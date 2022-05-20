@@ -38,7 +38,7 @@ class Renderer @Inject()(appConfig: AppConfig, renderer: NunjucksRenderer) {
     renderTemplate(template, ctx)
 
   private def renderTemplate(template: String, ctx: JsObject)(implicit request: RequestHeader): Future[Html] =
-    renderer.render(template, ctx ++ Json.obj("config" -> config.+("dummyKey" -> JsString(CSPNonce.get.getOrElse("")))))
+    renderer.render(template, ctx ++ Json.obj("config" -> config.+("nonce" -> JsString(CSPNonce.get.getOrElse("")))))
 
   private lazy val config: JsObject = Json.obj(
     fields =

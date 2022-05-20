@@ -16,22 +16,18 @@
 
 package controllers
 
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
-
-import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 @Singleton
-class HelloWorldController @Inject()(
-                                      mcc: MessagesControllerComponents,
-                                      renderer: Renderer)(implicit ec: ExecutionContext)
+class HelloWorldController @Inject()(mcc: MessagesControllerComponents)
   extends FrontendController(mcc) {
 
   val helloWorld: Action[AnyContent] = Action.async { implicit request =>
-    renderer.render("dummyFile.njk").map(Ok(_))
+    Future.successful(Ok(s"Cool + $request"))
   }
 
 }
