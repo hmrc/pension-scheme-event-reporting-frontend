@@ -44,9 +44,9 @@ class HelloWorldControllerSpec extends AnyWordSpec with Matchers with GuiceOneAp
       status(result) shouldBe Status.OK
     }
 
-    "return HTML" in {
+    "return Plain" in {
       val result = controller.helloWorld(fakeRequest)
-      contentType(result) shouldBe Some("text/html")
+      contentType(result) shouldBe Some("text/plain")
       charset(result) shouldBe Some("utf-8")
     }
   }
