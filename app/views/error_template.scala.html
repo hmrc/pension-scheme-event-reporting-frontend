@@ -14,15 +14,16 @@
  * limitations under the License.
  *@
 
-@this(layout: Layout)
+@import views.html._
 
-@()(implicit request: Request[_], messages: Messages)
+@this(layout: templates.Layout)
 
-@layout(pageTitle = Some("pension-scheme-event-reporting-frontend")) {
-    <h1 class="govuk-heading-xl">pension-scheme-event-reporting-frontend</h1>
-    <p class="govuk-body">@{messages("service.text")}</p>
-}
+@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
 
-@{
-    //$COVERAGE-OFF$
-}
+ @layout(
+  pageTitle = pageTitle){
+  <h1 class="govuk-heading-xl">@heading</h1>
+
+  <p class="govuk-body">@message</p>
+
+ }

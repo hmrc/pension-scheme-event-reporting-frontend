@@ -14,23 +14,13 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
-@import views.html.helper.CSPNonce
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLayout
+@this(layout: templates.Layout)
 
-@this(
-        appConfig: FrontendAppConfig,
-        hmrcLayout: HmrcLayout
-)
+@()(implicit request: Request[_], messages: Messages)
 
-@(pageTitle: Option[String] = None)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+@layout(
+    pageTitle = messages("messages__index__title")) {
 
-@hmrcLayout(
-    pageTitle = pageTitle,
-    nonce = CSPNonce.get,
-    isWelshTranslationAvailable = appConfig.welshLanguageSupportEnabled
-)(contentBlock)
-
-@{
-    //$COVERAGE-OFF$
+    <h1 class="govuk-heading-xl">@messages("messages__index__title")</h1>
+    <p class="govuk-body">@messages("messages__index__guidance")</p>
 }

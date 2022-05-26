@@ -18,8 +18,13 @@ package config
 
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class FrontendAppConfig @Inject()(config: Configuration) {
+class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) {
+  private def getConfigString(key: String) = servicesConfig.getConfString(key,
+    throw new Exception(s"Could not find config '$key'"))
+
   val welshLanguageSupportEnabled: Boolean = config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
+  val betaFeedbackUnauthenticatedUrl: String = getConfigString("contact-frontend.beta-feedback-url.unauthenticated")
 }

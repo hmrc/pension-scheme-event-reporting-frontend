@@ -18,7 +18,7 @@ package controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.HelloWorldPage
+import views.html.hello_world_page
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
@@ -26,7 +26,7 @@ import scala.concurrent.Future
 @Singleton
 class HelloWorldController @Inject()(
                                       mcc: MessagesControllerComponents,
-                                      helloWorldPage: HelloWorldPage)
+                                      helloWorldPage: hello_world_page)
   extends FrontendController(mcc) {
 
   val helloWorld: Action[AnyContent] = Action.async { implicit request =>

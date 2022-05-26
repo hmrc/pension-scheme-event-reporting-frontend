@@ -16,19 +16,18 @@
 
 package handlers
 
-import play.api.i18n.MessagesApi
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Request
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import views.html.ErrorTemplate
+import views.html.error_template
 
 import javax.inject.{Inject, Singleton}
 
-// NOTE: There should be changes to bootstrap to make this easier, the API in bootstrap should allow a `Future[Html]` rather than just an `Html`
 @Singleton
-class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, val messagesApi: MessagesApi)
-  extends FrontendErrorHandler {
+class ErrorHandler @Inject()(errorTemplate: error_template, val messagesApi: MessagesApi)
+  extends FrontendErrorHandler with I18nSupport{
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
     errorTemplate(pageTitle, heading, message)
 }
