@@ -7,12 +7,10 @@ object AppDependencies {
     play.sbt.PlayImport.ws,
     "uk.gov.hmrc"                   %%  "play-conditional-form-mapping"  % "1.9.0-play-28",
     "uk.gov.hmrc"                   %%  "bootstrap-frontend-play-28"     % "5.16.0",
-    "uk.gov.hmrc"                   %%  "play-nunjucks"                  % "0.33.0-play-28",
-    "uk.gov.hmrc"                   %%  "play-nunjucks-viewmodel"        % "0.15.0-play-28",
-    "org.webjars.npm"               %   "govuk-frontend"                 % "3.5.0",
-    "org.webjars.npm"               %   "hmrc-frontend"                  % "1.19.0",
     "com.google.inject.extensions"  %   "guice-multibindings"            % "4.2.2",
-    "uk.gov.hmrc"                   %%  "domain"                         % "6.2.0-play-28"
+    "uk.gov.hmrc"                   %%  "domain"                         % "6.2.0-play-28",
+    "uk.gov.hmrc"                   %% "play-frontend-hmrc"              % "1.25.0-play-28",
+    "uk.gov.hmrc"                   %% "play-ui"                         % "9.6.0-play-28"
   )
 
   val test = Seq(

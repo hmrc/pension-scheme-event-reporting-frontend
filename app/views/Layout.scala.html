@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package config
+@import config.FrontendAppConfig
+@import views.html.helper.CSPNonce
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLayout
 
-import com.google.inject.AbstractModule
+@this(
+        appConfig: FrontendAppConfig,
+        hmrcLayout: HmrcLayout
+)
 
-class Module extends AbstractModule {
+@(pageTitle: Option[String] = None)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-  override def configure(): Unit = {
+@hmrcLayout(
+    pageTitle = pageTitle,
+    nonce = CSPNonce.get,
+    isWelshTranslationAvailable = appConfig.welshLanguageSupportEnabled
+)(contentBlock)
 
-    bind(classOf[FrontendAppConfig]).asEagerSingleton()
-  }
+@{
+    //$COVERAGE-OFF$
 }

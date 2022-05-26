@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package config
+@this(layout: Layout)
 
-import com.google.inject.AbstractModule
+@()(implicit request: Request[_], messages: Messages)
 
-class Module extends AbstractModule {
+@layout(pageTitle = Some("pension-scheme-event-reporting-frontend")) {
+    <h1 class="govuk-heading-xl">pension-scheme-event-reporting-frontend</h1>
+    <p class="govuk-body">@{messages("service.text")}</p>
+}
 
-  override def configure(): Unit = {
-
-    bind(classOf[FrontendAppConfig]).asEagerSingleton()
-  }
+@{
+    //$COVERAGE-OFF$
 }

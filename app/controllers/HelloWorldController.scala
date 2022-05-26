@@ -18,16 +18,19 @@ package controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.html.HelloWorldPage
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class HelloWorldController @Inject()(mcc: MessagesControllerComponents)
+class HelloWorldController @Inject()(
+                                      mcc: MessagesControllerComponents,
+                                      helloWorldPage: HelloWorldPage)
   extends FrontendController(mcc) {
 
   val helloWorld: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(s"Cool + $request"))
+    Future.successful(Ok(helloWorldPage()))
   }
 
 }
