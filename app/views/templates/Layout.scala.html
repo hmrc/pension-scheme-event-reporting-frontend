@@ -19,7 +19,6 @@
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import views.html.helper.CSPNonce
-@import views.html.templates.Stylesheets
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
@@ -90,7 +89,7 @@
     routes.LogoutController.onPageLoad.url
 *@
 @govukLayout(
-    pageTitle = Some(pageTitle + " - " + Messages("messages__manage_pension_schemes__title")),
+    pageTitle = Some(pageTitle + " - " + Messages("messages__pension_scheme_event_reporting__title")),
     headBlock = Some(hmrcHead(
         headBlock = Some(headScripts)
     )),

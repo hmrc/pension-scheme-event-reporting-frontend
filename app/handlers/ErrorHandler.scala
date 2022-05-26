@@ -25,9 +25,9 @@ import views.html.error_template
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ErrorHandler @Inject()(errorTemplate: error_template, val messagesApi: MessagesApi)
+class ErrorHandler @Inject()(view: error_template, val messagesApi: MessagesApi)
   extends FrontendErrorHandler with I18nSupport{
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
-    errorTemplate(pageTitle, heading, message)
+    view(pageTitle, heading, message)
 }

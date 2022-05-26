@@ -50,7 +50,7 @@ lazy val root = (project in file("."))
     uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
     pipelineStages := Seq(digest),
     Assets / pipelineStages := Seq(concat,uglify),
-    includeFilter in uglify := GlobFilter("pensionschemeeventreportingfrontend-*.js")
+    uglify / includeFilter := GlobFilter("pensionschemeeventreportingfrontend-*.js")
   )
 
 lazy val testSettings: Seq[Def.Setting[_]] = Seq(
