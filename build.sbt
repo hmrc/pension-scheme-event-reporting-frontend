@@ -1,17 +1,18 @@
 import play.sbt.routes.RoutesKeys
-import sbt.{CrossVersion, Def, Setting, compilerPlugin}
+import sbt.Keys.includeFilter
+import sbt.{CrossVersion, Def, GlobFilter, Setting, compilerPlugin}
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings
+import uk.gov.hmrc.DefaultBuildSettings._
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 val appName: String = "pension-scheme-event-reporting-frontend"
 
 lazy val root = (project in file("."))
-  .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
+  .disablePlugins(JUnitXmlReportPlugin)
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin)
-  .settings(DefaultBuildSettings.scalaSettings: _*)
-  .settings(DefaultBuildSettings.defaultSettings(): _*)
+  .settings(scalaSettings: _*)
+  .settings(defaultSettings(): _*)
   .settings(SbtDistributablesPlugin.publishingSettings: _*)
   .settings(scalaVersion := "2.12.11")
   .settings(silencerSettings)
@@ -19,13 +20,14 @@ lazy val root = (project in file("."))
   .settings(majorVersion := 0)
   .settings(
     name := appName,
-    RoutesKeys.routesImport ++= Seq("models._", "java.time.LocalDate"),
+    RoutesKeys.routesImport ++= Seq(
+      "models._", "java.time.LocalDate"
+    ),
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
       "play.twirl.api.HtmlFormat._",
       "uk.gov.hmrc.play.views.html.helpers._",
-      "uk.gov.hmrc.play.views.html.layouts._",
-      "controllers.routes._"
+      "uk.gov.hmrc.play.views.html.layouts._"
     ),
     PlayKeys.playDefaultPort := 8216,
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*repositories.*;" +
@@ -41,11 +43,14 @@ lazy val root = (project in file("."))
       Resolver.jcenterRepo
     ),
     Concat.groups := Seq(
-      "javascripts/application.js" -> group(Seq("lib/govuk-frontend/govuk/all.js","lib/hmrc-frontend/hmrc/all.js"
+      "javascripts/pensionschemeeventreportingfrontend-app.js" -> group(Seq(
+        "javascripts/pensionschemeeventreportingfrontend.js"
       ))
     ),
     uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
-    Assets / pipelineStages := Seq(concat,uglify)
+    pipelineStages := Seq(digest),
+    Assets / pipelineStages := Seq(concat,uglify),
+    uglify / includeFilter := GlobFilter("pensionschemeeventreportingfrontend-*.js")
   )
 
 lazy val testSettings: Seq[Def.Setting[_]] = Seq(

@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package config
+@this()
 
-import com.google.inject.AbstractModule
+@()
 
-class Module extends AbstractModule {
-
-  override def configure(): Unit = {
-
-    bind(classOf[FrontendAppConfig]).asEagerSingleton()
-  }
-}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<link rel="stylesheet" media="all" type="text/css" href='@routes.Assets.versioned("stylesheets/managepensionsfrontendplayupgrade-app.scss")' />
+<script src='@routes.Assets.versioned("javascripts/managepensionsfrontend-app.min.js")'> </script>

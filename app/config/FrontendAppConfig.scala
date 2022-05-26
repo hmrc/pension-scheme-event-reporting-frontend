@@ -16,12 +16,15 @@
 
 package config
 
-import com.google.inject.AbstractModule
+import javax.inject.{Inject, Singleton}
+import play.api.Configuration
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-class Module extends AbstractModule {
+@Singleton
+class FrontendAppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) {
+  private def getConfigString(key: String) = servicesConfig.getConfString(key,
+    throw new Exception(s"Could not find config '$key'"))
 
-  override def configure(): Unit = {
-
-    bind(classOf[FrontendAppConfig]).asEagerSingleton()
-  }
+  val welshLanguageSupportEnabled: Boolean = config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
+  val betaFeedbackUnauthenticatedUrl: String = getConfigString("contact-frontend.beta-feedback-url.unauthenticated")
 }

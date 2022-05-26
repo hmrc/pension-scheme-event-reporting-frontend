@@ -1,2 +1,7 @@
-service.name = pension-scheme-event-reporting-frontend
+site.service_name = Pension Scheme Event Reporting
+site.back = Back
 service.text = This is your new service
+
+messages__index__title = Pension Scheme Event Reporting Frontend
+messages__index__guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
+messages__pension_scheme_event_reporting__title = Pension scheme event reporting - GOV.UK

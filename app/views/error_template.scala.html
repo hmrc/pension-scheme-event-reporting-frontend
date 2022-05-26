@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package config
+@import views.html._
 
-import javax.inject.{Inject, Singleton}
-import play.api.Configuration
+@this(layout: templates.Layout)
 
-@Singleton
-class AppConfig @Inject()(config: Configuration) {
-  val welshLanguageSupportEnabled: Boolean = config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
-  val dummyKey: Boolean = config.getOptional[Boolean]("features.dummyKey").getOrElse(false)
+@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
 
-}
+ @layout(
+  pageTitle = pageTitle){
+  <h1 class="govuk-heading-xl">@heading</h1>
+
+  <p class="govuk-body">@message</p>
+
+ }
