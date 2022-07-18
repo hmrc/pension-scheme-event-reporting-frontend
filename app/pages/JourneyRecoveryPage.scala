@@ -14,26 +14,15 @@
  * limitations under the License.
  */
 
-package queries
-
+package pages
+import controllers.routes
 import models.UserAnswers
-import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-import scala.util.{Success, Try}
+object JourneyRecoveryPage extends Page {
 
-sealed trait Query {
+  override def route(waypoints: Waypoints): Call =
+    routes.JourneyRecoveryController.onPageLoad()
 
-  def path: JsPath
-}
-
-trait Gettable[A] extends Query
-
-trait Settable[A] extends Query {
-
-  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
-    Success(userAnswers)
-}
-
-trait Derivable[A, B] extends Query {
-  val derive: A => B
+  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = ???
 }

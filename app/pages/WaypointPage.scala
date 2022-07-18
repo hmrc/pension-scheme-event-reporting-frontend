@@ -14,14 +14,30 @@
  * limitations under the License.
  */
 
-package navigation
+package pages
 
-import play.api.mvc.Call
-import pages._
-import models.{Mode, UserAnswers}
+import models.{CheckMode, Mode, NormalMode}
 
-class FakeNavigator(desiredRoute: Call) extends Navigator {
+trait WaypointPage extends Page
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    desiredRoute
+trait CheckAnswersPage extends WaypointPage {
+  val urlFragment: String
+
+  def waypoint: Waypoint =
+    Waypoint(this, CheckMode, urlFragment)
+}
+
+trait AddItemPage extends WaypointPage {
+  def waypoint(mode: Mode): Waypoint = {
+    Waypoint(this, mode, urlFragment(mode))
+  }
+
+  private def urlFragment(mode: Mode): String =
+    mode match {
+      case NormalMode => normalModeUrlFragment
+      case CheckMode  => checkModeUrlFragment
+    }
+
+  val normalModeUrlFragment: String
+  val checkModeUrlFragment: String
 }
