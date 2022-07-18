@@ -15,93 +15,84 @@
  *@
 
 @import config.FrontendAppConfig
-@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukBackLink, GovukLayout, TwoThirdsMainContent}
-@import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
+@import uk.gov.hmrc.hmrcfrontend.views.config.StandardAlphaBanner
 @import views.html.helper.CSPNonce
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 @this(
-        appConfig: FrontendAppConfig,
-        govukLayout: GovukLayout,
-        hmrcHead: HmrcHead,
-        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-        hmrcStandardFooter: HmrcStandardFooter,
-        hmrcStandardHeader: HmrcStandardHeader,
-        standardBetaBanner: StandardBetaBanner,
-        defaultMainContentLayout: TwoThirdsMainContent,
-        hmrcScripts: HmrcScripts,
-        stylesheets: Stylesheets,
-        govukBackLink: GovukBackLink,
-        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
+    appConfig: FrontendAppConfig,
+    govukLayout: GovukLayout,
+    govukBackLink: GovukBackLink,
+    hmrcHead: HmrcHead,
+    hmrcStandardHeader: HmrcStandardHeader,
+    hmrcStandardFooter: HmrcStandardFooter,
+    hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
+    hmrcLanguageSelect: HmrcLanguageSelect,
+    hmrcTimeoutDialog: HmrcTimeoutDialog,
+    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+    hmrcScripts: HmrcScripts,
+    alphaBanner: StandardAlphaBanner
 )
 
-@(pageTitle: String,
-        timeoutEnabled: Boolean = true,
-        canSignOut: Boolean = true,
-        showBackLink: Boolean = true,
-        fullWidthLayout: Boolean = false
-)(mainContent: Html)(implicit request: Request[_], messages: Messages)
+@(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-@*
-* TODO : Following urls should be replaced with a proper one by removing ""
-    routes.LogoutController.onPageLoad.url
-    routes.LogoutController.keepAlive.url
-*@
+@head = {
 
-@headScripts = {
-@if(timeoutEnabled) {
-    @hmrcTimeoutDialogHelper(
-        signOutUrl = "routes.LogoutController.onPageLoad.url",
-        keepAliveUrl = Some("routes.LogoutController.keepAlive.url"),
-        timeout = Some(900),
-        countdown = Some(120)
+    @hmrcHead(
+        nonce     = CSPNonce.get,
+        headBlock = if(timeout) { Some(
+            hmrcTimeoutDialog(TimeoutDialog(
+                timeout             = Some(appConfig.timeout),
+                countdown           = Some(appConfig.countdown),
+                keepAliveUrl        = Some(routes.KeepAliveController.keepAlive.url),
+                keepAliveButtonText = Some(messages("timeout.keepAlive")),
+                signOutUrl          = Some(controllers.auth.routes.AuthController.signOut.url),
+                signOutButtonText   = Some(messages("timeout.signOut")),
+                title               = Some(messages("timeout.title")),
+                message             = Some(messages("timeout.message"))
+            )))
+        } else None
     )
 }
 
-@stylesheets()
+@additionalScripts = {
+    <script src='@controllers.routes.Assets.versioned("javascripts/application.min.js")'></script>
 }
 
-@beforeContentBlock = {
-    @if(showBackLink) {
-        @govukBackLink(BackLink(
-            attributes = Map("id" -> "back-link"), classes="js-enabled", href="javascript:history.back()", content = HtmlContent(messages("site.back"))
+@beforeContent = {
+
+    @if(appConfig.languageTranslationEnabled) {
+        @hmrcLanguageSelect(LanguageSelect(
+            if (messages.lang.code == "cy") Cy else En,
+            (En, routes.LanguageSwitchController.switchToLanguage("en").url),
+            (Cy, routes.LanguageSwitchController.switchToLanguage("cy").url)
         ))
+    }
+
+    @if(showBackLink) {
+        @govukBackLink(BackLinkViewModel(href = "#"))
     }
 }
 
-@scripts = {
-    <script src='@controllers.routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
-    <script src='@controllers.routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
-    <script>window.GOVUKFrontend.initAll();
-    window.HMRCFrontend.initAll()</script>
+@content = {
+    @contentBlock
+
+    <div class="govuk-!-margin-top-8">
+        @hmrcReportTechnicalIssueHelper()
+    </div>
 }
 
-@mainContentWithGetHelp = {
-@mainContent
-@hmrcReportTechnicalIssueHelper()
-}
-
-@*
-* TODO : Following urls should be replaced with a proper one by removing ""
-    routes.SchemesOverviewController.onPageLoad.url
-    routes.LogoutController.onPageLoad.url
-*@
 @govukLayout(
-    pageTitle = Some(pageTitle + " - " + Messages("messages__pension_scheme_event_reporting__title")),
-    headBlock = Some(hmrcHead(
-        headBlock = Some(headScripts)
-    )),
+    pageTitle   = Some(pageTitle),
+    headBlock   = Some(head),
     headerBlock = Some(hmrcStandardHeader(
-        serviceName = Some(messages("site.service_name")),
-        serviceUrl = Some("routes.SchemesOverviewController.onPageLoad.url"),
-        signOutUrl = if(canSignOut) Some("routes.LogoutController.onPageLoad.url") else None,
-        phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl))
+        serviceUrl  = Some(routes.IndexController.onPageLoad.url),
+        signOutUrl  = if(showSignOut) Some(controllers.auth.routes.AuthController.signOut.url) else None,
+        phaseBanner = Some(alphaBanner(appConfig.feedbackUrl))
     )),
-    cspNonce = CSPNonce.get,
-    beforeContentBlock = Some(beforeContentBlock),
-    scriptsBlock = Some(scripts),
-    mainContentLayout = if(fullWidthLayout) None else Some(defaultMainContentLayout(_)),
-    footerBlock = Some(hmrcStandardFooter())
-)(mainContentWithGetHelp)
+    beforeContentBlock = Some(beforeContent),
+    footerBlock        = Some(hmrcStandardFooter()),
+    scriptsBlock       = Some(hmrcScripts(
+        nonce        = CSPNonce.get,
+        scriptsBlock = Some(additionalScripts)
+    ))
+)(content)
