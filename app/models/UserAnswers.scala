@@ -22,7 +22,6 @@ import queries.{Derivable, Gettable, Settable}
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
-                              id: String,
                               data: JsObject = Json.obj()
                             ) {
 
@@ -71,29 +70,4 @@ final case class UserAnswers(
         page.cleanup(None, updatedAnswers)
     }
   }
-}
-
-object UserAnswers {
-
-  val reads: Reads[UserAnswers] = {
-
-    import play.api.libs.functional.syntax._
-
-    (
-      (__ \ "_id").read[String] and
-        (__ \ "data").read[JsObject]
-      ) (UserAnswers.apply _)
-  }
-
-  val writes: OWrites[UserAnswers] = {
-
-    import play.api.libs.functional.syntax._
-
-    (
-      (__ \ "_id").write[String] and
-        (__ \ "data").write[JsObject]
-      ) (unlift(UserAnswers.unapply))
-  }
-
-  implicit val format: OFormat[UserAnswers] = OFormat(reads, writes)
 }

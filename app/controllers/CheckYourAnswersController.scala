@@ -33,13 +33,19 @@ class CheckYourAnswersController @Inject()(
                                             view: CheckYourAnswersView
                                           ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-
-      val list = SummaryListViewModel(
-        rows = Seq.empty
-      )
-
-      Ok(view(list))
+  //  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  //    implicit request =>
+  //
+  //      val list = SummaryListViewModel(
+  //        rows = Seq.empty
+  //      )
+  //
+  //      Ok(view(list))
+  //  }
+  def onPageLoad: Action[AnyContent] = identify { implicit request =>
+    val list = SummaryListViewModel(
+      rows = Seq.empty
+    )
+    Ok(view(list))
   }
 }

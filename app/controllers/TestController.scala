@@ -17,29 +17,23 @@
 package controllers
 
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import models.enumeration.EventType
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.TestView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
-class KeepAliveController @Inject()(
-                                     val controllerComponents: MessagesControllerComponents,
-                                     identify: IdentifierAction,
-                                     getData: DataRetrievalAction
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController {
+class TestController @Inject()(
+                                 val controllerComponents: MessagesControllerComponents,
+                                 identify: IdentifierAction,
+                                 getData: DataRetrievalAction,
+                                 view: TestView
+                               ) extends FrontendBaseController with I18nSupport {
 
-  //  def keepAlive: Action[AnyContent] = (identify andThen getData).async {
-  //    implicit request =>
-  //      request.userAnswers
-  //        .map {
-  //          answers =>
-  //            Future.successful(Ok)
-  //        }
-  //        .getOrElse(Future.successful(Ok))
-  //  }
-  def keepAlive: Action[AnyContent] = identify { implicit request =>
-
-    Ok
+  def onPageLoad(pstr: String): Action[AnyContent] = (identify andThen getData(pstr, EventType.Event1)) { implicit request =>
+    println( "\n>>USER ANSWERS>>" + request.userAnswers)
+    Ok(view())
   }
 }
