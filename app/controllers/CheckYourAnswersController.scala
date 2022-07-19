@@ -19,10 +19,12 @@ package controllers
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.enumeration.EventType
+import pages.{CheckYourAnswersPage, EmptyWaypoints, TestPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.govuk.summarylist._
+import viewmodels.implicits._
 import views.html.CheckYourAnswersView
 
 class CheckYourAnswersController @Inject()(
@@ -37,8 +39,24 @@ class CheckYourAnswersController @Inject()(
   private val pstr = "123"
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData(pstr, EventType.Event1) andThen requireData) { implicit request =>
+
+    val thisPage  = CheckYourAnswersPage
+    val waypoints = EmptyWaypoints
+
+    val xx = request.userAnswers.get(TestPage) match {
+      case Some(answer) =>
+        SummaryListRowViewModel(
+          key = "partnerName.checkYourAnswersLabel",
+          value = ValueViewModel("wibble"),
+          actions = Seq(
+            ActionItemViewModel("site.change", TestPage.changeLink(waypoints, thisPage).url)
+          )
+        )
+      case _ => throw new RuntimeException("AA")
+    }
+
     val list = SummaryListViewModel(
-      rows = Seq.empty
+      rows = Seq(xx)
     )
     Ok(view(list))
   }
