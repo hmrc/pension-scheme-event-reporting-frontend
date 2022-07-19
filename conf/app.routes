@@ -19,4 +19,5 @@ GET         /account/sign-out                            controllers.auth.AuthCo
 GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad
 
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
-GET         /test/:pstr/                          controllers.TestController.onPageLoad(pstr: String)
+GET         /test                                        controllers.TestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /test                                        controllers.TestController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

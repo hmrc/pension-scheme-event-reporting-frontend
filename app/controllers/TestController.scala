@@ -16,24 +16,63 @@
 
 package controllers
 
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import connectors.UserAnswersCacheConnector
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import forms.TestFormProvider
+import models.UserAnswers
 import models.enumeration.EventType
+import pages.{TestPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.TestView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class TestController @Inject()(
-                                 val controllerComponents: MessagesControllerComponents,
-                                 identify: IdentifierAction,
-                                 getData: DataRetrievalAction,
-                                 view: TestView
-                               ) extends FrontendBaseController with I18nSupport {
+                                val controllerComponents: MessagesControllerComponents,
+                                identify: IdentifierAction,
+                                getData: DataRetrievalAction,
+                                requireData: DataRequiredAction,
+                                userAnswersCacheConnector: UserAnswersCacheConnector,
+                                formProvider: TestFormProvider,
+                                view: TestView
+                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(pstr: String): Action[AnyContent] = (identify andThen getData(pstr, EventType.Event1)) { implicit request =>
-    println( "\n>>USER ANSWERS>>" + request.userAnswers)
-    Ok(view())
+  private val form = formProvider()
+
+  private val pstr = "123"
+
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, EventType.Event1)) { implicit request =>
+    val preparedForm = request.userAnswers match {
+      case None => form
+      case Some(ua) => ua.get(TestPage) match {
+        case None => form
+        case Some(value) => form.fill(value)
+      }
+    }
+    Ok(view(preparedForm, waypoints))
   }
+
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, EventType.Event1)).async {
+    implicit request =>
+      form.bindFromRequest().fold(
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors, waypoints))),
+        value => {
+
+          val originalUserAnswers = request.userAnswers match {
+            case None => UserAnswers()
+            case Some(ua) => ua
+          }
+
+          val updatedAnswers = originalUserAnswers.setOrException(TestPage, value)
+          userAnswersCacheConnector.save(pstr, EventType.Event1, updatedAnswers).map { _ =>
+            Redirect(TestPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+          }
+        }
+      )
+  }
+
 }

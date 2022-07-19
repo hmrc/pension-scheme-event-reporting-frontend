@@ -15,17 +15,39 @@
  *@
 
 @this(
-    layout: templates.Layout
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios: GovukRadios,
+    govukButton: GovukButton
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
 
 @layout(
-    pageTitle    = titleNoForm(messages("index.title")),
+    pageTitle    = titleNoForm(messages("test.title")),
     showBackLink = false
 ) {
 
-    <h1 class="govuk-heading-xl">@messages("index.heading")</h1>
-BLA!
-    <p class="govuk-body">@messages("index.guidance")</p>
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form))
+    }
+
+    <h1 class="govuk-heading-xl">@messages("test.heading")</h1>
+
+    @formHelper(action = routes.TestController.onSubmit(waypoints), 'autoComplete -> "off") {
+
+        @govukRadios(
+            RadiosViewModel.yesNo(
+                field = form("value"),
+                legend = LegendViewModel("WIBBLE").asPageHeading()
+            )
+        )
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+
+        <p class="govuk-body">@messages("index.guidance")</p>
+    }
 }

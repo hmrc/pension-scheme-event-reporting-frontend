@@ -55,3 +55,7 @@ signedOut.guidance = We did not save your answers.
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+test.error.required = You must enter a value here!
+test.title = TEST PAGE TITLE
+test.heading = TEST PAGE HEADING

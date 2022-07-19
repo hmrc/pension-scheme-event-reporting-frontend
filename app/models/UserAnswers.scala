@@ -16,6 +16,7 @@
 
 package models
 
+import pages.QuestionPage
 import play.api.libs.json._
 import queries.{Derivable, Gettable, Settable}
 
@@ -52,6 +53,13 @@ final case class UserAnswers(
       d =>
         val updatedAnswers = copy(data = d)
         page.cleanup(Some(value), updatedAnswers)
+    }
+  }
+
+  def setOrException[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): UserAnswers = {
+    set(page, value) match {
+      case Success(ua) => ua
+      case Failure(ex) => throw ex
     }
   }
 
