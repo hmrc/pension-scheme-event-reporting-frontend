@@ -17,7 +17,7 @@
 package controllers
 
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.TestFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
@@ -34,7 +34,6 @@ class TestController @Inject()(
                                 val controllerComponents: MessagesControllerComponents,
                                 identify: IdentifierAction,
                                 getData: DataRetrievalAction,
-                                requireData: DataRequiredAction,
                                 userAnswersCacheConnector: UserAnswersCacheConnector,
                                 formProvider: TestFormProvider,
                                 view: TestView

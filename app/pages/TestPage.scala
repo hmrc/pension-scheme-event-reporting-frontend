@@ -32,7 +32,7 @@ case object TestPage extends QuestionPage[Boolean] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this).map {
-      case true  => TestPage
+      case true  => CheckYourAnswersPage
       case false => TestPage
     }.orRecover
 }

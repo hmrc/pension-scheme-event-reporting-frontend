@@ -14,7 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package journey
 
-trait ModelGenerators {
+import org.scalatest.freespec.AnyFreeSpec
+import pages.{CheckYourAnswersPage, TestPage}
+
+class InitialSectionJourneySpec extends AnyFreeSpec with JourneyHelpers {
+  
+  "test journey" in {
+
+    startingFrom(TestPage)
+      .run(
+        submitAnswer(TestPage, true),
+        pageMustBe(CheckYourAnswersPage)
+      )
+  }
 }

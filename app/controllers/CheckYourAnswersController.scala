@@ -18,6 +18,7 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import models.enumeration.EventType
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -33,16 +34,9 @@ class CheckYourAnswersController @Inject()(
                                             view: CheckYourAnswersView
                                           ) extends FrontendBaseController with I18nSupport {
 
-  //  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
-  //    implicit request =>
-  //
-  //      val list = SummaryListViewModel(
-  //        rows = Seq.empty
-  //      )
-  //
-  //      Ok(view(list))
-  //  }
-  def onPageLoad: Action[AnyContent] = identify { implicit request =>
+  private val pstr = "123"
+
+  def onPageLoad: Action[AnyContent] = (identify andThen getData(pstr, EventType.Event1) andThen requireData) { implicit request =>
     val list = SummaryListViewModel(
       rows = Seq.empty
     )
