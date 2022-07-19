@@ -46,8 +46,8 @@ class CheckYourAnswersController @Inject()(
     val xx = request.userAnswers.get(TestPage) match {
       case Some(answer) =>
         SummaryListRowViewModel(
-          key = "partnerName.checkYourAnswersLabel",
-          value = ValueViewModel("wibble"),
+          key = "test.checkYourAnswersLabel",
+          value = ValueViewModel(answer.toString),
           actions = Seq(
             ActionItemViewModel("site.change", TestPage.changeLink(waypoints, thisPage).url)
           )
