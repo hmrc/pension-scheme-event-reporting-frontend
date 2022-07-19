@@ -19,7 +19,7 @@ package journey
 import org.scalatest.freespec.AnyFreeSpec
 import pages.{CheckYourAnswersPage, TestPage}
 
-class InitialSectionJourneySpec extends AnyFreeSpec with JourneyHelpers {
+class TestJourneySpec extends AnyFreeSpec with JourneyHelpers {
   
   "test journey" in {
 
