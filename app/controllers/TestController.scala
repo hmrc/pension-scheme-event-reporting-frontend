@@ -41,6 +41,7 @@ class TestController @Inject()(
 
   private val form = formProvider()
 
+  // TODO: This will need to be retrieved from a Mongo collection. Can't put it in URL for security reasons.
   private val pstr = "123"
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, EventType.Event1)) { implicit request =>

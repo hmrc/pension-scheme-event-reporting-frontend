@@ -29,17 +29,8 @@ class KeepAliveController @Inject()(
                                      getData: DataRetrievalAction
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController {
 
-  //  def keepAlive: Action[AnyContent] = (identify andThen getData).async {
-  //    implicit request =>
-  //      request.userAnswers
-  //        .map {
-  //          answers =>
-  //            Future.successful(Ok)
-  //        }
-  //        .getOrElse(Future.successful(Ok))
-  //  }
   def keepAlive: Action[AnyContent] = identify { implicit request =>
-
+    // TODO: Need to implement this
     Ok
   }
 }
