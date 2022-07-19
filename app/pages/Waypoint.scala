@@ -18,26 +18,25 @@ package pages
 
 import models.Mode
 
-case class Waypoint (
-                      page: WaypointPage,
-                      mode: Mode,
-                      urlFragment: String
-                    )
+case class Waypoint(
+                     page: WaypointPage,
+                     mode: Mode,
+                     urlFragment: String
+                   )
 
 object Waypoint {
 
+  /*
+  Every CYA page you create needs to extend CheckAnswersPage and will get a url fragment; and every add-to-list page will extend
+  AddToListPage and get normal-mode and check-mode fragments.  And yes, you’ll add them to the fromString method on Waypoint as well.
+  See claim-child-benefit-frontend project for examples of how this is used.
+   */
+
   private val fragments: Map[String, Waypoint] =
     Map(
-      CheckYourAnswersPage.urlFragment                         -> CheckYourAnswersPage.waypoint
-//      ,
-//      AddApplicantPreviousFamilyNamePage.normalModeUrlFragment -> AddApplicantPreviousFamilyNamePage.waypoint(NormalMode),
-//      AddApplicantPreviousFamilyNamePage.checkModeUrlFragment  -> AddApplicantPreviousFamilyNamePage.waypoint(CheckMode),
-//      AddChildPage.normalModeUrlFragment                       -> AddChildPage.waypoint(NormalMode),
-//      AddChildPage.checkModeUrlFragment                        -> AddChildPage.waypoint(CheckMode)
+      CheckYourAnswersPage.urlFragment -> CheckYourAnswersPage.waypoint
     )
 
   def fromString(s: String): Option[Waypoint] =
     fragments.get(s)
-//      .orElse(CheckChildDetailsPage.waypointFromString(s))
-//      .orElse(AddChildPreviousNamePage.waypointFromString(s))
 }
