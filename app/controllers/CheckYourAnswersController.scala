@@ -21,6 +21,7 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import models.enumeration.EventType
 import pages.{CheckYourAnswersPage, EmptyWaypoints, TestPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.govuk.summarylist._
@@ -43,21 +44,21 @@ class CheckYourAnswersController @Inject()(
     val thisPage  = CheckYourAnswersPage
     val waypoints = EmptyWaypoints
 
-    val xx = request.userAnswers.get(TestPage) match {
+    request.userAnswers.get(TestPage) match {
       case Some(answer) =>
-        SummaryListRowViewModel(
+        val summaryListRows = SummaryListRowViewModel(
           key = "test.checkYourAnswersLabel",
           value = ValueViewModel(answer.toString),
           actions = Seq(
             ActionItemViewModel("site.change", TestPage.changeLink(waypoints, thisPage).url)
           )
         )
-      case _ => throw new RuntimeException("AA")
+        val list = SummaryListViewModel(
+          rows = Seq(summaryListRows)
+        )
+        Ok(view(list))
+      case _ => Redirect(routes.JourneyRecoveryController.onPageLoad())
     }
 
-    val list = SummaryListViewModel(
-      rows = Seq(xx)
-    )
-    Ok(view(list))
   }
 }

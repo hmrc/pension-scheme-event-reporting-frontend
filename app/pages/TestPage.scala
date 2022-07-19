@@ -30,9 +30,12 @@ case object TestPage extends QuestionPage[Boolean] {
   override def route(waypoints: Waypoints): Call =
     routes.TestController.onPageLoad(waypoints)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    println("\n>>>WAYP=" + waypoints)
     answers.get(this).map {
-      case true  => CheckYourAnswersPage
+      case true  =>
+        CheckYourAnswersPage
       case false => TestPage
     }.orRecover
+  }
 }
