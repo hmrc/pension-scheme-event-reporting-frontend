@@ -89,10 +89,10 @@ class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach  {
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set($className$Page, true).success.value
+        val updatedAnswers = emptyUserAnswers.set($className$Page, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual $className$Page.navigate(waypoints, emptyUserAnswers, expectedAnswers).url
+        redirectLocation(result).value mustEqual $className$Page.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
       }
     }
   }

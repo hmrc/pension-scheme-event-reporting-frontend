@@ -103,10 +103,10 @@ class TestControllerSpec extends SpecBase with BeforeAndAfterEach {
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(TestPage, true).success.value
+        val updatedAnswers = emptyUserAnswers.set(TestPage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual TestPage.navigate(waypoints, emptyUserAnswers, expectedAnswers).url
+        redirectLocation(result).value mustEqual TestPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
       }
     }
   }
