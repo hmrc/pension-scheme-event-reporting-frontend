@@ -38,7 +38,7 @@ class UserAnswersCacheConnectorSpec
   override protected def portConfigKey: String = "microservice.services.pension-scheme-event-reporting.port"
 
   private lazy val connector: UserAnswersCacheConnector = injector.instanceOf[UserAnswersCacheConnector]
-  private val userAnswersCacheUrl = s"/pension-scheme-event-reporting/cache/user-answers"
+  private val userAnswersCacheUrl = s"/pension-scheme-event-reporting/user-answers"
 
   private val validResponse =
     Json.obj(

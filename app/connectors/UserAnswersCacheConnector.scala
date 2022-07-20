@@ -32,7 +32,7 @@ class UserAnswersCacheConnector @Inject()(
                                            http: HttpClient
                                          ) {
 
-  private def url = s"${config.eventReportingUrl}/pension-scheme-event-reporting/cache/user-answers"
+  private def url = s"${config.eventReportingUrl}/pension-scheme-event-reporting/user-answers"
 
   def get(pstr: String, eventType: EventType)
          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
