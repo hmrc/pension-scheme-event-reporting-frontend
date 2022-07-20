@@ -1,5 +1,6 @@
 package controllers
 
+import base.SpecBase
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.{mock, reset}
 import connectors.UserAnswersCacheConnector
