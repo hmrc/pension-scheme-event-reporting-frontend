@@ -4,13 +4,11 @@ import base.SpecBase
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.{mock, reset}
 import connectors.UserAnswersCacheConnector
-import forms.{$className$FormProvider, TestFormProvider}
+import forms.$className$FormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
-import pages.{$className$Page, EmptyWaypoints, TestPage}
+import pages.{$className$Page, EmptyWaypoints}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
