@@ -29,12 +29,11 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewmodels.govuk.SummaryListFluency
 import views.html.TestView
 
 import scala.concurrent.Future
 
-class TestControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach {
+class TestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 

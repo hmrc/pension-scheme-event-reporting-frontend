@@ -1,5 +1,7 @@
 package controllers
 
+import org.mockito.Mockito.when
+import org.mockito.MockitoSugar.{mock, reset}
 import connectors.UserAnswersCacheConnector
 import forms.{$className$FormProvider, TestFormProvider}
 import models.UserAnswers
@@ -12,12 +14,11 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewmodels.govuk.SummaryListFluency
 import views.html.$className$View
 
 import scala.concurrent.Future
 
-class $className$ControllerSpec extends SpecBase with MockitoSugar {
+class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach  {
 
   private val waypoints = EmptyWaypoints
 
