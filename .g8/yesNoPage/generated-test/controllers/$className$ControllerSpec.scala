@@ -67,7 +67,7 @@ class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach  {
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[TestView]
+        val view = application.injector.instanceOf[$className$View]
 
         val result = route(application, request).value
 
