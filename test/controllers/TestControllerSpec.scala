@@ -62,7 +62,7 @@ class TestControllerSpec extends SpecBase with SummaryListFluency with BeforeAnd
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.TestController.onPageLoad(waypoints).url)
+        val request = FakeRequest(GET, getRoute)
 
         val result = route(application, request).value
 
