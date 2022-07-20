@@ -13,41 +13,37 @@ import views.html.$className$View
 import scala.concurrent.{ExecutionContext, Future}
 
 class $className;format="cap"$Controller @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         formProvider: $className$FormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: $className$View
+                                        val controllerComponents: MessagesControllerComponents,
+                                        identify: IdentifierAction,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
+                                        userAnswersCacheConnector: UserAnswersCacheConnector,
+                                        formProvider: $className$FormProvider,
+                                        view: $className$View
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  private val form = formProvider()
+  private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
+  // TODO: This will need to be retrieved from a Mongo collection. Can't put it in URL for security reasons.
+  private val pstr = "123"
 
-      val preparedForm = request.userAnswers.get($className$Page) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, waypoints))
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType) andThen requireData) { implicit request =>
+    val preparedForm = request.userAnswers.get($className$Page).fold(form)(form.fill)
+    Ok(view(preparedForm, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType) andThen requireData).async {
     implicit request =>
-
       form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set($className$Page, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect($className$Page.navigate(waypoints, request.userAnswers, updatedAnswers).route)
-      )
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints))),
+        value => {
+          val originalUserAnswers = request.userAnswers
+          val updatedAnswers = originalUserAnswers.setOrException($className$Page, value)
+          userAnswersCacheConnector.save(pstr, eventType, updatedAnswers).map { _ =>
+          Redirect($className$Page.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+        }
+      }
+    )
   }
 }

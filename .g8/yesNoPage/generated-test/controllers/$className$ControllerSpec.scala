@@ -1,32 +1,46 @@
 package controllers
 
-import base.SpecBase
-import forms.$className$FormProvider
+import connectors.UserAnswersCacheConnector
+import forms.{$className$FormProvider, TestFormProvider}
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{$className$Page, EmptyWaypoints}
+import pages.{$className$Page, EmptyWaypoints, TestPage}
 import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
-import views.html.$className$View
+import views.html.{$className$View, TestView}
 
 import scala.concurrent.Future
 
 class $className$ControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new $className$FormProvider()
-  val form = formProvider()
+
   private val waypoints = EmptyWaypoints
-  
-  lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(waypoints).url
+
+  private val formProvider = new $className$FormProvider()
+  private val form = formProvider()
+
+  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+
+  private def getRoute: String = routes.$className$Controller.onPageLoad(waypoints).url
+  private def postRoute: String = routes.$className$Controller.onSubmit(waypoints).url
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
+  )
+
+  override def beforeEach: Unit = {
+    super.beforeEach
+    reset(mockUserAnswersCacheConnector)
+  }
 
   "$className$ Controller" - {
+
 
     "must return OK and the correct view for a GET" in {
 
@@ -41,6 +55,25 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+      }
+    }
+
+
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+
+      val userAnswers = UserAnswers().set($className$Page, true).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val view = application.injector.instanceOf[TestView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form.fill(true), waypoints)(request, messages(application)).toString
       }
     }
 
