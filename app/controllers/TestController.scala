@@ -30,8 +30,7 @@ import views.html.TestView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TestController @Inject()(
-                                val controllerComponents: MessagesControllerComponents,
+class TestController @Inject()( val controllerComponents: MessagesControllerComponents,
                                 identify: IdentifierAction,
                                 getData: DataRetrievalAction,
                                 userAnswersCacheConnector: UserAnswersCacheConnector,
@@ -40,35 +39,25 @@ class TestController @Inject()(
                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
+  private val eventType = EventType.Event1
 
   // TODO: This will need to be retrieved from a Mongo collection. Can't put it in URL for security reasons.
   private val pstr = "123"
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, EventType.Event1)) { implicit request =>
-    val preparedForm = request.userAnswers match {
-      case None => form
-      case Some(ua) => ua.get(TestPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-    }
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType)) { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(_.get(TestPage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, EventType.Event1)).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
-
-          val originalUserAnswers = request.userAnswers match {
-            case None => UserAnswers()
-            case Some(ua) => ua
-          }
-
+          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(TestPage, value)
-          userAnswersCacheConnector.save(pstr, EventType.Event1, updatedAnswers).map { _ =>
+          userAnswersCacheConnector.save(pstr, eventType, updatedAnswers).map { _ =>
             Redirect(TestPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
