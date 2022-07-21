@@ -17,6 +17,10 @@
 package generators
 
 import org.scalacheck.Arbitrary
+import pages.TestDatePage
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryWibblePage: Arbitrary[TestDatePage.type] =
+    Arbitrary(TestDatePage)
 }

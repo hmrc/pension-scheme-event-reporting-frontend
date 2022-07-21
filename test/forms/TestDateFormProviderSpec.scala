@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import org.scalacheck.Arbitrary
-import org.scalacheck.Arbitrary.arbitrary
-import pages.TestDatePage
-import play.api.libs.json.{JsValue, Json}
+import java.time.{LocalDate, ZoneOffset}
 
-trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
+import forms.behaviours.DateBehaviours
 
-  implicit lazy val arbitraryWibbleUserAnswersEntry: Arbitrary[(TestDatePage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[TestDatePage.type]
-        value <- arbitrary[Int].map(Json.toJson(_))
-      } yield (page, value)
-    }
+class TestDateFormProviderSpec extends DateBehaviours {
+
+  val form = new TestDateFormProvider()()
+
+  ".value" - {
+
+    val validData = datesBetween(
+      min = LocalDate.of(2000, 1, 1),
+      max = LocalDate.now(ZoneOffset.UTC)
+    )
+
+    behave like dateField(form, "value", validData)
+
+    behave like mandatoryDateField(form, "value", "wibble.error.required.all")
+  }
 }

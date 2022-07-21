@@ -21,3 +21,6 @@ GET         /account/signed-out                          controllers.auth.Signed
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
 GET         /test                                        controllers.TestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /test                                        controllers.TestController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /testdate                                     controllers.TestDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /testdate                                     controllers.TestDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

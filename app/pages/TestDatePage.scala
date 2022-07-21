@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import org.scalacheck.Arbitrary.arbitrary
-import pages.TestDatePage
-import play.api.libs.json.{JsValue, Json}
+import java.time.LocalDate
 
-trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
+import controllers.routes
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-  implicit lazy val arbitraryWibbleUserAnswersEntry: Arbitrary[(TestDatePage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[TestDatePage.type]
-        value <- arbitrary[Int].map(Json.toJson(_))
-      } yield (page, value)
-    }
+case object TestDatePage extends QuestionPage[LocalDate] {
+
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "testdate"
+
+  override def route(waypoints: Waypoints): Call =
+    routes.TestDateController.onPageLoad(waypoints)
 }
