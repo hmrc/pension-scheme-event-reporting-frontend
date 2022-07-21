@@ -16,7 +16,7 @@
 
 package generators
 
-import models.{TestCheckBox, TestRadioButton}
+import models._
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {

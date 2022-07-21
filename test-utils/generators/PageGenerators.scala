@@ -17,7 +17,7 @@
 package generators
 
 import org.scalacheck.Arbitrary
-import pages.{TestCheckBoxPage, TestDatePage, TestRadioButtonPage}
+import pages._
 
 trait PageGenerators {
 
