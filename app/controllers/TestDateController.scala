@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.TestDateFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
-import pages.{TestPage, Waypoints, TestDatePage}
+import pages.{TestYesNoPage, Waypoints, TestDatePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

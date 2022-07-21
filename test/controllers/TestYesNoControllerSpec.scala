@@ -18,32 +18,32 @@ package controllers
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.TestFormProvider
+import forms.TestYesNoFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
-import pages.{EmptyWaypoints, TestPage}
+import pages.{EmptyWaypoints, TestYesNoPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.TestView
+import views.html.TestYesNoView
 
 import scala.concurrent.Future
 
-class TestControllerSpec extends SpecBase with BeforeAndAfterEach {
+class TestYesNoControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new TestFormProvider()
+  private val formProvider = new TestYesNoFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.TestController.onPageLoad(waypoints).url
-  private def postRoute: String = routes.TestController.onSubmit(waypoints).url
+  private def getRoute: String = routes.TestYesNoController.onPageLoad(waypoints).url
+  private def postRoute: String = routes.TestYesNoController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -65,7 +65,7 @@ class TestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[TestView]
+        val view = application.injector.instanceOf[TestYesNoView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
@@ -74,14 +74,14 @@ class TestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(TestPage, true).success.value
+      val userAnswers = UserAnswers().set(TestYesNoPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[TestView]
+        val view = application.injector.instanceOf[TestYesNoView]
 
         val result = route(application, request).value
 
@@ -103,10 +103,10 @@ class TestControllerSpec extends SpecBase with BeforeAndAfterEach {
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(TestPage, true).success.value
+        val updatedAnswers = emptyUserAnswers.set(TestYesNoPage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual TestPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual TestYesNoPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
       }
     }
   }

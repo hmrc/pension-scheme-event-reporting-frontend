@@ -35,7 +35,7 @@
 
     <h1 class="govuk-heading-xl">@messages("test.heading")</h1>
 
-    @formHelper(action = routes.TestController.onSubmit(waypoints), 'autoComplete -> "off") {
+    @formHelper(action = routes.TestYesNoController.onSubmit(waypoints), 'autoComplete -> "off") {
 
         @govukRadios(
             RadiosViewModel.yesNo(

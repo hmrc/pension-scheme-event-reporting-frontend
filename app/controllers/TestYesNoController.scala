@@ -18,24 +18,24 @@ package controllers
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.TestFormProvider
+import forms.TestYesNoFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
-import pages.{TestPage, Waypoints}
+import pages.{TestYesNoPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.TestView
+import views.html.TestYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TestController @Inject()( val controllerComponents: MessagesControllerComponents,
-                                identify: IdentifierAction,
-                                getData: DataRetrievalAction,
-                                userAnswersCacheConnector: UserAnswersCacheConnector,
-                                formProvider: TestFormProvider,
-                                view: TestView
+class TestYesNoController @Inject()(val controllerComponents: MessagesControllerComponents,
+                                    identify: IdentifierAction,
+                                    getData: DataRetrievalAction,
+                                    userAnswersCacheConnector: UserAnswersCacheConnector,
+                                    formProvider: TestYesNoFormProvider,
+                                    view: TestYesNoView
                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
@@ -45,7 +45,7 @@ class TestController @Inject()( val controllerComponents: MessagesControllerComp
   private val pstr = "123"
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(TestPage)).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(TestYesNoPage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
@@ -56,9 +56,9 @@ class TestController @Inject()( val controllerComponents: MessagesControllerComp
           Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(TestPage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(TestYesNoPage, value)
           userAnswersCacheConnector.save(pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(TestPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(TestYesNoPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

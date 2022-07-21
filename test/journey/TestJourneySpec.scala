@@ -17,15 +17,15 @@
 package journey
 
 import org.scalatest.freespec.AnyFreeSpec
-import pages.{CheckYourAnswersPage, TestPage}
+import pages.{CheckYourAnswersPage, TestYesNoPage}
 
 class TestJourneySpec extends AnyFreeSpec with JourneyHelpers {
   
   "test journey" in {
 
-    startingFrom(TestPage)
+    startingFrom(TestYesNoPage)
       .run(
-        submitAnswer(TestPage, true),
+        submitAnswer(TestYesNoPage, true),
         pageMustBe(CheckYourAnswersPage)
       )
   }

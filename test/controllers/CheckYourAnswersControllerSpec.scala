@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import pages.TestPage
+import pages.TestYesNoPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.govuk.SummaryListFluency
@@ -29,7 +29,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
     "must return OK and the correct view for a GET" in {
 
-      val ua = emptyUserAnswers.setOrException(TestPage, true)
+      val ua = emptyUserAnswers.setOrException(TestYesNoPage, true)
 
 
 

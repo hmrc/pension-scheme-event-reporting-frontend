@@ -21,20 +21,20 @@ import models.UserAnswers
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object TestPage extends QuestionPage[Boolean] {
+case object TestYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "test"
 
   override def route(waypoints: Waypoints): Call =
-    routes.TestController.onPageLoad(waypoints)
+    routes.TestYesNoController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
       case true  =>
         CheckYourAnswersPage
-      case false => TestPage
+      case false => TestYesNoPage
     }.orRecover
   }
 }

@@ -19,7 +19,7 @@ package controllers
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.enumeration.EventType
-import pages.{CheckYourAnswersPage, EmptyWaypoints, TestPage}
+import pages.{CheckYourAnswersPage, EmptyWaypoints, TestYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -44,13 +44,13 @@ class CheckYourAnswersController @Inject()(
     val thisPage  = CheckYourAnswersPage
     val waypoints = EmptyWaypoints
 
-    request.userAnswers.get(TestPage) match {
+    request.userAnswers.get(TestYesNoPage) match {
       case Some(answer) =>
         val summaryListRows = SummaryListRowViewModel(
           key = "test.checkYourAnswersLabel",
           value = ValueViewModel(answer.toString),
           actions = Seq(
-            ActionItemViewModel("site.change", TestPage.changeLink(waypoints, thisPage).url)
+            ActionItemViewModel("site.change", TestYesNoPage.changeLink(waypoints, thisPage).url)
           )
         )
         val list = SummaryListViewModel(
