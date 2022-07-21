@@ -31,6 +31,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.$className$View
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach {
@@ -43,11 +44,14 @@ class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.$className$Controller.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.$className$Controller.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
+
+  private val validAnswer = LocalDate.of(2020, 2, 12)
 
   override def beforeEach: Unit = {
     super.beforeEach
@@ -73,9 +77,7 @@ class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = UserAnswers().set($className$Page, true).success.value
-
+      val userAnswers = UserAnswers().set($className$Page, validAnswer).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
@@ -86,7 +88,7 @@ class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), waypoints)(request, messages(application)).toString
       }
     }
 
@@ -100,10 +102,14 @@ class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
+            "value.day" -> "12",
+            "value.month" -> "2",
+            "value.year" -> "2020"
+          )
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set($className$Page, true).success.value
+        val updatedAnswers = emptyUserAnswers.set($className$Page, validAnswer).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual $className$Page.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
