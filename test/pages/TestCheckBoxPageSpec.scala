@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import pages.{TestCheckBoxPage, TestDatePage}
+import models.TestCheckBox
+import pages.behaviours.PageBehaviours
 
-trait PageGenerators {
+class TestCheckBoxPageSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryTestCheckBoxPage: Arbitrary[TestCheckBoxPage.type] =
-    Arbitrary(TestCheckBoxPage)
+  "TestCheckBoxPage" - {
 
-  implicit lazy val arbitraryWibblePage: Arbitrary[TestDatePage.type] =
-    Arbitrary(TestDatePage)
+    beRetrievable[Set[TestCheckBox]](TestCheckBoxPage)
+
+    beSettable[Set[TestCheckBox]](TestCheckBoxPage)
+
+    beRemovable[Set[TestCheckBox]](TestCheckBoxPage)
+  }
 }

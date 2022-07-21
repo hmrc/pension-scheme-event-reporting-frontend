@@ -16,5 +16,13 @@
 
 package generators
 
+import models.TestCheckBox
+import org.scalacheck.{Arbitrary, Gen}
+
 trait ModelGenerators {
+
+  implicit lazy val arbitraryTestCheckBox: Arbitrary[TestCheckBox] =
+    Arbitrary {
+      Gen.oneOf(TestCheckBox.values)
+    }
 }

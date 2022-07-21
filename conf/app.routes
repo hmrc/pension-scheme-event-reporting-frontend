@@ -28,3 +28,6 @@ POST       /testdate                                     controllers.TestDateCon
 
 GET        /testcheckbox                                     controllers.TestCheckBoxController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /testcheckbox                                     controllers.TestCheckBoxController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /testCheckBox                        controllers.TestCheckBoxController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /testCheckBox                        controllers.TestCheckBoxController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

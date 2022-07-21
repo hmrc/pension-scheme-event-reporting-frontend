@@ -70,3 +70,11 @@ wibble.error.required.two = The wibble must include {0} and {1}
 wibble.error.required = The wibble must include {0}
 wibble.error.invalid = Enter a real Wibble
 wibble.change.hidden = Wibble
+
+testCheckBox.title = testCheckBox
+testCheckBox.heading = testCheckBox
+testCheckBox.option1 = Option 1
+testCheckBox.option2 = Option 2
+testCheckBox.checkYourAnswersLabel = testCheckBox
+testCheckBox.error.required = Select testCheckBox
+testCheckBox.change.hidden = TestCheckBox
