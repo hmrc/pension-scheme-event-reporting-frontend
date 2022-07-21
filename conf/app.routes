@@ -19,3 +19,18 @@ GET         /account/sign-out                            controllers.auth.AuthCo
 GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad
 
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
+
+GET         /testyesno                                   controllers.TestYesNoController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /testyesno                                   controllers.TestYesNoController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /testdate                                     controllers.TestDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /testdate                                     controllers.TestDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /testcheckbox                                     controllers.TestCheckBoxController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /testcheckbox                                     controllers.TestCheckBoxController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /testCheckBox                        controllers.TestCheckBoxController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /testCheckBox                        controllers.TestCheckBoxController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /testRadioButton                        controllers.TestRadioButtonController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /testRadioButton                        controllers.TestRadioButtonController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

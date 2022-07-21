@@ -16,18 +16,29 @@
 
 package models
 
+import pages.QuestionPage
 import play.api.libs.json._
-import queries.{Gettable, Settable}
+import queries.{Derivable, Gettable, Settable}
 
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
-                              id: String,
                               data: JsObject = Json.obj()
                             ) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
+
+  def get[A, B](derivable: Derivable[A, B])(implicit rds: Reads[A]): Option[B] =
+    Reads.optionNoError(Reads.at(derivable.path))
+      .reads(data)
+      .getOrElse(None)
+      .map(derivable.derive)
+
+  def isDefined(gettable: Gettable[_]): Boolean =
+    Reads.optionNoError(Reads.at[JsValue](gettable.path)).reads(data)
+      .map(_.isDefined)
+      .getOrElse(false)
 
   def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
 
@@ -42,6 +53,13 @@ final case class UserAnswers(
       d =>
         val updatedAnswers = copy(data = d)
         page.cleanup(Some(value), updatedAnswers)
+    }
+  }
+
+  def setOrException[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): UserAnswers = {
+    set(page, value) match {
+      case Success(ua) => ua
+      case Failure(ex) => throw ex
     }
   }
 
@@ -60,29 +78,4 @@ final case class UserAnswers(
         page.cleanup(None, updatedAnswers)
     }
   }
-}
-
-object UserAnswers {
-
-  val reads: Reads[UserAnswers] = {
-
-    import play.api.libs.functional.syntax._
-
-    (
-      (__ \ "_id").read[String] and
-        (__ \ "data").read[JsObject]
-      ) (UserAnswers.apply _)
-  }
-
-  val writes: OWrites[UserAnswers] = {
-
-    import play.api.libs.functional.syntax._
-
-    (
-      (__ \ "_id").write[String] and
-        (__ \ "data").write[JsObject]
-      ) (unlift(UserAnswers.unapply))
-  }
-
-  implicit val format: OFormat[UserAnswers] = OFormat(reads, writes)
 }

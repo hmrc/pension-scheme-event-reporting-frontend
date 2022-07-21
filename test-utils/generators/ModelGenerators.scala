@@ -16,9 +16,18 @@
 
 package generators
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
+import models.{TestCheckBox, TestRadioButton}
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
+
+  implicit lazy val arbitraryTestRadioButton: Arbitrary[TestRadioButton] =
+    Arbitrary {
+      Gen.oneOf(TestRadioButton.values.toSeq)
+    }
+
+  implicit lazy val arbitraryTestCheckBox: Arbitrary[TestCheckBox] =
+    Arbitrary {
+      Gen.oneOf(TestCheckBox.values)
+    }
 }

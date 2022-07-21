@@ -17,40 +17,64 @@
 package controllers.actions
 
 import base.SpecBase
-import org.scalatestplus.mockito.MockitoSugar
+import connectors.UserAnswersCacheConnector
+import models.UserAnswers
+import models.enumeration.EventType
+import models.requests.{IdentifierRequest, OptionalDataRequest}
+import org.mockito.ArgumentMatchers.{eq => eqTo, _}
+import org.mockito.MockitoSugar
+import org.scalatest.concurrent.ScalaFutures
+import play.api.libs.json.Json
+import play.api.mvc.AnyContent
 
-class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-  "Data Retrieval Action" - {
 
-    // TODO: Commented for now - will need to decide how to do data retrieval
+class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-//    "when there is no data in the cache" - {
-//
-//      "must set userAnswers to 'None' in the request" in {
-//
-//        val sessionRepository = mock[SessionRepository]
-//        when(sessionRepository.get("id")) thenReturn Future(None)
-//        val action = new Harness(sessionRepository)
-//
-//        val result = action.callTransform(IdentifierRequest(FakeRequest(), "id")).futureValue
-//
-//        result.userAnswers must not be defined
-//      }
-//    }
-//
-//    "when there is data in the cache" - {
-//
-//      "must build a userAnswers object and add it to the request" in {
-//
-//        val sessionRepository = mock[SessionRepository]
-//        when(sessionRepository.get("id")) thenReturn Future(Some(UserAnswers("id")))
-//        val action = new Harness(sessionRepository)
-//
-//        val result = action.callTransform(new IdentifierRequest(FakeRequest(), "id")).futureValue
-//
-//        result.userAnswers mustBe defined
-//      }
-//    }
+  val userAnswersCacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+
+  private val userId = "user"
+  private val request: IdentifierRequest[AnyContent] = IdentifierRequest(fakeRequest, userId)
+  private val pstr = "123"
+  private val eventType = EventType.Event1
+
+  private val json = Json.obj("test" -> "test")
+  private val userAnswers = UserAnswers(json)
+
+  class Harness extends DataRetrievalImpl(pstr, eventType, userAnswersCacheConnector) {
+    def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
+  }
+
+
+  "Data Retrieval Action when there is no data in the cache" - {
+    "must set userAnswers to 'None' in the request" in {
+      when(userAnswersCacheConnector.get(eqTo(pstr), eqTo(eventType))(any(), any())) thenReturn Future(None)
+      val action = new Harness
+
+      val expectedResult = OptionalDataRequest(request, userId, None)
+      val futureResult = action.callTransform(request)
+
+      whenReady(futureResult) { result =>
+        result.userAnswers.isEmpty mustBe true
+        result mustBe expectedResult
+      }
+    }
+  }
+
+  "Data Retrieval Action when there is data in the cache" - {
+    "must build a userAnswers object and add it to the request" in {
+      when(userAnswersCacheConnector.get(eqTo(pstr), eqTo(eventType))(any(), any())) thenReturn Future(Some(userAnswers))
+      val action = new Harness
+
+      val expectedResult = OptionalDataRequest(request, userId, Some(userAnswers))
+      val futureResult = action.callTransform(request)
+
+      whenReady(futureResult) { result =>
+        result.userAnswers.isDefined mustBe true
+        result mustBe expectedResult
+      }
+    }
   }
 }

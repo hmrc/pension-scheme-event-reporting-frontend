@@ -18,10 +18,13 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import models.enumeration.EventType
+import pages.{CheckYourAnswersPage, EmptyWaypoints, TestYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.govuk.summarylist._
+import viewmodels.implicits._
 import views.html.CheckYourAnswersView
 
 class CheckYourAnswersController @Inject()(
@@ -33,13 +36,28 @@ class CheckYourAnswersController @Inject()(
                                             view: CheckYourAnswersView
                                           ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
+  private val pstr = "123"
 
-      val list = SummaryListViewModel(
-        rows = Seq.empty
-      )
+  def onPageLoad: Action[AnyContent] = (identify andThen getData(pstr, EventType.Event1) andThen requireData) { implicit request =>
 
-      Ok(view(list))
+    val thisPage  = CheckYourAnswersPage
+    val waypoints = EmptyWaypoints
+
+    request.userAnswers.get(TestYesNoPage) match {
+      case Some(answer) =>
+        val summaryListRows = SummaryListRowViewModel(
+          key = "test.checkYourAnswersLabel",
+          value = ValueViewModel(answer.toString),
+          actions = Seq(
+            ActionItemViewModel("site.change", TestYesNoPage.changeLink(waypoints, thisPage).url)
+          )
+        )
+        val list = SummaryListViewModel(
+          rows = Seq(summaryListRows)
+        )
+        Ok(view(list))
+      case _ => Redirect(routes.JourneyRecoveryController.onPageLoad())
+    }
+
   }
 }

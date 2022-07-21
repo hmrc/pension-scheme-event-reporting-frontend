@@ -16,12 +16,62 @@
 
 package pages
 
-import scala.language.implicitConversions
+import models.{CheckMode, NormalMode, UserAnswers}
+import play.api.mvc.Call
+import queries.Gettable
 
-trait Page
+final case class PageAndWaypoints(page: Page, waypoints: Waypoints) {
 
-object Page {
+  lazy val route: Call = page.route(waypoints)
+  lazy val url: String = route.url
+}
 
-  implicit def toString(page: Page): String =
-    page.toString
+trait Page {
+  def navigate(waypoints: Waypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): PageAndWaypoints = {
+    val targetPage            = nextPage(waypoints, originalAnswers, updatedAnswers)
+    val recalibratedWaypoints = waypoints.recalibrate(this, targetPage)
+
+    PageAndWaypoints(targetPage, recalibratedWaypoints)
+  }
+
+  private def nextPage(waypoints: Waypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
+    waypoints match {
+      case EmptyWaypoints =>
+        nextPageNormalMode(waypoints, originalAnswers, updatedAnswers)
+
+      case b: NonEmptyWaypoints =>
+        b.currentMode match {
+          case CheckMode  => nextPageCheckMode(b, originalAnswers, updatedAnswers)
+          case NormalMode => nextPageNormalMode(b, originalAnswers, updatedAnswers)
+        }
+    }
+
+  protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
+    nextPageCheckMode(waypoints, updatedAnswers)
+
+  protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    nextPageNormalMode(waypoints, answers, answers) match {
+      case questionPage: Page with Gettable[_] =>
+        if (answers.isDefined(questionPage)) waypoints.next.page else questionPage
+
+      case otherPage =>
+        otherPage
+    }
+
+  protected def nextPageNormalMode(waypoints: Waypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
+    nextPageNormalMode(waypoints, updatedAnswers)
+
+  protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    IndexPage
+
+  def route(waypoints: Waypoints): Call
+
+  def changeLink(waypoints: Waypoints, sourcePage: WaypointPage): PageAndWaypoints = {
+    sourcePage match {
+      case p: CheckAnswersPage =>
+        PageAndWaypoints(this, waypoints.setNextWaypoint(p.waypoint))
+      case p: AddItemPage =>
+        PageAndWaypoints(this, waypoints.setNextWaypoint(p.waypoint(CheckMode)))
+    }
+  }
 }
