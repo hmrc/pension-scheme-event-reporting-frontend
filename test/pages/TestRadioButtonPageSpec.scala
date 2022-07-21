@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import models.{TestCheckBox, TestRadioButton}
-import org.scalacheck.{Arbitrary, Gen}
+import models.TestRadioButton
+import pages.behaviours.PageBehaviours
 
-trait ModelGenerators {
+class TestRadioButtonSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryTestRadioButton: Arbitrary[TestRadioButton] =
-    Arbitrary {
-      Gen.oneOf(TestRadioButton.values.toSeq)
-    }
+  "TestRadioButtonPage" - {
 
-  implicit lazy val arbitraryTestCheckBox: Arbitrary[TestCheckBox] =
-    Arbitrary {
-      Gen.oneOf(TestCheckBox.values)
-    }
+    beRetrievable[TestRadioButton](TestRadioButtonPage)
+
+    beSettable[TestRadioButton](TestRadioButtonPage)
+
+    beRemovable[TestRadioButton](TestRadioButtonPage)
+  }
 }

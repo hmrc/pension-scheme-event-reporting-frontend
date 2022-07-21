@@ -16,13 +16,21 @@
 
 package generators
 
-import models.TestCheckBox
+import models.{TestCheckBox, TestRadioButton}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
-import pages.{TestCheckBoxPage, TestDatePage}
+import pages.{TestCheckBoxPage, TestDatePage, TestRadioButtonPage}
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
+
+  implicit lazy val arbitraryTestRadioButtonUserAnswersEntry: Arbitrary[(TestRadioButtonPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[TestRadioButtonPage.type]
+        value <- arbitrary[TestRadioButton].map(Json.toJson(_))
+      } yield (page, value)
+    }
 
   implicit lazy val arbitraryTestCheckBoxUserAnswersEntry: Arbitrary[(TestCheckBoxPage.type, JsValue)] =
     Arbitrary {

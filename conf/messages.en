@@ -78,3 +78,11 @@ testCheckBox.option2 = Option 2
 testCheckBox.checkYourAnswersLabel = testCheckBox
 testCheckBox.error.required = Select testCheckBox
 testCheckBox.change.hidden = TestCheckBox
+
+testRadioButton.title = testRadioButton
+testRadioButton.heading = testRadioButton
+testRadioButton.option1 = Option 1
+testRadioButton.option2 = Option 2
+testRadioButton.checkYourAnswersLabel = testRadioButton
+testRadioButton.error.required = Select testRadioButton
+testRadioButton.change.hidden = TestRadioButton

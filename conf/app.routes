@@ -31,3 +31,6 @@ POST       /testcheckbox                                     controllers.TestChe
 
 GET        /testCheckBox                        controllers.TestCheckBoxController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /testCheckBox                        controllers.TestCheckBoxController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /testRadioButton                        controllers.TestRadioButtonController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /testRadioButton                        controllers.TestRadioButtonController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import models.{TestCheckBox, TestRadioButton}
-import org.scalacheck.{Arbitrary, Gen}
+import javax.inject.Inject
 
-trait ModelGenerators {
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.TestRadioButton
 
-  implicit lazy val arbitraryTestRadioButton: Arbitrary[TestRadioButton] =
-    Arbitrary {
-      Gen.oneOf(TestRadioButton.values.toSeq)
-    }
+class TestRadioButtonFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryTestCheckBox: Arbitrary[TestCheckBox] =
-    Arbitrary {
-      Gen.oneOf(TestCheckBox.values)
-    }
+  def apply(): Form[TestRadioButton] =
+    Form(
+      "value" -> enumerable[TestRadioButton]("testRadioButton.error.required")
+    )
 }
