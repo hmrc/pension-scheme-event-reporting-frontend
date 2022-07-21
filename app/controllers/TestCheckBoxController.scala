@@ -51,7 +51,6 @@ class TestCheckBoxController @Inject()(val controllerComponents: MessagesControl
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType)).async {
     implicit request =>
-      println( "\n>>>" + request.request.body)
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints))),
