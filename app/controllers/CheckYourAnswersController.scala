@@ -21,7 +21,6 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import models.enumeration.EventType
 import pages.{CheckYourAnswersPage, EmptyWaypoints, TestYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.govuk.summarylist._

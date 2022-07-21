@@ -19,9 +19,8 @@ package controllers
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.TestDateFormProvider
-import models.UserAnswers
 import models.enumeration.EventType
-import pages.{TestYesNoPage, Waypoints, TestDatePage}
+import pages.{TestDatePage, Waypoints}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -41,7 +40,7 @@ class TestDateController @Inject()(
                                     formProvider: TestDateFormProvider,
                                     val controllerComponents: MessagesControllerComponents,
                                     view: TestDateView
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def form: Form[LocalDate] = formProvider()
 
