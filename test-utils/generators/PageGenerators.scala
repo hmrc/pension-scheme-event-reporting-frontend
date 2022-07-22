@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryTestIntPagePage: Arbitrary[TestIntPagePage.type] =
+    Arbitrary(TestIntPagePage)
+
   implicit lazy val arbitraryTestStringPagePage: Arbitrary[TestStringPagePage.type] =
     Arbitrary(TestStringPagePage)
 

@@ -96,3 +96,12 @@ testStringPage.checkYourAnswersLabel = testStringPage
 testStringPage.error.required = Enter testStringPage
 testStringPage.error.length = TestStringPage must be 100 characters or less
 testStringPage.change.hidden = TestStringPage
+
+testIntPage.title = TestIntPage
+testIntPage.heading = TestIntPage
+testIntPage.checkYourAnswersLabel = TestIntPage
+testIntPage.error.nonNumeric = Enter your testIntPage using numbers
+testIntPage.error.required = Enter your testIntPage
+testIntPage.error.wholeNumber = Enter your testIntPage using whole numbers
+testIntPage.error.outOfRange = TestIntPage must be between {0} and {1}
+testIntPage.change.hidden = TestIntPage
