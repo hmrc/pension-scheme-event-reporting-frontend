@@ -86,3 +86,6 @@ testRadioButton.option2 = Option 2
 testRadioButton.checkYourAnswersLabel = testRadioButton
 testRadioButton.error.required = Select testRadioButton
 testRadioButton.change.hidden = TestRadioButton
+
+testContentPage.title = testContentPage
+testContentPage.heading = testContentPage
