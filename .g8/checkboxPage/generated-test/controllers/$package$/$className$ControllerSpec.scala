@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers$if(package.empty)$$else$.$package$$endif$
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
