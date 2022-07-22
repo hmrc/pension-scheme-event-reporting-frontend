@@ -18,25 +18,25 @@ package controllers
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.$className$FormProvider
+import forms.TestStringPageFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
-import pages.{$className$Page, Waypoints}
+import pages.{TestStringPagePage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.$className$View
+import views.html.TestStringPageView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class $className$Controller @Inject()(val controllerComponents: MessagesControllerComponents,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         userAnswersCacheConnector: UserAnswersCacheConnector,
-                                         formProvider: $className$FormProvider,
-                                         view: $className$View
-                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class TestStringPageController @Inject()(val controllerComponents: MessagesControllerComponents,
+                                    identify: IdentifierAction,
+                                    getData: DataRetrievalAction,
+                                    userAnswersCacheConnector: UserAnswersCacheConnector,
+                                    formProvider: TestStringPageFormProvider,
+                                    view: TestStringPageView
+                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event1
@@ -45,7 +45,7 @@ class $className$Controller @Inject()(val controllerComponents: MessagesControll
   private val pstr = "123"
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get($className$Page)).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(TestStringPagePage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
@@ -56,9 +56,9 @@ class $className$Controller @Inject()(val controllerComponents: MessagesControll
           Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException($className$Page, value)
+          val updatedAnswers = originalUserAnswers.setOrException(TestStringPagePage, value)
           userAnswersCacheConnector.save(pstr, eventType, updatedAnswers).map { _ =>
-            Redirect($className$Page.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(TestStringPagePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

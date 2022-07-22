@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import pages._
+import pages.behaviours.PageBehaviours
 
-trait PageGenerators {
 
-  implicit lazy val arbitraryTestStringPagePage: Arbitrary[TestStringPagePage.type] =
-    Arbitrary(TestStringPagePage)
+class TestStringPagePageSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryTestRadioButtonPage: Arbitrary[TestRadioButtonPage.type] =
-    Arbitrary(TestRadioButtonPage)
+  "TestStringPagePage" - {
 
-  implicit lazy val arbitraryTestCheckBoxPage: Arbitrary[TestCheckBoxPage.type] =
-    Arbitrary(TestCheckBoxPage)
+    beRetrievable[String](TestStringPagePage)
 
-  implicit lazy val arbitraryWibblePage: Arbitrary[TestDatePage.type] =
-    Arbitrary(TestDatePage)
+    beSettable[String](TestStringPagePage)
+
+    beRemovable[String](TestStringPagePage)
+  }
 }

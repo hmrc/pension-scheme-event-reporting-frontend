@@ -18,32 +18,32 @@ package controllers
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.$className$FormProvider
+import forms.TestStringPageFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
-import pages.{EmptyWaypoints, $className$Page}
+import pages.{EmptyWaypoints, TestStringPagePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.$className$View
+import views.html.TestStringPageView
 
 import scala.concurrent.Future
 
-class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach {
+class TestStringPageControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new $className$FormProvider()
+  private val formProvider = new TestStringPageFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.$className$Controller.onPageLoad(waypoints).url
-  private def postRoute: String = routes.$className$Controller.onSubmit(waypoints).url
+  private def getRoute: String = routes.TestStringPageController.onPageLoad(waypoints).url
+  private def postRoute: String = routes.TestStringPageController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -56,7 +56,7 @@ class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach {
     reset(mockUserAnswersCacheConnector)
   }
 
-  "$className$ Controller" - {
+  "Test String Page Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -67,7 +67,7 @@ class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[$className$View]
+        val view = application.injector.instanceOf[TestStringPageView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
@@ -76,14 +76,14 @@ class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set($className$Page, validValue).success.value
+      val userAnswers = UserAnswers().set(TestStringPagePage, validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[$className$View]
+        val view = application.injector.instanceOf[TestStringPageView]
 
         val result = route(application, request).value
 
@@ -105,10 +105,10 @@ class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach {
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set($className$Page, validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(TestStringPagePage, validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual $className$Page.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual TestStringPagePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
       }
     }
 
@@ -124,7 +124,7 @@ class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
 
-        val view = application.injector.instanceOf[$className$View]
+        val view = application.injector.instanceOf[TestStringPageView]
         val boundForm = form.bind(Map("value" -> ""))
 
         val result = route(application, request).value

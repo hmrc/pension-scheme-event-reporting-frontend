@@ -36,3 +36,6 @@ GET        /testRadioButton                        controllers.TestRadioButtonCo
 POST       /testRadioButton                        controllers.TestRadioButtonController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET        /testContentPage                       controllers.TestContentPageController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /testStringPage                        controllers.TestStringPageController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /testStringPage                        controllers.TestStringPageController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

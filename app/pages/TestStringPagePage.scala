@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import pages._
+import controllers.routes
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-trait PageGenerators {
+case object TestStringPagePage extends QuestionPage[String] {
 
-  implicit lazy val arbitraryTestStringPagePage: Arbitrary[TestStringPagePage.type] =
-    Arbitrary(TestStringPagePage)
+  override def path: JsPath = JsPath \ toString
 
-  implicit lazy val arbitraryTestRadioButtonPage: Arbitrary[TestRadioButtonPage.type] =
-    Arbitrary(TestRadioButtonPage)
+  override def toString: String = "testStringPage"
 
-  implicit lazy val arbitraryTestCheckBoxPage: Arbitrary[TestCheckBoxPage.type] =
-    Arbitrary(TestCheckBoxPage)
-
-  implicit lazy val arbitraryWibblePage: Arbitrary[TestDatePage.type] =
-    Arbitrary(TestDatePage)
+  override def route(waypoints: Waypoints): Call =
+    routes.TestStringPageController.onPageLoad(waypoints)
 }

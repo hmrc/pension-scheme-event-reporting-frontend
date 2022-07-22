@@ -89,3 +89,10 @@ testRadioButton.change.hidden = TestRadioButton
 
 testContentPage.title = testContentPage
 testContentPage.heading = testContentPage
+
+testStringPage.title = testStringPage
+testStringPage.heading = testStringPage
+testStringPage.checkYourAnswersLabel = testStringPage
+testStringPage.error.required = Enter testStringPage
+testStringPage.error.length = TestStringPage must be 100 characters or less
+testStringPage.change.hidden = TestStringPage

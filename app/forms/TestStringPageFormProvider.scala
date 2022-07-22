@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import org.scalacheck.Arbitrary
-import pages._
+import javax.inject.Inject
 
-trait PageGenerators {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  implicit lazy val arbitraryTestStringPagePage: Arbitrary[TestStringPagePage.type] =
-    Arbitrary(TestStringPagePage)
+class TestStringPageFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryTestRadioButtonPage: Arbitrary[TestRadioButtonPage.type] =
-    Arbitrary(TestRadioButtonPage)
-
-  implicit lazy val arbitraryTestCheckBoxPage: Arbitrary[TestCheckBoxPage.type] =
-    Arbitrary(TestCheckBoxPage)
-
-  implicit lazy val arbitraryWibblePage: Arbitrary[TestDatePage.type] =
-    Arbitrary(TestDatePage)
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("testStringPage.error.required")
+        .verifying(maxLength(100, "testStringPage.error.length"))
+    )
 }
