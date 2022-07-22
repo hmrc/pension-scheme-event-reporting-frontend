@@ -30,6 +30,6 @@ trait PageGenerators {
   implicit lazy val arbitraryTestCheckBoxPage: Arbitrary[TestCheckBoxPage.type] =
     Arbitrary(TestCheckBoxPage)
 
-  implicit lazy val arbitraryWibblePage: Arbitrary[TestDatePage.type] =
+  implicit lazy val arbitraryDatePage: Arbitrary[TestDatePage.type] =
     Arbitrary(TestDatePage)
 }

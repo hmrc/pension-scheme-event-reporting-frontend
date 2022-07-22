@@ -48,7 +48,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryWibbleUserAnswersEntry: Arbitrary[(TestDatePage.type, JsValue)] =
+  implicit lazy val arbitraryDateUserAnswersEntry: Arbitrary[(TestDatePage.type, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[TestDatePage.type]

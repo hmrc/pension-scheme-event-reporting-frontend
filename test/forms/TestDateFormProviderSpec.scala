@@ -33,6 +33,6 @@ class TestDateFormProviderSpec extends DateBehaviours {
 
     behave like dateField(form, "value", validData)
 
-    behave like mandatoryDateField(form, "value", "wibble.error.required.all")
+    behave like mandatoryDateField(form, "value", "testDate.error.required.all")
   }
 }

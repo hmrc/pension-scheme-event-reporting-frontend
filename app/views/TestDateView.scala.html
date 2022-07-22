@@ -24,7 +24,7 @@
 
 @(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("wibble.title"))) {
+@layout(pageTitle = title(form, messages("testDate.title"))) {
 
     @formHelper(action = routes.TestDateController.onSubmit(waypoints), 'autoComplete -> "off") {
 
@@ -35,9 +35,9 @@
         @govukDateInput(
             DateViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("wibble.heading")).asPageHeading()
+                legend = LegendViewModel(messages("testDate.heading")).asPageHeading()
             )
-            .withHint(HintViewModel(messages("wibble.hint")))
+            .withHint(HintViewModel(messages("testDate.hint")))
         )
 
         @govukButton(

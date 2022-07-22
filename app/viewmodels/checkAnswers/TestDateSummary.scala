@@ -24,7 +24,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object WibbleSummary  {
+object TestDateSummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
@@ -34,11 +34,11 @@ object WibbleSummary  {
         val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 
         SummaryListRowViewModel(
-          key     = "wibble.checkYourAnswersLabel",
+          key     = "testDate.checkYourAnswersLabel",
           value   = ValueViewModel(answer.format(dateFormatter)),
           actions = Seq(
             ActionItemViewModel("site.change", TestDatePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("wibble.change.hidden"))
+              .withVisuallyHiddenText(messages("testDate.change.hidden"))
           )
         )
     }

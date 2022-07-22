@@ -27,10 +27,10 @@ class TestDateFormProvider @Inject() extends Mappings {
   def apply(): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidKey     = "wibble.error.invalid",
-        allRequiredKey = "wibble.error.required.all",
-        twoRequiredKey = "wibble.error.required.two",
-        requiredKey    = "wibble.error.required"
+        invalidKey     = "testDate.error.invalid",
+        allRequiredKey = "testDate.error.required.all",
+        twoRequiredKey = "testDate.error.required.two",
+        requiredKey    = "testDate.error.required"
       )
     )
 }

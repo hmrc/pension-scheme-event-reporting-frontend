@@ -61,15 +61,15 @@ test.title = TEST PAGE TITLE
 test.heading = TEST PAGE HEADING
 
 test.checkYourAnswersLabel = Test
-wibble.title = Wibble
-wibble.heading = Wibble
-wibble.hint = For example, 12 11 2007
-wibble.checkYourAnswersLabel = Wibble
-wibble.error.required.all = Enter the wibble
-wibble.error.required.two = The wibble must include {0} and {1}
-wibble.error.required = The wibble must include {0}
-wibble.error.invalid = Enter a real Wibble
-wibble.change.hidden = Wibble
+testDate.title = Date
+testDate.heading = Date
+testDate.hint = For example, 12 11 2007
+testDate.checkYourAnswersLabel = Date
+testDate.error.required.all = Enter the date
+testDate.error.required.two = The date must include {0} and {1}
+testDate.error.required = The date must include {0}
+testDate.error.invalid = Enter a real date
+testDate.change.hidden = Enter date
 
 testCheckBox.title = testCheckBox
 testCheckBox.heading = testCheckBox
