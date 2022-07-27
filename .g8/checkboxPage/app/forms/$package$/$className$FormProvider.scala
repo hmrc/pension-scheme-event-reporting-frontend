@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package forms$if(package.empty)$$else$.$package$$endif$
 
-import java.time.{LocalDate, ZoneOffset}
+import javax.inject.Inject
 
-import forms.behaviours.DateBehaviours
+import forms.mappings.Mappings
+import play.api.data.Form
+import play.api.data.Forms.set
+import models$if(!package.empty)$.$package$$endif$.$className$
 
-class TestDateFormProviderSpec extends DateBehaviours {
+class $className$FormProvider @Inject() extends Mappings {
 
-  val form = new TestDateFormProvider()()
-
-  ".value" - {
-
-    val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
+  def apply(): Form[Set[$className$]] =
+    Form(
+      "value" -> set(enumerable[$className$]("$className;format="decap"$.error.required")).verifying(nonEmptySet("$className;format="decap"$.error.required"))
     )
-
-    behave like dateField(form, "value", validData)
-
-    behave like mandatoryDateField(form, "value", "testDate.error.required.all")
-  }
 }

@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package forms
+package pages$if(package.empty)$$else$.$package$$endif$
 
-import java.time.{LocalDate, ZoneOffset}
+import controllers$if(!package.empty)$.$package$$endif$.routes
+import models$if(!package.empty)$.$package$$endif$.$className$
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
+$if(!package.empty)$
+import pages.{Waypoints, QuestionPage}
+$endif$
 
-import forms.behaviours.DateBehaviours
+case object $className$Page extends QuestionPage[Set[$className$]] {
+  
+  override def path: JsPath = JsPath \ toString
+  
+  override def toString: String = "$className;format="decap"$"
 
-class TestDateFormProviderSpec extends DateBehaviours {
-
-  val form = new TestDateFormProvider()()
-
-  ".value" - {
-
-    val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
-    )
-
-    behave like dateField(form, "value", validData)
-
-    behave like mandatoryDateField(form, "value", "testDate.error.required.all")
-  }
+  override def route(waypoints: Waypoints): Call =
+    routes.$className$Controller.onPageLoad(waypoints)
 }

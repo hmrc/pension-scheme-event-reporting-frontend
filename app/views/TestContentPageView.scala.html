@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,27 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package forms
+@this(
+        layout: templates.Layout,
+        govukButton: GovukButton
+)
 
-import java.time.{LocalDate, ZoneOffset}
+@()(implicit request: Request[_], messages: Messages)
 
-import forms.behaviours.DateBehaviours
+@layout(pageTitle = titleNoForm(messages("testContentPage.title"))) {
 
-class TestDateFormProviderSpec extends DateBehaviours {
-
-  val form = new TestDateFormProvider()()
-
-  ".value" - {
-
-    val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
-    )
-
-    behave like dateField(form, "value", validData)
-
-    behave like mandatoryDateField(form, "value", "testDate.error.required.all")
-  }
+    <h1 class="govuk-heading-xl">@messages("testContentPage.heading")</h1>
 }

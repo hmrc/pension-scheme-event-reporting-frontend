@@ -17,9 +17,15 @@
 package generators
 
 import org.scalacheck.Arbitrary
-import pages.{TestCheckBoxPage, TestDatePage, TestRadioButtonPage}
+import pages._
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryTestIntPagePage: Arbitrary[TestIntPagePage.type] =
+    Arbitrary(TestIntPagePage)
+
+  implicit lazy val arbitraryTestStringPagePage: Arbitrary[TestStringPagePage.type] =
+    Arbitrary(TestStringPagePage)
 
   implicit lazy val arbitraryTestRadioButtonPage: Arbitrary[TestRadioButtonPage.type] =
     Arbitrary(TestRadioButtonPage)
@@ -27,6 +33,6 @@ trait PageGenerators {
   implicit lazy val arbitraryTestCheckBoxPage: Arbitrary[TestCheckBoxPage.type] =
     Arbitrary(TestCheckBoxPage)
 
-  implicit lazy val arbitraryWibblePage: Arbitrary[TestDatePage.type] =
+  implicit lazy val arbitraryDatePage: Arbitrary[TestDatePage.type] =
     Arbitrary(TestDatePage)
 }

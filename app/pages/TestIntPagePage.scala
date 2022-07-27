@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import java.time.{LocalDate, ZoneOffset}
+import controllers.routes
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-import forms.behaviours.DateBehaviours
+case object TestIntPagePage extends QuestionPage[Int] {
 
-class TestDateFormProviderSpec extends DateBehaviours {
+  override def path: JsPath = JsPath \ toString
 
-  val form = new TestDateFormProvider()()
+  override def toString: String = "testIntPage"
 
-  ".value" - {
-
-    val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
-    )
-
-    behave like dateField(form, "value", validData)
-
-    behave like mandatoryDateField(form, "value", "testDate.error.required.all")
-  }
+  override def route(waypoints: Waypoints): Call =
+    routes.TestIntPageController.onPageLoad(waypoints)
 }

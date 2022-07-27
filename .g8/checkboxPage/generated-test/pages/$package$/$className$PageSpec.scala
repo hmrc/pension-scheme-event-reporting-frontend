@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package pages$if(package.empty)$$else$.$package$$endif$
 
-import java.time.{LocalDate, ZoneOffset}
+import models$if(!package.empty)$.$package$$endif$.$className$
+import pages.behaviours.PageBehaviours
 
-import forms.behaviours.DateBehaviours
+class $className$PageSpec extends PageBehaviours {
 
-class TestDateFormProviderSpec extends DateBehaviours {
+  "$className$Page" - {
 
-  val form = new TestDateFormProvider()()
+    beRetrievable[Set[$className$]]($className$Page)
 
-  ".value" - {
+    beSettable[Set[$className$]]($className$Page)
 
-    val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
-    )
-
-    behave like dateField(form, "value", validData)
-
-    behave like mandatoryDateField(form, "value", "testDate.error.required.all")
+    beRemovable[Set[$className$]]($className$Page)
   }
 }

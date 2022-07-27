@@ -14,24 +14,29 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers$if(package.empty)$$else$.$package$$endif$
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.$className$FormProvider
+import forms$if(!package.empty)$.$package$$endif$.$className$FormProvider
+import views.html$if(!package.empty)$.$package$$endif$.$className$View
+$if(package.empty)$
+import models.{$className$, UserAnswers}
+$else$
 import models.UserAnswers
+import models.$package$.$className$
+import pages.EmptyWaypoints
+import pages.$package$.$className$Page
+$endif$
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
-import pages.{EmptyWaypoints, $className$Page}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.$className$View
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach {
@@ -51,12 +56,15 @@ class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach {
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validAnswer = LocalDate.of(2020, 2, 12)
-
   override def beforeEach: Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
+
+  private val validAnswer: Set[$className$] = Set(
+    $className$.Option1,
+    $className$.Option2
+  )
 
   "$className$ Controller" - {
 
@@ -77,7 +85,9 @@ class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
+
       val userAnswers = UserAnswers().set($className$Page, validAnswer).success.value
+
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
@@ -99,13 +109,11 @@ class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach {
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
           .build()
-
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(
-            "value.day" -> "12",
-            "value.month" -> "2",
-            "value.year" -> "2020"
+            "value[0]" -> "option1",
+            "value[1]" -> "option2"
           )
 
         val result = route(application, request).value

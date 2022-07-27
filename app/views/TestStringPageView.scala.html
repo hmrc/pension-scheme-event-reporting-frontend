@@ -14,40 +14,36 @@
  * limitations under the License.
  *@
 
+@import viewmodels.InputWidth._
+
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
+    govukInput: GovukInput,
     govukButton: GovukButton
 )
 
 @(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle    = titleNoForm(messages("test.title")),
-    showBackLink = false
-) {
+@layout(pageTitle = title(form, messages("testStringPage.title"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form))
-    }
+    @formHelper(action = routes.TestStringPageController.onSubmit(waypoints)) {
 
-    <h1 class="govuk-heading-xl">@messages("test.heading")</h1>
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form))
+        }
 
-    @formHelper(action = routes.TestYesNoController.onSubmit(waypoints), 'autoComplete -> "off") {
-
-        @govukRadios(
-            RadiosViewModel.yesNo(
+        @govukInput(
+            InputViewModel(
                 field = form("value"),
-                legend = LegendViewModel("Date").asPageHeading()
+                label = LabelViewModel(messages("testStringPage.heading")).asPageHeading()
             )
+            .withWidth(Full)
         )
 
         @govukButton(
             ButtonViewModel(messages("site.continue"))
         )
-
-        <p class="govuk-body">@messages("index.guidance")</p>
     }
 }

@@ -16,29 +16,27 @@
 
 package viewmodels.checkAnswers
 
-import java.time.format.DateTimeFormatter
 import models.UserAnswers
-import pages.{TestDatePage, CheckAnswersPage, Waypoints}
+import pages.{TestStringPagePage, CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object WibbleSummary  {
+object TestStringPageSummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TestDatePage).map {
+    answers.get(TestStringPagePage).map {
       answer =>
 
-        val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-
         SummaryListRowViewModel(
-          key     = "wibble.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.format(dateFormatter)),
+          key     = "testStringPage.checkYourAnswersLabel",
+          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", TestDatePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("wibble.change.hidden"))
+            ActionItemViewModel("site.change", TestStringPagePage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("testStringPage.change.hidden"))
           )
         )
     }

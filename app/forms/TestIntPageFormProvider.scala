@@ -16,23 +16,18 @@
 
 package forms
 
-import java.time.{LocalDate, ZoneOffset}
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-import forms.behaviours.DateBehaviours
+class TestIntPageFormProvider @Inject() extends Mappings {
 
-class TestDateFormProviderSpec extends DateBehaviours {
-
-  val form = new TestDateFormProvider()()
-
-  ".value" - {
-
-    val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
+  def apply(): Form[Int] =
+    Form(
+      "value" -> int(
+        "testIntPage.error.required",
+        "testIntPage.error.wholeNumber",
+        "testIntPage.error.nonNumeric")
+          .verifying(inRange(0, Int.MaxValue, "testIntPage.error.outOfRange"))
     )
-
-    behave like dateField(form, "value", validData)
-
-    behave like mandatoryDateField(form, "value", "testDate.error.required.all")
-  }
 }
