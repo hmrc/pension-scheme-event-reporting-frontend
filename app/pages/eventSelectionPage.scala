@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import models._
-import org.scalacheck.{Arbitrary, Gen}
+import controllers.routes
+import models.eventSelection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-trait ModelGenerators {
+case object eventSelectionPage extends QuestionPage[eventSelection] {
 
-  implicit lazy val arbitraryeventSelection: Arbitrary[eventSelection] =
-    Arbitrary {
-      Gen.oneOf(eventSelection.values.toSeq)
-    }
+  override def path: JsPath = JsPath \ toString
 
-  implicit lazy val arbitraryTestRadioButton: Arbitrary[TestRadioButton] =
-    Arbitrary {
-      Gen.oneOf(TestRadioButton.values.toSeq)
-    }
+  override def toString: String = "eventSelection"
 
-  implicit lazy val arbitraryTestCheckBox: Arbitrary[TestCheckBox] =
-    Arbitrary {
-      Gen.oneOf(TestCheckBox.values)
-    }
+  override def route(waypoints: Waypoints): Call =
+    routes.eventSelectionController.onPageLoad(waypoints)
 }
