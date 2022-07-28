@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package models.requests
+package models
 
-import models.LoggedInUser
-import play.api.mvc.{Request, WrappedRequest}
+import models.enumeration.AdministratorOrPractitioner
 
-case class IdentifierRequest[A] (request: Request[A], loggedInUser: LoggedInUser) extends WrappedRequest[A](request)
+case class LoggedInUser(
+                         externalId: String,
+                         administratorOrPractitioner: AdministratorOrPractitioner,
+                         psaIdOrPspId: String
+                       )
