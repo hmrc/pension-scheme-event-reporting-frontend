@@ -17,16 +17,16 @@
 package pages
 
 import controllers.routes
-import models.eventSelection
+import models.EventSelection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object eventSelectionPage extends QuestionPage[eventSelection] {
+case object EventSelectionPage extends QuestionPage[EventSelection] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "eventSelection"
+  override def toString: String = "EventSelection"
 
   override def route(waypoints: Waypoints): Call =
-    routes.eventSelectionController.onPageLoad(waypoints)
+    routes.EventSelectionController.onPageLoad(waypoints)
 }

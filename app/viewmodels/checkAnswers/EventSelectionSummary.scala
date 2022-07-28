@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers
 
 import models.UserAnswers
-import pages.{eventSelectionPage, CheckAnswersPage, Waypoints}
+import pages.{EventSelectionPage, CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -25,25 +25,25 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object eventSelectionSummary  {
+object EventSelectionSummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(eventSelectionPage).map {
+    answers.get(EventSelectionPage).map {
       answer =>
 
         val value = ValueViewModel(
           HtmlContent(
-            HtmlFormat.escape(messages(s"eventSelection.$answer"))
+            HtmlFormat.escape(messages(s"EventSelection.$answer"))
           )
         )
 
         SummaryListRowViewModel(
-          key     = "eventSelection.checkYourAnswersLabel",
+          key     = "EventSelection.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", eventSelectionPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("eventSelection.change.hidden"))
+            ActionItemViewModel("site.change", EventSelectionPage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("EventSelection.change.hidden"))
           )
         )
     }

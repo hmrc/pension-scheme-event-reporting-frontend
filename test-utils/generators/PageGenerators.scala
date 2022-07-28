@@ -21,8 +21,8 @@ import pages._
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryeventSelectionPage: Arbitrary[eventSelectionPage.type] =
-    Arbitrary(eventSelectionPage)
+  implicit lazy val arbitraryeventSelectionPage: Arbitrary[EventSelectionPage.type] =
+    Arbitrary(EventSelectionPage)
 
   implicit lazy val arbitraryTestIntPagePage: Arbitrary[TestIntPagePage.type] =
     Arbitrary(TestIntPagePage)

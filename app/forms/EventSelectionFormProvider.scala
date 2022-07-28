@@ -20,12 +20,12 @@ import javax.inject.Inject
 
 import forms.mappings.Mappings
 import play.api.data.Form
-import models.eventSelection
+import models.EventSelection
 
-class eventSelectionFormProvider @Inject() extends Mappings {
+class EventSelectionFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[eventSelection] =
+  def apply(): Form[EventSelection] =
     Form(
-      "value" -> enumerable[eventSelection]("eventSelection.error.required")
+      "value" -> enumerable[EventSelection]("EventSelection.error.required")
     )
 }

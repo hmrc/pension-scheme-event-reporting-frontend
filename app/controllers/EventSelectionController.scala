@@ -18,24 +18,24 @@ package controllers
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.eventSelectionFormProvider
+import forms.EventSelectionFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
-import pages.{eventSelectionPage, Waypoints}
+import pages.{EventSelectionPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.eventSelectionView
+import views.html.EventSelectionView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class eventSelectionController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                          identify: IdentifierAction,
-                                          getData: DataRetrievalAction,
-                                          userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          formProvider: eventSelectionFormProvider,
-                                          view: eventSelectionView
+class EventSelectionController @Inject()(val controllerComponents: MessagesControllerComponents,
+                                         identify: IdentifierAction,
+                                         getData: DataRetrievalAction,
+                                         userAnswersCacheConnector: UserAnswersCacheConnector,
+                                         formProvider: EventSelectionFormProvider,
+                                         view: EventSelectionView
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
@@ -45,7 +45,7 @@ class eventSelectionController @Inject()(val controllerComponents: MessagesContr
   private val pstr = "123"
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(eventSelectionPage)).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(EventSelectionPage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
@@ -56,9 +56,9 @@ class eventSelectionController @Inject()(val controllerComponents: MessagesContr
           Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(eventSelectionPage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(EventSelectionPage, value)
           userAnswersCacheConnector.save(pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(eventSelectionPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(EventSelectionPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

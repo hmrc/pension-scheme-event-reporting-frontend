@@ -24,9 +24,9 @@
 
 @(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("eventSelection.title"))) {
+@layout(pageTitle = title(form, messages("EventSelection.title"))) {
 
-    @formHelper(action = routes.eventSelectionController.onSubmit(waypoints), 'autoComplete -> "off") {
+    @formHelper(action = routes.EventSelectionController.onSubmit(waypoints), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
@@ -36,7 +36,7 @@
             RadiosViewModel(
                 field  = form("value"),
                 legend = LegendViewModel(messages("eventSelection.heading")).asPageHeading(),
-                items  = eventSelection.options
+                items  = EventSelection.options
             )
         )
 
