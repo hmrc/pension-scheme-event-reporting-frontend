@@ -26,6 +26,6 @@ class EventSelectionFormProvider @Inject() extends Mappings {
 
   def apply(): Form[EventSelection] =
     Form(
-      "value" -> enumerable[EventSelection]("EventSelection.error.required")
+      "value" -> enumerable[EventSelection]("eventSelection.error.required")
     )
 }
