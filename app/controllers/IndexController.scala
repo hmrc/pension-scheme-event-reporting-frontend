@@ -35,8 +35,8 @@ class IndexController @Inject()(
                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = identify.async { implicit request =>
-    sessionDataCacheConnector.upsertTestPstr(request.loggedInUser.externalId).map{ _ =>
-    Ok(view())
+    sessionDataCacheConnector.upsertTestPstr(request.loggedInUser.externalId, pstr = "456").map { _ =>
+      Ok(view())
     }
   }
 }

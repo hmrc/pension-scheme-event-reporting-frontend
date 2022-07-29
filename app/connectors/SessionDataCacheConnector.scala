@@ -33,7 +33,7 @@ class SessionDataCacheConnector  @Inject()(
 ) {
   private def url(cacheId:String) = s"${config.pensionsAdministratorUrl}/pension-administrator/journey-cache/session-data/$cacheId"
 
-  def upsertTestPstr(id: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+  def upsertTestPstr(id: String, pstr: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json"
     )
@@ -42,7 +42,7 @@ class SessionDataCacheConnector  @Inject()(
 
     val json = Json.obj(
       "eventReporting" -> Json.obj(
-        "pstr" -> "123"
+        "pstr" -> pstr
       )
     )
 

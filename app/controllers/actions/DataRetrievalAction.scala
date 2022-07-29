@@ -48,9 +48,13 @@ class DataRetrievalImpl( eventType: EventType,
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    getPstr(request).flatMap{
-      case None => throw new RuntimeException("No PSTR selected")
-      case Some(pstr) =>
+    val futurePstr = getPstr(request) map {
+      case None => "123" // TODO: Once we have an event reporting dashboard then we should redirect user to ??? page at this point
+      case Some(pstr) => pstr
+    }
+
+    futurePstr.flatMap{ pstr =>
+      println("\n>>>" + pstr)
         val result = for {
           data <- userAnswersCacheConnector.get(pstr, eventType)
         } yield {

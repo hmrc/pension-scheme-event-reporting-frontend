@@ -45,7 +45,7 @@ class IndexControllerSpec extends SpecBase {
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
           .build()
 
-      when(mockSessionDataCacheConnector.upsertTestPstr(any())(any(), any())).thenReturn(Future.successful( () ))
+      when(mockSessionDataCacheConnector.upsertTestPstr(any(), any())(any(), any())).thenReturn(Future.successful( () ))
 
       running(application) {
         val request = FakeRequest(GET, routes.IndexController.onPageLoad.url)
