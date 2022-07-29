@@ -17,9 +17,14 @@
 package models
 
 import models.enumeration.AdministratorOrPractitioner
+import play.api.libs.json.{Format, Json}
 
 case class LoggedInUser(
                          externalId: String,
                          administratorOrPractitioner: AdministratorOrPractitioner,
                          psaIdOrPspId: String
                        )
+
+object LoggedInUser {
+  implicit val formats: Format[LoggedInUser] = Json.format[LoggedInUser]
+}
