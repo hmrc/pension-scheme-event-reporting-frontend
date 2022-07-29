@@ -36,9 +36,7 @@ class CheckYourAnswersController @Inject()(
                                             view: CheckYourAnswersView
                                           ) extends FrontendBaseController with I18nSupport {
 
-  private val pstr = "123"
-
-  def onPageLoad: Action[AnyContent] = (identify andThen getData(pstr, EventType.Event1) andThen requireData) { implicit request =>
+  def onPageLoad: Action[AnyContent] = (identify andThen getData(EventType.Event1) andThen requireData) { implicit request =>
 
     val thisPage  = CheckYourAnswersPage
     val waypoints = EmptyWaypoints

@@ -17,7 +17,7 @@
 package controllers.actions
 
 import com.google.inject.ImplementedBy
-import connectors.UserAnswersCacheConnector
+import connectors.{SessionDataCacheConnector, UserAnswersCacheConnector}
 import models.enumeration.EventType
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import play.api.Logger
@@ -29,34 +29,49 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-class DataRetrievalImpl(
-                         pstr: String,
-                         eventType: EventType,
+class DataRetrievalImpl( eventType: EventType,
+                         sessionDataCacheConnector: SessionDataCacheConnector,
                          userAnswersCacheConnector: UserAnswersCacheConnector
                        )(implicit val executionContext: ExecutionContext)
   extends DataRetrieval {
   private val logger = Logger(classOf[DataRetrievalImpl])
 
-  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-    val result = for {
-      data <- userAnswersCacheConnector.get(pstr, eventType)
-    } yield {
-      // TODO: What should userId be? For now make it internal ID but should probably be PSA ID/ PSP ID
-      OptionalDataRequest[A](request, request.loggedInUser, data)
+  private def getPstr[A](request: IdentifierRequest[A])(implicit hc:HeaderCarrier): Future[Option[String]] = {
+    sessionDataCacheConnector.fetch(request.loggedInUser.externalId).map { optionJsValue =>
+      optionJsValue.flatMap { json =>
+        (json \ "eventReporting" \ "pstr").toOption.flatMap(_.validate[String].asOpt)
+      }
     }
-    result andThen {
-      case Success(v) => logger.info("Successful response to data retrieval:" + v)
-      case Failure(t: Throwable) => logger.warn("Unable to complete dataretrieval", t)
+  }
+
+  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
+
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
+    getPstr(request).flatMap{
+      case None => throw new RuntimeException("No PSTR selected")
+      case Some(pstr) =>
+        val result = for {
+          data <- userAnswersCacheConnector.get(pstr, eventType)
+        } yield {
+          OptionalDataRequest[A](pstr, request, request.loggedInUser, data)
+        }
+        result andThen {
+          case Success(v) => logger.info("Successful response to data retrieval:" + v)
+          case Failure(t: Throwable) => logger.warn("Unable to complete dataretrieval", t)
+        }
     }
   }
 }
 
-class DataRetrievalActionImpl @Inject()(userAnswersCacheConnector: UserAnswersCacheConnector)
+class DataRetrievalActionImpl @Inject()(
+                                         sessionDataCacheConnector: SessionDataCacheConnector,
+                                         userAnswersCacheConnector: UserAnswersCacheConnector
+                                       )
                                        (implicit val executionContext: ExecutionContext)
   extends DataRetrievalAction {
-  override def apply(pstr: String, eventType: EventType): DataRetrieval =
-    new DataRetrievalImpl(pstr, eventType, userAnswersCacheConnector)
+  override def apply(eventType: EventType): DataRetrieval =
+    new DataRetrievalImpl(eventType, sessionDataCacheConnector, userAnswersCacheConnector)
 }
 
 @ImplementedBy(classOf[DataRetrievalImpl])
@@ -64,5 +79,5 @@ trait DataRetrieval extends ActionTransformer[IdentifierRequest, OptionalDataReq
 
 @ImplementedBy(classOf[DataRetrievalActionImpl])
 trait DataRetrievalAction {
-  def apply(pstr: String, eventType: EventType): DataRetrieval
+  def apply(eventType: EventType): DataRetrieval
 }
