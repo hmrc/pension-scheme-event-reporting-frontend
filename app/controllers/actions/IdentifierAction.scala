@@ -82,13 +82,13 @@ class AuthenticatedIdentifierAction @Inject()(
     enrolments
       .getEnrolment(key = enrolmentPSA)
       .flatMap(_.getIdentifier("PSAID"))
-      .map(x => PsaId(x.value).id)
+      .map(enrolmentIdentifier => PsaId(enrolmentIdentifier.value).id)
 
   private def getPspId(enrolments: Enrolments): Option[String] =
     enrolments
       .getEnrolment(key = enrolmentPSP)
       .flatMap(_.getIdentifier("PSPID"))
-      .map(x => PspId(x.value).id)
+      .map(enrolmentIdentifier => PspId(enrolmentIdentifier.value).id)
 
   private def administratorOrPractitioner(id: String)(implicit hc: HeaderCarrier): Future[Option[AdministratorOrPractitioner]] = {
     sessionDataCacheConnector.fetch(id).map { optionJsValue =>
