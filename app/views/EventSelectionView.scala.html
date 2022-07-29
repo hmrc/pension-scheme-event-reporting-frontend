@@ -24,7 +24,10 @@
 
 @(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("eventSelection.title"))) {
+@layout(
+    pageTitle = title(form, messages("eventSelection.title")),
+    showBackLink = false
+) {
 
     @formHelper(action = routes.EventSelectionController.onSubmit(waypoints), 'autoComplete -> "off") {
 
