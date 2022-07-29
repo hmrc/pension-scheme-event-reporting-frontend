@@ -74,7 +74,7 @@ class AuthenticatedIdentifierAction @Inject()(
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
       case e: AuthorisationException =>
         logger.warn(s"Authorization Failed with error $e")
-        Redirect(routes.UnauthorisedController.onPageLoad)
+        Redirect(config.youNeedToRegisterUrl)
     }
   }
 
@@ -106,7 +106,7 @@ class AuthenticatedIdentifierAction @Inject()(
     case Practitioner => getPspId(enrolments).map(LoggedInUser(externalId, Practitioner, _))
   }
 
-  private def futureUnauthorisedPage: Future[Result] = Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
+  private def futureUnauthorisedPage: Future[Result] = Future.successful(Redirect(config.youNeedToRegisterUrl))
 
   private def actionForBothEnrolments[A](externalId: String, enrolments: Enrolments, request: Request[A],
                                          block: IdentifierRequest[A] => Future[Result])(implicit headerCarrier: HeaderCarrier): Future[Result] = {

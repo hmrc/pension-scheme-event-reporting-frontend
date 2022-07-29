@@ -46,6 +46,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val signOutUrl: String       = configuration.get[String]("urls.signOut")
 
   def administratorOrPractitionerUrl: String = loadConfig("urls.administratorOrPractitioner")
+  def youNeedToRegisterUrl: String = loadConfig("urls.youNeedToRegisterPage")
 
   private val exitSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
   val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/pension-scheme-event-reporting-frontend"

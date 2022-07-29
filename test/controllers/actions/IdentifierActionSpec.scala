@@ -20,7 +20,6 @@ import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.SessionDataCacheConnector
-import controllers.routes
 import models.LoggedInUser
 import models.enumeration.AdministratorOrPractitioner
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
@@ -202,12 +201,17 @@ class IdentifierActionSpec
       new FakeFailingAuthConnector(new InsufficientEnrolments),
       mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector
     )
+
+    val testUrl = "/test"
+
+    when(mockFrontendAppConfig.youNeedToRegisterUrl).thenReturn(testUrl)
+
     val controller = new Harness(authAction)
     val result = controller.onPageLoad()(fakeRequest)
 
     status(result) mustBe SEE_OTHER
 
-    redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
+    redirectLocation(result) mustBe Some(testUrl)
   }
 }
 
