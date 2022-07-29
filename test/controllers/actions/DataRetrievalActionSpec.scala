@@ -18,7 +18,8 @@ package controllers.actions
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import models.UserAnswers
+import models.enumeration.AdministratorOrPractitioner.Administrator
+import models.{LoggedInUser, UserAnswers}
 import models.enumeration.EventType
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
@@ -35,8 +36,8 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
   val userAnswersCacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private val userId = "user"
-  private val request: IdentifierRequest[AnyContent] = IdentifierRequest(fakeRequest, userId)
+  private val loggedInUser = LoggedInUser("user", Administrator, "psaId")
+  private val request: IdentifierRequest[AnyContent] = IdentifierRequest(fakeRequest, loggedInUser)
   private val pstr = "123"
   private val eventType = EventType.Event1
 
@@ -53,7 +54,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
       when(userAnswersCacheConnector.get(eqTo(pstr), eqTo(eventType))(any(), any())) thenReturn Future(None)
       val action = new Harness
 
-      val expectedResult = OptionalDataRequest(request, userId, None)
+      val expectedResult = OptionalDataRequest(request, loggedInUser, None)
       val futureResult = action.callTransform(request)
 
       whenReady(futureResult) { result =>
@@ -68,7 +69,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
       when(userAnswersCacheConnector.get(eqTo(pstr), eqTo(eventType))(any(), any())) thenReturn Future(Some(userAnswers))
       val action = new Harness
 
-      val expectedResult = OptionalDataRequest(request, userId, Some(userAnswers))
+      val expectedResult = OptionalDataRequest(request, loggedInUser, Some(userAnswers))
       val futureResult = action.callTransform(request)
 
       whenReady(futureResult) { result =>

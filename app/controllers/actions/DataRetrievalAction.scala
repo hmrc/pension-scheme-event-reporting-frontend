@@ -43,7 +43,7 @@ class DataRetrievalImpl(
       data <- userAnswersCacheConnector.get(pstr, eventType)
     } yield {
       // TODO: What should userId be? For now make it internal ID but should probably be PSA ID/ PSP ID
-      OptionalDataRequest[A](request, request.userId, data)
+      OptionalDataRequest[A](request, request.loggedInUser, data)
     }
     result andThen {
       case Success(v) => logger.info("Successful response to data retrieval:" + v)
