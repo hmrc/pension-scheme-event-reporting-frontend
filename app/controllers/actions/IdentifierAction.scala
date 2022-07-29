@@ -54,10 +54,12 @@ class AuthenticatedIdentifierAction @Inject()(
   private def bothPsaAndPspEnrolmentsPresent(enrolments: Enrolments): Boolean =
     enrolments.getEnrolment(enrolmentPSA).isDefined && enrolments.getEnrolment(enrolmentPSP).isDefined
 
-  private def getLoggedInUser(externalId: String, role:AdministratorOrPractitioner, enrolments: Enrolments): Option[LoggedInUser] = role match {
+  private def getLoggedInUser(externalId: String, role: AdministratorOrPractitioner, enrolments: Enrolments): Option[LoggedInUser] = role match {
     case Administrator => getPsaId(enrolments).map(LoggedInUser(externalId, Administrator, _))
     case Practitioner => getPspId(enrolments).map(LoggedInUser(externalId, Practitioner, _))
   }
+
+  private def futureUnauthorisedPage: Future[Result] = Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
 
   override def invokeBlock[A](
                                request: Request[A],
@@ -76,19 +78,20 @@ class AuthenticatedIdentifierAction @Inject()(
           case Some(role) =>
             getLoggedInUser(externalId, role, enrolments) match {
               case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser))
-              case _ => Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
+              case _ => futureUnauthorisedPage
             }
         }
       case Some(externalId) ~ enrolments if enrolments.getEnrolment(enrolmentPSA).isDefined =>
         getLoggedInUser(externalId, Administrator, enrolments) match {
           case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser))
-          case _ => Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
+          case _ => futureUnauthorisedPage
         }
       case Some(externalId) ~ enrolments if enrolments.getEnrolment(enrolmentPSP).isDefined =>
         getLoggedInUser(externalId, Practitioner, enrolments) match {
           case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser))
-          case _ => Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
+          case _ => futureUnauthorisedPage
         }
+      case _ => futureUnauthorisedPage
     } recover {
       case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
