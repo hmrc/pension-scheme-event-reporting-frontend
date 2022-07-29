@@ -33,7 +33,7 @@ object EventSelection extends Enumerable.Implicits {
   case object Event6 extends WithName("event6") with EventSelection
   case object Event7 extends WithName("event7") with EventSelection
   case object Event8 extends WithName("event8") with EventSelection
-  case object Event8A$ extends WithName("event8a") with EventSelection
+  case object Event8A extends WithName("event8a") with EventSelection
   case object Event10 extends WithName("event10") with EventSelection
   case object Event11 extends WithName("event11") with EventSelection
   case object Event12 extends WithName("event12") with EventSelection
@@ -42,7 +42,7 @@ object EventSelection extends Enumerable.Implicits {
   case object Event18 extends WithName("event18") with EventSelection
   case object Event19 extends WithName("event19") with EventSelection
   case object Event20 extends WithName("event20") with EventSelection
-  case object Event20A$ extends WithName("event20a") with EventSelection
+  case object Event20A extends WithName("event20a") with EventSelection
   case object Event22 extends WithName("event22") with EventSelection
   case object Event23 extends WithName("event23") with EventSelection
   case object Event24 extends WithName("event24") with EventSelection
@@ -50,29 +50,28 @@ object EventSelection extends Enumerable.Implicits {
   case object EventWoundUp extends WithName("eventWoundUp") with EventSelection
 
   val values: Seq[EventSelection] = Seq(
-    Event1, Event2, Event3, Event4, Event5, Event6, Event7, Event8, Event8A$, Event10,
-    Event11, Event12, Event13, Event14, Event18, Event19, Event20, Event20A$, Event22,
+    Event1, Event2, Event3, Event4, Event5, Event6, Event7, Event8, Event8A, Event10,
+    Event11, Event12, Event13, Event14, Event18, Event19, Event20, Event20A, Event22,
     Event23, Event24, Or, EventWoundUp
   )
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
+    case (Or, _) => RadioItem(divider = Some("or"))
+    case (EventWoundUp, index) =>
+      RadioItem(
+        content = Text(messages(s"eventSelection.${EventWoundUp.toString}")),
+        value = Some(EventWoundUp.toString),
+        id = Some(s"value_$index")
+      )
     case (value, index) =>
-      if( value.toString == "or" ) {
-        RadioItem(
-          divider = Some("or")
-        )
-      } else {
-        RadioItem(
-          content = Text(messages(s"eventSelection.${value.toString}")),
-          value   = Some(value.toString),
-          id      = Some(s"value_$index"),
-          hint    = if(value.toString != "eventWoundUp"){
-            Some(Hint(
-              content = Text(messages(s"eventSelection.${value.toString}.hint"))
-            ))
-          } else { None }
-        )
-      }
+      RadioItem(
+        content = Text(messages(s"eventSelection.${value.toString}")),
+        value = Some(value.toString),
+        id = Some(s"value_$index"),
+        hint = Some(Hint(
+          content = Text(messages(s"eventSelection.${value.toString}.hint"))
+        ))
+      )
   }
 
   implicit val enumerable: Enumerable[EventSelection] =
