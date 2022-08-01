@@ -106,8 +106,8 @@ testIntPage.error.wholeNumber = Enter your testIntPage using whole numbers
 testIntPage.error.outOfRange = TestIntPage must be between {0} and {1}
 testIntPage.change.hidden = TestIntPage
 
-eventSummary.title = Event report for tax year ending 5 April [year]
-eventSummary.heading = Event report for tax year ending 5 April [year]
+eventSummary.title = Event report for tax year ending 5 April 2023
+eventSummary.heading = Event report for tax year ending 5 April 2023
 eventSummary.heading.caption = Company pension scheme ABC
 eventSummary.yesno.legend = Do you want to add another event?
 eventSummary.checkYourAnswersLabel = Check Your Answers
