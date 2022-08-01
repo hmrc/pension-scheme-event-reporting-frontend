@@ -17,12 +17,11 @@
 package navigation
 
 import javax.inject.{Inject, Singleton}
-
 import play.api.mvc.Call
 import controllers.routes
 import pages._
 import models._
-import models.enumeration.EventType
+import models.enumeration.EventType.Event18
 
 @Singleton
 class Navigator @Inject()() {
@@ -32,7 +31,7 @@ class Navigator @Inject()() {
   }
 
   private val checkRouteMap: Page => UserAnswers => Call = {
-    case _ => _ => routes.CheckYourAnswersController.onPageLoad
+    case _ => _ => routes.CheckYourAnswersController.onPageLoad(Event18)
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {

@@ -38,7 +38,7 @@ class CheckYourAnswersController @Inject()(
 
   private val pstr = "123"
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData(pstr, EventType.Event1) andThen requireData) { implicit request =>
+  def onPageLoad(eventType: EventType): Action[AnyContent] = (identify andThen getData(pstr, eventType) andThen requireData) { implicit request =>
 
     val thisPage  = CheckYourAnswersPage
     val waypoints = EmptyWaypoints
