@@ -22,6 +22,7 @@ import play.api.mvc.Call
 import controllers.routes
 import pages._
 import models._
+import models.enumeration.EventType
 
 @Singleton
 class Navigator @Inject()() {

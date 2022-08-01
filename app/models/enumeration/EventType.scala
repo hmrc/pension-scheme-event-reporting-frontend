@@ -16,6 +16,9 @@
 
 package models.enumeration
 
+import pages.Waypoints
+import play.api.mvc.QueryStringBindable
+
 sealed trait EventType
 
 object EventType extends Enumerable.Implicits {
@@ -68,4 +71,20 @@ object EventType extends Enumerable.Implicits {
     Event10, Event11, Event12, Event13, Event14, Event18, Event19, Event20, Event20A, Event22, Event23, Event24)
 
   def getEventType(s: String): Option[EventType] = values.find(_.toString == s)
+
+  implicit def queryStringBindable(implicit stringBinder: QueryStringBindable[String]): QueryStringBindable[EventType] =
+    new QueryStringBindable[EventType] {
+
+      override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, EventType]] = {
+        params.get(key).map {
+          data =>
+            EventType.getEventType(data.head)
+              .map(Right(_))
+              .getOrElse(Left(s"Unable to bind parameter ${data.head} as EventType"))
+        }
+      }
+
+      override def unbind(key: String, value: EventType): String =
+        stringBinder.unbind(key, value.toString)
+    }
 }

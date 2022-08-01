@@ -43,3 +43,6 @@ POST       /testIntPage                  controllers.TestIntPageController.onSub
 
 GET        /event-selection                        controllers.EventSelectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /event-selection                        controllers.EventSelectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-18-confirmation                        controllers.event18.Event18ConfirmationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-18-confirmation                        controllers.event18.Event18ConfirmationController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
