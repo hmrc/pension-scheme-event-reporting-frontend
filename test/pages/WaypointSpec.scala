@@ -16,6 +16,7 @@
 
 package pages
 
+import models.enumeration.EventType
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -26,7 +27,7 @@ class WaypointSpec extends AnyFreeSpec with Matchers with OptionValues {
 
     "must return CheckYourAnswers when given its waypoint" in {
 
-      Waypoint.fromString("check-answers").value mustEqual CheckYourAnswersPage.waypoint
+      Waypoint.fromString("check-answers").value mustEqual CheckYourAnswersPage(EventType.Event18).waypoint
     }
   }
 }

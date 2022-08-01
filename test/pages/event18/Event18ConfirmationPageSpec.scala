@@ -16,17 +16,16 @@
 
 package pages.event18
 
-import models.event18.Event18Confirmation
 import pages.behaviours.PageBehaviours
 
 class Event18ConfirmationPageSpec extends PageBehaviours {
 
   "Event18ConfirmationPage" - {
 
-    beRetrievable[Set[Event18Confirmation]](Event18ConfirmationPage)
+    beRetrievable[Boolean](Event18ConfirmationPage)
 
-    beSettable[Set[Event18Confirmation]](Event18ConfirmationPage)
+    beSettable[Boolean](Event18ConfirmationPage)
 
-    beRemovable[Set[Event18Confirmation]](Event18ConfirmationPage)
+    beRemovable[Boolean](Event18ConfirmationPage)
   }
 }

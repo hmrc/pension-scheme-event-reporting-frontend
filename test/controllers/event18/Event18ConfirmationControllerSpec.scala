@@ -19,19 +19,18 @@ package controllers.event18
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event18.Event18ConfirmationFormProvider
-import views.html.event18.Event18ConfirmationView
 import models.UserAnswers
-import models.event18.Event18Confirmation
-import pages.EmptyWaypoints
-import pages.event18.Event18ConfirmationPage
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
+import pages.EmptyWaypoints
+import pages.event18.Event18ConfirmationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import views.html.event18.Event18ConfirmationView
 
 import scala.concurrent.Future
 
@@ -57,7 +56,7 @@ class Event18ConfirmationControllerSpec extends SpecBase with BeforeAndAfterEach
     reset(mockUserAnswersCacheConnector)
   }
 
-  private val validAnswer: Set[Event18Confirmation] = Set(Event18Confirmation.Confirmation)
+  private val validAnswer: Boolean = true
 
   "Event18Confirmation Controller" - {
 

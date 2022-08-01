@@ -18,18 +18,22 @@ package pages.event18
 
 import controllers.event18.routes
 import models.UserAnswers
-import models.event18.Event18Confirmation
+import models.enumeration.EventType.Event18
+import pages.{CheckYourAnswersPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Page, QuestionPage, Waypoints}
 
-case object Event18ConfirmationPage extends QuestionPage[Set[Event18Confirmation]] {
+case object Event18ConfirmationPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "event18Confirmation"
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = super.nextPageNormalMode(waypoints, answers)
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this) match {
+      case Some(true) => CheckYourAnswersPage(Event18)
+      case _ => this
+    }
 
   override def route(waypoints: Waypoints): Call =
     routes.Event18ConfirmationController.onPageLoad(waypoints)

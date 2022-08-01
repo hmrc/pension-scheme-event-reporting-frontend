@@ -16,7 +16,6 @@
 
 package models.enumeration
 
-import pages.Waypoints
 import play.api.mvc.QueryStringBindable
 
 sealed trait EventType

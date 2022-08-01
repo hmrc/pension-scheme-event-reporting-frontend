@@ -16,17 +16,16 @@
 
 package forms.event18
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
-import play.api.data.Forms.set
-import models.event18.Event18Confirmation
+import play.api.data.Forms.checked
+
+import javax.inject.Inject
 
 class Event18ConfirmationFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Set[Event18Confirmation]] =
+  def apply(): Form[Boolean] =
     Form(
-      "value" -> set(enumerable[Event18Confirmation]("event18Confirmation.error.required")).verifying(nonEmptySet("event18Confirmation.error.required"))
+      "value" -> checked("event18Confirmation.error.required")
     )
 }

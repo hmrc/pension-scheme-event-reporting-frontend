@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import models.event18.Event18Confirmation
 @import controllers.event18.routes
 
 @this(
@@ -40,7 +39,12 @@
                 form   = form,
                 name   = "value",
                 legend = LegendViewModel(messages("event18Confirmation.heading")).asPageHeading(),
-                items  = Event18Confirmation.checkboxItems
+                items  = Seq(CheckboxItem(
+                    content = Text(messages(s"event18Confirmation.confirmation")),
+                    id      = Some("value"),
+                    name    = Some("value"),
+                    value   = "true"
+                ))
             )
         )
 

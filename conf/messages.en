@@ -161,3 +161,4 @@ event18Confirmation.confirmation = I confirm that the scheme is to be treated as
 event18Confirmation.checkYourAnswersLabel = Scheme chargeable payment
 event18Confirmation.error.required = You must tick the box to continue
 event18Confirmation.change.hidden = Event18Confirmation
+event18Confirmation.summary.title = Event 18: Scheme chargeable payment

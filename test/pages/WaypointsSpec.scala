@@ -17,6 +17,7 @@
 package pages
 
 import models.NormalMode
+import models.enumeration.EventType
 import org.scalatest.{EitherValues, OptionValues}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -172,7 +173,7 @@ class WaypointsSpec extends AnyFreeSpec with Matchers with OptionValues with Eit
 
       "must read from a real waypoint" in new Fixture {
 
-        val waypoint = CheckYourAnswersPage.waypoint
+        val waypoint = CheckYourAnswersPage(EventType.Event18).waypoint
 
         Waypoints.fromString(waypoint.urlFragment).value mustEqual Waypoints(List(waypoint))
       }
@@ -187,7 +188,7 @@ class WaypointsSpec extends AnyFreeSpec with Matchers with OptionValues with Eit
 
       val bindable = implicitly[QueryStringBindable[Waypoints]]
 
-      val waypoint = CheckYourAnswersPage.waypoint
+      val waypoint = CheckYourAnswersPage(EventType.Event18).waypoint
 
       val data = Map("key" -> List(s"${waypoint.urlFragment}"))
       val expectedResult = Waypoints(List(waypoint))

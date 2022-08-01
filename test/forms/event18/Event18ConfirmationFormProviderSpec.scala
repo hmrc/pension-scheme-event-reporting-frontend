@@ -17,7 +17,6 @@
 package forms.event18
 
 import forms.behaviours.CheckboxFieldBehaviours
-import models.event18.Event18Confirmation
 import play.api.data.FormError
 
 class Event18ConfirmationFormProviderSpec extends CheckboxFieldBehaviours {
@@ -29,10 +28,10 @@ class Event18ConfirmationFormProviderSpec extends CheckboxFieldBehaviours {
     val fieldName = "value"
     val requiredKey = "event18Confirmation.error.required"
 
-    behave like checkboxField[Event18Confirmation](
+    behave like checkboxField[Boolean](
       form,
       fieldName,
-      validValues  = Event18Confirmation.values,
+      validValues  = Seq(true, false),
       invalidError = FormError(s"$fieldName[0]", "error.invalid")
     )
 
