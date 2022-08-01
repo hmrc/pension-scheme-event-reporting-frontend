@@ -108,7 +108,6 @@ testIntPage.change.hidden = TestIntPage
 
 eventSummary.title = Event report for tax year ending 5 April 2023
 eventSummary.heading = Event report for tax year ending 5 April 2023
-eventSummary.heading.caption = Company pension scheme ABC
 eventSummary.yesno.legend = Do you want to add another event?
 eventSummary.checkYourAnswersLabel = Check Your Answers
 eventSummary.error.required = Select yes if you want to add another event
