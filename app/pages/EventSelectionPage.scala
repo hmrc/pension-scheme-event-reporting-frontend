@@ -30,9 +30,6 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     SchemeWindUpDatePage
 
-
-  override def route(waypoints: Waypoints): Call = {
-    println("\n\n TESTING")
-    routes.SchemeWindUpDateController.onPageLoad(waypoints)
-  }
+  override def route(waypoints: Waypoints): Call =
+    routes.EventSelectionController.onPageLoad(waypoints)
 }
