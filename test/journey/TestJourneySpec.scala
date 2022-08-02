@@ -16,8 +16,11 @@
 
 package journey
 
+import models.EventSelection.EventWoundUp
 import org.scalatest.freespec.AnyFreeSpec
-import pages.{CheckYourAnswersPage, TestYesNoPage}
+import pages.{CheckYourAnswersPage, EventSelectionPage, SchemeWindUpDatePage, TestYesNoPage}
+
+import java.time.LocalDate
 
 class TestJourneySpec extends AnyFreeSpec with JourneyHelpers {
   
@@ -27,6 +30,15 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers {
       .run(
         submitAnswer(TestYesNoPage, true),
         pageMustBe(CheckYourAnswersPage)
+      )
+  }
+  "test windUp journey" in {
+
+    startingFrom(EventSelectionPage)
+      .run(
+        submitAnswer(EventSelectionPage, EventWoundUp),
+        pageMustBe(SchemeWindUpDatePage),
+        submitAnswer(SchemeWindUpDatePage, LocalDate.of(2021, 5, 4))
       )
   }
 }

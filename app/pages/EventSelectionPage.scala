@@ -17,6 +17,7 @@
 package pages
 
 import controllers.routes
+import models.EventSelection.EventWoundUp
 import models.{EventSelection, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -27,9 +28,12 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
 
   override def toString: String = "EventSelection"
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    SchemeWindUpDatePage
-
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    answers.get(EventSelectionPage) match {
+      case None => IndexPage
+      case Some(EventWoundUp) => SchemeWindUpDatePage
+    }
+  }
   override def route(waypoints: Waypoints): Call =
     routes.EventSelectionController.onPageLoad(waypoints)
 }
