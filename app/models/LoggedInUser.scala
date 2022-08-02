@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 
-package models.requests
+package models
 
-import models.LoggedInUser
-import play.api.mvc.{Request, WrappedRequest}
+import models.enumeration.AdministratorOrPractitioner
+import play.api.libs.json.{Format, Json}
 
-case class IdentifierRequest[A] (request: Request[A], loggedInUser: LoggedInUser) extends WrappedRequest[A](request)
+case class LoggedInUser(
+                         externalId: String,
+                         administratorOrPractitioner: AdministratorOrPractitioner,
+                         psaIdOrPspId: String
+                       )
+
+object LoggedInUser {
+  implicit val formats: Format[LoggedInUser] = Json.format[LoggedInUser]
+}

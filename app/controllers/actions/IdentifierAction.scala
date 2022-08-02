@@ -18,13 +18,20 @@ package controllers.actions
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import connectors.SessionDataCacheConnector
 import controllers.routes
+import models.LoggedInUser
+import models.enumeration.AdministratorOrPractitioner
+import models.enumeration.AdministratorOrPractitioner._
 import models.requests.IdentifierRequest
+import play.api.Logger
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
+import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.domain.{PsaId, PspId}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,41 +41,91 @@ trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with
 class AuthenticatedIdentifierAction @Inject()(
                                                override val authConnector: AuthConnector,
                                                config: FrontendAppConfig,
-                                               val parser: BodyParsers.Default
+                                               val parser: BodyParsers.Default,
+                                               sessionDataCacheConnector: SessionDataCacheConnector
                                              )
                                              (implicit val executionContext: ExecutionContext) extends IdentifierAction with AuthorisedFunctions {
 
-  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
+  private val logger = Logger(classOf[AuthenticatedIdentifierAction])
 
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+  private val enrolmentPSA = "HMRC-PODS-ORG"
+  private val enrolmentPSP = "HMRC-PODSPP-ORG"
 
-    authorised().retrieve(Retrievals.internalId) {
-      _.map {
-        internalId => block(IdentifierRequest(request, internalId))
-      }.getOrElse(throw new UnauthorizedException("Unable to retrieve internal Id"))
+  override def invokeBlock[A](
+                               request: Request[A],
+                               block: IdentifierRequest[A] => Future[Result]
+                             ): Future[Result] = {
+
+    implicit val hc: HeaderCarrier =
+      HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
+    authorised(Enrolment(enrolmentPSA) or Enrolment(enrolmentPSP)).retrieve(
+      Retrievals.externalId and Retrievals.allEnrolments
+    ) {
+      case Some(externalId) ~ enrolments if bothPsaAndPspEnrolmentsPresent(enrolments) =>
+        actionForBothEnrolments(externalId, enrolments, request, block)
+      case Some(externalId) ~ enrolments if enrolments.getEnrolment(enrolmentPSA).isDefined =>
+        actionForOneEnrolment(Administrator, externalId, enrolments, request, block)
+      case Some(externalId) ~ enrolments if enrolments.getEnrolment(enrolmentPSP).isDefined =>
+        actionForOneEnrolment(Practitioner, externalId, enrolments, request, block)
+      case _ => futureUnauthorisedPage
     } recover {
       case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
-      case _: AuthorisationException =>
-        Redirect(routes.UnauthorisedController.onPageLoad)
+      case e: AuthorisationException =>
+        logger.warn(s"Authorization Failed with error $e")
+        Redirect(config.youNeedToRegisterUrl)
     }
   }
-}
 
-class SessionIdentifierAction @Inject()(
-                                         val parser: BodyParsers.Default
-                                       )
-                                       (implicit val executionContext: ExecutionContext) extends IdentifierAction {
+  private def getPsaId(enrolments: Enrolments): Option[String] =
+    enrolments
+      .getEnrolment(key = enrolmentPSA)
+      .flatMap(_.getIdentifier("PSAID"))
+      .map(enrolmentIdentifier => PsaId(enrolmentIdentifier.value).id)
 
-  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
+  private def getPspId(enrolments: Enrolments): Option[String] =
+    enrolments
+      .getEnrolment(key = enrolmentPSP)
+      .flatMap(_.getIdentifier("PSPID"))
+      .map(enrolmentIdentifier => PspId(enrolmentIdentifier.value).id)
 
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+  private def administratorOrPractitioner(id: String)(implicit hc: HeaderCarrier): Future[Option[AdministratorOrPractitioner]] = {
+    sessionDataCacheConnector.fetch(id).map { optionJsValue =>
+      optionJsValue.flatMap { json =>
+        (json \ "administratorOrPractitioner").toOption.flatMap(_.validate[AdministratorOrPractitioner].asOpt)
+      }
+    }
+  }
 
-    hc.sessionId match {
-      case Some(session) =>
-        block(IdentifierRequest(request, session.value))
-      case None =>
-        Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+  private def bothPsaAndPspEnrolmentsPresent(enrolments: Enrolments): Boolean =
+    enrolments.getEnrolment(enrolmentPSA).isDefined && enrolments.getEnrolment(enrolmentPSP).isDefined
+
+  private def getLoggedInUser(externalId: String, role: AdministratorOrPractitioner, enrolments: Enrolments): Option[LoggedInUser] = role match {
+    case Administrator => getPsaId(enrolments).map(LoggedInUser(externalId, Administrator, _))
+    case Practitioner => getPspId(enrolments).map(LoggedInUser(externalId, Practitioner, _))
+  }
+
+  private def futureUnauthorisedPage: Future[Result] = Future.successful(Redirect(config.youNeedToRegisterUrl))
+
+  private def actionForBothEnrolments[A](externalId: String, enrolments: Enrolments, request: Request[A],
+                                         block: IdentifierRequest[A] => Future[Result])(implicit headerCarrier: HeaderCarrier): Future[Result] = {
+    administratorOrPractitioner(externalId).flatMap {
+      case None => Future.successful(Redirect(Call("GET", config.administratorOrPractitionerUrl)))
+      case Some(role) =>
+        getLoggedInUser(externalId, role, enrolments) match {
+          case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser))
+          case _ => futureUnauthorisedPage
+        }
+    }
+  }
+
+  def actionForOneEnrolment[A](administratorOrPractitioner: AdministratorOrPractitioner,
+                               externalId: String, enrolments: Enrolments, request: Request[A],
+                               block: IdentifierRequest[A] => Future[Result])(implicit headerCarrier: HeaderCarrier): Future[Result] = {
+    getLoggedInUser(externalId, administratorOrPractitioner, enrolments) match {
+      case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser))
+      case _ => futureUnauthorisedPage
     }
   }
 }

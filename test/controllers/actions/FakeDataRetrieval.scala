@@ -16,7 +16,8 @@
 
 package controllers.actions
 
-import models.UserAnswers
+import models.enumeration.AdministratorOrPractitioner.Administrator
+import models.{LoggedInUser, UserAnswers}
 import models.enumeration.EventType
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 
@@ -29,7 +30,7 @@ class FakeDataRetrievalAction(json: Option[UserAnswers]) extends DataRetrievalAc
 class FakeDataRetrieval(dataToReturn: Option[UserAnswers]) extends DataRetrieval {
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
-    Future(OptionalDataRequest(request.request, "user-id", dataToReturn))
+    Future(OptionalDataRequest(request.request, LoggedInUser("user-id", Administrator, "psaId"), dataToReturn))
 
   override protected implicit val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
