@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.eventWindUp
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.SchemeWindUpDateFormProvider
+import forms.eventWindUp.SchemeWindUpDateFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
-import pages.{EmptyWaypoints, SchemeWindUpDatePage}
+import pages.EmptyWaypoints
+import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.SchemeWindUpDateView
+import views.html.eventWindUp.SchemeWindUpDateView
 
 import java.time.LocalDate
 import scala.concurrent.Future

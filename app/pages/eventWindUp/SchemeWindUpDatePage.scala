@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-package pages
+package pages.eventWindUp
+
+import controllers.eventWindUp.routes
+import pages.{QuestionPage, Waypoints}
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
 import java.time.LocalDate
 
-import org.scalacheck.Arbitrary
-import pages.behaviours.PageBehaviours
+case object SchemeWindUpDatePage extends QuestionPage[LocalDate] {
 
-class SchemeWindUpDatePageSpec extends PageBehaviours {
+  override def path: JsPath = JsPath \ toString
 
-  "SchemeWindUpDatePage" - {
+  override def toString: String = "schemeWindUpDate"
 
-    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
-      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
-    }
-
-    beRetrievable[LocalDate](SchemeWindUpDatePage)
-
-    beSettable[LocalDate](SchemeWindUpDatePage)
-
-    beRemovable[LocalDate](SchemeWindUpDatePage)
-  }
+  override def route(waypoints: Waypoints): Call =
+    routes.SchemeWindUpDateController.onPageLoad(waypoints)
 }

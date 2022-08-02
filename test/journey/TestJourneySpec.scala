@@ -18,7 +18,8 @@ package journey
 
 import models.EventSelection.EventWoundUp
 import org.scalatest.freespec.AnyFreeSpec
-import pages.{CheckYourAnswersPage, EventSelectionPage, SchemeWindUpDatePage, TestYesNoPage}
+import pages.eventWindUp.SchemeWindUpDatePage
+import pages.{CheckYourAnswersPage, EventSelectionPage, TestYesNoPage}
 
 import java.time.LocalDate
 

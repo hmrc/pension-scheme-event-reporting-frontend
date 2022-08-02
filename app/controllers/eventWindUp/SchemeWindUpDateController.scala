@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.eventWindUp
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.SchemeWindUpDateFormProvider
+import forms.eventWindUp.SchemeWindUpDateFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
-import pages.{SchemeWindUpDatePage, Waypoints}
+import pages.Waypoints
+import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.SchemeWindUpDateView
+import views.html.eventWindUp.SchemeWindUpDateView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

@@ -18,7 +18,8 @@ package viewmodels.checkAnswers
 
 import java.time.format.DateTimeFormatter
 import models.UserAnswers
-import pages.{SchemeWindUpDatePage, CheckAnswersPage, Waypoints}
+import pages.eventWindUp.SchemeWindUpDatePage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._

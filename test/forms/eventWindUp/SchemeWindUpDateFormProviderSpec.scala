@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package pages
+package forms.eventWindUp
 
-import java.time.LocalDate
+import forms.behaviours.DateBehaviours
 
-import controllers.routes
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import java.time.{LocalDate, ZoneOffset}
 
-case object SchemeWindUpDatePage extends QuestionPage[LocalDate] {
+class SchemeWindUpDateFormProviderSpec extends DateBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  val form = new SchemeWindUpDateFormProvider()()
 
-  override def toString: String = "schemeWindUpDate"
+  ".value" - {
 
-  override def route(waypoints: Waypoints): Call =
-    routes.SchemeWindUpDateController.onPageLoad(waypoints)
+    val validData = datesBetween(
+      min = LocalDate.of(2000, 1, 1),
+      max = LocalDate.now(ZoneOffset.UTC)
+    )
+
+    behave like dateField(form, "value", validData)
+
+    behave like mandatoryDateField(form, "value", "schemeWindUpDate.error.required.all")
+  }
 }

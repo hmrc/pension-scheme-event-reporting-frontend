@@ -44,5 +44,5 @@ POST       /testIntPage                  controllers.TestIntPageController.onSub
 GET        /event-selection                        controllers.EventSelectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /event-selection                        controllers.EventSelectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /windup                  controllers.SchemeWindUpDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /windup                  controllers.SchemeWindUpDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /windup                  controllers.eventWindUp.SchemeWindUpDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /windup                  controllers.eventWindUp.SchemeWindUpDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

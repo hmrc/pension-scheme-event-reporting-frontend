@@ -26,7 +26,7 @@
 
 @layout(pageTitle = title(form, messages("schemeWindUpDate.title"))) {
 
-    @formHelper(action = routes.SchemeWindUpDateController.onSubmit(waypoints), 'autoComplete -> "off") {
+    @formHelper(action = controllers.eventWindUp.routes.SchemeWindUpDateController.onSubmit(waypoints), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value.day")))
