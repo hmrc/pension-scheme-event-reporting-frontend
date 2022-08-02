@@ -16,23 +16,18 @@
 
 package pages
 
+import java.time.LocalDate
+
 import controllers.routes
-import models.{EventSelection, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object EventSelectionPage extends QuestionPage[EventSelection] {
+case object SchemeWindUpDatePage extends QuestionPage[LocalDate] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "EventSelection"
+  override def toString: String = "schemeWindUpDate"
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    SchemeWindUpDatePage
-
-
-  override def route(waypoints: Waypoints): Call = {
-    println("\n\n TESTING")
+  override def route(waypoints: Waypoints): Call =
     routes.SchemeWindUpDateController.onPageLoad(waypoints)
-  }
 }

@@ -16,23 +16,23 @@
 
 package pages
 
-import controllers.routes
-import models.{EventSelection, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import java.time.LocalDate
 
-case object EventSelectionPage extends QuestionPage[EventSelection] {
+import org.scalacheck.Arbitrary
+import pages.behaviours.PageBehaviours
 
-  override def path: JsPath = JsPath \ toString
+class SchemeWindUpDatePageSpec extends PageBehaviours {
 
-  override def toString: String = "EventSelection"
+  "SchemeWindUpDatePage" - {
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    SchemeWindUpDatePage
+    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
+      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
+    }
 
+    beRetrievable[LocalDate](SchemeWindUpDatePage)
 
-  override def route(waypoints: Waypoints): Call = {
-    println("\n\n TESTING")
-    routes.SchemeWindUpDateController.onPageLoad(waypoints)
+    beSettable[LocalDate](SchemeWindUpDatePage)
+
+    beRemovable[LocalDate](SchemeWindUpDatePage)
   }
 }

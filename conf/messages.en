@@ -154,3 +154,13 @@ eventSelection.eventWoundUp = Scheme has wound up
 eventSelection.checkYourAnswersLabel = Check your answers
 eventSelection.error.required = Select the event you want to add to the event report
 eventSelection.change.hidden = eventSelection
+
+schemeWindUpDate.title = When was the scheme wound up?
+schemeWindUpDate.heading = When was the scheme wound up?
+schemeWindUpDate.hint = For example, 27 3 2022
+schemeWindUpDate.checkYourAnswersLabel = SchemeWindUpDate
+schemeWindUpDate.error.required.all = Enter the date the scheme was wound up
+schemeWindUpDate.error.required.two = The date must include a {0} and {1}
+schemeWindUpDate.error.required = The date must include a {0}
+schemeWindUpDate.error.invalid = Enter a real date
+schemeWindUpDate.change.hidden = SchemeWindUpDate

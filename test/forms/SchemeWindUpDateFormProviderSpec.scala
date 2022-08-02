@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{EventSelection, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import java.time.{LocalDate, ZoneOffset}
 
-case object EventSelectionPage extends QuestionPage[EventSelection] {
+import forms.behaviours.DateBehaviours
 
-  override def path: JsPath = JsPath \ toString
+class SchemeWindUpDateFormProviderSpec extends DateBehaviours {
 
-  override def toString: String = "EventSelection"
+  val form = new SchemeWindUpDateFormProvider()()
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    SchemeWindUpDatePage
+  ".value" - {
 
+    val validData = datesBetween(
+      min = LocalDate.of(2000, 1, 1),
+      max = LocalDate.now(ZoneOffset.UTC)
+    )
 
-  override def route(waypoints: Waypoints): Call = {
-    println("\n\n TESTING")
-    routes.SchemeWindUpDateController.onPageLoad(waypoints)
+    behave like dateField(form, "value", validData)
+
+    behave like mandatoryDateField(form, "value", "schemeWindUpDate.error.required.all")
   }
 }

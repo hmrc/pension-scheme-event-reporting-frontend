@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{EventSelection, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import java.time.LocalDate
 
-case object EventSelectionPage extends QuestionPage[EventSelection] {
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-  override def path: JsPath = JsPath \ toString
+class SchemeWindUpDateFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "EventSelection"
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    SchemeWindUpDatePage
-
-
-  override def route(waypoints: Waypoints): Call = {
-    println("\n\n TESTING")
-    routes.SchemeWindUpDateController.onPageLoad(waypoints)
-  }
+  def apply(): Form[LocalDate] =
+    Form(
+      "value" -> localDate(
+        invalidKey     = "schemeWindUpDate.error.invalid",
+        allRequiredKey = "schemeWindUpDate.error.required.all",
+        twoRequiredKey = "schemeWindUpDate.error.required.two",
+        requiredKey    = "schemeWindUpDate.error.required"
+      )
+    )
 }

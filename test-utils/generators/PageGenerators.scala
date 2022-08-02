@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitrarySchemeWindUpDatePage: Arbitrary[SchemeWindUpDatePage.type] =
+    Arbitrary(SchemeWindUpDatePage)
+
   implicit lazy val arbitraryeventSelectionPage: Arbitrary[EventSelectionPage.type] =
     Arbitrary(EventSelectionPage)
 
