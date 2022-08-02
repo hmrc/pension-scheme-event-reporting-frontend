@@ -16,12 +16,15 @@
 
 package helpers
 
+import base.SpecBase
+
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
-object DateHelper {
-  private val dateFormatterDMYWithSlash: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyy")
+class DateHelperSpec extends SpecBase {
 
-  def formatDateDMYWithSlash(date: LocalDate): String = date.format(dateFormatterDMYWithSlash)
+  "Date helper" - {
+    "must return OK and the correct view for a GET" in {
+      DateHelper.formatDateDMYWithSlash(LocalDate.now) mustBe "02/08/2022"
+    }
+  }
 }
-
