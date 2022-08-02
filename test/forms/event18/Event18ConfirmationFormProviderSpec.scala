@@ -28,14 +28,14 @@ class Event18ConfirmationFormProviderSpec extends CheckboxFieldBehaviours {
     val fieldName = "value"
     val requiredKey = "event18Confirmation.error.required"
 
-    behave like checkboxField[Boolean](
+    behave like singleCheckboxField[Boolean](
       form,
       fieldName,
-      validValues  = Seq(true, false),
-      invalidError = FormError(s"$fieldName[0]", "error.invalid")
+      value = true,
+      invalidError = FormError(fieldName, "error.boolean")
     )
 
-    behave like mandatoryCheckboxField(
+    behave like mandatorySingleCheckboxField(
       form,
       fieldName,
       requiredKey

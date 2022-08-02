@@ -17,7 +17,6 @@
 package pages
 
 import models.Mode
-import models.enumeration.EventType.Event18
 
 case class Waypoint(
                      page: WaypointPage,
@@ -35,7 +34,7 @@ object Waypoint {
 
   private val fragments: Map[String, Waypoint] =
     Map(
-      CheckYourAnswersPage(Event18).urlFragment -> CheckYourAnswersPage(Event18).waypoint
+      CheckYourAnswersPage.event18.urlFragment -> CheckYourAnswersPage.event18.waypoint
     )
 
   def fromString(s: String): Option[Waypoint] =

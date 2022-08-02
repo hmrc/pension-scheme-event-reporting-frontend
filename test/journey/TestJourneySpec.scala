@@ -16,18 +16,18 @@
 
 package journey
 
-import models.enumeration.EventType.Event18
 import org.scalatest.freespec.AnyFreeSpec
-import pages.{CheckYourAnswersPage, TestYesNoPage}
+import pages.CheckYourAnswersPage
+import pages.event18.Event18ConfirmationPage
 
 class TestJourneySpec extends AnyFreeSpec with JourneyHelpers {
   
   "test journey" in {
 
-    startingFrom(TestYesNoPage)
+    startingFrom(Event18ConfirmationPage)
       .run(
-        submitAnswer(TestYesNoPage, true),
-        pageMustBe(CheckYourAnswersPage(Event18))
+        submitAnswer(Event18ConfirmationPage, true),
+        pageMustBe(CheckYourAnswersPage.event18)
       )
   }
 }

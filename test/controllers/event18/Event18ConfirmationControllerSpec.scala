@@ -104,8 +104,7 @@ class Event18ConfirmationControllerSpec extends SpecBase with BeforeAndAfterEach
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(
-            "value[0]" -> "option1",
-            "value[1]" -> "option2"
+            "value" -> "true"
           )
 
         val result = route(application, request).value
