@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.eventWindUp
 
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.mvc.Call
 
 object CheckYourAnswersPage extends CheckAnswersPage {
 
   override val urlFragment: String = "check-answers"
 
-  override def route(waypoints: Waypoints): Call = controllers.routes.CheckYourAnswersController.onPageLoad
+  override def route(waypoints: Waypoints): Call = controllers.eventWindUp.routes.CheckYourAnswersController.onPageLoad
 }

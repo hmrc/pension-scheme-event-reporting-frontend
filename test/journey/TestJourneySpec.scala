@@ -39,7 +39,8 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers {
       .run(
         submitAnswer(EventSelectionPage, EventWoundUp),
         pageMustBe(SchemeWindUpDatePage),
-        submitAnswer(SchemeWindUpDatePage, LocalDate.of(2021, 5, 4))
+        submitAnswer(SchemeWindUpDatePage, LocalDate.of(2021, 5, 4)),
+        pageMustBe(pages.eventWindUp.CheckYourAnswersPage)
       )
   }
 }

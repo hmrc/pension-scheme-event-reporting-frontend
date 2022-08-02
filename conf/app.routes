@@ -1,48 +1,51 @@
 # microservice specific routes
 
-->          /hmrc-frontend                               hmrcfrontend.Routes
+->          /hmrc-frontend                    hmrcfrontend.Routes
 
-GET         /                                            controllers.IndexController.onPageLoad
+GET         /                                 controllers.IndexController.onPageLoad
 
-GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                     controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /language/:lang                   controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET         /refresh-session                             controllers.KeepAliveController.keepAlive
+GET         /refresh-session                  controllers.KeepAliveController.keepAlive
 
-GET         /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
+GET         /there-is-a-problem               controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
+GET         /check-your-answers               controllers.CheckYourAnswersController.onPageLoad
 
-GET         /account/sign-out-survey                     controllers.auth.AuthController.signOut
-GET         /account/sign-out                            controllers.auth.AuthController.signOutNoSurvey
-GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad
+GET         /account/sign-out-survey          controllers.auth.AuthController.signOut
+GET         /account/sign-out                 controllers.auth.AuthController.signOutNoSurvey
+GET         /account/signed-out               controllers.auth.SignedOutController.onPageLoad
 
-GET         /testyesno                                   controllers.TestYesNoController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /testyesno                                   controllers.TestYesNoController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /testyesno                        controllers.TestYesNoController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /testyesno                        controllers.TestYesNoController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /testdate                                     controllers.TestDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /testdate                                     controllers.TestDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /testdate                         controllers.TestDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /testdate                         controllers.TestDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /testcheckbox                                     controllers.TestCheckBoxController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /testcheckbox                                     controllers.TestCheckBoxController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /testcheckbox                     controllers.TestCheckBoxController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /testcheckbox                     controllers.TestCheckBoxController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /testCheckBox                        controllers.TestCheckBoxController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /testCheckBox                        controllers.TestCheckBoxController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /testCheckBox                     controllers.TestCheckBoxController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /testCheckBox                     controllers.TestCheckBoxController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /testRadioButton                        controllers.TestRadioButtonController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /testRadioButton                        controllers.TestRadioButtonController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /testRadioButton                  controllers.TestRadioButtonController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /testRadioButton                  controllers.TestRadioButtonController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /testContentPage                       controllers.TestContentPageController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /testContentPage                  controllers.TestContentPageController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /testStringPage                        controllers.TestStringPageController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /testStringPage                        controllers.TestStringPageController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /testStringPage                   controllers.TestStringPageController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /testStringPage                   controllers.TestStringPageController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /testIntPage                  controllers.TestIntPageController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /testIntPage                  controllers.TestIntPageController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /testIntPage                      controllers.TestIntPageController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /testIntPage                      controllers.TestIntPageController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /event-selection                        controllers.EventSelectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /event-selection                        controllers.EventSelectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /event-selection                  controllers.EventSelectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /event-selection                  controllers.EventSelectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /windup                  controllers.eventWindUp.SchemeWindUpDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /windup                  controllers.eventWindUp.SchemeWindUpDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /windup                           controllers.eventWindUp.SchemeWindUpDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /windup                           controllers.eventWindUp.SchemeWindUpDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /windup/check-your-answers        controllers.eventWindUp.CheckYourAnswersController.onPageLoad
+

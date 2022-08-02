@@ -17,7 +17,8 @@
 package pages.eventWindUp
 
 import controllers.eventWindUp.routes
-import pages.{QuestionPage, Waypoints}
+import models.UserAnswers
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,6 +29,10 @@ case object SchemeWindUpDatePage extends QuestionPage[LocalDate] {
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "schemeWindUpDate"
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    CheckYourAnswersPage
+  }
 
   override def route(waypoints: Waypoints): Call =
     routes.SchemeWindUpDateController.onPageLoad(waypoints)
