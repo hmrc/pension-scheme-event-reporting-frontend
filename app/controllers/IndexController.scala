@@ -35,6 +35,7 @@ class IndexController @Inject()(
                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = identify.async { implicit request =>
+    // TODO: Temporary code below just so we can test the setting of PSTR in DB. Can remove when linked to scheme selection in manage fe
     sessionDataCacheConnector.upsertTestPstr(request.loggedInUser.externalId, pstr = "123").map { _ =>
       Ok(view())
     }

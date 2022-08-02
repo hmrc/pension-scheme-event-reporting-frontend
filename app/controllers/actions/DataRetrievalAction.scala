@@ -54,7 +54,6 @@ class DataRetrievalImpl( eventType: EventType,
     }
 
     futurePstr.flatMap{ pstr =>
-      println("\n>>>" + pstr)
         val result = for {
           data <- userAnswersCacheConnector.get(pstr, eventType)
         } yield {
