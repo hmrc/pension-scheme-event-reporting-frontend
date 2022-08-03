@@ -54,10 +54,10 @@ private[mappings] class LocalDateFormatter(
     )
 
     for {
-      day   <- int.bind(s"$key.day", data).right
+      day <- int.bind(s"$key.day", data).right
       month <- int.bind(s"$key.month", data).right
-      year  <- int.bind(s"$key.year", data).right
-      date  <- toDate(key, day, month, year).right
+      year <- int.bind(s"$key.year", data).right
+      date <- toDate(key, day, month, year).right
     } yield date
   }
 
@@ -75,19 +75,20 @@ private[mappings] class LocalDateFormatter(
 
     fields.count(_._2.isDefined) match {
       case 3 =>
-        val x = formatDate(key, data).left.map {
+        val formattedDate = formatDate(key, data).left.map {
           _.map(_.copy(key = key, args = args))
         }
-        x.map{
-          d =>
+        formattedDate match {
+          case errors@Left(_) => errors
+          case rightDate@Right(d) =>
             taxYearValidationDetail match {
-              case None => Right(d)
+              case None => rightDate
               case Some(TaxYearValidationDetail(invalidKey, taxYear)) =>
                 val taxYearDetails = DateHelper.extractTaxYear(d)
                 if (taxYearDetails == taxYear) {
-                 Right(d)
+                  rightDate
                 } else {
-                  Left(List(FormError(key, requiredKey, missingFields ++ args)))
+                  Left(List(FormError(key, invalidKey, missingFields ++ args)))
                 }
             }
         }

@@ -31,19 +31,19 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
   private val formWithoutTaxYear = Form(
     "value" -> localDate(
-      requiredKey    = "error.required",
+      requiredKey = "error.required",
       allRequiredKey = "error.required.all",
       twoRequiredKey = "error.required.two",
-      invalidKey     = "error.invalid"
+      invalidKey = "error.invalid"
     )
   )
 
   private val formWithTaxYear = Form(
     "value" -> localDate(
-      requiredKey    = "error.required",
+      requiredKey = "error.required",
       allRequiredKey = "error.required.all",
       twoRequiredKey = "error.required.two",
-      invalidKey     = "error.invalid",
+      invalidKey = "error.invalid",
       taxYearValidationDetail = Some(TaxYearValidationDetail(
         invalidKey = "error.outside",
         taxYear = 2022
@@ -81,7 +81,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
         result.value.value mustEqual date
     }
   }
-  "must bind valid data including tax year" in {
+  "must bind valid data within tax year" in {
 
     forAll(taxYearValidData -> "valid date") {
       date =>
@@ -98,20 +98,20 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
     }
   }
 
-  "must fail to bind valid data including tax year" in {
+  "must fail to bind valid data outside tax year" in {
 
-    val date = LocalDate.of(2020,1,1)
+    val date = LocalDate.of(2020, 1, 1)
 
-        val data = Map(
-          "value.day" -> date.getDayOfMonth.toString,
-          "value.month" -> date.getMonthValue.toString,
-          "value.year" -> date.getYear.toString
-        )
+    val data = Map(
+      "value.day" -> date.getDayOfMonth.toString,
+      "value.month" -> date.getMonthValue.toString,
+      "value.year" -> date.getYear.toString
+    )
 
-        val result = formWithTaxYear.bind(data)
+    val result = formWithTaxYear.bind(data)
 
     result.errors must contain only FormError("value", "error.outside", List.empty)
-    }
+  }
 
   "must fail to bind an empty date" in {
 
