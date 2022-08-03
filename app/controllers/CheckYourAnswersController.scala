@@ -42,7 +42,6 @@ class CheckYourAnswersController @Inject()(
   private val pstr = "123"
 
   def onPageLoad(eventType: EventType): Action[AnyContent] = (identify andThen getData(pstr, eventType) andThen requireData) { implicit request =>
-println("\n>>>I AM HERE:" + eventType)
     val thisPage = CheckYourAnswersPage(eventType)
     val waypoints = EmptyWaypoints
 
@@ -61,29 +60,3 @@ println("\n>>>I AM HERE:" + eventType)
   private def buildEvent18CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
     Event18ConfirmationSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
 }
-
-/*
-  def onPageLoad: Action[AnyContent] = (identify andThen getData(pstr, EventType.Event1) andThen requireData) { implicit request =>
-
-    val thisPage  = CheckYourAnswersPage
-    val waypoints = EmptyWaypoints
-    val dateFormatter = DateTimeFormatter.ofPattern("d MM yyyy")
-
-    request.userAnswers.get(SchemeWindUpDatePage) match {
-      case Some(answer) =>
-        val summaryListRows = SummaryListRowViewModel(
-          key = "schemeWindUpDate.checkYourAnswersLabel",
-          value = ValueViewModel(answer.format(dateFormatter)),
-          actions = Seq(
-            ActionItemViewModel("site.change", SchemeWindUpDatePage.changeLink(waypoints, thisPage).url)
-          )
-        )
-        val list = SummaryListViewModel(
-          rows = Seq(summaryListRows)
-        )
-        Ok(view(list))
-      case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-    }
-
-  }
- */
