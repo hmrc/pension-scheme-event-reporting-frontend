@@ -16,6 +16,8 @@
 
 package viewmodels.checkAnswers
 
+import helpers.DateHelper
+
 import java.time.format.DateTimeFormatter
 import models.UserAnswers
 import pages.eventWindUp.SchemeWindUpDatePage
@@ -32,11 +34,9 @@ object SchemeWindUpDateSummary  {
     answers.get(SchemeWindUpDatePage).map {
       answer =>
 
-        val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-
         SummaryListRowViewModel(
           key     = "schemeWindUpDate.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.format(dateFormatter)),
+          value   = ValueViewModel(DateHelper.formatDateDMYWithSlash(answer)),
           actions = Seq(
             ActionItemViewModel("site.change", SchemeWindUpDatePage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("schemeWindUpDate.change.hidden"))
