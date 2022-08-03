@@ -26,5 +26,13 @@ class DateHelperSpec extends SpecBase {
     "must return OK and the correct view for a GET" in {
       DateHelper.formatDateDMYWithSlash(LocalDate.of(2022,8,2)) mustBe "02/08/2022"
     }
+
+    "must return the year of the date inputted in August" in {
+      DateHelper.extractTaxYear(LocalDate.of(2022,8,2)) mustBe 2022
+    }
+
+    "must return the year of the date inputted in March" in {
+      DateHelper.extractTaxYear(LocalDate.of(2022,3,2)) mustBe 2021
+    }
   }
 }

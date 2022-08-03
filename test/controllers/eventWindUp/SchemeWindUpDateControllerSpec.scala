@@ -40,7 +40,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new SchemeWindUpDateFormProvider()
-  private val form = formProvider()
+  private val form = formProvider(2022)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 

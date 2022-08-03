@@ -23,5 +23,21 @@ object DateHelper {
   private val dateFormatterDMYWithSlash: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyy")
 
   def formatDateDMYWithSlash(date: LocalDate): String = date.format(dateFormatterDMYWithSlash)
+
+  def extractTaxYear(date: LocalDate): Int = {
+    val year = date.getYear
+
+    val taxYearDate = LocalDate.of(year, 4, 6)
+
+    if (date.isBefore(taxYearDate)) {
+      year - 1
+    } else {
+      year
+    }
+
+    //if before 6 April - year minus 1
+    //if before 5 April - that same year
+
+  }
 }
 

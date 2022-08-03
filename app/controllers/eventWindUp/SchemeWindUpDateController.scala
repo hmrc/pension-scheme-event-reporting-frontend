@@ -23,7 +23,7 @@ import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
 import pages.eventWindUp.SchemeWindUpDatePage
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.eventWindUp.SchemeWindUpDateView
@@ -39,7 +39,7 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
                                     view: SchemeWindUpDateView
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
+  private def form(implicit messages: Messages) = formProvider(2022)
   private val eventType = EventType.WindUp
 
   // TODO: This will need to be retrieved from a Mongo collection. Can't put it in URL for security reasons.

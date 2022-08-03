@@ -16,14 +16,15 @@
 
 package forms.eventWindUp
 
+import base.SpecBase
 import forms.behaviours.DateBehaviours
 import play.api.data.FormError
 
 import java.time.{LocalDate, ZoneOffset}
 
-class SchemeWindUpDateFormProviderSpec extends DateBehaviours {
+class SchemeWindUpDateFormProviderSpec extends DateBehaviours with SpecBase {
 
-  val form = new SchemeWindUpDateFormProvider()()
+  val form = new SchemeWindUpDateFormProvider()(2022)
 
   ".value" - {
 

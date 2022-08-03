@@ -16,6 +16,7 @@
 
 package forms.mappings
 
+import helpers.DateHelper
 import models.TaxYearValidationDetail
 
 import java.time.LocalDate
@@ -74,8 +75,21 @@ private[mappings] class LocalDateFormatter(
 
     fields.count(_._2.isDefined) match {
       case 3 =>
-        formatDate(key, data).left.map {
+        val x = formatDate(key, data).left.map {
           _.map(_.copy(key = key, args = args))
+        }
+        x.map{
+          d =>
+            taxYearValidationDetail match {
+              case None => Right(d)
+              case Some(TaxYearValidationDetail(invalidKey, taxYear)) =>
+                val taxYearDetails = DateHelper.extractTaxYear(d)
+                if (taxYearDetails == taxYear) {
+                 Right(d)
+                } else {
+                  Left(List(FormError(key, requiredKey, missingFields ++ args)))
+                }
+            }
         }
       case 2 =>
         Left(List(FormError(key, requiredKey, missingFields ++ args)))
