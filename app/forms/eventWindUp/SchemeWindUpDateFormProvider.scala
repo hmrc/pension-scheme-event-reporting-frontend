@@ -17,6 +17,7 @@
 package forms.eventWindUp
 
 import forms.mappings.Mappings
+import models.TaxYearValidationDetail
 import play.api.data.Form
 import play.api.i18n.Messages
 
@@ -28,14 +29,14 @@ class SchemeWindUpDateFormProvider @Inject() extends Mappings {
   def apply(taxYear: Int)(implicit messages: Messages): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidKey     = "schemeWindUpDate.error.invalid",
+        invalidKey = "schemeWindUpDate.error.invalid",
         allRequiredKey = "schemeWindUpDate.error.required.all",
         twoRequiredKey = "schemeWindUpDate.error.required.two",
-        requiredKey    = "schemeWindUpDate.error.required"
-      ).verifying(
-        minDate(min, messages("schemeWindUpDate.error.outside.taxYear", formatDateDMY(min), formatDateDMY(max))),
-        maxDate(max, messages("schemeWindUpDate.error.outside.taxYear", formatDateDMY(min), formatDateDMY(max))),
-        yearHas4Digits("chargeC.paymentDate.error.invalid")
-      ),
+        requiredKey = "schemeWindUpDate.error.required",
+        taxYearValidationDetail = Some(TaxYearValidationDetail(
+          invalidKey = "error.outside",
+          taxYear = taxYear
+        ))
+      )
     )
 }

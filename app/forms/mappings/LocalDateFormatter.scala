@@ -16,8 +16,9 @@
 
 package forms.mappings
 
-import java.time.LocalDate
+import models.TaxYearValidationDetail
 
+import java.time.LocalDate
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -28,7 +29,7 @@ private[mappings] class LocalDateFormatter(
                                             allRequiredKey: String,
                                             twoRequiredKey: String,
                                             requiredKey: String,
-                                            outsideTaxYearKey: Option[String] = None,
+                                            taxYearValidationDetail: Option[TaxYearValidationDetail],
                                             args: Seq[String] = Seq.empty
                                           ) extends Formatter[LocalDate] with Formatters {
 

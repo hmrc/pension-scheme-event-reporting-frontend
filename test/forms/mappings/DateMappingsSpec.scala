@@ -17,8 +17,8 @@
 package forms.mappings
 
 import java.time.LocalDate
-
 import generators.Generators
+import models.TaxYearValidationDetail
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
@@ -29,23 +29,27 @@ import play.api.data.{Form, FormError}
 class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with OptionValues
   with Mappings {
 
-  val form = Form(
+  private val form = Form(
     "value" -> localDate(
       requiredKey    = "error.required",
       allRequiredKey = "error.required.all",
       twoRequiredKey = "error.required.two",
-      invalidKey     = "error.invalid"
+      invalidKey     = "error.invalid",
+      taxYearValidationDetail = Some(TaxYearValidationDetail(
+        invalidKey = "error.outside",
+        taxYear = 2022
+      ))
     )
   )
 
-  val validData = datesBetween(
+  private val validData = datesBetween(
     min = LocalDate.of(2000, 1, 1),
     max = LocalDate.of(3000, 1, 1)
   )
 
-  val invalidField: Gen[String] = Gen.alphaStr.suchThat(_.nonEmpty)
+  private val invalidField: Gen[String] = Gen.alphaStr.suchThat(_.nonEmpty)
 
-  val missingField: Gen[Option[String]] = Gen.option(Gen.const(""))
+  private val missingField: Gen[Option[String]] = Gen.option(Gen.const(""))
 
   "must bind valid data" in {
 
