@@ -34,7 +34,7 @@ class SchemeWindUpDateFormProvider @Inject() extends Mappings {
         twoRequiredKey = "schemeWindUpDate.error.required.two",
         requiredKey = "schemeWindUpDate.error.required",
         taxYearValidationDetail = Some(TaxYearValidationDetail(
-          invalidKey = "error.outside",
+          invalidKey = "schemeWindUpDate.error.outside.taxYear",
           taxYear = taxYear
         ))
       )

@@ -53,8 +53,9 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints))),
+        formWithErrors => {
+          println( "\n>>>" + formWithErrors)
+          Future.successful(BadRequest(view(formWithErrors, waypoints)))},
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(SchemeWindUpDatePage, value)

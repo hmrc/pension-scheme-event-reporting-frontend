@@ -84,11 +84,11 @@ private[mappings] class LocalDateFormatter(
             taxYearValidationDetail match {
               case None => rightDate
               case Some(TaxYearValidationDetail(invalidKey, taxYear)) =>
-                val taxYearDetails = DateHelper.extractTaxYear(d)
-                if (taxYearDetails == taxYear) {
+                val taxYearForDate = DateHelper.extractTaxYear(d)
+                if (taxYearForDate == taxYear) {
                   rightDate
                 } else {
-                  Left(List(FormError(key, invalidKey, missingFields ++ args)))
+                  Left(List(FormError(key, invalidKey, Seq(taxYear, taxYear + 1))))
                 }
             }
         }
