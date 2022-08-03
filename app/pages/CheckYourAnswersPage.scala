@@ -18,7 +18,7 @@ package pages
 
 import controllers.routes
 import models.enumeration.EventType
-import models.enumeration.EventType.Event18
+import models.enumeration.EventType.{Event18, WindUp}
 import play.api.mvc.Call
 
 object CheckYourAnswersPage {
@@ -33,4 +33,5 @@ object CheckYourAnswersPage {
   }
 
   val event18: CheckAnswersPage = CheckYourAnswersPage(Event18)
+  val windUp: CheckAnswersPage = CheckYourAnswersPage(WindUp)
 }

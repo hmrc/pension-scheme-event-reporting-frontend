@@ -55,6 +55,6 @@ GET        /new-report/event-18-check-your-answers                  controllers.
 GET         /windup                           controllers.eventWindUp.SchemeWindUpDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /windup                           controllers.eventWindUp.SchemeWindUpDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /new-report/windup-check-your-answers                  controllers.CheckYourAnswersController.onPageLoad(eventType: EventType ?= EventType.WindUp)
+GET        /new-report/event-windup-check-your-answers                  controllers.CheckYourAnswersController.onPageLoad(eventType: EventType ?= EventType.WindUp)
 
 

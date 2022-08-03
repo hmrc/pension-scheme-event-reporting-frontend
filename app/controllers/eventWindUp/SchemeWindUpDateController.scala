@@ -59,7 +59,11 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(SchemeWindUpDatePage, value)
           userAnswersCacheConnector.save(pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(SchemeWindUpDatePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            val d = SchemeWindUpDatePage.navigate(waypoints, originalUserAnswers, updatedAnswers)
+            println("\n>>page>" + d.page)
+            println("\n>>url>" + d.url)
+            println("\n>d>>" + d.route)
+            Redirect(d.route)
           }
         }
       )
