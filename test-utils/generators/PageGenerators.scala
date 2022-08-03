@@ -24,6 +24,9 @@ trait PageGenerators {
   implicit lazy val arbitraryEvent18ConfirmationPage: Arbitrary[event18.Event18ConfirmationPage.type] =
     Arbitrary(event18.Event18ConfirmationPage)
 
+  implicit lazy val arbitraryEventSummaryPage: Arbitrary[EventSummaryPage.type] =
+    Arbitrary(EventSummaryPage)
+
   implicit lazy val arbitraryeventSelectionPage: Arbitrary[EventSelectionPage.type] =
     Arbitrary(EventSelectionPage)
 

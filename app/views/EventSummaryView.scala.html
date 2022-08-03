@@ -1,0 +1,93 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@this(
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios: GovukRadios,
+    govukButton: GovukButton,
+    govukSummaryList : GovukSummaryList
+)
+
+@(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages("eventSummary.title"))) {
+
+    @formHelper(action = routes.EventSummaryController.onSubmit(waypoints), 'autoComplete -> "off") {
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form))
+        }
+
+        <span class="govuk-caption-xl">Company pension scheme ABC</span>
+        <h1 class="govuk-heading-l">@messages("eventSummary.heading")</h1>
+
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(
+                        content = Text("Event"),
+                        classes = "govuk-visually-hidden"
+                    ),
+                    value = Value(
+                        content = Text("Event 18: Scheme chargeable payment"),
+                        classes = "govuk-!-font-weight-bold govuk-!-width-full"
+                    ),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = "#",
+                                content = Text("Change"),
+                                visuallyHiddenText = Some("Event 18: Scheme chargeable payment")
+                            )
+                        )
+                    ))
+                ),
+                SummaryListRow(
+                    key = Key(
+                        content = Text("Event"),
+                        classes = "govuk-visually-hidden"
+                    ),
+                    value = Value(
+                        content = Text("Scheme has wound up"),
+                        classes = "govuk-!-font-weight-bold govuk-!-font-weight-bold govuk-!-width-full"
+                    ),
+                    actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = "#",
+                            content = Text("Change"),
+                            visuallyHiddenText = Some("Scheme has wound up")
+                        )
+                    )
+                    ))
+                )
+            )
+        ))
+
+        @govukRadios(
+            RadiosViewModel.yesNo(
+                field = form("value"),
+                legend = LegendViewModel(messages("eventSummary.yesno.legend")).withCssClass("govuk-fieldset__legend--m"),
+            )
+        )
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
+}
