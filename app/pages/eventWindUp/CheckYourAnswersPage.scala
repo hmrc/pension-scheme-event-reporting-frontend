@@ -16,6 +16,7 @@
 
 package pages.eventWindUp
 
+import models.enumeration.EventType
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.mvc.Call
 
@@ -23,5 +24,5 @@ object CheckYourAnswersPage extends CheckAnswersPage {
 
   override val urlFragment: String = "check-answers"
 
-  override def route(waypoints: Waypoints): Call = controllers.eventWindUp.routes.CheckYourAnswersController.onPageLoad
+  override def route(waypoints: Waypoints): Call = controllers.routes.CheckYourAnswersController.onPageLoad(EventType.WindUp)
 }

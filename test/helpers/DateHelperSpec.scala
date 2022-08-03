@@ -24,7 +24,7 @@ class DateHelperSpec extends SpecBase {
 
   "Date helper" - {
     "must return OK and the correct view for a GET" in {
-      DateHelper.formatDateDMYWithSlash(LocalDate.now) mustBe "02/08/2022"
+      DateHelper.formatDateDMYWithSlash(LocalDate.of(2022,8,2)) mustBe "02/08/2022"
     }
   }
 }

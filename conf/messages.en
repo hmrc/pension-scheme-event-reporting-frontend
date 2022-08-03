@@ -10,7 +10,7 @@ site.start = Start now
 site.startAgain = Start again
 site.signIn = Sign in
 site.govuk = GOV.UK
-
+site.saveAndContinue = Save and continue
 date.day = Day
 date.month = Month
 date.year = Year
@@ -106,6 +106,13 @@ testIntPage.error.wholeNumber = Enter your testIntPage using whole numbers
 testIntPage.error.outOfRange = TestIntPage must be between {0} and {1}
 testIntPage.change.hidden = TestIntPage
 
+eventSummary.title = Event report for tax year ending 5 April 2023
+eventSummary.heading = Event report for tax year ending 5 April 2023
+eventSummary.yesno.legend = Do you want to add another event?
+eventSummary.checkYourAnswersLabel = Check Your Answers
+eventSummary.error.required = Select yes if you want to add another event
+eventSummary.change.hidden = EventSummary
+
 eventSelection.title = Which event are you adding to the event report?
 eventSelection.heading = Which event are you adding to the event report?
 eventSelection.event1 = Event 1
@@ -164,3 +171,11 @@ schemeWindUpDate.error.required.two = The date must include a {0} and {1}
 schemeWindUpDate.error.required = The date must include a {0}
 schemeWindUpDate.error.invalid = Enter a real date
 schemeWindUpDate.change.hidden = SchemeWindUpDate
+
+event18Confirmation.title = Scheme chargeable payment
+event18Confirmation.heading = Scheme chargeable payment
+event18Confirmation.confirmation = I confirm that the scheme is to be treated as having made a scheme chargeable payment relating to income or gains from taxable property.
+event18Confirmation.checkYourAnswersLabel = Scheme chargeable payment
+event18Confirmation.error.required = You must tick the box to continue
+event18Confirmation.change.hidden = Event18Confirmation
+event18Confirmation.summary.title = Event 18: Scheme chargeable payment

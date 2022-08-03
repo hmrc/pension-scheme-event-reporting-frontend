@@ -19,12 +19,15 @@ package controllers
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.enumeration.EventType
-import pages.{CheckYourAnswersPage, EmptyWaypoints, TestYesNoPage}
+import models.enumeration.EventType.Event18
+import models.requests.DataRequest
+import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.Event18ConfirmationSummary
 import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 import views.html.CheckYourAnswersView
 
 class CheckYourAnswersController @Inject()(
@@ -38,26 +41,45 @@ class CheckYourAnswersController @Inject()(
 
   private val pstr = "123"
 
+  def onPageLoad(eventType: EventType): Action[AnyContent] = (identify andThen getData(pstr, eventType) andThen requireData) { implicit request =>
+
+    val thisPage = CheckYourAnswersPage(eventType)
+    val waypoints = EmptyWaypoints
+
+    val rows = eventType match {
+      case Event18 => buildEvent18CYARows(waypoints, thisPage)
+      case _ => Nil
+    }
+
+    Ok(view(SummaryListViewModel(rows = rows)))
+  }
+
+  private def buildEvent18CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
+    Event18ConfirmationSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+}
+
+/*
   def onPageLoad: Action[AnyContent] = (identify andThen getData(pstr, EventType.Event1) andThen requireData) { implicit request =>
 
     val thisPage  = CheckYourAnswersPage
     val waypoints = EmptyWaypoints
+    val dateFormatter = DateTimeFormatter.ofPattern("d MM yyyy")
 
-    request.userAnswers.get(TestYesNoPage) match {
+    request.userAnswers.get(SchemeWindUpDatePage) match {
       case Some(answer) =>
         val summaryListRows = SummaryListRowViewModel(
-          key = "test.checkYourAnswersLabel",
-          value = ValueViewModel(answer.toString),
+          key = "schemeWindUpDate.checkYourAnswersLabel",
+          value = ValueViewModel(answer.format(dateFormatter)),
           actions = Seq(
-            ActionItemViewModel("site.change", TestYesNoPage.changeLink(waypoints, thisPage).url)
+            ActionItemViewModel("site.change", SchemeWindUpDatePage.changeLink(waypoints, thisPage).url)
           )
         )
         val list = SummaryListViewModel(
           rows = Seq(summaryListRows)
         )
         Ok(view(list))
-      case _ => Redirect(routes.JourneyRecoveryController.onPageLoad())
+      case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
     }
 
   }
-}
+ */

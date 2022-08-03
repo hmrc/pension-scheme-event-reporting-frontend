@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.event18
 
-import org.scalatest.OptionValues
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
+import pages.behaviours.PageBehaviours
 
-class WaypointSpec extends AnyFreeSpec with Matchers with OptionValues {
+class Event18ConfirmationPageSpec extends PageBehaviours {
 
-  ".fromString" - {
+  "Event18ConfirmationPage" - {
 
-    "must return CheckYourAnswers for event 18 when given its waypoint" in {
+    beRetrievable[Boolean](Event18ConfirmationPage)
 
-      Waypoint.fromString("event-18-check-answers").value mustEqual CheckYourAnswersPage.event18.waypoint
-    }
+    beSettable[Boolean](Event18ConfirmationPage)
+
+    beRemovable[Boolean](Event18ConfirmationPage)
   }
 }

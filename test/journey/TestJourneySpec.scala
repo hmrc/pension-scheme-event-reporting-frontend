@@ -22,15 +22,17 @@ import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckYourAnswersPage, EventSelectionPage, TestYesNoPage}
 
 import java.time.LocalDate
+import pages.CheckYourAnswersPage
+import pages.event18.Event18ConfirmationPage
 
 class TestJourneySpec extends AnyFreeSpec with JourneyHelpers {
   
   "test journey" in {
 
-    startingFrom(TestYesNoPage)
+    startingFrom(Event18ConfirmationPage)
       .run(
-        submitAnswer(TestYesNoPage, true),
-        pageMustBe(CheckYourAnswersPage)
+        submitAnswer(Event18ConfirmationPage, true),
+        pageMustBe(CheckYourAnswersPage.event18)
       )
   }
   "test windUp journey" in {

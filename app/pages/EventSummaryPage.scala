@@ -17,27 +17,23 @@
 package pages
 
 import controllers.routes
-import models.EventSelection.EventWoundUp
-import models.{EventSelection, UserAnswers}
-import pages.eventWindUp.SchemeWindUpDatePage
-import models.EventSelection.Event18
-import pages.event18.Event18ConfirmationPage
+import models.UserAnswers
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object EventSelectionPage extends QuestionPage[EventSelection] {
+case object EventSummaryPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "EventSelection"
+  override def toString: String = "eventSummary"
 
   override def route(waypoints: Waypoints): Call =
-    routes.EventSelectionController.onPageLoad(waypoints)
+    routes.EventSummaryController.onPageLoad(waypoints)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    answers.get(this) match {
-      case Some(Event18) => Event18ConfirmationPage
-      case Some(EventWoundUp) => SchemeWindUpDatePage
-      case _ => EventSelectionPage
-    }
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    answers.get(this).map {
+      case true  => this
+      case false => this
+    }.orRecover
+  }
 }

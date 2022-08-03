@@ -18,8 +18,13 @@ package pages
 
 import controllers.routes
 import models.UserAnswers
+import models.enumeration.EventType
+import models.requests.DataRequest
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import play.api.mvc.{AnyContent, Call}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Key, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.govuk.summarylist._
 
 case object TestYesNoPage extends QuestionPage[Boolean] {
 
@@ -32,9 +37,20 @@ case object TestYesNoPage extends QuestionPage[Boolean] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
-      case true  =>
-        CheckYourAnswersPage
+      case true  => CheckYourAnswersPage(EventType.Event18)
       case false => TestYesNoPage
     }.orRecover
+  }
+
+  def cya(waypoints: Waypoints, sourcePage: WaypointPage)(implicit request: DataRequest[AnyContent]): Option[SummaryListRow] = {
+    request.userAnswers.get(this) map { answer =>
+        SummaryListRowViewModel(
+          key = Key(Text("test.checkYourAnswersLabel")),
+          value = ValueViewModel(Text(answer.toString)),
+          actions = Seq(
+            ActionItem("site.change", Text(TestYesNoPage.changeLink(waypoints, sourcePage).url))
+          )
+        )
+    }
   }
 }
