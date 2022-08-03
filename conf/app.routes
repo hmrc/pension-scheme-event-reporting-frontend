@@ -12,9 +12,9 @@ GET         /refresh-session                  controllers.KeepAliveController.ke
 
 GET         /there-is-a-problem               controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /account/sign-out-survey                     controllers.auth.AuthController.signOut
-GET         /account/sign-out                            controllers.auth.AuthController.signOutNoSurvey
-GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad
+GET         /account/sign-out-survey          controllers.auth.AuthController.signOut
+GET         /account/sign-out                 controllers.auth.AuthController.signOutNoSurvey
+GET         /account/signed-out               controllers.auth.SignedOutController.onPageLoad
 
 GET         /testyesno                        controllers.TestYesNoController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /testyesno                        controllers.TestYesNoController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
@@ -41,20 +41,17 @@ POST        /testIntPage                      controllers.TestIntPageController.
 
 GET         /event-selection                  controllers.EventSelectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /event-selection                  controllers.EventSelectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
-GET        /event-summary                        controllers.EventSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /event-summary                        controllers.EventSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /event-summary                    controllers.EventSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /event-summary                    controllers.EventSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /event-selection                        controllers.EventSelectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /event-selection                        controllers.EventSelectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /event-selection                  controllers.EventSelectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /event-selection                  controllers.EventSelectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /new-report/event-18-confirmation                        controllers.event18.Event18ConfirmationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/event-18-confirmation                        controllers.event18.Event18ConfirmationController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-18-confirmation                        controllers.event18.Event18ConfirmationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-18-confirmation                        controllers.event18.Event18ConfirmationController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /new-report/event-18-check-your-answers                  controllers.CheckYourAnswersController.onPageLoad(eventType: EventType ?= EventType.Event18)
+GET         /new-report/event-windup-check-your-answers              controllers.CheckYourAnswersController.onPageLoad(eventType: EventType ?= EventType.WindUp)
+GET         /new-report/event-18-check-your-answers                  controllers.CheckYourAnswersController.onPageLoad(eventType: EventType ?= EventType.Event18)
 
 GET         /windup                           controllers.eventWindUp.SchemeWindUpDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /windup                           controllers.eventWindUp.SchemeWindUpDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
-
-GET        /new-report/event-windup-check-your-answers                  controllers.CheckYourAnswersController.onPageLoad(eventType: EventType ?= EventType.WindUp)
-
-

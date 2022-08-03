@@ -165,13 +165,13 @@ eventSelection.change.hidden = eventSelection
 schemeWindUpDate.title = When was the scheme wound up?
 schemeWindUpDate.heading = When was the scheme wound up?
 schemeWindUpDate.hint = For example, 27 3 2022
-schemeWindUpDate.checkYourAnswersLabel = SchemeWindUpDate
+schemeWindUpDate.checkYourAnswersLabel = When was the scheme wound up?
 schemeWindUpDate.error.required.all = Enter the date the scheme was wound up
 schemeWindUpDate.error.required.two = The date must include a {0} and {1}
 schemeWindUpDate.error.outside.taxYear = Date must be between 6 April {0} and 5 April {1}
 schemeWindUpDate.error.required = The date must include a {0}
 schemeWindUpDate.error.invalid = Enter a real date
-schemeWindUpDate.change.hidden = SchemeWindUpDate
+schemeWindUpDate.change.hidden = When was the scheme wound up?
 
 event18Confirmation.title = Scheme chargeable payment
 event18Confirmation.heading = Scheme chargeable payment

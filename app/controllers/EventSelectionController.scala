@@ -45,8 +45,7 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
   private val pstr = "123"
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(EventSelectionPage)).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints))
+    Ok(view(form, waypoints))
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType)).async {
@@ -57,9 +56,7 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(EventSelectionPage, value)
-          userAnswersCacheConnector.save(pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(EventSelectionPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
-          }
+          Future.successful(Redirect(EventSelectionPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route))
         }
       )
   }

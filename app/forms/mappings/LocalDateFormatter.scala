@@ -88,7 +88,7 @@ private[mappings] class LocalDateFormatter(
                 if (taxYearForDate == taxYear) {
                   rightDate
                 } else {
-                  Left(List(FormError(key, invalidKey, Seq(taxYear, taxYear + 1))))
+                  Left(List(FormError(key, invalidKey, Seq(taxYear.toString, (taxYear + 1).toString))))
                 }
             }
         }

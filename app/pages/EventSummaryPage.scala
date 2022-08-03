@@ -32,8 +32,8 @@ case object EventSummaryPage extends QuestionPage[Boolean] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
-      case true  => this
-      case false => this
+      case true  => EventSelectionPage
+      case false => IndexPage
     }.orRecover
   }
 }
