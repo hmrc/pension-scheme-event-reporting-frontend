@@ -41,5 +41,8 @@ POST       /testStringPage                        controllers.TestStringPageCont
 GET        /testIntPage                  controllers.TestIntPageController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /testIntPage                  controllers.TestIntPageController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
+GET        /event-summary                        controllers.EventSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /event-summary                        controllers.EventSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
 GET        /event-selection                        controllers.EventSelectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /event-selection                        controllers.EventSelectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
