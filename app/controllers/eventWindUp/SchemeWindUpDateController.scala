@@ -40,7 +40,7 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event1
+  private val eventType = EventType.WindUp
 
   // TODO: This will need to be retrieved from a Mongo collection. Can't put it in URL for security reasons.
   private val pstr = "123"

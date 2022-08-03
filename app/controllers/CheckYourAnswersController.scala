@@ -56,10 +56,10 @@ println("\n>>>I AM HERE:" + eventType)
   }
 
   private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
-    Event18ConfirmationSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+    SchemeWindUpDateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
 
   private def buildEvent18CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
-    SchemeWindUpDateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+    Event18ConfirmationSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
 }
 
 /*
