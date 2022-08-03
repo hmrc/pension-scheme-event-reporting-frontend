@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import models.enumeration.EventType.Event18
 import pages.TestYesNoPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -31,12 +32,10 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
       val ua = emptyUserAnswers.setOrException(TestYesNoPage, true)
 
-
-
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(Event18).url)
 
         val result = route(application, request).value
 
@@ -53,7 +52,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(Event18).url)
 
         val result = route(application, request).value
 

@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package pages
+package pages.event18
 
-import controllers.routes
-import models.EventSelection.Event18
-import models.{EventSelection, UserAnswers}
-import pages.event18.Event18ConfirmationPage
+import controllers.event18.routes
+import models.UserAnswers
+import pages.{CheckYourAnswersPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object EventSelectionPage extends QuestionPage[EventSelection] {
+case object Event18ConfirmationPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "EventSelection"
-
-  override def route(waypoints: Waypoints): Call =
-    routes.EventSelectionController.onPageLoad(waypoints)
+  override def toString: String = "event18Confirmation"
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
-      case Some(Event18) => Event18ConfirmationPage
-      case _ => EventSelectionPage
+      case Some(true) => CheckYourAnswersPage.event18
+      case _ => this
     }
+
+  override def route(waypoints: Waypoints): Call =
+    routes.Event18ConfirmationController.onPageLoad(waypoints)
 }

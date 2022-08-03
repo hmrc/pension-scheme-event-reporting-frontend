@@ -21,6 +21,27 @@ import play.api.data.{Form, FormError}
 
 trait CheckboxFieldBehaviours extends FormSpec {
 
+  def singleCheckboxField[T](form: Form[_],
+                             fieldName: String,
+                             value: T,
+                             invalidError: FormError): Unit = {
+    s"binds `$value` successfully" in {
+      val data = Map(
+        fieldName -> value.toString
+      )
+      val result = form.bind(data)
+      result.get mustEqual value
+      result.errors mustBe empty
+    }
+
+    "fail to bind when the answer is invalid" in {
+      val data = Map(
+        fieldName -> "invalid value"
+      )
+      form.bind(data).errors must contain(invalidError)
+    }
+  }
+
   def checkboxField[T](form: Form[_],
                        fieldName: String,
                        validValues: Seq[T],
@@ -41,6 +62,23 @@ trait CheckboxFieldBehaviours extends FormSpec {
         s"$fieldName[0]" -> "invalid value"
       )
       form.bind(data).errors must contain(invalidError)
+    }
+  }
+
+  def mandatorySingleCheckboxField(form: Form[_],
+                                   fieldName: String,
+                                   requiredKey: String): Unit = {
+
+    "fail to bind when no answers are selected" in {
+      val data = Map.empty[String, String]
+      form.bind(data).errors must contain(FormError(fieldName, requiredKey))
+    }
+
+    "fail to bind when blank answer provided" in {
+      val data = Map(
+        fieldName -> ""
+      )
+      form.bind(data).errors must contain(FormError(fieldName, "error.boolean"))
     }
   }
 

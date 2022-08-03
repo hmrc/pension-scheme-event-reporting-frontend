@@ -17,11 +17,20 @@
 package pages
 
 import controllers.routes
+import models.enumeration.EventType
+import models.enumeration.EventType.Event18
 import play.api.mvc.Call
 
-object CheckYourAnswersPage extends CheckAnswersPage {
+object CheckYourAnswersPage {
 
-  override val urlFragment: String = "check-answers"
+  def apply(eventType: EventType): CheckAnswersPage = new CheckAnswersPage {
 
-  override def route(waypoints: Waypoints): Call = routes.CheckYourAnswersController.onPageLoad
+    override val urlFragment: String = s"event-${eventType.toString}-check-answers"
+
+    override def route(waypoints: Waypoints): Call = {
+      routes.CheckYourAnswersController.onPageLoad(eventType)
+    }
+  }
+
+  val event18: CheckAnswersPage = CheckYourAnswersPage(Event18)
 }
