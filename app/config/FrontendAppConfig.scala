@@ -26,10 +26,14 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
 
+  private def loadConfig(key: String): String =
+    configuration.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
+
   val host: String    = configuration.get[String]("host")
   val appName: String = configuration.get[String]("appName")
 
   lazy val eventReportingUrl: String = servicesConfig.baseUrl("pension-scheme-event-reporting")
+  lazy val pensionsAdministratorUrl: String = servicesConfig.baseUrl("pension-administrator")
 
   private val contactHost = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "pension-scheme-event-reporting-frontend"
@@ -40,6 +44,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val loginUrl: String         = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String       = configuration.get[String]("urls.signOut")
+
+  def administratorOrPractitionerUrl: String = loadConfig("urls.administratorOrPractitioner")
+  def youNeedToRegisterUrl: String = loadConfig("urls.youNeedToRegisterPage")
 
   private val exitSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
   val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/pension-scheme-event-reporting-frontend"

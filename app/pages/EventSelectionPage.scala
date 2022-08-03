@@ -14,9 +14,19 @@
  * limitations under the License.
  */
 
-package models.requests
+package pages
 
-import models.LoggedInUser
-import play.api.mvc.{Request, WrappedRequest}
+import controllers.routes
+import models.EventSelection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-case class IdentifierRequest[A] (request: Request[A], loggedInUser: LoggedInUser) extends WrappedRequest[A](request)
+case object EventSelectionPage extends QuestionPage[EventSelection] {
+
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "EventSelection"
+
+  override def route(waypoints: Waypoints): Call =
+    routes.EventSelectionController.onPageLoad(waypoints)
+}

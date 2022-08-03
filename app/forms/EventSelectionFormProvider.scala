@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package controllers
+package forms
 
 import javax.inject.Inject
-import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.UnauthorisedView
 
-class UnauthorisedController @Inject()(
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: UnauthorisedView
-                                      ) extends FrontendBaseController with I18nSupport {
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.EventSelection
 
-  def onPageLoad: Action[AnyContent] = Action { implicit request =>
-    Ok(view())
-  }
+class EventSelectionFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[EventSelection] =
+    Form(
+      "value" -> enumerable[EventSelection]("eventSelection.error.required")
+    )
 }

@@ -18,8 +18,6 @@ GET         /account/sign-out-survey                     controllers.auth.AuthCo
 GET         /account/sign-out                            controllers.auth.AuthController.signOutNoSurvey
 GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad
 
-GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
-
 GET         /testyesno                                   controllers.TestYesNoController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /testyesno                                   controllers.TestYesNoController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
@@ -45,3 +43,6 @@ POST       /testIntPage                  controllers.TestIntPageController.onSub
 
 GET        /event-summary                        controllers.EventSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /event-summary                        controllers.EventSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /event-selection                        controllers.EventSelectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /event-selection                        controllers.EventSelectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

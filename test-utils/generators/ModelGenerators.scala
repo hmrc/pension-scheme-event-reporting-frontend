@@ -21,6 +21,11 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryeventSelection: Arbitrary[EventSelection] =
+    Arbitrary {
+      Gen.oneOf(EventSelection.values.toSeq)
+    }
+
   implicit lazy val arbitraryTestRadioButton: Arbitrary[TestRadioButton] =
     Arbitrary {
       Gen.oneOf(TestRadioButton.values.toSeq)
