@@ -17,6 +17,7 @@
 package forms.eventWindUp
 
 import forms.behaviours.DateBehaviours
+import play.api.data.FormError
 
 import java.time.{LocalDate, ZoneOffset}
 
@@ -34,5 +35,24 @@ class SchemeWindUpDateFormProviderSpec extends DateBehaviours {
     behave like dateField(form, "value", validData)
 
     behave like mandatoryDateField(form, "value", "schemeWindUpDate.error.required.all")
+
+    behave like dateFieldWithMax(
+      form = form,
+      key = "value" ,
+      max = LocalDate.of(2022,12,31),
+      formError = FormError("value", "schemeWindUpDate.error.outOfRange")
+    )
+
+//    "must validate" in {
+//      val data = Map(
+//        s"$key.day"   -> "21",
+//        s"$key.month" -> "01",
+//        s"$key.year"  -> "1800"
+//      )
+//
+//      val result = form.bind(data)
+//
+//      result.errors must contain only formError
+//    }
   }
 }

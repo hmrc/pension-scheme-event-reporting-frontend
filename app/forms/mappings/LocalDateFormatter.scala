@@ -28,6 +28,7 @@ private[mappings] class LocalDateFormatter(
                                             allRequiredKey: String,
                                             twoRequiredKey: String,
                                             requiredKey: String,
+                                            outsideTaxYearKey: Option[String] = None,
                                             args: Seq[String] = Seq.empty
                                           ) extends Formatter[LocalDate] with Formatters {
 

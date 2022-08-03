@@ -18,19 +18,24 @@ package forms.eventWindUp
 
 import forms.mappings.Mappings
 import play.api.data.Form
+import play.api.i18n.Messages
 
 import java.time.LocalDate
 import javax.inject.Inject
 
 class SchemeWindUpDateFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[LocalDate] =
+  def apply(taxYear: Int)(implicit messages: Messages): Form[LocalDate] =
     Form(
       "value" -> localDate(
         invalidKey     = "schemeWindUpDate.error.invalid",
         allRequiredKey = "schemeWindUpDate.error.required.all",
         twoRequiredKey = "schemeWindUpDate.error.required.two",
         requiredKey    = "schemeWindUpDate.error.required"
-      )
+      ).verifying(
+        minDate(min, messages("schemeWindUpDate.error.outside.taxYear", formatDateDMY(min), formatDateDMY(max))),
+        maxDate(max, messages("schemeWindUpDate.error.outside.taxYear", formatDateDMY(min), formatDateDMY(max))),
+        yearHas4Digits("chargeC.paymentDate.error.invalid")
+      ),
     )
 }
