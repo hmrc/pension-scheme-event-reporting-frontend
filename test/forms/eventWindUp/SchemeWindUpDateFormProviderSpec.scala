@@ -29,8 +29,8 @@ class SchemeWindUpDateFormProviderSpec extends DateBehaviours with SpecBase {
   ".value" - {
 
     val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
+      min = LocalDate.of(2022, 4, 6),
+      max = LocalDate.of(2023, 4, 5)
     )
 
     behave like dateField(form, "value", validData)
@@ -41,19 +41,8 @@ class SchemeWindUpDateFormProviderSpec extends DateBehaviours with SpecBase {
       form = form,
       key = "value" ,
       max = LocalDate.of(2022,12,31),
-      formError = FormError("value", "schemeWindUpDate.error.outOfRange")
+      formError = FormError("value", "schemeWindUpDate.error.outside.taxYear", Seq(2022, 2023))
     )
 
-//    "must validate" in {
-//      val data = Map(
-//        s"$key.day"   -> "21",
-//        s"$key.month" -> "01",
-//        s"$key.year"  -> "1800"
-//      )
-//
-//      val result = form.bind(data)
-//
-//      result.errors must contain only formError
-//    }
   }
 }

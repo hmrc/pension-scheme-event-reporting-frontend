@@ -105,8 +105,8 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(
             "value.day" -> "12",
-            "value.month" -> "2",
-            "value.year" -> "2020"
+            "value.month" -> "5",
+            "value.year" -> "2022"
           )
 
         val result = route(application, request).value

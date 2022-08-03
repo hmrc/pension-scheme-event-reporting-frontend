@@ -54,7 +54,6 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
-          println( "\n>>>" + formWithErrors)
           Future.successful(BadRequest(view(formWithErrors, waypoints)))},
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
