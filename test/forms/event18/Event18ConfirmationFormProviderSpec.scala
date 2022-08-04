@@ -14,19 +14,31 @@
  * limitations under the License.
  */
 
-package pages
+package forms.event18
 
-import org.scalatest.OptionValues
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
+import forms.behaviours.CheckboxFieldBehaviours
+import play.api.data.FormError
 
-class WaypointSpec extends AnyFreeSpec with Matchers with OptionValues {
+class Event18ConfirmationFormProviderSpec extends CheckboxFieldBehaviours {
 
-  ".fromString" - {
+  val form = new Event18ConfirmationFormProvider()()
 
-    "must return CheckYourAnswers for event 18 when given its waypoint" in {
+  ".value" - {
 
-      Waypoint.fromString("event-18-check-answers").value mustEqual CheckYourAnswersPage.event18.waypoint
-    }
+    val fieldName = "value"
+    val requiredKey = "event18Confirmation.error.required"
+
+    behave like singleCheckboxField[Boolean](
+      form,
+      fieldName,
+      value = true,
+      invalidError = FormError(fieldName, "error.boolean")
+    )
+
+    behave like mandatorySingleCheckboxField(
+      form,
+      fieldName,
+      requiredKey
+    )
   }
 }

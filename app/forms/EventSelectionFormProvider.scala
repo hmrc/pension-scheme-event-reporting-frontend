@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import org.scalatest.OptionValues
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
+import javax.inject.Inject
 
-class WaypointSpec extends AnyFreeSpec with Matchers with OptionValues {
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.EventSelection
 
-  ".fromString" - {
+class EventSelectionFormProvider @Inject() extends Mappings {
 
-    "must return CheckYourAnswers for event 18 when given its waypoint" in {
-
-      Waypoint.fromString("event-18-check-answers").value mustEqual CheckYourAnswersPage.event18.waypoint
-    }
-  }
+  def apply(): Form[EventSelection] =
+    Form(
+      "value" -> enumerable[EventSelection]("eventSelection.error.required")
+    )
 }

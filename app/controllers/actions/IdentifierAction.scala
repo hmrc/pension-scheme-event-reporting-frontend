@@ -19,7 +19,6 @@ package controllers.actions
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.SessionDataCacheConnector
-import controllers.routes
 import models.LoggedInUser
 import models.enumeration.AdministratorOrPractitioner
 import models.enumeration.AdministratorOrPractitioner._
@@ -122,7 +121,7 @@ class AuthenticatedIdentifierAction @Inject()(
 
   def actionForOneEnrolment[A](administratorOrPractitioner: AdministratorOrPractitioner,
                                externalId: String, enrolments: Enrolments, request: Request[A],
-                               block: IdentifierRequest[A] => Future[Result])(implicit headerCarrier: HeaderCarrier): Future[Result] = {
+                               block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
     getLoggedInUser(externalId, administratorOrPractitioner, enrolments) match {
       case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser))
       case _ => futureUnauthorisedPage

@@ -16,17 +16,24 @@
 
 package pages
 
-import org.scalatest.OptionValues
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
+import controllers.routes
+import models.UserAnswers
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class WaypointSpec extends AnyFreeSpec with Matchers with OptionValues {
+case object EventSummaryPage extends QuestionPage[Boolean] {
 
-  ".fromString" - {
+  override def path: JsPath = JsPath \ toString
 
-    "must return CheckYourAnswers for event 18 when given its waypoint" in {
+  override def toString: String = "eventSummary"
 
-      Waypoint.fromString("event-18-check-answers").value mustEqual CheckYourAnswersPage.event18.waypoint
-    }
+  override def route(waypoints: Waypoints): Call =
+    routes.EventSummaryController.onPageLoad(waypoints)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    answers.get(this).map {
+      case true  => this
+      case false => this
+    }.orRecover
   }
 }

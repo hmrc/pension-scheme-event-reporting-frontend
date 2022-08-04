@@ -17,20 +17,24 @@
 package pages
 
 import controllers.routes
-import models.enumeration.EventType
-import models.enumeration.EventType.Event18
+import models.EventSelection.Event18
+import models.{EventSelection, UserAnswers}
+import pages.event18.Event18ConfirmationPage
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-object CheckYourAnswersPage {
+case object EventSelectionPage extends QuestionPage[EventSelection] {
 
-  def apply(eventType: EventType): CheckAnswersPage = new CheckAnswersPage {
+  override def path: JsPath = JsPath \ toString
 
-    override val urlFragment: String = s"event-${eventType.toString}-check-answers"
+  override def toString: String = "EventSelection"
 
-    override def route(waypoints: Waypoints): Call = {
-      routes.CheckYourAnswersController.onPageLoad(eventType)
+  override def route(waypoints: Waypoints): Call =
+    routes.EventSelectionController.onPageLoad(waypoints)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this) match {
+      case Some(Event18) => Event18ConfirmationPage
+      case _ => EventSelectionPage
     }
-  }
-
-  val event18: CheckAnswersPage = CheckYourAnswersPage(Event18)
 }
