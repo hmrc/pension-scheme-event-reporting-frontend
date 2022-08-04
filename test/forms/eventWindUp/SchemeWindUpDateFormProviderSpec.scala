@@ -39,7 +39,14 @@ class SchemeWindUpDateFormProviderSpec extends DateBehaviours with SpecBase {
     behave like dateFieldWithMax(
       form = form,
       key = "value" ,
-      max = LocalDate.of(2022,12,31),
+      max = LocalDate.of(2023,4,5),
+      formError = FormError("value", "schemeWindUpDate.error.outside.taxYear", Seq("2022", "2023"))
+    )
+
+    behave like dateFieldWithMin(
+      form = form,
+      key = "value" ,
+      min = LocalDate.of(2022,4,6),
       formError = FormError("value", "schemeWindUpDate.error.outside.taxYear", Seq("2022", "2023"))
     )
 
