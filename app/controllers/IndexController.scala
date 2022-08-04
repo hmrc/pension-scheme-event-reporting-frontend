@@ -22,6 +22,7 @@ import controllers.actions.IdentifierAction
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.IndexView
 
@@ -35,8 +36,9 @@ class IndexController @Inject()(
                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = identify.async { implicit request =>
+    val sessionId = request.request.session.get(SessionKeys.sessionId).getOrElse(request.loggedInUser.externalId)
     // TODO: Temporary code below just so we can test the setting of PSTR in DB. Can remove when linked to scheme selection in manage fe
-    sessionDataCacheConnector.upsertTestPstr(request.loggedInUser.externalId, pstr = "123").map { _ =>
+    sessionDataCacheConnector.upsertTestPstr(sessionId, pstr = "123").map { _ =>
       Ok(view())
     }
   }

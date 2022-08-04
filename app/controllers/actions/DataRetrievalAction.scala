@@ -22,7 +22,7 @@ import models.enumeration.EventType
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import play.api.Logger
 import play.api.mvc.ActionTransformer
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, SessionId, SessionKeys}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
@@ -37,7 +37,8 @@ class DataRetrievalImpl( eventType: EventType,
   private val logger = Logger(classOf[DataRetrievalImpl])
 
   private def getPstr[A](request: IdentifierRequest[A])(implicit hc:HeaderCarrier): Future[Option[String]] = {
-    sessionDataCacheConnector.fetch(request.loggedInUser.externalId).map { optionJsValue =>
+    val sessionId = request.request.session.get(SessionKeys.sessionId).getOrElse(request.loggedInUser.externalId)
+    sessionDataCacheConnector.fetch(sessionId).map { optionJsValue =>
       optionJsValue.flatMap { json =>
         (json \ "eventReporting" \ "pstr").toOption.flatMap(_.validate[String].asOpt)
       }
