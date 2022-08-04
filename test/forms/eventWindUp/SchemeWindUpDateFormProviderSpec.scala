@@ -24,14 +24,13 @@ import java.time.LocalDate
 
 class SchemeWindUpDateFormProviderSpec extends DateBehaviours with SpecBase {
 
-  val form = new SchemeWindUpDateFormProvider()(2022)
+  private val form = new SchemeWindUpDateFormProvider()(2022)
+  private val validData = datesBetween(
+    min = LocalDate.of(2022, 4, 6),
+    max = LocalDate.of(2023, 4, 5)
+  )
 
-  ".value" - {
-
-    val validData = datesBetween(
-      min = LocalDate.of(2022, 4, 6),
-      max = LocalDate.of(2023, 4, 5)
-    )
+  ".value must" - {
 
     behave like dateField(form, "value", validData)
 
