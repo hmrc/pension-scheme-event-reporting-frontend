@@ -20,6 +20,7 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.eventWindUp.SchemeWindUpDateFormProvider
 import models.UserAnswers
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.{mock, reset}
@@ -52,7 +53,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach {
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validAnswer = LocalDate.of(2020, 2, 12)
+  private val validAnswer = LocalDate.of(2022, 5, 12)
 
   override def beforeEach: Unit = {
     super.beforeEach
@@ -94,7 +95,8 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      val uaCaptor:ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
@@ -114,6 +116,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual SchemeWindUpDatePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        uaCaptor.getValue.get(SchemeWindUpDatePage) mustBe Some(validAnswer)
       }
     }
 
