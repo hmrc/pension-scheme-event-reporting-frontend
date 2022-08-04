@@ -41,15 +41,12 @@ class TestCheckBoxController @Inject()(val controllerComponents: MessagesControl
   private val form = formProvider()
   private val eventType = EventType.Event1
 
-  // TODO: This will need to be retrieved from a Mongo collection. Can't put it in URL for security reasons.
-  private val pstr = "123"
-
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType)) { implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(TestCheckBoxPage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType)).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
@@ -57,7 +54,7 @@ class TestCheckBoxController @Inject()(val controllerComponents: MessagesControl
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(TestCheckBoxPage, value)
-          userAnswersCacheConnector.save(pstr, eventType, updatedAnswers).map { _ =>
+          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(TestCheckBoxPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }

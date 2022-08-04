@@ -33,6 +33,30 @@ class SessionDataCacheConnector  @Inject()(
 ) {
   private def url(cacheId:String) = s"${config.pensionsAdministratorUrl}/pension-administrator/journey-cache/session-data/$cacheId"
 
+  // TODO: Temporary code below just so we can test the setting of PSTR in DB. Can remove when linked to scheme selection in manage fe
+  def upsertTestPstr(id: String, pstr: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+    val headers: Seq[(String, String)] = Seq(
+      "Content-Type" -> "application/json"
+    )
+
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    val json = Json.obj(
+      "eventReporting" -> Json.obj(
+        "pstr" -> pstr
+      )
+    )
+
+    http.POST[JsValue, HttpResponse](url(id), json)(implicitly, implicitly, hc, implicitly)
+      .map { response =>
+        response.status match {
+          case OK => ()
+          case _ =>
+            throw new HttpException(response.body, response.status)
+        }
+      }
+  }
+
   def fetch(id: String)
     (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[JsValue]] = {
 

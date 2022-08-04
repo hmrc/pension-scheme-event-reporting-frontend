@@ -42,15 +42,12 @@ class Event18ConfirmationController @Inject()(val controllerComponents: Messages
   private val form = formProvider()
   private val eventType = EventType.Event18
 
-  // TODO: This will need to be retrieved from a Mongo collection. Can't put it in URL for security reasons.
-  private val pstr = "123"
-
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType)) { implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData( eventType)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(Event18ConfirmationPage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType)).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
@@ -58,7 +55,7 @@ class Event18ConfirmationController @Inject()(val controllerComponents: Messages
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(Event18ConfirmationPage, value)
-          userAnswersCacheConnector.save(pstr, eventType, updatedAnswers).map { _ =>
+          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(Event18ConfirmationPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }

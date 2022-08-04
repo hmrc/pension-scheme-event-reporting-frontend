@@ -17,20 +17,20 @@
 package controllers.actions
 
 import models.enumeration.AdministratorOrPractitioner.Administrator
-import models.{LoggedInUser, UserAnswers}
 import models.enumeration.EventType
 import models.requests.{IdentifierRequest, OptionalDataRequest}
+import models.{LoggedInUser, UserAnswers}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class FakeDataRetrievalAction(json: Option[UserAnswers]) extends DataRetrievalAction {
-  override def apply(pstr: String, eventType: EventType): DataRetrieval = new FakeDataRetrieval(json)
+  override def apply(eventType: EventType): DataRetrieval = new FakeDataRetrieval(json)
 }
 
 class FakeDataRetrieval(dataToReturn: Option[UserAnswers]) extends DataRetrieval {
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
-    Future(OptionalDataRequest(request.request, LoggedInUser("user-id", Administrator, "psaId"), dataToReturn))
+    Future(OptionalDataRequest("123", request.request, LoggedInUser("user-id", Administrator, "psaId"), dataToReturn))
 
   override protected implicit val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
