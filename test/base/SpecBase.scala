@@ -27,6 +27,7 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.FakeRequest
+import uk.gov.hmrc.http.SessionKeys
 import play.api.test.Helpers.baseApplicationBuilder.injector
 
 trait SpecBase
@@ -39,7 +40,10 @@ trait SpecBase
 
   val userAnswersId: String = "id"
 
-  def fakeRequest = FakeRequest("", "")
+  def fakeRequest = FakeRequest("", "").withSession(
+    SessionKeys.sessionId -> "sessionId"
+  )
+
   def emptyUserAnswers: UserAnswers = UserAnswers()
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
