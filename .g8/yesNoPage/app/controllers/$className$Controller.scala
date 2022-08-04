@@ -26,22 +26,19 @@ class $className;format="cap"$Controller @Inject()(
   private val form = formProvider()
   private val eventType = EventType.Event1
 
-  // TODO: This will need to be retrieved from a Mongo collection. Can't put it in URL for security reasons.
-  private val pstr = "123"
-
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType) andThen requireData) { implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
     val preparedForm = request.userAnswers.get($className$Page).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType) andThen requireData).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
           val originalUserAnswers = request.userAnswers
           val updatedAnswers = originalUserAnswers.setOrException($className$Page, value)
-          userAnswersCacheConnector.save(pstr, eventType, updatedAnswers).map { _ =>
+          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
           Redirect($className$Page.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
         }
       }

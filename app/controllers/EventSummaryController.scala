@@ -17,16 +17,16 @@
 package controllers
 
 import connectors.UserAnswersCacheConnector
-import models.enumeration.EventType
 import controllers.actions._
 import forms.EventSummaryFormProvider
-import javax.inject.Inject
+import models.enumeration.EventType
 import pages.{EventSummaryPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.EventSummaryView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EventSummaryController @Inject()(
@@ -42,21 +42,18 @@ class EventSummaryController @Inject()(
   private val form = formProvider()
   private val eventType = EventType.WindUp
 
-  // TODO: This will need to be retrieved from a Mongo collection. Can't put it in URL for security reasons.
-  private val pstr = "123"
-
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify { implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
     Ok(view(form, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType) andThen requireData).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
           val originalUserAnswers = request.userAnswers
           val updatedAnswers = originalUserAnswers.setOrException(EventSummaryPage, value)
-          userAnswersCacheConnector.save(pstr, eventType, updatedAnswers).map { _ =>
+          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
           Redirect(EventSummaryPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
         }
       }

@@ -110,7 +110,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
     val result = formWithTaxYear.bind(data)
 
-    result.errors must contain only FormError("value", "error.outside", Seq(2022, 2023))
+    result.errors must contain only FormError("value", "error.outside", Seq("2022", "2023"))
   }
 
   "must fail to bind an empty date" in {

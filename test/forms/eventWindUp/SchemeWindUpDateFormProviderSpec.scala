@@ -20,7 +20,7 @@ import base.SpecBase
 import forms.behaviours.DateBehaviours
 import play.api.data.FormError
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.LocalDate
 
 class SchemeWindUpDateFormProviderSpec extends DateBehaviours with SpecBase {
 
@@ -41,7 +41,7 @@ class SchemeWindUpDateFormProviderSpec extends DateBehaviours with SpecBase {
       form = form,
       key = "value" ,
       max = LocalDate.of(2022,12,31),
-      formError = FormError("value", "schemeWindUpDate.error.outside.taxYear", Seq(2022, 2023))
+      formError = FormError("value", "schemeWindUpDate.error.outside.taxYear", Seq("2022", "2023"))
     )
 
   }

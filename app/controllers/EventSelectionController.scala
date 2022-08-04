@@ -16,7 +16,6 @@
 
 package controllers
 
-import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.EventSelectionFormProvider
 import models.UserAnswers
@@ -28,27 +27,24 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.EventSelectionView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class EventSelectionController @Inject()(val controllerComponents: MessagesControllerComponents,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalAction,
-                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                          formProvider: EventSelectionFormProvider,
                                          view: EventSelectionView
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                         ) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event1
 
-  // TODO: This will need to be retrieved from a Mongo collection. Can't put it in URL for security reasons.
-  private val pstr = "123"
-
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType)) { implicit request =>
-    Ok(view(form, waypoints))
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(_.get(EventSelectionPage)).fold(form)(form.fill)
+    Ok(view(preparedForm, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType)).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

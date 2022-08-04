@@ -42,15 +42,12 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
   private def form(implicit messages: Messages) = formProvider(2022)
   private val eventType = EventType.WindUp
 
-  // TODO: This will need to be retrieved from a Mongo collection. Can't put it in URL for security reasons.
-  private val pstr = "123"
-
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType)) { implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(SchemeWindUpDatePage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(pstr, eventType)).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
@@ -58,7 +55,7 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(SchemeWindUpDatePage, value)
-          userAnswersCacheConnector.save(pstr, eventType, updatedAnswers).map { _ =>
+          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(SchemeWindUpDatePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
