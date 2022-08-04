@@ -24,7 +24,7 @@ import models.LoggedInUser
 import models.enumeration.AdministratorOrPractitioner
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
+import org.mockito.{ArgumentMatchers, Mockito}
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.mock
 import org.scalatest.BeforeAndAfterEach
@@ -36,10 +36,11 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 class IdentifierActionSpec
   extends SpecBase with BeforeAndAfterEach with GuiceOneAppPerSuite {
@@ -61,7 +62,8 @@ class IdentifierActionSpec
     def onPageLoad(): Action[AnyContent] = authAction {
       implicit request =>
         Ok(Json.obj(
-          "loggedInUser" -> Json.toJson(request.loggedInUser)
+          "loggedInUser" -> Json.toJson(request.loggedInUser),
+          "pstr" -> request.pstr
         ))
     }
   }
@@ -86,12 +88,14 @@ class IdentifierActionSpec
   override def beforeEach: Unit = {
     Mockito.reset(authConnector, mockSessionDataCacheConnector, mockFrontendAppConfig)
     when(mockFrontendAppConfig.loginUrl).thenReturn(dummyCall.url)
-    when(mockSessionDataCacheConnector.fetch(any())(any(), any()))
+    when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+      .thenReturn(Future.successful(None))
+    when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
       .thenReturn(Future.successful(None))
   }
 
   "Identifier Action" - {
-    "when the user has logged in with HMRC-PODS-ORG enrolment must have the PSAID" in {
+    "when the user has logged in with HMRC-PODS-ORG enrolment must have the PSAID and retrieve PSTR from session DB" in {
       val controller = new Harness(authAction)
       val enrolments = Enrolments(Set(
         Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None)
@@ -99,14 +103,25 @@ class IdentifierActionSpec
 
       when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(Future.successful(new ~(Some(externalId), enrolments)))
+      val pstrInDB = "456"
+      val pstrJson = Json.obj(
+        "eventReporting" -> Json.obj(
+          "pstr" -> pstrInDB
+        )
+      )
+
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+        .thenReturn(Future.successful(Some(pstrJson)))
 
       val result = controller.onPageLoad()(fakeRequest)
       status(result) mustBe OK
-      (contentAsJson(result) \ "loggedInUser").asOpt[LoggedInUser].value mustEqual
+      val actualJsonContent = contentAsJson(result)
+      (actualJsonContent \ "loggedInUser").asOpt[LoggedInUser].value mustEqual
         LoggedInUser(externalId = externalId, administratorOrPractitioner = AdministratorOrPractitioner.Administrator, psaIdOrPspId = psaId)
+      (actualJsonContent \ "pstr").asOpt[String] mustBe Some(pstrInDB)
     }
 
-    "when the user has logged in with HMRC-PODSPP-ORG enrolment must have the PSPID" in {
+    "when the user has logged in with HMRC-PODSPP-ORG enrolment must have the PSPID and when no PSTR in DB default to 123 (for now!)" in {
       val controller = new Harness(authAction)
       val enrolments = Enrolments(Set(
         Enrolment(pspEnrolmentKey, Seq(EnrolmentIdentifier("PSPID", pspId)), "Activated", None)
@@ -117,8 +132,10 @@ class IdentifierActionSpec
 
       val result = controller.onPageLoad()(fakeRequest)
       status(result) mustBe OK
-      (contentAsJson(result) \ "loggedInUser").asOpt[LoggedInUser].value mustEqual
+      val actualJsonContent = contentAsJson(result)
+      (actualJsonContent \ "loggedInUser").asOpt[LoggedInUser].value mustEqual
         LoggedInUser(externalId = externalId, administratorOrPractitioner = AdministratorOrPractitioner.Practitioner, psaIdOrPspId = pspId)
+      (actualJsonContent \ "pstr").asOpt[String] mustBe Some("123")
     }
 
     "the user has logged in with HMRC-PODS-ORG and HMRC_PODSPP_ORG enrolments and has not chosen a role " +
@@ -142,7 +159,7 @@ class IdentifierActionSpec
 
     "the user has logged in with HMRC-PODS-ORG and HMRC_PODSPP_ORG enrolments and has chosen the role of administrator " +
       "must have the PSAID" in {
-      when(mockSessionDataCacheConnector.fetch(any())(any(), any()))
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
         .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
       val controller = new Harness(authAction)
       val enrolments = Enrolments(Set(
@@ -161,7 +178,7 @@ class IdentifierActionSpec
 
     "the user has logged in with HMRC-PODS-ORG and HMRC_PODSPP_ORG enrolments and has chosen the role of practitioner " +
       "must have the PSPID and no PSAID" in {
-      when(mockSessionDataCacheConnector.fetch(any())(any(), any()))
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
         .thenReturn(Future.successful(Some(jsonAOP(Practitioner))))
       val controller = new Harness(authAction)
       val enrolments = Enrolments(Set(
