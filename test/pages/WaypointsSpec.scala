@@ -18,10 +18,9 @@ package pages
 
 import cats.data.NonEmptyList
 import models.NormalMode
-import models.enumeration.EventType
-import org.scalatest.{EitherValues, OptionValues}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.{EitherValues, OptionValues}
 import play.api.libs.json.JsPath
 import play.api.mvc.{Call, QueryStringBindable}
 

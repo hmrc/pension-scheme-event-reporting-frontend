@@ -14,30 +14,28 @@
  * limitations under the License.
  */
 
-package pages
+package pages.eventWindUp
 
-import controllers.routes
-import models.EventSelection.EventWoundUp
-import models.{EventSelection, UserAnswers}
-import pages.eventWindUp.SchemeWindUpDatePage
-import models.EventSelection.Event18
-import pages.event18.Event18ConfirmationPage
+import controllers.eventWindUp.routes
+import models.UserAnswers
+import pages.{CheckYourAnswersPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object EventSelectionPage extends QuestionPage[EventSelection] {
+import java.time.LocalDate
+
+case object SchemeWindUpDatePage extends QuestionPage[LocalDate] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "EventSelection"
-
-  override def route(waypoints: Waypoints): Call =
-    routes.EventSelectionController.onPageLoad(waypoints)
+  override def toString: String = "schemeWindUpDate"
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
-      case Some(Event18) => Event18ConfirmationPage
-      case Some(EventWoundUp) => SchemeWindUpDatePage
-      case _ => EventSelectionPage
+      case Some(_) => CheckYourAnswersPage.windUp
+      case _ => this
     }
+
+  override def route(waypoints: Waypoints): Call =
+    routes.SchemeWindUpDateController.onPageLoad(waypoints)
 }

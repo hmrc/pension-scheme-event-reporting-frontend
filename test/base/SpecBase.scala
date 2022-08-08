@@ -28,6 +28,7 @@ import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.SessionKeys
+import play.api.test.Helpers.baseApplicationBuilder.injector
 
 trait SpecBase
   extends AnyFreeSpec
@@ -57,4 +58,9 @@ trait SpecBase
           bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
         ): _*
       )
+
+  protected def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
+
+  protected implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+
 }

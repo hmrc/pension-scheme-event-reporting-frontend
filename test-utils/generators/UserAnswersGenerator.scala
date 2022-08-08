@@ -22,11 +22,13 @@ import org.scalatest.TryValues
 import pages._
 import play.api.libs.json.{JsValue, Json}
 import org.scalacheck.Arbitrary.arbitrary
+import pages.eventWindUp.SchemeWindUpDatePage
 
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+    arbitrary[(SchemeWindUpDatePage.type, JsValue)] ::
     arbitrary[(event18.Event18ConfirmationPage.type, JsValue)] ::
     arbitrary[(EventSummaryPage.type, JsValue)] ::
     arbitrary[(EventSelectionPage.type, JsValue)] ::

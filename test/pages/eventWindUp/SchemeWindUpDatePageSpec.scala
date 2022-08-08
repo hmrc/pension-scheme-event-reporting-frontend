@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package pages
+package pages.eventWindUp
 
-import controllers.routes
-import models.UserAnswers
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import org.scalacheck.Arbitrary
+import pages.behaviours.PageBehaviours
 
-case object EventSummaryPage extends QuestionPage[Boolean] {
+import java.time.LocalDate
 
-  override def path: JsPath = JsPath \ toString
+class SchemeWindUpDatePageSpec extends PageBehaviours {
 
-  override def toString: String = "eventSummary"
+  "SchemeWindUpDatePage" - {
 
-  override def route(waypoints: Waypoints): Call =
-    routes.EventSummaryController.onPageLoad(waypoints)
+    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
+      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
+    }
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(this).map(_ => EventSelectionPage).orRecover
+    beRetrievable[LocalDate](SchemeWindUpDatePage)
+
+    beSettable[LocalDate](SchemeWindUpDatePage)
+
+    beRemovable[LocalDate](SchemeWindUpDatePage)
   }
 }
-

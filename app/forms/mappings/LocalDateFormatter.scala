@@ -16,11 +16,12 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-
+import helpers.DateHelper
+import models.TaxYearValidationDetail
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
+import java.time.LocalDate
 import scala.util.{Failure, Success, Try}
 
 private[mappings] class LocalDateFormatter(
@@ -28,6 +29,7 @@ private[mappings] class LocalDateFormatter(
                                             allRequiredKey: String,
                                             twoRequiredKey: String,
                                             requiredKey: String,
+                                            taxYearValidationDetail: Option[TaxYearValidationDetail],
                                             args: Seq[String] = Seq.empty
                                           ) extends Formatter[LocalDate] with Formatters {
 
@@ -51,10 +53,10 @@ private[mappings] class LocalDateFormatter(
     )
 
     for {
-      day   <- int.bind(s"$key.day", data).right
+      day <- int.bind(s"$key.day", data).right
       month <- int.bind(s"$key.month", data).right
-      year  <- int.bind(s"$key.year", data).right
-      date  <- toDate(key, day, month, year).right
+      year <- int.bind(s"$key.year", data).right
+      date <- toDate(key, day, month, year).right
     } yield date
   }
 
@@ -72,8 +74,22 @@ private[mappings] class LocalDateFormatter(
 
     fields.count(_._2.isDefined) match {
       case 3 =>
-        formatDate(key, data).left.map {
+        val formattedDate = formatDate(key, data).left.map {
           _.map(_.copy(key = key, args = args))
+        }
+        formattedDate match {
+          case errors@Left(_) => errors
+          case rightDate@Right(d) =>
+            taxYearValidationDetail match {
+              case None => rightDate
+              case Some(TaxYearValidationDetail(invalidKey, taxYear)) =>
+                val taxYearForDate = DateHelper.extractTaxYear(d)
+                if (taxYearForDate == taxYear) {
+                  rightDate
+                } else {
+                  Left(List(FormError(key, invalidKey, Seq(taxYear.toString, (taxYear + 1).toString))))
+                }
+            }
         }
       case 2 =>
         Left(List(FormError(key, requiredKey, missingFields ++ args)))

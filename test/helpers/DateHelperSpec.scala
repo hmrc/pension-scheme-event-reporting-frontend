@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package pages
+package helpers
 
-import controllers.routes
-import models.UserAnswers
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import base.SpecBase
 
-case object EventSummaryPage extends QuestionPage[Boolean] {
+import java.time.LocalDate
 
-  override def path: JsPath = JsPath \ toString
+class DateHelperSpec extends SpecBase {
 
-  override def toString: String = "eventSummary"
+  "Date helper" - {
+    "must return OK and the correct view for a GET" in {
+      DateHelper.formatDateDMYWithSlash(LocalDate.of(2022,8,2)) mustBe "02/08/2022"
+    }
 
-  override def route(waypoints: Waypoints): Call =
-    routes.EventSummaryController.onPageLoad(waypoints)
+    "must return the year of the date inputted in August" in {
+      DateHelper.extractTaxYear(LocalDate.of(2022,8,2)) mustBe 2022
+    }
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(this).map(_ => EventSelectionPage).orRecover
+    "must return the year of the date inputted in March" in {
+      DateHelper.extractTaxYear(LocalDate.of(2022,3,2)) mustBe 2021
+    }
   }
 }
-

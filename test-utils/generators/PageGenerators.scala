@@ -18,8 +18,12 @@ package generators
 
 import org.scalacheck.Arbitrary
 import pages._
+import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
+
+  implicit lazy val arbitrarySchemeWindUpDatePage: Arbitrary[SchemeWindUpDatePage.type] =
+    Arbitrary(SchemeWindUpDatePage)
 
   implicit lazy val arbitraryEvent18ConfirmationPage: Arbitrary[event18.Event18ConfirmationPage.type] =
     Arbitrary(event18.Event18ConfirmationPage)

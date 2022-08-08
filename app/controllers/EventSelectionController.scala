@@ -16,7 +16,6 @@
 
 package controllers
 
-import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.EventSelectionFormProvider
 import models.UserAnswers
@@ -28,15 +27,14 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.EventSelectionView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class EventSelectionController @Inject()(val controllerComponents: MessagesControllerComponents,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalAction,
-                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                          formProvider: EventSelectionFormProvider,
                                          view: EventSelectionView
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                         ) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event1
@@ -54,9 +52,7 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(EventSelectionPage, value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(EventSelectionPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
-          }
+          Future.successful(Redirect(EventSelectionPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route))
         }
       )
   }

@@ -34,7 +34,8 @@ object Waypoint {
 
   private val fragments: Map[String, Waypoint] =
     Map(
-      CheckYourAnswersPage.event18.urlFragment -> CheckYourAnswersPage.event18.waypoint
+      CheckYourAnswersPage.event18.urlFragment -> CheckYourAnswersPage.event18.waypoint,
+      CheckYourAnswersPage.windUp.urlFragment -> CheckYourAnswersPage.windUp.waypoint
     )
 
   def fromString(s: String): Option[Waypoint] =

@@ -25,7 +25,7 @@
 
 @(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("eventSummary.title"))) {
+@layout(pageTitle = title(form, messages("eventSummary.title", "2023"))) {
 
     @formHelper(action = routes.EventSummaryController.onSubmit(waypoints), 'autoComplete -> "off") {
 
@@ -34,7 +34,7 @@
         }
 
         <span class="govuk-caption-xl">Company pension scheme ABC</span>
-        <h1 class="govuk-heading-l">@messages("eventSummary.heading")</h1>
+        <h1 class="govuk-heading-l">@messages("eventSummary.heading", "2023")</h1>
 
         @govukSummaryList(SummaryList(
             rows = Seq(
@@ -50,7 +50,7 @@
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = "#",
+                                href = "/pension-scheme-event-reporting-frontend/new-report/event-18-confirmation?waypoints=event-18-check-answers",
                                 content = Text("Change"),
                                 visuallyHiddenText = Some("Event 18: Scheme chargeable payment")
                             )
@@ -69,7 +69,7 @@
                     actions = Some(Actions(
                     items = Seq(
                         ActionItem(
-                            href = "#",
+                            href = "/pension-scheme-event-reporting-frontend/windup?waypoints=event-0-check-answers",
                             content = Text("Change"),
                             visuallyHiddenText = Some("Scheme has wound up")
                         )

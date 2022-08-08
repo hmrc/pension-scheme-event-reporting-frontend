@@ -14,24 +14,31 @@
  * limitations under the License.
  */
 
-package pages
+package helpers
 
-import controllers.routes
-import models.UserAnswers
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
-case object EventSummaryPage extends QuestionPage[Boolean] {
+class DateHelper {
+  def now = LocalDate.now()
+}
 
-  override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "eventSummary"
+object DateHelper {
+  private val dateFormatterDMYWithSlash: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyy")
 
-  override def route(waypoints: Waypoints): Call =
-    routes.EventSummaryController.onPageLoad(waypoints)
+  def formatDateDMYWithSlash(date: LocalDate): String = date.format(dateFormatterDMYWithSlash)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(this).map(_ => EventSelectionPage).orRecover
+  def extractTaxYear(date: LocalDate): Int = {
+    val year = date.getYear
+
+    val taxYearDate = LocalDate.of(year, 4, 6)
+
+    if (date.isBefore(taxYearDate)) {
+      year - 1
+    } else {
+      year
+    }
   }
 }
 
