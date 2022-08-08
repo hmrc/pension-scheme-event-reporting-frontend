@@ -19,6 +19,7 @@ package controllers.eventWindUp
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.eventWindUp.SchemeWindUpDateFormProvider
+import helpers.DateHelper
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
@@ -28,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.eventWindUp.SchemeWindUpDateView
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,10 +38,11 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
                                     getData: DataRetrievalAction,
                                     userAnswersCacheConnector: UserAnswersCacheConnector,
                                     formProvider: SchemeWindUpDateFormProvider,
-                                    view: SchemeWindUpDateView
+                                    view: SchemeWindUpDateView,
+                                    dateHelper: DateHelper
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def form(implicit messages: Messages) = formProvider(2022)
+  private def form(implicit messages: Messages) = formProvider(DateHelper.extractTaxYear(dateHelper.now))
   private val eventType = EventType.WindUp
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>

@@ -19,6 +19,11 @@ package helpers
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+class DateHelper {
+  def now = LocalDate.now()
+}
+
+
 object DateHelper {
   private val dateFormatterDMYWithSlash: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyy")
 
@@ -34,10 +39,6 @@ object DateHelper {
     } else {
       year
     }
-
-    //if before 6 April - year minus 1
-    //if before 5 April - that same year
-
   }
 }
 

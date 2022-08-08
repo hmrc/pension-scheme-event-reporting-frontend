@@ -31,9 +31,7 @@ case object EventSummaryPage extends QuestionPage[Boolean] {
     routes.EventSummaryController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(this).map {
-      case true  => EventSelectionPage
-      case false => EventSelectionPage
-    }.orRecover
+    answers.get(this).map(_ => EventSelectionPage).orRecover
   }
 }
+

@@ -19,6 +19,7 @@ package controllers.eventWindUp
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.eventWindUp.SchemeWindUpDateFormProvider
+import helpers.DateHelper
 import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -44,13 +45,15 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val form = formProvider(2022)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val mockTaxYear = mock[DateHelper]
 
   private def getRoute: String = routes.SchemeWindUpDateController.onPageLoad(waypoints).url
 
   private def postRoute: String = routes.SchemeWindUpDateController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
+    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
+    bind[DateHelper].toInstance(mockTaxYear)
   )
 
   private val validAnswer = LocalDate.of(2022, 5, 12)
@@ -58,6 +61,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach {
   override def beforeEach: Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
+    when(mockTaxYear.now).thenReturn(validAnswer)
   }
 
   "SchemeWindUpDate Controller" - {
