@@ -22,6 +22,7 @@ import forms$if(!package.empty)$.$package$$endif$.$className$FormProvider
 import views.html$if(!package.empty)$.$package$$endif$.$className$View
 $if(package.empty)$
 import models.{$className$, UserAnswers}
+import pages.{EmptyWaypoints, $className$Page}
 $else$
 import models.UserAnswers
 import models.$package$.$className$
