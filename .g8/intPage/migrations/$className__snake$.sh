@@ -24,7 +24,8 @@ echo "Adding to UserAnswersEntryGenerators"
 awk '/trait UserAnswersEntryGenerators/ {\
     print;\
     print "";\
-    print "  implicit lazy val arbitrary$className$UserAnswersEntry: Arbitrary[($className$Page.type, JsValue)] =";\
+    print "  implicit lazy val arbitrary$className$UserAnswersEntry: Arbitrary[(pages$if(!package.empty)$.$package$$endif$.$className$Page.type, JsValue)] =";\
+
     print "    Arbitrary {";\
     print "      for {";\
     print "        page  <- arbitrary[pages$if(!package.empty)$.$package$$endif$.$className$Page.type]";\
