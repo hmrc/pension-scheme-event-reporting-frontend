@@ -1,9 +1,9 @@
-package controllers
+package controllers$if(package.empty)$$else$.$package$$endif$
 
 import base.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.$className$View
+import views.html$if(!package.empty)$.$package$$endif$.$className$View
 
 class $className$ControllerSpec extends SpecBase {
 
