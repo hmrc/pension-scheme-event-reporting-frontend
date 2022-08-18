@@ -5,7 +5,7 @@ import models.UserAnswers
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 $if(!package.empty)$
-import pages.{Waypoints, QuestionPage}
+import pages.{Page, QuestionPage, Waypoints}
 $endif$
 
 case object $className$Page extends QuestionPage[Boolean] {
