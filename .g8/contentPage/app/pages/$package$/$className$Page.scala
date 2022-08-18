@@ -1,6 +1,5 @@
 package pages$if(!package.empty)$.$package$$endif$
 
-import controllers.routes
 import play.api.mvc.Call
 $if(!package.empty)$
 import pages.{Waypoints, Page}
