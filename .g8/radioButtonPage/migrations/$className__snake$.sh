@@ -44,7 +44,7 @@ echo "Adding to ModelGenerators"
 awk '/trait ModelGenerators/ {\
     print;\
     print "";\
-    print "  implicit lazy val arbitrary$className$: Arbitrary[$className$] =";\
+    print "  implicit lazy val arbitrary$className$: Arbitrary[$if(!package.empty)$$package$.$endif$$className$] =";\
     print "    Arbitrary {";\
     print "      Gen.oneOf($if(!package.empty)$$package$.$endif$$className$.values.toSeq)";\
     print "    }";\
