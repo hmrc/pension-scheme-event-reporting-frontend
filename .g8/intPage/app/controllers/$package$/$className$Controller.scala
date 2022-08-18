@@ -18,7 +18,7 @@ package controllers$if(!package.empty)$.$package$$endif$
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.$className$FormProvider
+import forms$if(!package.empty)$.$package$$endif$.$className$FormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 $if(package.empty)$
