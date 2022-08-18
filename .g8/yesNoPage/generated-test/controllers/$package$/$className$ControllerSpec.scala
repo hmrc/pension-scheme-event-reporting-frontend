@@ -1,5 +1,6 @@
 package controllers$if(package.empty)$$else$.$package$$endif$
 
+import base.SpecBase
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.{mock, reset}
 import connectors.UserAnswersCacheConnector
