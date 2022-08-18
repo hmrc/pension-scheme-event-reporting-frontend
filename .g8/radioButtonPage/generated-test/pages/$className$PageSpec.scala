@@ -1,6 +1,6 @@
-package pages
+package pages$if(package.empty)$$else$.$package$$endif$
 
-import models.$className$
+import models$if(!package.empty)$.$package$$endif$.$className$
 import pages.behaviours.PageBehaviours
 
 class $className$Spec extends PageBehaviours {

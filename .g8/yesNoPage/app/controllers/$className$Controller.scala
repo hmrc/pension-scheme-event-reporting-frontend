@@ -1,15 +1,20 @@
-package controllers
+package controllers$if(!package.empty)$.$package$$endif$
 
 import connectors.UserAnswersCacheConnector
 import models.enumeration.EventType
 import controllers.actions._
-import forms.$className$FormProvider
+import forms$if(!package.empty)$.$package$$endif$.$className$FormProvider
 import javax.inject.Inject
+$if(package.empty)$
 import pages.{$className$Page, Waypoints}
+$else$
+import pages.Waypoints
+import pages.$package$.$className$Page
+$endif$
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.$className$View
+import views.html$if(!package.empty)$.$package$$endif$.$className$View
 
 import scala.concurrent.{ExecutionContext, Future}
 

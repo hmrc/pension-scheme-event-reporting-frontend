@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers$if(!package.empty)$.$package$$endif$
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.$className$FormProvider
 import models.UserAnswers
 import models.enumeration.EventType
+$if(package.empty)$
 import pages.{$className$Page, Waypoints}
+$else$
+import pages.Waypoints
+import pages.$package$.$className$Page
+$endif$
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.$className$View
+import views.html$if(!package.empty)$.$package$$endif$.$className$View
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

@@ -1,7 +1,7 @@
-package forms
+package forms$if(package.empty)$$else$.$package$$endif$
 
 import forms.behaviours.OptionFieldBehaviours
-import models.$className$
+import models$if(!package.empty)$.$package$$endif$.$className$
 import play.api.data.FormError
 
 class $className$FormProviderSpec extends OptionFieldBehaviours {

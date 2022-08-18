@@ -1,4 +1,4 @@
-package models
+package models$if(package.empty)$$else$.$package$$endif$
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen

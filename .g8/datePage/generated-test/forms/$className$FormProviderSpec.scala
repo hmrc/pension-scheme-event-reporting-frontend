@@ -1,4 +1,4 @@
-package forms
+package forms$if(package.empty)$$else$.$package$$endif$
 
 import java.time.{LocalDate, ZoneOffset}
 

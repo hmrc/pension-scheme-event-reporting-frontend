@@ -14,22 +14,29 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers$if(package.empty)$$else$.$package$$endif$
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.$className$FormProvider
+import forms$if(!package.empty)$.$package$$endif$.$className$FormProvider
+$if(package.empty)$
 import models.{$className$, UserAnswers}
+import pages.{EmptyWaypoints, $className$Page}
+$else$
+import models.UserAnswers
+import models.$package$.$className$
+import pages.EmptyWaypoints
+import pages.$package$.$className$Page
+$endif$
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
-import pages.{EmptyWaypoints, $className$Page}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.$className$View
+import views.html$if(!package.empty)$.$package$$endif$.$className$View
 
 import scala.concurrent.Future
 

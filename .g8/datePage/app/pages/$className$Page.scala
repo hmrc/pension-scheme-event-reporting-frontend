@@ -1,10 +1,13 @@
-package pages
+package pages$if(package.empty)$$else$.$package$$endif$
 
 import java.time.LocalDate
 
-import controllers.routes
+import controllers$if(!package.empty)$.$package$$endif$.routes
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+$if(!package.empty)$
+import pages.{Waypoints, QuestionPage}
+$endif$
 
 case object $className$Page extends QuestionPage[LocalDate] {
 

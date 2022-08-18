@@ -6,8 +6,8 @@ echo "Applying migration $className;format="snake"$"
 echo "Adding routes to conf/app.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /$className;format="decap"$                        controllers.$className$Controller.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)" >> ../conf/app.routes
-echo "POST       /$className;format="decap"$                        controllers.$className$Controller.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)" >> ../conf/app.routes
+echo "GET        /$className;format="decap"$                        controllers.$if(!package.empty)$.$package$$endif$.$className$Controller.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)" >> ../conf/app.routes
+echo "POST       /$className;format="decap"$                        controllers.$if(!package.empty)$.$package$$endif$.$className$Controller.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
@@ -23,11 +23,11 @@ echo "Adding to UserAnswersEntryGenerators"
 awk '/trait UserAnswersEntryGenerators/ {\
     print;\
     print "";\
-    print "  implicit lazy val arbitrary$className$UserAnswersEntry: Arbitrary[($className$Page.type, JsValue)] =";\
+    print "  implicit lazy val arbitrary$className$UserAnswersEntry: Arbitrary[(pages$if(!package.empty)$.$package$$endif$.$className$Page.type, JsValue)] =";\
     print "    Arbitrary {";\
     print "      for {";\
-    print "        page  <- arbitrary[$className$Page.type]";\
-    print "        value <- arbitrary[$className$].map(Json.toJson(_))";\
+    print "        page  <- arbitrary[pages$if(!package.empty)$.$package$$endif$.$className$Page.type]";\
+    print "        value <- arbitrary[models$if(!package.empty)$.$package$$endif$.$className$].map(Json.toJson(_))";\
     print "      } yield (page, value)";\
     print "    }";\
     next }1' ../test-utils/generators/UserAnswersEntryGenerators.scala > tmp && mv tmp ../test-utils/generators/UserAnswersEntryGenerators.scala
@@ -37,7 +37,7 @@ awk '/trait PageGenerators/ {\
     print;\
     print "";\
     print "  implicit lazy val arbitrary$className$Page: Arbitrary[$className$Page.type] =";\
-    print "    Arbitrary($className$Page)";\
+    print "    Arbitrary($if(!package.empty)$$package$.$endif$$className$Page)";\
     next }1' ../test-utils/generators/PageGenerators.scala > tmp && mv tmp ../test-utils/generators/PageGenerators.scala
 
 echo "Adding to ModelGenerators"
@@ -46,14 +46,14 @@ awk '/trait ModelGenerators/ {\
     print "";\
     print "  implicit lazy val arbitrary$className$: Arbitrary[$className$] =";\
     print "    Arbitrary {";\
-    print "      Gen.oneOf($className$.values.toSeq)";\
+    print "      Gen.oneOf($if(!package.empty)$$package$.$endif$$className$.values.toSeq)";\
     print "    }";\
     next }1' ../test-utils/generators/ModelGenerators.scala > tmp && mv tmp ../test-utils/generators/ModelGenerators.scala
 
 echo "Adding to UserAnswersGenerator"
 awk '/val generators/ {\
     print;\
-    print "    arbitrary[($className$Page.type, JsValue)] ::";\
+    print "    arbitrary[($if(!package.empty)$$package$.$endif$$className$Page.type, JsValue)] ::";\
     next }1' ../test-utils/generators/UserAnswersGenerator.scala > tmp && mv tmp ../test-utils/generators/UserAnswersGenerator.scala
 
 echo "Migration $className;format="snake"$ completed"

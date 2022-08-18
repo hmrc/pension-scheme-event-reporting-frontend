@@ -1,4 +1,4 @@
-package models
+package models$if(package.empty)$$else$.$package$$endif$
 
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text

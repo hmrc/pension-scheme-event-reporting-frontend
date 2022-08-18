@@ -1,4 +1,4 @@
-package forms
+package forms$if(package.empty)$$else$.$package$$endif$
 
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError

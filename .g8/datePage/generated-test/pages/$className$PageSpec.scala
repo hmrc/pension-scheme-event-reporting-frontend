@@ -1,4 +1,4 @@
-package pages
+package pages$if(package.empty)$$else$.$package$$endif$
 
 import java.time.LocalDate
 

@@ -1,7 +1,12 @@
 package viewmodels.checkAnswers
 
 import models.UserAnswers
-import pages.{$className$Page, CheckAnswersPage, Waypoints}
+$if(package.empty)$
+import pages.{CheckAnswersPage, $className$Page, Waypoints}
+$else$
+import pages.{CheckAnswersPage, Waypoints}
+import pages.$package$.$className$Page
+$endif$
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow

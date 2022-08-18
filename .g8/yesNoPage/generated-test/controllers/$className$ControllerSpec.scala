@@ -1,18 +1,23 @@
-package controllers
+package controllers$if(package.empty)$$else$.$package$$endif$
 
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.{mock, reset}
 import connectors.UserAnswersCacheConnector
-import forms.$className$FormProvider
+import forms$if(!package.empty)$.$package$$endif$.$className$FormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
-import pages.{$className$Page, EmptyWaypoints}
+$if(package.empty)$
+import pages.{EmptyWaypoints, $className$Page}
+$else$
+import pages.EmptyWaypoints
+import pages.$package$.$className$Page
+$endif$
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.$className$View
+import views.html$if(!package.empty)$.$package$$endif$.$className$View
 
 import scala.concurrent.Future
 

@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers$if(package.empty)$$else$.$package$$endif$
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.$className$FormProvider
+import forms$if(!package.empty)$.$package$$endif$.$className$FormProvider
 import models.UserAnswers
+$if(package.empty)$
+import pages.{EmptyWaypoints, $className$Page}
+$else$
+import pages.EmptyWaypoints
+import pages.$package$.$className$Page
+$endif$
+
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.{mock, reset}
@@ -29,7 +36,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.$className$View
+import views.html$if(!package.empty)$.$package$$endif$.$className$View
 
 import java.time.LocalDate
 import scala.concurrent.Future
