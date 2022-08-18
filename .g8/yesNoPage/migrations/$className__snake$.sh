@@ -6,8 +6,8 @@ echo "Applying migration $className;format="snake"$"
 echo "Adding routes to conf/app.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /$className;format="decap"$                        controllers.$if(!package.empty)$.$package$$endif$.$className$Controller.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)" >> ../conf/app.routes
-echo "POST       /$className;format="decap"$                        controllers.$if(!package.empty)$.$package$$endif$.$className$Controller.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)" >> ../conf/app.routes
+echo "GET        /$className;format="decap"$                        controllers$if(!package.empty)$.$package$$endif$.$className$Controller.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)" >> ../conf/app.routes
+echo "POST       /$className;format="decap"$                        controllers$if(!package.empty)$.$package$$endif$.$className$Controller.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
