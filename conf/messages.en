@@ -180,3 +180,12 @@ event18Confirmation.checkYourAnswersLabel = Scheme chargeable payment
 event18Confirmation.error.required = You must tick the box to continue
 event18Confirmation.change.hidden = Event18Confirmation
 event18Confirmation.summary.title = Event 18: Scheme chargeable payment
+
+howAddUnauthPayment.title = How do you want to add the unauthorised payment details?
+howAddUnauthPayment.heading = How do you want to add the unauthorised payment details?
+howAddUnauthPayment.manual = Manually enter the details
+howAddUnauthPayment.fileUpload = Upload a file
+howAddUnauthPayment.checkYourAnswersLabel = How do you want to add the unauthorised payment details?
+howAddUnauthPayment.error.required = Select how you want to add the unauthorised payment details
+howAddUnauthPayment.change.hidden = How do you want to add the unauthorised payment details?
+howAddUnauthPayment.hint = Uploading a file will overwrite any data you have previously added for this event
