@@ -16,8 +16,10 @@
 
 package journey
 
-import models.EventSelection.EventWoundUp
+import models.EventSelection._
+import models.event1.HowAddUnauthPayment.Manual
 import org.scalatest.freespec.AnyFreeSpec
+import pages.event1.{HowAddUnauthPaymentPage, WhoReceivedUnauthPaymentPage}
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckYourAnswersPage, EventSelectionPage}
@@ -42,6 +44,17 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers {
         pageMustBe(SchemeWindUpDatePage),
         submitAnswer(SchemeWindUpDatePage, LocalDate.of(2021, 5, 4)),
         pageMustBe(pages.CheckYourAnswersPage.windUp)
+      )
+  }
+
+  "test event1 journey" in {
+
+    startingFrom(EventSelectionPage)
+      .run(
+        submitAnswer(EventSelectionPage, Event1),
+        pageMustBe(HowAddUnauthPaymentPage),
+        submitAnswer(HowAddUnauthPaymentPage, Manual),
+        pageMustBe(WhoReceivedUnauthPaymentPage)
       )
   }
 }

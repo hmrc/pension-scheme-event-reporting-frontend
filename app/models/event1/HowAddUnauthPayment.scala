@@ -35,12 +35,12 @@ object HowAddUnauthPayment extends Enumerable.Implicits {
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
-      // TODO: fix hints to render only on Upload a file option
       RadioItem(
         content = Text(messages(s"howAddUnauthPayment.${value.toString}")),
         value   = Some(value.toString),
         id      = Some(s"value_$index"),
-        hint    = Some(Hint(content = Text("Hello")))
+        hint    = if (value == FileUpload) Some(Hint(content = Text(messages("howAddUnauthPayment.fileUpload.hint")))) else None,
+        disabled = (value == FileUpload)
       )
   }
 

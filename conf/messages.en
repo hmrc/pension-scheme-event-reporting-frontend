@@ -188,7 +188,7 @@ howAddUnauthPayment.fileUpload = Upload a file
 howAddUnauthPayment.checkYourAnswersLabel = How do you want to add the unauthorised payment details?
 howAddUnauthPayment.error.required = Select how you want to add the unauthorised payment details
 howAddUnauthPayment.change.hidden = How do you want to add the unauthorised payment details?
-howAddUnauthPayment.hint = Uploading a file will overwrite any data you have previously added for this event
+howAddUnauthPayment.fileUpload.hint = Uploading a file will overwrite any data you have previously added for this event
 
 whoReceivedUnauthPayment.title = Who received the unauthorised payment or deemed unauthorised payment?
 whoReceivedUnauthPayment.heading = Who received the unauthorised payment or deemed unauthorised payment?

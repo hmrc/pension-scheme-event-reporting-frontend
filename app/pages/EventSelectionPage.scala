@@ -20,7 +20,8 @@ import controllers.routes
 import models.EventSelection.EventWoundUp
 import models.{EventSelection, UserAnswers}
 import pages.eventWindUp.SchemeWindUpDatePage
-import models.EventSelection.Event18
+import models.EventSelection._
+import pages.event1.HowAddUnauthPaymentPage
 import pages.event18.Event18ConfirmationPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -36,6 +37,7 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
+      case Some(Event1) => HowAddUnauthPaymentPage
       case Some(Event18) => Event18ConfirmationPage
       case Some(EventWoundUp) => SchemeWindUpDatePage
       case _ => EventSelectionPage
