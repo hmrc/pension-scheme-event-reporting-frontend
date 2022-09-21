@@ -28,6 +28,7 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+    arbitrary[(event1.WhoReceivedUnauthPaymentPage.type, JsValue)] ::
     arbitrary[(event1.HowAddUnauthPaymentPage.type, JsValue)] ::
     arbitrary[(SchemeWindUpDatePage.type, JsValue)] ::
     arbitrary[(event18.Event18ConfirmationPage.type, JsValue)] ::

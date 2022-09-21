@@ -19,31 +19,28 @@ package models.event1
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import models.{Enumerable, WithName}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
+import models.{Enumerable,WithName}
 
-sealed trait HowAddUnauthPayment
+sealed trait WhoReceivedUnauthPayment
 
-object HowAddUnauthPayment extends Enumerable.Implicits {
+object WhoReceivedUnauthPayment extends Enumerable.Implicits {
 
-  case object Manual extends WithName("manual") with HowAddUnauthPayment
-  case object FileUpload extends WithName("fileUpload") with HowAddUnauthPayment
+  case object Member extends WithName("member") with WhoReceivedUnauthPayment
+  case object Employer extends WithName("employer") with WhoReceivedUnauthPayment
 
-  val values: Seq[HowAddUnauthPayment] = Seq(
-    Manual, FileUpload
+  val values: Seq[WhoReceivedUnauthPayment] = Seq(
+    Member, Employer
   )
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
-      // TODO: fix hints to render only on Upload a file option
       RadioItem(
-        content = Text(messages(s"howAddUnauthPayment.${value.toString}")),
+        content = Text(messages(s"whoReceivedUnauthPayment.${value.toString}")),
         value   = Some(value.toString),
-        id      = Some(s"value_$index"),
-        hint    = Some(Hint(content = Text("Hello")))
+        id      = Some(s"value_$index")
       )
   }
 
-  implicit val enumerable: Enumerable[HowAddUnauthPayment] =
+  implicit val enumerable: Enumerable[WhoReceivedUnauthPayment] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

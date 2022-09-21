@@ -75,3 +75,6 @@ POST        /windup                           controllers.eventWindUp.SchemeWind
 
 GET        /new-report/event-1-entry-type                        controllers.event1.HowAddUnauthPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-1-entry-type                        controllers.event1.HowAddUnauthPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-1-payment-type                        controllers.event1.WhoReceivedUnauthPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-1-payment-type                        controllers.event1.WhoReceivedUnauthPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
