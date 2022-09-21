@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class SchemeWindUpDateFormProvider @Inject() extends Mappings {
 
-  def apply(taxYear: Int)(implicit messages: Messages): Form[LocalDate] =
+  def apply(taxYear: Int): Form[LocalDate] =
     Form(
       "value" -> localDate(
         invalidKey = "schemeWindUpDate.error.invalid",
