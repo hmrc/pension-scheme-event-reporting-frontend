@@ -17,10 +17,12 @@
 package pages.event1
 
 import controllers.event1.routes
+import models.UserAnswers
 import models.event1.HowAddUnauthPayment
+import models.event1.HowAddUnauthPayment.Manual
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Waypoints, QuestionPage}
+import pages.{CheckYourAnswersPage, Page, QuestionPage, Waypoints}
 
 case object HowAddUnauthPaymentPage extends QuestionPage[HowAddUnauthPayment] {
 
@@ -28,6 +30,13 @@ case object HowAddUnauthPaymentPage extends QuestionPage[HowAddUnauthPayment] {
 
   override def toString: String = "howAddUnauthPayment"
 
-  override def route(waypoints: Waypoints): Call =
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this) match {
+      case Some(Manual) => WhoReceivedUnauthPaymentPage
+      case _ => this
+    }
+
+  override def route(waypoints: Waypoints): Call = {
     routes.HowAddUnauthPaymentController.onPageLoad(waypoints)
+  }
 }

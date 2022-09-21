@@ -19,7 +19,8 @@ package models.event1
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import models.{Enumerable,WithName}
+import models.{Enumerable, WithName}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 
 sealed trait WhoReceivedUnauthPayment
 
@@ -37,7 +38,8 @@ object WhoReceivedUnauthPayment extends Enumerable.Implicits {
       RadioItem(
         content = Text(messages(s"whoReceivedUnauthPayment.${value.toString}")),
         value   = Some(value.toString),
-        id      = Some(s"value_$index")
+        id      = Some(s"value_$index"),
+        hint    = if (value == Member) Some(Hint(content = Text(messages("whoReceivedUnauthPayment.member.hint")))) else None
       )
   }
 
