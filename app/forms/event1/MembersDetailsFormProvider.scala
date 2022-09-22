@@ -28,14 +28,20 @@ class MembersDetailsFormProvider @Inject() extends Mappings {
 
   def apply(): Form[MembersDetails] =
     Form(
-      mapping("firstName" -> text("membersDetails.error.firstName.required")
-        .verifying(maxLength(firstNameLength, "membersDetails.error.firstName.length"),
-          regexp(regexName, "membersDetails.error.firstName.invalid")),
-        "lastName" -> text("membersDetails.error.lastName.required")
-          .verifying(maxLength(lastNameLength, "membersDetails.error.lastName.length"),
-            regexp(regexName, "membersDetails.error.lastName.invalid")),
-        "nino" -> text("membersDetails.error.nino.required")
-          .verifying(validNino("membersDetails.error.nino.invalid")
+      mapping("firstName" ->
+        text("membersDetails.error.firstName.required").verifying(
+          firstError(
+            maxLength(firstNameLength, "membersDetails.error.firstName.length"),
+            regexp(regexName, "membersDetails.error.firstName.invalid"))),
+        "lastName" ->
+          text("membersDetails.error.lastName.required").verifying(
+            firstError(
+              maxLength(lastNameLength, "membersDetails.error.lastName.length"),
+              regexp(regexName, "membersDetails.error.lastName.invalid"))
+          ),
+        "nino" ->
+          text("membersDetails.error.nino.required").verifying(
+            validNino("membersDetails.error.nino.invalid")
           ))(MembersDetails.apply)(MembersDetails.unapply)
     )
 

@@ -20,10 +20,10 @@ import play.api.data.{Form, FormError}
 
 trait StringFieldBehaviours extends FieldBehaviours {
 
-    def fieldWithMaxLength(form: Form[_],
-                           fieldName: String,
-                           maxLength: Int,
-                           lengthError: FormError): Unit = {
+  def fieldWithMaxLength(form: Form[_],
+                         fieldName: String,
+                         maxLength: Int,
+                         lengthError: FormError): Unit = {
 
     s"not bind strings longer than $maxLength characters" in {
 
@@ -32,6 +32,29 @@ trait StringFieldBehaviours extends FieldBehaviours {
           val result = form.bind(Map(fieldName -> string)).apply(fieldName)
           result.errors must contain only lengthError
       }
+    }
+  }
+
+  def fieldWithRegex(form: Form[_],
+                     fieldName: String,
+                     invalidString: String,
+                     error: FormError): Unit = {
+
+    "not bind strings invalidated by regex" in {
+      val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+      result.errors mustEqual Seq(error)
+    }
+  }
+
+  def fieldWithTransform[A, B](form: Form[A],
+                               transformName: String,
+                               data: Map[String, String],
+                               expected: B,
+                               actual: A => B): Unit = {
+    s"apply field transform $transformName" in {
+      val result = form.bind(data)
+      result.errors.size mustBe 0
+      actual(result.get) mustBe expected
     }
   }
 }

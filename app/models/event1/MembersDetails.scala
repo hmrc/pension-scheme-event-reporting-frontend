@@ -16,28 +16,13 @@
 
 package models.event1
 
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json.{JsPath, Json, Reads, Writes}
+import play.api.libs.json.{Json, OFormat}
+
 
 case class MembersDetails(firstName: String, lastName: String, nino: String)
 
 object MembersDetails {
 
-  implicit val reads: Reads[MembersDetails] =
-    (
-      (JsPath \ "firstName").read[String] and
-        (JsPath \ "lastName").read[String] and
-        (JsPath \ "nino").read[String]
-      ) (MembersDetails.apply _)
-
-  implicit val writes: Writes[MembersDetails] = Json.writes[MembersDetails]
-
-  def apply(firstName: String, lastName: String, nino: String): MembersDetails = {
-    MembersDetails(firstName, lastName, nino)
-  }
-
-  def unapply(membersDetails: MembersDetails): Option[(String, String, String)] = {
-    Some((membersDetails.firstName, membersDetails.lastName, membersDetails.nino))
-  }
+  implicit val format: OFormat[MembersDetails] = Json.format[MembersDetails]
 }
 
