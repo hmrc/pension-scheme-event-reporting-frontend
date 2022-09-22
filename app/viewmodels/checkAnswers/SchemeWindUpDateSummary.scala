@@ -17,8 +17,6 @@
 package viewmodels.checkAnswers
 
 import helpers.DateHelper
-
-import java.time.format.DateTimeFormatter
 import models.UserAnswers
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckAnswersPage, Waypoints}

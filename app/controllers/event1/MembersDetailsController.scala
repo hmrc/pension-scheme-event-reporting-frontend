@@ -14,51 +14,49 @@
  * limitations under the License.
  */
 
-package controllers.eventWindUp
+package controllers.event1
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.eventWindUp.SchemeWindUpDateFormProvider
-import helpers.DateHelper
+import forms.event1.MembersDetailsFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
-import pages.eventWindUp.SchemeWindUpDatePage
-import play.api.i18n.{I18nSupport, Messages}
+import pages.event1.MembersDetailsPage
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.eventWindUp.SchemeWindUpDateView
+import views.html.event1.MembersDetailsView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                    identify: IdentifierAction,
-                                    getData: DataRetrievalAction,
-                                    userAnswersCacheConnector: UserAnswersCacheConnector,
-                                    formProvider: SchemeWindUpDateFormProvider,
-                                    view: SchemeWindUpDateView,
-                                    dateHelper: DateHelper
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class MembersDetailsController @Inject()(val controllerComponents: MessagesControllerComponents,
+                                         identify: IdentifierAction,
+                                         getData: DataRetrievalAction,
+                                         userAnswersCacheConnector: UserAnswersCacheConnector,
+                                         formProvider: MembersDetailsFormProvider,
+                                         view: MembersDetailsView
+                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def form(implicit messages: Messages) = formProvider(DateHelper.extractTaxYear(dateHelper.now))
-  private val eventType = EventType.WindUp
+  private val form = formProvider()
+  private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(SchemeWindUpDatePage)).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors => {
-          Future.successful(BadRequest(view(formWithErrors, waypoints)))},
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(SchemeWindUpDatePage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(MembersDetailsPage, value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(SchemeWindUpDatePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(MembersDetailsPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

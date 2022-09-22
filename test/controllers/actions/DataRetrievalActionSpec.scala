@@ -17,7 +17,7 @@
 package controllers.actions
 
 import base.SpecBase
-import connectors.{SessionDataCacheConnector, UserAnswersCacheConnector}
+import connectors.UserAnswersCacheConnector
 import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.enumeration.EventType
 import models.requests.{IdentifierRequest, OptionalDataRequest}

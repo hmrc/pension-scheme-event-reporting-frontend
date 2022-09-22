@@ -30,7 +30,7 @@ trait JourneyHelpers extends Matchers with TryValues with OptionValues {
 
   type JourneyStep[A] = State[JourneyState, A]
 
-  final case class JourneyState(page: Page, waypoints: Waypoints, answers: UserAnswers) {
+  case class JourneyState(page: Page, waypoints: Waypoints, answers: UserAnswers) {
 
     def next: JourneyState = {
       val PageAndWaypoints(nextPage, newWaypoints) = page.navigate(waypoints, answers, answers)
@@ -113,18 +113,18 @@ trait JourneyHelpers extends Matchers with TryValues with OptionValues {
 
   def submitAnswer[A](page: Page with Settable[A], value: A)(implicit writes: Writes[A], position: Position): JourneyStep[Unit] = {
     for {
-      _               <- pageMustBe(page)
+      _ <- pageMustBe(page)
       originalAnswers <- getAnswers
-      _               <- setUserAnswerTo(page, value)
-      _               <- next(originalAnswers)
+      _ <- setUserAnswerTo(page, value)
+      _ <- next(originalAnswers)
     } yield ()
   }
 
   def removeAddToListItem[A](settable: Settable[A])(implicit writes: Writes[A], position: Position): JourneyStep[Unit] = {
     for {
       originalAnswers <- getAnswers
-      _               <- remove(settable)
-      _               <- next(originalAnswers)
+      _ <- remove(settable)
+      _ <- next(originalAnswers)
     } yield ()
   }
 

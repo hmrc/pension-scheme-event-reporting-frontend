@@ -17,6 +17,7 @@
 package generators
 
 import models._
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
@@ -24,6 +25,15 @@ trait ModelGenerators {
   implicit lazy val arbitraryWhoReceivedUnauthPayment: Arbitrary[event1.WhoReceivedUnauthPayment] =
     Arbitrary {
       Gen.oneOf(event1.WhoReceivedUnauthPayment.values.toSeq)
+    }
+
+  implicit lazy val arbitraryMembersDetails: Arbitrary[event1.MembersDetails] =
+    Arbitrary {
+      for {
+        firstName <- arbitrary[String]
+        lastName <- arbitrary[String]
+        nino <- arbitrary[String]
+      } yield event1.MembersDetails(firstName, lastName, nino)
     }
 
   implicit lazy val arbitraryHowAddUnauthPayment: Arbitrary[event1.HowAddUnauthPayment] =
