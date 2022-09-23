@@ -17,14 +17,14 @@
 package forms.event1
 
 import forms.event1.PersonNameFormProvider.{firstNameLength, lastNameLength}
-import forms.mappings.Mappings
+import forms.mappings.{Mappings, Transforms}
 import models.event1.MembersDetails
 import play.api.data.Form
 import play.api.data.Forms.mapping
 
 import javax.inject.Inject
 
-class MembersDetailsFormProvider @Inject() extends Mappings {
+class MembersDetailsFormProvider @Inject() extends Mappings with Transforms {
 
   def apply(): Form[MembersDetails] =
     Form(
@@ -40,9 +40,11 @@ class MembersDetailsFormProvider @Inject() extends Mappings {
               regexp(regexName, "membersDetails.error.lastName.invalid"))
           ),
         "nino" ->
-          text("membersDetails.error.nino.required").verifying(
-            validNino("membersDetails.error.nino.invalid")
-          ))(MembersDetails.apply)(MembersDetails.unapply)
+          text("membersDetails.error.nino.required")
+            .transform(noSpaceWithUpperCaseTransform, noTransform)
+            .verifying(
+              validNino("membersDetails.error.nino.invalid")
+            ))(MembersDetails.apply)(MembersDetails.unapply)
     )
 
 }

@@ -102,9 +102,16 @@ class MembersDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
     val invalidKey = "membersDetails.error.nino.invalid"
     val fieldName = "nino"
 
-    "successfully bind when valid NINO is provided" in {
-      val res = form.bind(Map("firstName" -> "validFirstName", "lastName" -> "validLastName", "nino" -> "AB020202A"))
-      res.get mustEqual MembersDetails("validFirstName", "validLastName", "AB020202A")
+    Seq("aB020202A", "Ab020202A", "AB020202a", "AB020202A", "ab020202a").foreach { nino =>
+      s"successfully bind when valid NINO $nino is provided" in {
+        val res = form.bind(Map("firstName" -> "validFirstName", "lastName" -> "validLastName", "nino" -> nino))
+        res.get mustEqual MembersDetails("validFirstName", "validLastName", "AB020202A")
+      }
+    }
+
+    "successfully bind when yes is selected and valid NINO with spaces is provided" in {
+      val res = form.bind(Map("firstName" -> "validFirstName", "lastName" -> "validLastName", "nino" -> " a b 0 2 0 2 0 2 a "))
+      res.get.nino mustEqual "AB020202A"
     }
 
     Seq("DE999999A", "AO111111B", "ORA12345C", "AB0202020", "AB0303030D", "AB040404E").foreach { nino =>
