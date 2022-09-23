@@ -25,7 +25,7 @@ import pages.EmptyWaypoints
 import pages.event1.PaymentNaturePage
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.MockitoSugar.{mock, reset, times, verify}
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -109,6 +109,7 @@ class PaymentNatureControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual PaymentNaturePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
