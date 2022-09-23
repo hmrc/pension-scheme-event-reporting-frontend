@@ -38,7 +38,7 @@ class WhatYouWillNeedControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[WhatYouWillNeedView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(request, messages(application)).toString
+        contentAsString(result) mustEqual view(routes.MembersDetailsController.onPageLoad().url)(request, messages(application)).toString
       }
     }
   }

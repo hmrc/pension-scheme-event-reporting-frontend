@@ -39,6 +39,6 @@ class WhatYouWillNeedController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) {
     implicit request =>
-      Ok(view())
+      Ok(view(routes.MembersDetailsController.onPageLoad().url))
   }
 }
