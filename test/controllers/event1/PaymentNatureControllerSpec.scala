@@ -25,14 +25,13 @@ import pages.EmptyWaypoints
 import pages.event1.PaymentNaturePage
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.mockito.MockitoSugar.{mock, reset, times, verify}
+import org.mockito.MockitoSugar.{mock, reset, times, verify, never}
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.event1.PaymentNatureView
-
 import scala.concurrent.Future
 
 class PaymentNatureControllerSpec extends SpecBase with BeforeAndAfterEach {
@@ -130,6 +129,7 @@ class PaymentNatureControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
       }
     }
   }
