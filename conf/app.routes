@@ -84,5 +84,8 @@ GET         /new-report/event-1-member-need                    controllers.event
 GET        /new-report/event-1-member-details                  controllers.event1.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-1-member-details                  controllers.event1.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /new-report/event-1-mandate                        controllers.event1.DoYouHoldSignedMandateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/event-1-mandate                        controllers.event1.DoYouHoldSignedMandateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/event-1-mandate                         controllers.event1.DoYouHoldSignedMandateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-1-mandate                         controllers.event1.DoYouHoldSignedMandateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-1-payment-value                   controllers.event1.ValueOfUnauthorisedPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-1-payment-value                   controllers.event1.ValueOfUnauthorisedPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

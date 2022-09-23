@@ -17,34 +17,35 @@
 package controllers.event1
 
 import base.SpecBase
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
 import connectors.UserAnswersCacheConnector
-import forms.event1.DoYouHoldSignedMandateFormProvider
+import forms.event1.ValueOfUnauthorisedPaymentFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{never, times, verify, when}
+import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
-import pages.event1.DoYouHoldSignedMandatePage
+import pages.event1.ValueOfUnauthorisedPaymentPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event1.DoYouHoldSignedMandateView
+import views.html.event1.ValueOfUnauthorisedPaymentView
 
 import scala.concurrent.Future
 
-class DoYouHoldSignedMandateControllerSpec extends SpecBase with BeforeAndAfterEach  {
+class ValueOfUnauthorisedPaymentControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new DoYouHoldSignedMandateFormProvider()
+  private val formProvider = new ValueOfUnauthorisedPaymentFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.DoYouHoldSignedMandateController.onPageLoad(waypoints).url
-  private def postRoute: String = routes.DoYouHoldSignedMandateController.onSubmit(waypoints).url
+  private def getRoute: String = routes.ValueOfUnauthorisedPaymentController.onPageLoad(waypoints).url
+
+  private def postRoute: String = routes.ValueOfUnauthorisedPaymentController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -55,7 +56,7 @@ class DoYouHoldSignedMandateControllerSpec extends SpecBase with BeforeAndAfterE
     reset(mockUserAnswersCacheConnector)
   }
 
-  "DoYouHoldSignedMandate Controller" - {
+  "ValueOfUnauthorisedPayment Controller" - {
 
 
     "must return OK and the correct view for a GET" in {
@@ -67,7 +68,7 @@ class DoYouHoldSignedMandateControllerSpec extends SpecBase with BeforeAndAfterE
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[DoYouHoldSignedMandateView]
+        val view = application.injector.instanceOf[ValueOfUnauthorisedPaymentView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
@@ -77,14 +78,14 @@ class DoYouHoldSignedMandateControllerSpec extends SpecBase with BeforeAndAfterE
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(DoYouHoldSignedMandatePage, true).success.value
+      val userAnswers = UserAnswers().set(ValueOfUnauthorisedPaymentPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[DoYouHoldSignedMandateView]
+        val view = application.injector.instanceOf[ValueOfUnauthorisedPaymentView]
 
         val result = route(application, request).value
 
@@ -106,17 +107,15 @@ class DoYouHoldSignedMandateControllerSpec extends SpecBase with BeforeAndAfterE
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(DoYouHoldSignedMandatePage, true).success.value
+        val updatedAnswers = emptyUserAnswers.set(ValueOfUnauthorisedPaymentPage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual DoYouHoldSignedMandatePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual ValueOfUnauthorisedPaymentPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
     "must return bad request when invalid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
@@ -126,7 +125,7 @@ class DoYouHoldSignedMandateControllerSpec extends SpecBase with BeforeAndAfterE
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[DoYouHoldSignedMandateView]
+        val view = application.injector.instanceOf[ValueOfUnauthorisedPaymentView]
         val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value
