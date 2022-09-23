@@ -113,8 +113,6 @@ class PaymentNatureControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must return bad request when invalid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
