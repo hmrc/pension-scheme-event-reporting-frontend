@@ -1,4 +1,4 @@
-service.name = pension-scheme-event-reporting-frontend
+service.name = Managing pension schemes
 
 site.back = Back
 site.remove = Remove
@@ -35,8 +35,8 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 
-index.title = pension-scheme-event-reporting-frontend
-index.heading = pension-scheme-event-reporting-frontend
+index.title = Event Reporting
+index.heading = Event Reporting
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
 checkYourAnswers.title = Check Your Answers
