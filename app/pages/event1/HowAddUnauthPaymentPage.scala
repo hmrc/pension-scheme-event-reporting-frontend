@@ -14,32 +14,29 @@
  * limitations under the License.
  */
 
-package pages
+package pages.event1
 
-import controllers.routes
-import models.EventSelection.EventWoundUp
-import models.{EventSelection, UserAnswers}
-import pages.eventWindUp.SchemeWindUpDatePage
-import models.EventSelection._
-import pages.event1.HowAddUnauthPaymentPage
-import pages.event18.Event18ConfirmationPage
+import controllers.event1.routes
+import models.UserAnswers
+import models.event1.HowAddUnauthPayment
+import models.event1.HowAddUnauthPayment.Manual
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.{Page, QuestionPage, Waypoints}
 
-case object EventSelectionPage extends QuestionPage[EventSelection] {
+case object HowAddUnauthPaymentPage extends QuestionPage[HowAddUnauthPayment] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "EventSelection"
-
-  override def route(waypoints: Waypoints): Call =
-    routes.EventSelectionController.onPageLoad(waypoints)
+  override def toString: String = "howAddUnauthPayment"
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
-      case Some(Event1) => HowAddUnauthPaymentPage
-      case Some(Event18) => Event18ConfirmationPage
-      case Some(EventWoundUp) => SchemeWindUpDatePage
-      case _ => EventSelectionPage
+      case Some(Manual) => WhoReceivedUnauthPaymentPage
+      case _ => this
     }
+
+  override def route(waypoints: Waypoints): Call = {
+    routes.HowAddUnauthPaymentController.onPageLoad(waypoints)
+  }
 }

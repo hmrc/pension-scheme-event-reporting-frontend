@@ -14,28 +14,18 @@
  * limitations under the License.
  */
 
-package forms.eventWindUp
+package forms.event1
 
-import forms.mappings.Mappings
-import models.TaxYearValidationDetail
-import play.api.data.Form
-
-import java.time.LocalDate
 import javax.inject.Inject
 
-class SchemeWindUpDateFormProvider @Inject() extends Mappings {
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.event1.HowAddUnauthPayment
 
-  def apply(taxYear: Int): Form[LocalDate] =
+class HowAddUnauthPaymentFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[HowAddUnauthPayment] =
     Form(
-      "value" -> localDate(
-        invalidKey = "schemeWindUpDate.error.invalid",
-        allRequiredKey = "schemeWindUpDate.error.required.all",
-        twoRequiredKey = "schemeWindUpDate.error.required.two",
-        requiredKey = "schemeWindUpDate.error.required",
-        taxYearValidationDetail = Some(TaxYearValidationDetail(
-          invalidKey = "schemeWindUpDate.error.outside.taxYear",
-          taxYear = taxYear
-        ))
-      )
+      "value" -> enumerable[HowAddUnauthPayment]("howAddUnauthPayment.error.required")
     )
 }

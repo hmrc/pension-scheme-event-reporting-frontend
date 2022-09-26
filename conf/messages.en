@@ -181,6 +181,24 @@ event18Confirmation.error.required = You must tick the box to continue
 event18Confirmation.change.hidden = Event18Confirmation
 event18Confirmation.summary.title = Event 18: Scheme chargeable payment
 
+howAddUnauthPayment.title = How do you want to add the unauthorised payment details?
+howAddUnauthPayment.heading = How do you want to add the unauthorised payment details?
+howAddUnauthPayment.manual = Manually enter the details
+howAddUnauthPayment.fileUpload = Upload a file
+howAddUnauthPayment.checkYourAnswersLabel = How do you want to add the unauthorised payment details?
+howAddUnauthPayment.error.required = Select how you want to add the unauthorised payment details
+howAddUnauthPayment.change.hidden = How do you want to add the unauthorised payment details?
+howAddUnauthPayment.fileUpload.hint = Uploading a file will overwrite any data you have previously added for this event
+
+whoReceivedUnauthPayment.title = Who received the unauthorised payment or deemed unauthorised payment?
+whoReceivedUnauthPayment.heading = Who received the unauthorised payment or deemed unauthorised payment?
+whoReceivedUnauthPayment.member = Member or someone in respect of the member
+whoReceivedUnauthPayment.employer = Employer or someone in respect of the employer
+whoReceivedUnauthPayment.checkYourAnswersLabel = Who received the unauthorised payment or deemed unauthorised payment?
+whoReceivedUnauthPayment.error.required = Select who received the unauthorised payment or deemed unauthorised payment?
+whoReceivedUnauthPayment.change.hidden = Who received the unauthorised payment or deemed unauthorised payment?
+whoReceivedUnauthPayment.member.hint = If a deemed unauthorised payment is being reported, you must select this option
+
 paymentNature.title = Nature of the payment or deemed payment
 paymentNature.heading = Nature of the payment or deemed payment
 paymentNature.benefitInKind = Benefit in kind

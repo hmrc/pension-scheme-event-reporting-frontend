@@ -21,19 +21,29 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryWhoReceivedUnauthPayment: Arbitrary[event1.WhoReceivedUnauthPayment] =
+    Arbitrary {
+      Gen.oneOf(event1.WhoReceivedUnauthPayment.values)
+    }
+
+  implicit lazy val arbitraryHowAddUnauthPayment: Arbitrary[event1.HowAddUnauthPayment] =
+    Arbitrary {
+      Gen.oneOf(event1.HowAddUnauthPayment.values)
+    }
+
   implicit lazy val arbitraryPaymentNature: Arbitrary[event1.PaymentNature] =
     Arbitrary {
-      Gen.oneOf(event1.PaymentNature.values.toSeq)
+      Gen.oneOf(event1.PaymentNature.values)
     }
 
   implicit lazy val arbitraryeventSelection: Arbitrary[EventSelection] =
     Arbitrary {
-      Gen.oneOf(EventSelection.values.toSeq)
+      Gen.oneOf(EventSelection.values)
     }
 
   implicit lazy val arbitraryTestRadioButton: Arbitrary[TestRadioButton] =
     Arbitrary {
-      Gen.oneOf(TestRadioButton.values.toSeq)
+      Gen.oneOf(TestRadioButton.values)
     }
 
   implicit lazy val arbitraryTestCheckBox: Arbitrary[TestCheckBox] =
