@@ -98,5 +98,11 @@ POST       /companyDetails                        controllers.event1.employer.Co
 GET        /new-report/employer/event-1-company-postcode        controllers.address.EnterPostcodeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "event1Employer")
 POST       /new-report/employer/event-1-company-postcode        controllers.address.EnterPostcodeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "event1Employer")
 
-GET        /new-report/employer/event-1-wibble-postcode        controllers.address.EnterPostcodeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "wibble")
-POST       /new-report/employer/event-1-wibble-postcode        controllers.address.EnterPostcodeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "wibble")
+GET        /new-report/employer/event-1-dummy-postcode        controllers.address.EnterPostcodeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "dummy")
+POST       /new-report/employer/event-1-dummy-postcode        controllers.address.EnterPostcodeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "dummy")
+
+GET        /new-report/employer/event-1-company-address        controllers.address.ChooseAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "event1Employer")
+POST       /new-report/employer/event-1-company-address        controllers.address.ChooseAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "event1Employer")
+
+GET        /new-report/employer/event-1-dummy-address        controllers.address.ChooseAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "dummy")
+POST       /new-report/employer/event-1-dummy-address        controllers.address.ChooseAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "dummy")

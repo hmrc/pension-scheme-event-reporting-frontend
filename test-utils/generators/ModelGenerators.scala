@@ -22,6 +22,11 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryChooseAddress: Arbitrary[address.ChooseAddress] =
+    Arbitrary {
+      Gen.oneOf(address.ChooseAddress.values.toSeq)
+    }
+
   implicit lazy val arbitraryWhoReceivedUnauthPayment: Arbitrary[event1.WhoReceivedUnauthPayment] =
     Arbitrary {
       Gen.oneOf(event1.WhoReceivedUnauthPayment.values)

@@ -264,3 +264,11 @@ enterPostcode.checkYourAnswersLabel = What is x’s postcode?
 enterPostcode.error.required = Enter a postcode
 enterPostcode.error.length = Enter a real postcode
 enterPostcode.change.hidden = What is x’s postcode?
+
+chooseAddress.title = chooseAddress
+chooseAddress.heading = chooseAddress
+chooseAddress.option1 = Option 1
+chooseAddress.option2 = Option 2
+chooseAddress.checkYourAnswersLabel = chooseAddress
+chooseAddress.error.required = Select chooseAddress
+chooseAddress.change.hidden = ChooseAddress
