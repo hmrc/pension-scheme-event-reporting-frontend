@@ -248,3 +248,12 @@ employer.whatYouWillNeed.item2 = the company number
 employer.whatYouWillNeed.item3 = the company address
 employer.whatYouWillNeed.item4 = the nature of the payment
 employer.whatYouWillNeed.item5 = the payment value and date
+
+companyDetails.title = Company Details
+companyDetails.heading = Company Details
+companyDetails.companyName.title = Company or organisation name
+companyDetails.companyNumber.title = Company number
+companyDetails.checkYourAnswersLabel = Company Details
+companyDetails.error.required = Enter company Details
+companyDetails.error.length = CompanyDetails must be 100 characters or less
+companyDetails.change.hidden = CompanyDetails
