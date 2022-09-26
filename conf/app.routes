@@ -94,3 +94,9 @@ GET         /new-report/employer/event-1-what-you-will-need                    c
 
 GET        /companyDetails                        controllers.event1.employer.CompanyDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /companyDetails                        controllers.event1.employer.CompanyDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/employer/event-1-company-postcode        controllers.address.EnterPostcodeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "event1Employer")
+POST       /new-report/employer/event-1-company-postcode        controllers.address.EnterPostcodeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "event1Employer")
+
+GET        /new-report/employer/event-1-wibble-postcode        controllers.address.EnterPostcodeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "wibble")
+POST       /new-report/employer/event-1-wibble-postcode        controllers.address.EnterPostcodeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "wibble")

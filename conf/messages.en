@@ -257,3 +257,10 @@ companyDetails.checkYourAnswersLabel = Company Details
 companyDetails.error.required = Enter company Details
 companyDetails.error.length = CompanyDetails must be 100 characters or less
 companyDetails.change.hidden = CompanyDetails
+
+enterPostcode.title = What is the company’s postcode?
+enterPostcode.heading = What is x’s postcode?
+enterPostcode.checkYourAnswersLabel = What is x’s postcode?
+enterPostcode.error.required = Enter a postcode
+enterPostcode.error.length = Enter a real postcode
+enterPostcode.change.hidden = What is x’s postcode?
