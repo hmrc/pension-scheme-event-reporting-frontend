@@ -25,6 +25,8 @@ import pages.{Page, QuestionPage, Waypoints}
 
 case class EnterPostcodePage(addressJourneyType: AddressJourneyType) extends QuestionPage[String] {
 
+  def getName(userAnswers: UserAnswers): Option[String] = None
+
   override def path: JsPath = JsPath \ addressJourneyType.eventTypeFragment \ addressJourneyType.addressJourneyTypeFragment \ toString
 
   override def toString: String = "enterPostcode"

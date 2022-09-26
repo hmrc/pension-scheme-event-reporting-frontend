@@ -258,24 +258,24 @@ companyDetails.error.required = Enter company Details
 companyDetails.error.length = CompanyDetails must be 100 characters or less
 companyDetails.change.hidden = CompanyDetails
 
-enterPostcode.title = What is the company’s postcode?
-enterPostcode.heading = What is x’s postcode?
+enterPostcode.title = What is {0}’s postcode?
+enterPostcode.heading = What is {0}’s postcode?
 enterPostcode.checkYourAnswersLabel = What is x’s postcode?
 enterPostcode.error.required = Enter a postcode
 enterPostcode.error.length = Enter a real postcode
 enterPostcode.change.hidden = What is x’s postcode?
 
-chooseAddress.title = chooseAddress
-chooseAddress.heading = chooseAddress
+chooseAddress.title = What is {0}’s address?
+chooseAddress.heading = What is {0}’s address?
 chooseAddress.option1 = Option 1
 chooseAddress.option2 = Option 2
-chooseAddress.checkYourAnswersLabel = chooseAddress
-chooseAddress.error.required = Select chooseAddress
-chooseAddress.change.hidden = ChooseAddress
+chooseAddress.checkYourAnswersLabel = What is {0}’s address?
+chooseAddress.error.required = Select address
+chooseAddress.change.hidden = What is {0}’s address?
 
-manualAddress.title = manualAddress
-manualAddress.heading = manualAddress
-manualAddress.checkYourAnswersLabel = manualAddress
-manualAddress.error.required = Enter manualAddress
+manualAddress.title = What is {0}’s address?
+manualAddress.heading = What is {0}’s address?
+manualAddress.checkYourAnswersLabel = What is {0}’s address?
+manualAddress.error.required = Enter address
 manualAddress.error.length = ManualAddress must be 100 characters or less
-manualAddress.change.hidden = ManualAddress
+manualAddress.change.hidden = What is {0}’s address?

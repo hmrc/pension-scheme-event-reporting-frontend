@@ -17,10 +17,9 @@
 package controllers.address
 
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.address.ChooseAddressFormProvider
-import models.UserAnswers
-import models.enumeration.{AddressJourneyType, EventType}
+import models.enumeration.AddressJourneyType
 import pages.Waypoints
 import pages.address.ChooseAddressPage
 import play.api.i18n.I18nSupport
@@ -34,28 +33,31 @@ import scala.concurrent.{ExecutionContext, Future}
 class ChooseAddressController @Inject()(val controllerComponents: MessagesControllerComponents,
                                           identify: IdentifierAction,
                                           getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
                                           userAnswersCacheConnector: UserAnswersCacheConnector,
                                           formProvider: ChooseAddressFormProvider,
                                           view: ChooseAddressView
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(ChooseAddressPage(addressJourneyType))).fold(form)(form.fill)
+  def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
+    (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
+
+    val preparedForm = request.userAnswers.get(ChooseAddressPage(addressJourneyType)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, addressJourneyType))
   }
 
-  def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
+    (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints, addressJourneyType))),
         value => {
-          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+          val originalUserAnswers = request.userAnswers
           val updatedAnswers = originalUserAnswers.setOrException(ChooseAddressPage(addressJourneyType), value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+          userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, updatedAnswers).map { _ =>
             Redirect(ChooseAddressPage(addressJourneyType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }

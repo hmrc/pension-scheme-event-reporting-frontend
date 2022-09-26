@@ -17,9 +17,8 @@
 package controllers.address
 
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.address.EnterPostcodeFormProvider
-import models.UserAnswers
 import models.enumeration.{AddressJourneyType, EventType}
 import pages.Waypoints
 import pages.address.EnterPostcodePage
@@ -34,28 +33,30 @@ import scala.concurrent.{ExecutionContext, Future}
 class EnterPostcodeController @Inject()(val controllerComponents: MessagesControllerComponents,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
                                          userAnswersCacheConnector: UserAnswersCacheConnector,
                                          formProvider: EnterPostcodeFormProvider,
                                          view: EnterPostcodeView
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(EnterPostcodePage(addressJourneyType))).fold(form)(form.fill)
+  def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
+    (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
+    val preparedForm = request.userAnswers.get(EnterPostcodePage(addressJourneyType)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, addressJourneyType))
   }
 
-  def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
+    (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints, addressJourneyType))),
         value => {
-          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+          val originalUserAnswers = request.userAnswers
           val updatedAnswers = originalUserAnswers.setOrException(EnterPostcodePage(addressJourneyType), value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+          userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, updatedAnswers).map { _ =>
             Redirect(EnterPostcodePage(addressJourneyType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }

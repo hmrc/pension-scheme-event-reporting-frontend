@@ -16,6 +16,9 @@
 
 package models.enumeration
 
+import models.UserAnswers
+import pages.event1.employer.CompanyDetailsPage
+import play.api.i18n.Messages
 import play.api.mvc.{JavascriptLiteral, QueryStringBindable}
 
 sealed trait AddressJourneyType {
@@ -23,9 +26,11 @@ sealed trait AddressJourneyType {
   def nodeName: String
   def eventTypeFragment = s"event${eventType.toString}"
   def addressJourneyTypeFragment = s"${nodeName}"
+  val name: UserAnswers => String
+  val entityType: String = ""
 }
 
-class WithEventType(et: EventType, node: String) extends AddressJourneyType {
+class WithDetail(et: EventType, node: String) extends AddressJourneyType {
   override val toString: String = {
     s"event-${eventType.toString}-${nodeName}"
   }
@@ -33,12 +38,20 @@ class WithEventType(et: EventType, node: String) extends AddressJourneyType {
   override def eventType: EventType = et
 
   override def nodeName: String = node
+
+  override val name: UserAnswers => String = _ => ""
 }
 
 object AddressJourneyType extends Enumerable.Implicits {
 
-  case object Event1EmployerAddressJourney extends WithEventType(EventType.Event1, "employerAddress") with AddressJourneyType
-  case object DummyAddressJourney extends WithEventType(EventType.Event1, "dummy") with AddressJourneyType
+  case object Event1EmployerAddressJourney extends WithDetail(EventType.Event1, "employerAddress") with AddressJourneyType {
+    override val name: UserAnswers => String = ua => ua.get(CompanyDetailsPage) match {
+      case Some(cd) => cd.companyName
+      case _ => "company"
+    }
+    override val entityType: String = "the company"
+  }
+  case object DummyAddressJourney extends WithDetail(EventType.Event1, "dummy") with AddressJourneyType
 
   private val values: List[AddressJourneyType] = List(Event1EmployerAddressJourney)
 

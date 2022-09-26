@@ -18,6 +18,7 @@
 
 @import viewmodels.InputWidth._
 @import models.enumeration.AddressJourneyType
+@import models.requests.DataRequest
 
 @this(
     layout: templates.Layout,
@@ -27,9 +28,13 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType)(implicit request: DataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("enterPostcode.title"))) {
+@name=@{
+    addressJourneyType.name(request.userAnswers)
+}
+
+@layout(pageTitle = title(form, messages("enterPostcode.title", addressJourneyType.entityType))) {
 
     @formHelper(action = routes.EnterPostcodeController.onSubmit(waypoints, addressJourneyType)) {
 
@@ -40,7 +45,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("enterPostcode.heading")).asPageHeading()
+                label = LabelViewModel(messages("enterPostcode.heading", name)).asPageHeading()
             )
             .withWidth(Full)
         )

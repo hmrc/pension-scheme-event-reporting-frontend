@@ -17,6 +17,7 @@
 @import models.address.ChooseAddress
 @import controllers.address.routes
 @import models.enumeration.AddressJourneyType
+@import models.requests.DataRequest
 
 @this(
     layout: templates.Layout,
@@ -26,9 +27,13 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType)(implicit request: DataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("chooseAddress.title"))) {
+@name=@{
+    addressJourneyType.name(request.userAnswers)
+}
+
+@layout(pageTitle = title(form, messages("chooseAddress.title", addressJourneyType.entityType))) {
 
     @formHelper(action = routes.ChooseAddressController.onSubmit(waypoints, addressJourneyType), 'autoComplete -> "off") {
 
@@ -39,7 +44,7 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("chooseAddress.heading")).asPageHeading(),
+                legend = LegendViewModel(messages("chooseAddress.heading", name)).asPageHeading(),
                 items  = ChooseAddress.options
             )
         )
