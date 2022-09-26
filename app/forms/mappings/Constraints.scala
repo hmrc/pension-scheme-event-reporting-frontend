@@ -22,7 +22,8 @@ import uk.gov.hmrc.domain.Nino
 
 trait Constraints {
 
-  val regexName = """^[a-zA-Z &`\\\'\.^]{1,35}$"""
+  val regexName = """^[a-zA-Z &`\-\'\.^]{1,35}$"""
+  val regexSurname = """^[a-zA-Z &`\\\-\'\.^]{1,35}$"""
 
   protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =
     Constraint {
