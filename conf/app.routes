@@ -70,11 +70,11 @@ GET         /new-report/event-22-check-your-answers            controllers.Check
 GET         /new-report/event-23-check-your-answers            controllers.CheckYourAnswersController.onPageLoad(eventType: EventType ?= EventType.Event23)
 GET         /new-report/event-24-check-your-answers            controllers.CheckYourAnswersController.onPageLoad(eventType: EventType ?= EventType.Event24)
 
-GET        /new-report/event-1-entry-type                        controllers.event1.HowAddUnauthPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/event-1-entry-type                        controllers.event1.HowAddUnauthPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-1-entry-type                     controllers.event1.HowAddUnauthPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-entry-type                     controllers.event1.HowAddUnauthPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /new-report/event-1-payment-type                        controllers.event1.WhoReceivedUnauthPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/event-1-payment-type                        controllers.event1.WhoReceivedUnauthPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-1-payment-type                   controllers.event1.WhoReceivedUnauthPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-payment-type                   controllers.event1.WhoReceivedUnauthPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /windup                                            controllers.eventWindUp.SchemeWindUpDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /windup                                            controllers.eventWindUp.SchemeWindUpDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

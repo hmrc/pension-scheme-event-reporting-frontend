@@ -19,7 +19,6 @@ package forms.eventWindUp
 import forms.mappings.Mappings
 import models.TaxYearValidationDetail
 import play.api.data.Form
-import play.api.i18n.Messages
 
 import java.time.LocalDate
 import javax.inject.Inject

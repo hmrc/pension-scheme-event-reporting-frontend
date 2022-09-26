@@ -24,7 +24,7 @@ import models.event1.WhoReceivedUnauthPayment
 import pages.EmptyWaypoints
 import pages.event1.WhoReceivedUnauthPaymentPage
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
@@ -109,13 +109,11 @@ class WhoReceivedUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfte
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual WhoReceivedUnauthPaymentPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
     "must return bad request when invalid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
-
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
           .build()
@@ -131,6 +129,7 @@ class WhoReceivedUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfte
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
   }

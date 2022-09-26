@@ -30,7 +30,7 @@ class HowAddUnauthPaymentSpec extends AnyFreeSpec with Matchers with ScalaCheckP
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(HowAddUnauthPayment.values.toSeq)
+      val gen = Gen.oneOf(HowAddUnauthPayment.values)
 
       forAll(gen) {
         howAddUnauthPayment =>
@@ -52,7 +52,7 @@ class HowAddUnauthPaymentSpec extends AnyFreeSpec with Matchers with ScalaCheckP
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(HowAddUnauthPayment.values.toSeq)
+      val gen = Gen.oneOf(HowAddUnauthPayment.values)
 
       forAll(gen) {
         howAddUnauthPayment =>
