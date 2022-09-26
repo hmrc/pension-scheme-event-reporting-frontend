@@ -92,23 +92,24 @@ POST       /new-report/event-1-payment-value                   controllers.event
 
 GET         /new-report/employer/event-1-what-you-will-need                    controllers.event1.employer.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /companyDetails                        controllers.event1.employer.CompanyDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /companyDetails                        controllers.event1.employer.CompanyDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/employer/event-1-company-details                        controllers.event1.employer.CompanyDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/employer/event-1-company-details                        controllers.event1.employer.CompanyDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /new-report/employer/event-1-company-postcode        controllers.address.EnterPostcodeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "event1Employer")
-POST       /new-report/employer/event-1-company-postcode        controllers.address.EnterPostcodeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "event1Employer")
+GET        /new-report/employer/event-1-company-postcode        controllers.address.EnterPostcodeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney)
+POST       /new-report/employer/event-1-company-postcode        controllers.address.EnterPostcodeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney)
 
-GET        /new-report/employer/event-1-dummy-postcode        controllers.address.EnterPostcodeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "dummy")
-POST       /new-report/employer/event-1-dummy-postcode        controllers.address.EnterPostcodeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "dummy")
+GET        /new-report/employer/event-1-dummy-postcode        controllers.address.EnterPostcodeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = DummyAddressJourney)
+POST       /new-report/employer/event-1-dummy-postcode        controllers.address.EnterPostcodeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = DummyAddressJourney)
 
-GET        /new-report/employer/event-1-company-address        controllers.address.ChooseAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "event1Employer")
-POST       /new-report/employer/event-1-company-address        controllers.address.ChooseAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "event1Employer")
+GET        /new-report/employer/event-1-company-address        controllers.address.ChooseAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney)
+POST       /new-report/employer/event-1-company-address        controllers.address.ChooseAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney)
 
-GET        /new-report/employer/event-1-dummy-address        controllers.address.ChooseAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "dummy")
-POST       /new-report/employer/event-1-dummy-address        controllers.address.ChooseAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "dummy")
+GET        /new-report/employer/event-1-dummy-address        controllers.address.ChooseAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = DummyAddressJourney)
+POST       /new-report/employer/event-1-dummy-address        controllers.address.ChooseAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = DummyAddressJourney)
 
-GET        /new-report/employer/event-1-manual-address       controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "event1Employer")
-POST       /new-report/employer/event-1-manual-address       controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "event1Employer")
+GET        /new-report/employer/event-1-manual-address       controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney)
+POST       /new-report/employer/event-1-manual-address       controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney)
 
-GET        /new-report/employer/event-1-dummy-address       controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "dummy")
-POST       /new-report/employer/event-1-dummy-address       controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "dummy")
+GET        /new-report/employer/event-1-dummy-address       controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = DummyAddressJourney)
+POST       /new-report/employer/event-1-dummy-address       controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = DummyAddressJourney)
+

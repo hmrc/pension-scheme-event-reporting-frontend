@@ -17,8 +17,9 @@
 package viewmodels.address.checkAnswers
 
 import models.UserAnswers
-import pages.{CheckAnswersPage, Waypoints}
+import models.enumeration.AddressJourneyType
 import pages.address.ManualAddressPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,16 +28,16 @@ import viewmodels.implicits._
 
 object ManualAddressSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, urlFragment: String)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, addressJourneyType: AddressJourneyType)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ManualAddressPage(urlFragment)).map {
+    answers.get(ManualAddressPage(addressJourneyType)).map {
       answer =>
 
         SummaryListRowViewModel(
           key     = "manualAddress.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", ManualAddressPage(urlFragment).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", ManualAddressPage(addressJourneyType).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("manualAddress.change.hidden"))
           )
         )

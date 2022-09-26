@@ -18,16 +18,17 @@ package pages.address
 
 import controllers.address.routes
 import models.address.ChooseAddress
+import models.enumeration.AddressJourneyType
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Waypoints, QuestionPage}
 
-case class ChooseAddressPage(urlFragment: String) extends QuestionPage[ChooseAddress] {
+case class ChooseAddressPage(addressJourneyType: AddressJourneyType) extends QuestionPage[ChooseAddress] {
 
-  override def path: JsPath = JsPath \ urlFragment \ toString
+  override def path: JsPath = JsPath \ addressJourneyType.eventTypeFragment \ addressJourneyType.addressJourneyTypeFragment \ toString
 
   override def toString: String = "chooseAddress"
 
   override def route(waypoints: Waypoints): Call =
-    routes.ChooseAddressController.onPageLoad(waypoints, urlFragment)
+    routes.ChooseAddressController.onPageLoad(waypoints, addressJourneyType)
 }

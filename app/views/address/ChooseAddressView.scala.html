@@ -16,6 +16,7 @@
 
 @import models.address.ChooseAddress
 @import controllers.address.routes
+@import models.enumeration.AddressJourneyType
 
 @this(
     layout: templates.Layout,
@@ -25,11 +26,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, urlFragment: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("chooseAddress.title"))) {
 
-    @formHelper(action = routes.ChooseAddressController.onSubmit(waypoints, urlFragment), 'autoComplete -> "off") {
+    @formHelper(action = routes.ChooseAddressController.onSubmit(waypoints, addressJourneyType), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))

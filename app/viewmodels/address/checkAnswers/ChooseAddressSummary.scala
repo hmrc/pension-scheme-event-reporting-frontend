@@ -17,8 +17,9 @@
 package viewmodels.address.checkAnswers
 
 import models.UserAnswers
-import pages.{CheckAnswersPage, Waypoints}
+import models.enumeration.AddressJourneyType
 import pages.address.ChooseAddressPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -28,9 +29,9 @@ import viewmodels.implicits._
 
 object ChooseAddressSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, urlFragment: String)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, addressJourneyType: AddressJourneyType)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ChooseAddressPage(urlFragment: String)).map {
+    answers.get(ChooseAddressPage(addressJourneyType)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -43,7 +44,7 @@ object ChooseAddressSummary  {
           key     = "chooseAddress.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", ChooseAddressPage(urlFragment: String).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", ChooseAddressPage(addressJourneyType).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("chooseAddress.change.hidden"))
           )
         )

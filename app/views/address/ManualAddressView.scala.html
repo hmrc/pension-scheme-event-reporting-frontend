@@ -17,6 +17,7 @@
 @import controllers.address.routes
 
 @import viewmodels.InputWidth._
+@import models.enumeration.AddressJourneyType
 
 @this(
     layout: templates.Layout,
@@ -26,11 +27,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, urlFragment: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("manualAddress.title"))) {
 
-    @formHelper(action = routes.ManualAddressController.onSubmit(waypoints, urlFragment)) {
+    @formHelper(action = routes.ManualAddressController.onSubmit(waypoints, addressJourneyType)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

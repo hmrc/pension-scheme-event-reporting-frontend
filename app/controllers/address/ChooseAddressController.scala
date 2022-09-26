@@ -20,7 +20,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.address.ChooseAddressFormProvider
 import models.UserAnswers
-import models.enumeration.EventType
+import models.enumeration.{AddressJourneyType, EventType}
 import pages.Waypoints
 import pages.address.ChooseAddressPage
 import play.api.i18n.I18nSupport
@@ -42,21 +42,21 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
   private val form = formProvider()
   private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints, urlFragment: String): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(ChooseAddressPage(urlFragment))).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, urlFragment))
+  def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(_.get(ChooseAddressPage(addressJourneyType))).fold(form)(form.fill)
+    Ok(view(preparedForm, waypoints, addressJourneyType))
   }
 
-  def onSubmit(waypoints: Waypoints, urlFragment: String): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, urlFragment))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, addressJourneyType))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(ChooseAddressPage(urlFragment), value)
+          val updatedAnswers = originalUserAnswers.setOrException(ChooseAddressPage(addressJourneyType), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(ChooseAddressPage(urlFragment).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(ChooseAddressPage(addressJourneyType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

@@ -33,6 +33,7 @@
 package viewmodels.address.checkAnswers
 
 import models.UserAnswers
+import models.enumeration.AddressJourneyType
 import pages.address.EnterPostcodePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -43,16 +44,16 @@ import viewmodels.implicits._
 
 object EnterPostcodeSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, urlFragment: String)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, addressJourneyType: AddressJourneyType)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(EnterPostcodePage(urlFragment)).map {
+    answers.get(EnterPostcodePage(addressJourneyType)).map {
       answer =>
 
         SummaryListRowViewModel(
           key     = "enterPostcode.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", EnterPostcodePage(urlFragment).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("enterPostcode.change.hidden"))
           )
         )

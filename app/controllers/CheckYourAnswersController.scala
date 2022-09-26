@@ -18,15 +18,15 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event18, WindUp}
+import models.enumeration.{AddressJourneyType, EventType}
 import models.requests.DataRequest
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.address.checkAnswers.{ChooseAddressSummary, ManualAddressSummary}
+import viewmodels.address.checkAnswers.ManualAddressSummary
 import viewmodels.checkAnswers.{Event18ConfirmationSummary, SchemeWindUpDateSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
@@ -56,7 +56,7 @@ class CheckYourAnswersController @Inject()(
   }
 
   private def buildEvent1CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
-    ManualAddressSummary.row(request.userAnswers, waypoints, sourcePage, "event1Employer").toSeq
+    ManualAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1EmployerAddressJourney).toSeq
 
   private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
     SchemeWindUpDateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
