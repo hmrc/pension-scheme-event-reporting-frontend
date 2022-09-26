@@ -19,13 +19,11 @@ package pages.address
 import controllers.address.routes
 import models.UserAnswers
 import models.enumeration.AddressJourneyType
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Page, QuestionPage, Waypoints}
 
 case class EnterPostcodePage(addressJourneyType: AddressJourneyType) extends QuestionPage[String] {
-
-  def getName(userAnswers: UserAnswers): Option[String] = None
 
   override def path: JsPath = JsPath \ addressJourneyType.eventTypeFragment \ addressJourneyType.addressJourneyTypeFragment \ toString
 
@@ -34,7 +32,8 @@ case class EnterPostcodePage(addressJourneyType: AddressJourneyType) extends Que
   override def route(waypoints: Waypoints): Call =
     routes.EnterPostcodeController.onPageLoad(waypoints, addressJourneyType)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+  final override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     ChooseAddressPage(addressJourneyType)
   }
+
 }

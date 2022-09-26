@@ -19,9 +19,10 @@ package pages.address
 import controllers.address.routes
 import models.UserAnswers
 import models.enumeration.AddressJourneyType
+import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Page, QuestionPage, Waypoints}
 
 case class ManualAddressPage(addressJourneyType: AddressJourneyType) extends QuestionPage[String] {
 
@@ -33,6 +34,9 @@ case class ManualAddressPage(addressJourneyType: AddressJourneyType) extends Que
     routes.ManualAddressController.onPageLoad(waypoints, addressJourneyType)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    ChooseAddressPage(addressJourneyType)
+    addressJourneyType match {
+      case Event1EmployerAddressJourney => IndexPage
+      case _ => super.nextPageNormalMode(waypoints, answers)
+    }
   }
 }
