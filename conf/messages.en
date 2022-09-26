@@ -272,3 +272,10 @@ chooseAddress.option2 = Option 2
 chooseAddress.checkYourAnswersLabel = chooseAddress
 chooseAddress.error.required = Select chooseAddress
 chooseAddress.change.hidden = ChooseAddress
+
+manualAddress.title = manualAddress
+manualAddress.heading = manualAddress
+manualAddress.checkYourAnswersLabel = manualAddress
+manualAddress.error.required = Enter manualAddress
+manualAddress.error.length = ManualAddress must be 100 characters or less
+manualAddress.change.hidden = ManualAddress

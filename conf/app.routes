@@ -106,3 +106,9 @@ POST       /new-report/employer/event-1-company-address        controllers.addre
 
 GET        /new-report/employer/event-1-dummy-address        controllers.address.ChooseAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "dummy")
 POST       /new-report/employer/event-1-dummy-address        controllers.address.ChooseAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "dummy")
+
+GET        /new-report/employer/event-1-manual-address       controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "event1Employer")
+POST       /new-report/employer/event-1-manual-address       controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "event1Employer")
+
+GET        /new-report/employer/event-1-dummy-address       controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "dummy")
+POST       /new-report/employer/event-1-dummy-address       controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, urlFragment: String = "dummy")

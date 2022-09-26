@@ -22,6 +22,9 @@ import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryManualAddressPage: Arbitrary[address.ManualAddressPage.type] =
+    Arbitrary(address.ManualAddressPage)
+
   implicit lazy val arbitraryChooseAddressPage: Arbitrary[address.ChooseAddressPage.type] =
     Arbitrary(address.ChooseAddressPage)
 
