@@ -89,3 +89,5 @@ POST       /new-report/event-1-mandate                         controllers.event
 
 GET        /new-report/event-1-payment-value                   controllers.event1.ValueOfUnauthorisedPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-1-payment-value                   controllers.event1.ValueOfUnauthorisedPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/employer/event-1-what-you-will-need                    controllers.event1.employer.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)

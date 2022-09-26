@@ -18,6 +18,7 @@ package journey
 
 import models.EventSelection._
 import models.event1.HowAddUnauthPayment.Manual
+import models.event1.WhoReceivedUnauthPayment.Employer
 import org.scalatest.freespec.AnyFreeSpec
 import pages.event1.{HowAddUnauthPaymentPage, WhoReceivedUnauthPaymentPage}
 import pages.event18.Event18ConfirmationPage
@@ -47,7 +48,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers {
       )
   }
 
-  "test event1 journey" in {
+  "test event1 journey (member)" in {
 
     startingFrom(EventSelectionPage)
       .run(
@@ -55,6 +56,18 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers {
         pageMustBe(HowAddUnauthPaymentPage),
         submitAnswer(HowAddUnauthPaymentPage, Manual),
         pageMustBe(WhoReceivedUnauthPaymentPage)
+      )
+  }
+
+  "test event1 journey (employer)" in {
+
+    startingFrom(EventSelectionPage)
+      .run(
+        submitAnswer(EventSelectionPage, Event1),
+        pageMustBe(HowAddUnauthPaymentPage),
+        submitAnswer(HowAddUnauthPaymentPage, Manual),
+        pageMustBe(WhoReceivedUnauthPaymentPage),
+        submitAnswer(WhoReceivedUnauthPaymentPage, Employer)
       )
   }
 }
