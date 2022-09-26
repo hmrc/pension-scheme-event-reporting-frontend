@@ -28,13 +28,9 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType)(implicit request: DataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String)(implicit request: DataRequest[_], messages: Messages)
 
-@name=@{
-    addressJourneyType.name(request.userAnswers)
-}
-
-@layout(pageTitle = title(form, messages("manualAddress.title", addressJourneyType.entityType))) {
+@layout(pageTitle = title(form, pageTitle)) {
 
     @formHelper(action = routes.ManualAddressController.onSubmit(waypoints, addressJourneyType)) {
 
@@ -45,7 +41,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("manualAddress.heading", name)).asPageHeading()
+                label = LabelViewModel(pageHeading).asPageHeading()
             )
             .withWidth(Full)
         )

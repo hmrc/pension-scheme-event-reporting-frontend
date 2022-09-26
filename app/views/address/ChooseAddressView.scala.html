@@ -27,13 +27,9 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType)(implicit request: DataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String)(implicit request: DataRequest[_], messages: Messages)
 
-@name=@{
-    addressJourneyType.name(request.userAnswers)
-}
-
-@layout(pageTitle = title(form, messages("chooseAddress.title", addressJourneyType.entityType))) {
+@layout(pageTitle = title(form, pageTitle)) {
 
     @formHelper(action = routes.ChooseAddressController.onSubmit(waypoints, addressJourneyType), 'autoComplete -> "off") {
 
@@ -44,7 +40,7 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("chooseAddress.heading", name)).asPageHeading(),
+                legend = LegendViewModel(pageHeading).asPageHeading(),
                 items  = ChooseAddress.options
             )
         )

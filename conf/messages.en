@@ -279,3 +279,5 @@ manualAddress.checkYourAnswersLabel = What is {0}’s address?
 manualAddress.error.required = Enter address
 manualAddress.error.length = ManualAddress must be 100 characters or less
 manualAddress.change.hidden = What is {0}’s address?
+
+event1.employerAddress.chooseAddress.heading = WIBBLE

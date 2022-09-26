@@ -17,41 +17,73 @@
 package models.enumeration
 
 import models.UserAnswers
+import models.requests.DataRequest
 import pages.event1.employer.CompanyDetailsPage
-import play.api.i18n.Messages
-import play.api.mvc.{JavascriptLiteral, QueryStringBindable}
+import play.api.i18n.{Messages, MessagesProvider}
+import play.api.mvc.{AnyContent, JavascriptLiteral, QueryStringBindable}
 
 sealed trait AddressJourneyType {
   def eventType: EventType
+
   def nodeName: String
+
   def eventTypeFragment = s"event${eventType.toString}"
-  def addressJourneyTypeFragment = s"${nodeName}"
+
+  def addressJourneyTypeFragment: String = nodeName
+
   val name: UserAnswers => String
-  val entityType: String = ""
+  val entityType: String
+
+  def heading(whichPage: String)(implicit
+                                 request: DataRequest[AnyContent],
+                                 provider: MessagesProvider): String = {
+    val specificHeadingMsgKey = s"${this.toString}.$whichPage.heading"
+    val msgKeyHeading = if (Messages.isDefinedAt(specificHeadingMsgKey)) {
+      specificHeadingMsgKey
+    } else {
+      s"$whichPage.heading"
+    }
+    Messages(msgKeyHeading, this.name(request.userAnswers))
+  }
+
+  def title(whichPage: String)(implicit
+                               request: DataRequest[AnyContent],
+                               provider: MessagesProvider): String = {
+    val specificTitleMsgKey = s"${this.toString}.$whichPage.title"
+    val msgKeyTitle = if (Messages.isDefinedAt(specificTitleMsgKey)) {
+      specificTitleMsgKey
+    } else {
+      s"$whichPage.title"
+    }
+    Messages(msgKeyTitle, entityType)
+  }
+
 }
 
-class WithDetail(et: EventType, node: String) extends AddressJourneyType {
-  override val toString: String = {
-    s"event-${eventType.toString}-${nodeName}"
-  }
+abstract class WithJourneyTypeDetail(et: EventType, node: String) extends AddressJourneyType {
+  override val toString: String = s"event${eventType.toString}.${nodeName}"
 
   override def eventType: EventType = et
 
   override def nodeName: String = node
 
-  override val name: UserAnswers => String = _ => ""
+  override val name: UserAnswers => String
 }
 
 object AddressJourneyType extends Enumerable.Implicits {
-
-  case object Event1EmployerAddressJourney extends WithDetail(EventType.Event1, "employerAddress") with AddressJourneyType {
+  case object Event1EmployerAddressJourney extends WithJourneyTypeDetail(EventType.Event1, "employerAddress") with AddressJourneyType {
+    override val entityType: String = "the company"
     override val name: UserAnswers => String = ua => ua.get(CompanyDetailsPage) match {
       case Some(cd) => cd.companyName
-      case _ => "company"
+      case _ => entityType
     }
-    override val entityType: String = "the company"
   }
-  case object DummyAddressJourney extends WithDetail(EventType.Event1, "dummy") with AddressJourneyType
+
+  // TODO: Remove this once we have at least two usages of the address journey
+  case object DummyAddressJourney extends WithJourneyTypeDetail(EventType.Event1, "dummy") with AddressJourneyType {
+    override val entityType: String = "dummy entity type"
+    override val name: UserAnswers => String = _ => "dummy name"
+  }
 
   private val values: List[AddressJourneyType] = List(Event1EmployerAddressJourney)
 

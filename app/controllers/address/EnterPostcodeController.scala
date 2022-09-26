@@ -19,7 +19,7 @@ package controllers.address
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.address.EnterPostcodeFormProvider
-import models.enumeration.{AddressJourneyType, EventType}
+import models.enumeration.AddressJourneyType
 import pages.Waypoints
 import pages.address.EnterPostcodePage
 import play.api.i18n.I18nSupport
@@ -31,36 +31,41 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EnterPostcodeController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         userAnswersCacheConnector: UserAnswersCacheConnector,
-                                         formProvider: EnterPostcodeFormProvider,
-                                         view: EnterPostcodeView
-                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                        identify: IdentifierAction,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
+                                        userAnswersCacheConnector: UserAnswersCacheConnector,
+                                        formProvider: EnterPostcodeFormProvider,
+                                        view: EnterPostcodeView
+                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+
+  private val whichAddressPage = "enterPostcode"
 
   private val form = formProvider()
 
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
-    val preparedForm = request.userAnswers.get(EnterPostcodePage(addressJourneyType)).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, addressJourneyType))
-  }
+      val preparedForm = request.userAnswers.get(EnterPostcodePage(addressJourneyType)).fold(form)(form.fill)
+      Ok(view(preparedForm, waypoints, addressJourneyType,
+        addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage)))
+    }
 
   def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, addressJourneyType))),
-        value => {
-          val originalUserAnswers = request.userAnswers
-          val updatedAnswers = originalUserAnswers.setOrException(EnterPostcodePage(addressJourneyType), value)
-          userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, updatedAnswers).map { _ =>
-            Redirect(EnterPostcodePage(addressJourneyType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+      implicit request =>
+        form.bindFromRequest().fold(
+          formWithErrors => {
+            Future.successful(BadRequest(view(formWithErrors, waypoints, addressJourneyType,
+              addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage))))
+          },
+          value => {
+            val originalUserAnswers = request.userAnswers
+            val updatedAnswers = originalUserAnswers.setOrException(EnterPostcodePage(addressJourneyType), value)
+            userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, updatedAnswers).map { _ =>
+              Redirect(EnterPostcodePage(addressJourneyType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            }
           }
-        }
-      )
-  }
+        )
+    }
 
 }
