@@ -60,8 +60,16 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryHowAddUnauthPaymentUserAnswersEntry: Arbitrary[(pages.event1.HowAddUnauthPaymentPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event1.HowAddUnauthPaymentPage.type]
+        page <- arbitrary[pages.event1.HowAddUnauthPaymentPage.type]
         value <- arbitrary[models.event1.HowAddUnauthPayment].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryPaymentNatureUserAnswersEntry: Arbitrary[(pages.event1.PaymentNaturePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[pages.event1.PaymentNaturePage.type]
+        value <- arbitrary[models.event1.PaymentNature].map(Json.toJson(_))
       } yield (page, value)
     }
 

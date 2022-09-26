@@ -70,22 +70,25 @@ GET         /new-report/event-22-check-your-answers            controllers.Check
 GET         /new-report/event-23-check-your-answers            controllers.CheckYourAnswersController.onPageLoad(eventType: EventType ?= EventType.Event23)
 GET         /new-report/event-24-check-your-answers            controllers.CheckYourAnswersController.onPageLoad(eventType: EventType ?= EventType.Event24)
 
-GET         /windup                                            controllers.eventWindUp.SchemeWindUpDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /windup                                            controllers.eventWindUp.SchemeWindUpDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
-
 GET         /new-report/event-1-entry-type                     controllers.event1.HowAddUnauthPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-entry-type                     controllers.event1.HowAddUnauthPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-1-payment-type                   controllers.event1.WhoReceivedUnauthPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-payment-type                   controllers.event1.WhoReceivedUnauthPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
+GET         /windup                                            controllers.eventWindUp.SchemeWindUpDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /windup                                            controllers.eventWindUp.SchemeWindUpDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/member/event-1-payment-nature          controllers.event1.PaymentNatureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/member/event-1-payment-nature          controllers.event1.PaymentNatureController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
 GET         /new-report/event-1-member-need                    controllers.event1.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /new-report/event-1-member-details                  controllers.event1.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/event-1-member-details                  controllers.event1.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-1-member-details                 controllers.event1.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-member-details                 controllers.event1.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /new-report/event-1-mandate                         controllers.event1.DoYouHoldSignedMandateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/event-1-mandate                         controllers.event1.DoYouHoldSignedMandateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-1-mandate                        controllers.event1.DoYouHoldSignedMandateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-mandate                        controllers.event1.DoYouHoldSignedMandateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /new-report/event-1-payment-value                   controllers.event1.ValueOfUnauthorisedPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/event-1-payment-value                   controllers.event1.ValueOfUnauthorisedPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-1-payment-value                  controllers.event1.ValueOfUnauthorisedPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-payment-value                  controllers.event1.ValueOfUnauthorisedPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

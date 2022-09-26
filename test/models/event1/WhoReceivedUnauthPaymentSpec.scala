@@ -30,7 +30,7 @@ class WhoReceivedUnauthPaymentSpec extends AnyFreeSpec with Matchers with ScalaC
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(WhoReceivedUnauthPayment.values.toSeq)
+      val gen = Gen.oneOf(WhoReceivedUnauthPayment.values)
 
       forAll(gen) {
         whoReceivedUnauthPayment =>
@@ -52,7 +52,7 @@ class WhoReceivedUnauthPaymentSpec extends AnyFreeSpec with Matchers with ScalaC
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(WhoReceivedUnauthPayment.values.toSeq)
+      val gen = Gen.oneOf(WhoReceivedUnauthPayment.values)
 
       forAll(gen) {
         whoReceivedUnauthPayment =>

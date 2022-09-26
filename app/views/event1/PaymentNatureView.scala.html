@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import models.event1.HowAddUnauthPayment
+@import models.event1.PaymentNature
 @import controllers.event1.routes
 
 @this(
@@ -27,9 +27,9 @@
 
 @(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("howAddUnauthPayment.title"))) {
+@layout(pageTitle = title(form, messages("paymentNature.title"))) {
 
-    @formHelper(action = routes.HowAddUnauthPaymentController.onSubmit(waypoints), 'autoComplete -> "off") {
+    @formHelper(action = routes.PaymentNatureController.onSubmit(waypoints), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
@@ -38,8 +38,8 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("howAddUnauthPayment.heading")).asPageHeading(),
-                items  = HowAddUnauthPayment.options
+                legend = LegendViewModel(messages("paymentNature.heading")).asPageHeading().withCssClass("govuk-!-margin-bottom-8"),
+                items  = PaymentNature.options
             )
         )
 

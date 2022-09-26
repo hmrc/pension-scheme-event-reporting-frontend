@@ -24,40 +24,40 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class HowAddUnauthPaymentSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class PaymentNatureSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "HowAddUnauthPayment" - {
+  "PaymentNature" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(HowAddUnauthPayment.values)
+      val gen = Gen.oneOf(PaymentNature.values.toSeq)
 
       forAll(gen) {
-        howAddUnauthPayment =>
+        paymentNature =>
 
-          JsString(howAddUnauthPayment.toString).validate[HowAddUnauthPayment].asOpt.value mustEqual howAddUnauthPayment
+          JsString(paymentNature.toString).validate[PaymentNature].asOpt.value mustEqual paymentNature
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!HowAddUnauthPayment.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!PaymentNature.values.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
 
-          JsString(invalidValue).validate[HowAddUnauthPayment] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[PaymentNature] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(HowAddUnauthPayment.values)
+      val gen = Gen.oneOf(PaymentNature.values.toSeq)
 
       forAll(gen) {
-        howAddUnauthPayment =>
+        paymentNature =>
 
-          Json.toJson(howAddUnauthPayment) mustEqual JsString(howAddUnauthPayment.toString)
+          Json.toJson(paymentNature) mustEqual JsString(paymentNature.toString)
       }
     }
   }
