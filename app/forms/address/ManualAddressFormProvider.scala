@@ -29,20 +29,20 @@ class ManualAddressFormProvider @Inject()(countryOptions: CountryOptions) extend
   def apply(): Form[Address] = Form(
     mapping(
       "addressLine1" ->
-        addressLineMapping("messages__error__address_line_1_required", "messages__error__address_line_1_length",
-          "messages__error__address_line_1_invalid"),
+        addressLineMapping("manualAddress.addressLine1.error.required", "manualAddress.addressLine1.error.length",
+          "manualAddress.addressLine1.error.invalid"),
       "addressLine2" ->
-        addressLineMapping("messages__error__address_line_2_required", "messages__error__address_line_2_length",
-          "messages__error__address_line_2_invalid"),
+        addressLineMapping("manualAddress.addressLine2.error.required", "manualAddress.addressLine2.error.length",
+          "manualAddress.addressLine2.error.invalid"),
       "addressLine3" ->
-        optionalAddressLineMapping("messages__error__address_line_3_length", "messages__error__address_line_3_invalid"),
+        optionalAddressLineMapping("manualAddress.addressLine3.error.length", "manualAddress.addressLine3.error.invalid"),
       "addressLine4" ->
-        optionalAddressLineMapping("messages__error__address_line_4_length", "messages__error__address_line_4_invalid"),
+        optionalAddressLineMapping("manualAddress.addressLine4.error.length", "manualAddress.addressLine4.error.invalid"),
       "postCode" ->
-        postCodeWithCountryMapping("messages__error__postcode", "messages__error__postcode_invalid",
-          "messages__error__postcode_nonUK_length"),
+        postCodeWithCountryMapping("manualAddress.postCode.error.required", "enterPostcode.error.invalid",
+          "enterPostcode.error.nonUKLength"),
       "country" ->
-        countryMapping(countryOptions, "messages__error_country_required", "messages__error_country_invalid")
+        countryMapping(countryOptions, "manualAddress.country.error.required", "manualAddress.country.error.invalidd")
     )(Address.apply)(Address.unapply)
   )
 }

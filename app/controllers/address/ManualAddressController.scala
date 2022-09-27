@@ -19,9 +19,11 @@ package controllers.address
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.address.ManualAddressFormProvider
+import models.address.Address
 import models.enumeration.AddressJourneyType
 import pages.Waypoints
 import pages.address.ChooseAddressPage
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -43,7 +45,7 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
 
   private val whichAddressPage = "manualAddress"
 
-  private val form = formProvider()
+  private val form: Form[Address] = formProvider()
 
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
@@ -57,7 +59,7 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
       implicit request =>
         form.bindFromRequest().fold(
           formWithErrors => {
-            Future.successful(BadRequest(view(formWithErrors, waypoints, addressJourneyType,
+            Future.successful(BadRequest(view(addArgsToErrors(formWithErrors, addressJourneyType.name(request.userAnswers)), waypoints, addressJourneyType,
               addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage), countryOptions.options)))
           },
           value => {
@@ -69,5 +71,8 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
           }
         )
     }
+
+  private def addArgsToErrors(form: Form[Address], args: String*): Form[Address] =
+    form copy (errors = form.errors.map(_ copy (args = args)))
 
 }

@@ -25,9 +25,9 @@ class EnterPostcodeFormProvider @Inject() extends AddressMapping {
   def apply(): Form[String] =
     Form(
       "value" -> postCodeMapping(
-        "messages__error__postcode",
-        "messages__error__postcode_length",
-        "messages__error__postcode_invalid"
+        "enterPostcode.error.required",
+        "enterPostcode.error.length",
+        "enterPostcode.error.invalid"
       )
     )
 }

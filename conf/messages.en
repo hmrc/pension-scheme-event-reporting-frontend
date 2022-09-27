@@ -262,8 +262,6 @@ companyDetails.companyNumber.error.length = The company or organisation’s comp
 companyDetails.companyNumber.error.invalidCharacters = The company or organisation’s company number must only include letters and numbers, like 01234567 or AB123456
 companyDetails.change.hidden = CompanyDetails
 
-
-
 enterPostcode.title = What is {0}’s postcode?
 enterPostcode.heading = What is {0}’s postcode?
 enterPostcode.checkYourAnswersLabel = What is x’s postcode?
@@ -272,6 +270,11 @@ enterPostcode.error.length = Enter a real postcode
 enterPostcode.change.hidden = What is x’s postcode?
 enterPostcode.hint = You can
 enterPostcode.link = enter the address manually
+enterPostcode.error.required = Enter a postcode
+enterPostcode.error.length = The postcode cannot be more than 8 characters
+enterPostcode.error.nonUKLength = The postcode cannot be more than 10 characters
+enterPostcode.error.invalid = Enter a postcode in the correct format
+enterPostcode.error.noResults = Postcode cannot be found
 
 chooseAddress.title = What is {0}’s address?
 chooseAddress.heading = What is {0}’s address?
@@ -284,10 +287,20 @@ chooseAddress.change.hidden = What is {0}’s address?
 manualAddress.title = What is {0}’s address?
 manualAddress.heading = What is {0}’s address?
 manualAddress.checkYourAnswersLabel = What is {0}’s address?
-manualAddress.error.required = Enter address
-manualAddress.error.length = ManualAddress must be 100 characters or less
 manualAddress.change.hidden = What is {0}’s address?
-
+manualAddress.addressLine1.error.required = Enter the first line of {0}’s address
+manualAddress.addressLine1.error.length = Address line 1 must be 35 characters or fewer
+manualAddress.addressLine1.error.invalid = Address line 1 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+manualAddress.addressLine2.error.required = Enter the second line of {0}’s address
+manualAddress.addressLine2.error.length = Address line 2 must be 35 characters or fewer
+manualAddress.addressLine2.error.invalid = Address line 2 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+manualAddress.addressLine3.error.length = Address line 3 must be 35 characters or fewer
+manualAddress.addressLine3.error.invalid = Address line 3 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+manualAddress.addressLine4.error.length = Address line 4 must be 35 characters or fewer
+manualAddress.addressLine4.error.invalid = Address line 4 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+manualAddress.postCode.error.required = Enter a postcode
+manualAddress.country.error.required = Enter a country
+manualAddress.country.error.invalid = Invalid country
 manualAddress.addressLine1 = Address Line 1
 manualAddress.addressLine2 = Address Line 2
 manualAddress.addressLine3 = Address Line 3 (optional)
@@ -295,10 +308,5 @@ manualAddress.addressLine4 = Address Line 4 (optional)
 manualAddress.postCode = Postcode (if UK)
 manualAddress.country = Country
 
-messages__error__postcode = Enter a postcode
-messages__error__postcode_length = The postcode cannot be more than 8 characters
-messages__error__postcode_nonUK_length = The postcode cannot be more than 10 characters
-messages__error__postcode_invalid = Enter a postcode in the correct format
-messages__error__postcode_failed = There is a problem with the address finder. Try again or enter the address manually
-messages__error__postcode_no_results = Postcode cannot be found
+
 

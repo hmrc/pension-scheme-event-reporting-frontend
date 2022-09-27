@@ -62,8 +62,8 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
               addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage))))
           },
           postCode => {
-            val noResults: Message = Message("messages__error__postcode_no_results", postCode)
-            val invalidPostcode: Message = Message("messages__error__postcode_no_results", postCode)
+            val noResults: Message = Message("enterPostcode.error.noResults", postCode)
+            val invalidPostcode: Message = Message("enterPostcode.error.noResults", postCode)
 
             addressLookupConnector.addressLookupByPostCode(postCode).flatMap {
               case Nil =>
