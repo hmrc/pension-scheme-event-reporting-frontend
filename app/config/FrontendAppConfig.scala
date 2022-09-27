@@ -34,6 +34,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   lazy val eventReportingUrl: String = servicesConfig.baseUrl("pension-scheme-event-reporting")
   lazy val pensionsAdministratorUrl: String = servicesConfig.baseUrl("pension-administrator")
+  lazy val addressLookUp: String = s"${servicesConfig.baseUrl("address-lookup")}"
 
   private val contactHost = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "pension-scheme-event-reporting-frontend"
@@ -44,6 +45,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val loginUrl: String         = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String       = configuration.get[String]("urls.signOut")
+
+
 
   def administratorOrPractitionerUrl: String = loadConfig("urls.administratorOrPractitioner")
   def youNeedToRegisterUrl: String = loadConfig("urls.youNeedToRegisterPage")
