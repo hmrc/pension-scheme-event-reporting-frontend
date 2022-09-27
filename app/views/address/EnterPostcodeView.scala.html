@@ -46,6 +46,9 @@
             .withWidth(Full)
         )
 
+        <p class="govuk-body">
+            @messages("enterPostcode.hint") <a href="@routes.ManualAddressController.onPageLoad(waypoints, addressJourneyType).url" class="govuk-link">@messages("enterPostcode.link")</a>.
+        </p>
         @govukButton(
             ButtonViewModel(messages("site.continue"))
         )

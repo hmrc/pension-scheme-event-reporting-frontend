@@ -29,7 +29,7 @@ case class ChooseAddressPage(addressJourneyType: AddressJourneyType) extends Que
 
   override def path: JsPath = JsPath \ addressJourneyType.eventTypeFragment \ addressJourneyType.addressJourneyTypeFragment \ toString
 
-  override def toString: String = "chooseAddress"
+  override def toString: String = "address"
 
   override def route(waypoints: Waypoints): Call =
     routes.ChooseAddressController.onPageLoad(waypoints, addressJourneyType)

@@ -26,9 +26,9 @@ import play.api.mvc.Call
 
 case class EnterPostcodePage(addressJourneyType: AddressJourneyType) extends QuestionPage[Seq[TolerantAddress]] {
 
-  override def path: JsPath = JsPath \ addressJourneyType.eventTypeFragment \ addressJourneyType.addressJourneyTypeFragment \ toString
+  override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "enterPostcode"
+  override def toString: String = "addressList"
 
   override def route(waypoints: Waypoints): Call =
     routes.EnterPostcodeController.onPageLoad(waypoints, addressJourneyType)

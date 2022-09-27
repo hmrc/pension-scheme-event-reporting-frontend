@@ -264,6 +264,8 @@ enterPostcode.checkYourAnswersLabel = What is x’s postcode?
 enterPostcode.error.required = Enter a postcode
 enterPostcode.error.length = Enter a real postcode
 enterPostcode.change.hidden = What is x’s postcode?
+enterPostcode.hint = You can
+enterPostcode.link = enter the address manually
 
 chooseAddress.title = What is {0}’s address?
 chooseAddress.heading = What is {0}’s address?
@@ -295,3 +297,4 @@ messages__error__postcode_nonUK_length = The postcode cannot be more than 10 cha
 messages__error__postcode_invalid = Enter a postcode in the correct format
 messages__error__postcode_failed = There is a problem with the address finder. Try again or enter the address manually
 messages__error__postcode_no_results = Postcode cannot be found
+
