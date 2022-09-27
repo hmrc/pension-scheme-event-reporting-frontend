@@ -281,3 +281,10 @@ manualAddress.error.length = ManualAddress must be 100 characters or less
 manualAddress.change.hidden = What is {0}’s address?
 
 event1.employerAddress.chooseAddress.heading = WIBBLE
+
+messages__error__postcode = Enter a postcode
+messages__error__postcode_length = The postcode cannot be more than 8 characters
+messages__error__postcode_nonUK_length = The postcode cannot be more than 10 characters
+messages__error__postcode_invalid = Enter a postcode in the correct format
+messages__error__postcode_failed = There is a problem with the address finder. Try again or enter the address manually
+messages__error__postcode_no_results = Postcode cannot be found

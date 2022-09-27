@@ -14,27 +14,6 @@
  * limitations under the License.
  */
 
-package forms.mappings
+package utils
 
-trait Transforms {
-
-  protected def noSpaceWithUpperCaseTransform(value: String): String =
-    toUpperCaseAlphaOnly(strip(value))
-
-  protected def toUpperCaseAlphaOnly(value: String): String =
-    value.map {
-      case c if ('a' to 'z').contains(c) => c.toUpper
-      case c => c
-    }
-
-  protected def strip(value: String): String = {
-    value.replaceAll(" ", "")
-  }
-
-  protected def noTransform(value: String): String = {
-    value
-  }
-
-  protected def minimiseSpace(value: String): String =
-    value.replaceAll(" {2,}", " ")
-}
+case class InputOption(value: String, label: String, dataTarget: Option[String] = None, hint: Set[String] = Set.empty)

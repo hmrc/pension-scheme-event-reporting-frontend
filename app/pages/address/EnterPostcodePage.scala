@@ -18,12 +18,13 @@ package pages.address
 
 import controllers.address.routes
 import models.UserAnswers
+import models.address.TolerantAddress
 import models.enumeration.AddressJourneyType
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class EnterPostcodePage(addressJourneyType: AddressJourneyType) extends QuestionPage[String] {
+case class EnterPostcodePage(addressJourneyType: AddressJourneyType) extends QuestionPage[Seq[TolerantAddress]] {
 
   override def path: JsPath = JsPath \ addressJourneyType.eventTypeFragment \ addressJourneyType.addressJourneyTypeFragment \ toString
 

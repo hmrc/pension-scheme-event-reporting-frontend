@@ -23,6 +23,9 @@ import models.{Enumerable, TaxYearValidationDetail}
 
 trait Mappings extends Formatters with Constraints {
 
+  protected def optionalText(): FieldMapping[Option[String]] =
+    of(optionalStringFormatter)
+
   protected def text(errorKey: String = "error.required", args: Seq[String] = Seq.empty): FieldMapping[String] =
     of(stringFormatter(errorKey, args))
 

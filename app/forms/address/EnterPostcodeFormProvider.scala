@@ -16,16 +16,18 @@
 
 package forms.address
 
-import javax.inject.Inject
-
-import forms.mappings.Mappings
+import forms.mappings.AddressMapping
 import play.api.data.Form
 
-class EnterPostcodeFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
+class EnterPostcodeFormProvider @Inject() extends AddressMapping {
   def apply(): Form[String] =
     Form(
-      "value" -> text("enterPostcode.error.required")
-        .verifying(maxLength(100, "enterPostcode.error.length"))
+      "value" -> postCodeMapping(
+        "messages__error__postcode",
+        "messages__error__postcode_length",
+        "messages__error__postcode_invalid"
+      )
     )
 }

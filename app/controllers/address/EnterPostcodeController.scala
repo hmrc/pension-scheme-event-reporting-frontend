@@ -16,15 +16,18 @@
 
 package controllers.address
 
-import connectors.UserAnswersCacheConnector
+import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.address.EnterPostcodeFormProvider
 import models.enumeration.AddressJourneyType
+import models.requests.DataRequest
 import pages.Waypoints
 import pages.address.EnterPostcodePage
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.Message
 import views.html.address.EnterPostcodeView
 
 import javax.inject.Inject
@@ -36,7 +39,8 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
                                         requireData: DataRequiredAction,
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                         formProvider: EnterPostcodeFormProvider,
-                                        view: EnterPostcodeView
+                                        view: EnterPostcodeView,
+                                        addressLookupConnector:AddressLookupConnector
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val whichAddressPage = "enterPostcode"
@@ -45,8 +49,7 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
 
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
-      val preparedForm = request.userAnswers.get(EnterPostcodePage(addressJourneyType)).fold(form)(form.fill)
-      Ok(view(preparedForm, waypoints, addressJourneyType,
+      Ok(view(form, waypoints, addressJourneyType,
         addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage)))
     }
 
@@ -58,14 +61,34 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
             Future.successful(BadRequest(view(formWithErrors, waypoints, addressJourneyType,
               addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage))))
           },
-          value => {
-            val originalUserAnswers = request.userAnswers
-            val updatedAnswers = originalUserAnswers.setOrException(EnterPostcodePage(addressJourneyType), value)
-            userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, updatedAnswers).map { _ =>
-              Redirect(EnterPostcodePage(addressJourneyType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+          postCode => {
+            val noResults: Message = Message("messages__error__postcode_no_results", postCode)
+            val invalidPostcode: Message = Message("messages__error__postcode_no_results", postCode)
+
+            addressLookupConnector.addressLookupByPostCode(postCode).flatMap {
+              case Nil =>
+                Future.successful(BadRequest(view(formWithError(noResults), waypoints, addressJourneyType,
+                  addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage))))
+
+              case addresses =>
+
+                val originalUserAnswers = request.userAnswers
+                val updatedAnswers = originalUserAnswers.setOrException(EnterPostcodePage(addressJourneyType), addresses)
+                userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, updatedAnswers).map { _ =>
+                  Redirect(EnterPostcodePage(addressJourneyType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+                }
+
+            } recoverWith {
+              case _ =>
+                Future.successful(BadRequest(view(formWithError(invalidPostcode), waypoints, addressJourneyType,
+                  addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage))))
             }
           }
         )
     }
+
+  private def formWithError(message: Message)(implicit request: DataRequest[AnyContent]): Form[String] = {
+    form.withError("postcode", message)
+  }
 
 }

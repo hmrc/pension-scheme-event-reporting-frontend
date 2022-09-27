@@ -17,15 +17,21 @@
 package connectors
 
 
-import com.google.inject.{ImplementedBy, Inject}
+import com.google.inject.Inject
+import config.FrontendAppConfig
+import models.address.TolerantAddress
+import play.api.Logger
+import play.api.http.Status.OK
+import play.api.libs.json.{JsObject, Json, Reads}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddressLookupConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
 
-  private val logger  = Logger(classOf[AddressLookupConnectorImpl])
+  private val logger  = Logger(classOf[AddressLookupConnector])
 
-  override def addressLookupByPostCode(postCode: String)
+  def addressLookupByPostCode(postCode: String)
                                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TolerantAddress]] = {
     val schemeHc = hc.withExtraHeaders("X-Hmrc-Origin" -> "PODS")
 
