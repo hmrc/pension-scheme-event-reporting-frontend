@@ -18,24 +18,20 @@ package pages.event1
 
 import controllers.event1.routes
 import models.UserAnswers
-import models.event1.WhoReceivedUnauthPayment
-import models.event1.WhoReceivedUnauthPayment.Member
+import models.event1.MembersDetails
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object WhoReceivedUnauthPaymentPage extends QuestionPage[WhoReceivedUnauthPayment] {
+case object MembersDetailsPage extends QuestionPage[MembersDetails] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "whoReceivedUnauthPayment"
+  override def toString: String = "membersDetails"
 
   override def route(waypoints: Waypoints): Call =
-    routes.WhoReceivedUnauthPaymentController.onPageLoad(waypoints)
+    routes.MembersDetailsController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    answers.get(this) match {
-      case Some(Member) => WhatYouWillNeedPage
-      case _ => this
-    }
+    DoYouHoldSignedMandatePage
 }

@@ -90,11 +90,11 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
       chars <- listOfN(length, arbitrary[Char])
     } yield chars.mkString
 
-  def stringsLongerThan(minLength: Int): Gen[String] = for {
-    maxLength <- (minLength * 2).max(100)
-    length    <- Gen.chooseNum(minLength + 1, maxLength)
-    chars     <- listOfN(length, arbitrary[Char])
-  } yield chars.mkString
+  def stringsLongerThan(minLength: Int): Gen[String] =
+    for {
+      base <- Gen.listOfN(minLength + 1, alphaNumChar).map(_.mkString)
+      surplus <- alphaNumStr
+    } yield base + surplus
 
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =
     nonEmptyString suchThat (!excluded.contains(_))
@@ -116,5 +116,16 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
       millis =>
         Instant.ofEpochMilli(millis).atOffset(ZoneOffset.UTC).toLocalDate
     }
+  }
+
+  def regexWildcardChar: Gen[Char] = {
+    arbitrary[Char].retryUntil(c =>
+      c.getType match {
+        case Character.LINE_SEPARATOR => false
+        case Character.PARAGRAPH_SEPARATOR => false
+        case Character.CONTROL => false
+        case _ => true
+      }
+    )
   }
 }

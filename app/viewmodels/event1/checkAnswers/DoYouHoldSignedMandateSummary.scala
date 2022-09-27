@@ -17,33 +17,28 @@
 package viewmodels.checkAnswers
 
 import models.UserAnswers
-import pages.event18.Event18ConfirmationPage
 import pages.{CheckAnswersPage, Waypoints}
+import pages.event1.DoYouHoldSignedMandatePage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Empty, HtmlContent}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object Event18ConfirmationSummary  {
+object DoYouHoldSignedMandateSummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(Event18ConfirmationPage).map {
+    answers.get(DoYouHoldSignedMandatePage).map {
       answer =>
 
-        val value = if(answer) {
-          ValueViewModel(HtmlContent(messages(s"event18Confirmation.confirmation")))
-        } else {
-          ValueViewModel(Empty)
-        }
+        val value = if (answer) "site.yes" else "site.no"
 
         SummaryListRowViewModel(
-          key     = "event18Confirmation.summary.title",
-          value   = value,
+          key     = "doYouHoldSignedMandate.checkYourAnswersLabel",
+          value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", Event18ConfirmationPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("event18Confirmation.change.hidden"))
+            ActionItemViewModel("site.change", DoYouHoldSignedMandatePage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("doYouHoldSignedMandate.change.hidden"))
           )
         )
     }

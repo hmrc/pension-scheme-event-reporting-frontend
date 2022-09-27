@@ -14,36 +14,33 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event1.checkAnswers
 
 import models.UserAnswers
-import pages.event18.Event18ConfirmationPage
 import pages.{CheckAnswersPage, Waypoints}
+import pages.event1.MembersDetailsPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Empty, HtmlContent}
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object Event18ConfirmationSummary  {
+object MembersDetailsSummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(Event18ConfirmationPage).map {
+    answers.get(MembersDetailsPage).map {
       answer =>
 
-        val value = if(answer) {
-          ValueViewModel(HtmlContent(messages(s"event18Confirmation.confirmation")))
-        } else {
-          ValueViewModel(Empty)
-        }
+        val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"membersDetails.$answer")).toString))
 
         SummaryListRowViewModel(
-          key     = "event18Confirmation.summary.title",
+          key     = "membersDetails.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", Event18ConfirmationPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("event18Confirmation.change.hidden"))
+            ActionItemViewModel("site.change", MembersDetailsPage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("membersDetails.change.hidden"))
           )
         )
     }
