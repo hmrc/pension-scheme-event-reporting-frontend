@@ -18,6 +18,9 @@
 @import controllers.address.routes
 @import models.enumeration.AddressJourneyType
 @import models.requests.DataRequest
+@import models.address.TolerantAddress
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 @this(
     layout: templates.Layout,
@@ -27,7 +30,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String)(implicit request: DataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String, addresses: Seq[TolerantAddress])(implicit request: DataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, pageTitle)) {
 
@@ -37,12 +40,23 @@
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
-        @govukRadios(
-            RadiosViewModel(
-                field  = form("value"),
-                legend = LegendViewModel(pageHeading).asPageHeading(),
-                items  = ChooseAddress.options
-            )
+        @govukRadios(Radios(
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(pageHeading),
+                    classes = "govuk-visually-hidden",
+                    isPageHeading = false,
+                ))
+            )),
+            items = for((address, i) <-  addresses.zipWithIndex)
+                yield {
+                    RadioItem(
+                        content = Text(address.print),
+                        value = Some(i.toString),
+                        id = Some(form("value").id+"-"+i.toString),
+                    )
+                }
+            ).withFormField(form("value"))
         )
 
         @govukButton(

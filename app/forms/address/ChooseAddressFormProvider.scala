@@ -17,15 +17,16 @@
 package forms.address
 
 import javax.inject.Inject
-
-import forms.mappings.Mappings
+import forms.mappings.{Constraints, Mappings}
 import play.api.data.Form
 import models.address.ChooseAddress
 
 class ChooseAddressFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[ChooseAddress] =
+  def apply(addresses: Seq[_]): Form[Int] =
     Form(
-      "value" -> enumerable[ChooseAddress]("chooseAddress.error.required")
+      "value" -> int("chooseAddress.error.required")
+        .verifying(minimumValue(0, "error.invalid"))
+        .verifying(maximumValue(addresses.length - 1, "error.invalid"))
     )
+
 }
