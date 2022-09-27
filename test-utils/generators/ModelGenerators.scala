@@ -18,14 +18,10 @@ package generators
 
 import models._
 import models.event1.MembersDetails
+import models.event1.employer.CompanyDetails
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
-
-  implicit lazy val arbitraryChooseAddress: Arbitrary[address.ChooseAddress] =
-    Arbitrary {
-      Gen.oneOf(address.ChooseAddress.values.toSeq)
-    }
 
   implicit lazy val arbitraryWhoReceivedUnauthPayment: Arbitrary[event1.WhoReceivedUnauthPayment] =
     Arbitrary {
@@ -39,6 +35,16 @@ trait ModelGenerators {
         lastName <- Seq("validLastName1", "validLastName2")
         nino <- Seq("AA123456D", "AA123457D")
       } yield MembersDetails(firstName, lastName, nino)
+
+      Gen.oneOf(list)
+    }
+
+  implicit lazy val arbitraryCompanyDetails: Arbitrary[CompanyDetails] =
+    Arbitrary {
+      val list = for {
+        companyName <- Seq("validCompanyName1", "validCompanyName2")
+        companyNumber <- Seq("validCompanyNumber1", "validCompanyNumber2")
+      } yield CompanyDetails(companyName, companyNumber)
 
       Gen.oneOf(list)
     }

@@ -18,7 +18,6 @@
 
 @import viewmodels.InputWidth._
 @import models.enumeration.AddressJourneyType
-@import models.requests.DataRequest
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import utils.InputOption
@@ -32,7 +31,7 @@
     govukSelect: GovukSelect
 )
 
-@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String, options: Seq[InputOption])(implicit request: DataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String, options: Seq[InputOption])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, pageTitle)) {
 

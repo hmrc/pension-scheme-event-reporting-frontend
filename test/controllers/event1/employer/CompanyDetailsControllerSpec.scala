@@ -18,6 +18,7 @@ package controllers.event1.employer
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
+import data.SampleData._
 import forms.event1.employer.CompanyDetailsFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
@@ -50,8 +51,6 @@ class CompanyDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validValue = "abc"
-
   override def beforeEach: Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
@@ -77,7 +76,7 @@ class CompanyDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(CompanyDetailsPage, validValue).success.value
+      val userAnswers = UserAnswers().set(CompanyDetailsPage, companyDetails).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -89,7 +88,7 @@ class CompanyDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(companyDetails), waypoints)(request, messages(application)).toString
       }
     }
 
@@ -103,10 +102,13 @@ class CompanyDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
+            "companyName" -> companyDetails.companyName,
+            "companyNumber" -> companyDetails.companyNumber
+          )
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(CompanyDetailsPage, validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(CompanyDetailsPage, companyDetails).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual CompanyDetailsPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url

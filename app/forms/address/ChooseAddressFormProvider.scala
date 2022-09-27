@@ -16,10 +16,10 @@
 
 package forms.address
 
-import javax.inject.Inject
-import forms.mappings.{Constraints, Mappings}
+import forms.mappings.Mappings
 import play.api.data.Form
-import models.address.ChooseAddress
+
+import javax.inject.Inject
 
 class ChooseAddressFormProvider @Inject() extends Mappings {
   def apply(addresses: Seq[_]): Form[Int] =

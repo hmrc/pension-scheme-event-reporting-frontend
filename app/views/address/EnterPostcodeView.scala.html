@@ -18,7 +18,6 @@
 
 @import viewmodels.InputWidth._
 @import models.enumeration.AddressJourneyType
-@import models.requests.DataRequest
 
 @this(
     layout: templates.Layout,
@@ -28,7 +27,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String)(implicit request: DataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, pageTitle)) {
 

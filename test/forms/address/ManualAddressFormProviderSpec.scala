@@ -16,16 +16,18 @@
 
 package forms.address
 
+import data.SampleData._
 import forms.behaviours.StringFieldBehaviours
-import play.api.data.FormError
+import models.address.Address
+import play.api.data.{Form, FormError}
 
 class ManualAddressFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "manualAddress.error.required"
-  val lengthKey = "manualAddress.error.length"
-  val maxLength = 100
+  private val requiredKey = "manualAddress.error.required"
+  private val lengthKey = "manualAddress.error.length"
+  private val maxLength = 100
 
-  val form = new ManualAddressFormProvider()()
+  private val form: Form[Address] = new ManualAddressFormProvider(countryOptions)()
 
   ".value" - {
 

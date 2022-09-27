@@ -72,7 +72,7 @@ trait Constraints {
 
   protected def safeText(errorKey: String): Constraint[String] = regexp(regexSafeText, errorKey)
 
-  protected def country(countryOptions: CountryOptions, errorKey: String): Constraint[String] =
+  protected def country(countryOptions: CountryOptions, errorKey: String): Constraint[String] = {
     Constraint {
       input =>
         countryOptions.options
@@ -80,6 +80,7 @@ trait Constraints {
           .map(_ => Valid)
           .getOrElse(Invalid(errorKey))
     }
+  }
 
   implicit def convertToOptionalConstraint[T](constraint: Constraint[T]): Constraint[Option[T]] =
     Constraint {

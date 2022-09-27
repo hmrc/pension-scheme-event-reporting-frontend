@@ -18,7 +18,7 @@ package pages.address
 
 import controllers.address.routes
 import models.UserAnswers
-import models.address.{Address, ChooseAddress}
+import models.address.Address
 import models.enumeration.AddressJourneyType
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import pages.{IndexPage, Page, QuestionPage, Waypoints}

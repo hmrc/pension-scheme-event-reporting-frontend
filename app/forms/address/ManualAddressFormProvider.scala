@@ -42,7 +42,7 @@ class ManualAddressFormProvider @Inject()(countryOptions: CountryOptions) extend
         postCodeWithCountryMapping("manualAddress.postCode.error.required", "enterPostcode.error.invalid",
           "enterPostcode.error.nonUKLength"),
       "country" ->
-        countryMapping(countryOptions, "manualAddress.country.error.required", "manualAddress.country.error.invalidd")
+        countryMapping(countryOptions, "manualAddress.country.error.required", "manualAddress.country.error.invalid")
     )(Address.apply)(Address.unapply)
   )
 }

@@ -16,25 +16,29 @@
 
 package forms.address
 
+import data.SampleData._
 import forms.behaviours.OptionFieldBehaviours
-import models.address.ChooseAddress
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
 
 class ChooseAddressFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new ChooseAddressFormProvider()()
+  val form = new ChooseAddressFormProvider()(seqAddresses)
 
   ".value" - {
 
     val fieldName = "value"
     val requiredKey = "chooseAddress.error.required"
 
-    behave like optionsField[ChooseAddress](
-      form,
-      fieldName,
-      validValues  = ChooseAddress.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    "bind valid value" in {
+        val result: Form[Int] = form.bind(Map(fieldName -> "1"))
+      result.errors mustBe empty
+        result.value mustEqual Some(1)
+    }
+
+    "not bind invalid value" in {
+      val result: Form[Int] = form.bind(Map(fieldName -> "2"))
+      result.errors.size mustBe 1
+    }
 
     behave like mandatoryField(
       form,

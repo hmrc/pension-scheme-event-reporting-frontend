@@ -18,18 +18,22 @@ package controllers.address
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
+import data.SampleData._
 import forms.address.ManualAddressFormProvider
-import models.UserAnswers
+import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
-import pages.address.ManualAddressPage
+import pages.address.ChooseAddressPage
+import pages.event1.employer.CompanyDetailsPage
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import utils.CountryOptions
 import views.html.address.ManualAddressView
 
 import scala.concurrent.Future
@@ -38,19 +42,21 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new ManualAddressFormProvider()
+  private val formProvider = new ManualAddressFormProvider(countryOptions)
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.ManualAddressController.onPageLoad(waypoints).url
-  private def postRoute: String = routes.ManualAddressController.onSubmit(waypoints).url
+  private def getRoute: String = routes.ManualAddressController.onPageLoad(waypoints, Event1EmployerAddressJourney).url
+
+  private def postRoute: String = routes.ManualAddressController.onSubmit(waypoints, Event1EmployerAddressJourney).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
+    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
+    bind[CountryOptions].toInstance(countryOptions)
   )
 
-  private val validValue = "abc"
+  private val entityType = "the company"
 
   override def beforeEach: Unit = {
     super.beforeEach
@@ -61,7 +67,9 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val ua = emptyUserAnswers.setOrException(CompanyDetailsPage, companyDetails)
+
+      val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -71,15 +79,18 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[ManualAddressView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, Event1EmployerAddressJourney,
+          Messages("manualAddress.title", entityType),
+          Messages("manualAddress.heading", companyDetails.companyName), countryOptions.options)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(ManualAddressPage, validValue).success.value
+      val ua = emptyUserAnswers.setOrException(CompanyDetailsPage, companyDetails)
+        .setOrException(ChooseAddressPage(Event1EmployerAddressJourney), seqAddresses.head)
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -89,7 +100,9 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(seqAddresses.head), waypoints, Event1EmployerAddressJourney,
+          Messages("manualAddress.title", entityType),
+          Messages("manualAddress.heading", companyDetails.companyName), countryOptions.options)(request, messages(application)).toString
       }
     }
 
@@ -97,19 +110,27 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
+      val ua = emptyUserAnswers.setOrException(CompanyDetailsPage, companyDetails)
+
+      val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
+            "addressLine1" -> seqTolerantAddresses.head.addressLine1.get,
+            "addressLine2" -> seqTolerantAddresses.head.addressLine2.get,
+            "addressLine3" -> seqTolerantAddresses.head.addressLine3.get,
+            "addressLine4" -> seqTolerantAddresses.head.addressLine4.get,
+            "postCode" -> seqTolerantAddresses.head.postcode.get,
+            "country" -> seqTolerantAddresses.head.countryOpt.get
+          )
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(ManualAddressPage, validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(ChooseAddressPage(Event1EmployerAddressJourney), seqAddresses.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ManualAddressPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual ChooseAddressPage(Event1EmployerAddressJourney)
+          .navigate(waypoints, emptyUserAnswers, updatedAnswers).url
       }
     }
 
@@ -117,21 +138,23 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
+      val ua = emptyUserAnswers.setOrException(CompanyDetailsPage, companyDetails)
+
+      val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
-
-        val view = application.injector.instanceOf[ManualAddressView]
-        val boundForm = form.bind(Map("value" -> ""))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
+            "addressLine1" -> "",
+            "addressLine2" -> seqTolerantAddresses.head.addressLine2.get,
+            "addressLine3" -> seqTolerantAddresses.head.addressLine3.get,
+            "addressLine4" -> seqTolerantAddresses.head.addressLine4.get,
+            "postCode" -> seqTolerantAddresses.head.postcode.get,
+            "country" -> seqTolerantAddresses.head.countryOpt.get
+          )
 
         val result = route(application, request).value
-
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
       }
     }
   }
