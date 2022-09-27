@@ -21,10 +21,11 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import forms.address.ManualAddressFormProvider
 import models.enumeration.AddressJourneyType
 import pages.Waypoints
-import pages.address.ManualAddressPage
+import pages.address.ChooseAddressPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.CountryOptions
 import views.html.address.ManualAddressView
 
 import javax.inject.Inject
@@ -36,7 +37,8 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
                                         requireData: DataRequiredAction,
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                         formProvider: ManualAddressFormProvider,
-                                        view: ManualAddressView
+                                        view: ManualAddressView,
+                                        val countryOptions: CountryOptions
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val whichAddressPage = "manualAddress"
@@ -45,9 +47,9 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
 
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
-      val preparedForm = request.userAnswers.get(ManualAddressPage(addressJourneyType)).fold(form)(form.fill)
+      val preparedForm = request.userAnswers.get(ChooseAddressPage(addressJourneyType)).fold(form)(form.fill)
       Ok(view(preparedForm, waypoints, addressJourneyType,
-        addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage)))
+        addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage), countryOptions.options))
     }
 
   def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
@@ -56,13 +58,13 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
         form.bindFromRequest().fold(
           formWithErrors => {
             Future.successful(BadRequest(view(formWithErrors, waypoints, addressJourneyType,
-              addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage))))
+              addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage), countryOptions.options)))
           },
           value => {
             val originalUserAnswers = request.userAnswers
-            val updatedAnswers = originalUserAnswers.setOrException(ManualAddressPage(addressJourneyType), value)
+            val updatedAnswers = originalUserAnswers.setOrException(ChooseAddressPage(addressJourneyType), value)
             userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, updatedAnswers).map { _ =>
-              Redirect(ManualAddressPage(addressJourneyType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+              Redirect(ChooseAddressPage(addressJourneyType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
             }
           }
         )

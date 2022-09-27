@@ -16,16 +16,33 @@
 
 package forms.address
 
+import forms.mappings.AddressMapping
+import models.address.Address
+import play.api.data.Form
+import play.api.data.Forms.mapping
+import utils.CountryOptions
+
 import javax.inject.Inject
 
-import forms.mappings.Mappings
-import play.api.data.Form
+class ManualAddressFormProvider @Inject()(countryOptions: CountryOptions) extends AddressMapping {
 
-class ManualAddressFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("manualAddress.error.required")
-        .verifying(maxLength(100, "manualAddress.error.length"))
-    )
+  def apply(): Form[Address] = Form(
+    mapping(
+      "addressLine1" ->
+        addressLineMapping("messages__error__address_line_1_required", "messages__error__address_line_1_length",
+          "messages__error__address_line_1_invalid"),
+      "addressLine2" ->
+        addressLineMapping("messages__error__address_line_2_required", "messages__error__address_line_2_length",
+          "messages__error__address_line_2_invalid"),
+      "addressLine3" ->
+        optionalAddressLineMapping("messages__error__address_line_3_length", "messages__error__address_line_3_invalid"),
+      "addressLine4" ->
+        optionalAddressLineMapping("messages__error__address_line_4_length", "messages__error__address_line_4_invalid"),
+      "postCode" ->
+        postCodeWithCountryMapping("messages__error__postcode", "messages__error__postcode_invalid",
+          "messages__error__postcode_nonUK_length"),
+      "country" ->
+        countryMapping(countryOptions, "messages__error_country_required", "messages__error_country_invalid")
+    )(Address.apply)(Address.unapply)
+  )
 }

@@ -280,6 +280,13 @@ manualAddress.error.required = Enter address
 manualAddress.error.length = ManualAddress must be 100 characters or less
 manualAddress.change.hidden = What is {0}’s address?
 
+manualAddress.addressLine1 = Address Line 1
+manualAddress.addressLine2 = Address Line 2
+manualAddress.addressLine3 = Address Line 3 (optional)
+manualAddress.addressLine4 = Address Line 4 (optional)
+manualAddress.postCode = Postcode (if UK)
+manualAddress.country = Country
+
 event1.employerAddress.chooseAddress.heading = WIBBLE
 
 messages__error__postcode = Enter a postcode
