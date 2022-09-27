@@ -254,9 +254,15 @@ companyDetails.heading = Company Details
 companyDetails.companyName.title = Company or organisation name
 companyDetails.companyNumber.title = Company number
 companyDetails.checkYourAnswersLabel = Company Details
-companyDetails.error.required = Enter company Details
-companyDetails.error.length = CompanyDetails must be 100 characters or less
+companyDetails.companyName.error.required = Enter the company or organisation’s name
+companyDetails.companyName.error.length = The company or organisation’s name must be 160 characters or fewer
+companyDetails.companyName.error.invalidCharacters = The company name contains invalid characters
+companyDetails.companyNumber.error.required = Enter the company or organisation’s company number
+companyDetails.companyNumber.error.length = The company or organisation’s company number must be 7 or 8 characters, like 0123456 or AB123456
+companyDetails.companyNumber.error.invalidCharacters = The company or organisation’s company number must only include letters and numbers, like 01234567 or AB123456
 companyDetails.change.hidden = CompanyDetails
+
+
 
 enterPostcode.title = What is {0}’s postcode?
 enterPostcode.heading = What is {0}’s postcode?
@@ -288,8 +294,6 @@ manualAddress.addressLine3 = Address Line 3 (optional)
 manualAddress.addressLine4 = Address Line 4 (optional)
 manualAddress.postCode = Postcode (if UK)
 manualAddress.country = Country
-
-event1.employerAddress.chooseAddress.heading = WIBBLE
 
 messages__error__postcode = Enter a postcode
 messages__error__postcode_length = The postcode cannot be more than 8 characters

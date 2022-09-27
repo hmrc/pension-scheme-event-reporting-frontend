@@ -25,13 +25,32 @@ import javax.inject.Inject
 
 class CompanyDetailsFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[CompanyDetails] =
-    Form(
-      mapping(
-        "companyName" -> text("companyDetails.error.required")
-        .verifying(maxLength(100, "companyDetails.error.length")),
-      "companyNumber" -> text("companyDetails.error.required")
-        .verifying(maxLength(100, "companyDetails.error.length"))
-      )(CompanyDetails.apply)(CompanyDetails.unapply)
-    )
+  private val companyNameLength: Int = 160
+  private val companyNumberMinLength: Int = 6
+  private val companyNumberMaxLength: Int = 8
+
+  def apply(): Form[CompanyDetails] = Form(
+    mapping(
+      "companyName" -> text("companyDetails.companyName.error.required")
+        .verifying(
+          firstError(
+            maxLength(
+              companyNameLength,
+              "companyDetails.companyName.error.lengthh"
+            ),
+            safeText("companyDetails.companyName.error.invalidCharacters")
+          )
+        ),
+      "companyNumber" -> text("companyDetails.companyNumber.error.required")
+        .verifying(
+          firstError(
+            maxLength(companyNumberMaxLength, "companyDetails.companyNumber.error.length"),
+            minLength(companyNumberMinLength, "companyDetails.companyNumber.error.length"),
+            safeText("companyDetails.companyNumber.error.invalidCharacters")
+          )
+        )
+    )(CompanyDetails.apply)(CompanyDetails.unapply)
+  )
+
+
 }

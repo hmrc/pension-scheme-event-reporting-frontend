@@ -42,6 +42,8 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        <h1 class="govuk-heading-xl">@pageHeading</h1>
+
         @govukInput(
             InputViewModel(
                 field = form("addressLine1"),

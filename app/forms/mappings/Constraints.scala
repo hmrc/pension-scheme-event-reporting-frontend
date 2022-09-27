@@ -27,6 +27,7 @@ trait Constraints {
   val regexPostcode = """^[A-Z]{1,2}[0-9][0-9A-Z]?\s?[0-9][A-Z]{2}$"""
   val regexPostCodeNonUk = """^([0-9]+-)*[0-9]+$"""
   val regexAddressLine = """^[A-Za-z0-9 &!'‘’(),./\u2014\u2013\u2010\u002d]{1,35}$"""
+  val regexSafeText = """^[a-zA-Z0-9\u00C0-\u00FF !#$%&'‘’"“”«»()*+,./:;=?@\\\[\]|~£€¥\u005C\u2014\u2013\u2010\u005F\u005E\u0060\u002d]{1,160}$"""
 
   protected def postCode(errorKey: String): Constraint[String] = regexp(regexPostcode, errorKey)
 
@@ -68,6 +69,8 @@ trait Constraints {
           Invalid(errorKey, maximum)
         }
     }
+
+  protected def safeText(errorKey: String): Constraint[String] = regexp(regexSafeText, errorKey)
 
   protected def country(countryOptions: CountryOptions, errorKey: String): Constraint[String] =
     Constraint {
@@ -111,6 +114,14 @@ trait Constraints {
         Valid
       case _ =>
         Invalid(errorKey, maximum)
+    }
+
+  protected def minLength(minimum: Int, errorKey: String): Constraint[String] =
+    Constraint {
+      case str if str.length >= minimum =>
+        Valid
+      case _ =>
+        Invalid(errorKey, minimum)
     }
 
   protected def maxDate(maximum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =

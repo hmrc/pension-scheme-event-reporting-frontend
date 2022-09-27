@@ -18,10 +18,11 @@ package pages.event1.employer
 
 import controllers.event1.employer.routes
 import models.UserAnswers
+import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.event1.employer.CompanyDetails
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Page, QuestionPage, Waypoints}
 
 case object CompanyDetailsPage extends QuestionPage[CompanyDetails] {
 
@@ -33,5 +34,5 @@ case object CompanyDetailsPage extends QuestionPage[CompanyDetails] {
     routes.CompanyDetailsController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    WhatYouWillNeedPage
+  pages.address.EnterPostcodePage(Event1EmployerAddressJourney)
 }
