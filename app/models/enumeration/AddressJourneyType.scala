@@ -38,28 +38,11 @@ sealed trait AddressJourneyType {
 
   def heading(whichPage: String)(implicit
                                  request: DataRequest[AnyContent],
-                                 provider: MessagesProvider): Message = {
-    val specificHeadingMsgKey = s"${this.toString}.$whichPage.heading"
-    val msgKeyHeading = if (Messages.isDefinedAt(specificHeadingMsgKey)) {
-      specificHeadingMsgKey
-    } else {
-      s"$whichPage.heading"
-    }
-    Message(msgKeyHeading, this.name(request.userAnswers))
-  }
+                                 provider: MessagesProvider): Message
 
   def title(whichPage: String)(implicit
                                request: DataRequest[AnyContent],
-                               provider: MessagesProvider): Message = {
-    val specificTitleMsgKey = s"${this.toString}.$whichPage.title"
-    val msgKeyTitle = if (Messages.isDefinedAt(specificTitleMsgKey)) {
-      specificTitleMsgKey
-    } else {
-      s"$whichPage.title"
-    }
-    Message(msgKeyTitle, entityType)
-  }
-
+                               provider: MessagesProvider): Message
 }
 
 abstract class WithJourneyTypeDetail(et: EventType, node: String) extends AddressJourneyType {
@@ -70,10 +53,18 @@ abstract class WithJourneyTypeDetail(et: EventType, node: String) extends Addres
   override def nodeName: String = node
 
   override val name: UserAnswers => Message
+
+  override def heading(whichPage: String)(implicit
+                                          request: DataRequest[AnyContent],
+                                          provider: MessagesProvider): Message = Message(s"$whichPage.heading", this.name(request.userAnswers))
+
+  override def title(whichPage: String)(implicit
+                                        request: DataRequest[AnyContent],
+                                        provider: MessagesProvider): Message = Message(s"$whichPage.title", entityType)
 }
 
 object AddressJourneyType extends Enumerable.Implicits {
-  case object Event1EmployerAddressJourney extends WithJourneyTypeDetail(EventType.Event1, "employerAddress") with AddressJourneyType {
+  case object Event1EmployerAddressJourney extends WithJourneyTypeDetail(EventType.Event1, "employerAddress") {
     override val entityType: Message = Message("entityType.theCompany")
     override val name: UserAnswers => Message = ua => ua.get(CompanyDetailsPage) match {
       case Some(cd) => Literal(cd.companyName)
@@ -85,6 +76,25 @@ object AddressJourneyType extends Enumerable.Implicits {
   case object DummyAddressJourney extends WithJourneyTypeDetail(EventType.Event1, "dummy") with AddressJourneyType {
     override val entityType: Message = Message("dummy entity type")
     override val name: UserAnswers => Message = _ => Message("dummy name")
+    // Examples below as to how to override the header/ title message key on address pages if necessary:-
+    //
+    //    override def heading(whichPage: String)(implicit
+    //                                            request: DataRequest[AnyContent],
+    //                                            provider: MessagesProvider): Message = {
+    //      whichPage match {
+    //        case "chooseAddress" => Message("another-message-keya", this.name(request.userAnswers))
+    //        case _ => super.heading(whichPage)
+    //      }
+    //    }
+    //
+    //    override def title(whichPage: String)(implicit
+    //                                          request: DataRequest[AnyContent],
+    //                                          provider: MessagesProvider): Message = {
+    //      whichPage match {
+    //        case "chooseAddress" => Message("another-message-keyb", this.name(request.userAnswers))
+    //        case _ => super.heading(whichPage)
+    //      }
+    //    }
   }
 
   private val values: List[AddressJourneyType] = List(Event1EmployerAddressJourney)
