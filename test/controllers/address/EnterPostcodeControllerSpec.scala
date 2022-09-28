@@ -27,6 +27,7 @@ import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
 import pages.address.EnterPostcodePage
+import pages.event1.employer.CompanyDetailsPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -45,6 +46,7 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.EnterPostcodeController.onPageLoad(waypoints, Event1EmployerAddressJourney).url
+
   private def postRoute: String = routes.EnterPostcodeController.onSubmit(waypoints, Event1EmployerAddressJourney).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -62,7 +64,9 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val ua = emptyUserAnswers.setOrException(CompanyDetailsPage, companyDetails)
+
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -72,7 +76,9 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[EnterPostcodeView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, Event1EmployerAddressJourney, "", "")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, Event1EmployerAddressJourney,
+          messages("enterPostcode.title", "the company"),
+          messages("enterPostcode.heading", companyDetails.companyName))(request, messages(application)).toString
       }
     }
 
@@ -86,7 +92,7 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "zz11zz"))
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.setOrException(EnterPostcodePage(Event1EmployerAddressJourney), seqTolerantAddresses)
@@ -114,7 +120,6 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(form, waypoints, Event1EmployerAddressJourney, "", "")(request, messages(application)).toString
       }
     }
   }

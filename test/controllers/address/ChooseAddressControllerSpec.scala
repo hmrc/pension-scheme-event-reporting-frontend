@@ -27,6 +27,7 @@ import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
+import pages.event1.employer.CompanyDetailsPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -45,6 +46,7 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.ChooseAddressController.onPageLoad(waypoints, Event1EmployerAddressJourney).url
+
   private def postRoute: String = routes.ChooseAddressController.onSubmit(waypoints, Event1EmployerAddressJourney).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -61,6 +63,7 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
     "must return OK and the correct view for a GET" in {
       val ua = emptyUserAnswers
         .setOrException(EnterPostcodePage(Event1EmployerAddressJourney), seqTolerantAddresses)
+        .setOrException(CompanyDetailsPage, companyDetails)
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -73,7 +76,10 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(form, waypoints, Event1EmployerAddressJourney, "", "", seqTolerantAddresses)(request, messages(application)).toString
+          view(form, waypoints, Event1EmployerAddressJourney,
+            messages("chooseAddress.title", "the company"),
+            messages("chooseAddress.heading", companyDetails.companyName),
+            seqTolerantAddresses)(request, messages(application)).toString
       }
     }
 
@@ -116,7 +122,6 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(form, waypoints, Event1EmployerAddressJourney, "", "", seqTolerantAddresses)(request, messages(application)).toString
       }
     }
   }
