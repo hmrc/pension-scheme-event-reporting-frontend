@@ -17,7 +17,7 @@
 package controllers.address
 
 import base.SpecBase
-import connectors.UserAnswersCacheConnector
+import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
 import data.SampleData._
 import forms.address.EnterPostcodeFormProvider
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
@@ -44,20 +44,23 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val mockAddressLookupConnector = mock[AddressLookupConnector]
 
   private def getRoute: String = routes.EnterPostcodeController.onPageLoad(waypoints, Event1EmployerAddressJourney).url
 
   private def postRoute: String = routes.EnterPostcodeController.onSubmit(waypoints, Event1EmployerAddressJourney).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
+    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
+    bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
   )
 
   private val validValue = "abc"
 
   override def beforeEach: Unit = {
     super.beforeEach
-    reset(mockUserAnswersCacheConnector)
+    reset(mockUserAnswersCacheConnector, mockAddressLookupConnector)
+    when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any())).thenReturn(Future.successful(seqTolerantAddresses))
   }
 
   "EnterPostcode Controller" - {
