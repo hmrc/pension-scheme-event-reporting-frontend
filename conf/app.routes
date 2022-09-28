@@ -93,7 +93,7 @@ POST        /new-report/event-1-mandate                        controllers.event
 GET         /new-report/event-1-payment-value                  controllers.event1.ValueOfUnauthorisedPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-payment-value                  controllers.event1.ValueOfUnauthorisedPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET         /new-report/employer/event-1-what-you-will-need    controllers.event1.employer.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/employer/event-1-employer-need         controllers.event1.employer.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET        /new-report/employer/event-1-company-details        controllers.event1.employer.CompanyDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/employer/event-1-company-details        controllers.event1.employer.CompanyDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
@@ -104,8 +104,8 @@ POST       /new-report/employer/event-1-company-postcode       controllers.addre
 GET        /new-report/employer/event-1-company-address        controllers.address.ChooseAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney)
 POST       /new-report/employer/event-1-company-address        controllers.address.ChooseAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney)
 
-GET        /new-report/employer/event-1-manual-address         controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney)
-POST       /new-report/employer/event-1-manual-address         controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney)
+GET        /new-report/employer/event-1-company-manual-address         controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney)
+POST       /new-report/employer/event-1-company-manual-address         controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney)
 
 # TODO: Remove the dummy routes below when we add the second address journey into the service. There need to be at least 2 address routes to avoid compile errors.
 
@@ -118,6 +118,5 @@ POST       /new-report/employer/event-1-dummy-address          controllers.addre
 GET        /new-report/employer/event-1-dummy-address          controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = DummyAddressJourney)
 POST       /new-report/employer/event-1-dummy-address          controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = DummyAddressJourney)
 
-
-GET        /new-report/employer/event-1-payment-nature        controllers.event1.employer.PaymentNatureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/employer/event-1-payment-nature        controllers.event1.employer.PaymentNatureController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/employer/event-1-employer-payment-nature        controllers.event1.employer.PaymentNatureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/employer/event-1-employer-payment-nature        controllers.event1.employer.PaymentNatureController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
