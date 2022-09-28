@@ -39,14 +39,16 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
                                         view: ChooseAddressView
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
+
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
       request.userAnswers.get(EnterPostcodePage(addressJourneyType)) match {
         case Some(addresses) =>
           val form = formProvider(addresses)
+          val page = ChooseAddressPage(addressJourneyType)
           Ok(view(form, waypoints, addressJourneyType,
-            addressJourneyType.title(ChooseAddressPage(addressJourneyType)),
-            addressJourneyType.heading(ChooseAddressPage(addressJourneyType)),
+            addressJourneyType.title(page),
+            addressJourneyType.heading(page),
             addresses
           ))
         case _ => Redirect(controllers.routes.IndexController.onPageLoad.url)
@@ -56,15 +58,24 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
   def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
       implicit request =>
-
+        val page = ChooseAddressPage(addressJourneyType)
         request.userAnswers.get(EnterPostcodePage(addressJourneyType)) match {
           case Some(addresses) =>
             val form = formProvider(addresses)
             form.bindFromRequest().fold(
               formWithErrors => {
-                Future.successful(BadRequest(view(formWithErrors, waypoints, addressJourneyType,
-                  addressJourneyType.title(ChooseAddressPage(addressJourneyType)),
-                  addressJourneyType.heading(ChooseAddressPage(addressJourneyType)), addresses)))
+                Future.successful(
+                  BadRequest(
+                    view(
+                      formWithErrors,
+                      waypoints,
+                      addressJourneyType,
+                      addressJourneyType.title(page),
+                      addressJourneyType.heading(page),
+                      addresses
+                    )
+                  )
+                )
               },
               value => {
                 val originalUserAnswers = request.userAnswers
@@ -72,7 +83,7 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
                   case Some(address) =>
                     val updatedAnswers = originalUserAnswers.setOrException(ManualAddressPage(addressJourneyType), address)
                     userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, updatedAnswers).map { _ =>
-                      Redirect(ChooseAddressPage(addressJourneyType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+                      Redirect(page.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
                     }
                   case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
                 }
@@ -80,8 +91,6 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
             )
           case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
         }
-
-
     }
 
 }

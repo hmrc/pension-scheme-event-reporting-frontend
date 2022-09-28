@@ -25,7 +25,7 @@ import pages.Waypoints
 import pages.address.EnterPostcodePage
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.Message
 import views.html.address.EnterPostcodeView
@@ -40,50 +40,61 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                         formProvider: EnterPostcodeFormProvider,
                                         view: EnterPostcodeView,
-                                        addressLookupConnector:AddressLookupConnector
+                                        addressLookupConnector: AddressLookupConnector
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
-      Ok(view(form, waypoints, addressJourneyType,
-        addressJourneyType.title(EnterPostcodePage(addressJourneyType)),
-        addressJourneyType.heading(EnterPostcodePage(addressJourneyType))))
+      val page = EnterPostcodePage(addressJourneyType)
+      Ok(
+        view(
+          form,
+          waypoints,
+          addressJourneyType,
+          addressJourneyType.title(page),
+          addressJourneyType.heading(page)
+        )
+      )
     }
 
   def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
       implicit request =>
+        val page = EnterPostcodePage(addressJourneyType)
+        def renderView(yy: Form[String]): Future[Result] = {
+          Future.successful(
+            BadRequest(
+              view(
+                yy,
+                waypoints,
+                addressJourneyType,
+                addressJourneyType.title(page),
+                addressJourneyType.heading(page)
+              )
+            )
+          )
+        }
+
         form.bindFromRequest().fold(
-          formWithErrors => {
-            Future.successful(BadRequest(view(formWithErrors, waypoints, addressJourneyType,
-              addressJourneyType.title(EnterPostcodePage(addressJourneyType)),
-              addressJourneyType.heading(EnterPostcodePage(addressJourneyType)))))
-          },
+          formWithErrors => renderView(formWithErrors),
           postCode => {
             val noResults: Message = Message("enterPostcode.error.noResults", postCode)
             val invalidPostcode: Message = Message("enterPostcode.error.noResults", postCode)
-
             addressLookupConnector.addressLookupByPostCode(postCode).flatMap {
               case Nil =>
-                Future.successful(BadRequest(view(formWithError(noResults), waypoints, addressJourneyType,
-                  addressJourneyType.title(EnterPostcodePage(addressJourneyType)),
-                  addressJourneyType.heading(EnterPostcodePage(addressJourneyType)))))
-
+                renderView(formWithError(noResults))
               case addresses =>
-
                 val originalUserAnswers = request.userAnswers
-                val updatedAnswers = originalUserAnswers.setOrException(EnterPostcodePage(addressJourneyType), addresses)
+                val updatedAnswers = originalUserAnswers.setOrException(page, addresses)
                 userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, updatedAnswers).map { _ =>
-                  Redirect(EnterPostcodePage(addressJourneyType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+                  Redirect(page.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
                 }
 
             } recoverWith {
               case _ =>
-                Future.successful(BadRequest(view(formWithError(invalidPostcode), waypoints, addressJourneyType,
-                  addressJourneyType.title(EnterPostcodePage(addressJourneyType)),
-                  addressJourneyType.heading(EnterPostcodePage(addressJourneyType)))))
+                renderView(formWithError(invalidPostcode))
             }
           }
         )
