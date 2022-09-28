@@ -26,6 +26,7 @@ class CompanyDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
   private val form = new CompanyDetailsFormProvider()()
 
   private val companyNameLength: Int = 160
+  private val companyNumberLength: Int = 8
 
   ".companyName" - {
 
@@ -59,6 +60,41 @@ class CompanyDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
       fieldName,
       "{invalid}",
       error = FormError(fieldName, invalidKey, Seq(regexSafeText))
+    )
+  }
+
+  ".companyNumber" - {
+
+    val fieldName = "companyNumber"
+    val requiredKey = "companyDetails.companyNumber.error.required"
+    val lengthKey = "companyDetails.companyNumber.error.length"
+    val invalidKey = "companyDetails.companyNumber.error.invalidCharacters"
+    val maxLength = companyNumberLength
+
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      RegexpGen.from(regexCrn)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like fieldWithRegex(
+      form,
+      fieldName,
+      "AB12$212",
+      error = FormError(fieldName, invalidKey, Seq(regexCrn))
     )
   }
 }

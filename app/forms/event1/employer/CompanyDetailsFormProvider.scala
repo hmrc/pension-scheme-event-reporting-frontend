@@ -46,7 +46,8 @@ class CompanyDetailsFormProvider @Inject() extends Mappings {
           firstError(
             maxLength(companyNumberMaxLength, "companyDetails.companyNumber.error.length"),
             minLength(companyNumberMinLength, "companyDetails.companyNumber.error.length"),
-            safeText("companyDetails.companyNumber.error.invalidCharacters")
+            safeText("companyDetails.companyNumber.error.invalidCharacters"),
+            companyNumber("companyDetails.companyNumber.error.invalidCharacters")
           )
         )
     )(CompanyDetails.apply)(CompanyDetails.unapply)

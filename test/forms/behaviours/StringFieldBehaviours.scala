@@ -58,7 +58,7 @@ trait StringFieldBehaviours extends FieldBehaviours {
                      invalidString: String,
                      error: FormError): Unit = {
 
-    "not bind strings invalidated by regex" in {
+    s"not bind string $invalidString invalidated by regex " in {
       val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
       result.errors mustEqual Seq(error)
     }
