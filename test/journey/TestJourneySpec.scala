@@ -89,7 +89,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(EnterPostcodePage(Event1EmployerAddressJourney), seqTolerantAddresses),
         pageMustBe(ChooseAddressPage(Event1EmployerAddressJourney)),
         submitAnswer(ChooseAddressPage(Event1EmployerAddressJourney), seqAddresses.head),
-        pageMustBe(IndexPage)
+        pageMustBe(employer.PaymentNaturePage)
       )
 
   }

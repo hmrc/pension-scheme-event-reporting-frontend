@@ -326,3 +326,13 @@ manualAddress.country = Country
 
 entityType.theCompany = the company
 
+paymentNature.title = Nature of the payment or deemed payment
+paymentNature.heading = Nature of the payment or deemed payment
+paymentNature.loansExceeding50PercentOfFundValue = Loans to or in respect of the employer exceeding 50% of the value of the fund
+paymentNature.residentialProperty  = Residential property held directly or indirectly by an investment-regulated pension scheme
+paymentNature.tangibleMoveableProperty  = Tangible moveable property held directly or indirectly by an investment-regulated pension scheme
+paymentNature.courtOrder  = Court order payment/confiscation order
+paymentNature.other = Other
+paymentNature.checkYourAnswersLabel = Nature of the payment or deemed payment
+paymentNature.error.required = Select the nature of the payment or deemed payment
+paymentNature.change.hidden = Nature of the payment or deemed payment
