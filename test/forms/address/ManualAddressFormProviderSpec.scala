@@ -16,40 +16,105 @@
 
 package forms.address
 
-import data.SampleData._
-import forms.behaviours.StringFieldBehaviours
+import forms.behaviours.{AddressBehaviours, FormBehaviours}
 import models.address.Address
-import play.api.data.{Form, FormError}
+import utils.FakeCountryOptions
 
-class ManualAddressFormProviderSpec extends StringFieldBehaviours {
+import scala.util.Random
 
-  private val requiredKey = "manualAddress.error.required"
-  private val lengthKey = "manualAddress.error.length"
-  private val maxLength = 100
+class ManualAddressFormProviderSpec extends AddressBehaviours with FormBehaviours {
 
-  private val form: Form[Address] = new ManualAddressFormProvider(countryOptions)()
 
-  ".value" - {
+  private def alphaString(max: Int = maxAddressLineLength) =
+    Random.alphanumeric take Random.shuffle(Range(1, max).toList).head mkString ""
 
-    val fieldName = "value"
+  private val addressLine1 = alphaString()
+  private val addressLine2 = alphaString()
+  private val addressLine3 = alphaString()
+  private val addressLine4 = alphaString()
+  private val postCode = "ZZ1 1ZZ"
 
-    behave like fieldThatBindsValidData(
+  private val countryOptions = FakeCountryOptions()
+
+  val validData: Map[String, String] = Map(
+    "addressLine1" -> addressLine1,
+    "addressLine2" -> addressLine2,
+    "addressLine3" -> addressLine3,
+    "addressLine4" -> addressLine4,
+    "postCode" -> postCode,
+    "country" -> "GB"
+  )
+
+  val form = new ManualAddressFormProvider(countryOptions)()
+
+  "Address form" - {
+    behave like questionForm(Address(
+      addressLine1,
+      addressLine2,
+      Some(addressLine3),
+      Some(addressLine4),
+      Some(postCode),
+      "GB"
+    ))
+
+    behave like formWithCountry(
       form,
-      fieldName,
-      stringsWithMaxLength(maxLength)
+      "country",
+      "manualAddress.country.error.required",
+      "manualAddress.country.error.invalid",
+      countryOptions,
+      Map(
+        "addressLine1" -> addressLine1,
+        "addressLine2" -> addressLine2
+      )
     )
 
-    behave like fieldWithMaxLength(
+    behave like formWithCountryAndPostCode(
       form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      "manualAddress.postCode.error.required",
+      "enterPostcode.error.invalid",
+      "enterPostcode.error.nonUKLength",
+      Map(
+        "addressLine1" -> addressLine1,
+        "addressLine2" -> addressLine2
+      ),
+      (address: Address) => address.postcode.getOrElse("")
     )
 
-    behave like mandatoryField(
+
+    behave like formWithAddressField(
       form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      "addressLine1",
+      "manualAddress.addressLine1.error.required",
+      "manualAddress.addressLine1.error.length",
+      "manualAddress.addressLine1.error.invalid"
+    )
+
+    behave like formWithAddressField(
+      form,
+      "addressLine2",
+      "manualAddress.addressLine2.error.required",
+      "manualAddress.addressLine2.error.length",
+      "manualAddress.addressLine2.error.invalid"
+    )
+
+    behave like formWithOptionalAddressField(
+      form,
+      "addressLine3",
+      "manualAddress.addressLine3.error.length",
+      "manualAddress.addressLine3.error.invalid",
+      validData,
+      (address: Address) => address.addressLine3
+    )
+
+    behave like formWithOptionalAddressField(
+      form,
+      "addressLine4",
+      "manualAddress.addressLine4.error.length",
+      "manualAddress.addressLine4.error.invalid",
+      validData,
+      (address: Address) => address.addressLine4
     )
   }
+
 }

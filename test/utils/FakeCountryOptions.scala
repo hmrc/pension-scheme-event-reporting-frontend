@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package forms.address
+package utils
 
-import forms.behaviours.AddressBehaviours
+class FakeCountryOptions extends CountryOptions(FakeCountryOptions.fakeCountries)
 
-class EnterPostcodeFormProviderSpec extends AddressBehaviours {
+object FakeCountryOptions {
 
-  private val requiredKey = "enterPostcode.error.required"
-  private val lengthKey = "enterPostcode.error.length"
-  private val invalid = "enterPostcode.error.invalid"
-  private val fieldName = "value"
+  def apply() = new FakeCountryOptions()
 
-  val form = new EnterPostcodeFormProvider()()
+  def fakeCountries: Seq[InputOption] = {
 
-  ".value" - {
-    behave like formWithPostCode(
-      form,
-      fieldName,
-      requiredKey,
-      lengthKey,
-      invalid
-    )
+    for {
+      a <- 'A' to 'Z'
+      b <- 'A' to 'Z'
+    } yield {
+      val country: String = Seq(a, b).mkString("")
+      InputOption(country, s"Country of $country", None)
+    }
   }
 }

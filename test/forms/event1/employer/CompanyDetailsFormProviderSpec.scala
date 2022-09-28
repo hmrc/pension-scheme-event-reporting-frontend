@@ -17,24 +17,28 @@
 package forms.event1.employer
 
 import forms.behaviours.StringFieldBehaviours
+import forms.mappings.Constraints
 import play.api.data.FormError
+import wolfendale.scalacheck.regexp.RegexpGen
 
-class CompanyDetailsFormProviderSpec extends StringFieldBehaviours {
+class CompanyDetailsFormProviderSpec extends StringFieldBehaviours with Constraints {
 
-  val requiredKey = "companyDetails.error.required"
-  val lengthKey = "companyDetails.error.length"
-  val maxLength = 100
+  private val form = new CompanyDetailsFormProvider()()
 
-  val form = new CompanyDetailsFormProvider()()
+  private val companyNameLength: Int = 160
 
-  ".value" - {
+  ".companyName" - {
 
-    val fieldName = "value"
+    val fieldName = "companyName"
+    val requiredKey = "companyDetails.companyName.error.required"
+    val lengthKey = "companyDetails.companyName.error.length"
+    val invalidKey = "companyDetails.companyName.error.invalidCharacters"
+    val maxLength = companyNameLength
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      RegexpGen.from(regexSafeText)
     )
 
     behave like fieldWithMaxLength(
@@ -48,6 +52,13 @@ class CompanyDetailsFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like fieldWithRegex(
+      form,
+      fieldName,
+      "{invalid}",
+      error = FormError(fieldName, invalidKey, Seq(regexSafeText))
     )
   }
 }

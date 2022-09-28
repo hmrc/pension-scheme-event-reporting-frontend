@@ -17,6 +17,7 @@
 package forms.behaviours
 
 import play.api.data.{Form, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 trait StringFieldBehaviours extends FieldBehaviours {
 
@@ -33,6 +34,23 @@ trait StringFieldBehaviours extends FieldBehaviours {
           result.errors must contain only lengthError
       }
     }
+  }
+
+  def optionalField[T](
+                        form: Form[T],
+                        fieldName: String,
+                        validData: Map[String, String],
+                        accessor: T => Option[String]
+                      ): Unit = {
+
+    "trim spaces" in {
+      val value = validData(fieldName)
+      forAll(RegexpGen.from("""^\s+""" + value + """\s+$""")) { s =>
+        val result = form.bind(validData.updated(fieldName, s))
+        accessor(result.get) mustBe Some(value)
+      }
+    }
+
   }
 
   def fieldWithRegex(form: Form[_],
