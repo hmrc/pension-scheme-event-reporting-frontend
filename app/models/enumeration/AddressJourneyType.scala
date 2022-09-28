@@ -21,6 +21,8 @@ import models.requests.DataRequest
 import pages.event1.employer.CompanyDetailsPage
 import play.api.i18n.{Messages, MessagesProvider}
 import play.api.mvc.{AnyContent, JavascriptLiteral, QueryStringBindable}
+import viewmodels.Message
+import viewmodels.Message.Literal
 
 sealed trait AddressJourneyType {
   def eventType: EventType
@@ -31,31 +33,31 @@ sealed trait AddressJourneyType {
 
   def addressJourneyTypeFragment: String = nodeName
 
-  val name: UserAnswers => String
-  val entityType: String
+  val name: UserAnswers => Message
+  val entityType: Message
 
   def heading(whichPage: String)(implicit
                                  request: DataRequest[AnyContent],
-                                 provider: MessagesProvider): String = {
+                                 provider: MessagesProvider): Message = {
     val specificHeadingMsgKey = s"${this.toString}.$whichPage.heading"
     val msgKeyHeading = if (Messages.isDefinedAt(specificHeadingMsgKey)) {
       specificHeadingMsgKey
     } else {
       s"$whichPage.heading"
     }
-    Messages(msgKeyHeading, this.name(request.userAnswers))
+    Message(msgKeyHeading, this.name(request.userAnswers))
   }
 
   def title(whichPage: String)(implicit
                                request: DataRequest[AnyContent],
-                               provider: MessagesProvider): String = {
+                               provider: MessagesProvider): Message = {
     val specificTitleMsgKey = s"${this.toString}.$whichPage.title"
     val msgKeyTitle = if (Messages.isDefinedAt(specificTitleMsgKey)) {
       specificTitleMsgKey
     } else {
       s"$whichPage.title"
     }
-    Messages(msgKeyTitle, entityType)
+    Message(msgKeyTitle, entityType)
   }
 
 }
@@ -67,22 +69,22 @@ abstract class WithJourneyTypeDetail(et: EventType, node: String) extends Addres
 
   override def nodeName: String = node
 
-  override val name: UserAnswers => String
+  override val name: UserAnswers => Message
 }
 
 object AddressJourneyType extends Enumerable.Implicits {
   case object Event1EmployerAddressJourney extends WithJourneyTypeDetail(EventType.Event1, "employerAddress") with AddressJourneyType {
-    override val entityType: String = "the company"
-    override val name: UserAnswers => String = ua => ua.get(CompanyDetailsPage) match {
-      case Some(cd) => cd.companyName
+    override val entityType: Message = Message("entityType.theCompany")
+    override val name: UserAnswers => Message = ua => ua.get(CompanyDetailsPage) match {
+      case Some(cd) => Literal(cd.companyName)
       case _ => entityType
     }
   }
 
-  // TODO: Remove this once we have at least two usages of the address journey
+  // TODO: Remove this once we have at least two usages of the address journey. If only one instance then we get compile errors.
   case object DummyAddressJourney extends WithJourneyTypeDetail(EventType.Event1, "dummy") with AddressJourneyType {
-    override val entityType: String = "dummy entity type"
-    override val name: UserAnswers => String = _ => "dummy name"
+    override val entityType: Message = Message("dummy entity type")
+    override val name: UserAnswers => Message = _ => Message("dummy name")
   }
 
   private val values: List[AddressJourneyType] = List(Event1EmployerAddressJourney)

@@ -324,5 +324,5 @@ manualAddress.addressLine4 = Address Line 4 (optional)
 manualAddress.postCode = Postcode (if UK)
 manualAddress.country = Country
 
-
+entityType.theCompany = the company
 
