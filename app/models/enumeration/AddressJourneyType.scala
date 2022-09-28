@@ -19,77 +19,61 @@ package models.enumeration
 import models.UserAnswers
 import models.requests.DataRequest
 import pages.event1.employer.CompanyDetailsPage
-import play.api.i18n.{Messages, MessagesProvider}
 import play.api.mvc.{AnyContent, JavascriptLiteral, QueryStringBindable}
 import viewmodels.Message
 import viewmodels.Message.Literal
 
 sealed trait AddressJourneyType {
-  def eventType: EventType
+  val eventType: EventType
+  val nodeName: String
+  def entityTypeInstanceName(ua:UserAnswers):Message
 
-  def nodeName: String
+  def heading(whichPage: String)(implicit request: DataRequest[AnyContent]): Message
 
-  def eventTypeFragment = s"event${eventType.toString}"
-
-  def addressJourneyTypeFragment: String = nodeName
-
-  val name: UserAnswers => Message
-  val entityType: Message
-
-  def heading(whichPage: String)(implicit
-                                 request: DataRequest[AnyContent],
-                                 provider: MessagesProvider): Message
-
-  def title(whichPage: String)(implicit
-                               request: DataRequest[AnyContent],
-                               provider: MessagesProvider): Message
+  def title(whichPage: String): Message
 }
 
-abstract class WithJourneyTypeDetail(et: EventType, node: String) extends AddressJourneyType {
-  override val toString: String = s"event${eventType.toString}.${nodeName}"
-
-  override def eventType: EventType = et
-
-  override def nodeName: String = node
-
-  override val name: UserAnswers => Message
+abstract class WithJourneyTypeDetail(val eventType: EventType, val nodeName: String, entityTypeMessageKey: String) extends AddressJourneyType {
+  override def toString: String = s"event${this.eventType.toString}.$nodeName"
 
   override def heading(whichPage: String)(implicit
-                                          request: DataRequest[AnyContent],
-                                          provider: MessagesProvider): Message = Message(s"$whichPage.heading", this.name(request.userAnswers))
+                                          request: DataRequest[AnyContent]): Message =
+    Message(s"$whichPage.heading", this.entityTypeInstanceName(request.userAnswers))
 
-  override def title(whichPage: String)(implicit
-                                        request: DataRequest[AnyContent],
-                                        provider: MessagesProvider): Message = Message(s"$whichPage.title", entityType)
+  override def title(whichPage: String): Message = Message(s"$whichPage.title",
+    Message(entityTypeMessageKey))
 }
 
 object AddressJourneyType extends Enumerable.Implicits {
-  case object Event1EmployerAddressJourney extends WithJourneyTypeDetail(EventType.Event1, "employerAddress") {
-    override val entityType: Message = Message("entityType.theCompany")
-    override val name: UserAnswers => Message = ua => ua.get(CompanyDetailsPage) match {
+  private val entityTypeMessageKeyCompany = "entityType.theCompany"
+  case object Event1EmployerAddressJourney extends WithJourneyTypeDetail(
+    eventType = EventType.Event1,
+    nodeName = "employerAddress",
+    entityTypeMessageKey = entityTypeMessageKeyCompany) {
+    override def entityTypeInstanceName(ua: UserAnswers): Message = ua.get(CompanyDetailsPage) match {
       case Some(cd) => Literal(cd.companyName)
-      case _ => entityType
+      case _ => Message(entityTypeMessageKeyCompany)
     }
   }
 
-  // TODO: Remove this once we have at least two usages of the address journey. If only one instance then we get compile errors.
-  case object DummyAddressJourney extends WithJourneyTypeDetail(EventType.Event1, "dummy") with AddressJourneyType {
-    override val entityType: Message = Message("dummy entity type")
-    override val name: UserAnswers => Message = _ => Message("dummy name")
+  // TODO: Remove this dummy object when we have at least two usages of the AddressJourneyType. If only one instance then we get compile errors.
+  case object DummyAddressJourney extends WithJourneyTypeDetail(
+    eventType = EventType.Event1,
+    nodeName = "dummyNodeName",
+    entityTypeMessageKey = "entityTypeMessageKey") {
+    override def entityTypeInstanceName(ua: UserAnswers): Message = Message("dummy name")
+
     // Examples below as to how to override the header/ title message key on address pages if necessary:-
     //
     //    override def heading(whichPage: String)(implicit
-    //                                            request: DataRequest[AnyContent],
-    //                                            provider: MessagesProvider): Message = {
+    //                                            request: DataRequest[AnyContent]): Message = {
     //      whichPage match {
     //        case "chooseAddress" => Message("another-message-keya", this.name(request.userAnswers))
     //        case _ => super.heading(whichPage)
     //      }
     //    }
     //
-    //    override def title(whichPage: String)(implicit
-    //                                          request: DataRequest[AnyContent],
-    //                                          provider: MessagesProvider): Message = {
+    //    override def title(whichPage: String): Message = {
     //      whichPage match {
     //        case "chooseAddress" => Message("another-message-keyb", this.name(request.userAnswers))
     //        case _ => super.heading(whichPage)
@@ -117,11 +101,6 @@ object AddressJourneyType extends Enumerable.Implicits {
         stringBinder.unbind(key, value.toString)
     }
 
-  implicit val jsLiteral: JavascriptLiteral[AddressJourneyType] = new JavascriptLiteral[AddressJourneyType] {
-    override def to(value: AddressJourneyType): String = value match {
-      case Event1EmployerAddressJourney => Event1EmployerAddressJourney.toString
-      case DummyAddressJourney => DummyAddressJourney.toString
-    }
-  }
+  implicit val jsLiteral: JavascriptLiteral[AddressJourneyType] = (value: AddressJourneyType) => value.toString
 }
 

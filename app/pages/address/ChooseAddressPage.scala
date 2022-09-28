@@ -27,7 +27,7 @@ import play.api.mvc.Call
 
 case class ChooseAddressPage(addressJourneyType: AddressJourneyType) extends QuestionPage[Address] {
 
-  override def path: JsPath = JsPath \ addressJourneyType.eventTypeFragment \ addressJourneyType.addressJourneyTypeFragment \ toString
+  override def path: JsPath = JsPath \ s"event${addressJourneyType.eventType.toString}" \ addressJourneyType.nodeName \ toString
 
   override def toString: String = "address"
 

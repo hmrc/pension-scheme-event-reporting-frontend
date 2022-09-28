@@ -59,7 +59,7 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
       implicit request =>
         form.bindFromRequest().fold(
           formWithErrors => {
-            Future.successful(BadRequest(view(addArgsToErrors(formWithErrors, addressJourneyType.name(request.userAnswers)), waypoints, addressJourneyType,
+            Future.successful(BadRequest(view(addArgsToErrors(formWithErrors, addressJourneyType.entityTypeInstanceName(request.userAnswers)), waypoints, addressJourneyType,
               addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage), countryOptions.options)))
           },
           value => {

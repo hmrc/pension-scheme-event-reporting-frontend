@@ -49,8 +49,6 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
 
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
-      println("\n>1>>" +addressJourneyType.heading(whichAddressPage))
-      println("\n>2>>" +addressJourneyType.heading(whichAddressPage))
       Ok(view(form, waypoints, addressJourneyType,
         addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage)))
     }
