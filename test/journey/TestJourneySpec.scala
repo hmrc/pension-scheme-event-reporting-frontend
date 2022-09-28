@@ -16,18 +16,21 @@
 
 package journey
 
+import data.SampleData.{companyDetails, seqAddresses, seqTolerantAddresses}
 import generators.ModelGenerators
 import models.EventSelection._
+import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.event1.HowAddUnauthPayment.Manual
-import models.event1.WhoReceivedUnauthPayment.Employer
 import models.event1.MembersDetails
-import models.event1.WhoReceivedUnauthPayment.Member
+import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
+import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.event1._
+import pages.event1.employer.CompanyDetailsPage
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
-import pages.{CheckYourAnswersPage, EventSelectionPage}
+import pages.{CheckYourAnswersPage, EventSelectionPage, IndexPage}
 
 import java.time.LocalDate
 
@@ -75,7 +78,19 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         pageMustBe(HowAddUnauthPaymentPage),
         submitAnswer(HowAddUnauthPaymentPage, Manual),
         pageMustBe(WhoReceivedUnauthPaymentPage),
-        submitAnswer(WhoReceivedUnauthPaymentPage, Employer)
+        submitAnswer(WhoReceivedUnauthPaymentPage, Employer),
+        pageMustBe(employer.WhatYouWillNeedPage)
       )
+
+    startingFrom(CompanyDetailsPage)
+      .run(
+        submitAnswer(CompanyDetailsPage, companyDetails),
+        pageMustBe(EnterPostcodePage(Event1EmployerAddressJourney)),
+        submitAnswer(EnterPostcodePage(Event1EmployerAddressJourney), seqTolerantAddresses),
+        pageMustBe(ChooseAddressPage(Event1EmployerAddressJourney)),
+        submitAnswer(ChooseAddressPage(Event1EmployerAddressJourney), seqAddresses.head),
+        pageMustBe(IndexPage)
+      )
+
   }
 }

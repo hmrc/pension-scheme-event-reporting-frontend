@@ -17,20 +17,17 @@
 package generators
 
 import models.UserAnswers
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
-import play.api.libs.json.{JsValue, Json}
-import org.scalacheck.Arbitrary.arbitrary
 import pages.eventWindUp.SchemeWindUpDatePage
+import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-//    arbitrary[(address.ManualAddressPage.type, JsValue)] ::
-//    arbitrary[(address.ChooseAddressPage.type, JsValue)] ::
-//    arbitrary[(address.EnterPostcodePage.type, JsValue)] ::
     arbitrary[(event1.employer.CompanyDetailsPage.type, JsValue)] ::
     arbitrary[(event1.ValueOfUnauthorisedPaymentPage.type, JsValue)] ::
     arbitrary[(event1.DoYouHoldSignedMandatePage.type, JsValue)] ::

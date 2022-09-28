@@ -29,10 +29,12 @@ import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
+import pages.event1.employer.CompanyDetailsPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import views.html.address.ChooseAddressView
 
 import scala.concurrent.Future
 
@@ -60,28 +62,28 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   "Choose address controller" - {
 
-    //    "must return OK and the correct view for a GET" in {
-    //      val ua = emptyUserAnswers
-    //        .setOrException(EnterPostcodePage(Event1EmployerAddressJourney), seqTolerantAddresses)
-    //        .setOrException(CompanyDetailsPage, companyDetails)
-    //
-    //      val application = applicationBuilder(userAnswers = Some(ua)).build()
-    //
-    //      running(application) {
-    //        val request = FakeRequest(GET, getRoute)
-    //
-    //        val result = route(application, request).value
-    //
-    //        val view = application.injector.instanceOf[ChooseAddressView]
-    //
-    //        status(result) mustEqual OK
-    //        contentAsString(result) mustEqual
-    //          view(form, waypoints, Event1EmployerAddressJourney,
-    //            messages("chooseAddress.title", "the company"),
-    //            messages("chooseAddress.heading", companyDetails.companyName),
-    //            seqTolerantAddresses)(request, messages(application)).toString
-    //      }
-    //    }
+    "must return OK and the correct view for a GET" in {
+      val ua = emptyUserAnswers
+        .setOrException(EnterPostcodePage(Event1EmployerAddressJourney), seqTolerantAddresses)
+        .setOrException(CompanyDetailsPage, companyDetails)
+
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[ChooseAddressView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual
+          view(form, waypoints, Event1EmployerAddressJourney,
+            messages("chooseAddress.title", "the company"),
+            messages("chooseAddress.heading", companyDetails.companyName),
+            seqTolerantAddresses)(request, messages(application)).toString
+      }
+    }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
       val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
