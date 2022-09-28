@@ -19,9 +19,20 @@ package generators
 import models._
 import models.event1.MembersDetails
 import models.event1.employer.CompanyDetails
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import uk.gov.hmrc.domain.Nino
 
 trait ModelGenerators {
+
+  implicit lazy val arbitraryNino: Arbitrary[Nino] = Arbitrary {
+    for {
+      firstChar <- Gen.oneOf('A', 'C', 'E', 'H', 'J', 'L', 'M', 'O', 'P', 'R', 'S', 'W', 'X', 'Y').map(_.toString)
+      secondChar <- Gen.oneOf('A', 'B', 'C', 'E', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z').map(_.toString)
+      digits <- Gen.listOfN(6, Gen.numChar)
+      lastChar <- Gen.oneOf('A', 'B', 'C', 'D')
+    } yield Nino(firstChar ++ secondChar ++ digits :+ lastChar)
+  }
 
   implicit lazy val arbitraryWhoReceivedUnauthPayment: Arbitrary[event1.WhoReceivedUnauthPayment] =
     Arbitrary {
@@ -33,8 +44,8 @@ trait ModelGenerators {
       val list = for {
         firstName <- Seq("validFirstName1", "validFirstName2")
         lastName <- Seq("validLastName1", "validLastName2")
-        nino <- Seq("AA123456D", "AA123457D")
-      } yield MembersDetails(firstName, lastName, nino)
+        nino <- arbitrary[Nino].sample
+      } yield MembersDetails(firstName, lastName, nino.nino)
 
       Gen.oneOf(list)
     }
@@ -52,6 +63,11 @@ trait ModelGenerators {
   implicit lazy val arbitraryHowAddUnauthPayment: Arbitrary[event1.HowAddUnauthPayment] =
     Arbitrary {
       Gen.oneOf(event1.HowAddUnauthPayment.values)
+    }
+
+  implicit lazy val arbitraryPaymentNature: Arbitrary[event1.PaymentNature] =
+    Arbitrary {
+      Gen.oneOf(event1.PaymentNature.values)
     }
 
   implicit lazy val arbitraryeventSelection: Arbitrary[EventSelection] =

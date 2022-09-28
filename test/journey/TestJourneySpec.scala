@@ -16,19 +16,23 @@
 
 package journey
 
+import generators.ModelGenerators
 import models.EventSelection._
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.WhoReceivedUnauthPayment.Employer
+import models.event1.MembersDetails
+import models.event1.WhoReceivedUnauthPayment.Member
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
-import pages.event1.{HowAddUnauthPaymentPage, WhoReceivedUnauthPaymentPage}
+import pages.event1._
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckYourAnswersPage, EventSelectionPage}
 
 import java.time.LocalDate
 
-class TestJourneySpec extends AnyFreeSpec with JourneyHelpers {
-  
+class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerators {
+
   "test journey" in {
 
     startingFrom(Event18ConfirmationPage)
@@ -42,7 +46,6 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers {
     startingFrom(EventSelectionPage)
       .run(
         submitAnswer(EventSelectionPage, EventWoundUp),
-        pageMustBe(SchemeWindUpDatePage),
         submitAnswer(SchemeWindUpDatePage, LocalDate.of(2021, 5, 4)),
         pageMustBe(pages.CheckYourAnswersPage.windUp)
       )
@@ -50,12 +53,17 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers {
 
   "test event1 journey (member)" in {
 
+    val membersDetails = arbitrary[MembersDetails].sample
+
     startingFrom(EventSelectionPage)
       .run(
         submitAnswer(EventSelectionPage, Event1),
-        pageMustBe(HowAddUnauthPaymentPage),
         submitAnswer(HowAddUnauthPaymentPage, Manual),
-        pageMustBe(WhoReceivedUnauthPaymentPage)
+        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
+        next,
+        submitAnswer(MembersDetailsPage, membersDetails.get),
+        submitAnswer(DoYouHoldSignedMandatePage, true),
+        pageMustBe(ValueOfUnauthorisedPaymentPage)
       )
   }
 

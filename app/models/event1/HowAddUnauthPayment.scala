@@ -40,7 +40,7 @@ object HowAddUnauthPayment extends Enumerable.Implicits {
         value   = Some(value.toString),
         id      = Some(s"value_$index"),
         hint    = if (value == FileUpload) Some(Hint(content = Text(messages("howAddUnauthPayment.fileUpload.hint")))) else None,
-        disabled = (value == FileUpload)
+        disabled = value == FileUpload
       )
   }
 

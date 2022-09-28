@@ -18,10 +18,10 @@ package models.event1
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.OptionValues
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
 class HowAddUnauthPaymentSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
@@ -30,7 +30,7 @@ class HowAddUnauthPaymentSpec extends AnyFreeSpec with Matchers with ScalaCheckP
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(HowAddUnauthPayment.values.toSeq)
+      val gen = Gen.oneOf(HowAddUnauthPayment.values)
 
       forAll(gen) {
         howAddUnauthPayment =>
@@ -52,7 +52,7 @@ class HowAddUnauthPaymentSpec extends AnyFreeSpec with Matchers with ScalaCheckP
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(HowAddUnauthPayment.values.toSeq)
+      val gen = Gen.oneOf(HowAddUnauthPayment.values)
 
       forAll(gen) {
         howAddUnauthPayment =>

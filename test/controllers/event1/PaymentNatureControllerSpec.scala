@@ -18,34 +18,33 @@ package controllers.event1
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event1.WhoReceivedUnauthPaymentFormProvider
+import forms.event1.PaymentNatureFormProvider
 import models.UserAnswers
-import models.event1.WhoReceivedUnauthPayment
+import models.event1.PaymentNature
 import pages.EmptyWaypoints
-import pages.event1.WhoReceivedUnauthPaymentPage
+import pages.event1.PaymentNaturePage
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito.when
+import org.mockito.MockitoSugar.{mock, reset, times, verify, never}
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event1.WhoReceivedUnauthPaymentView
-
+import views.html.event1.PaymentNatureView
 import scala.concurrent.Future
 
-class WhoReceivedUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfterEach {
+class PaymentNatureControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new WhoReceivedUnauthPaymentFormProvider()
+  private val formProvider = new PaymentNatureFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.WhoReceivedUnauthPaymentController.onPageLoad(waypoints).url
-  private def postRoute: String = routes.WhoReceivedUnauthPaymentController.onSubmit(waypoints).url
+  private def getRoute: String = routes.PaymentNatureController.onPageLoad(waypoints).url
+  private def postRoute: String = routes.PaymentNatureController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -67,7 +66,7 @@ class WhoReceivedUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfte
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[WhoReceivedUnauthPaymentView]
+        val view = application.injector.instanceOf[PaymentNatureView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
@@ -76,19 +75,19 @@ class WhoReceivedUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfte
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(WhoReceivedUnauthPaymentPage, WhoReceivedUnauthPayment.values.head).success.value
+      val userAnswers = UserAnswers().set(PaymentNaturePage, PaymentNature.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[WhoReceivedUnauthPaymentView]
+        val view = application.injector.instanceOf[PaymentNatureView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(WhoReceivedUnauthPayment.values.head), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(PaymentNature.values.head), waypoints)(request, messages(application)).toString
       }
     }
 
@@ -102,18 +101,19 @@ class WhoReceivedUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfte
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", WhoReceivedUnauthPayment.values.head.toString))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", PaymentNature.values.head.toString))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(WhoReceivedUnauthPaymentPage, WhoReceivedUnauthPayment.values.head).success.value
+        val updatedAnswers = emptyUserAnswers.set(PaymentNaturePage, PaymentNature.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual WhoReceivedUnauthPaymentPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual PaymentNaturePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
     "must return bad request when invalid data is submitted" in {
+
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
           .build()
@@ -122,14 +122,14 @@ class WhoReceivedUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfte
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[WhoReceivedUnauthPaymentView]
+        val view = application.injector.instanceOf[PaymentNatureView]
         val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
       }
     }
   }
