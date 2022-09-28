@@ -22,7 +22,7 @@ import forms.address.ManualAddressFormProvider
 import models.address.Address
 import models.enumeration.AddressJourneyType
 import pages.Waypoints
-import pages.address.ChooseAddressPage
+import pages.address.ManualAddressPage
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -43,15 +43,14 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
                                         val countryOptions: CountryOptions
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val whichAddressPage = "manualAddress"
-
   private val form: Form[Address] = formProvider()
 
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
-      val preparedForm = request.userAnswers.get(ChooseAddressPage(addressJourneyType)).fold(form)(form.fill)
+      val preparedForm = request.userAnswers.get(ManualAddressPage(addressJourneyType)).fold(form)(form.fill)
       Ok(view(preparedForm, waypoints, addressJourneyType,
-        addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage), countryOptions.options))
+        addressJourneyType.title(ManualAddressPage(addressJourneyType)),
+        addressJourneyType.heading(ManualAddressPage(addressJourneyType)), countryOptions.options))
     }
 
   def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
@@ -59,14 +58,16 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
       implicit request =>
         form.bindFromRequest().fold(
           formWithErrors => {
-            Future.successful(BadRequest(view(addArgsToErrors(formWithErrors, addressJourneyType.entityTypeInstanceName(request.userAnswers)), waypoints, addressJourneyType,
-              addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage), countryOptions.options)))
+            Future.successful(BadRequest(view(addArgsToErrors(formWithErrors, addressJourneyType.entityTypeInstanceName(request.userAnswers)),
+              waypoints, addressJourneyType,
+              addressJourneyType.title(ManualAddressPage(addressJourneyType)),
+              addressJourneyType.heading(ManualAddressPage(addressJourneyType)), countryOptions.options)))
           },
           value => {
             val originalUserAnswers = request.userAnswers
-            val updatedAnswers = originalUserAnswers.setOrException(ChooseAddressPage(addressJourneyType), value)
+            val updatedAnswers = originalUserAnswers.setOrException(ManualAddressPage(addressJourneyType), value)
             userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, updatedAnswers).map { _ =>
-              Redirect(ChooseAddressPage(addressJourneyType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+              Redirect(ManualAddressPage(addressJourneyType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
             }
           }
         )

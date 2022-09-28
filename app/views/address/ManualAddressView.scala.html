@@ -46,7 +46,7 @@
         @govukInput(
             InputViewModel(
                 field = form("addressLine1"),
-                label = LabelViewModel("manualAddress.addressLine1")
+                label = LabelViewModel("address.addressLine1")
             )
             .withWidth(TwoThirds)
         )
@@ -54,7 +54,7 @@
         @govukInput(
             InputViewModel(
                 field = form("addressLine2"),
-                label = LabelViewModel("manualAddress.addressLine2")
+                label = LabelViewModel("address.addressLine2")
             )
             .withWidth(TwoThirds)
         )
@@ -62,7 +62,7 @@
         @govukInput(
             InputViewModel(
                 field = form("addressLine3"),
-                label = LabelViewModel("manualAddress.addressLine3")
+                label = LabelViewModel("address.addressLine3")
             )
             .withWidth(OneHalf)
         )
@@ -70,7 +70,7 @@
         @govukInput(
             InputViewModel(
                 field = form("addressLine4"),
-                label = LabelViewModel("manualAddress.addressLine4")
+                label = LabelViewModel("address.addressLine4")
             )
             .withWidth(OneHalf)
         )
@@ -78,7 +78,7 @@
         @govukInput(
             InputViewModel(
                 field = form("postCode"),
-                label = LabelViewModel("manualAddress.postCode")
+                label = LabelViewModel("address.postCode")
             )
             .withWidth(OneQuarter)
         )
@@ -96,7 +96,7 @@
                     )
                 ),
                 label = Label(
-                    content = Text(messages("manualAddress.country"))
+                    content = Text(messages("address.country"))
                 )
             ).withFormField(form("country")))
         </div>

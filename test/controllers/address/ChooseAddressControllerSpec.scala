@@ -28,7 +28,7 @@ import org.mockito.Mockito.{times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
-import pages.address.{ChooseAddressPage, EnterPostcodePage}
+import pages.address.{ChooseAddressPage, EnterPostcodePage, ManualAddressPage}
 import pages.event1.employer.CompanyDetailsPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -108,7 +108,7 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
         redirectLocation(result).value mustEqual ChooseAddressPage(Event1EmployerAddressJourney)
           .navigate(waypoints, ua.setOrException(ChooseAddressPage(Event1EmployerAddressJourney), seqAddresses.head), updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
-        uaCaptor.getValue.get(ChooseAddressPage(Event1EmployerAddressJourney)) mustBe Some(seqAddresses.head)
+        uaCaptor.getValue.get(ManualAddressPage(Event1EmployerAddressJourney)) mustBe Some(seqAddresses.head)
       }
     }
 

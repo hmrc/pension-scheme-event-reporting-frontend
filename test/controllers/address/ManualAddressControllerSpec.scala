@@ -26,7 +26,7 @@ import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
-import pages.address.ChooseAddressPage
+import pages.address.{ChooseAddressPage, ManualAddressPage}
 import pages.event1.employer.CompanyDetailsPage
 import play.api.i18n.Messages
 import play.api.inject.bind
@@ -80,15 +80,15 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints, Event1EmployerAddressJourney,
-          Messages("manualAddress.title", entityType),
-          Messages("manualAddress.heading", companyDetails.companyName), countryOptions.options)(request, messages(application)).toString
+          Messages("address.title", entityType),
+          Messages("address.heading", companyDetails.companyName), countryOptions.options)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val ua = emptyUserAnswers.setOrException(CompanyDetailsPage, companyDetails)
-        .setOrException(ChooseAddressPage(Event1EmployerAddressJourney), seqAddresses.head)
+        .setOrException(ManualAddressPage(Event1EmployerAddressJourney), seqAddresses.head)
 
       val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
 
@@ -101,8 +101,8 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form.fill(seqAddresses.head), waypoints, Event1EmployerAddressJourney,
-          Messages("manualAddress.title", entityType),
-          Messages("manualAddress.heading", companyDetails.companyName), countryOptions.options)(request, messages(application)).toString
+          Messages("address.title", entityType),
+          Messages("address.heading", companyDetails.companyName), countryOptions.options)(request, messages(application)).toString
       }
     }
 

@@ -60,8 +60,8 @@ class ManualAddressFormProviderSpec extends AddressBehaviours with FormBehaviour
     behave like formWithCountry(
       form,
       "country",
-      "manualAddress.country.error.required",
-      "manualAddress.country.error.invalid",
+      "address.country.error.required",
+      "address.country.error.invalid",
       countryOptions,
       Map(
         "addressLine1" -> addressLine1,
@@ -71,7 +71,7 @@ class ManualAddressFormProviderSpec extends AddressBehaviours with FormBehaviour
 
     behave like formWithCountryAndPostCode(
       form,
-      "manualAddress.postCode.error.required",
+      "address.postCode.error.required",
       "enterPostcode.error.invalid",
       "enterPostcode.error.nonUKLength",
       Map(
@@ -85,24 +85,24 @@ class ManualAddressFormProviderSpec extends AddressBehaviours with FormBehaviour
     behave like formWithAddressField(
       form,
       "addressLine1",
-      "manualAddress.addressLine1.error.required",
-      "manualAddress.addressLine1.error.length",
-      "manualAddress.addressLine1.error.invalid"
+      "address.addressLine1.error.required",
+      "address.addressLine1.error.length",
+      "address.addressLine1.error.invalid"
     )
 
     behave like formWithAddressField(
       form,
       "addressLine2",
-      "manualAddress.addressLine2.error.required",
-      "manualAddress.addressLine2.error.length",
-      "manualAddress.addressLine2.error.invalid"
+      "address.addressLine2.error.required",
+      "address.addressLine2.error.length",
+      "address.addressLine2.error.invalid"
     )
 
     behave like formWithOptionalAddressField(
       form,
       "addressLine3",
-      "manualAddress.addressLine3.error.length",
-      "manualAddress.addressLine3.error.invalid",
+      "address.addressLine3.error.length",
+      "address.addressLine3.error.invalid",
       validData,
       (address: Address) => address.addressLine3
     )
@@ -110,8 +110,8 @@ class ManualAddressFormProviderSpec extends AddressBehaviours with FormBehaviour
     behave like formWithOptionalAddressField(
       form,
       "addressLine4",
-      "manualAddress.addressLine4.error.length",
-      "manualAddress.addressLine4.error.invalid",
+      "address.addressLine4.error.length",
+      "address.addressLine4.error.invalid",
       validData,
       (address: Address) => address.addressLine4
     )

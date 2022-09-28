@@ -21,7 +21,7 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import forms.address.ChooseAddressFormProvider
 import models.enumeration.AddressJourneyType
 import pages.Waypoints
-import pages.address.{ChooseAddressPage, EnterPostcodePage}
+import pages.address.{ChooseAddressPage, EnterPostcodePage, ManualAddressPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -39,18 +39,14 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
                                         view: ChooseAddressView
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val whichAddressPage = "chooseAddress"
-
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
-
-
       request.userAnswers.get(EnterPostcodePage(addressJourneyType)) match {
         case Some(addresses) =>
           val form = formProvider(addresses)
           Ok(view(form, waypoints, addressJourneyType,
-            addressJourneyType.title(whichAddressPage),
-            addressJourneyType.heading(whichAddressPage),
+            addressJourneyType.title(ChooseAddressPage(addressJourneyType)),
+            addressJourneyType.heading(ChooseAddressPage(addressJourneyType)),
             addresses
           ))
         case _ => Redirect(controllers.routes.IndexController.onPageLoad.url)
@@ -67,13 +63,14 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
             form.bindFromRequest().fold(
               formWithErrors => {
                 Future.successful(BadRequest(view(formWithErrors, waypoints, addressJourneyType,
-                  addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage), addresses)))
+                  addressJourneyType.title(ChooseAddressPage(addressJourneyType)),
+                  addressJourneyType.heading(ChooseAddressPage(addressJourneyType)), addresses)))
               },
               value => {
                 val originalUserAnswers = request.userAnswers
                 addresses(value).toAddress match {
                   case Some(address) =>
-                    val updatedAnswers = originalUserAnswers.setOrException(ChooseAddressPage(addressJourneyType), address)
+                    val updatedAnswers = originalUserAnswers.setOrException(ManualAddressPage(addressJourneyType), address)
                     userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, updatedAnswers).map { _ =>
                       Redirect(ChooseAddressPage(addressJourneyType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
                     }

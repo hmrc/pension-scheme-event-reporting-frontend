@@ -22,18 +22,18 @@ import models.address.Address
 import models.enumeration.AddressJourneyType
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import pages.event1.employer.PaymentNaturePage
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ChooseAddressPage(addressJourneyType: AddressJourneyType) extends QuestionPage[Address] {
+case class ManualAddressPage(addressJourneyType: AddressJourneyType) extends QuestionPage[Address] {
 
   override def path: JsPath = JsPath \ s"event${addressJourneyType.eventType.toString}" \ addressJourneyType.nodeName \ toString
 
-  override def toString: String = "chooseAddress"
+  override def toString: String = "address"
 
   override def route(waypoints: Waypoints): Call =
-    routes.ChooseAddressController.onPageLoad(waypoints, addressJourneyType)
+    routes.ManualAddressController.onPageLoad(waypoints, addressJourneyType)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     addressJourneyType match {

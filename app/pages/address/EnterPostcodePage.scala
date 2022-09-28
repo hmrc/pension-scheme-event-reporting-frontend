@@ -28,7 +28,7 @@ case class EnterPostcodePage(addressJourneyType: AddressJourneyType) extends Que
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "addressList"
+  override def toString: String = "enterPostcode"
 
   override def route(waypoints: Waypoints): Call =
     routes.EnterPostcodeController.onPageLoad(waypoints, addressJourneyType)

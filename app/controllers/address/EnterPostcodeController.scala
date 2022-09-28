@@ -43,14 +43,13 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
                                         addressLookupConnector:AddressLookupConnector
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val whichAddressPage = "enterPostcode"
-
   private val form = formProvider()
 
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
       Ok(view(form, waypoints, addressJourneyType,
-        addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage)))
+        addressJourneyType.title(EnterPostcodePage(addressJourneyType)),
+        addressJourneyType.heading(EnterPostcodePage(addressJourneyType))))
     }
 
   def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
@@ -59,7 +58,8 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
         form.bindFromRequest().fold(
           formWithErrors => {
             Future.successful(BadRequest(view(formWithErrors, waypoints, addressJourneyType,
-              addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage))))
+              addressJourneyType.title(EnterPostcodePage(addressJourneyType)),
+              addressJourneyType.heading(EnterPostcodePage(addressJourneyType)))))
           },
           postCode => {
             val noResults: Message = Message("enterPostcode.error.noResults", postCode)
@@ -68,7 +68,8 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
             addressLookupConnector.addressLookupByPostCode(postCode).flatMap {
               case Nil =>
                 Future.successful(BadRequest(view(formWithError(noResults), waypoints, addressJourneyType,
-                  addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage))))
+                  addressJourneyType.title(EnterPostcodePage(addressJourneyType)),
+                  addressJourneyType.heading(EnterPostcodePage(addressJourneyType)))))
 
               case addresses =>
 
@@ -81,7 +82,8 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
             } recoverWith {
               case _ =>
                 Future.successful(BadRequest(view(formWithError(invalidPostcode), waypoints, addressJourneyType,
-                  addressJourneyType.title(whichAddressPage), addressJourneyType.heading(whichAddressPage))))
+                  addressJourneyType.title(EnterPostcodePage(addressJourneyType)),
+                  addressJourneyType.heading(EnterPostcodePage(addressJourneyType)))))
             }
           }
         )

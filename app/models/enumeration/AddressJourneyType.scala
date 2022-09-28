@@ -18,6 +18,7 @@ package models.enumeration
 
 import models.UserAnswers
 import models.requests.DataRequest
+import pages.Page
 import pages.event1.employer.CompanyDetailsPage
 import play.api.mvc.{AnyContent, JavascriptLiteral, QueryStringBindable}
 import viewmodels.Message
@@ -28,19 +29,19 @@ sealed trait AddressJourneyType {
   val nodeName: String
   def entityTypeInstanceName(ua:UserAnswers):Message
 
-  def heading(whichPage: String)(implicit request: DataRequest[AnyContent]): Message
+  def heading(whichPage: Page)(implicit request: DataRequest[AnyContent]): Message
 
-  def title(whichPage: String): Message
+  def title(whichPage: Page): Message
 }
 
 abstract class WithJourneyTypeDetail(val eventType: EventType, val nodeName: String, entityTypeMessageKey: String) extends AddressJourneyType {
   override def toString: String = s"event${this.eventType.toString}.$nodeName"
 
-  override def heading(whichPage: String)(implicit
+  override def heading(whichPage: Page)(implicit
                                           request: DataRequest[AnyContent]): Message =
-    Message(s"$whichPage.heading", this.entityTypeInstanceName(request.userAnswers))
+    Message(s"${whichPage.toString}.heading", this.entityTypeInstanceName(request.userAnswers))
 
-  override def title(whichPage: String): Message = Message(s"$whichPage.title",
+  override def title(whichPage: Page): Message = Message(s"${whichPage.toString}.title",
     Message(entityTypeMessageKey))
 }
 
@@ -65,17 +66,17 @@ object AddressJourneyType extends Enumerable.Implicits {
 
     // Examples below as to how to override the header/ title message key on address pages if necessary:-
     //
-    //    override def heading(whichPage: String)(implicit
+    //    override def heading(whichPage: Page)(implicit
     //                                            request: DataRequest[AnyContent]): Message = {
     //      whichPage match {
-    //        case "chooseAddress" => Message("another-message-keya", this.name(request.userAnswers))
+    //        case ManualAddressPage(_) => Message("another-message-keya", this.name(request.userAnswers))
     //        case _ => super.heading(whichPage)
     //      }
     //    }
     //
     //    override def title(whichPage: String): Message = {
     //      whichPage match {
-    //        case "chooseAddress" => Message("another-message-keyb", this.name(request.userAnswers))
+    //        case ManualAddressPage(_) => Message("another-message-keyb", this.name(request.userAnswers))
     //        case _ => super.heading(whichPage)
     //      }
     //    }

@@ -29,20 +29,20 @@ class ManualAddressFormProvider @Inject()(countryOptions: CountryOptions) extend
   def apply(): Form[Address] = Form(
     mapping(
       "addressLine1" ->
-        addressLineMapping("manualAddress.addressLine1.error.required", "manualAddress.addressLine1.error.length",
-          "manualAddress.addressLine1.error.invalid"),
+        addressLineMapping("address.addressLine1.error.required", "address.addressLine1.error.length",
+          "address.addressLine1.error.invalid"),
       "addressLine2" ->
-        addressLineMapping("manualAddress.addressLine2.error.required", "manualAddress.addressLine2.error.length",
-          "manualAddress.addressLine2.error.invalid"),
+        addressLineMapping("address.addressLine2.error.required", "address.addressLine2.error.length",
+          "address.addressLine2.error.invalid"),
       "addressLine3" ->
-        optionalAddressLineMapping("manualAddress.addressLine3.error.length", "manualAddress.addressLine3.error.invalid"),
+        optionalAddressLineMapping("address.addressLine3.error.length", "address.addressLine3.error.invalid"),
       "addressLine4" ->
-        optionalAddressLineMapping("manualAddress.addressLine4.error.length", "manualAddress.addressLine4.error.invalid"),
+        optionalAddressLineMapping("address.addressLine4.error.length", "address.addressLine4.error.invalid"),
       "postCode" ->
-        postCodeWithCountryMapping("manualAddress.postCode.error.required", "enterPostcode.error.invalid",
+        postCodeWithCountryMapping("address.postCode.error.required", "enterPostcode.error.invalid",
           "enterPostcode.error.nonUKLength"),
       "country" ->
-        countryMapping(countryOptions, "manualAddress.country.error.required", "manualAddress.country.error.invalid")
+        countryMapping(countryOptions, "address.country.error.required", "address.country.error.invalid")
     )(Address.apply)(Address.unapply)
   )
 }
