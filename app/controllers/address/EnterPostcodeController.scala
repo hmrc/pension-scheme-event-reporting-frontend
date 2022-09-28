@@ -80,11 +80,9 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
         form.bindFromRequest().fold(
           formWithErrors => renderView(formWithErrors),
           postCode => {
-            val noResults: Message = Message("enterPostcode.error.noResults", postCode)
-            val invalidPostcode: Message = Message("enterPostcode.error.noResults", postCode)
             addressLookupConnector.addressLookupByPostCode(postCode).flatMap {
               case Nil =>
-                renderView(formWithError(noResults))
+                renderView(formWithError(Message("enterPostcode.error.noResults", postCode)))
               case addresses =>
                 val originalUserAnswers = request.userAnswers
                 val updatedAnswers = originalUserAnswers.setOrException(page, addresses)
@@ -94,7 +92,7 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
 
             } recoverWith {
               case _ =>
-                renderView(formWithError(invalidPostcode))
+                renderView(formWithError(Message("enterPostcode.error.noResults", postCode)))
             }
           }
         )
