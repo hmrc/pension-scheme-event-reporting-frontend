@@ -63,11 +63,11 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
     (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
       implicit request =>
         val page = EnterPostcodePage(addressJourneyType)
-        def renderView(yy: Form[String]): Future[Result] = {
+        def renderView(formForRender: Form[String]): Future[Result] = {
           Future.successful(
             BadRequest(
               view(
-                yy,
+                formForRender,
                 waypoints,
                 addressJourneyType,
                 addressJourneyType.title(page),
