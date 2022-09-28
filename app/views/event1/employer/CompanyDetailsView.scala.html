@@ -36,21 +36,23 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        <h1 class="govuk-heading-xl">@messages("companyDetails.heading")</h1>
+
         @govukInput(
             InputViewModel(
                 field = form("companyName"),
-                label = LabelViewModel(messages("companyDetails.companyName.title")).asPageHeading()
+                label = LabelViewModel(messages("companyDetails.companyName.title"))
             )
-            .withWidth(Full)
+            .withWidth(TwoThirds)
         )
 
 
         @govukInput(
             InputViewModel(
                 field = form("companyNumber"),
-                label = LabelViewModel(messages("companyDetails.companyNumber.title")).asPageHeading()
+                label = LabelViewModel(messages("companyDetails.companyNumber.title"))
             )
-            .withWidth(Full)
+            .withWidth(OneThird)
         )
 
         @govukButton(

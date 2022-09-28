@@ -38,17 +38,11 @@
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
-        <h1 class="govuk-heading-xl">@pageHeading</h1>
-
-        @govukRadios(Radios(
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(pageHeading),
-                    classes = "govuk-visually-hidden",
-                    isPageHeading = false,
-                ))
-            )),
-            items = for((address, i) <-  addresses.zipWithIndex)
+        @govukRadios(
+            RadiosViewModel(
+                field  = form("value"),
+                legend = LegendViewModel(messages(pageHeading)).asPageHeading(),
+                items  = for((address, i) <-  addresses.zipWithIndex)
                 yield {
                     RadioItem(
                         content = Text(address.print),
@@ -56,7 +50,7 @@
                         id = Some(form("value").id+"-"+i.toString),
                     )
                 }
-            ).withFormField(form("value"))
+            )
         )
 
         @govukButton(
