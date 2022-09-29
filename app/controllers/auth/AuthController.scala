@@ -37,16 +37,15 @@ class AuthController @Inject()(
   def signOut(): Action[AnyContent] = identify.async {
     implicit request =>
       sessionDataCacheConnector.removeAll(request.loggedInUser.externalId).flatMap { _ =>
-        Future.successful(Redirect(config.signOutUrl,
-          Map("continue" -> Seq(config.exitSurveyUrl))).withNewSession)
+        Future.successful(Redirect(config.exitSurveyUrl))
       }
   }
 
   def signOutNoSurvey(): Action[AnyContent] = identify.async {
     implicit request =>
       sessionDataCacheConnector.removeAll(request.loggedInUser.externalId).flatMap { _ =>
-        Future.successful(Redirect(config.signOutUrl,
-          Map("continue" -> Seq(routes.SignedOutController.onPageLoad.url))).withNewSession)
+        Future.successful(Redirect(config.loginUrl,
+          Map("continue" -> Seq(config.loginContinueUrl))).withNewSession)
       }
   }
 }
