@@ -27,8 +27,8 @@ import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
-import pages.event1._
-import pages.event1.employer.CompanyDetailsPage
+import pages.event1.employer._
+import pages.event1.{WhatYouWillNeedPage, _}
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckYourAnswersPage, EventSelectionPage, IndexPage}
@@ -69,7 +69,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, true),
         submitAnswer(SchemeUnAuthPaySurchargeMemberPage, true),
-        pageMustBe(PaymentNaturePage)
+        pageMustBe(pages.event1.PaymentNaturePage)
       )
   }
 
@@ -87,7 +87,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, true),
         submitAnswer(SchemeUnAuthPaySurchargeMemberPage, false),
-        pageMustBe(PaymentNaturePage)
+        pageMustBe(pages.event1.PaymentNaturePage)
       )
   }
 
@@ -105,7 +105,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(MembersDetailsPage, membersDetails.get),
         submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, false),
-        pageMustBe(PaymentNaturePage)
+        pageMustBe(pages.event1.PaymentNaturePage)
       )
   }
 
@@ -126,7 +126,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
     startingFrom(EventSelectionPage)
       .run(
         paymentNatureJourney,
-        submitAnswer(PaymentNaturePage, BenefitInKind),
+        submitAnswer(pages.event1.PaymentNaturePage, BenefitInKind),
         submitAnswer(BenefitInKindBriefDescriptionPage, ""),
         pageMustBe(IndexPage)
       )
@@ -140,7 +140,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(EventSelectionPage, Event1),
         submitAnswer(HowAddUnauthPaymentPage, Manual),
         submitAnswer(WhoReceivedUnauthPaymentPage, Member),
-        pageMustBe(employer.WhatYouWillNeedPage),
+        pageMustBe(WhatYouWillNeedPage),
         next,
         submitAnswer(MembersDetailsPage, membersDetails.get),
         submitAnswer(DoYouHoldSignedMandatePage, true),
@@ -150,7 +150,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
     startingFrom(EventSelectionPage)
       .run(
         paymentNatureJourney,
-        submitAnswer(PaymentNaturePage, BenefitInKind),
+        submitAnswer(pages.event1.PaymentNaturePage, BenefitInKind),
         submitAnswer(BenefitInKindBriefDescriptionPage, "valid - description"),
         pageMustBe(IndexPage)
       )
@@ -163,13 +163,15 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(EventSelectionPage, Event1),
         submitAnswer(HowAddUnauthPaymentPage, Manual),
         submitAnswer(WhoReceivedUnauthPaymentPage, Employer),
-        pageMustBe(employer.WhatYouWillNeedPage),
-        next,
+        pageMustBe(employer.WhatYouWillNeedPage)
+      )
+
+    startingFrom(CompanyDetailsPage)
+      .run(
         submitAnswer(CompanyDetailsPage, companyDetails),
         submitAnswer(EnterPostcodePage(Event1EmployerAddressJourney), seqTolerantAddresses),
         submitAnswer(ChooseAddressPage(Event1EmployerAddressJourney), seqAddresses.head),
         pageMustBe(employer.PaymentNaturePage)
       )
-
   }
 }
