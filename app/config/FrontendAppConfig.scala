@@ -36,7 +36,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val pensionsAdministratorUrl: String = servicesConfig.baseUrl("pension-administrator")
 
   private val contactHost = configuration.get[String]("contact-frontend.host")
-  private val contactFormServiceIdentifier = "pension-scheme-event-reporting-frontend"
+  private val contactFormServiceIdentifier = "PODS"
 
   def feedbackUrl(implicit request: RequestHeader): String =
     s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
@@ -49,7 +49,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   def youNeedToRegisterUrl: String = loadConfig("urls.youNeedToRegisterPage")
 
   private val exitSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
-  val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/pension-scheme-event-reporting-frontend"
+  val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/PODS"
 
   val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("features.welsh-translation")
