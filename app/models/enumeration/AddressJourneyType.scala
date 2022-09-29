@@ -57,7 +57,7 @@ object AddressJourneyType extends Enumerable.Implicits {
     }
   }
 
-  // TODO: Remove this dummy object when we have at least two usages of the AddressJourneyType. If only one instance then we get compile errors.
+  // TODO: Remove this dummy object when we have at least two instances of AddressJourneyType. If only one instance then we get compile errors.
   case object DummyAddressJourney extends WithJourneyTypeDetail(
     eventType = EventType.Event1,
     nodeName = "dummyNodeName",

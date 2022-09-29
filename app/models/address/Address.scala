@@ -32,16 +32,6 @@ case class Address(addressLine1: String,
                    postcode: Option[String],
                    country: String) {
 
-  def print: String = {
-    Seq(
-      Some(addressLine1),
-      Some(addressLine2),
-      addressLine3,
-      addressLine4,
-      postcode
-    ).flatten.mkString(", ")
-  }
-
   def lines(countryOptions: CountryOptions): Seq[String] = {
     Seq(
       Some(this.addressLine1),

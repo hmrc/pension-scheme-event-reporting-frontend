@@ -55,8 +55,6 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach {
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
   )
 
-  private val validValue = "abc"
-
   override def beforeEach: Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector, mockAddressLookupConnector)
@@ -116,9 +114,6 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach {
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
-
-        val view = application.injector.instanceOf[EnterPostcodeView]
-        val boundForm = form.bind(Map("value" -> ""))
 
         val result = route(application, request).value
 

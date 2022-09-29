@@ -124,7 +124,7 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
 
