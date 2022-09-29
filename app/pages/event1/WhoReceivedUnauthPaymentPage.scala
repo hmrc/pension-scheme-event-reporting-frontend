@@ -19,7 +19,7 @@ package pages.event1
 import controllers.event1.routes
 import models.UserAnswers
 import models.event1.WhoReceivedUnauthPayment
-import models.event1.WhoReceivedUnauthPayment.Member
+import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -36,6 +36,7 @@ case object WhoReceivedUnauthPaymentPage extends QuestionPage[WhoReceivedUnauthP
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
       case Some(Member) => WhatYouWillNeedPage
+      case Some(Employer) => employer.WhatYouWillNeedPage
       case _ => this
     }
 }

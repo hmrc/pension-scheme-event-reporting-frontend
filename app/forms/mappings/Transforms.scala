@@ -34,4 +34,7 @@ trait Transforms {
   protected def noTransform(value: String): String = {
     value
   }
+
+  protected def minimiseSpace(value: String): String =
+    value.replaceAll(" {2,}", " ")
 }

@@ -18,11 +18,17 @@ package generators
 
 import models._
 import models.event1.MembersDetails
+import models.event1.employer.CompanyDetails
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import uk.gov.hmrc.domain.Nino
 
 trait ModelGenerators {
+
+  implicit lazy val arbitraryEmployerPaymentNature: Arbitrary[event1.employer.PaymentNature] =
+    Arbitrary {
+      Gen.oneOf(event1.employer.PaymentNature.values.toSeq)
+    }
 
   implicit lazy val arbitraryNino: Arbitrary[Nino] = Arbitrary {
     for {
@@ -45,6 +51,16 @@ trait ModelGenerators {
         lastName <- Seq("validLastName1", "validLastName2")
         nino <- arbitrary[Nino].sample
       } yield MembersDetails(firstName, lastName, nino.nino)
+
+      Gen.oneOf(list)
+    }
+
+  implicit lazy val arbitraryCompanyDetails: Arbitrary[CompanyDetails] =
+    Arbitrary {
+      val list = for {
+        companyName <- Seq("validCompanyName1", "validCompanyName2")
+        companyNumber <- Seq("validCompanyNumber1", "validCompanyNumber2")
+      } yield CompanyDetails(companyName, companyNumber)
 
       Gen.oneOf(list)
     }

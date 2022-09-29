@@ -6,7 +6,7 @@ import forms.behaviours.DateBehaviours
 
 class $className$FormProviderSpec extends DateBehaviours {
 
-  val form = new $className$FormProvider()()
+  private val form = new $className$FormProvider()()
 
   ".value" - {
 

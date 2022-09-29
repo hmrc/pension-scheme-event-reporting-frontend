@@ -256,6 +256,87 @@ valueOfUnauthorisedPayment.checkYourAnswersLabel = Is the value of the unauthori
 valueOfUnauthorisedPayment.error.required = Select yes if the value of the unauthorised payment is more than 25% of the pension fund for the individual
 valueOfUnauthorisedPayment.change.hidden = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
 
+employer.whatYouWillNeed.title = What you will need
+employer.whatYouWillNeed.heading = What you will need
+employer.whatYouWillNeed.p = To record an unauthorised payment you will need to tell us:
+employer.whatYouWillNeed.item1 = the company or organisation name
+employer.whatYouWillNeed.item2 = the company number
+employer.whatYouWillNeed.item3 = the company address
+employer.whatYouWillNeed.item4 = the nature of the payment
+employer.whatYouWillNeed.item5 = the payment value and date
+
+companyDetails.title = Company details
+companyDetails.heading = Company details
+companyDetails.companyName.title = Company or organisation name
+companyDetails.companyNumber.title = Company number
+companyDetails.checkYourAnswersLabel = Company details
+companyDetails.companyName.error.required = Enter the company or organisation’s name
+companyDetails.companyName.error.length = The company or organisation’s name must be 160 characters or fewer
+companyDetails.companyName.error.invalidCharacters = The company name contains invalid characters
+companyDetails.companyNumber.error.required = Enter the company or organisation’s company number
+companyDetails.companyNumber.error.length = The company or organisation’s company number must be 7 or 8 characters, like 0123456 or AB123456
+companyDetails.companyNumber.error.invalidCharacters = The company or organisation’s company number must only include letters and numbers, like 01234567 or AB123456
+companyDetails.change.hidden = CompanyDetails
+
+enterPostcode.title = What is {0}’s postcode?
+enterPostcode.heading = What is {0}’s postcode?
+enterPostcode.checkYourAnswersLabel = What is x’s postcode?
+enterPostcode.error.required = Enter a postcode
+enterPostcode.error.length = Enter a real postcode
+enterPostcode.change.hidden = What is x’s postcode?
+enterPostcode.hint = You can
+enterPostcode.link = enter the address manually
+enterPostcode.error.required = Enter a postcode
+enterPostcode.error.length = The postcode cannot be more than 8 characters
+enterPostcode.error.nonUKLength = The postcode cannot be more than 10 characters
+enterPostcode.error.invalid = Enter a postcode in the correct format
+enterPostcode.error.noResults = Postcode cannot be found
+
+chooseAddress.title = What is {0}’s address?
+chooseAddress.heading = What is {0}’s address?
+chooseAddress.option1 = Option 1
+chooseAddress.option2 = Option 2
+chooseAddress.checkYourAnswersLabel = What is {0}’s address?
+chooseAddress.error.required = Select address
+chooseAddress.change.hidden = What is {0}’s address?
+
+address.title = What is {0}’s address?
+address.heading = What is {0}’s address?
+address.checkYourAnswersLabel = What is {0}’s address?
+address.change.hidden = What is {0}’s address?
+address.addressLine1.error.required = Enter the first line of {0}’s address
+address.addressLine1.error.length = Address line 1 must be 35 characters or fewer
+address.addressLine1.error.invalid = Address line 1 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+address.addressLine2.error.required = Enter the second line of {0}’s address
+address.addressLine2.error.length = Address line 2 must be 35 characters or fewer
+address.addressLine2.error.invalid = Address line 2 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+address.addressLine3.error.length = Address line 3 must be 35 characters or fewer
+address.addressLine3.error.invalid = Address line 3 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+address.addressLine4.error.length = Address line 4 must be 35 characters or fewer
+address.addressLine4.error.invalid = Address line 4 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+address.postCode.error.required = Enter a postcode
+address.country.error.required = Enter a country
+address.country.error.invalid = Invalid country
+address.addressLine1 = Address Line 1
+address.addressLine2 = Address Line 2
+address.addressLine3 = Address Line 3 (optional)
+address.addressLine4 = Address Line 4 (optional)
+address.postCode = Postcode (if UK)
+address.country = Country
+
+entityType.theCompany = the company
+
+paymentNature.title = Nature of the payment or deemed payment
+paymentNature.heading = Nature of the payment or deemed payment
+paymentNature.loansExceeding50PercentOfFundValue = Loans to or in respect of the employer exceeding 50% of the value of the fund
+paymentNature.residentialProperty  = Residential property held directly or indirectly by an investment-regulated pension scheme
+paymentNature.tangibleMoveableProperty  = Tangible moveable property held directly or indirectly by an investment-regulated pension scheme
+paymentNature.courtOrder  = Court order payment/confiscation order
+paymentNature.other = Other
+paymentNature.checkYourAnswersLabel = Nature of the payment or deemed payment
+paymentNature.error.required = Select the nature of the payment or deemed payment
+paymentNature.change.hidden = Nature of the payment or deemed payment
+
 schemeUnAuthPaySurchargeMember.title = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
 schemeUnAuthPaySurchargeMember.heading = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
 schemeUnAuthPaySurchargeMember.checkYourAnswersLabel = Is the scheme paying the unauthorised payment surcharge on behalf of the member?

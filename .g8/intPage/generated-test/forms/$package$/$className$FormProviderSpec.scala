@@ -5,7 +5,7 @@ import play.api.data.FormError
 
 class $className$FormProviderSpec extends IntFieldBehaviours {
 
-  val form = new $className$FormProvider()()
+  private val form = new $className$FormProvider()()
 
   ".value" - {
 

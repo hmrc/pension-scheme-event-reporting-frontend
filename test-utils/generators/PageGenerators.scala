@@ -22,6 +22,18 @@ import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryEmployerPaymentNaturePage: Arbitrary[event1.employer.PaymentNaturePage.type] =
+    Arbitrary(event1.employer.PaymentNaturePage)
+
+  implicit lazy val arbitraryChooseAddressPage: Arbitrary[address.ChooseAddressPage.type] =
+    Arbitrary(address.ChooseAddressPage)
+
+  implicit lazy val arbitraryEnterPostcodePage: Arbitrary[address.EnterPostcodePage.type] =
+    Arbitrary(address.EnterPostcodePage)
+
+  implicit lazy val arbitraryCompanyDetailsPage: Arbitrary[event1.employer.CompanyDetailsPage.type] =
+    Arbitrary(event1.employer.CompanyDetailsPage)
+
   implicit lazy val arbitrarySchemeUnAuthPaySurchargeMemberPage: Arbitrary[event1.SchemeUnAuthPaySurchargeMemberPage.type] =
     Arbitrary(event1.SchemeUnAuthPaySurchargeMemberPage)
 
@@ -39,7 +51,7 @@ trait PageGenerators {
 
   implicit lazy val arbitraryHowAddUnauthPaymentPage: Arbitrary[event1.HowAddUnauthPaymentPage.type] =
     Arbitrary(event1.HowAddUnauthPaymentPage)
-    
+
   implicit lazy val arbitraryPaymentNaturePage: Arbitrary[event1.PaymentNaturePage.type] =
     Arbitrary(event1.PaymentNaturePage)
 
