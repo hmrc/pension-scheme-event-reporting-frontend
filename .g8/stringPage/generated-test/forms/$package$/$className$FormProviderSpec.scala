@@ -5,11 +5,11 @@ import play.api.data.FormError
 
 class $className$FormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "$className;format="decap"$.error.required"
-  val lengthKey = "$className;format="decap"$.error.length"
-  val maxLength = $maxLength$
+  private val requiredKey = "$className;format="decap"$.error.required"
+  private val lengthKey = "$className;format="decap"$.error.length"
+  private val maxLength = $maxLength$
 
-  val form = new $className$FormProvider()()
+  private val form = new $className$FormProvider()()
 
   ".value" - {
 

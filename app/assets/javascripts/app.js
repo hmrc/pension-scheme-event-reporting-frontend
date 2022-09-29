@@ -14,4 +14,12 @@ document.addEventListener('DOMContentLoaded', function(event) {
       window.history.back();
     });
   }
+
+  if(document.querySelectorAll('select').length > 0){
+      accessibleAutocomplete.enhanceSelectElement({
+          defaultValue: '',
+          selectElement: document.querySelector('select')
+      })
+  }
+
 });

@@ -16,12 +16,16 @@
 
 package forms.mappings
 
-import java.time.LocalDate
+import models.{Enumerable, TaxYearValidationDetail}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
-import models.{Enumerable, TaxYearValidationDetail}
+
+import java.time.LocalDate
 
 trait Mappings extends Formatters with Constraints {
+
+  protected def optionalText(): FieldMapping[Option[String]] =
+    of(optionalStringFormatter)
 
   protected def text(errorKey: String = "error.required", args: Seq[String] = Seq.empty): FieldMapping[String] =
     of(stringFormatter(errorKey, args))
@@ -36,9 +40,6 @@ trait Mappings extends Formatters with Constraints {
                         invalidKey: String = "error.boolean",
                         args: Seq[String] = Seq.empty): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey, args))
-
-
-
 
   protected def enumerable[A](requiredKey: String = "error.required",
                               invalidKey: String = "error.invalid",

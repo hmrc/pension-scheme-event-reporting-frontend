@@ -21,6 +21,8 @@ lazy val root = (project in file("."))
     RoutesKeys.routesImport ++= Seq(
       "models._",
       "models.enumeration.EventType",
+      "models.enumeration.AddressJourneyType",
+      "models.enumeration.AddressJourneyType._",
       "pages.Waypoints",
       "pages.EmptyWaypoints",
       "uk.gov.hmrc.play.bootstrap.binders.RedirectUrl"
@@ -62,6 +64,7 @@ lazy val root = (project in file("."))
     Concat.groups := Seq(
       "javascripts/application.js" ->
         group(Seq(
+          "javascripts/autocomplete/location-autocomplete.min.js",
           "javascripts/app.js"
         ))
     ),

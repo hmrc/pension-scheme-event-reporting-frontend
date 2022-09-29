@@ -1,0 +1,108 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.address.routes
+
+@import viewmodels.InputWidth._
+@import models.enumeration.AddressJourneyType
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import utils.InputOption
+
+@this(
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukInput: GovukInput,
+    govukButton: GovukButton,
+    govukSelect: GovukSelect
+)
+
+@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String, options: Seq[InputOption])(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = title(form, pageTitle)) {
+
+    @formHelper(action = routes.ManualAddressController.onSubmit(waypoints, addressJourneyType)) {
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form))
+        }
+
+        <h1 class="govuk-heading-xl">@pageHeading</h1>
+
+        @govukInput(
+            InputViewModel(
+                field = form("addressLine1"),
+                label = LabelViewModel("address.addressLine1")
+            )
+            .withWidth(TwoThirds)
+        )
+
+        @govukInput(
+            InputViewModel(
+                field = form("addressLine2"),
+                label = LabelViewModel("address.addressLine2")
+            )
+            .withWidth(TwoThirds)
+        )
+
+        @govukInput(
+            InputViewModel(
+                field = form("addressLine3"),
+                label = LabelViewModel("address.addressLine3")
+            )
+            .withWidth(OneHalf)
+        )
+
+        @govukInput(
+            InputViewModel(
+                field = form("addressLine4"),
+                label = LabelViewModel("address.addressLine4")
+            )
+            .withWidth(OneHalf)
+        )
+
+        @govukInput(
+            InputViewModel(
+                field = form("postCode"),
+                label = LabelViewModel("address.postCode")
+            )
+            .withWidth(OneQuarter)
+        )
+
+        <div class="govuk-!-width-one-half">
+            @govukSelect(Select(
+                id = "country",
+                name = "country",
+                classes = "govuk-!-width-one-half country",
+                items = Seq(SelectItem(value = Some(""))) ++
+                options.map(valueOption =>
+                    SelectItem(
+                        value = Some(valueOption.value),
+                        text = valueOption.label
+                    )
+                ),
+                label = Label(
+                    content = Text(messages("address.country"))
+                )
+            ).withFormField(form("country")))
+        </div>
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))
+        )
+    }
+}

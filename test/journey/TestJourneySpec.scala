@@ -21,7 +21,7 @@ import models.EventSelection._
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersDetails
 import models.event1.PaymentNature.BenefitInKind
-import models.event1.WhoReceivedUnauthPayment.Member
+import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.event1._
@@ -149,5 +149,29 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(BenefitInKindBriefDescriptionPage, "valid - description"),
         pageMustBe(IndexPage)
       )
+  }
+
+  "test event1 journey (employer)" in {
+
+    startingFrom(EventSelectionPage)
+      .run(
+        submitAnswer(EventSelectionPage, Event1),
+        pageMustBe(HowAddUnauthPaymentPage),
+        submitAnswer(HowAddUnauthPaymentPage, Manual),
+        pageMustBe(WhoReceivedUnauthPaymentPage),
+        submitAnswer(WhoReceivedUnauthPaymentPage, Employer),
+        pageMustBe(employer.WhatYouWillNeedPage)
+      )
+
+    startingFrom(CompanyDetailsPage)
+      .run(
+        submitAnswer(CompanyDetailsPage, companyDetails),
+        pageMustBe(EnterPostcodePage(Event1EmployerAddressJourney)),
+        submitAnswer(EnterPostcodePage(Event1EmployerAddressJourney), seqTolerantAddresses),
+        pageMustBe(ChooseAddressPage(Event1EmployerAddressJourney)),
+        submitAnswer(ChooseAddressPage(Event1EmployerAddressJourney), seqAddresses.head),
+        pageMustBe(employer.PaymentNaturePage)
+      )
+
   }
 }
