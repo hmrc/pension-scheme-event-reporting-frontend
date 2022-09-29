@@ -30,7 +30,7 @@ import pages.event1._
 import pages.event1.employer.CompanyDetailsPage
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
-import pages.{CheckYourAnswersPage, EventSelectionPage, IndexPage}
+import pages.{CheckYourAnswersPage, EventSelectionPage}
 
 import java.time.LocalDate
 
@@ -66,9 +66,67 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         next,
         submitAnswer(MembersDetailsPage, membersDetails.get),
         submitAnswer(DoYouHoldSignedMandatePage, true),
-        pageMustBe(ValueOfUnauthorisedPaymentPage)
+        submitAnswer(ValueOfUnauthorisedPaymentPage, true),
+        submitAnswer(SchemeUnAuthPaySurchargeMemberPage, false),
+        pageMustBe(PaymentNaturePage)
       )
   }
+
+
+  "test event1 journey for unauthorised payment less than 25%" in {
+
+    val membersDetails = arbitrary[MembersDetails].sample
+
+    startingFrom(EventSelectionPage)
+      .run(
+        submitAnswer(EventSelectionPage, Event1),
+        submitAnswer(HowAddUnauthPaymentPage, Manual),
+        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
+        next,
+        submitAnswer(MembersDetailsPage, membersDetails.get),
+        submitAnswer(DoYouHoldSignedMandatePage, true),
+        submitAnswer(ValueOfUnauthorisedPaymentPage, false),
+        pageMustBe(PaymentNaturePage)
+      )
+  }
+
+
+  "test event1 journey for unauthorised payment more than 25% when Scheme Unauthorized Payment Surcharge true" in {
+
+    val membersDetails = arbitrary[MembersDetails].sample
+
+    startingFrom(EventSelectionPage)
+      .run(
+        submitAnswer(EventSelectionPage, Event1),
+        submitAnswer(HowAddUnauthPaymentPage, Manual),
+        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
+        next,
+        submitAnswer(MembersDetailsPage, membersDetails.get),
+        submitAnswer(DoYouHoldSignedMandatePage, true),
+        submitAnswer(ValueOfUnauthorisedPaymentPage, true),
+        submitAnswer(SchemeUnAuthPaySurchargeMemberPage, true),
+        pageMustBe(PaymentNaturePage)
+      )
+  }
+
+  "test event1 journey for unauthorised payment more than 25% when Scheme Unauthorized Payment Surcharge false" in {
+
+    val membersDetails = arbitrary[MembersDetails].sample
+
+    startingFrom(EventSelectionPage)
+      .run(
+        submitAnswer(EventSelectionPage, Event1),
+        submitAnswer(HowAddUnauthPaymentPage, Manual),
+        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
+        next,
+        submitAnswer(MembersDetailsPage, membersDetails.get),
+        submitAnswer(DoYouHoldSignedMandatePage, true),
+        submitAnswer(ValueOfUnauthorisedPaymentPage, true),
+        submitAnswer(SchemeUnAuthPaySurchargeMemberPage, false),
+        pageMustBe(PaymentNaturePage)
+      )
+  }
+
 
   "test event1 journey (employer)" in {
 

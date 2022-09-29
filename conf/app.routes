@@ -120,3 +120,6 @@ POST       /new-report/event-1-dummy-address          controllers.address.Manual
 
 GET        /new-report/event-1-employer-payment-nature        controllers.event1.employer.PaymentNatureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-1-employer-payment-nature        controllers.event1.employer.PaymentNatureController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-1-surcharge                        controllers.event1.SchemeUnAuthPaySurchargeMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-1-surcharge                        controllers.event1.SchemeUnAuthPaySurchargeMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

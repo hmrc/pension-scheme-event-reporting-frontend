@@ -336,3 +336,9 @@ paymentNature.other = Other
 paymentNature.checkYourAnswersLabel = Nature of the payment or deemed payment
 paymentNature.error.required = Select the nature of the payment or deemed payment
 paymentNature.change.hidden = Nature of the payment or deemed payment
+
+schemeUnAuthPaySurchargeMember.title = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
+schemeUnAuthPaySurchargeMember.heading = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
+schemeUnAuthPaySurchargeMember.checkYourAnswersLabel = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
+schemeUnAuthPaySurchargeMember.error.required = Select yes if Is the scheme paying the unauthorised payment surcharge on behalf of the member?
+schemeUnAuthPaySurchargeMember.change.hidden = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
