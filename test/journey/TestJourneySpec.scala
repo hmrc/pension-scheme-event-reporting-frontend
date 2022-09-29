@@ -50,7 +50,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       )
   }
 
-  "test event1 journey for unauthorised payment more than 25%" in {
+  "test event1 journey for unauthorised payment more than 25% when Scheme Unauthorized Payment Surcharge true" in {
 
     val membersDetails = arbitrary[MembersDetails].sample
 
@@ -63,7 +63,26 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(MembersDetailsPage, membersDetails.get),
         submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, true),
-        pageMustBe(SchemeUnAuthPaySurchargeMemberPage)
+        submitAnswer(SchemeUnAuthPaySurchargeMemberPage, true),
+        pageMustBe(PaymentNaturePage)
+      )
+  }
+
+  "test event1 journey for unauthorised payment more than 25% when Scheme Unauthorized Payment Surcharge false" in {
+
+    val membersDetails = arbitrary[MembersDetails].sample
+
+    startingFrom(EventSelectionPage)
+      .run(
+        submitAnswer(EventSelectionPage, Event1),
+        submitAnswer(HowAddUnauthPaymentPage, Manual),
+        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
+        next,
+        submitAnswer(MembersDetailsPage, membersDetails.get),
+        submitAnswer(DoYouHoldSignedMandatePage, true),
+        submitAnswer(ValueOfUnauthorisedPaymentPage, true),
+        submitAnswer(SchemeUnAuthPaySurchargeMemberPage, false),
+        pageMustBe(PaymentNaturePage)
       )
   }
 
