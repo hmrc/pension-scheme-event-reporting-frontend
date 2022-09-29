@@ -16,9 +16,9 @@
 
 package forms.mappings
 
+import models.Enumerable
 import play.api.data.FormError
 import play.api.data.format.Formatter
-import models.Enumerable
 
 import scala.util.control.Exception.nonFatalCatch
 
@@ -46,9 +46,9 @@ trait Formatters {
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
       data.get(key) match {
-        case None                      => Left(Seq(FormError(key, errorKey, args)))
+        case None => Left(Seq(FormError(key, errorKey, args)))
         case Some(s) if s.trim.isEmpty => Left(Seq(FormError(key, errorKey, args)))
-        case Some(s)                   => Right(s)
+        case Some(s) => Right(s)
       }
 
     override def unbind(key: String, value: String): Map[String, String] =
@@ -64,9 +64,9 @@ trait Formatters {
         baseFormatter
           .bind(key, data)
           .right.flatMap {
-          case "true"  => Right(true)
+          case "true" => Right(true)
           case "false" => Right(false)
-          case _       => Left(Seq(FormError(key, invalidKey, args)))
+          case _ => Left(Seq(FormError(key, invalidKey, args)))
         }
 
       def unbind(key: String, value: Boolean) = Map(key -> value.toString)

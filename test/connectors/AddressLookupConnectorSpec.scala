@@ -44,12 +44,12 @@ class AddressLookupConnectorSpec extends AsyncWordSpec
       "means the AddressLookup has found no data for postcode" in {
         server.stubFor(
           post(urlEqualTo(url))
-            .withRequestBody(equalTo(Json.obj("postcode"->"ZZ1 1ZZ").toString()))
+            .withRequestBody(equalTo(Json.obj("postcode" -> "ZZ1 1ZZ").toString()))
             .willReturn
-          (
-            aResponse().withStatus(OK)
-              .withBody("[]")
-          )
+            (
+              aResponse().withStatus(OK)
+                .withBody("[]")
+            )
         )
         connector.addressLookupByPostCode("ZZ1 1ZZ") map {
           result =>
@@ -90,17 +90,15 @@ class AddressLookupConnectorSpec extends AsyncWordSpec
             |]
             |""".stripMargin
 
-
         val tolerantAddressSample = Seq(
           TolerantAddress(Some("10 Other Place"), Some("Some District"), Some("Anytown"), Some("Somerset"), Some("ZZ1 1ZZ"), Some("UK")),
           TolerantAddress(Some("2 Other Place"), Some("Some District"), Some("Anytown"), Some("Somerset"), Some("ZZ1 1ZZ"), Some("UK"))
         )
 
-
         server.stubFor(
           post(urlEqualTo(url))
             .withHeader("user-agent", matching(".+"))
-            .withRequestBody(equalTo(Json.obj("postcode"->"ZZ1 1ZZ").toString()))
+            .withRequestBody(equalTo(Json.obj("postcode" -> "ZZ1 1ZZ").toString()))
             .willReturn
             (
               aResponse().withStatus(OK)
@@ -113,7 +111,6 @@ class AddressLookupConnectorSpec extends AsyncWordSpec
         }
       }
     }
-
 
 
     "returns an ok and Seq of Addresses" which {
@@ -147,16 +144,14 @@ class AddressLookupConnectorSpec extends AsyncWordSpec
             |]
             |""".stripMargin
 
-
         val tolerantAddressSample = Seq(
           TolerantAddress(Some("2 Other Place"), Some("Some District"), Some("Anytown"), Some("Somerset"), Some("ZZ1 1ZZ"), Some("UK"))
         )
 
-
         server.stubFor(
           post(urlEqualTo(url))
             .withHeader("user-agent", matching(".+"))
-            .withRequestBody(equalTo(Json.obj("postcode"->"ZZ1 1ZZ").toString()))
+            .withRequestBody(equalTo(Json.obj("postcode" -> "ZZ1 1ZZ").toString()))
             .willReturn
             (
               aResponse().withStatus(OK)
@@ -170,20 +165,16 @@ class AddressLookupConnectorSpec extends AsyncWordSpec
       }
     }
 
-
-
-
-
     "returns an exception" which {
       "means the Address Lookup has returned a non 200 response " in {
 
         server.stubFor(
           post(urlEqualTo(url))
-            .withRequestBody(equalTo(Json.obj("postcode"->"ZZ1 1ZZ").toString()))
+            .withRequestBody(equalTo(Json.obj("postcode" -> "ZZ1 1ZZ").toString()))
             .willReturn
-          (
-            aResponse().withStatus(NOT_FOUND).withBody("Something is wrong")
-          )
+            (
+              aResponse().withStatus(NOT_FOUND).withBody("Something is wrong")
+            )
         )
 
         recoverToSucceededIf[HttpException] {
@@ -196,11 +187,11 @@ class AddressLookupConnectorSpec extends AsyncWordSpec
 
         server.stubFor(
           post(urlEqualTo(url))
-            .withRequestBody(equalTo(Json.obj("postcode"->"ZZ1 1ZZ").toString()))
+            .withRequestBody(equalTo(Json.obj("postcode" -> "ZZ1 1ZZ").toString()))
             .willReturn
-          (
-            aResponse().withStatus(NO_CONTENT)
-          )
+            (
+              aResponse().withStatus(NO_CONTENT)
+            )
         )
 
         recoverToSucceededIf[HttpException] {

@@ -16,19 +16,23 @@
 
 package models.event1.employer
 
+import models.{Enumerable, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import models.{Enumerable,WithName}
 
 sealed trait PaymentNature
 
 object PaymentNature extends Enumerable.Implicits {
 
   case object LoansExceeding50PercentOfFundValue extends WithName("loansExceeding50PercentOfFundValue") with PaymentNature
+
   case object ResidentialProperty extends WithName("residentialProperty") with PaymentNature
+
   case object TangibleMoveableProperty extends WithName("tangibleMoveableProperty") with PaymentNature
+
   case object CourtOrder extends WithName("courtOrder") with PaymentNature
+
   case object Other extends WithName("other") with PaymentNature
 
   val values: Seq[PaymentNature] = Seq(
@@ -39,8 +43,8 @@ object PaymentNature extends Enumerable.Implicits {
     case (value, index) =>
       RadioItem(
         content = Text(messages(s"paymentNature.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
+        value = Some(value.toString),
+        id = Some(s"value_$index")
       )
   }
 

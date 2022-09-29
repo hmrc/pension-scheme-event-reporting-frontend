@@ -22,7 +22,7 @@ import models.address.Address
 import models.enumeration.AddressJourneyType
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import pages.event1.employer.PaymentNaturePage
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

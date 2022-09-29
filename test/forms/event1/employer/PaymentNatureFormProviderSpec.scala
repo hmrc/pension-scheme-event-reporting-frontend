@@ -32,7 +32,7 @@ class PaymentNatureFormProviderSpec extends OptionFieldBehaviours {
     behave like optionsField[PaymentNature](
       form,
       fieldName,
-      validValues  = PaymentNature.values,
+      validValues = PaymentNature.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

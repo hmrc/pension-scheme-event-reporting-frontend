@@ -15,17 +15,15 @@
  *@
 
 @import controllers.address.routes
-@import models.enumeration.AddressJourneyType
 @import models.address.TolerantAddress
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import models.enumeration.AddressJourneyType
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton
 )
 
 @(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String, addresses: Seq[TolerantAddress])(implicit request: Request[_], messages: Messages)
@@ -35,19 +33,19 @@
     @formHelper(action = routes.ChooseAddressController.onSubmit(waypoints, addressJourneyType), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
         }
 
         @govukRadios(
             RadiosViewModel(
-                field  = form("value"),
+                field = form("value"),
                 legend = LegendViewModel(messages(pageHeading)).asPageHeading(),
-                items  = for((address, i) <-  addresses.zipWithIndex)
-                yield {
+                items = for((address, i) <- addresses.zipWithIndex)
+                    yield {
                     RadioItem(
                         content = Text(address.print),
                         value = Some(i.toString),
-                        id = Some(form("value").id+"-"+i.toString),
+                        id = Some(form("value").id + "-" + i.toString),
                     )
                 }
             )

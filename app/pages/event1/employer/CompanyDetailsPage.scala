@@ -34,5 +34,5 @@ case object CompanyDetailsPage extends QuestionPage[CompanyDetails] {
     routes.CompanyDetailsController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-  pages.address.EnterPostcodePage(Event1EmployerAddressJourney)
+    pages.address.EnterPostcodePage(Event1EmployerAddressJourney)
 }

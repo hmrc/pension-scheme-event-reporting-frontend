@@ -27,7 +27,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object ChooseAddressSummary  {
+object ChooseAddressSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, addressJourneyType: AddressJourneyType)
          (implicit messages: Messages): Option[SummaryListRow] =
@@ -41,8 +41,8 @@ object ChooseAddressSummary  {
         )
 
         SummaryListRowViewModel(
-          key     = "chooseAddress.checkYourAnswersLabel",
-          value   = value,
+          key = "chooseAddress.checkYourAnswersLabel",
+          value = value,
           actions = Seq(
             ActionItemViewModel("site.change", ChooseAddressPage(addressJourneyType).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("chooseAddress.change.hidden"))
