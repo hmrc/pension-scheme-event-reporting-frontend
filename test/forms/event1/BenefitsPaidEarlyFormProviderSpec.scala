@@ -17,6 +17,7 @@
 package forms.event1
 
 import forms.behaviours.StringFieldBehaviours
+import forms.event1.member.BenefitsPaidEarlyFormProvider
 import play.api.data.FormError
 
 class BenefitsPaidEarlyFormProviderSpec extends StringFieldBehaviours {

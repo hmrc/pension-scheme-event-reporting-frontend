@@ -124,5 +124,5 @@ POST        /new-report/event-1-employer-payment-nature        controllers.event
 GET         /new-report/event-1-surcharge                      controllers.event1.SchemeUnAuthPaySurchargeMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-surcharge                      controllers.event1.SchemeUnAuthPaySurchargeMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /new-report/member/event-1-benefits-paid-early      controllers.event1.BenefitsPaidEarlyController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/member/event-1-benefits-paid-early      controllers.event1.BenefitsPaidEarlyController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/member/event-1-benefits-paid-early      controllers.event1.member.BenefitsPaidEarlyController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/member/event-1-benefits-paid-early      controllers.event1.member.BenefitsPaidEarlyController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

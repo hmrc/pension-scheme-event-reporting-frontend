@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.event1
+package controllers.event1.member
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event1.BenefitsPaidEarlyFormProvider
+import forms.event1.member.BenefitsPaidEarlyFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event1.BenefitsPaidEarlyView
+import views.html.event1.member.BenefitsPaidEarlyView
 
 import scala.concurrent.Future
 
