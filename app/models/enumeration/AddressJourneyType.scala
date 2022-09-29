@@ -69,14 +69,14 @@ object AddressJourneyType extends Enumerable.Implicits {
     //    override def heading(whichPage: Page)(implicit
     //                                            request: DataRequest[AnyContent]): Message = {
     //      whichPage match {
-    //        case ManualAddressPage(_) => Message("another-message-keya", this.name(request.userAnswers))
+    //        case ManualAddressPage(ChooseAddressPage) => Message("another-message-keya", this.name(request.userAnswers))
     //        case _ => super.heading(whichPage)
     //      }
     //    }
     //
     //    override def title(whichPage: String): Message = {
     //      whichPage match {
-    //        case ManualAddressPage(_) => Message("another-message-keyb", this.name(request.userAnswers))
+    //        case ManualAddressPage(EnterPostcodePage) => Message("another-message-keyb", this.name(request.userAnswers))
     //        case _ => super.heading(whichPage)
     //      }
     //    }
