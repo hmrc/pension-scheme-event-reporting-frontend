@@ -14,29 +14,19 @@
  * limitations under the License.
  */
 
-package pages.event1
+package pages.event1.member
 
 import controllers.event1.routes
-import models.UserAnswers
-import models.event1.PaymentNature
-import models.event1.PaymentNature.BenefitsPaidEarly
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
 
-case object PaymentNaturePage extends QuestionPage[PaymentNature] {
+case object BenefitsPaidEarlyPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "paymentNature"
+  override def toString: String = "benefitsPaidEarly"
 
-  def route(waypoints: Waypoints): Call =
-    routes.PaymentNatureController.onPageLoad(waypoints)
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(PaymentNaturePage) match {
-      case Some(BenefitsPaidEarly) => pages.event1.member.BenefitsPaidEarlyPage
-      case _ => IndexPage
-    }
-  }
+  override def route(waypoints: Waypoints): Call =
+    routes.BenefitsPaidEarlyController.onPageLoad(waypoints)
 }

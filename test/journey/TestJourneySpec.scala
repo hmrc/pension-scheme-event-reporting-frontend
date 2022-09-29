@@ -22,12 +22,14 @@ import models.EventSelection._
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersDetails
+import models.event1.PaymentNature.BenefitsPaidEarly
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.event1._
 import pages.event1.employer.CompanyDetailsPage
+import pages.event1.member.BenefitsPaidEarlyPage
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckYourAnswersPage, EventSelectionPage}
@@ -54,7 +56,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       )
   }
 
-  "test event1 journey (member)" in {
+  "test event1 journey (member), payment nature is benefits paid early" in {
 
     val membersDetails = arbitrary[MembersDetails].sample
 
@@ -68,10 +70,10 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, true),
         submitAnswer(SchemeUnAuthPaySurchargeMemberPage, false),
-        pageMustBe(PaymentNaturePage)
+        submitAnswer(PaymentNaturePage, BenefitsPaidEarly),
+        pageMustBe(BenefitsPaidEarlyPage)
       )
   }
-
 
   "test event1 journey for unauthorised payment less than 25%" in {
 
