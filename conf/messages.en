@@ -342,3 +342,10 @@ schemeUnAuthPaySurchargeMember.heading = Is the scheme paying the unauthorised p
 schemeUnAuthPaySurchargeMember.checkYourAnswersLabel = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
 schemeUnAuthPaySurchargeMember.error.required = Select yes if Is the scheme paying the unauthorised payment surcharge on behalf of the member?
 schemeUnAuthPaySurchargeMember.change.hidden = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
+
+benefitInKindBriefDescription.title = Give a brief description of the benefit in kind
+benefitInKindBriefDescription.heading = Give a brief description of the benefit in kind
+benefitInKindBriefDescription.hint = You can enter a maximum of 150 characters (optional).
+benefitInKindBriefDescription.checkYourAnswersLabel = Give a brief description of the benefit in kind
+benefitInKindBriefDescription.error.length = You can enter a maximum of 150 characters (optional)
+benefitInKindBriefDescription.change.hidden = Give a brief description of the benefit in kind
