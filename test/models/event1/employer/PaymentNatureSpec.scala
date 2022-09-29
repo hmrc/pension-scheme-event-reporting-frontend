@@ -18,10 +18,10 @@ package models.event1.employer
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.OptionValues
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
 class PaymentNatureSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
@@ -30,7 +30,7 @@ class PaymentNatureSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(PaymentNature.values.toSeq)
+      val gen = Gen.oneOf(PaymentNature.values)
 
       forAll(gen) {
         paymentNature =>
@@ -52,7 +52,7 @@ class PaymentNatureSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(PaymentNature.values.toSeq)
+      val gen = Gen.oneOf(PaymentNature.values)
 
       forAll(gen) {
         paymentNature =>

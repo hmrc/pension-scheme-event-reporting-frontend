@@ -20,27 +20,25 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.address.TolerantAddress
-import play.api.Logger
+import play.api.Logging
 import play.api.http.Status.OK
 import play.api.libs.json.{JsObject, Json, Reads}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddressLookupConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
-
-  private val logger  = Logger(classOf[AddressLookupConnector])
+class AddressLookupConnector @Inject()(http: HttpClient, config: FrontendAppConfig) extends Logging {
 
   def addressLookupByPostCode(postCode: String)
-                                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TolerantAddress]] = {
+                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TolerantAddress]] = {
     val schemeHc = hc.withExtraHeaders("X-Hmrc-Origin" -> "PODS")
 
     val addressLookupUrl = s"${config.addressLookUp}/lookup"
 
     implicit val reads: Reads[Seq[TolerantAddress]] = TolerantAddress.postCodeLookupReads
 
-    val lookupAddressByPostcode: JsObject =Json.obj("postcode"->postCode)
-    http.POST[JsObject , HttpResponse](addressLookupUrl , lookupAddressByPostcode)(implicitly , implicitly, schemeHc, implicitly) flatMap {
+    val lookupAddressByPostcode: JsObject = Json.obj("postcode" -> postCode)
+    http.POST[JsObject, HttpResponse](addressLookupUrl, lookupAddressByPostcode)(implicitly, implicitly, schemeHc, implicitly) flatMap {
       case response if response.status equals OK => Future.successful {
         response.json.as[Seq[TolerantAddress]]
           .filterNot(a => a.addressLine1.isEmpty && a.addressLine2.isEmpty && a.addressLine3.isEmpty &&

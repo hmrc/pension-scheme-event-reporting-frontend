@@ -25,7 +25,9 @@ object SampleData {
     InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"),
     InputOption("GB", "Great Britain")
   )
+
   def countryOptions: CountryOptions = new CountryOptions(options)
+
   val seqAddresses: Seq[Address] = Seq[Address](
     Address(
       addressLine1 = "addr11",
@@ -63,5 +65,5 @@ object SampleData {
       countryOpt = Some("GB")
     )
   )
-  val companyDetails: CompanyDetails = CompanyDetails( "Company Name", "12345678")
+  val companyDetails: CompanyDetails = CompanyDetails("Company Name", "12345678")
 }

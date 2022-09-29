@@ -18,9 +18,9 @@ package pages.event1.employer
 
 import controllers.event1.employer.routes
 import models.event1.employer.PaymentNature
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Waypoints, QuestionPage}
 
 case object PaymentNaturePage extends QuestionPage[PaymentNature] {
 

@@ -30,9 +30,9 @@ class ChooseAddressFormProviderSpec extends OptionFieldBehaviours {
     val requiredKey = "chooseAddress.error.required"
 
     "bind valid value" in {
-        val result: Form[Int] = form.bind(Map(fieldName -> "1"))
+      val result: Form[Int] = form.bind(Map(fieldName -> "1"))
       result.errors mustBe empty
-        result.value mustEqual Some(1)
+      result.value mustEqual Some(1)
     }
 
     "not bind invalid value" in {

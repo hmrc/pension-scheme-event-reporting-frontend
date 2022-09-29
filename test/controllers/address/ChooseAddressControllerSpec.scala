@@ -24,7 +24,7 @@ import models.UserAnswers
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
@@ -113,9 +113,6 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must return bad request when invalid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
-
       val ua = emptyUserAnswers.setOrException(EnterPostcodePage(Event1EmployerAddressJourney), seqTolerantAddresses)
 
       val application =
@@ -129,6 +126,7 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
   }

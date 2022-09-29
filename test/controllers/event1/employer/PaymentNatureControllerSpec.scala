@@ -21,12 +21,12 @@ import connectors.UserAnswersCacheConnector
 import forms.event1.employer.PaymentNatureFormProvider
 import models.UserAnswers
 import models.event1.employer.PaymentNature
-import pages.EmptyWaypoints
-import pages.event1.employer.PaymentNaturePage
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
+import pages.EmptyWaypoints
+import pages.event1.employer.PaymentNaturePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -45,6 +45,7 @@ class PaymentNatureControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.PaymentNatureController.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.PaymentNatureController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -109,13 +110,11 @@ class PaymentNatureControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual PaymentNaturePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
     "must return bad request when invalid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
-
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
           .build()
@@ -131,6 +130,7 @@ class PaymentNatureControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
   }

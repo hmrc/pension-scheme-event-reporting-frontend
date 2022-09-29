@@ -28,7 +28,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryEmployerPaymentNatureUserAnswersEntry: Arbitrary[(pages.event1.employer.PaymentNaturePage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event1.employer.PaymentNaturePage.type]
+        page <- arbitrary[pages.event1.employer.PaymentNaturePage.type]
         value <- arbitrary[models.event1.employer.PaymentNature].map(Json.toJson(_))
       } yield (page, value)
     }
@@ -52,7 +52,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitrarySchemeUnAuthPaySurchargeMemberUserAnswersEntry: Arbitrary[(pages.event1.SchemeUnAuthPaySurchargeMemberPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event1.SchemeUnAuthPaySurchargeMemberPage.type]
+        page <- arbitrary[pages.event1.SchemeUnAuthPaySurchargeMemberPage.type]
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }
@@ -100,7 +100,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryPaymentNatureUserAnswersEntry: Arbitrary[(pages.event1.PaymentNaturePage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event1.PaymentNaturePage.type]
+        page <- arbitrary[pages.event1.PaymentNaturePage.type]
         value <- arbitrary[models.event1.PaymentNature].map(Json.toJson(_))
       } yield (page, value)
     }
