@@ -79,8 +79,8 @@ POST        /new-report/event-1-payment-type                   controllers.event
 GET         /windup                                            controllers.eventWindUp.SchemeWindUpDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /windup                                            controllers.eventWindUp.SchemeWindUpDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET         /new-report/member/event-1-payment-nature          controllers.event1.PaymentNatureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /new-report/member/event-1-payment-nature          controllers.event1.PaymentNatureController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-1-member-payment-nature          controllers.event1.PaymentNatureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-member-payment-nature          controllers.event1.PaymentNatureController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-1-member-need                    controllers.event1.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
@@ -96,5 +96,5 @@ POST        /new-report/event-1-payment-value                  controllers.event
 GET         /new-report/event-1-surcharge                      controllers.event1.SchemeUnAuthPaySurchargeMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-surcharge                      controllers.event1.SchemeUnAuthPaySurchargeMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET         /new-report/member/event-1-benefit-in-kind         controllers.event1.BenefitInKindBriefDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /new-report/member/event-1-benefit-in-kind
+GET         /new-report/event-1-benefit-in-kind                controllers.event1.BenefitInKindBriefDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-benefit-in-kind                controllers.event1.BenefitInKindBriefDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

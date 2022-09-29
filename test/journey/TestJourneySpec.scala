@@ -20,13 +20,14 @@ import generators.ModelGenerators
 import models.EventSelection._
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersDetails
+import models.event1.PaymentNature.BenefitInKind
 import models.event1.WhoReceivedUnauthPayment.Member
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.event1._
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
-import pages.{CheckYourAnswersPage, EventSelectionPage}
+import pages.{CheckYourAnswersPage, EventSelectionPage, IndexPage}
 
 import java.time.LocalDate
 
@@ -101,6 +102,52 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, false),
         pageMustBe(PaymentNaturePage)
+      )
+  }
+
+  "test event1 member-journey for benefit in kind - empty" in {
+    val membersDetails = arbitrary[MembersDetails].sample
+
+    val paymentNatureJourney =
+      journeyOf(
+        submitAnswer(EventSelectionPage, Event1),
+        submitAnswer(HowAddUnauthPaymentPage, Manual),
+        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
+        next,
+        submitAnswer(MembersDetailsPage, membersDetails.get),
+        submitAnswer(DoYouHoldSignedMandatePage, true),
+        submitAnswer(ValueOfUnauthorisedPaymentPage, false),
+      )
+
+    startingFrom(EventSelectionPage)
+      .run(
+        paymentNatureJourney,
+        submitAnswer(PaymentNaturePage, BenefitInKind),
+        submitAnswer(BenefitInKindBriefDescriptionPage, ""),
+        pageMustBe(IndexPage)
+      )
+  }
+
+  "test event1 member-journey for benefit in kind - with some description" in {
+    val membersDetails = arbitrary[MembersDetails].sample
+
+    val paymentNatureJourney =
+      journeyOf(
+        submitAnswer(EventSelectionPage, Event1),
+        submitAnswer(HowAddUnauthPaymentPage, Manual),
+        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
+        next,
+        submitAnswer(MembersDetailsPage, membersDetails.get),
+        submitAnswer(DoYouHoldSignedMandatePage, true),
+        submitAnswer(ValueOfUnauthorisedPaymentPage, false),
+      )
+
+    startingFrom(EventSelectionPage)
+      .run(
+        paymentNatureJourney,
+        submitAnswer(PaymentNaturePage, BenefitInKind),
+        submitAnswer(BenefitInKindBriefDescriptionPage, "valid - description"),
+        pageMustBe(IndexPage)
       )
   }
 }

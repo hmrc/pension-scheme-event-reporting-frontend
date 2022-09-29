@@ -21,8 +21,8 @@ import play.api.data.FormError
 
 class BenefitInKindBriefDescriptionFormProviderSpec extends StringFieldBehaviours {
 
-  val lengthKey = "benefitInKindBriefDescription.error.length"
-  val maxLength = 150
+  private val lengthKey = "benefitInKindBriefDescription.error.length"
+  private val maxLength = 150
 
   val form = new BenefitInKindBriefDescriptionFormProvider()()
 
