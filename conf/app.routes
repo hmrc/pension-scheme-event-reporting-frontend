@@ -92,3 +92,6 @@ POST        /new-report/event-1-mandate                        controllers.event
 
 GET         /new-report/event-1-payment-value                  controllers.event1.ValueOfUnauthorisedPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-payment-value                  controllers.event1.ValueOfUnauthorisedPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/member/event-1-benefit-in-kind         controllers.event1.BenefitInKindBriefDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/member/event-1-benefit-in-kind         controllers.event1.BenefitInKindBriefDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

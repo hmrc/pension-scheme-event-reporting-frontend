@@ -50,7 +50,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       )
   }
 
-  "test event1 journey" in {
+  "test event1 journey for member" in {
 
     val membersDetails = arbitrary[MembersDetails].sample
 
