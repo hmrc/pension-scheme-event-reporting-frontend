@@ -69,7 +69,7 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
             Future.successful(
               BadRequest(
                 view(
-                  addArgsToErrors(formWithErrors, addressJourneyType.entityTypeInstanceName(request.userAnswers)),
+                  addArgsToErrors(formWithErrors, addressJourneyType.entityName(request.userAnswers)),
                   waypoints,
                   addressJourneyType,
                   addressJourneyType.title(page),

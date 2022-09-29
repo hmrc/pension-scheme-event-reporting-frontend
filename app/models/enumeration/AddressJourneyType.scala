@@ -27,7 +27,7 @@ import viewmodels.Message.Literal
 sealed trait AddressJourneyType {
   val eventType: EventType
   val nodeName: String
-  def entityTypeInstanceName(ua:UserAnswers):Message
+  def entityName(ua:UserAnswers):Message
 
   def heading(whichPage: Page)(implicit request: DataRequest[AnyContent]): Message
 
@@ -39,7 +39,7 @@ abstract class WithJourneyTypeDetail(val eventType: EventType, val nodeName: Str
 
   override def heading(whichPage: Page)(implicit
                                           request: DataRequest[AnyContent]): Message =
-    Message(s"${whichPage.toString}.heading", this.entityTypeInstanceName(request.userAnswers))
+    Message(s"${whichPage.toString}.heading", this.entityName(request.userAnswers))
 
   override def title(whichPage: Page): Message = Message(s"${whichPage.toString}.title",
     Message(entityTypeMessageKey))
@@ -51,7 +51,7 @@ object AddressJourneyType extends Enumerable.Implicits {
     eventType = EventType.Event1,
     nodeName = "employerAddress",
     entityTypeMessageKey = entityTypeMessageKeyCompany) {
-    override def entityTypeInstanceName(ua: UserAnswers): Message = ua.get(CompanyDetailsPage) match {
+    override def entityName(ua: UserAnswers): Message = ua.get(CompanyDetailsPage) match {
       case Some(cd) => Literal(cd.companyName)
       case _ => Message(entityTypeMessageKeyCompany)
     }
@@ -62,7 +62,7 @@ object AddressJourneyType extends Enumerable.Implicits {
     eventType = EventType.Event1,
     nodeName = "dummyNodeName",
     entityTypeMessageKey = "entityTypeMessageKey") {
-    override def entityTypeInstanceName(ua: UserAnswers): Message = Message("dummy name")
+    override def entityName(ua: UserAnswers): Message = Message("dummy name")
 
     // Examples below as to how to override the header/ title message key on address pages if necessary:-
     //
