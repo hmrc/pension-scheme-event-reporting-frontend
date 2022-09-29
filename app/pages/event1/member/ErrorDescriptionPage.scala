@@ -14,30 +14,19 @@
  * limitations under the License.
  */
 
-package pages.event1
+package pages.event1.member
 
-import controllers.event1.routes
-import models.UserAnswers
-import models.event1.PaymentNature
-import models.event1.PaymentNature.ErrorCalcTaxFreeLumpSums
-import pages.event1.member.ErrorDescriptionPage
+import controllers.event1.member.routes
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{Waypoints, QuestionPage}
 
-case object PaymentNaturePage extends QuestionPage[PaymentNature] {
+case object ErrorDescriptionPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "paymentNature"
+  override def toString: String = "errorDescription"
 
   override def route(waypoints: Waypoints): Call =
-    routes.PaymentNatureController.onPageLoad(waypoints)
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(PaymentNaturePage) match {
-      case Some(ErrorCalcTaxFreeLumpSums) => pages.event1.member.ErrorDescriptionPage
-      case _ => IndexPage
-    }
-  }
+    routes.ErrorDescriptionController.onPageLoad(waypoints)
 }

@@ -22,12 +22,14 @@ import models.EventSelection._
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersDetails
+import models.event1.PaymentNature.ErrorCalcTaxFreeLumpSums
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.event1._
 import pages.event1.employer.CompanyDetailsPage
+import pages.event1.member.ErrorDescriptionPage
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckYourAnswersPage, EventSelectionPage}
@@ -86,7 +88,9 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(MembersDetailsPage, membersDetails.get),
         submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, false),
-        pageMustBe(PaymentNaturePage)
+        pageMustBe(PaymentNaturePage),
+        submitAnswer(PaymentNaturePage, ErrorCalcTaxFreeLumpSums),
+        pageMustBe(ErrorDescriptionPage)
       )
   }
 

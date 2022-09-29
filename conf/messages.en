@@ -342,3 +342,11 @@ schemeUnAuthPaySurchargeMember.heading = Is the scheme paying the unauthorised p
 schemeUnAuthPaySurchargeMember.checkYourAnswersLabel = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
 schemeUnAuthPaySurchargeMember.error.required = Select yes if Is the scheme paying the unauthorised payment surcharge on behalf of the member?
 schemeUnAuthPaySurchargeMember.change.hidden = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
+
+errorDescription.title = Give a brief description of the error
+errorDescription.heading = Give a brief description of the error
+errorDescription.checkYourAnswersLabel = Give a brief description of the error
+errorDescription.hint = You can enter a maximum of 150 characters (optional).
+errorDescription.error.required = Enter a brief description of the error
+errorDescription.error.length = The error description must be 150 characters or less
+errorDescription.change.hidden = Give a brief description of the error
