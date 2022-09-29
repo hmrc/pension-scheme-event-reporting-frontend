@@ -17,6 +17,7 @@
 package controllers.auth
 
 import config.FrontendAppConfig
+import connectors.SessionDataCacheConnector
 import controllers.actions.IdentifierAction
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,20 +30,23 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthController @Inject()(
                                 val controllerComponents: MessagesControllerComponents,
                                 config: FrontendAppConfig,
-                                identify: IdentifierAction
+                                identify: IdentifierAction,
+                                sessionDataCacheConnector: SessionDataCacheConnector
                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def signOut(): Action[AnyContent] = identify.async {
     implicit request =>
-
-      Future.successful(Redirect(config.signOutUrl, Map("continue" -> Seq(config.exitSurveyUrl))))
-
+      sessionDataCacheConnector.removeAll(request.loggedInUser.externalId).flatMap { _ =>
+        Future.successful(Redirect(config.signOutUrl,
+          Map("continue" -> Seq(config.exitSurveyUrl))).withNewSession)
+      }
   }
 
   def signOutNoSurvey(): Action[AnyContent] = identify.async {
     implicit request =>
-
-      Future.successful(Redirect(config.signOutUrl, Map("continue" -> Seq(routes.SignedOutController.onPageLoad.url))))
-
+      sessionDataCacheConnector.removeAll(request.loggedInUser.externalId).flatMap { _ =>
+        Future.successful(Redirect(config.signOutUrl,
+          Map("continue" -> Seq(routes.SignedOutController.onPageLoad.url))).withNewSession)
+      }
   }
 }
