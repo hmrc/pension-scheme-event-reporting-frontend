@@ -265,11 +265,11 @@ employer.whatYouWillNeed.item3 = the company address
 employer.whatYouWillNeed.item4 = the nature of the payment
 employer.whatYouWillNeed.item5 = the payment value and date
 
-companyDetails.title = Company Details
-companyDetails.heading = Company Details
+companyDetails.title = Company details
+companyDetails.heading = Company details
 companyDetails.companyName.title = Company or organisation name
 companyDetails.companyNumber.title = Company number
-companyDetails.checkYourAnswersLabel = Company Details
+companyDetails.checkYourAnswersLabel = Company details
 companyDetails.companyName.error.required = Enter the company or organisation’s name
 companyDetails.companyName.error.length = The company or organisation’s name must be 160 characters or fewer
 companyDetails.companyName.error.invalidCharacters = The company name contains invalid characters
