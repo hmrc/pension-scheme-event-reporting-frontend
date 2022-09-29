@@ -256,6 +256,12 @@ valueOfUnauthorisedPayment.checkYourAnswersLabel = Is the value of the unauthori
 valueOfUnauthorisedPayment.error.required = Select yes if the value of the unauthorised payment is more than 25% of the pension fund for the individual
 valueOfUnauthorisedPayment.change.hidden = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
 
+schemeUnAuthPaySurchargeMember.title = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
+schemeUnAuthPaySurchargeMember.heading = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
+schemeUnAuthPaySurchargeMember.checkYourAnswersLabel = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
+schemeUnAuthPaySurchargeMember.error.required = Select yes if Is the scheme paying the unauthorised payment surcharge on behalf of the member?
+schemeUnAuthPaySurchargeMember.change.hidden = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
+
 benefitInKindBriefDescription.title = Give a brief description of the benefit in kind
 benefitInKindBriefDescription.heading = Give a brief description of the benefit in kind
 benefitInKindBriefDescription.hint = You can enter a maximum of 150 characters (optional).
