@@ -22,7 +22,7 @@ import play.api.data.{Form, FormError}
 
 class ChooseAddressFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new ChooseAddressFormProvider()(seqAddresses)
+  private val form = new ChooseAddressFormProvider()(seqAddresses)
 
   ".value" - {
 

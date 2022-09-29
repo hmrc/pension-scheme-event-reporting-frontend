@@ -22,7 +22,7 @@ import play.api.data.FormError
 
 class PaymentNatureFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new PaymentNatureFormProvider()()
+  private val form = new PaymentNatureFormProvider()()
 
   ".value" - {
 

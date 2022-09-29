@@ -23,8 +23,6 @@ import utils.FakeCountryOptions
 import scala.util.Random
 
 class ManualAddressFormProviderSpec extends AddressBehaviours with FormBehaviours {
-
-
   private def alphaString(max: Int = maxAddressLineLength) =
     Random.alphanumeric take Random.shuffle(Range(1, max).toList).head mkString ""
 
