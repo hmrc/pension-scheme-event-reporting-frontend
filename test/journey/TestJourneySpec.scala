@@ -19,6 +19,7 @@ package journey
 import data.SampleData.{companyDetails, seqAddresses, seqTolerantAddresses}
 import generators.ModelGenerators
 import models.EventSelection._
+import models.TestCheckBox.writes
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersDetails
@@ -27,8 +28,8 @@ import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
-import pages.event1.{WhatYouWillNeedPage, _}
-import pages.event1.employer.{CompanyDetailsPage, _}
+import pages.event1.employer.CompanyDetailsPage
+import pages.event1._
 import pages.event1.member.BenefitsPaidEarlyPage
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
@@ -70,8 +71,9 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, true),
         submitAnswer(SchemeUnAuthPaySurchargeMemberPage, false),
-        submitAnswer(PaymentNaturePage, BenefitsPaidEarly),
-        pageMustBe(BenefitsPaidEarlyPage)
+        submitAnswer(pages.event1.PaymentNaturePage, BenefitsPaidEarly),
+        submitAnswer(BenefitsPaidEarlyPage, ""),
+        pageMustBe(IndexPage)
       )
   }
 
@@ -88,7 +90,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(MembersDetailsPage, membersDetails.get),
         submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, false),
-        pageMustBe(PaymentNaturePage)
+        pageMustBe(pages.event1.PaymentNaturePage)
       )
   }
 
