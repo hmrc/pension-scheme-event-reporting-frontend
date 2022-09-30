@@ -19,10 +19,11 @@ package pages.event1
 import controllers.event1.routes
 import models.UserAnswers
 import models.event1.PaymentNature
-import models.event1.PaymentNature.BenefitInKind
-import pages.{Page, QuestionPage, Waypoints}
+import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly}
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
 
 case object PaymentNaturePage extends QuestionPage[PaymentNature] {
 
@@ -30,12 +31,14 @@ case object PaymentNaturePage extends QuestionPage[PaymentNature] {
 
   override def toString: String = "paymentNature"
 
-  override def route(waypoints: Waypoints): Call =
+  def route(waypoints: Waypoints): Call =
     routes.PaymentNatureController.onPageLoad(waypoints)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    answers.get(this) match {
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    answers.get(PaymentNaturePage) match {
       case Some(BenefitInKind) => BenefitInKindBriefDescriptionPage
-      case _ => this
+      case Some(BenefitsPaidEarly) => pages.event1.member.BenefitsPaidEarlyPage
+      case _ => IndexPage
     }
+  }
 }

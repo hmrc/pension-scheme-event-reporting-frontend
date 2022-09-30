@@ -343,6 +343,13 @@ schemeUnAuthPaySurchargeMember.checkYourAnswersLabel = Is the scheme paying the 
 schemeUnAuthPaySurchargeMember.error.required = Select yes if Is the scheme paying the unauthorised payment surcharge on behalf of the member?
 schemeUnAuthPaySurchargeMember.change.hidden = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
 
+benefitsPaidEarly.title = Give a brief description of why the benefits are being paid early
+benefitsPaidEarly.heading = Give a brief description of why the benefits are being paid early
+benefitsPaidEarly.checkYourAnswersLabel = benefitsPaidEarly
+benefitsPaidEarly.hint = You can enter a maximum of 150 characters (optional).
+benefitsPaidEarly.error.length = The description of why the benefits are being paid early must be 150 characters or less
+benefitsPaidEarly.change.hidden = Give a brief description of why the benefits are being paid early
+
 benefitInKindBriefDescription.title = Give a brief description of the benefit in kind
 benefitInKindBriefDescription.heading = Give a brief description of the benefit in kind
 benefitInKindBriefDescription.hint = You can enter a maximum of 150 characters (optional).
