@@ -130,24 +130,6 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       )
   }
 
-
-  "test event1 member-journey for unauthorised payment less than 25%" in {
-
-    val membersDetails = arbitrary[MembersDetails].sample
-
-    startingFrom(EventSelectionPage)
-      .run(
-        submitAnswer(EventSelectionPage, Event1),
-        submitAnswer(HowAddUnauthPaymentPage, Manual),
-        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
-        next,
-        submitAnswer(MembersDetailsPage, membersDetails.get),
-        submitAnswer(DoYouHoldSignedMandatePage, true),
-        submitAnswer(ValueOfUnauthorisedPaymentPage, false),
-        pageMustBe(pages.event1.PaymentNaturePage)
-      )
-  }
-
   "test event1 member-journey for benefit in kind - empty" in {
     val membersDetails = arbitrary[MembersDetails].sample
 

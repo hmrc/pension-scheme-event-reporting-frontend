@@ -127,6 +127,6 @@ POST        /new-report/event-1-dummy-address                  controllers.addre
 GET         /new-report/event-1-employer-payment-nature        controllers.event1.employer.PaymentNatureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-employer-payment-nature        controllers.event1.employer.PaymentNatureController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /new-report/member/event-1-benefits-paid-early      controllers.event1.member.BenefitsPaidEarlyController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/member/event-1-benefits-paid-early      controllers.event1.member.BenefitsPaidEarlyController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/event-1-benefits-paid-early      controllers.event1.member.BenefitsPaidEarlyController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-1-benefits-paid-early      controllers.event1.member.BenefitsPaidEarlyController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
