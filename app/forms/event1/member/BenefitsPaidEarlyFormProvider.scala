@@ -17,7 +17,8 @@
 package forms.event1.member
 
 import forms.mappings.Mappings
-import play.api.data.Form
+import play.api.data.Forms.single
+import play.api.data.{Form, Forms}
 
 import javax.inject.Inject
 
@@ -25,7 +26,8 @@ class BenefitsPaidEarlyFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("benefitsPaidEarly.error.required")
-        .verifying(maxLength(150, "benefitsPaidEarly.error.length"))
+      single(
+        "value" -> Forms.text.verifying(maxLength(150, "benefitsPaidEarly.error.length"))
+      )
     )
 }

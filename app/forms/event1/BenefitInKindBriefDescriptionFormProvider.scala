@@ -27,7 +27,12 @@ class BenefitInKindBriefDescriptionFormProvider @Inject() extends Mappings {
   def apply(): Form[String] =
     Form(
       single(
-        "value" -> Forms.text.verifying(maxLength(150, "benefitInKindBriefDescription.error.length"))
+        "value" -> Forms.text.verifying(
+          maxLength(
+            maximum = 150,
+            errorKey = "benefitInKindBriefDescription.error.length"
+          )
+        )
       )
     )
 }

@@ -22,8 +22,9 @@ import play.api.data.FormError
 
 class BenefitsPaidEarlyFormProviderSpec extends StringFieldBehaviours {
 
-  private val requiredKey = "benefitsPaidEarly.error.required"
   private val maxLength = 150
+  private val lengthKey = "benefitsPaidEarly.error.length"
+
 
   private val form = new BenefitsPaidEarlyFormProvider()()
 
@@ -37,10 +38,11 @@ class BenefitsPaidEarlyFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
-    behave like mandatoryField(
+    behave like fieldWithMaxLength(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     "bind empty data" in {
