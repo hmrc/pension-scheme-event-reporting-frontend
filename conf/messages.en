@@ -347,7 +347,6 @@ benefitsPaidEarly.title = Give a brief description of why the benefits are being
 benefitsPaidEarly.heading = Give a brief description of why the benefits are being paid early
 benefitsPaidEarly.checkYourAnswersLabel = benefitsPaidEarly
 benefitsPaidEarly.hint = You can enter a maximum of 150 characters (optional).
-benefitsPaidEarly.error.required = Enter a brief description of why the benefits are being paid early
 benefitsPaidEarly.error.length = The description of why the benefits are being paid early must be 150 characters or less
 benefitsPaidEarly.change.hidden = Give a brief description of why the benefits are being paid early
 
