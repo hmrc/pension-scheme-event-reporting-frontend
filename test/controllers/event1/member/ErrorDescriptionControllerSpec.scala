@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import forms.event1.member.ErrorDescriptionFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
@@ -110,6 +110,7 @@ class ErrorDescriptionControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ErrorDescriptionPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
@@ -130,13 +131,11 @@ class ErrorDescriptionControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ErrorDescriptionPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
     "must return bad request when invalid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
-
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
           .build()
@@ -145,12 +144,10 @@ class ErrorDescriptionControllerSpec extends SpecBase with BeforeAndAfterEach {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "A" * 151))
 
-        val view = application.injector.instanceOf[ErrorDescriptionView]
-        val boundForm = form.bind(Map("value" -> ""))
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
   }
