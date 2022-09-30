@@ -31,7 +31,6 @@ import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.event1._
 import pages.event1.employer.CompanyDetailsPage
 import pages.event1.member.ErrorDescriptionPage
-import pages.event1.employer._
 import pages.event1.{WhatYouWillNeedPage, _}
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
@@ -108,7 +107,6 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(MembersDetailsPage, membersDetails.get),
         submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, false),
-        pageMustBe(pages.event1.PaymentNaturePage),
         submitAnswer(pages.event1.PaymentNaturePage, ErrorCalcTaxFreeLumpSums),
         pageMustBe(ErrorDescriptionPage)
       )

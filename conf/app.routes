@@ -12,10 +12,10 @@ GET         /refresh-session                                   controllers.KeepA
 
 GET         /there-is-a-problem                                controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /sign-out-survey                  controllers.auth.AuthController.signOut
-GET         /sign-out                         controllers.auth.AuthController.signOutNoSurvey
-GET         /signed-out                       controllers.auth.SignedOutController.onPageLoad
-GET         /keep-alive                       controllers.KeepAliveController.keepAlive
+GET         /sign-out-survey                                   controllers.auth.AuthController.signOut
+GET         /sign-out                                          controllers.auth.AuthController.signOutNoSurvey
+GET         /signed-out                                        controllers.auth.SignedOutController.onPageLoad
+GET         /keep-alive                                        controllers.KeepAliveController.keepAlive
 
 GET         /testyesno                                         controllers.TestYesNoController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /testyesno                                         controllers.TestYesNoController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
@@ -128,8 +128,5 @@ POST        /new-report/event-1-dummy-address                  controllers.addre
 GET         /new-report/event-1-employer-payment-nature        controllers.event1.employer.PaymentNatureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-employer-payment-nature        controllers.event1.employer.PaymentNatureController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET         /new-report/event-1-surcharge                      controllers.event1.SchemeUnAuthPaySurchargeMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /new-report/event-1-surcharge                      controllers.event1.SchemeUnAuthPaySurchargeMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
-
-GET        /new-report/event-1-error-payment                        controllers.event1.member.ErrorDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/event-1-error-payment                        controllers.event1.member.ErrorDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-1-error-payment                  controllers.event1.member.ErrorDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-error-payment                  controllers.event1.member.ErrorDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
