@@ -37,7 +37,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   lazy val addressLookUp: String = s"${servicesConfig.baseUrl("address-lookup")}"
 
   private val contactHost = configuration.get[String]("contact-frontend.host")
-  private val contactFormServiceIdentifier = "pension-scheme-event-reporting-frontend"
+  private val contactFormServiceIdentifier = "PODS"
 
   lazy val locationCanonicalList: String = loadConfig("location.canonical.list")
 
@@ -53,7 +53,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   def youNeedToRegisterUrl: String = loadConfig("urls.youNeedToRegisterPage")
 
   private val exitSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
-  val exitSurveyUrl: String = s"$exitSurveyBaseUrl/feedback/pension-scheme-event-reporting-frontend"
+  val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/PODS"
 
   val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("features.welsh-translation")

@@ -29,6 +29,6 @@
     @govukSummaryList(list)
 
     @govukButton(
-        ButtonViewModel(messages("site.saveAndContinue")).asLink("/pension-scheme-event-reporting-frontend/event-summary")
+        ButtonViewModel(messages("site.saveAndContinue")).asLink("/manage-pension-scheme-event-report/event-summary").withAttribute(("id", "submit"))
     )
 }

@@ -12,9 +12,10 @@ GET         /refresh-session                                   controllers.KeepA
 
 GET         /there-is-a-problem                                controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /account/sign-out-survey                           controllers.auth.AuthController.signOut
-GET         /account/sign-out                                  controllers.auth.AuthController.signOutNoSurvey
-GET         /account/signed-out                                controllers.auth.SignedOutController.onPageLoad
+GET         /sign-out-survey                  controllers.auth.AuthController.signOut
+GET         /sign-out                         controllers.auth.AuthController.signOutNoSurvey
+GET         /signed-out                       controllers.auth.SignedOutController.onPageLoad
+GET         /keep-alive                       controllers.KeepAliveController.keepAlive
 
 GET         /testyesno                                         controllers.TestYesNoController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /testyesno                                         controllers.TestYesNoController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

@@ -36,6 +36,7 @@
         @govukButton(
             ButtonViewModel(messages("site.signIn"))
                 .asLink(routes.IndexController.onPageLoad.url)
+                .withAttribute(("id", "submit"))
         )
     </p>
 }
