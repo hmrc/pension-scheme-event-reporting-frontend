@@ -150,9 +150,6 @@ class $className$ControllerSpec extends SpecBase with BeforeAndAfterEach {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "A" * 151))
 
-        val view = application.injector.instanceOf[$className$View]
-        val boundForm = form.bind(Map("value" -> ""))
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
