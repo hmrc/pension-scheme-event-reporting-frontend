@@ -10,6 +10,6 @@ class $className$FormProvider @Inject() extends Mappings {
   def apply(): Form[Option[String]] =
     Form(
       "value" -> optionalText()
-        .verifying(maxLength($maxLength$, "$className;format=\"decap\"$.error.length"))
-    )
+        .verifying(maxLength($maxLength$, "$className;format="decap"$.error.length"))
+  )
 }
