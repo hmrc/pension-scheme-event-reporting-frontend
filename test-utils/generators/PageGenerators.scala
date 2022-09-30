@@ -39,6 +39,10 @@ trait PageGenerators {
   implicit lazy val arbitraryCompanyDetailsPage: Arbitrary[event1.employer.CompanyDetailsPage.type] =
     Arbitrary(event1.employer.CompanyDetailsPage)
 
+
+  implicit lazy val arbitraryBenefitInKindBriefDescriptionPage: Arbitrary[event1.BenefitInKindBriefDescriptionPage.type] =
+    Arbitrary(event1.BenefitInKindBriefDescriptionPage)
+
   implicit lazy val arbitrarySchemeUnAuthPaySurchargeMemberPage: Arbitrary[event1.SchemeUnAuthPaySurchargeMemberPage.type] =
     Arbitrary(event1.SchemeUnAuthPaySurchargeMemberPage)
 

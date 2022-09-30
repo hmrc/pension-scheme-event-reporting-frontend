@@ -22,17 +22,17 @@ import models.EventSelection._
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersDetails
-import models.event1.PaymentNature.BenefitsPaidEarly
+import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
-import pages.event1._
-import pages.event1.employer.CompanyDetailsPage
+import pages.event1.{WhatYouWillNeedPage, _}
+import pages.event1.employer.{CompanyDetailsPage, _}
 import pages.event1.member.BenefitsPaidEarlyPage
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
-import pages.{CheckYourAnswersPage, EventSelectionPage}
+import pages.{CheckYourAnswersPage, EventSelectionPage, IndexPage}
 
 import java.time.LocalDate
 
@@ -92,8 +92,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       )
   }
 
-
-  "test event1 journey for unauthorised payment more than 25% when Scheme Unauthorized Payment Surcharge true" in {
+  "test event1 member-journey for unauthorised payment more than 25% when Scheme Unauthorized Payment Surcharge true" in {
 
     val membersDetails = arbitrary[MembersDetails].sample
 
@@ -107,11 +106,11 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, true),
         submitAnswer(SchemeUnAuthPaySurchargeMemberPage, true),
-        pageMustBe(PaymentNaturePage)
+        pageMustBe(pages.event1.PaymentNaturePage)
       )
   }
 
-  "test event1 journey for unauthorised payment more than 25% when Scheme Unauthorized Payment Surcharge false" in {
+  "test event1 member-journey for unauthorised payment more than 25% when Scheme Unauthorized Payment Surcharge false" in {
 
     val membersDetails = arbitrary[MembersDetails].sample
 
@@ -125,19 +124,81 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, true),
         submitAnswer(SchemeUnAuthPaySurchargeMemberPage, false),
-        pageMustBe(PaymentNaturePage)
+        pageMustBe(pages.event1.PaymentNaturePage)
       )
   }
 
+
+  "test event1 member-journey for unauthorised payment less than 25%" in {
+
+    val membersDetails = arbitrary[MembersDetails].sample
+
+    startingFrom(EventSelectionPage)
+      .run(
+        submitAnswer(EventSelectionPage, Event1),
+        submitAnswer(HowAddUnauthPaymentPage, Manual),
+        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
+        next,
+        submitAnswer(MembersDetailsPage, membersDetails.get),
+        submitAnswer(DoYouHoldSignedMandatePage, true),
+        submitAnswer(ValueOfUnauthorisedPaymentPage, false),
+        pageMustBe(pages.event1.PaymentNaturePage)
+      )
+  }
+
+  "test event1 member-journey for benefit in kind - empty" in {
+    val membersDetails = arbitrary[MembersDetails].sample
+
+    val paymentNatureJourney =
+      journeyOf(
+        submitAnswer(EventSelectionPage, Event1),
+        submitAnswer(HowAddUnauthPaymentPage, Manual),
+        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
+        next,
+        submitAnswer(MembersDetailsPage, membersDetails.get),
+        submitAnswer(DoYouHoldSignedMandatePage, true),
+        submitAnswer(ValueOfUnauthorisedPaymentPage, false),
+      )
+
+    startingFrom(EventSelectionPage)
+      .run(
+        paymentNatureJourney,
+        submitAnswer(pages.event1.PaymentNaturePage, BenefitInKind),
+        submitAnswer(BenefitInKindBriefDescriptionPage, ""),
+        pageMustBe(IndexPage)
+      )
+  }
+
+  "test event1 member-journey for benefit in kind - with some description" in {
+    val membersDetails = arbitrary[MembersDetails].sample
+
+    val paymentNatureJourney =
+      journeyOf(
+        submitAnswer(EventSelectionPage, Event1),
+        submitAnswer(HowAddUnauthPaymentPage, Manual),
+        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
+        pageMustBe(WhatYouWillNeedPage),
+        next,
+        submitAnswer(MembersDetailsPage, membersDetails.get),
+        submitAnswer(DoYouHoldSignedMandatePage, true),
+        submitAnswer(ValueOfUnauthorisedPaymentPage, false),
+      )
+
+    startingFrom(EventSelectionPage)
+      .run(
+        paymentNatureJourney,
+        submitAnswer(pages.event1.PaymentNaturePage, BenefitInKind),
+        submitAnswer(BenefitInKindBriefDescriptionPage, "valid - description"),
+        pageMustBe(IndexPage)
+      )
+  }
 
   "test event1 journey (employer)" in {
 
     startingFrom(EventSelectionPage)
       .run(
         submitAnswer(EventSelectionPage, Event1),
-        pageMustBe(HowAddUnauthPaymentPage),
         submitAnswer(HowAddUnauthPaymentPage, Manual),
-        pageMustBe(WhoReceivedUnauthPaymentPage),
         submitAnswer(WhoReceivedUnauthPaymentPage, Employer),
         pageMustBe(employer.WhatYouWillNeedPage)
       )
@@ -145,12 +206,9 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
     startingFrom(CompanyDetailsPage)
       .run(
         submitAnswer(CompanyDetailsPage, companyDetails),
-        pageMustBe(EnterPostcodePage(Event1EmployerAddressJourney)),
         submitAnswer(EnterPostcodePage(Event1EmployerAddressJourney), seqTolerantAddresses),
-        pageMustBe(ChooseAddressPage(Event1EmployerAddressJourney)),
         submitAnswer(ChooseAddressPage(Event1EmployerAddressJourney), seqAddresses.head),
         pageMustBe(employer.PaymentNaturePage)
       )
-
   }
 }
