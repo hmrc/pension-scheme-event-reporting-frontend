@@ -42,7 +42,7 @@ $endif$
             Textarea(
                 id = form("value").id,
                 name = form("value").name,
-                hint = Some(HintViewModel(messages("hint"))),
+                hint = Some(HintViewModel(messages("$className;format="decap"$.hint"))),
                 label = LabelViewModel(messages("$className;format="decap"$.heading")).asPageHeading(),
                 value = form("value").value,
                 errorMessage = form("value").error.map(error => ErrorMessage(content = error.format))
