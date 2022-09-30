@@ -21,7 +21,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class KeepAliveController @Inject()(
                                      val controllerComponents: MessagesControllerComponents,
@@ -29,8 +29,7 @@ class KeepAliveController @Inject()(
                                      getData: DataRetrievalAction
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController {
 
-  def keepAlive: Action[AnyContent] = identify { implicit request =>
-    // TODO: Need to implement this
-    Ok
+  def keepAlive: Action[AnyContent] = Action.async {
+    Future successful Ok("OK")
   }
 }

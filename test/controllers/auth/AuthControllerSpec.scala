@@ -18,50 +18,64 @@ package controllers.auth
 
 import base.SpecBase
 import config.FrontendAppConfig
+import connectors.SessionDataCacheConnector
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.mockito.MockitoSugar.{reset, times, verify}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.SEE_OTHER
+import play.api.inject
+import play.api.inject.guice.GuiceableModule
+import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{GET, running}
 import play.api.test.Helpers._
 
 import java.net.URLEncoder
+import scala.concurrent.Future
 
-class AuthControllerSpec extends SpecBase with MockitoSugar {
+class AuthControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
   // TODO: Amend once auth sorted
 
+  private val mockSessionDataCacheConnector = mock[SessionDataCacheConnector]
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    inject.bind[SessionDataCacheConnector].toInstance(mockSessionDataCacheConnector)
+  )
+
+  override def beforeEach: Unit = {
+    reset(mockSessionDataCacheConnector)
+    when(mockSessionDataCacheConnector.removeAll(any())(any(), any()))
+      .thenReturn(Future.successful(Ok("")))
+  }
+
   "signOut" - {
 
-    "must redirect to the continue URL" in {
-
-
+    "must redirect to the continue URL and clear down session cache" in {
       val application =
-        applicationBuilder(None)
+        applicationBuilder(None, extraModules)
           .build()
 
       running(application) {
-
         val appConfig = application.injector.instanceOf[FrontendAppConfig]
         val request   = FakeRequest(GET, routes.AuthController.signOut.url)
 
         val result = route(application, request).value
 
-        val encodedContinueUrl  = URLEncoder.encode(appConfig.exitSurveyUrl, "UTF-8")
-        val expectedRedirectUrl = s"${appConfig.signOutUrl}?continue=$encodedContinueUrl"
+        val expectedRedirectUrl = s"${appConfig.exitSurveyUrl}"
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expectedRedirectUrl
+        verify(mockSessionDataCacheConnector, times(1)).removeAll(any())(any(), any())
       }
     }
   }
 
   "signOutNoSurvey" - {
-
-    "must redirect to sign out, specifying SignedOut as the continue URL" in {
-
-
+    "must redirect to sign out, specifying SignedOut as the continue URL and clear down session cache" in {
       val application =
-        applicationBuilder(None)
+        applicationBuilder(None, extraModules)
           .build()
 
       running(application) {
@@ -71,11 +85,12 @@ class AuthControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
-        val encodedContinueUrl  = URLEncoder.encode(routes.SignedOutController.onPageLoad.url, "UTF-8")
-        val expectedRedirectUrl = s"${appConfig.signOutUrl}?continue=$encodedContinueUrl"
+        val encodedContinueUrl  = URLEncoder.encode(appConfig.loginContinueUrl, "UTF-8")
+        val expectedRedirectUrl = s"${appConfig.loginUrl}?continue=$encodedContinueUrl"
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expectedRedirectUrl
+        verify(mockSessionDataCacheConnector, times(1)).removeAll(any())(any(), any())
       }
     }
   }

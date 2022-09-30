@@ -12,9 +12,10 @@ GET         /refresh-session                                   controllers.KeepA
 
 GET         /there-is-a-problem                                controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /account/sign-out-survey                           controllers.auth.AuthController.signOut
-GET         /account/sign-out                                  controllers.auth.AuthController.signOutNoSurvey
-GET         /account/signed-out                                controllers.auth.SignedOutController.onPageLoad
+GET         /sign-out-survey                  controllers.auth.AuthController.signOut
+GET         /sign-out                         controllers.auth.AuthController.signOutNoSurvey
+GET         /signed-out                       controllers.auth.SignedOutController.onPageLoad
+GET         /keep-alive                       controllers.KeepAliveController.keepAlive
 
 GET         /testyesno                                         controllers.TestYesNoController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /testyesno                                         controllers.TestYesNoController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
@@ -79,8 +80,8 @@ POST        /new-report/event-1-payment-type                   controllers.event
 GET         /windup                                            controllers.eventWindUp.SchemeWindUpDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /windup                                            controllers.eventWindUp.SchemeWindUpDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET         /new-report/member/event-1-payment-nature          controllers.event1.PaymentNatureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /new-report/member/event-1-payment-nature          controllers.event1.PaymentNatureController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-1-member-payment-nature          controllers.event1.PaymentNatureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-member-payment-nature          controllers.event1.PaymentNatureController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-1-member-need                    controllers.event1.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
@@ -92,6 +93,12 @@ POST        /new-report/event-1-mandate                        controllers.event
 
 GET         /new-report/event-1-payment-value                  controllers.event1.ValueOfUnauthorisedPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-payment-value                  controllers.event1.ValueOfUnauthorisedPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-1-surcharge                      controllers.event1.SchemeUnAuthPaySurchargeMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-surcharge                      controllers.event1.SchemeUnAuthPaySurchargeMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-1-benefit-in-kind                controllers.event1.BenefitInKindBriefDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-benefit-in-kind                controllers.event1.BenefitInKindBriefDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-1-employer-need                  controllers.event1.employer.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 

@@ -1,4 +1,4 @@
-service.name = pension-scheme-event-reporting-frontend
+service.name = Managing pension schemes
 
 site.back = Back
 site.remove = Remove
@@ -35,8 +35,8 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 
-index.title = pension-scheme-event-reporting-frontend
-index.heading = pension-scheme-event-reporting-frontend
+index.title = Event Reporting
+index.heading = Event Reporting
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
 checkYourAnswers.title = Check Your Answers
@@ -350,3 +350,10 @@ errorDescription.hint = You can enter a maximum of 150 characters (optional).
 errorDescription.error.required = Enter a brief description of the error
 errorDescription.error.length = The error description must be 150 characters or less
 errorDescription.change.hidden = Give a brief description of the error
+
+benefitInKindBriefDescription.title = Give a brief description of the benefit in kind
+benefitInKindBriefDescription.heading = Give a brief description of the benefit in kind
+benefitInKindBriefDescription.hint = You can enter a maximum of 150 characters (optional).
+benefitInKindBriefDescription.checkYourAnswersLabel = Give a brief description of the benefit in kind
+benefitInKindBriefDescription.error.length = You can enter a maximum of 150 characters (optional)
+benefitInKindBriefDescription.change.hidden = Give a brief description of the benefit in kind

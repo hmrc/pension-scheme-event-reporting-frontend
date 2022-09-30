@@ -21,7 +21,6 @@ import play.api.data.FormError
 
 class ErrorDescriptionFormProviderSpec extends StringFieldBehaviours {
 
-  private val requiredKey = "errorDescription.error.required"
   private val lengthKey = "errorDescription.error.length"
   private val maxLength = 150
 

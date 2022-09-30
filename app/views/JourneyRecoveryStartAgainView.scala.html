@@ -31,6 +31,7 @@
         @govukButton(
             ButtonViewModel(messages("site.startAgain"))
                 .asLink(routes.IndexController.onPageLoad.url)
+                .withAttribute(("id", "submit"))
         )
     </p>
 }

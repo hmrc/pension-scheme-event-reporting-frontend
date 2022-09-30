@@ -35,8 +35,8 @@ case object WhoReceivedUnauthPaymentPage extends QuestionPage[WhoReceivedUnauthP
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
-      case Some(Member) => WhatYouWillNeedPage
-      case Some(Employer) => employer.WhatYouWillNeedPage
+      case Some(Member) => pages.event1.WhatYouWillNeedPage
+      case Some(Employer) => pages.event1.employer.WhatYouWillNeedPage
       case _ => this
     }
 }
