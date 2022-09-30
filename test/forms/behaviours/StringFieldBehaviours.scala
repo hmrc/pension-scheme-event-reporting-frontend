@@ -17,13 +17,14 @@
 package forms.behaviours
 
 import play.api.data.{Form, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 trait StringFieldBehaviours extends FieldBehaviours {
 
-    def fieldWithMaxLength(form: Form[_],
-                           fieldName: String,
-                           maxLength: Int,
-                           lengthError: FormError): Unit = {
+  def fieldWithMaxLength(form: Form[_],
+                         fieldName: String,
+                         maxLength: Int,
+                         lengthError: FormError): Unit = {
 
     s"not bind strings longer than $maxLength characters" in {
 
@@ -32,6 +33,46 @@ trait StringFieldBehaviours extends FieldBehaviours {
           val result = form.bind(Map(fieldName -> string)).apply(fieldName)
           result.errors must contain only lengthError
       }
+    }
+  }
+
+  def optionalField[T](
+                        form: Form[T],
+                        fieldName: String,
+                        validData: Map[String, String],
+                        accessor: T => Option[String]
+                      ): Unit = {
+
+    "trim spaces" in {
+      val value = validData(fieldName)
+      forAll(RegexpGen.from("""^\s+""" + value + """\s+$""")) { s =>
+        val result = form.bind(validData.updated(fieldName, s))
+        accessor(result.get) mustBe Some(value)
+      }
+    }
+
+  }
+
+  def fieldWithRegex(form: Form[_],
+                     fieldName: String,
+                     invalidString: String,
+                     error: FormError): Unit = {
+
+    s"not bind string $invalidString invalidated by regex " in {
+      val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+      result.errors mustEqual Seq(error)
+    }
+  }
+
+  def fieldWithTransform[A, B](form: Form[A],
+                               transformName: String,
+                               data: Map[String, String],
+                               expected: B,
+                               actual: A => B): Unit = {
+    s"apply field transform $transformName" in {
+      val result = form.bind(data)
+      result.errors.size mustBe 0
+      actual(result.get) mustBe expected
     }
   }
 }

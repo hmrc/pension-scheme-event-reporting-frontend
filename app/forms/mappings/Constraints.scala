@@ -17,10 +17,25 @@
 package forms.mappings
 
 import java.time.LocalDate
-
 import play.api.data.validation.{Constraint, Invalid, Valid}
+import uk.gov.hmrc.domain.Nino
+import utils.CountryOptions
 
 trait Constraints {
+
+  val regexName = """^[a-zA-Z &`\-\'\.^]{1,35}$"""
+  val regexSurname = """^[a-zA-Z &`\\\-\'\.^]{1,35}$"""
+  val regexPostcode = """^[A-Z]{1,2}[0-9][0-9A-Z]?\s?[0-9][A-Z]{2}$"""
+  val regexPostCodeNonUk = """^([0-9]+-)*[0-9]+$"""
+  val regexAddressLine = """^[A-Za-z0-9 &!'‘’(),./\u2014\u2013\u2010\u002d]{1,35}$"""
+  val regexSafeText = """^[a-zA-Z0-9\u00C0-\u00FF !#$%&'‘’"“”«»()*+,./:;=?@\\\[\]|~£€¥\u005C\u2014\u2013\u2010\u005F\u005E\u0060\u002d]{1,160}$"""
+  val regexCrn = "^[A-Za-z0-9 -]{7,8}$"
+
+  protected def postCode(errorKey: String): Constraint[String] = regexp(regexPostcode, errorKey)
+
+  protected def postCodeNonUk(errorKey: String): Constraint[String] = regexp(regexPostCodeNonUk, errorKey)
+
+  protected def addressLine(errorKey: String): Constraint[String] = regexp(regexAddressLine, errorKey)
 
   protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =
     Constraint {
@@ -57,6 +72,25 @@ trait Constraints {
         }
     }
 
+  protected def safeText(errorKey: String): Constraint[String] = regexp(regexSafeText, errorKey)
+  protected def companyNumber(errorKey: String): Constraint[String] = regexp(regexCrn, errorKey)
+
+  protected def country(countryOptions: CountryOptions, errorKey: String): Constraint[String] = {
+    Constraint {
+      input =>
+        countryOptions.options
+          .find(_.value == input)
+          .map(_ => Valid)
+          .getOrElse(Invalid(errorKey))
+    }
+  }
+
+  implicit def convertToOptionalConstraint[T](constraint: Constraint[T]): Constraint[Option[T]] =
+    Constraint {
+      case Some(t) => constraint.apply(t)
+      case _ => Valid
+    }
+
   protected def inRange[A](minimum: A, maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
     Constraint {
       input =>
@@ -86,6 +120,14 @@ trait Constraints {
         Invalid(errorKey, maximum)
     }
 
+  protected def minLength(minimum: Int, errorKey: String): Constraint[String] =
+    Constraint {
+      case str if str.length >= minimum =>
+        Valid
+      case _ =>
+        Invalid(errorKey, minimum)
+    }
+
   protected def maxDate(maximum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
     Constraint {
       case date if date.isAfter(maximum) =>
@@ -109,4 +151,11 @@ trait Constraints {
       case _ =>
         Invalid(errorKey)
     }
+
+  protected def validNino(invalidKey: String): Constraint[String] = {
+    Constraint {
+      case nino if Nino.isValid(nino) => Valid
+      case _ => Invalid(invalidKey)
+    }
+  }
 }

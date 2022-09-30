@@ -17,11 +17,9 @@
 package viewmodels.checkAnswers
 
 import models.UserAnswers
-import pages.{CheckAnswersPage, Waypoints}
 import pages.event18.Event18ConfirmationPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
-import play.api.mvc.Results.EmptyContent
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Empty, HtmlContent}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
