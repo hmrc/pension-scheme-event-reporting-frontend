@@ -79,10 +79,11 @@ final case class UserAnswers(
     }
   }
 
-  def removeOrException[A](page: QuestionPage[A])(implicit writes: Writes[A]): UserAnswers = {
+  def removeOrException[A](page: QuestionPage[A]): UserAnswers = {
     remove(page) match {
       case Success(ua) => ua
       case Failure(ex) => throw ex
     }
   }
+
 }

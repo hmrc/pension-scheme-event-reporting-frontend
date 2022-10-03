@@ -23,11 +23,17 @@ import models.TestCheckBox.writes
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersDetails
+import models.event1.PaymentNature.ErrorCalcTaxFreeLumpSums
+import models.event1.PaymentNature.BenefitInKind
 import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
+import pages.event1._
+import pages.event1.employer.CompanyDetailsPage
+import pages.event1.member.ErrorDescriptionPage
+import pages.event1.{WhatYouWillNeedPage, _}
 import pages.event1.employer.CompanyDetailsPage
 import pages.event1._
 import pages.event1.member.BenefitsPaidEarlyPage
@@ -111,6 +117,25 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         pageMustBe(pages.event1.PaymentNaturePage)
       )
   }
+
+  "test event1 member-journey for error description" in {
+
+    val membersDetails = arbitrary[MembersDetails].sample
+
+    startingFrom(EventSelectionPage)
+      .run(
+        submitAnswer(EventSelectionPage, Event1),
+        submitAnswer(HowAddUnauthPaymentPage, Manual),
+        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
+        next,
+        submitAnswer(MembersDetailsPage, membersDetails.get),
+        submitAnswer(DoYouHoldSignedMandatePage, true),
+        submitAnswer(ValueOfUnauthorisedPaymentPage, false),
+        submitAnswer(pages.event1.PaymentNaturePage, ErrorCalcTaxFreeLumpSums),
+        pageMustBe(ErrorDescriptionPage)
+      )
+  }
+
 
   "test event1 member-journey for unauthorised payment more than 25% when Scheme Unauthorized Payment Surcharge false" in {
 
