@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package forms.event1
+package pages.event1
 
-import forms.mappings.Mappings
-import play.api.data.Forms.single
-import play.api.data.{Form, Forms}
+import pages.behaviours.PageBehaviours
+import pages.event1.member.BenefitsPaidEarlyPage
 
-import javax.inject.Inject
 
-class BenefitInKindBriefDescriptionFormProvider @Inject() extends Mappings {
+class BenefitsPaidEarlyPageSpec extends PageBehaviours {
 
-  def apply(): Form[String] =
-    Form(
-      single(
-        "value" -> Forms.text.verifying(
-          maxLength(
-            maximum = 150,
-            errorKey = "benefitInKindBriefDescription.error.length"
-          )
-        )
-      )
-    )
+  "BenefitsPaidEarlyPage" - {
+
+    beRetrievable[String](BenefitsPaidEarlyPage)
+
+    beSettable[String](BenefitsPaidEarlyPage)
+
+    beRemovable[String](BenefitsPaidEarlyPage)
+  }
 }

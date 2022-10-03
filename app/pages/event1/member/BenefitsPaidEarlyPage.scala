@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package forms.event1
+package pages.event1.member
 
-import forms.mappings.Mappings
-import play.api.data.Forms.single
-import play.api.data.{Form, Forms}
+import controllers.event1.member.routes
+import pages.{QuestionPage, Waypoints}
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-import javax.inject.Inject
+case object BenefitsPaidEarlyPage extends QuestionPage[String] {
 
-class BenefitInKindBriefDescriptionFormProvider @Inject() extends Mappings {
+  override def path: JsPath = JsPath \ toString
 
-  def apply(): Form[String] =
-    Form(
-      single(
-        "value" -> Forms.text.verifying(
-          maxLength(
-            maximum = 150,
-            errorKey = "benefitInKindBriefDescription.error.length"
-          )
-        )
-      )
-    )
+  override def toString: String = "benefitsPaidEarly"
+
+  override def route(waypoints: Waypoints): Call =
+    routes.BenefitsPaidEarlyController.onPageLoad(waypoints)
 }

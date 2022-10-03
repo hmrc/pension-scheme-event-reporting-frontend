@@ -130,3 +130,7 @@ POST        /new-report/event-1-employer-payment-nature        controllers.event
 
 GET         /new-report/event-1-error-payment                  controllers.event1.member.ErrorDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-error-payment                  controllers.event1.member.ErrorDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-1-benefits-paid-early      controllers.event1.member.BenefitsPaidEarlyController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-1-benefits-paid-early      controllers.event1.member.BenefitsPaidEarlyController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+

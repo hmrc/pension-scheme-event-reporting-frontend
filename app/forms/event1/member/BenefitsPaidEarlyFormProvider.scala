@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.event1
+package forms.event1.member
 
 import forms.mappings.Mappings
 import play.api.data.Forms.single
@@ -22,17 +22,12 @@ import play.api.data.{Form, Forms}
 
 import javax.inject.Inject
 
-class BenefitInKindBriefDescriptionFormProvider @Inject() extends Mappings {
+class BenefitsPaidEarlyFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(
       single(
-        "value" -> Forms.text.verifying(
-          maxLength(
-            maximum = 150,
-            errorKey = "benefitInKindBriefDescription.error.length"
-          )
-        )
+        "value" -> Forms.text.verifying(maxLength(150, "benefitsPaidEarly.error.length"))
       )
     )
 }

@@ -21,8 +21,10 @@ import models.UserAnswers
 import models.event1.PaymentNature
 import models.event1.PaymentNature.{BenefitInKind, ErrorCalcTaxFreeLumpSums}
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import models.event1.PaymentNature.BenefitsPaidEarly
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
 
 case object PaymentNaturePage extends QuestionPage[PaymentNature] {
 
@@ -30,13 +32,14 @@ case object PaymentNaturePage extends QuestionPage[PaymentNature] {
 
   override def toString: String = "paymentNature"
 
-  override def route(waypoints: Waypoints): Call =
+  def route(waypoints: Waypoints): Call =
     routes.PaymentNatureController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(PaymentNaturePage) match {
       case Some(BenefitInKind) => BenefitInKindBriefDescriptionPage
       case Some(ErrorCalcTaxFreeLumpSums) => pages.event1.member.ErrorDescriptionPage
+      case Some(BenefitsPaidEarly) => pages.event1.member.BenefitsPaidEarlyPage
       case _ => IndexPage
     }
   }
