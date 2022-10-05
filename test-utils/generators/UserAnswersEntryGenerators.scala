@@ -17,6 +17,7 @@
 package generators
 
 import models._
+import models.event1.member.RefundDetails
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
@@ -30,7 +31,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
     Arbitrary {
       for {
         page  <- arbitrary[RefundDetailsPage.type]
-        value <- arbitrary[models.event1.RefundDetails].map(Json.toJson(_))
+        value <- arbitrary[RefundDetails].map(Json.toJson(_))
       } yield (page, value)
     }
 

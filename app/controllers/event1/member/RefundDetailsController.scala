@@ -18,7 +18,7 @@ package controllers.event1.member
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.event1.RefundDetailsFormProvider
+import forms.event1.member.RefundDetailsFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints

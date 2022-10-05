@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event1.member.checkAnswers
+
 
 import models.UserAnswers
 import pages.event1.member.RefundDetailsPage
@@ -49,3 +50,4 @@ object RefundDetailsSummary  {
         )
     }
 }
+

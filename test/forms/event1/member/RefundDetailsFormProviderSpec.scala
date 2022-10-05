@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package forms.event1
+package forms.event1.member
 
 import forms.behaviours.OptionFieldBehaviours
-import models.event1.RefundDetails
+import models.event1.member.RefundDetails
 import play.api.data.FormError
 
 class RefundDetailsFormProviderSpec extends OptionFieldBehaviours {

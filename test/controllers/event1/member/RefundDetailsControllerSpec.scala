@@ -18,9 +18,9 @@ package controllers.event1.member
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event1.RefundDetailsFormProvider
+import forms.event1.member.RefundDetailsFormProvider
 import models.UserAnswers
-import models.event1.RefundDetails
+import models.event1.member.RefundDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
@@ -31,7 +31,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event1.RefundDetailsView
+import views.html.event1.member.RefundDetailsView
 
 import scala.concurrent.Future
 

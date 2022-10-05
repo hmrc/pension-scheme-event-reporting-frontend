@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package models.event1
+package models.event1.member
 
+import models.{Enumerable, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import models.{Enumerable,WithName}
 
 sealed trait RefundDetails
 

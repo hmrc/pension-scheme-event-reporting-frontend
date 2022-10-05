@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package pages.event1
+package pages.event1.member
 
-import models.event1.RefundDetails
+import models.event1.member.RefundDetails
 import pages.behaviours.PageBehaviours
-import pages.event1.member.RefundDetailsPage
 
 class RefundDetailsSpec extends PageBehaviours {
 
