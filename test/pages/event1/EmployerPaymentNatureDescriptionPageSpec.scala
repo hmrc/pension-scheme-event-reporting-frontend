@@ -17,6 +17,7 @@
 package pages.event1
 
 import pages.behaviours.PageBehaviours
+import pages.event1.employer.EmployerPaymentNatureDescriptionPage
 
 
 class EmployerPaymentNatureDescriptionPageSpec extends PageBehaviours {

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package pages.event1
+package pages.event1.employer
 
 import controllers.event1.routes
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Waypoints, QuestionPage}
 
 case object EmployerPaymentNatureDescriptionPage extends QuestionPage[String] {
 

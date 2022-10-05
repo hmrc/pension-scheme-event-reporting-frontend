@@ -17,8 +17,10 @@
 package pages.event1.employer
 
 import controllers.event1.employer.routes
+import models.UserAnswers
 import models.event1.employer.PaymentNature
-import pages.{QuestionPage, Waypoints}
+import models.event1.employer.PaymentNature.{Other, TangibleMoveableProperty}
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -30,4 +32,12 @@ case object PaymentNaturePage extends QuestionPage[PaymentNature] {
 
   override def route(waypoints: Waypoints): Call =
     routes.PaymentNatureController.onPageLoad(waypoints)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    answers.get(PaymentNaturePage) match {
+      case Some(TangibleMoveableProperty) => EmployerTangibleMoveablePropertyPage
+      case Some(Other) => EmployerPaymentNatureDescriptionPage
+      case _ => IndexPage
+    }
+  }
 }

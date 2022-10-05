@@ -25,7 +25,7 @@ import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
-import pages.event1.EmployerTangibleMoveablePropertyPage
+import pages.event1.employer.EmployerTangibleMoveablePropertyPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest

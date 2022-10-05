@@ -26,13 +26,9 @@ sealed trait PaymentNature
 object PaymentNature extends Enumerable.Implicits {
 
   case object LoansExceeding50PercentOfFundValue extends WithName("loansExceeding50PercentOfFundValue") with PaymentNature
-
   case object ResidentialProperty extends WithName("residentialProperty") with PaymentNature
-
   case object TangibleMoveableProperty extends WithName("tangibleMoveableProperty") with PaymentNature
-
   case object CourtOrder extends WithName("courtOrder") with PaymentNature
-
   case object Other extends WithName("other") with PaymentNature
 
   val values: Seq[PaymentNature] = Seq(

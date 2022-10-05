@@ -22,7 +22,7 @@ import forms.event1.EmployerTangibleMoveablePropertyFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
-import pages.event1.EmployerTangibleMoveablePropertyPage
+import pages.event1.employer.EmployerTangibleMoveablePropertyPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController

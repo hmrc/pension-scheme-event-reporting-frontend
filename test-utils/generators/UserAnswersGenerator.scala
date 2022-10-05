@@ -21,6 +21,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
+import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage}
 import pages.event1.member.BenefitsPaidEarlyPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
@@ -29,9 +30,9 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitrary[(event1.EmployerPaymentNatureDescriptionPage.type, JsValue)] ::
+    arbitrary[(EmployerPaymentNatureDescriptionPage.type, JsValue)] ::
     arbitrary[(event1.MemberPaymentNatureDescriptionPage.type, JsValue)] ::
-    arbitrary[(event1.EmployerTangibleMoveablePropertyPage.type, JsValue)] ::
+    arbitrary[(EmployerTangibleMoveablePropertyPage.type, JsValue)] ::
     arbitrary[(event1.MemberTangibleMoveablePropertyPage.type, JsValue)] ::
     arbitrary[(event1.member.ErrorDescriptionPage.type, JsValue)] ::
     arbitrary[(BenefitsPaidEarlyPage.type, JsValue)] ::
