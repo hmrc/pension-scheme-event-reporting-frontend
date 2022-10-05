@@ -66,16 +66,38 @@ object AddressJourneyType extends Enumerable.Implicits {
     override def heading(whichPage: Page)(implicit
                                           request: DataRequest[AnyContent]): Message =
       whichPage match {
-        case EnterPostcodePage(_) => Message("memberResidentialAddress.enterPostcode.h1")
-        case ChooseAddressPage(_) => Message("memberResidentialAddress.chooseAddress.h1")
-        case ManualAddressPage(_) => Message("memberResidentialAddress.address.h1")
+        case EnterPostcodePage(_) => Message("residentialAddress.enterPostcode.h1")
+        case ChooseAddressPage(_) => Message("residentialAddress.chooseAddress.h1")
+        case ManualAddressPage(_) => Message("residentialAddress.address.h1")
       }
 
     override def title(whichPage: Page): Message =
       whichPage match {
-        case EnterPostcodePage(_) => Message("memberResidentialAddress.enterPostcode.title")
-        case ChooseAddressPage(_) => Message("memberResidentialAddress.chooseAddress.title")
-        case ManualAddressPage(_) => Message("memberResidentialAddress.address.title")
+        case EnterPostcodePage(_) => Message("residentialAddress.enterPostcode.title")
+        case ChooseAddressPage(_) => Message("residentialAddress.chooseAddress.title")
+        case ManualAddressPage(_) => Message("residentialAddress.address.title")
+      }
+  }
+
+  case object Event1EmployerPropertyAddressJourney extends WithJourneyTypeDetail(
+    eventType = EventType.Event1,
+    nodeName = "employerResidentialAddress",
+    entityTypeMessageKey = entityTypeMessageKeyCompany) {
+    override def entityName(ua: UserAnswers): Message = Message("memberResidentialAddress.enterPostcode.entityName")
+
+    override def heading(whichPage: Page)(implicit
+                                          request: DataRequest[AnyContent]): Message =
+      whichPage match {
+        case EnterPostcodePage(_) => Message("residentialAddress.enterPostcode.h1")
+        case ChooseAddressPage(_) => Message("residentialAddress.chooseAddress.h1")
+        case ManualAddressPage(_) => Message("residentialAddress.address.h1")
+      }
+
+    override def title(whichPage: Page): Message =
+      whichPage match {
+        case EnterPostcodePage(_) => Message("residentialAddress.enterPostcode.title")
+        case ChooseAddressPage(_) => Message("residentialAddress.chooseAddress.title")
+        case ManualAddressPage(_) => Message("residentialAddress.address.title")
       }
   }
 
