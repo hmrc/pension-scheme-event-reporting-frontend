@@ -364,3 +364,11 @@ benefitInKindBriefDescription.hint = You can enter a maximum of 150 characters (
 benefitInKindBriefDescription.checkYourAnswersLabel = Give a brief description of the benefit in kind
 benefitInKindBriefDescription.error.length = You can enter a maximum of 150 characters (optional)
 benefitInKindBriefDescription.change.hidden = Give a brief description of the benefit in kind
+
+refundDetails.title = refundDetails
+refundDetails.heading = refundDetails
+refundDetails.option1 = Option 1
+refundDetails.option2 = Option 2
+refundDetails.checkYourAnswersLabel = refundDetails
+refundDetails.error.required = Select refundDetails
+refundDetails.change.hidden = RefundDetails

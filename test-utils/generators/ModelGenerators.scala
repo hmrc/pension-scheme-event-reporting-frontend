@@ -25,6 +25,11 @@ import uk.gov.hmrc.domain.Nino
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryRefundDetails: Arbitrary[event1.RefundDetails] =
+    Arbitrary {
+      Gen.oneOf(event1.RefundDetails.values.toSeq)
+    }
+
   implicit lazy val arbitraryEmployerPaymentNature: Arbitrary[event1.employer.PaymentNature] =
     Arbitrary {
       Gen.oneOf(event1.employer.PaymentNature.values.toSeq)

@@ -134,3 +134,6 @@ POST        /new-report/event-1-error-payment                  controllers.event
 GET        /new-report/event-1-benefits-paid-early      controllers.event1.member.BenefitsPaidEarlyController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-1-benefits-paid-early      controllers.event1.member.BenefitsPaidEarlyController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
+
+GET        /new-report/event-1-refund-details                       controllers.event1.RefundDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-1-refund-details                       controllers.event1.RefundDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
