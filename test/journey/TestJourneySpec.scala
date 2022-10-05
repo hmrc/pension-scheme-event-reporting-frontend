@@ -23,15 +23,16 @@ import models.TestCheckBox.writes
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersDetails
-import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, ResidentialPropertyHeld}
+import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, OverpaymentOrWriteOff, ResidentialPropertyHeld}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.employer.PaymentNature.ResidentialProperty
+import models.event1.member.ReasonForTheOverpaymentOrWriteOff.DeathOfMember
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.event1._
 import pages.event1.employer.CompanyDetailsPage
-import pages.event1.member.{BenefitsPaidEarlyPage, ErrorDescriptionPage}
+import pages.event1.member.{BenefitsPaidEarlyPage, ErrorDescriptionPage, ReasonForTheOverpaymentOrWriteOffPage}
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckYourAnswersPage, EventSelectionPage, IndexPage}
@@ -124,6 +125,26 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       .run(
         submitAnswer(pages.event1.PaymentNaturePage, BenefitInKind),
         submitAnswer(BenefitInKindBriefDescriptionPage, "valid - description"),
+        pageMustBe(IndexPage)
+      )
+  }
+
+  "test event1 journey (member), payment nature is reason for the overpayment/writeOff" in {
+
+    val membersDetails = arbitrary[MembersDetails].sample
+
+    startingFrom(EventSelectionPage)
+      .run(
+        submitAnswer(EventSelectionPage, Event1),
+        submitAnswer(HowAddUnauthPaymentPage, Manual),
+        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
+        next,
+        submitAnswer(MembersDetailsPage, membersDetails.get),
+        submitAnswer(DoYouHoldSignedMandatePage, true),
+        submitAnswer(ValueOfUnauthorisedPaymentPage, true),
+        submitAnswer(SchemeUnAuthPaySurchargeMemberPage, false),
+        submitAnswer(pages.event1.PaymentNaturePage, OverpaymentOrWriteOff),
+        submitAnswer(ReasonForTheOverpaymentOrWriteOffPage, DeathOfMember),
         pageMustBe(IndexPage)
       )
   }
