@@ -25,11 +25,11 @@ sealed trait RefundDetails
 
 object RefundDetails extends Enumerable.Implicits {
 
-  case object Option1 extends WithName("option1") with RefundDetails
-  case object Option2 extends WithName("option2") with RefundDetails
+  case object WidowOrOrphan extends WithName("widowOrOrphan") with RefundDetails
+  case object Other extends WithName("other") with RefundDetails
 
   val values: Seq[RefundDetails] = Seq(
-    Option1, Option2
+    WidowOrOrphan, Other
   )
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {

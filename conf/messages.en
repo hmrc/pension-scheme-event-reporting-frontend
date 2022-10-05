@@ -367,8 +367,8 @@ benefitInKindBriefDescription.change.hidden = Give a brief description of the be
 
 refundDetails.title = refundDetails
 refundDetails.heading = refundDetails
-refundDetails.option1 = Option 1
-refundDetails.option2 = Option 2
+refundDetails.widowOrOrphan = A widow and/or orphan
+refundDetails.other = Other
 refundDetails.checkYourAnswersLabel = refundDetails
 refundDetails.error.required = Select refundDetails
 refundDetails.change.hidden = RefundDetails
