@@ -19,6 +19,7 @@ package models.enumeration
 import models.UserAnswers
 import models.requests.DataRequest
 import pages.Page
+import pages.address.{ChooseAddressPage, EnterPostcodePage, ManualAddressPage}
 import pages.event1.employer.CompanyDetailsPage
 import play.api.mvc.{AnyContent, JavascriptLiteral, QueryStringBindable}
 import viewmodels.Message
@@ -55,6 +56,27 @@ object AddressJourneyType extends Enumerable.Implicits {
       case Some(cd) => Literal(cd.companyName)
       case _ => Message(entityTypeMessageKeyCompany)
     }
+  }
+
+  case object Event1MemberPropertyAddressJourney extends WithJourneyTypeDetail(
+    eventType = EventType.Event1,
+    nodeName = "memberResidentialAddress",
+    entityTypeMessageKey = entityTypeMessageKeyCompany) {
+    override def entityName(ua: UserAnswers): Message = Message("memberResidentialAddress.enterPostcode.entityName")
+    override def heading(whichPage: Page)(implicit
+                                          request: DataRequest[AnyContent]): Message =
+      whichPage match {
+        case EnterPostcodePage(_) => Message("memberResidentialAddress.enterPostcode.h1")
+        case ChooseAddressPage(_) => Message("memberResidentialAddress.chooseAddress.h1")
+        case ManualAddressPage(_) => Message("memberResidentialAddress.address.h1")
+      }
+
+    override def title(whichPage: Page): Message =
+      whichPage match {
+        case EnterPostcodePage(_) => Message("memberResidentialAddress.enterPostcode.title")
+        case ChooseAddressPage(_) => Message("memberResidentialAddress.chooseAddress.title")
+        case ManualAddressPage(_) => Message("memberResidentialAddress.address.title")
+      }
   }
 
   // TODO: Remove this dummy object when we have at least two instances of AddressJourneyType. If only one instance then we get compile errors.
