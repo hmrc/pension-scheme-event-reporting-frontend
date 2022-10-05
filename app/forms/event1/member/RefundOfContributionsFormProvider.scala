@@ -17,15 +17,15 @@
 package forms.event1.member
 
 import forms.mappings.Mappings
-import models.event1.member.RefundDetails
+import models.event1.member.RefundOfContributions
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class RefundDetailsFormProvider @Inject() extends Mappings {
+class RefundOfContributionsFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[RefundDetails] =
+  def apply(): Form[RefundOfContributions] =
     Form(
-      "value" -> enumerable[RefundDetails]("refundDetails.error.required")
+      "value" -> enumerable[RefundOfContributions]("refundDetails.error.required")
     )
 }

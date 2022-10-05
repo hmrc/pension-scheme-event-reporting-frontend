@@ -135,5 +135,5 @@ GET        /new-report/event-1-benefits-paid-early      controllers.event1.membe
 POST       /new-report/event-1-benefits-paid-early      controllers.event1.member.BenefitsPaidEarlyController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 
-GET        /new-report/event-1-refund-details                       controllers.event1.member.RefundDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/event-1-refund-details                       controllers.event1.member.RefundDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/event-1-refund-details                       controllers.event1.member.RefundOfContributionsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-1-refund-details                       controllers.event1.member.RefundOfContributionsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

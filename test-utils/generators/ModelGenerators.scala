@@ -19,16 +19,16 @@ package generators
 import models._
 import models.event1.MembersDetails
 import models.event1.employer.CompanyDetails
-import models.event1.member.RefundDetails
+import models.event1.member.RefundOfContributions
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import uk.gov.hmrc.domain.Nino
 
 trait ModelGenerators {
 
-  implicit lazy val arbitraryRefundDetails: Arbitrary[RefundDetails] =
+  implicit lazy val arbitraryRefundDetails: Arbitrary[RefundOfContributions] =
     Arbitrary {
-      Gen.oneOf(event1.member.RefundDetails.values.toSeq)
+      Gen.oneOf(event1.member.RefundOfContributions.values.toSeq)
     }
 
   implicit lazy val arbitraryEmployerPaymentNature: Arbitrary[event1.employer.PaymentNature] =

@@ -15,7 +15,7 @@
  *@
 
 @import controllers.event1.member.routes
-@import models.event1.member.RefundDetails
+@import models.event1.member.RefundOfContributions
 
 @this(
     layout: templates.Layout,
@@ -29,7 +29,7 @@
 
 @layout(pageTitle = title(form, messages("refundDetails.title"))) {
 
-    @formHelper(action = routes.RefundDetailsController.onSubmit(waypoints), 'autoComplete -> "off") {
+    @formHelper(action = routes.RefundOfContributionsController.onSubmit(waypoints), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
@@ -39,7 +39,7 @@
             RadiosViewModel(
                 field  = form("value"),
                 legend = LegendViewModel(messages("refundDetails.heading")).asPageHeading(),
-                items  = RefundDetails.options
+                items  = RefundOfContributions.options
             )
         )
 

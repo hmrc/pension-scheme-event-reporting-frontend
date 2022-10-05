@@ -17,18 +17,18 @@
 package pages.event1.member
 
 import controllers.event1.member.routes
-import models.event1.member.RefundDetails
+import models.event1.member.RefundOfContributions
 import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object RefundDetailsPage extends QuestionPage[RefundDetails] {
+case object RefundOfContributionsPage extends QuestionPage[RefundOfContributions] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "refundDetails"
 
   override def route(waypoints: Waypoints): Call = {
-    routes.RefundDetailsController.onPageLoad(waypoints)
+    routes.RefundOfContributionsController.onPageLoad(waypoints)
   }
 }

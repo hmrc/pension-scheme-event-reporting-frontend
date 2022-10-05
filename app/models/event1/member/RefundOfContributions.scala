@@ -21,14 +21,14 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-sealed trait RefundDetails
+sealed trait RefundOfContributions
 
-object RefundDetails extends Enumerable.Implicits {
+object RefundOfContributions extends Enumerable.Implicits {
 
-  case object WidowOrOrphan extends WithName("widowOrOrphan") with RefundDetails
-  case object Other extends WithName("other") with RefundDetails
+  case object WidowOrOrphan extends WithName("widowOrOrphan") with RefundOfContributions
+  case object Other extends WithName("other") with RefundOfContributions
 
-  val values: Seq[RefundDetails] = Seq(
+  val values: Seq[RefundOfContributions] = Seq(
     WidowOrOrphan, Other
   )
 
@@ -41,6 +41,6 @@ object RefundDetails extends Enumerable.Implicits {
       )
   }
 
-  implicit val enumerable: Enumerable[RefundDetails] =
+  implicit val enumerable: Enumerable[RefundOfContributions] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

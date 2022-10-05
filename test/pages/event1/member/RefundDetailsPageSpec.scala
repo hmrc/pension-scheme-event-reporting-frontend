@@ -16,17 +16,17 @@
 
 package pages.event1.member
 
-import models.event1.member.RefundDetails
+import models.event1.member.RefundOfContributions
 import pages.behaviours.PageBehaviours
 
-class RefundDetailsSpec extends PageBehaviours {
+class RefundOfContributionsSpec extends PageBehaviours {
 
-  "RefundDetailsPage" - {
+  "RefundOfContributionsPage" - {
 
-    beRetrievable[RefundDetails](RefundDetailsPage)
+    beRetrievable[RefundOfContributions](RefundOfContributionsPage)
 
-    beSettable[RefundDetails](RefundDetailsPage)
+    beSettable[RefundOfContributions](RefundOfContributionsPage)
 
-    beRemovable[RefundDetails](RefundDetailsPage)
+    beRemovable[RefundOfContributions](RefundOfContributionsPage)
   }
 }

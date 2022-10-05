@@ -17,22 +17,22 @@
 package forms.event1.member
 
 import forms.behaviours.OptionFieldBehaviours
-import models.event1.member.RefundDetails
+import models.event1.member.RefundOfContributions
 import play.api.data.FormError
 
-class RefundDetailsFormProviderSpec extends OptionFieldBehaviours {
+class RefundOfContributionsFormProviderSpec extends OptionFieldBehaviours {
 
-  private val form = new RefundDetailsFormProvider()()
+  private val form = new RefundOfContributionsFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
     val requiredKey = "refundDetails.error.required"
 
-    behave like optionsField[RefundDetails](
+    behave like optionsField[RefundOfContributions](
       form,
       fieldName,
-      validValues  = RefundDetails.values,
+      validValues  = RefundOfContributions.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

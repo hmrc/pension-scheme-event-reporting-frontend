@@ -18,11 +18,11 @@ package controllers.event1.member
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.event1.member.RefundDetailsFormProvider
+import forms.event1.member.RefundOfContributionsFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
-import pages.event1.member.RefundDetailsPage
+import pages.event1.member.RefundOfContributionsPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -31,19 +31,19 @@ import views.html.event1.member.RefundDetailsView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RefundDetailsController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                          identify: IdentifierAction,
-                                          getData: DataRetrievalAction,
-                                          userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          formProvider: RefundDetailsFormProvider,
-                                          view: RefundDetailsView
+class RefundOfContributionsController @Inject()(val controllerComponents: MessagesControllerComponents,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                userAnswersCacheConnector: UserAnswersCacheConnector,
+                                                formProvider: RefundOfContributionsFormProvider,
+                                                view: RefundDetailsView
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(RefundDetailsPage)).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(RefundOfContributionsPage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
@@ -54,9 +54,9 @@ class RefundDetailsController @Inject()(val controllerComponents: MessagesContro
           Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(RefundDetailsPage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(RefundOfContributionsPage, value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(RefundDetailsPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(RefundOfContributionsPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

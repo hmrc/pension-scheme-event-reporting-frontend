@@ -18,15 +18,15 @@ package controllers.event1.member
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event1.member.RefundDetailsFormProvider
+import forms.event1.member.RefundOfContributionsFormProvider
 import models.UserAnswers
-import models.event1.member.RefundDetails
+import models.event1.member.RefundOfContributions
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
-import pages.event1.member.RefundDetailsPage
+import pages.event1.member.RefundOfContributionsPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -35,11 +35,11 @@ import views.html.event1.member.RefundDetailsView
 
 import scala.concurrent.Future
 
-class RefundDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
+class RefundOfContributionsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new RefundDetailsFormProvider()
+  private val formProvider = new RefundOfContributionsFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
@@ -56,7 +56,7 @@ class RefundDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
     reset(mockUserAnswersCacheConnector)
   }
 
-  "RefundDetails Controller" - {
+  "RefundOfContributions Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -76,7 +76,7 @@ class RefundDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(RefundDetailsPage, RefundDetails.values.head).success.value
+      val userAnswers = UserAnswers().set(RefundOfContributionsPage, RefundOfContributions.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -88,7 +88,7 @@ class RefundDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(RefundDetails.values.head), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(RefundOfContributions.values.head), waypoints)(request, messages(application)).toString
       }
     }
 
@@ -102,13 +102,13 @@ class RefundDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", RefundDetails.values.head.toString))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", RefundOfContributions.values.head.toString))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(RefundDetailsPage, RefundDetails.values.head).success.value
+        val updatedAnswers = emptyUserAnswers.set(RefundOfContributionsPage, RefundOfContributions.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RefundDetailsPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual RefundOfContributionsPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }

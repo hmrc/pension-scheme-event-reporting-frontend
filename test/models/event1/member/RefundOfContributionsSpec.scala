@@ -24,35 +24,35 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
-class RefundDetailsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class RefundOfContributionsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "RefundDetails" - {
+  "RefundOfContributions" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(RefundDetails.values.toSeq)
+      val gen = Gen.oneOf(RefundOfContributions.values.toSeq)
 
       forAll(gen) {
         refundDetails =>
 
-          JsString(refundDetails.toString).validate[RefundDetails].asOpt.value mustEqual refundDetails
+          JsString(refundDetails.toString).validate[RefundOfContributions].asOpt.value mustEqual refundDetails
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!RefundDetails.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!RefundOfContributions.values.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
 
-          JsString(invalidValue).validate[RefundDetails] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[RefundOfContributions] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(RefundDetails.values.toSeq)
+      val gen = Gen.oneOf(RefundOfContributions.values.toSeq)
 
       forAll(gen) {
         refundDetails =>

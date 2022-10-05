@@ -18,7 +18,7 @@ package viewmodels.event1.member.checkAnswers
 
 
 import models.UserAnswers
-import pages.event1.member.RefundDetailsPage
+import pages.event1.member.RefundOfContributionsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -27,11 +27,11 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object RefundDetailsSummary  {
+object RefundOfContributionsSummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(RefundDetailsPage).map {
+    answers.get(RefundOfContributionsPage).map {
       answer =>
 
         val value = ValueViewModel(
@@ -44,7 +44,7 @@ object RefundDetailsSummary  {
           key     = "refundDetails.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", RefundDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", RefundOfContributionsPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("refundDetails.change.hidden"))
           )
         )

@@ -17,21 +17,21 @@
 package generators
 
 import models._
-import models.event1.member.RefundDetails
+import models.event1.member.RefundOfContributions
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
-import pages.event1.member.{BenefitsPaidEarlyPage, RefundDetailsPage}
+import pages.event1.member.{BenefitsPaidEarlyPage, RefundOfContributionsPage}
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
-  implicit lazy val arbitraryRefundDetailsUserAnswersEntry: Arbitrary[(RefundDetailsPage.type, JsValue)] =
+  implicit lazy val arbitraryRefundDetailsUserAnswersEntry: Arbitrary[(RefundOfContributionsPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[RefundDetailsPage.type]
-        value <- arbitrary[RefundDetails].map(Json.toJson(_))
+        page  <- arbitrary[RefundOfContributionsPage.type]
+        value <- arbitrary[RefundOfContributions].map(Json.toJson(_))
       } yield (page, value)
     }
 
