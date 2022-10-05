@@ -96,6 +96,34 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString)
     }
 
+  private[mappings] def doubleFormatter(nothingEnteredKey: String, notANumberKey: String, noDecimalsKey: String,
+                                        amountTooHighKey: String, args: Seq[String] = Seq.empty): Formatter[Double] =
+    new Formatter[Double] {
+
+      val decimalRegexp = """^-?(\d*\.\d*)$"""
+      val maxAmount = 999999999.99
+
+      private val baseFormatter = stringFormatter(nothingEnteredKey, args)
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Double] =
+        baseFormatter
+          .bind(key, data)
+          .right.map(_.replace(",", ""))
+          .right.flatMap {
+          case s if s.matches(decimalRegexp) =>
+            Left(Seq(FormError(key, noDecimalsKey, args)))
+          case s if (s.toDouble > maxAmount) =>
+            Left(Seq(FormError(key, amountTooHighKey, args)))
+          case s =>
+            nonFatalCatch
+              .either(s.toDouble)
+              .left.map(_ => Seq(FormError(key, notANumberKey, args)))
+        }
+
+      override def unbind(key: String, value: Double): Map[String, String] =
+        baseFormatter.unbind(key, value.toString)
+    }
+
 
   private[mappings] def enumerableFormatter[A](requiredKey: String, invalidKey: String,
                                                args: Seq[String] = Seq.empty)(implicit ev: Enumerable[A]): Formatter[A] =

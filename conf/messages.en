@@ -375,3 +375,22 @@ memberResidentialAddress.chooseAddress.h1 = What is the address of the residenti
 
 memberResidentialAddress.address.title = What is the address of the residential property?
 memberResidentialAddress.address.h1 = What is the address of the residential property?
+
+paymentValueAndDate.title = Payment value and date
+paymentValueAndDate.heading = Payment value and date
+paymentValueAndDate.checkYourAnswersLabel = Payment value and date
+
+paymentValueAndDate.value.heading = Total value or amount of the unauthorised payment
+paymentValueAndDate.value.error.nothingEntered = Enter the payment value
+paymentValueAndDate.value.error.notANumber = The payment value must be an amount of money, like 123.45 or 156.00
+paymentValueAndDate.value.error.noDecimals = The payment value must include pence, like 123.45 or 156.00
+paymentValueAndDate.value.error.amountTooHigh = The payment value must be £999999999.99 or less
+paymentValueAndDate.value.change.hidden = Enter the payment value
+
+paymentValueAndDate.date.heading = Date of payment or when benefit made available
+paymentValueAndDate.date.hint = For example, 22 09 2022
+paymentValueAndDate.date.error.nothingEntered = Enter the date of payment or when benefit made available
+paymentValueAndDate.date.error.noDayMonthOrYear = The date must include a [day/month/year]
+paymentValueAndDate.date.error.outsideDateRanges = Enter a real date
+paymentValueAndDate.date.error.outsideRelevantTaxYear = Date must be between 6 April [year] and 5 April [year]
+paymentValueAndDate.date.change.hidden = Enter the date of payment or when benefit made available
