@@ -375,3 +375,10 @@ memberResidentialAddress.chooseAddress.h1 = What is the address of the residenti
 
 memberResidentialAddress.address.title = What is the address of the residential property?
 memberResidentialAddress.address.h1 = What is the address of the residential property?
+
+unauthorisedPaymentRecipientName.title = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.heading = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.checkYourAnswersLabel = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.error.required = Enter the name of the person or organisation that received the unauthorised payment
+unauthorisedPaymentRecipientName.error.length = The name of the person or organisation that received the unauthorised payment must be 100 characters or less
+unauthorisedPaymentRecipientName.change.hidden = Change the name of the person or organisation that received the unauthorised payment?
