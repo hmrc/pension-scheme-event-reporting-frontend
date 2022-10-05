@@ -19,12 +19,12 @@ package forms.event1
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class MemberPaymentNatureDescriptionFormProviderSpec extends StringFieldBehaviours {
+class EmployerPaymentNatureDescriptionFormProviderSpec extends StringFieldBehaviours {
 
-  private val lengthKey = "memberPaymentNatureDescription.error.length"
+  private val lengthKey = "employerPaymentNatureDescription.error.length"
   private val maxLength = 150
 
-  private val form = new MemberPaymentNatureDescriptionFormProvider()()
+  private val form = new EmployerPaymentNatureDescriptionFormProvider()()
 
   ".value" - {
 

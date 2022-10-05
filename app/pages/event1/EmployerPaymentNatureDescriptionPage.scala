@@ -16,17 +16,17 @@
 
 package pages.event1
 
-import pages.behaviours.PageBehaviours
+import controllers.event1.routes
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
+import pages.{Waypoints, QuestionPage}
 
+case object EmployerPaymentNatureDescriptionPage extends QuestionPage[String] {
 
-class MemberPaymentNatureDescriptionPageSpec extends PageBehaviours {
+  override def path: JsPath = JsPath \ toString
 
-  "MemberPaymentNatureDescriptionPage" - {
+  override def toString: String = "employerPaymentNatureDescription"
 
-    beRetrievable[String](MemberPaymentNatureDescriptionPage)
-
-    beSettable[String](MemberPaymentNatureDescriptionPage)
-
-    beRemovable[String](MemberPaymentNatureDescriptionPage)
-  }
+  override def route(waypoints: Waypoints): Call =
+    routes.EmployerPaymentNatureDescriptionController.onPageLoad(waypoints)
 }

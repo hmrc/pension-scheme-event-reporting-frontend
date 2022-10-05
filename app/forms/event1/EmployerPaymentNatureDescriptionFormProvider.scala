@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package pages.event1
+package forms.event1
 
-import pages.behaviours.PageBehaviours
+import javax.inject.Inject
 
+import forms.mappings.Mappings
+import play.api.data.Form
 
-class MemberPaymentNatureDescriptionPageSpec extends PageBehaviours {
+class EmployerPaymentNatureDescriptionFormProvider @Inject() extends Mappings {
 
-  "MemberPaymentNatureDescriptionPage" - {
-
-    beRetrievable[String](MemberPaymentNatureDescriptionPage)
-
-    beSettable[String](MemberPaymentNatureDescriptionPage)
-
-    beRemovable[String](MemberPaymentNatureDescriptionPage)
-  }
+  def apply(): Form[Option[String]] =
+    Form(
+      "value" -> optionalText()
+        .verifying(maxLength(150, "employerPaymentNatureDescription.error.length"))
+  )
 }

@@ -19,14 +19,14 @@ package pages.event1
 import pages.behaviours.PageBehaviours
 
 
-class MemberPaymentNatureDescriptionPageSpec extends PageBehaviours {
+class EmployerPaymentNatureDescriptionPageSpec extends PageBehaviours {
 
-  "MemberPaymentNatureDescriptionPage" - {
+  "EmployerPaymentNatureDescriptionPage" - {
 
-    beRetrievable[String](MemberPaymentNatureDescriptionPage)
+    beRetrievable[String](EmployerPaymentNatureDescriptionPage)
 
-    beSettable[String](MemberPaymentNatureDescriptionPage)
+    beSettable[String](EmployerPaymentNatureDescriptionPage)
 
-    beRemovable[String](MemberPaymentNatureDescriptionPage)
+    beRemovable[String](EmployerPaymentNatureDescriptionPage)
   }
 }

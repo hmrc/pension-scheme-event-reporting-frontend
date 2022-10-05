@@ -385,3 +385,10 @@ memberPaymentNatureDescription.hint = You can enter a maximum of 150 characters 
 memberPaymentNatureDescription.checkYourAnswersLabel = Give a brief description of the nature of the payment
 memberPaymentNatureDescription.error.length = You can enter a maximum of 150 characters (optional).
 memberPaymentNatureDescription.change.hidden = Give a brief description of the nature of the payment
+
+employerPaymentNatureDescription.title = Give a brief description of the nature of the payment
+employerPaymentNatureDescription.heading = Give a brief description of the nature of the payment
+employerPaymentNatureDescription.hint = You can enter a maximum of 150 characters (optional).
+employerPaymentNatureDescription.checkYourAnswersLabel = Give a brief description of the nature of the payment
+employerPaymentNatureDescription.error.length = You can enter a maximum of 150 characters (optional).
+employerPaymentNatureDescription.change.hidden = Give a brief description of the nature of the payment

@@ -123,6 +123,9 @@ POST       /new-report/event-1-employer-tangible-moveable-property              
 GET        /new-report/event-1-member-payment-description                        controllers.event1.MemberPaymentNatureDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-1-member-payment-description                        controllers.event1.MemberPaymentNatureDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
+GET        /new-report/event-1-employer-payment-description                        controllers.event1.EmployerPaymentNatureDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-1-employer-payment-description                        controllers.event1.EmployerPaymentNatureDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
 # TODO: Remove the dummy routes below when we add the second address journey into the service. There need to be at least 2 address routes to avoid compile errors.
 
 GET         /new-report/event-1-dummy-postcode                 controllers.address.EnterPostcodeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = DummyAddressJourney)
@@ -142,6 +145,3 @@ POST        /new-report/event-1-error-payment                  controllers.event
 
 GET        /new-report/event-1-benefits-paid-early      controllers.event1.member.BenefitsPaidEarlyController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-1-benefits-paid-early      controllers.event1.member.BenefitsPaidEarlyController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
-
-
-
