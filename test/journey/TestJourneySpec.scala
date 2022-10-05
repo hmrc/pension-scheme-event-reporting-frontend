@@ -23,9 +23,9 @@ import models.TestCheckBox.writes
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersDetails
-import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, ResidentialPropertyHeld}
+import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, Other, ResidentialPropertyHeld, TangibleMoveablePropertyHeld}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
-import models.event1.employer.PaymentNature.ResidentialProperty
+import models.event1.employer.PaymentNature.{ResidentialProperty, TangibleMoveableProperty}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
@@ -158,6 +158,34 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       .run(
         submitAnswer(pages.event1.employer.PaymentNaturePage, ResidentialProperty),
         pageMustBe(pages.address.EnterPostcodePage(Event1EmployerPropertyAddressJourney))
+      )
+  }
+
+  "test navigation to event1 tangible moveable property and payment nature description pages for member" in {
+    startingFrom(pages.event1.PaymentNaturePage)
+      .run(
+        submitAnswer(PaymentNaturePage, TangibleMoveablePropertyHeld),
+        pageMustBe(pages.event1.member.MemberTangibleMoveablePropertyPage)
+      )
+
+    startingFrom(pages.event1.PaymentNaturePage)
+      .run(
+        submitAnswer(PaymentNaturePage, Other),
+        pageMustBe(pages.event1.member.MemberPaymentNatureDescriptionPage)
+      )
+  }
+
+  "test navigation to event1 tangible moveable property and payment nature description pages for employer" in {
+    startingFrom(pages.event1.employer.PaymentNaturePage)
+      .run(
+        submitAnswer(pages.event1.employer.PaymentNaturePage, TangibleMoveableProperty),
+        pageMustBe(pages.event1.employer.EmployerTangibleMoveablePropertyPage)
+      )
+
+    startingFrom(pages.event1.employer.PaymentNaturePage)
+      .run(
+        submitAnswer(pages.event1.employer.PaymentNaturePage, models.event1.employer.PaymentNature.Other),
+        pageMustBe(pages.event1.employer.EmployerPaymentNatureDescriptionPage)
       )
   }
 }
