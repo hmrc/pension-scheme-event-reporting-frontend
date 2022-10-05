@@ -23,20 +23,15 @@ import models.TestCheckBox.writes
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersDetails
-import models.event1.PaymentNature.ErrorCalcTaxFreeLumpSums
-import models.event1.PaymentNature.BenefitInKind
-import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly}
+import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, RefundOfContributions}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
+import models.event1.member.RefundOfContributions.{WidowOrOrphan, Other}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.event1._
 import pages.event1.employer.CompanyDetailsPage
-import pages.event1.member.ErrorDescriptionPage
-import pages.event1.{WhatYouWillNeedPage, _}
-import pages.event1.employer.CompanyDetailsPage
-import pages.event1._
-import pages.event1.member.BenefitsPaidEarlyPage
+import pages.event1.member.{BenefitsPaidEarlyPage, ErrorDescriptionPage, RefundOfContributionsPage}
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckYourAnswersPage, EventSelectionPage, IndexPage}
@@ -218,6 +213,25 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(EnterPostcodePage(Event1EmployerAddressJourney), seqTolerantAddresses),
         submitAnswer(ChooseAddressPage(Event1EmployerAddressJourney), seqAddresses.head),
         pageMustBe(employer.PaymentNaturePage)
+      )
+  }
+
+  "testing nav to event1 Refund of Contributions pages (member) and selecting Widow and/or Orphan option before continuing" in {
+    startingFrom(PaymentNaturePage)
+      .run(
+        submitAnswer(PaymentNaturePage, RefundOfContributions),
+        pageMustBe(member.RefundOfContributionsPage),
+        submitAnswer(RefundOfContributionsPage, WidowOrOrphan),
+        pageMustBe(IndexPage)
+      )
+  }
+  "testing nav to event1 Refund of Contributions pages (member) and selecting Other option" in {
+    startingFrom(PaymentNaturePage)
+      .run(
+        submitAnswer(PaymentNaturePage, RefundOfContributions),
+        pageMustBe(member.RefundOfContributionsPage),
+        submitAnswer(RefundOfContributionsPage, Other),
+        pageMustBe(IndexPage)
       )
   }
 }

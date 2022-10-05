@@ -31,7 +31,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event1.member.RefundDetailsView
+import views.html.event1.member.RefundOfContributionsView
 
 import scala.concurrent.Future
 
@@ -44,8 +44,8 @@ class RefundOfContributionsControllerSpec extends SpecBase with BeforeAndAfterEa
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.RefundDetailsController.onPageLoad(waypoints).url
-  private def postRoute: String = routes.RefundDetailsController.onSubmit(waypoints).url
+  private def getRoute: String = routes.RefundOfContributionsController.onPageLoad(waypoints).url
+  private def postRoute: String = routes.RefundOfContributionsController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -67,7 +67,7 @@ class RefundOfContributionsControllerSpec extends SpecBase with BeforeAndAfterEa
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[RefundDetailsView]
+        val view = application.injector.instanceOf[RefundOfContributionsView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
@@ -83,7 +83,7 @@ class RefundOfContributionsControllerSpec extends SpecBase with BeforeAndAfterEa
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[RefundDetailsView]
+        val view = application.injector.instanceOf[RefundOfContributionsView]
 
         val result = route(application, request).value
 
@@ -122,7 +122,7 @@ class RefundOfContributionsControllerSpec extends SpecBase with BeforeAndAfterEa
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[RefundDetailsView]
+        val view = application.injector.instanceOf[RefundOfContributionsView]
         val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value

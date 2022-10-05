@@ -24,7 +24,7 @@ import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryRefundDetailsPage: Arbitrary[RefundOfContributionsPage.type] =
+  implicit lazy val arbitraryRefundOfContributionsPage: Arbitrary[RefundOfContributionsPage.type] =
     Arbitrary(member.RefundOfContributionsPage)
 
   implicit lazy val arbitraryErrorDescriptionPage: Arbitrary[event1.member.ErrorDescriptionPage.type] =

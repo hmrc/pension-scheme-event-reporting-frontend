@@ -27,7 +27,7 @@ class RefundOfContributionsFormProviderSpec extends OptionFieldBehaviours {
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "refundDetails.error.required"
+    val requiredKey = "refundOfContributions.error.required"
 
     behave like optionsField[RefundOfContributions](
       form,

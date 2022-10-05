@@ -36,16 +36,16 @@ object RefundOfContributionsSummary  {
 
         val value = ValueViewModel(
           HtmlContent(
-            HtmlFormat.escape(messages(s"refundDetails.$answer"))
+            HtmlFormat.escape(messages(s"refundOfContributions.$answer"))
           )
         )
 
         SummaryListRowViewModel(
-          key     = "refundDetails.checkYourAnswersLabel",
+          key     = "refundOfContributions.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
             ActionItemViewModel("site.change", RefundOfContributionsPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("refundDetails.change.hidden"))
+              .withVisuallyHiddenText(messages("refundOfContributions.change.hidden"))
           )
         )
     }

@@ -35,7 +35,7 @@ object RefundOfContributions extends Enumerable.Implicits {
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
       RadioItem(
-        content = Text(messages(s"refundDetails.${value.toString}")),
+        content = Text(messages(s"refundOfContributions.${value.toString}")),
         value   = Some(value.toString),
         id      = Some(s"value_$index")
       )

@@ -26,7 +26,7 @@ import pages.event1.member.RefundOfContributionsPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event1.member.RefundDetailsView
+import views.html.event1.member.RefundOfContributionsView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,7 +36,7 @@ class RefundOfContributionsController @Inject()(val controllerComponents: Messag
                                                 getData: DataRetrievalAction,
                                                 userAnswersCacheConnector: UserAnswersCacheConnector,
                                                 formProvider: RefundOfContributionsFormProvider,
-                                                view: RefundDetailsView
+                                                view: RefundOfContributionsView
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()

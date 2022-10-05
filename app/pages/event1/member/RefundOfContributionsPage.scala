@@ -26,7 +26,7 @@ case object RefundOfContributionsPage extends QuestionPage[RefundOfContributions
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "refundDetails"
+  override def toString: String = "refundOfContributions"
 
   override def route(waypoints: Waypoints): Call = {
     routes.RefundOfContributionsController.onPageLoad(waypoints)

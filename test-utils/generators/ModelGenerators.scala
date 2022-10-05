@@ -26,7 +26,7 @@ import uk.gov.hmrc.domain.Nino
 
 trait ModelGenerators {
 
-  implicit lazy val arbitraryRefundDetails: Arbitrary[RefundOfContributions] =
+  implicit lazy val arbitraryRefundOfContributions: Arbitrary[RefundOfContributions] =
     Arbitrary {
       Gen.oneOf(event1.member.RefundOfContributions.values.toSeq)
     }

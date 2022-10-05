@@ -33,9 +33,9 @@ class RefundOfContributionsSpec extends AnyFreeSpec with Matchers with ScalaChec
       val gen = Gen.oneOf(RefundOfContributions.values.toSeq)
 
       forAll(gen) {
-        refundDetails =>
+        refundOfContributions =>
 
-          JsString(refundDetails.toString).validate[RefundOfContributions].asOpt.value mustEqual refundDetails
+          JsString(refundOfContributions.toString).validate[RefundOfContributions].asOpt.value mustEqual refundOfContributions
       }
     }
 
@@ -55,9 +55,9 @@ class RefundOfContributionsSpec extends AnyFreeSpec with Matchers with ScalaChec
       val gen = Gen.oneOf(RefundOfContributions.values.toSeq)
 
       forAll(gen) {
-        refundDetails =>
+        refundOfContributions =>
 
-          Json.toJson(refundDetails) mustEqual JsString(refundDetails.toString)
+          Json.toJson(refundOfContributions) mustEqual JsString(refundOfContributions.toString)
       }
     }
   }

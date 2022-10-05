@@ -365,10 +365,10 @@ benefitInKindBriefDescription.checkYourAnswersLabel = Give a brief description o
 benefitInKindBriefDescription.error.length = You can enter a maximum of 150 characters (optional)
 benefitInKindBriefDescription.change.hidden = Give a brief description of the benefit in kind
 
-refundDetails.title = Who received the refund?
-refundDetails.heading = Who received the refund?
-refundDetails.widowOrOrphan = A widow and/or orphan
-refundDetails.other = Other
-refundDetails.checkYourAnswersLabel = Who received the refund?
-refundDetails.error.required = Select who received the refund
-refundDetails.change.hidden = Who received the refund?
+refundOfContributions.title = Who received the refund?
+refundOfContributions.heading = Who received the refund?
+refundOfContributions.widowOrOrphan = A widow and/or orphan
+refundOfContributions.other = Other
+refundOfContributions.checkYourAnswersLabel = Who received the refund?
+refundOfContributions.error.required = Select who received the refund
+refundOfContributions.change.hidden = Who received the refund?

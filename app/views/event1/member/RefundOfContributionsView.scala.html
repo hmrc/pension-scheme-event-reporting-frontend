@@ -27,7 +27,7 @@
 
 @(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("refundDetails.title"))) {
+@layout(pageTitle = title(form, messages("refundOfContributions.title"))) {
 
     @formHelper(action = routes.RefundOfContributionsController.onSubmit(waypoints), 'autoComplete -> "off") {
 
@@ -38,7 +38,7 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("refundDetails.heading")).asPageHeading(),
+                legend = LegendViewModel(messages("refundOfContributions.heading")).asPageHeading(),
                 items  = RefundOfContributions.options
             )
         )
