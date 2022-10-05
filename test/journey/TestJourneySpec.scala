@@ -79,118 +79,49 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
   }
 
   "test event1 journey for unauthorised payment less than 25%" in {
-
-    val membersDetails = arbitrary[MembersDetails].sample
-
-    startingFrom(EventSelectionPage)
+    startingFrom(ValueOfUnauthorisedPaymentPage)
       .run(
-        submitAnswer(EventSelectionPage, Event1),
-        submitAnswer(HowAddUnauthPaymentPage, Manual),
-        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
-        next,
-        submitAnswer(MembersDetailsPage, membersDetails.get),
-        submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, false),
         pageMustBe(pages.event1.PaymentNaturePage)
       )
   }
 
   "test event1 member-journey for unauthorised payment more than 25% when Scheme Unauthorized Payment Surcharge true" in {
-
-    val membersDetails = arbitrary[MembersDetails].sample
-
-    startingFrom(EventSelectionPage)
+    startingFrom(ValueOfUnauthorisedPaymentPage)
       .run(
-        submitAnswer(EventSelectionPage, Event1),
-        submitAnswer(HowAddUnauthPaymentPage, Manual),
-        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
-        next,
-        submitAnswer(MembersDetailsPage, membersDetails.get),
-        submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, true),
         submitAnswer(SchemeUnAuthPaySurchargeMemberPage, true),
         pageMustBe(pages.event1.PaymentNaturePage)
       )
   }
 
-  "test event1 member-journey for error description" in {
-
-    val membersDetails = arbitrary[MembersDetails].sample
-
-    startingFrom(EventSelectionPage)
+  "test event1 member-journey for unauthorised payment more than 25% when Scheme Unauthorized Payment " +
+    "Surcharge false incl error calc tax free lump sum" in {
+    startingFrom(ValueOfUnauthorisedPaymentPage)
       .run(
-        submitAnswer(EventSelectionPage, Event1),
-        submitAnswer(HowAddUnauthPaymentPage, Manual),
-        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
-        next,
-        submitAnswer(MembersDetailsPage, membersDetails.get),
-        submitAnswer(DoYouHoldSignedMandatePage, true),
-        submitAnswer(ValueOfUnauthorisedPaymentPage, false),
+        submitAnswer(ValueOfUnauthorisedPaymentPage, true),
+        submitAnswer(SchemeUnAuthPaySurchargeMemberPage, false),
+        pageMustBe(pages.event1.PaymentNaturePage)
+      )
+
+    startingFrom(pages.event1.PaymentNaturePage)
+      .run(
         submitAnswer(pages.event1.PaymentNaturePage, ErrorCalcTaxFreeLumpSums),
         pageMustBe(ErrorDescriptionPage)
       )
   }
 
-
-  "test event1 member-journey for unauthorised payment more than 25% when Scheme Unauthorized Payment Surcharge false" in {
-
-    val membersDetails = arbitrary[MembersDetails].sample
-
-    startingFrom(EventSelectionPage)
+  "test event1 member-journey for benefit in kind - empty and description" in {
+    startingFrom(ValueOfUnauthorisedPaymentPage)
       .run(
-        submitAnswer(EventSelectionPage, Event1),
-        submitAnswer(HowAddUnauthPaymentPage, Manual),
-        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
-        next,
-        submitAnswer(MembersDetailsPage, membersDetails.get),
-        submitAnswer(DoYouHoldSignedMandatePage, true),
-        submitAnswer(ValueOfUnauthorisedPaymentPage, true),
-        submitAnswer(SchemeUnAuthPaySurchargeMemberPage, false),
-        pageMustBe(pages.event1.PaymentNaturePage)
-      )
-  }
-
-  "test event1 member-journey for benefit in kind - empty" in {
-    val membersDetails = arbitrary[MembersDetails].sample
-
-    val paymentNatureJourney =
-      journeyOf(
-        submitAnswer(EventSelectionPage, Event1),
-        submitAnswer(HowAddUnauthPaymentPage, Manual),
-        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
-        next,
-        submitAnswer(MembersDetailsPage, membersDetails.get),
-        submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, false),
-      )
-
-    startingFrom(EventSelectionPage)
-      .run(
-        paymentNatureJourney,
         submitAnswer(pages.event1.PaymentNaturePage, BenefitInKind),
         submitAnswer(BenefitInKindBriefDescriptionPage, ""),
         pageMustBe(IndexPage)
       )
-  }
 
-  "test event1 member-journey for benefit in kind - with some description" in {
-    val membersDetails = arbitrary[MembersDetails].sample
-
-    val paymentNatureJourney =
-      journeyOf(
-        submitAnswer(EventSelectionPage, Event1),
-        submitAnswer(HowAddUnauthPaymentPage, Manual),
-        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
-        pageMustBe(WhatYouWillNeedPage),
-        next,
-        submitAnswer(MembersDetailsPage, membersDetails.get),
-        submitAnswer(DoYouHoldSignedMandatePage, true),
-        submitAnswer(ValueOfUnauthorisedPaymentPage, false),
-      )
-
-    startingFrom(EventSelectionPage)
+    startingFrom(pages.event1.PaymentNaturePage)
       .run(
-        paymentNatureJourney,
         submitAnswer(pages.event1.PaymentNaturePage, BenefitInKind),
         submitAnswer(BenefitInKindBriefDescriptionPage, "valid - description"),
         pageMustBe(IndexPage)
