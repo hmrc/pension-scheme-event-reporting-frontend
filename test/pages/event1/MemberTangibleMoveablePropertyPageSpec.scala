@@ -17,6 +17,7 @@
 package pages.event1
 
 import pages.behaviours.PageBehaviours
+import pages.event1.member.MemberTangibleMoveablePropertyPage
 
 
 class MemberTangibleMoveablePropertyPageSpec extends PageBehaviours {

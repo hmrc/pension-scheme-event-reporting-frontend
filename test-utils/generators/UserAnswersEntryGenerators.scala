@@ -21,7 +21,7 @@ import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage}
-import pages.event1.member.BenefitsPaidEarlyPage
+import pages.event1.member.{BenefitsPaidEarlyPage, MemberPaymentNatureDescriptionPage, MemberTangibleMoveablePropertyPage}
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
@@ -35,10 +35,10 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryMemberPaymentNatureDescriptionUserAnswersEntry: Arbitrary[(pages.event1.MemberPaymentNatureDescriptionPage.type, JsValue)] =
+  implicit lazy val arbitraryMemberPaymentNatureDescriptionUserAnswersEntry: Arbitrary[(MemberPaymentNatureDescriptionPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event1.MemberPaymentNatureDescriptionPage.type]
+        page  <- arbitrary[MemberPaymentNatureDescriptionPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
@@ -51,10 +51,10 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryMemberTangibleMoveablePropertyUserAnswersEntry: Arbitrary[(pages.event1.MemberTangibleMoveablePropertyPage.type, JsValue)] =
+  implicit lazy val arbitraryMemberTangibleMoveablePropertyUserAnswersEntry: Arbitrary[(MemberTangibleMoveablePropertyPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event1.MemberTangibleMoveablePropertyPage.type]
+        page  <- arbitrary[MemberTangibleMoveablePropertyPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }

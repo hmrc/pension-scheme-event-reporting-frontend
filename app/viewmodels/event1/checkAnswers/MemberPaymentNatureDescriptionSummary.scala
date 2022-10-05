@@ -17,8 +17,8 @@
 package viewmodels.checkAnswers
 
 import models.UserAnswers
+import pages.event1.member.MemberPaymentNatureDescriptionPage
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event1.MemberPaymentNatureDescriptionPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow

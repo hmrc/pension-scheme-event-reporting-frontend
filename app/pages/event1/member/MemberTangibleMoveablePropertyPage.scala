@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package pages.event1
+package pages.event1.member
 
 import controllers.event1.routes
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Waypoints, QuestionPage}
 
-case object MemberPaymentNatureDescriptionPage extends QuestionPage[String] {
+case object MemberTangibleMoveablePropertyPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "memberPaymentNatureDescription"
+  override def toString: String = "memberTangibleMoveableProperty"
 
   override def route(waypoints: Waypoints): Call =
-    routes.MemberPaymentNatureDescriptionController.onPageLoad(waypoints)
+    routes.MemberTangibleMoveablePropertyController.onPageLoad(waypoints)
 }
