@@ -20,23 +20,18 @@ import data.SampleData.{companyDetails, seqAddresses, seqTolerantAddresses}
 import generators.ModelGenerators
 import models.EventSelection._
 import models.TestCheckBox.writes
-import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
+import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersDetails
-import models.event1.PaymentNature.ErrorCalcTaxFreeLumpSums
-import models.event1.PaymentNature.BenefitInKind
-import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly}
+import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, ResidentialPropertyHeld}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
+import models.event1.employer.PaymentNature.ResidentialProperty
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.event1._
 import pages.event1.employer.CompanyDetailsPage
-import pages.event1.member.ErrorDescriptionPage
-import pages.event1.{WhatYouWillNeedPage, _}
-import pages.event1.employer.CompanyDetailsPage
-import pages.event1._
-import pages.event1.member.BenefitsPaidEarlyPage
+import pages.event1.member.{BenefitsPaidEarlyPage, ErrorDescriptionPage}
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckYourAnswersPage, EventSelectionPage, IndexPage}
@@ -203,7 +198,6 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
   }
 
   "test event1 journey (employer)" in {
-
     startingFrom(EventSelectionPage)
       .run(
         submitAnswer(EventSelectionPage, Event1),
@@ -218,6 +212,21 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(EnterPostcodePage(Event1EmployerAddressJourney), seqTolerantAddresses),
         submitAnswer(ChooseAddressPage(Event1EmployerAddressJourney), seqAddresses.head),
         pageMustBe(employer.PaymentNaturePage)
+      )
+  }
+
+
+  "test nav to event1 residential property pages (member & employer)" in {
+    startingFrom(PaymentNaturePage)
+      .run(
+        submitAnswer(PaymentNaturePage, ResidentialPropertyHeld),
+        pageMustBe(pages.address.EnterPostcodePage(Event1MemberPropertyAddressJourney))
+      )
+
+    startingFrom(pages.event1.employer.PaymentNaturePage)
+      .run(
+        submitAnswer(pages.event1.employer.PaymentNaturePage, ResidentialProperty),
+        pageMustBe(pages.address.EnterPostcodePage(Event1EmployerPropertyAddressJourney))
       )
   }
 }
