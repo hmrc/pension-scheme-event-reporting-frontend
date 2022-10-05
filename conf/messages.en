@@ -364,3 +364,14 @@ benefitInKindBriefDescription.hint = You can enter a maximum of 150 characters (
 benefitInKindBriefDescription.checkYourAnswersLabel = Give a brief description of the benefit in kind
 benefitInKindBriefDescription.error.length = You can enter a maximum of 150 characters (optional)
 benefitInKindBriefDescription.change.hidden = Give a brief description of the benefit in kind
+
+memberResidentialAddress.enterPostcode.entityName = the residential property
+
+memberResidentialAddress.enterPostcode.title = What is the postcode of the residential property?
+memberResidentialAddress.enterPostcode.h1 = What is the postcode of the residential property?
+
+memberResidentialAddress.chooseAddress.title = What is the address of the residential property?
+memberResidentialAddress.chooseAddress.h1 = What is the address of the residential property?
+
+memberResidentialAddress.address.title = What is the address of the residential property?
+memberResidentialAddress.address.h1 = What is the address of the residential property?

@@ -114,23 +114,20 @@ POST        /new-report/event-1-company-address                controllers.addre
 GET         /new-report/event-1-company-manual-address         controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney)
 POST        /new-report/event-1-company-manual-address         controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney)
 
-# TODO: Remove the dummy routes below when we add the second address journey into the service. There need to be at least 2 address routes to avoid compile errors.
-
-GET         /new-report/event-1-dummy-postcode                 controllers.address.EnterPostcodeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = DummyAddressJourney)
-POST        /new-report/event-1-dummy-postcode                 controllers.address.EnterPostcodeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = DummyAddressJourney)
-
-GET         /new-report/event-1-dummy-address                  controllers.address.ChooseAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = DummyAddressJourney)
-POST        /new-report/event-1-dummy-address                  controllers.address.ChooseAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = DummyAddressJourney)
-
-GET         /new-report/event-1-dummy-address                  controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = DummyAddressJourney)
-POST        /new-report/event-1-dummy-address                  controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = DummyAddressJourney)
-
 GET         /new-report/event-1-employer-payment-nature        controllers.event1.employer.PaymentNatureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-employer-payment-nature        controllers.event1.employer.PaymentNatureController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-1-error-payment                  controllers.event1.member.ErrorDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-error-payment                  controllers.event1.member.ErrorDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /new-report/event-1-benefits-paid-early      controllers.event1.member.BenefitsPaidEarlyController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/event-1-benefits-paid-early      controllers.event1.member.BenefitsPaidEarlyController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/event-1-benefits-paid-early              controllers.event1.member.BenefitsPaidEarlyController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-1-benefits-paid-early              controllers.event1.member.BenefitsPaidEarlyController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
+GET         /new-report/event-1-member-property-postcode               controllers.address.EnterPostcodeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney)
+POST        /new-report/event-1-member-property-postcode               controllers.address.EnterPostcodeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney)
+
+GET         /new-report/event-1-member-property-address              controllers.address.ChooseAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney)
+POST        /new-report/event-1-member-property-address              controllers.address.ChooseAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney)
+
+GET         /new-report/event-1-member-property-manual-address         controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney)
+POST        /new-report/event-1-member-property-manual-address         controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney)
