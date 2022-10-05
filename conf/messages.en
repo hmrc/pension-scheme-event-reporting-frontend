@@ -375,3 +375,13 @@ memberResidentialAddress.chooseAddress.h1 = What is the address of the residenti
 
 memberResidentialAddress.address.title = What is the address of the residential property?
 memberResidentialAddress.address.h1 = What is the address of the residential property?
+
+reasonForTheOverpaymentOrWriteOff.title = What is the reason for the overpayment/write off?
+reasonForTheOverpaymentOrWriteOff.heading = What is the reason for the overpayment/write off?
+reasonForTheOverpaymentOrWriteOff.deathOfMember = Death of member
+reasonForTheOverpaymentOrWriteOff.deathOfDependent = Death of dependent
+reasonForTheOverpaymentOrWriteOff.dependentNoLongerQualifiedForPension = Dependent no longer qualified for pension
+reasonForTheOverpaymentOrWriteOff.other = Other
+reasonForTheOverpaymentOrWriteOff.checkYourAnswersLabel = What is the reason for the overpayment/write off?
+reasonForTheOverpaymentOrWriteOff.error.required = Select the reason for the overpayment/write off
+reasonForTheOverpaymentOrWriteOff.change.hidden = What is the reason for the overpayment/write off?
