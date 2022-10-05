@@ -48,6 +48,7 @@ abstract class WithJourneyTypeDetail(val eventType: EventType, val nodeName: Str
 
 object AddressJourneyType extends Enumerable.Implicits {
   private val entityTypeMessageKeyCompany = "entityType.theCompany"
+  private val entityTypeMessageKeyResidentialProperty = "entityType.theResidentialProperty"
   case object Event1EmployerAddressJourney extends WithJourneyTypeDetail(
     eventType = EventType.Event1,
     nodeName = "employerAddress",
@@ -61,8 +62,8 @@ object AddressJourneyType extends Enumerable.Implicits {
   case object Event1MemberPropertyAddressJourney extends WithJourneyTypeDetail(
     eventType = EventType.Event1,
     nodeName = "memberResidentialAddress",
-    entityTypeMessageKey = entityTypeMessageKeyCompany) {
-    override def entityName(ua: UserAnswers): Message = Message("residentialAddress.enterPostcode.entityName")
+    entityTypeMessageKey = entityTypeMessageKeyResidentialProperty) {
+    override def entityName(ua: UserAnswers): Message = Message(entityTypeMessageKeyResidentialProperty)
     override def heading(whichPage: Page)(implicit
                                           request: DataRequest[AnyContent]): Message =
       whichPage match {
@@ -82,8 +83,8 @@ object AddressJourneyType extends Enumerable.Implicits {
   case object Event1EmployerPropertyAddressJourney extends WithJourneyTypeDetail(
     eventType = EventType.Event1,
     nodeName = "employerResidentialAddress",
-    entityTypeMessageKey = entityTypeMessageKeyCompany) {
-    override def entityName(ua: UserAnswers): Message = Message("residentialAddress.enterPostcode.entityName")
+    entityTypeMessageKey = entityTypeMessageKeyResidentialProperty) {
+    override def entityName(ua: UserAnswers): Message = Message(entityTypeMessageKeyResidentialProperty)
 
     override def heading(whichPage: Page)(implicit
                                           request: DataRequest[AnyContent]): Message =
