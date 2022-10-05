@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.event1
+package controllers.event1.member
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event1.RefundDetailsFormProvider
 import models.UserAnswers
 import models.event1.RefundDetails
-import pages.EmptyWaypoints
-import pages.event1.RefundDetailsPage
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
+import pages.EmptyWaypoints
+import pages.event1.member.RefundDetailsPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest

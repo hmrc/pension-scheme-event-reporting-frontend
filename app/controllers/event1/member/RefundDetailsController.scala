@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.event1
+package controllers.event1.member
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
@@ -22,11 +22,11 @@ import forms.event1.RefundDetailsFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
-import pages.event1.RefundDetailsPage
+import pages.event1.member.RefundDetailsPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event1.RefundDetailsView
+import views.html.event1.member.RefundDetailsView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

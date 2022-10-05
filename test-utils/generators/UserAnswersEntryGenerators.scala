@@ -20,16 +20,16 @@ import models._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
-import pages.event1.member.BenefitsPaidEarlyPage
+import pages.event1.member.{BenefitsPaidEarlyPage, RefundDetailsPage}
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
-  implicit lazy val arbitraryRefundDetailsUserAnswersEntry: Arbitrary[(pages.event1.RefundDetailsPage.type, JsValue)] =
+  implicit lazy val arbitraryRefundDetailsUserAnswersEntry: Arbitrary[(RefundDetailsPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event1.RefundDetailsPage.type]
+        page  <- arbitrary[RefundDetailsPage.type]
         value <- arbitrary[models.event1.RefundDetails].map(Json.toJson(_))
       } yield (page, value)
     }

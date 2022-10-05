@@ -370,5 +370,5 @@ refundDetails.heading = Who received the refund?
 refundDetails.widowOrOrphan = A widow and/or orphan
 refundDetails.other = Other
 refundDetails.checkYourAnswersLabel = Who received the refund?
-refundDetails.error.required = Select refundDetails
+refundDetails.error.required = Select who received the refund
 refundDetails.change.hidden = Who received the refund?

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package pages.event1
+package pages.event1.member
 
-import controllers.event1.routes
+import controllers.event1.member.routes
 import models.event1.RefundDetails
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Waypoints, QuestionPage}
 
 case object RefundDetailsPage extends QuestionPage[RefundDetails] {
 
@@ -28,6 +28,7 @@ case object RefundDetailsPage extends QuestionPage[RefundDetails] {
 
   override def toString: String = "refundDetails"
 
-  override def route(waypoints: Waypoints): Call =
+  override def route(waypoints: Waypoints): Call = {
     routes.RefundDetailsController.onPageLoad(waypoints)
+  }
 }
