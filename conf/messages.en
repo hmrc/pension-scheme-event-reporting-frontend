@@ -364,3 +364,10 @@ benefitInKindBriefDescription.hint = You can enter a maximum of 150 characters (
 benefitInKindBriefDescription.checkYourAnswersLabel = Give a brief description of the benefit in kind
 benefitInKindBriefDescription.error.length = You can enter a maximum of 150 characters (optional)
 benefitInKindBriefDescription.change.hidden = Give a brief description of the benefit in kind
+
+memberTangibleMoveableProperty.title = Give a brief description of the nature of the payment
+memberTangibleMoveableProperty.heading = Give a brief description of the tangible moveable property
+memberTangibleMoveableProperty.hint = You can enter a maximum of 150 characters (optional).
+memberTangibleMoveableProperty.checkYourAnswersLabel = Give a brief description of the tangible moveable property
+memberTangibleMoveableProperty.error.length = You can enter a maximum of 150 characters (optional)
+memberTangibleMoveableProperty.change.hidden = Give a brief description of the nature of the payment
