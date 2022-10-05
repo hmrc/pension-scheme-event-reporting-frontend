@@ -14,50 +14,50 @@
  * limitations under the License.
  */
 
-package controllers.event1.employer
+package controllers.event1.member
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event1.employer.UnauthorisedPaymentRecipientNameFormProvider
+import forms.event1.member.ReasonForTheOverpaymentOrWriteOffFormProvider
 import models.UserAnswers
+import models.event1.member.ReasonForTheOverpaymentOrWriteOff
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
-import pages.event1.employer.UnauthorisedPaymentRecipientNamePage
+import pages.event1.member.ReasonForTheOverpaymentOrWriteOffPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event1.employer.UnauthorisedPaymentRecipientNameView
+import views.html.event1.member.ReasonForTheOverpaymentOrWriteOffView
 
 import scala.concurrent.Future
 
-class UnauthorisedPaymentRecipientNameControllerSpec extends SpecBase with BeforeAndAfterEach {
+class ReasonForTheOverpaymentOrWriteOffControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new UnauthorisedPaymentRecipientNameFormProvider()
+  private val formProvider = new ReasonForTheOverpaymentOrWriteOffFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints).url
-  private def postRoute: String = routes.UnauthorisedPaymentRecipientNameController.onSubmit(waypoints).url
+  private def getRoute: String = routes.ReasonForTheOverpaymentOrWriteOffController.onPageLoad(waypoints).url
+
+  private def postRoute: String = routes.ReasonForTheOverpaymentOrWriteOffController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
-
-  private val validValue = "abc"
 
   override def beforeEach: Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
 
-  "UnauthorisedPaymentRecipientName Controller" - {
+  "ReasonForTheOverpaymentOrWriteOff Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -68,7 +68,7 @@ class UnauthorisedPaymentRecipientNameControllerSpec extends SpecBase with Befor
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[UnauthorisedPaymentRecipientNameView]
+        val view = application.injector.instanceOf[ReasonForTheOverpaymentOrWriteOffView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
@@ -77,19 +77,19 @@ class UnauthorisedPaymentRecipientNameControllerSpec extends SpecBase with Befor
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(UnauthorisedPaymentRecipientNamePage, validValue).success.value
+      val userAnswers = UserAnswers().set(ReasonForTheOverpaymentOrWriteOffPage, ReasonForTheOverpaymentOrWriteOff.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[UnauthorisedPaymentRecipientNameView]
+        val view = application.injector.instanceOf[ReasonForTheOverpaymentOrWriteOffView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(Some(validValue)), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(ReasonForTheOverpaymentOrWriteOff.values.head), waypoints)(request, messages(application)).toString
       }
     }
 
@@ -103,13 +103,13 @@ class UnauthorisedPaymentRecipientNameControllerSpec extends SpecBase with Befor
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "bla"))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ReasonForTheOverpaymentOrWriteOff.values.head.toString))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(UnauthorisedPaymentRecipientNamePage, validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(ReasonForTheOverpaymentOrWriteOffPage, ReasonForTheOverpaymentOrWriteOff.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual UnauthorisedPaymentRecipientNamePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual ReasonForTheOverpaymentOrWriteOffPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -121,10 +121,10 @@ class UnauthorisedPaymentRecipientNameControllerSpec extends SpecBase with Befor
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[UnauthorisedPaymentRecipientNameView]
-        val boundForm = form.bind(Map("value" -> ""))
+        val view = application.injector.instanceOf[ReasonForTheOverpaymentOrWriteOffView]
+        val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value
 

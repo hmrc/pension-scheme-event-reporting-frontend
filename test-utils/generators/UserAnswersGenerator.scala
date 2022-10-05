@@ -23,6 +23,7 @@ import org.scalatest.TryValues
 import pages._
 import pages.event1.employer.UnauthorisedPaymentRecipientNamePage
 import pages.event1.member.BenefitsPaidEarlyPage
+import pages.event1.member.{BenefitsPaidEarlyPage, ReasonForTheOverpaymentOrWriteOffPage}
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
@@ -30,6 +31,7 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+    arbitrary[(ReasonForTheOverpaymentOrWriteOffPage.type, JsValue)] ::
     arbitrary[(UnauthorisedPaymentRecipientNamePage.type, JsValue)] ::
     arbitrary[(event1.member.ErrorDescriptionPage.type, JsValue)] ::
     arbitrary[(BenefitsPaidEarlyPage.type, JsValue)] ::
@@ -60,11 +62,11 @@ trait UserAnswersGenerator extends TryValues {
 
     Arbitrary {
       for {
-        data    <- generators match {
+        data <- generators match {
           case Nil => Gen.const(Map[QuestionPage[_], JsValue]())
-          case _   => Gen.mapOf(oneOf(generators))
+          case _ => Gen.mapOf(oneOf(generators))
         }
-      } yield UserAnswers (
+      } yield UserAnswers(
         data = data.foldLeft(Json.obj()) {
           case (obj, (path, value)) =>
             obj.setObject(path.path, value).get

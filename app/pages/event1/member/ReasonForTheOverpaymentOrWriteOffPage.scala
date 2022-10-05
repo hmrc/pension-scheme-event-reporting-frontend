@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package forms.event1.employer
+package pages.event1.member
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import controllers.event1.member.routes
+import models.event1.member.ReasonForTheOverpaymentOrWriteOff
+import pages.{QuestionPage, Waypoints}
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-import javax.inject.Inject
+case object ReasonForTheOverpaymentOrWriteOffPage extends QuestionPage[ReasonForTheOverpaymentOrWriteOff] {
 
-class UnauthorisedPaymentRecipientNameFormProvider @Inject() extends Mappings {
+  override def path: JsPath = JsPath \ toString
 
-  def apply(): Form[Option[String]] =
-    Form(
-      "value" -> optionalText()
-        .verifying(
-          firstError(
-            maxLength(160, "unauthorisedPaymentRecipientName.error.length"),
-            regexp(regexPersonOrOrgName, "unauthorisedPaymentRecipientName.error.invalid")
-          )
-        )
-    )
+  override def toString: String = "reasonForTheOverpaymentOrWriteOff"
+
+  override def route(waypoints: Waypoints): Call =
+    routes.ReasonForTheOverpaymentOrWriteOffController.onPageLoad(waypoints)
 }

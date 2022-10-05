@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package forms.event1.employer
+package forms.event1.member
 
 import forms.mappings.Mappings
+import models.event1.member.ReasonForTheOverpaymentOrWriteOff
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class UnauthorisedPaymentRecipientNameFormProvider @Inject() extends Mappings {
+class ReasonForTheOverpaymentOrWriteOffFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Option[String]] =
+  def apply(): Form[ReasonForTheOverpaymentOrWriteOff] =
     Form(
-      "value" -> optionalText()
-        .verifying(
-          firstError(
-            maxLength(160, "unauthorisedPaymentRecipientName.error.length"),
-            regexp(regexPersonOrOrgName, "unauthorisedPaymentRecipientName.error.invalid")
-          )
-        )
+      "value" -> enumerable[ReasonForTheOverpaymentOrWriteOff]("reasonForTheOverpaymentOrWriteOff.error.required")
     )
 }

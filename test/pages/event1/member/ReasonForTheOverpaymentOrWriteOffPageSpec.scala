@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-package forms.event1.employer
+package pages.event1.member
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import models.event1.member.ReasonForTheOverpaymentOrWriteOff
+import pages.behaviours.PageBehaviours
 
-import javax.inject.Inject
+class ReasonForTheOverpaymentOrWriteOffSpec extends PageBehaviours {
 
-class UnauthorisedPaymentRecipientNameFormProvider @Inject() extends Mappings {
+  "ReasonForTheOverpaymentOrWriteOffPage" - {
 
-  def apply(): Form[Option[String]] =
-    Form(
-      "value" -> optionalText()
-        .verifying(
-          firstError(
-            maxLength(160, "unauthorisedPaymentRecipientName.error.length"),
-            regexp(regexPersonOrOrgName, "unauthorisedPaymentRecipientName.error.invalid")
-          )
-        )
-    )
+    beRetrievable[ReasonForTheOverpaymentOrWriteOff](ReasonForTheOverpaymentOrWriteOffPage)
+
+    beSettable[ReasonForTheOverpaymentOrWriteOff](ReasonForTheOverpaymentOrWriteOffPage)
+
+    beRemovable[ReasonForTheOverpaymentOrWriteOff](ReasonForTheOverpaymentOrWriteOffPage)
+  }
 }

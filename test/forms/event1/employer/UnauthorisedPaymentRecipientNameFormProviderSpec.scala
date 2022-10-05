@@ -51,11 +51,5 @@ class UnauthorisedPaymentRecipientNameFormProviderSpec extends StringFieldBehavi
       maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
   }
 }

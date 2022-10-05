@@ -14,36 +14,36 @@
  * limitations under the License.
  */
 
-package controllers.event1.employer
+package controllers.event1.member
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.event1.employer.UnauthorisedPaymentRecipientNameFormProvider
+import forms.event1.member.ReasonForTheOverpaymentOrWriteOffFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
-import pages.event1.employer.UnauthorisedPaymentRecipientNamePage
+import pages.event1.member.ReasonForTheOverpaymentOrWriteOffPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event1.employer.UnauthorisedPaymentRecipientNameView
+import views.html.event1.member.ReasonForTheOverpaymentOrWriteOffView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class UnauthorisedPaymentRecipientNameController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         userAnswersCacheConnector: UserAnswersCacheConnector,
-                                         formProvider: UnauthorisedPaymentRecipientNameFormProvider,
-                                         view: UnauthorisedPaymentRecipientNameView
-                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class ReasonForTheOverpaymentOrWriteOffController @Inject()(val controllerComponents: MessagesControllerComponents,
+                                                            identify: IdentifierAction,
+                                                            getData: DataRetrievalAction,
+                                                            userAnswersCacheConnector: UserAnswersCacheConnector,
+                                                            formProvider: ReasonForTheOverpaymentOrWriteOffFormProvider,
+                                                            view: ReasonForTheOverpaymentOrWriteOffView
+                                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(UnauthorisedPaymentRecipientNamePage)).fold(form){v => form.fill(Some(v))}
+    val preparedForm = request.userAnswers.flatMap(_.get(ReasonForTheOverpaymentOrWriteOffPage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
@@ -54,12 +54,9 @@ class UnauthorisedPaymentRecipientNameController @Inject()(val controllerCompone
           Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = value match {
-            case Some(v) => originalUserAnswers.setOrException(UnauthorisedPaymentRecipientNamePage, v)
-            case None => originalUserAnswers.removeOrException(UnauthorisedPaymentRecipientNamePage)
-          }
+          val updatedAnswers = originalUserAnswers.setOrException(ReasonForTheOverpaymentOrWriteOffPage, value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(UnauthorisedPaymentRecipientNamePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(ReasonForTheOverpaymentOrWriteOffPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

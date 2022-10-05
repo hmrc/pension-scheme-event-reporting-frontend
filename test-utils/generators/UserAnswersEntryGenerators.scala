@@ -17,11 +17,13 @@
 package generators
 
 import models._
+import models.event1.member.ReasonForTheOverpaymentOrWriteOff
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
 import pages.event1.employer.UnauthorisedPaymentRecipientNamePage
 import pages.event1.member.BenefitsPaidEarlyPage
+import pages.event1.member.{BenefitsPaidEarlyPage, ReasonForTheOverpaymentOrWriteOffPage}
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
@@ -35,10 +37,18 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
+  implicit lazy val arbitraryReasonForTheOverpaymentOrWriteOffUserAnswersEntry: Arbitrary[(ReasonForTheOverpaymentOrWriteOffPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[ReasonForTheOverpaymentOrWriteOffPage.type]
+        value <- arbitrary[ReasonForTheOverpaymentOrWriteOff].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryErrorDescriptionUserAnswersEntry: Arbitrary[(pages.event1.member.ErrorDescriptionPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event1.member.ErrorDescriptionPage.type]
+        page <- arbitrary[pages.event1.member.ErrorDescriptionPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
@@ -46,7 +56,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryBenefitsPaidEarlyUserAnswersEntry: Arbitrary[(BenefitsPaidEarlyPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[BenefitsPaidEarlyPage.type]
+        page <- arbitrary[BenefitsPaidEarlyPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
