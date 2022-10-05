@@ -41,7 +41,8 @@
                 field = form("value"),
                 label = LabelViewModel(messages("unauthorisedPaymentRecipientName.heading")).asPageHeading()
             )
-            .withWidth(Full)
+            .withWidth(TwoThirds)
+            .withHint(HintViewModel(messages("unauthorisedPaymentRecipientName.hint")))
         )
 
         @govukButton(

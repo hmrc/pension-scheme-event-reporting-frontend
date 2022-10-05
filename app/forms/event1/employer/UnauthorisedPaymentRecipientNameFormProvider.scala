@@ -26,6 +26,11 @@ class UnauthorisedPaymentRecipientNameFormProvider @Inject() extends Mappings {
   def apply(): Form[String] =
     Form(
       "value" -> text("unauthorisedPaymentRecipientName.error.required")
-        .verifying(maxLength(100, "unauthorisedPaymentRecipientName.error.length"))
+        .verifying(
+          firstError(
+            maxLength(160, "unauthorisedPaymentRecipientName.error.length"),
+            regexp(regexPersonOrOrgName, "unauthorisedPaymentRecipientName.error.invalid")
+          )
+        )
     )
 }

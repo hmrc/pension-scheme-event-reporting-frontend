@@ -22,8 +22,9 @@ import play.api.data.FormError
 class UnauthorisedPaymentRecipientNameFormProviderSpec extends StringFieldBehaviours {
 
   private val requiredKey = "unauthorisedPaymentRecipientName.error.required"
+  private val invalidKey = "unauthorisedPaymentRecipientName.error.invalid"
   private val lengthKey = "unauthorisedPaymentRecipientName.error.length"
-  private val maxLength = 100
+  private val maxLength = 160
 
   private val form = new UnauthorisedPaymentRecipientNameFormProvider()()
 
@@ -31,11 +32,18 @@ class UnauthorisedPaymentRecipientNameFormProviderSpec extends StringFieldBehavi
 
     val fieldName = "value"
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxLength)
-    )
+    "bind valid data" in {
+      val dataItem = "abc &'`\\.^"
+      val result = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
+      result.value.value mustBe dataItem
+      result.errors mustBe empty
+    }
+
+    "return errors when invalid data" in {
+      val dataItem = "-*%$£"
+      val result = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
+      result.errors.headOption.map(_.message) mustBe Some(invalidKey)
+    }
 
     behave like fieldWithMaxLength(
       form,
