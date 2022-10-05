@@ -79,31 +79,6 @@ object AddressJourneyType extends Enumerable.Implicits {
       }
   }
 
-  // TODO: Remove this dummy object when we have at least two instances of AddressJourneyType. If only one instance then we get compile errors.
-  case object DummyAddressJourney extends WithJourneyTypeDetail(
-    eventType = EventType.Event1,
-    nodeName = "dummyNodeName",
-    entityTypeMessageKey = "entityTypeMessageKey") {
-    override def entityName(ua: UserAnswers): Message = Message("dummy name")
-
-    // Examples below as to how to override the header/ title message key on address pages if necessary:-
-    //
-    //    override def heading(whichPage: Page)(implicit
-    //                                            request: DataRequest[AnyContent]): Message = {
-    //      whichPage match {
-    //        case ManualAddressPage(_) => Message("another-message-keya", this.name(request.userAnswers))
-    //        case _ => super.heading(whichPage)
-    //      }
-    //    }
-    //
-    //    override def title(whichPage: String): Message = {
-    //      whichPage match {
-    //        case ManualAddressPage(_) => Message("another-message-keyb", this.name(request.userAnswers))
-    //        case _ => super.heading(whichPage)
-    //      }
-    //    }
-  }
-
   private val values: List[AddressJourneyType] = List(Event1EmployerAddressJourney)
 
   def getEventType(s: String): Option[AddressJourneyType] = values.find(_.toString == s)
