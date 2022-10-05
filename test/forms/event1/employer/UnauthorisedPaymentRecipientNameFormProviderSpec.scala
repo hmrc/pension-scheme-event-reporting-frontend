@@ -21,7 +21,6 @@ import play.api.data.FormError
 
 class UnauthorisedPaymentRecipientNameFormProviderSpec extends StringFieldBehaviours {
 
-  private val requiredKey = "unauthorisedPaymentRecipientName.error.required"
   private val invalidKey = "unauthorisedPaymentRecipientName.error.invalid"
   private val lengthKey = "unauthorisedPaymentRecipientName.error.length"
   private val maxLength = 160
