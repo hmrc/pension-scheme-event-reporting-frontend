@@ -62,7 +62,7 @@ object AddressJourneyType extends Enumerable.Implicits {
     eventType = EventType.Event1,
     nodeName = "memberResidentialAddress",
     entityTypeMessageKey = entityTypeMessageKeyCompany) {
-    override def entityName(ua: UserAnswers): Message = Message("memberResidentialAddress.enterPostcode.entityName")
+    override def entityName(ua: UserAnswers): Message = Message("residentialAddress.enterPostcode.entityName")
     override def heading(whichPage: Page)(implicit
                                           request: DataRequest[AnyContent]): Message =
       whichPage match {
@@ -83,7 +83,7 @@ object AddressJourneyType extends Enumerable.Implicits {
     eventType = EventType.Event1,
     nodeName = "employerResidentialAddress",
     entityTypeMessageKey = entityTypeMessageKeyCompany) {
-    override def entityName(ua: UserAnswers): Message = Message("memberResidentialAddress.enterPostcode.entityName")
+    override def entityName(ua: UserAnswers): Message = Message("residentialAddress.enterPostcode.entityName")
 
     override def heading(whichPage: Page)(implicit
                                           request: DataRequest[AnyContent]): Message =

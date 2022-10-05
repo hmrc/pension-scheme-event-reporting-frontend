@@ -365,7 +365,7 @@ benefitInKindBriefDescription.checkYourAnswersLabel = Give a brief description o
 benefitInKindBriefDescription.error.length = You can enter a maximum of 150 characters (optional)
 benefitInKindBriefDescription.change.hidden = Give a brief description of the benefit in kind
 
-memberResidentialAddress.enterPostcode.entityName = the residential property
+residentialAddress.enterPostcode.entityName = the residential property
 
 residentialAddress.enterPostcode.title = What is the postcode of the residential property?
 residentialAddress.enterPostcode.h1 = What is the postcode of the residential property?
