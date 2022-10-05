@@ -121,10 +121,10 @@ class UnauthorisedPaymentRecipientNameControllerSpec extends SpecBase with Befor
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "$%"))
 
         val view = application.injector.instanceOf[UnauthorisedPaymentRecipientNameView]
-        val boundForm = form.bind(Map("value" -> ""))
+        val boundForm = form.bind(Map("value" -> "$%"))
 
         val result = route(application, request).value
 
