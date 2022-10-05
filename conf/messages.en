@@ -392,3 +392,14 @@ employerPaymentNatureDescription.hint = You can enter a maximum of 150 character
 employerPaymentNatureDescription.checkYourAnswersLabel = Give a brief description of the nature of the payment
 employerPaymentNatureDescription.error.length = You can enter a maximum of 150 characters (optional).
 employerPaymentNatureDescription.change.hidden = Give a brief description of the nature of the payment
+
+memberResidentialAddress.enterPostcode.entityName = the residential property
+
+memberResidentialAddress.enterPostcode.title = What is the postcode of the residential property?
+memberResidentialAddress.enterPostcode.h1 = What is the postcode of the residential property?
+
+memberResidentialAddress.chooseAddress.title = What is the address of the residential property?
+memberResidentialAddress.chooseAddress.h1 = What is the address of the residential property?
+
+memberResidentialAddress.address.title = What is the address of the residential property?
+memberResidentialAddress.address.h1 = What is the address of the residential property?
