@@ -20,16 +20,17 @@ import models._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
+import pages.event1.employer.UnauthorisedPaymentRecipientNamePage
 import pages.event1.member.BenefitsPaidEarlyPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
-  implicit lazy val arbitraryUnauthorisedPaymentRecipientNameUserAnswersEntry: Arbitrary[(pages.event1.UnauthorisedPaymentRecipientNamePage.type, JsValue)] =
+  implicit lazy val arbitraryUnauthorisedPaymentRecipientNameUserAnswersEntry: Arbitrary[(UnauthorisedPaymentRecipientNamePage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event1.UnauthorisedPaymentRecipientNamePage.type]
+        page  <- arbitrary[UnauthorisedPaymentRecipientNamePage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }

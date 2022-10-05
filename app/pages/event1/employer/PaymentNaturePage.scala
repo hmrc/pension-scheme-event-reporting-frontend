@@ -20,7 +20,6 @@ import controllers.event1.employer.routes
 import models.UserAnswers
 import models.event1.employer.PaymentNature
 import models.event1.employer.PaymentNature.CourtOrder
-import pages.event1.UnauthorisedPaymentRecipientNamePage
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

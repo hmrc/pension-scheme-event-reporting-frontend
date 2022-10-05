@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package pages.event1
+package pages.event1.employer
 
-import controllers.event1.routes
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
-import pages.{Waypoints, QuestionPage}
+import pages.behaviours.PageBehaviours
 
-case object UnauthorisedPaymentRecipientNamePage extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+class UnauthorisedPaymentRecipientNamePageSpec extends PageBehaviours {
 
-  override def toString: String = "unauthorisedPaymentRecipientName"
+  "UnauthorisedPaymentRecipientNamePage" - {
 
-  override def route(waypoints: Waypoints): Call =
-    routes.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints)
+    beRetrievable[String](UnauthorisedPaymentRecipientNamePage)
+
+    beSettable[String](UnauthorisedPaymentRecipientNamePage)
+
+    beRemovable[String](UnauthorisedPaymentRecipientNamePage)
+  }
 }

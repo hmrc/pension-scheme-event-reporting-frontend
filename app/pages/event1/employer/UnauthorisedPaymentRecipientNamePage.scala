@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package forms.event1
+package pages.event1.employer
 
-import javax.inject.Inject
+import controllers.event1.routes
+import pages.{QuestionPage, Waypoints}
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-import forms.mappings.Mappings
-import play.api.data.Form
+case object UnauthorisedPaymentRecipientNamePage extends QuestionPage[String] {
 
-class UnauthorisedPaymentRecipientNameFormProvider @Inject() extends Mappings {
+  override def path: JsPath = JsPath \ toString
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("unauthorisedPaymentRecipientName.error.required")
-        .verifying(maxLength(100, "unauthorisedPaymentRecipientName.error.length"))
-    )
+  override def toString: String = "unauthorisedPaymentRecipientName"
+
+  override def route(waypoints: Waypoints): Call =
+    controllers.event1.employer.routes.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints)
 }
