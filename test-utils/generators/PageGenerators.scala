@@ -24,6 +24,9 @@ import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryMemberPaymentNatureDescriptionPage: Arbitrary[event1.MemberPaymentNatureDescriptionPage.type] =
+    Arbitrary(event1.MemberPaymentNatureDescriptionPage)
+
   implicit lazy val arbitraryEmployerTangibleMoveablePropertyPage: Arbitrary[event1.EmployerTangibleMoveablePropertyPage.type] =
     Arbitrary(event1.EmployerTangibleMoveablePropertyPage)
 
