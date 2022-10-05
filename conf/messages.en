@@ -370,28 +370,28 @@ memberTangibleMoveableProperty.title = Give a brief description of the nature of
 memberTangibleMoveableProperty.heading = Give a brief description of the tangible moveable property
 memberTangibleMoveableProperty.hint = You can enter a maximum of 150 characters (optional).
 memberTangibleMoveableProperty.checkYourAnswersLabel = Give a brief description of the tangible moveable property
-memberTangibleMoveableProperty.error.length = You can enter a maximum of 150 characters (optional).
+memberTangibleMoveableProperty.error.length = The tangible moveable property must be 150 characters or fewer
 memberTangibleMoveableProperty.change.hidden = Give a brief description of the nature of the payment
 
 employerTangibleMoveableProperty.title = Give a brief description of the nature of the payment
 employerTangibleMoveableProperty.heading = Give a brief description of the tangible moveable property
 employerTangibleMoveableProperty.hint = You can enter a maximum of 150 characters (optional).
 employerTangibleMoveableProperty.checkYourAnswersLabel = Give a brief description of the nature of the payment
-employerTangibleMoveableProperty.error.length = You can enter a maximum of 150 characters (optional).
+employerTangibleMoveableProperty.error.length = The tangible moveable property must be 150 characters or fewer
 employerTangibleMoveableProperty.change.hidden = Give a brief description of the nature of the payment
 
 memberPaymentNatureDescription.title = Give a brief description of the nature of the payment
 memberPaymentNatureDescription.heading = Give a brief description of the nature of the payment
 memberPaymentNatureDescription.hint = You can enter a maximum of 150 characters (optional).
 memberPaymentNatureDescription.checkYourAnswersLabel = Give a brief description of the nature of the payment
-memberPaymentNatureDescription.error.length = You can enter a maximum of 150 characters (optional).
+memberPaymentNatureDescription.error.length = The nature of the payment must be 150 characters or fewer
 memberPaymentNatureDescription.change.hidden = Give a brief description of the nature of the payment
 
 employerPaymentNatureDescription.title = Give a brief description of the nature of the payment
 employerPaymentNatureDescription.heading = Give a brief description of the nature of the payment
 employerPaymentNatureDescription.hint = You can enter a maximum of 150 characters (optional).
 employerPaymentNatureDescription.checkYourAnswersLabel = Give a brief description of the nature of the payment
-employerPaymentNatureDescription.error.length = You can enter a maximum of 150 characters (optional).
+employerPaymentNatureDescription.error.length = The nature of the payment must be 150 characters or fewer
 employerPaymentNatureDescription.change.hidden = Give a brief description of the nature of the payment
 
 memberResidentialAddress.enterPostcode.entityName = the residential property
