@@ -21,7 +21,6 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 trait StringFieldBehaviours extends FieldBehaviours {
 
-
   def fieldWithMaxLength(form: Form[_],
                          fieldName: String,
                          maxLength: Int,

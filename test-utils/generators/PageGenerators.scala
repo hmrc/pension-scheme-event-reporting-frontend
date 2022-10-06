@@ -19,10 +19,8 @@ package generators
 import org.scalacheck.Arbitrary
 import pages._
 import pages.event1.employer.UnauthorisedPaymentRecipientNamePage
+import pages.event1.member.{BenefitsPaidEarlyPage, ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage}
 import pages.event1.{employer, member}
-import pages.event1.member.BenefitsPaidEarlyPage
-import pages.event1.member
-import pages.event1.member.{BenefitsPaidEarlyPage, ReasonForTheOverpaymentOrWriteOffPage}
 import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
@@ -32,6 +30,9 @@ trait PageGenerators {
 
   implicit lazy val arbitraryReasonForTheOverpaymentOrWriteOffPage: Arbitrary[ReasonForTheOverpaymentOrWriteOffPage.type] =
     Arbitrary(member.ReasonForTheOverpaymentOrWriteOffPage)
+
+  implicit lazy val arbitraryRefundOfContributionsPage: Arbitrary[RefundOfContributionsPage.type] =
+    Arbitrary(member.RefundOfContributionsPage)
 
   implicit lazy val arbitraryErrorDescriptionPage: Arbitrary[event1.member.ErrorDescriptionPage.type] =
     Arbitrary(event1.member.ErrorDescriptionPage)

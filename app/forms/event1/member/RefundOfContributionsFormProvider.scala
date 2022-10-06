@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package pages.event1.employer
+package forms.event1.member
 
-import pages.{QuestionPage, Waypoints}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.mappings.Mappings
+import models.event1.member.RefundOfContributions
+import play.api.data.Form
 
-case object UnauthorisedPaymentRecipientNamePage extends QuestionPage[String] {
+import javax.inject.Inject
 
-  override def path: JsPath = JsPath \ toString
+class RefundOfContributionsFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "unauthorisedPaymentRecipientName"
-
-  override def route(waypoints: Waypoints): Call =
-    controllers.event1.employer.routes.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints)
+  def apply(): Form[RefundOfContributions] =
+    Form(
+      "value" -> enumerable[RefundOfContributions]("refundOfContributions.error.required")
+    )
 }

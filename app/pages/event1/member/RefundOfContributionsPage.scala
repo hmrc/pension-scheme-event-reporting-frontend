@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package pages.event1.employer
+package pages.event1.member
 
+import controllers.event1.member.routes
+import models.event1.member.RefundOfContributions
 import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object UnauthorisedPaymentRecipientNamePage extends QuestionPage[String] {
+case object RefundOfContributionsPage extends QuestionPage[RefundOfContributions] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "unauthorisedPaymentRecipientName"
+  override def toString: String = "refundOfContributions"
 
-  override def route(waypoints: Waypoints): Call =
-    controllers.event1.employer.routes.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints)
+  override def route(waypoints: Waypoints): Call = {
+    routes.RefundOfContributionsController.onPageLoad(waypoints)
+  }
 }

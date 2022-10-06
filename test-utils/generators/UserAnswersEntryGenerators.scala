@@ -17,13 +17,12 @@
 package generators
 
 import models._
-import models.event1.member.ReasonForTheOverpaymentOrWriteOff
+import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
 import pages.event1.employer.UnauthorisedPaymentRecipientNamePage
-import pages.event1.member.BenefitsPaidEarlyPage
-import pages.event1.member.{BenefitsPaidEarlyPage, ReasonForTheOverpaymentOrWriteOffPage}
+import pages.event1.member.{BenefitsPaidEarlyPage, ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage}
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
@@ -32,7 +31,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryUnauthorisedPaymentRecipientNameUserAnswersEntry: Arbitrary[(UnauthorisedPaymentRecipientNamePage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[UnauthorisedPaymentRecipientNamePage.type]
+        page <- arbitrary[UnauthorisedPaymentRecipientNamePage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
@@ -42,6 +41,14 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       for {
         page <- arbitrary[ReasonForTheOverpaymentOrWriteOffPage.type]
         value <- arbitrary[ReasonForTheOverpaymentOrWriteOff].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryRefundOfContributionsUserAnswersEntry: Arbitrary[(RefundOfContributionsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[RefundOfContributionsPage.type]
+        value <- arbitrary[RefundOfContributions].map(Json.toJson(_))
       } yield (page, value)
     }
 
