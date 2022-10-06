@@ -23,6 +23,7 @@ import org.scalatest.TryValues
 import pages._
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage}
 import pages.event1.member.{BenefitsPaidEarlyPage, MemberPaymentNatureDescriptionPage, MemberTangibleMoveablePropertyPage}
+import pages.event1.member.ReasonForTheOverpaymentOrWriteOffPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
@@ -56,6 +57,29 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(TestCheckBoxPage.type, JsValue)] ::
     arbitrary[(TestDatePage.type, JsValue)] ::
     Nil
+    arbitrary[(ReasonForTheOverpaymentOrWriteOffPage.type, JsValue)] ::
+      arbitrary[(event1.member.ErrorDescriptionPage.type, JsValue)] ::
+      arbitrary[(BenefitsPaidEarlyPage.type, JsValue)] ::
+      arbitrary[(event1.employer.PaymentNaturePage.type, JsValue)] ::
+      arbitrary[(event1.employer.CompanyDetailsPage.type, JsValue)] ::
+      arbitrary[(event1.BenefitInKindBriefDescriptionPage.type, JsValue)] ::
+      arbitrary[(event1.SchemeUnAuthPaySurchargeMemberPage.type, JsValue)] ::
+      arbitrary[(event1.ValueOfUnauthorisedPaymentPage.type, JsValue)] ::
+      arbitrary[(event1.DoYouHoldSignedMandatePage.type, JsValue)] ::
+      arbitrary[(event1.MembersDetailsPage.type, JsValue)] ::
+      arbitrary[(event1.WhoReceivedUnauthPaymentPage.type, JsValue)] ::
+      arbitrary[(event1.HowAddUnauthPaymentPage.type, JsValue)] ::
+      arbitrary[(event1.PaymentNaturePage.type, JsValue)] ::
+      arbitrary[(SchemeWindUpDatePage.type, JsValue)] ::
+      arbitrary[(event18.Event18ConfirmationPage.type, JsValue)] ::
+      arbitrary[(EventSummaryPage.type, JsValue)] ::
+      arbitrary[(EventSelectionPage.type, JsValue)] ::
+      arbitrary[(TestIntPagePage.type, JsValue)] ::
+      arbitrary[(TestStringPagePage.type, JsValue)] ::
+      arbitrary[(TestRadioButtonPage.type, JsValue)] ::
+      arbitrary[(TestCheckBoxPage.type, JsValue)] ::
+      arbitrary[(TestDatePage.type, JsValue)] ::
+      Nil
 
   implicit lazy val arbitraryUserData: Arbitrary[UserAnswers] = {
 
@@ -63,11 +87,11 @@ trait UserAnswersGenerator extends TryValues {
 
     Arbitrary {
       for {
-        data    <- generators match {
+        data <- generators match {
           case Nil => Gen.const(Map[QuestionPage[_], JsValue]())
-          case _   => Gen.mapOf(oneOf(generators))
+          case _ => Gen.mapOf(oneOf(generators))
         }
-      } yield UserAnswers (
+      } yield UserAnswers(
         data = data.foldLeft(Json.obj()) {
           case (obj, (path, value)) =>
             obj.setObject(path.path, value).get

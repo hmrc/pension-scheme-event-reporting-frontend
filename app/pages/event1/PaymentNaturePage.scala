@@ -22,6 +22,7 @@ import models.enumeration.AddressJourneyType.Event1MemberPropertyAddressJourney
 import models.event1.PaymentNature
 import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, Other, ResidentialPropertyHeld, TangibleMoveablePropertyHeld}
 import pages.event1.member.{MemberPaymentNatureDescriptionPage, MemberTangibleMoveablePropertyPage}
+import models.event1.PaymentNature.OverpaymentOrWriteOff
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -44,6 +45,7 @@ case object PaymentNaturePage extends QuestionPage[PaymentNature] {
       case Some(BenefitsPaidEarly) => pages.event1.member.BenefitsPaidEarlyPage
       case Some(TangibleMoveablePropertyHeld) => MemberTangibleMoveablePropertyPage
       case Some(Other) => MemberPaymentNatureDescriptionPage
+      case Some(OverpaymentOrWriteOff) => pages.event1.member.ReasonForTheOverpaymentOrWriteOffPage
       case _ => IndexPage
     }
   }

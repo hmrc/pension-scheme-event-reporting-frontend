@@ -24,14 +24,17 @@ import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Even
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersDetails
 import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, Other, ResidentialPropertyHeld, TangibleMoveablePropertyHeld}
+import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, OverpaymentOrWriteOff, ResidentialPropertyHeld}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.employer.PaymentNature.{ResidentialProperty, TangibleMoveableProperty}
+import models.event1.employer.PaymentNature.ResidentialProperty
+import models.event1.member.ReasonForTheOverpaymentOrWriteOff.DeathOfMember
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.event1._
 import pages.event1.employer.CompanyDetailsPage
-import pages.event1.member.{BenefitsPaidEarlyPage, ErrorDescriptionPage}
+import pages.event1.member.{BenefitsPaidEarlyPage, ErrorDescriptionPage, ReasonForTheOverpaymentOrWriteOffPage}
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckYourAnswersPage, EventSelectionPage, IndexPage}
@@ -58,7 +61,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       )
   }
 
-  "test event1 journey (member), payment nature is benefits paid early" in {
+  "test event1 journey (member), payment nature page" in {
 
     val membersDetails = arbitrary[MembersDetails].sample
 
@@ -71,10 +74,18 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(MembersDetailsPage, membersDetails.get),
         submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, true),
-        submitAnswer(SchemeUnAuthPaySurchargeMemberPage, false),
-        submitAnswer(pages.event1.PaymentNaturePage, BenefitsPaidEarly),
-        submitAnswer(BenefitsPaidEarlyPage, ""),
-        pageMustBe(IndexPage)
+        submitAnswer(SchemeUnAuthPaySurchargeMemberPage, true),
+        pageMustBe(pages.event1.PaymentNaturePage)
+      )
+  }
+
+  "test event1 journey for Do You Hold Signed Mandate is false" in {
+    startingFrom(DoYouHoldSignedMandatePage)
+      .run(
+        submitAnswer(DoYouHoldSignedMandatePage, false),
+        submitAnswer(ValueOfUnauthorisedPaymentPage, true),
+        submitAnswer(SchemeUnAuthPaySurchargeMemberPage, true),
+        pageMustBe(pages.event1.PaymentNaturePage)
       )
   }
 
@@ -86,35 +97,50 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       )
   }
 
-  "test event1 member-journey for unauthorised payment more than 25% when Scheme Unauthorized Payment Surcharge true" in {
-    startingFrom(ValueOfUnauthorisedPaymentPage)
-      .run(
-        submitAnswer(ValueOfUnauthorisedPaymentPage, true),
-        submitAnswer(SchemeUnAuthPaySurchargeMemberPage, true),
-        pageMustBe(pages.event1.PaymentNaturePage)
-      )
-  }
-
-  "test event1 member-journey for unauthorised payment more than 25% when Scheme Unauthorized Payment " +
-    "Surcharge false incl error calc tax free lump sum" in {
+  "test event1 member-journey when Scheme Unauthorized Payment Surcharge false" in {
     startingFrom(ValueOfUnauthorisedPaymentPage)
       .run(
         submitAnswer(ValueOfUnauthorisedPaymentPage, true),
         submitAnswer(SchemeUnAuthPaySurchargeMemberPage, false),
         pageMustBe(pages.event1.PaymentNaturePage)
       )
+  }
+
+  "test event1 member-journey for error calc tax free lump sum" in {
+    startingFrom(pages.event1.PaymentNaturePage)
+      .run(
+        submitAnswer(pages.event1.PaymentNaturePage, ErrorCalcTaxFreeLumpSums),
+        submitAnswer(ErrorDescriptionPage, ""),
+        pageMustBe(IndexPage)
+      )
 
     startingFrom(pages.event1.PaymentNaturePage)
       .run(
         submitAnswer(pages.event1.PaymentNaturePage, ErrorCalcTaxFreeLumpSums),
-        pageMustBe(ErrorDescriptionPage)
+        submitAnswer(ErrorDescriptionPage, "valid - description"),
+        pageMustBe(IndexPage)
+      )
+  }
+
+  "test event1 member-journey for benefits paid early" in {
+    startingFrom(pages.event1.PaymentNaturePage)
+      .run(
+        submitAnswer(pages.event1.PaymentNaturePage, BenefitsPaidEarly),
+        submitAnswer(BenefitsPaidEarlyPage, ""),
+        pageMustBe(IndexPage)
+      )
+
+    startingFrom(pages.event1.PaymentNaturePage)
+      .run(
+        submitAnswer(pages.event1.PaymentNaturePage, BenefitsPaidEarly),
+        submitAnswer(BenefitsPaidEarlyPage, "valid - description"),
+        pageMustBe(IndexPage)
       )
   }
 
   "test event1 member-journey for benefit in kind - empty and description" in {
-    startingFrom(ValueOfUnauthorisedPaymentPage)
+    startingFrom(pages.event1.PaymentNaturePage)
       .run(
-        submitAnswer(ValueOfUnauthorisedPaymentPage, false),
         submitAnswer(pages.event1.PaymentNaturePage, BenefitInKind),
         submitAnswer(BenefitInKindBriefDescriptionPage, ""),
         pageMustBe(IndexPage)
@@ -124,6 +150,15 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       .run(
         submitAnswer(pages.event1.PaymentNaturePage, BenefitInKind),
         submitAnswer(BenefitInKindBriefDescriptionPage, "valid - description"),
+        pageMustBe(IndexPage)
+      )
+  }
+
+  "test event1 journey (member), payment nature is reason for the overpayment/writeOff" in {
+    startingFrom(pages.event1.PaymentNaturePage)
+      .run(
+        submitAnswer(pages.event1.PaymentNaturePage, OverpaymentOrWriteOff),
+        submitAnswer(ReasonForTheOverpaymentOrWriteOffPage, DeathOfMember),
         pageMustBe(IndexPage)
       )
   }
@@ -145,7 +180,6 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         pageMustBe(employer.PaymentNaturePage)
       )
   }
-
 
   "test nav to event1 residential property pages (member & employer)" in {
     startingFrom(PaymentNaturePage)
