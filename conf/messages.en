@@ -366,19 +366,19 @@ benefitInKindBriefDescription.checkYourAnswersLabel = Give a brief description o
 benefitInKindBriefDescription.error.length = You can enter a maximum of 150 characters (optional)
 benefitInKindBriefDescription.change.hidden = Give a brief description of the benefit in kind
 
-memberTangibleMoveableProperty.title = Give a brief description of the nature of the payment
+memberTangibleMoveableProperty.title = Give a brief description of the tangible moveable property
 memberTangibleMoveableProperty.heading = Give a brief description of the tangible moveable property
 memberTangibleMoveableProperty.hint = You can enter a maximum of 150 characters (optional).
 memberTangibleMoveableProperty.checkYourAnswersLabel = Give a brief description of the tangible moveable property
 memberTangibleMoveableProperty.error.length = The tangible moveable property must be 150 characters or fewer
-memberTangibleMoveableProperty.change.hidden = Give a brief description of the nature of the payment
+memberTangibleMoveableProperty.change.hidden = Give a brief description of the tangible moveable property
 
-employerTangibleMoveableProperty.title = Give a brief description of the nature of the payment
+employerTangibleMoveableProperty.title = Give a brief description of the tangible moveable property
 employerTangibleMoveableProperty.heading = Give a brief description of the tangible moveable property
 employerTangibleMoveableProperty.hint = You can enter a maximum of 150 characters (optional).
-employerTangibleMoveableProperty.checkYourAnswersLabel = Give a brief description of the nature of the payment
+employerTangibleMoveableProperty.checkYourAnswersLabel = Give a brief description of the tangible moveable property
 employerTangibleMoveableProperty.error.length = The tangible moveable property must be 150 characters or fewer
-employerTangibleMoveableProperty.change.hidden = Give a brief description of the nature of the payment
+employerTangibleMoveableProperty.change.hidden = Give a brief description of the tangible moveable property
 
 memberPaymentNatureDescription.title = Give a brief description of the nature of the payment
 memberPaymentNatureDescription.heading = Give a brief description of the nature of the payment
