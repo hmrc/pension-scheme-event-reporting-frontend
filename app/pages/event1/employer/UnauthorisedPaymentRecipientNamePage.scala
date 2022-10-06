@@ -16,7 +16,6 @@
 
 package pages.event1.employer
 
-import controllers.event1.routes
 import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

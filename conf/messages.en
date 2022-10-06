@@ -397,6 +397,7 @@ reasonForTheOverpaymentOrWriteOff.other = Other
 reasonForTheOverpaymentOrWriteOff.checkYourAnswersLabel = What is the reason for the overpayment/write off?
 reasonForTheOverpaymentOrWriteOff.error.required = Select the reason for the overpayment/write off
 reasonForTheOverpaymentOrWriteOff.change.hidden = What is the reason for the overpayment/write off?
+
 refundOfContributions.title = Who received the refund?
 refundOfContributions.heading = Who received the refund?
 refundOfContributions.widowOrOrphan = A widow and/or orphan

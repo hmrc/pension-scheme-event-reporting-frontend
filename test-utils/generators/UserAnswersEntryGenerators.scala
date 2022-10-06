@@ -31,7 +31,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryUnauthorisedPaymentRecipientNameUserAnswersEntry: Arbitrary[(UnauthorisedPaymentRecipientNamePage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[UnauthorisedPaymentRecipientNamePage.type]
+        page <- arbitrary[UnauthorisedPaymentRecipientNamePage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
@@ -47,7 +47,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryRefundOfContributionsUserAnswersEntry: Arbitrary[(RefundOfContributionsPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[RefundOfContributionsPage.type]
+        page <- arbitrary[RefundOfContributionsPage.type]
         value <- arbitrary[RefundOfContributions].map(Json.toJson(_))
       } yield (page, value)
     }

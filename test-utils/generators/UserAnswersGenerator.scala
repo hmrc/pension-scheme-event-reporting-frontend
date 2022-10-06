@@ -31,30 +31,30 @@ trait UserAnswersGenerator extends TryValues {
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
     arbitrary[(RefundOfContributionsPage.type, JsValue)] ::
-    arbitrary[(ReasonForTheOverpaymentOrWriteOffPage.type, JsValue)] ::
-    arbitrary[(UnauthorisedPaymentRecipientNamePage.type, JsValue)] ::
-    arbitrary[(event1.member.ErrorDescriptionPage.type, JsValue)] ::
-    arbitrary[(BenefitsPaidEarlyPage.type, JsValue)] ::
-    arbitrary[(event1.employer.PaymentNaturePage.type, JsValue)] ::
-    arbitrary[(event1.employer.CompanyDetailsPage.type, JsValue)] ::
-    arbitrary[(event1.BenefitInKindBriefDescriptionPage.type, JsValue)] ::
-    arbitrary[(event1.SchemeUnAuthPaySurchargeMemberPage.type, JsValue)] ::
-    arbitrary[(event1.ValueOfUnauthorisedPaymentPage.type, JsValue)] ::
-    arbitrary[(event1.DoYouHoldSignedMandatePage.type, JsValue)] ::
-    arbitrary[(event1.MembersDetailsPage.type, JsValue)] ::
-    arbitrary[(event1.WhoReceivedUnauthPaymentPage.type, JsValue)] ::
-    arbitrary[(event1.HowAddUnauthPaymentPage.type, JsValue)] ::
-    arbitrary[(event1.PaymentNaturePage.type, JsValue)] ::
-    arbitrary[(SchemeWindUpDatePage.type, JsValue)] ::
-    arbitrary[(event18.Event18ConfirmationPage.type, JsValue)] ::
-    arbitrary[(EventSummaryPage.type, JsValue)] ::
-    arbitrary[(EventSelectionPage.type, JsValue)] ::
-    arbitrary[(TestIntPagePage.type, JsValue)] ::
-    arbitrary[(TestStringPagePage.type, JsValue)] ::
-    arbitrary[(TestRadioButtonPage.type, JsValue)] ::
-    arbitrary[(TestCheckBoxPage.type, JsValue)] ::
-    arbitrary[(TestDatePage.type, JsValue)] ::
-    Nil
+      arbitrary[(ReasonForTheOverpaymentOrWriteOffPage.type, JsValue)] ::
+      arbitrary[(UnauthorisedPaymentRecipientNamePage.type, JsValue)] ::
+      arbitrary[(event1.member.ErrorDescriptionPage.type, JsValue)] ::
+      arbitrary[(BenefitsPaidEarlyPage.type, JsValue)] ::
+      arbitrary[(event1.employer.PaymentNaturePage.type, JsValue)] ::
+      arbitrary[(event1.employer.CompanyDetailsPage.type, JsValue)] ::
+      arbitrary[(event1.BenefitInKindBriefDescriptionPage.type, JsValue)] ::
+      arbitrary[(event1.SchemeUnAuthPaySurchargeMemberPage.type, JsValue)] ::
+      arbitrary[(event1.ValueOfUnauthorisedPaymentPage.type, JsValue)] ::
+      arbitrary[(event1.DoYouHoldSignedMandatePage.type, JsValue)] ::
+      arbitrary[(event1.MembersDetailsPage.type, JsValue)] ::
+      arbitrary[(event1.WhoReceivedUnauthPaymentPage.type, JsValue)] ::
+      arbitrary[(event1.HowAddUnauthPaymentPage.type, JsValue)] ::
+      arbitrary[(event1.PaymentNaturePage.type, JsValue)] ::
+      arbitrary[(SchemeWindUpDatePage.type, JsValue)] ::
+      arbitrary[(event18.Event18ConfirmationPage.type, JsValue)] ::
+      arbitrary[(EventSummaryPage.type, JsValue)] ::
+      arbitrary[(EventSelectionPage.type, JsValue)] ::
+      arbitrary[(TestIntPagePage.type, JsValue)] ::
+      arbitrary[(TestStringPagePage.type, JsValue)] ::
+      arbitrary[(TestRadioButtonPage.type, JsValue)] ::
+      arbitrary[(TestCheckBoxPage.type, JsValue)] ::
+      arbitrary[(TestDatePage.type, JsValue)] ::
+      Nil
 
   implicit lazy val arbitraryUserData: Arbitrary[UserAnswers] = {
 
