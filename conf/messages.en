@@ -364,3 +364,12 @@ benefitInKindBriefDescription.hint = You can enter a maximum of 150 characters (
 benefitInKindBriefDescription.checkYourAnswersLabel = Give a brief description of the benefit in kind
 benefitInKindBriefDescription.error.length = You can enter a maximum of 150 characters (optional)
 benefitInKindBriefDescription.change.hidden = Give a brief description of the benefit in kind
+
+whoWasTheTransferMade.title = Who was the transfer made to?
+whoWasTheTransferMade.heading = Who was the transfer made to?
+whoWasTheTransferMade.anEmployerFinanced = An employer-financed retirement benefit scheme (EFRBS)
+whoWasTheTransferMade.nonRecognisedScheme = A non-recognised pension scheme which is not a qualifying overseas pension scheme
+whoWasTheTransferMade.other = Other
+whoWasTheTransferMade.checkYourAnswersLabel = Who was the transfer made to?
+whoWasTheTransferMade.error.required = Select who the transfer was made to
+whoWasTheTransferMade.change.hidden = WhoWasTheTransferMade

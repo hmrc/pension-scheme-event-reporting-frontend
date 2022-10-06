@@ -17,14 +17,23 @@
 package generators
 
 import models._
+import models.event1.member.WhoWasTheTransferMade
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
-import pages.event1.member.BenefitsPaidEarlyPage
+import pages.event1.member.{BenefitsPaidEarlyPage, WhoWasTheTransferMadePage}
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
+
+  implicit lazy val arbitraryWhoWasTheTransferMadeUserAnswersEntry: Arbitrary[(WhoWasTheTransferMadePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[pages.event1.member.WhoWasTheTransferMadePage.type]
+        value <- arbitrary[WhoWasTheTransferMade].map(Json.toJson(_))
+      } yield (page, value)
+    }
 
   implicit lazy val arbitraryErrorDescriptionUserAnswersEntry: Arbitrary[(pages.event1.member.ErrorDescriptionPage.type, JsValue)] =
     Arbitrary {

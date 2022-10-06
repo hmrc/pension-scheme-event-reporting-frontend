@@ -19,9 +19,8 @@ package pages.event1
 import controllers.event1.routes
 import models.UserAnswers
 import models.event1.PaymentNature
-import models.event1.PaymentNature.{BenefitInKind, ErrorCalcTaxFreeLumpSums}
+import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, TransferToNonRegPensionScheme}
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
-import models.event1.PaymentNature.BenefitsPaidEarly
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -40,6 +39,7 @@ case object PaymentNaturePage extends QuestionPage[PaymentNature] {
       case Some(BenefitInKind) => BenefitInKindBriefDescriptionPage
       case Some(ErrorCalcTaxFreeLumpSums) => pages.event1.member.ErrorDescriptionPage
       case Some(BenefitsPaidEarly) => pages.event1.member.BenefitsPaidEarlyPage
+      case Some(TransferToNonRegPensionScheme) => pages.event1.member.WhoWasTheTransferMadePage
       case _ => IndexPage
     }
   }

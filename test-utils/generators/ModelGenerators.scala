@@ -19,11 +19,17 @@ package generators
 import models._
 import models.event1.MembersDetails
 import models.event1.employer.CompanyDetails
+import models.event1.member.WhoWasTheTransferMade
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import uk.gov.hmrc.domain.Nino
 
 trait ModelGenerators {
+
+  implicit lazy val arbitraryWhoWasTheTransferMade: Arbitrary[WhoWasTheTransferMade] =
+    Arbitrary {
+      Gen.oneOf(event1.member.WhoWasTheTransferMade.values.toSeq)
+    }
 
   implicit lazy val arbitraryEmployerPaymentNature: Arbitrary[event1.employer.PaymentNature] =
     Arbitrary {
