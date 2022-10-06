@@ -19,6 +19,7 @@ package models.enumeration
 import models.UserAnswers
 import models.requests.DataRequest
 import pages.Page
+import pages.address.{ChooseAddressPage, EnterPostcodePage, ManualAddressPage}
 import pages.event1.employer.CompanyDetailsPage
 import play.api.mvc.{AnyContent, JavascriptLiteral, QueryStringBindable}
 import viewmodels.Message
@@ -47,6 +48,7 @@ abstract class WithJourneyTypeDetail(val eventType: EventType, val nodeName: Str
 
 object AddressJourneyType extends Enumerable.Implicits {
   private val entityTypeMessageKeyCompany = "entityType.theCompany"
+  private val entityTypeMessageKeyResidentialProperty = "entityType.theResidentialProperty"
   case object Event1EmployerAddressJourney extends WithJourneyTypeDetail(
     eventType = EventType.Event1,
     nodeName = "employerAddress",
@@ -57,29 +59,47 @@ object AddressJourneyType extends Enumerable.Implicits {
     }
   }
 
-  // TODO: Remove this dummy object when we have at least two instances of AddressJourneyType. If only one instance then we get compile errors.
-  case object DummyAddressJourney extends WithJourneyTypeDetail(
+  case object Event1MemberPropertyAddressJourney extends WithJourneyTypeDetail(
     eventType = EventType.Event1,
-    nodeName = "dummyNodeName",
-    entityTypeMessageKey = "entityTypeMessageKey") {
-    override def entityName(ua: UserAnswers): Message = Message("dummy name")
+    nodeName = "memberResidentialAddress",
+    entityTypeMessageKey = entityTypeMessageKeyResidentialProperty) {
+    override def entityName(ua: UserAnswers): Message = Message(entityTypeMessageKeyResidentialProperty)
+    override def heading(whichPage: Page)(implicit
+                                          request: DataRequest[AnyContent]): Message =
+      whichPage match {
+        case EnterPostcodePage(_) => Message("residentialAddress.enterPostcode.h1")
+        case ChooseAddressPage(_) => Message("residentialAddress.chooseAddress.h1")
+        case ManualAddressPage(_) => Message("residentialAddress.address.h1")
+      }
 
-    // Examples below as to how to override the header/ title message key on address pages if necessary:-
-    //
-    //    override def heading(whichPage: Page)(implicit
-    //                                            request: DataRequest[AnyContent]): Message = {
-    //      whichPage match {
-    //        case ManualAddressPage(_) => Message("another-message-keya", this.name(request.userAnswers))
-    //        case _ => super.heading(whichPage)
-    //      }
-    //    }
-    //
-    //    override def title(whichPage: String): Message = {
-    //      whichPage match {
-    //        case ManualAddressPage(_) => Message("another-message-keyb", this.name(request.userAnswers))
-    //        case _ => super.heading(whichPage)
-    //      }
-    //    }
+    override def title(whichPage: Page): Message =
+      whichPage match {
+        case EnterPostcodePage(_) => Message("residentialAddress.enterPostcode.title")
+        case ChooseAddressPage(_) => Message("residentialAddress.chooseAddress.title")
+        case ManualAddressPage(_) => Message("residentialAddress.address.title")
+      }
+  }
+
+  case object Event1EmployerPropertyAddressJourney extends WithJourneyTypeDetail(
+    eventType = EventType.Event1,
+    nodeName = "employerResidentialAddress",
+    entityTypeMessageKey = entityTypeMessageKeyResidentialProperty) {
+    override def entityName(ua: UserAnswers): Message = Message(entityTypeMessageKeyResidentialProperty)
+
+    override def heading(whichPage: Page)(implicit
+                                          request: DataRequest[AnyContent]): Message =
+      whichPage match {
+        case EnterPostcodePage(_) => Message("residentialAddress.enterPostcode.h1")
+        case ChooseAddressPage(_) => Message("residentialAddress.chooseAddress.h1")
+        case ManualAddressPage(_) => Message("residentialAddress.address.h1")
+      }
+
+    override def title(whichPage: Page): Message =
+      whichPage match {
+        case EnterPostcodePage(_) => Message("residentialAddress.enterPostcode.title")
+        case ChooseAddressPage(_) => Message("residentialAddress.chooseAddress.title")
+        case ManualAddressPage(_) => Message("residentialAddress.address.title")
+      }
   }
 
   private val values: List[AddressJourneyType] = List(Event1EmployerAddressJourney)

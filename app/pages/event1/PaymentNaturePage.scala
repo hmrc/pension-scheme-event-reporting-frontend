@@ -18,7 +18,9 @@ package pages.event1
 
 import controllers.event1.routes
 import models.UserAnswers
+import models.enumeration.AddressJourneyType.Event1MemberPropertyAddressJourney
 import models.event1.PaymentNature
+import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, OverpaymentOrWriteOff, ResidentialPropertyHeld}
 import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, RefundOfContributions}
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
@@ -38,7 +40,9 @@ case object PaymentNaturePage extends QuestionPage[PaymentNature] {
     answers.get(PaymentNaturePage) match {
       case Some(BenefitInKind) => BenefitInKindBriefDescriptionPage
       case Some(ErrorCalcTaxFreeLumpSums) => pages.event1.member.ErrorDescriptionPage
+      case Some(ResidentialPropertyHeld) => pages.address.EnterPostcodePage(Event1MemberPropertyAddressJourney)
       case Some(BenefitsPaidEarly) => pages.event1.member.BenefitsPaidEarlyPage
+      case Some(OverpaymentOrWriteOff) => pages.event1.member.ReasonForTheOverpaymentOrWriteOffPage
       case Some(RefundOfContributions) => pages.event1.member.RefundOfContributionsPage
       case _ => IndexPage
     }
