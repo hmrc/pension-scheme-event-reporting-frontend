@@ -137,3 +137,6 @@ POST       /new-report/event-1-benefits-paid-early             controllers.event
 
 GET        /new-report/event-1-transfer-recipient              controllers.event1.member.WhoWasTheTransferMadeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-1-transfer-recipient              controllers.event1.member.WhoWasTheTransferMadeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-1-scheme-details                  controllers.event1.member.SchemeDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-1-scheme-details                  controllers.event1.member.SchemeDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
