@@ -132,6 +132,9 @@ POST        /new-report/event-1-member-property-address               controller
 GET         /new-report/event-1-member-property-manual-address        controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney)
 POST        /new-report/event-1-member-property-manual-address        controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney)
 
+GET        /new-report/event-1-employer-recipient-name                        controllers.event1.employer.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-1-employer-recipient-name                        controllers.event1.employer.UnauthorisedPaymentRecipientNameController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
 GET         /new-report/event-1-employer-property-postcode               controllers.address.EnterPostcodeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney)
 POST        /new-report/event-1-employer-property-postcode               controllers.address.EnterPostcodeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney)
 
