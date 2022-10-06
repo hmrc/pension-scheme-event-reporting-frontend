@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package models.event1
+package models
 
-import play.api.libs.json.{Json, Format}
+import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDate
 
-case class PaymentDetails(paymentValue: BigDecimal, paymentDate: LocalDate)
+case class AFTQuarter(startDate: LocalDate, endDate: LocalDate)
 
-object PaymentDetails {
-  implicit val format: Format[PaymentDetails] = Json.format[PaymentDetails]
+object AFTQuarter {
+
+  implicit lazy val formats: Format[AFTQuarter] =
+    Json.format[AFTQuarter]
 }
-

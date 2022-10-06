@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package models.event1
-
-import play.api.libs.json.{Json, Format}
+package utils
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.concurrent.atomic.AtomicReference
 
-case class PaymentDetails(paymentValue: BigDecimal, paymentDate: LocalDate)
+object DateHelper {
 
-object PaymentDetails {
-  implicit val format: Format[PaymentDetails] = Json.format[PaymentDetails]
+  val dateFormatterDMY: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+
+  def formatDateDMY(date: LocalDate): String = date.format(dateFormatterDMY)
+
+  private val mockDate: AtomicReference[Option[LocalDate]] = new AtomicReference(None)
+
+  def today: LocalDate = mockDate.get().getOrElse(LocalDate.now())
 }
-

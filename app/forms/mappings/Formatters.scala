@@ -20,10 +20,16 @@ import models.Enumerable
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
+import java.text.DecimalFormat
+import scala.util.{Failure, Success, Try}
 import scala.util.control.Exception.nonFatalCatch
 
 trait Formatters {
 
+  private[mappings] val numericRegexp = """^-?(\-?)(\d*)(\.?)(\d*)$"""
+  private[mappings] val intRegexp = """^-?(\d*)$"""
+  private[mappings] val decimal2DPRegexp = """^-?(\d*\.\d{2})$"""
+  private[mappings] val decimalFormat = new DecimalFormat("0.00")
 
   private[mappings] val optionalStringFormatter: Formatter[Option[String]] = new Formatter[Option[String]] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] =
@@ -96,32 +102,33 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString)
     }
 
-  private[mappings] def doubleFormatter(nothingEnteredKey: String, notANumberKey: String, noDecimalsKey: String,
-                                        amountTooHighKey: String, args: Seq[String] = Seq.empty): Formatter[Double] =
-    new Formatter[Double] {
+  private[mappings] def bigDecimal2DPFormatter(nothingEnteredKey: String,
+                                               notANumberKey: String,
+                                               noDecimalsKey: String,
+                                               args: Seq[String] = Seq.empty): Formatter[BigDecimal] =
+    new Formatter[BigDecimal] {
 
-      val decimalRegexp = """^-?(\d*\.\d*)$"""
-      val maxAmount = 999999999.99
+      private val baseFormatter = stringFormatter(nothingEnteredKey)
 
-      private val baseFormatter = stringFormatter(nothingEnteredKey, args)
 
-      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Double] =
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BigDecimal] =
         baseFormatter
           .bind(key, data)
-          .right.map(_.replace(",", ""))
+          .right.map(_.replace(",", "").replace(" ", ""))
           .right.flatMap {
-          case s if s.matches(decimalRegexp) =>
+          case s if !s.matches(numericRegexp) =>
+            Left(Seq(FormError(key, notANumberKey, args)))
+          case s if !s.matches(noDecimalsKey) && !s.matches(intRegexp) =>
             Left(Seq(FormError(key, noDecimalsKey, args)))
-          case s if (s.toDouble > maxAmount) =>
-            Left(Seq(FormError(key, amountTooHighKey, args)))
           case s =>
-            nonFatalCatch
-              .either(s.toDouble)
-              .left.map(_ => Seq(FormError(key, notANumberKey, args)))
+            Try(BigDecimal(s)) match {
+              case Success(x) => Right(x)
+              case Failure(_) => Left(Seq(FormError(key, notANumberKey, args)))
+            }
         }
 
-      override def unbind(key: String, value: Double): Map[String, String] =
-        baseFormatter.unbind(key, value.toString)
+      override def unbind(key: String, value: BigDecimal): Map[String, String] =
+        baseFormatter.unbind(key, decimalFormat.format(value))
     }
 
 

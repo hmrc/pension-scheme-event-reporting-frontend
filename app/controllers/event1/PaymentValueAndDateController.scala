@@ -19,15 +19,18 @@ package controllers.event1
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.PaymentValueAndDateFormProvider
-import models.UserAnswers
+import models.{Quarters, UserAnswers}
 import models.enumeration.EventType
+import models.event1.PaymentDetails
 import pages.Waypoints
 import pages.event1.PaymentValueAndDatePage
-import play.api.i18n.I18nSupport
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event1.PaymentValueAndDateView
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,17 +42,30 @@ class PaymentValueAndDateController @Inject()(val controllerComponents: Messages
                                       view: PaymentValueAndDateView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
+  private def form(startDate: LocalDate)(implicit messages: Messages): Form[PaymentDetails] = {
+    val endDate = Quarters.getQuarter(startDate).endDate
+    formProvider(
+      startDate,
+      endDate
+    )
+  }
+
+
   private val eventType = EventType.Event1
 
+  // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now.
+  private val stubDate: LocalDate = LocalDate.now()
+
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(PaymentValueAndDatePage)).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(PaymentValueAndDatePage)) match {
+      case Some(value) => form(startDate = stubDate).fill(value)
+      case None => form(stubDate)
+    }
     Ok(view(preparedForm, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
-    implicit request =>
-      form.bindFromRequest().fold(
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
+      form(stubDate).bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
@@ -61,5 +77,4 @@ class PaymentValueAndDateController @Inject()(val controllerComponents: Messages
         }
       )
   }
-
 }

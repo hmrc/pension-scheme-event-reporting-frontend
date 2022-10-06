@@ -23,7 +23,8 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    govukDateInput: GovukDateInput
 )
 
 @(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
@@ -36,13 +37,37 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        <h1 class="govuk-heading-xl">@messages("paymentValueAndDate.title")</h1>
+
         @govukInput(
-            InputViewModel(
-                field = form("value"),
-                label = LabelViewModel(messages("paymentValueAndDate.heading")).asPageHeading()
+            Input(
+                id = "paymentValue",
+                name = "paymentValue",
+                label = Label(
+                isPageHeading = true,
+                classes = "govuk-label",
+                content = Text(
+                    messages("paymentValueAndDate.value.heading") // not quite right, class incorrect probably
+                )
+            ),
+                classes = "govuk-input--width-5",
+                spellcheck = Some(false),
+                prefix = Some(PrefixOrSuffix(content = Text("£")))
             )
-            .asNumeric()
-            .withWidth(Fixed10)
+        )
+
+        @govukDateInput(
+            DateInput(
+                id = "paymentDate",
+                namePrefix = Some("paymentDate"),
+                hint = Some(Hint(content = Text(messages("paymentValueAndDate.date.hint")))
+                ),
+                fieldset = Some(
+                    Fieldset(
+                        legend = Some(Legend(content = Text(messages("paymentValueAndDate.date.heading")), classes = "govuk-fieldset__legend", isPageHeading = false)) // again change class
+                    )
+                )
+            )
         )
 
         @govukButton(
