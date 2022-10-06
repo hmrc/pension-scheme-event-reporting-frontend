@@ -18,15 +18,12 @@ package generators
 
 import org.scalacheck.Arbitrary
 import pages._
-import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage}
 import pages.event1.{employer, member}
-import pages.event1.member.{BenefitsPaidEarlyPage, MemberPaymentNatureDescriptionPage, MemberTangibleMoveablePropertyPage}
-import pages.event1.member
-import pages.event1.member.{BenefitsPaidEarlyPage, ReasonForTheOverpaymentOrWriteOffPage}
+import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
+import pages.event1.member.{BenefitsPaidEarlyPage, ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage, MemberTangibleMoveablePropertyPage}
 import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
-
   implicit lazy val arbitraryEmployerPaymentNatureDescriptionPage: Arbitrary[EmployerPaymentNatureDescriptionPage.type] =
     Arbitrary(employer.EmployerPaymentNatureDescriptionPage)
 
@@ -39,8 +36,14 @@ trait PageGenerators {
   implicit lazy val arbitraryMemberTangibleMoveablePropertyPage: Arbitrary[MemberTangibleMoveablePropertyPage.type] =
     Arbitrary(member.MemberTangibleMoveablePropertyPage)
 
+  implicit lazy val arbitraryUnauthorisedPaymentRecipientNamePage: Arbitrary[UnauthorisedPaymentRecipientNamePage.type] =
+    Arbitrary(employer.UnauthorisedPaymentRecipientNamePage)
+
   implicit lazy val arbitraryReasonForTheOverpaymentOrWriteOffPage: Arbitrary[ReasonForTheOverpaymentOrWriteOffPage.type] =
     Arbitrary(member.ReasonForTheOverpaymentOrWriteOffPage)
+
+  implicit lazy val arbitraryRefundOfContributionsPage: Arbitrary[RefundOfContributionsPage.type] =
+    Arbitrary(member.RefundOfContributionsPage)
 
   implicit lazy val arbitraryErrorDescriptionPage: Arbitrary[event1.member.ErrorDescriptionPage.type] =
     Arbitrary(event1.member.ErrorDescriptionPage)

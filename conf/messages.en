@@ -409,6 +409,14 @@ memberResidentialAddress.chooseAddress.h1 = What is the address of the residenti
 memberResidentialAddress.address.title = What is the address of the residential property?
 memberResidentialAddress.address.h1 = What is the address of the residential property?
 
+unauthorisedPaymentRecipientName.title = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.heading = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.checkYourAnswersLabel = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.error.invalid = The recipient name must only include letters, spaces, ampersands, grave accents, apostrophes, backslashes, full stops and carets
+unauthorisedPaymentRecipientName.error.length = The company or organisation’s name must be 160 characters or fewer
+unauthorisedPaymentRecipientName.change.hidden = Change the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.hint = Recipient name (optional)
+
 reasonForTheOverpaymentOrWriteOff.title = What is the reason for the overpayment/write off?
 reasonForTheOverpaymentOrWriteOff.heading = What is the reason for the overpayment/write off?
 reasonForTheOverpaymentOrWriteOff.deathOfMember = Death of member
@@ -418,3 +426,11 @@ reasonForTheOverpaymentOrWriteOff.other = Other
 reasonForTheOverpaymentOrWriteOff.checkYourAnswersLabel = What is the reason for the overpayment/write off?
 reasonForTheOverpaymentOrWriteOff.error.required = Select the reason for the overpayment/write off
 reasonForTheOverpaymentOrWriteOff.change.hidden = What is the reason for the overpayment/write off?
+
+refundOfContributions.title = Who received the refund?
+refundOfContributions.heading = Who received the refund?
+refundOfContributions.widowOrOrphan = A widow and/or orphan
+refundOfContributions.other = Other
+refundOfContributions.checkYourAnswersLabel = Who received the refund?
+refundOfContributions.error.required = Select who received the refund
+refundOfContributions.change.hidden = Who received the refund?

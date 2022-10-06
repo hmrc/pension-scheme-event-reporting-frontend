@@ -22,8 +22,7 @@ import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage}
-import pages.event1.member.{BenefitsPaidEarlyPage, MemberPaymentNatureDescriptionPage, MemberTangibleMoveablePropertyPage}
-import pages.event1.member.ReasonForTheOverpaymentOrWriteOffPage
+import pages.event1.member.{BenefitsPaidEarlyPage, MemberPaymentNatureDescriptionPage, MemberTangibleMoveablePropertyPage, ReasonForTheOverpaymentOrWriteOffPage}
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
@@ -32,7 +31,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryEmployerPaymentNatureDescriptionUserAnswersEntry: Arbitrary[(EmployerPaymentNatureDescriptionPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[EmployerPaymentNatureDescriptionPage.type]
+        page <- arbitrary[EmployerPaymentNatureDescriptionPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
@@ -40,7 +39,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryMemberPaymentNatureDescriptionUserAnswersEntry: Arbitrary[(MemberPaymentNatureDescriptionPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[MemberPaymentNatureDescriptionPage.type]
+        page <- arbitrary[MemberPaymentNatureDescriptionPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
@@ -48,7 +47,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryEmployerTangibleMoveablePropertyUserAnswersEntry: Arbitrary[(EmployerTangibleMoveablePropertyPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[EmployerTangibleMoveablePropertyPage.type]
+        page <- arbitrary[EmployerTangibleMoveablePropertyPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
@@ -56,7 +55,15 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryMemberTangibleMoveablePropertyUserAnswersEntry: Arbitrary[(MemberTangibleMoveablePropertyPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[MemberTangibleMoveablePropertyPage.type]
+        page <- arbitrary[MemberTangibleMoveablePropertyPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryUnauthorisedPaymentRecipientNameUserAnswersEntry: Arbitrary[(UnauthorisedPaymentRecipientNamePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[UnauthorisedPaymentRecipientNamePage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
@@ -66,6 +73,14 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       for {
         page <- arbitrary[ReasonForTheOverpaymentOrWriteOffPage.type]
         value <- arbitrary[ReasonForTheOverpaymentOrWriteOff].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryRefundOfContributionsUserAnswersEntry: Arbitrary[(RefundOfContributionsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[RefundOfContributionsPage.type]
+        value <- arbitrary[RefundOfContributions].map(Json.toJson(_))
       } yield (page, value)
     }
 
