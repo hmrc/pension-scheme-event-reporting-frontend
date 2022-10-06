@@ -151,3 +151,6 @@ POST        /new-report/event-1-overpayment-details                     controll
 
 GET         /new-report/event-1-refund-details                          controllers.event1.member.RefundOfContributionsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-refund-details                          controllers.event1.member.RefundOfContributionsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-1-member-recipient-name                    controllers.event1.member.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-1-member-recipient-name                    controllers.event1.member.UnauthorisedPaymentRecipientNameController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

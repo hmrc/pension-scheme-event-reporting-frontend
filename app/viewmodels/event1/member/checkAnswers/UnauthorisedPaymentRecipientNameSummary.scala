@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package viewmodels.event1.checkAnswers
+package viewmodels.event1.member.checkAnswers
 
 import models.UserAnswers
-import pages.event1.employer.UnauthorisedPaymentRecipientNamePage
 import pages.{CheckAnswersPage, Waypoints}
+import pages.event1.member.UnauthorisedPaymentRecipientNamePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
