@@ -17,9 +17,11 @@
 package forms.event1.employer
 
 import forms.behaviours.StringFieldBehaviours
+import forms.mappings.Constraints
 import play.api.data.FormError
+import wolfendale.scalacheck.regexp.RegexpGen
 
-class UnauthorisedPaymentRecipientNameFormProviderSpec extends StringFieldBehaviours {
+class UnauthorisedPaymentRecipientNameFormProviderSpec extends StringFieldBehaviours with Constraints {
 
   private val invalidKey = "unauthorisedPaymentRecipientName.error.invalid"
   private val lengthKey = "unauthorisedPaymentRecipientName.error.length"
@@ -31,12 +33,11 @@ class UnauthorisedPaymentRecipientNameFormProviderSpec extends StringFieldBehavi
 
     val fieldName = "value"
 
-    "bind valid data" in {
-      val dataItem = "abc &'`\\.^"
-      val result = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
-      result.value.value mustBe dataItem
-      result.errors mustBe empty
-    }
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      RegexpGen.from(regexPersonOrOrgName)
+    )
 
     "return errors when invalid data" in {
       val dataItem = "-*%$£"

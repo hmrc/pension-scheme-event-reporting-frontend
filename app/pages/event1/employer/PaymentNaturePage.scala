@@ -18,9 +18,11 @@ package pages.event1.employer
 
 import controllers.event1.employer.routes
 import models.UserAnswers
+import models.enumeration.AddressJourneyType.Event1EmployerPropertyAddressJourney
 import models.event1.employer.PaymentNature
 import models.event1.employer.PaymentNature.CourtOrder
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import models.event1.employer.PaymentNature.ResidentialProperty
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -36,6 +38,7 @@ case object PaymentNaturePage extends QuestionPage[PaymentNature] {
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(PaymentNaturePage) match {
       case Some(CourtOrder) => UnauthorisedPaymentRecipientNamePage
+      case Some(ResidentialProperty) => pages.address.EnterPostcodePage(Event1EmployerPropertyAddressJourney)
       case _ => IndexPage
     }
   }
