@@ -21,8 +21,8 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
-import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage}
-import pages.event1.member.{BenefitsPaidEarlyPage, ReasonForTheOverpaymentOrWriteOffPage, MemberPaymentNatureDescriptionPage, MemberTangibleMoveablePropertyPage}
+import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
+import pages.event1.member._
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 

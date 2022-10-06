@@ -44,6 +44,7 @@ class MemberTangibleMoveablePropertyControllerSpec extends SpecBase with BeforeA
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.MemberTangibleMoveablePropertyController.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.MemberTangibleMoveablePropertyController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](

@@ -25,7 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object EmployerTangibleMoveablePropertySummary  {
+object EmployerTangibleMoveablePropertySummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
@@ -33,8 +33,8 @@ object EmployerTangibleMoveablePropertySummary  {
       answer =>
 
         SummaryListRowViewModel(
-          key     = "employerTangibleMoveableProperty.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key = "employerTangibleMoveableProperty.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", EmployerTangibleMoveablePropertyPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("employerTangibleMoveableProperty.change.hidden"))

@@ -16,10 +16,10 @@
 
 package forms.event1
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class MemberPaymentNatureDescriptionFormProvider @Inject() extends Mappings {
 
@@ -27,5 +27,5 @@ class MemberPaymentNatureDescriptionFormProvider @Inject() extends Mappings {
     Form(
       "value" -> optionalText()
         .verifying(maxLength(150, "memberPaymentNatureDescription.error.length"))
-  )
+    )
 }

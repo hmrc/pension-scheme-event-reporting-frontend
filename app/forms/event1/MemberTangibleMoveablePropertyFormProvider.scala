@@ -16,10 +16,10 @@
 
 package forms.event1
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class MemberTangibleMoveablePropertyFormProvider @Inject() extends Mappings {
 
@@ -27,5 +27,5 @@ class MemberTangibleMoveablePropertyFormProvider @Inject() extends Mappings {
     Form(
       "value" -> optionalText()
         .verifying(maxLength(150, "memberTangibleMoveableProperty.error.length"))
-  )
+    )
 }

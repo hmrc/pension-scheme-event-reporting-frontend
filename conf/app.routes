@@ -132,6 +132,9 @@ POST        /new-report/event-1-member-property-address                    contr
 GET         /new-report/event-1-member-property-manual-address             controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney)
 POST        /new-report/event-1-member-property-manual-address             controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney)
 
+GET         /new-report/event-1-employer-recipient-name                    controllers.event1.employer.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-employer-recipient-name                    controllers.event1.employer.UnauthorisedPaymentRecipientNameController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
 GET         /new-report/event-1-employer-property-postcode                 controllers.address.EnterPostcodeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney)
 POST        /new-report/event-1-employer-property-postcode                 controllers.address.EnterPostcodeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney)
 
@@ -140,9 +143,6 @@ POST        /new-report/event-1-employer-property-address                  contr
 
 GET         /new-report/event-1-employer-property-manual-address           controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney)
 POST        /new-report/event-1-employer-property-manual-address           controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney)
-
-GET         /new-report/event-1-employer-recipient-name                    controllers.event1.employer.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /new-report/event-1-employer-recipient-name                    controllers.event1.employer.UnauthorisedPaymentRecipientNameController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-1-overpayment-details                        controllers.event1.member.ReasonForTheOverpaymentOrWriteOffController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-overpayment-details                        controllers.event1.member.ReasonForTheOverpaymentOrWriteOffController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
@@ -161,6 +161,3 @@ POST        /new-report/event-1-member-payment-description                 contr
 
 GET         /new-report/event-1-employer-payment-description               controllers.event1.EmployerPaymentNatureDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-employer-payment-description               controllers.event1.EmployerPaymentNatureDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
-
-GET         /new-report/event-1-employer-payment-nature                    controllers.event1.employer.PaymentNatureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /new-report/event-1-employer-payment-nature                    controllers.event1.employer.PaymentNatureController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

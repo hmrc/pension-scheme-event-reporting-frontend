@@ -32,18 +32,18 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EmployerTangibleMoveablePropertyController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                           identify: IdentifierAction,
-                                           getData: DataRetrievalAction,
-                                           userAnswersCacheConnector: UserAnswersCacheConnector,
-                                           formProvider: EmployerTangibleMoveablePropertyFormProvider,
-                                           view: EmployerTangibleMoveablePropertyView
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                           identify: IdentifierAction,
+                                                           getData: DataRetrievalAction,
+                                                           userAnswersCacheConnector: UserAnswersCacheConnector,
+                                                           formProvider: EmployerTangibleMoveablePropertyFormProvider,
+                                                           view: EmployerTangibleMoveablePropertyView
+                                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(EmployerTangibleMoveablePropertyPage)).fold(form){v => form.fill(Some(v))}
+    val preparedForm = request.userAnswers.flatMap(_.get(EmployerTangibleMoveablePropertyPage)).fold(form) { v => form.fill(Some(v)) }
     Ok(view(preparedForm, waypoints))
   }
 

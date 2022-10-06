@@ -16,14 +16,12 @@
 
 @import controllers.event1.routes
 
-@import viewmodels.InputWidth._
-
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukTextarea: GovukTextarea,
-    govukButton: GovukButton
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukTextarea: GovukTextarea,
+        govukButton: GovukButton
 )
 
 @(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)

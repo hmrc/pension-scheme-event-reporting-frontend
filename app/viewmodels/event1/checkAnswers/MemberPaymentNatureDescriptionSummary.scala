@@ -25,7 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MemberPaymentNatureDescriptionSummary  {
+object MemberPaymentNatureDescriptionSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
@@ -33,8 +33,8 @@ object MemberPaymentNatureDescriptionSummary  {
       answer =>
 
         SummaryListRowViewModel(
-          key     = "memberPaymentNatureDescription.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key = "memberPaymentNatureDescription.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", MemberPaymentNatureDescriptionPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("memberPaymentNatureDescription.change.hidden"))

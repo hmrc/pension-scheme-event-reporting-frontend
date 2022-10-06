@@ -17,12 +17,12 @@
 package generators
 
 import models._
-import models.event1.member.ReasonForTheOverpaymentOrWriteOff
+import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
-import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage}
-import pages.event1.member.{BenefitsPaidEarlyPage, MemberPaymentNatureDescriptionPage, MemberTangibleMoveablePropertyPage, ReasonForTheOverpaymentOrWriteOffPage}
+import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
+import pages.event1.member._
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 

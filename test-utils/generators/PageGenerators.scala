@@ -18,9 +18,9 @@ package generators
 
 import org.scalacheck.Arbitrary
 import pages._
-import pages.event1.{employer, member}
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
-import pages.event1.member.{BenefitsPaidEarlyPage, ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage, MemberTangibleMoveablePropertyPage}
+import pages.event1.member._
+import pages.event1.{employer, member}
 import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {

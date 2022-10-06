@@ -44,6 +44,7 @@ class EmployerTangibleMoveablePropertyControllerSpec extends SpecBase with Befor
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.EmployerTangibleMoveablePropertyController.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.EmployerTangibleMoveablePropertyController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](

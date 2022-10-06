@@ -44,6 +44,7 @@ class MemberPaymentNatureDescriptionControllerSpec extends SpecBase with BeforeA
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.MemberPaymentNatureDescriptionController.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.MemberPaymentNatureDescriptionController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](

@@ -20,9 +20,8 @@ import controllers.event1.employer.routes
 import models.UserAnswers
 import models.enumeration.AddressJourneyType.Event1EmployerPropertyAddressJourney
 import models.event1.employer.PaymentNature
-import models.event1.employer.PaymentNature.{Other, TangibleMoveableProperty, CourtOrder}
+import models.event1.employer.PaymentNature.{CourtOrder, Other, ResidentialProperty, TangibleMoveableProperty}
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
-import models.event1.employer.PaymentNature.ResidentialProperty
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

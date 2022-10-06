@@ -44,6 +44,7 @@ class EmployerPaymentNatureDescriptionControllerSpec extends SpecBase with Befor
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.EmployerPaymentNatureDescriptionController.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.EmployerPaymentNatureDescriptionController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](

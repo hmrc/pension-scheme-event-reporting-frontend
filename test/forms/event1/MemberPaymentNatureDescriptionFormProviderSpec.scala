@@ -42,5 +42,11 @@ class MemberPaymentNatureDescriptionFormProviderSpec extends StringFieldBehaviou
       maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
+
+    "bind empty data" in {
+      val result = form.bind(Map(fieldName -> "")).apply(fieldName)
+      result.value.value mustBe ""
+      result.errors mustBe empty
+    }
   }
 }
