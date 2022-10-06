@@ -325,6 +325,7 @@ address.postCode = Postcode (if UK)
 address.country = Country
 
 entityType.theCompany = the company
+entityType.theResidentialProperty = the residential property
 
 paymentNature.title = Nature of the payment or deemed payment
 paymentNature.heading = Nature of the payment or deemed payment
@@ -365,11 +366,14 @@ benefitInKindBriefDescription.checkYourAnswersLabel = Give a brief description o
 benefitInKindBriefDescription.error.length = You can enter a maximum of 150 characters (optional)
 benefitInKindBriefDescription.change.hidden = Give a brief description of the benefit in kind
 
-memberResidentialAddress.enterPostcode.entityName = the residential property
+residentialAddress.enterPostcode.title = What is the postcode of the residential property?
+residentialAddress.enterPostcode.h1 = What is the postcode of the residential property?
 
-memberResidentialAddress.enterPostcode.title = What is the postcode of the residential property?
-memberResidentialAddress.enterPostcode.h1 = What is the postcode of the residential property?
+residentialAddress.chooseAddress.title = What is the address of the residential property?
+residentialAddress.chooseAddress.h1 = What is the address of the residential property?
 
+residentialAddress.address.title = What is the address of the residential property?
+residentialAddress.address.h1 = What is the address of the residential property?
 memberResidentialAddress.chooseAddress.title = What is the address of the residential property?
 memberResidentialAddress.chooseAddress.h1 = What is the address of the residential property?
 
