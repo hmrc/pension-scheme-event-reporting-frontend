@@ -16,7 +16,8 @@
 
 package models.enumeration
 
-import play.api.libs.json.{JsError, JsString, JsSuccess, Reads}
+import models.EventSelection.values
+import models.{Enumerable, EventSelection}
 import play.api.mvc.QueryStringBindable
 
 sealed trait EventType
@@ -72,17 +73,6 @@ object EventType extends Enumerable.Implicits {
 
   def getEventType(s: String): Option[EventType] = values.find(_.toString == s)
 
-//  implicit def reads[EventType](implicit ev: Enumerable[EventType]): Reads[EventType] = {
-//    Reads {
-//      case JsString(str) =>
-//        ev.withName(str).map {
-//          s => JsSuccess(s)
-//        }.getOrElse(JsError("error.invalid"))
-//      case _ =>
-//        JsError("error.invalid")
-//    }
-//  }
-
   implicit def queryStringBindable(implicit stringBinder: QueryStringBindable[String]): QueryStringBindable[EventType] =
     new QueryStringBindable[EventType] {
 
@@ -98,4 +88,7 @@ object EventType extends Enumerable.Implicits {
       override def unbind(key: String, value: EventType): String =
         stringBinder.unbind(key, value.toString)
     }
+
+  implicit val enumerable: Enumerable[EventType] =
+    Enumerable(values.map(v => v.toString -> v): _*)
 }
