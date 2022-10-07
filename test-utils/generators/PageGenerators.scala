@@ -36,6 +36,9 @@ trait PageGenerators {
   implicit lazy val arbitraryMemberTangibleMoveablePropertyPage: Arbitrary[MemberTangibleMoveablePropertyPage.type] =
     Arbitrary(member.MemberTangibleMoveablePropertyPage)
 
+  implicit lazy val arbitraryMemberUnauthorisedPaymentRecipientNamePage: Arbitrary[event1.member.UnauthorisedPaymentRecipientNamePage.type] =
+    Arbitrary(event1.member.UnauthorisedPaymentRecipientNamePage)
+
   implicit lazy val arbitraryUnauthorisedPaymentRecipientNamePage: Arbitrary[UnauthorisedPaymentRecipientNamePage.type] =
     Arbitrary(employer.UnauthorisedPaymentRecipientNamePage)
 
