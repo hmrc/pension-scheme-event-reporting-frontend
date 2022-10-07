@@ -26,5 +26,6 @@ class SchemeDetailsFormProvider @Inject() extends Mappings {
   def apply(): Form[Option[String]] =
     Form(
       "value" -> optionalText()
+        .verifying(maxLength(150, "schemeDetails.error.length"))
     )
 }

@@ -18,11 +18,11 @@ package forms.event1.member
 
 import forms.SchemeDetails.SchemeDetailsFormProvider
 import forms.behaviours.StringFieldBehaviours
-import play.api.data.FormError
 
 class SchemeDetailsFormProviderSpec extends StringFieldBehaviours {
 
   private val validData = Some("abc")
+  private val maxLength = 150
 
   private val form = new SchemeDetailsFormProvider()()
 
@@ -30,11 +30,11 @@ class SchemeDetailsFormProviderSpec extends StringFieldBehaviours {
 
     val fieldName = "value"
 
-    "bind optional data" in {
-      val result = form.bind(Map(fieldName -> validData.value)).apply(fieldName)
-      result.value mustBe validData
-      result.errors mustBe empty
-    }
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      stringsWithMaxLength(maxLength)
+    )
 
     "bind empty data" in {
       val result = form.bind(Map(fieldName -> "")).apply(fieldName)

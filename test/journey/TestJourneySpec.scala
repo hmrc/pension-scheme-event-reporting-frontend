@@ -23,20 +23,18 @@ import models.TestCheckBox.writes
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersDetails
-import models.event1.PaymentNature.ErrorCalcTaxFreeLumpSums
-import models.event1.PaymentNature.BenefitInKind
-import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly}
+import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, TransferToNonRegPensionScheme}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
+import models.event1.member.WhoWasTheTransferMade.{AnEmployerFinanced, Other}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.event1._
 import pages.event1.employer.CompanyDetailsPage
-import pages.event1.member.ErrorDescriptionPage
+import pages.event1.member.{BenefitsPaidEarlyPage, ErrorDescriptionPage, SchemeDetailsPage, WhoWasTheTransferMadePage}
 import pages.event1.{WhatYouWillNeedPage, _}
 import pages.event1.employer.CompanyDetailsPage
 import pages.event1._
-import pages.event1.member.BenefitsPaidEarlyPage
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckYourAnswersPage, EventSelectionPage, IndexPage}
@@ -220,4 +218,15 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         pageMustBe(employer.PaymentNaturePage)
       )
   }
+
+  "test navigation to event1 Transfer to non-registered pension scheme journey for member" in {
+    startingFrom(pages.event1.PaymentNaturePage)
+      .run(
+        submitAnswer(PaymentNaturePage, TransferToNonRegPensionScheme),
+        submitAnswer(WhoWasTheTransferMadePage, AnEmployerFinanced),
+        pageMustBe(pages.event1.member.SchemeDetailsPage)
+      )
+
+  }
+
 }

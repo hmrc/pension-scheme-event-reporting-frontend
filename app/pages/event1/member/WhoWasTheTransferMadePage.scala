@@ -17,8 +17,10 @@
 package pages.event1.member
 
 import controllers.event1.member.routes
+import models.UserAnswers
 import models.event1.member.WhoWasTheTransferMade
-import pages.{QuestionPage, Waypoints}
+import models.event1.member.WhoWasTheTransferMade.{AnEmployerFinanced, NonRecognisedScheme, Other}
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -30,4 +32,13 @@ case object WhoWasTheTransferMadePage extends QuestionPage[WhoWasTheTransferMade
 
   override def route(waypoints: Waypoints): Call =
     routes.WhoWasTheTransferMadeController.onPageLoad(waypoints)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    answers.get(WhoWasTheTransferMadePage) match {
+      case Some(AnEmployerFinanced) => SchemeDetailsPage
+      case Some(NonRecognisedScheme) => SchemeDetailsPage
+      case Some(Other) => SchemeDetailsPage
+      case _ => IndexPage
+    }
+  }
 }

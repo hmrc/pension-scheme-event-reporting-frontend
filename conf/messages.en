@@ -380,5 +380,5 @@ schemeDetails.schemeName = Scheme name (optional)
 schemeDetails.reference = Reference (optional)
 schemeDetails.checkYourAnswersLabel = Scheme details
 schemeDetails.error.required = Enter Scheme details
-schemeDetails.error.length = Scheme details must be 500 characters or less
+schemeDetails.error.length = Scheme details must be 150 characters or less
 schemeDetails.change.hidden = Scheme details
