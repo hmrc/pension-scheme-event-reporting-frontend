@@ -42,24 +42,24 @@
             InputViewModel(
                 field = form("loanAmount"),
                 label = Label(
-                    classes = "govuk-label",
                     content = Text(messages("loanDetails.loanAmount.heading"))
                 )
             )
             .withCssClass("govuk-input--width-5")
             .withPrefix(PrefixOrSuffix(content = Text("£")))
+            .asNumeric()
         )
 
         @govukInput(
             InputViewModel(
                 field = form("fundValue"),
                 label = Label(
-                    classes = "govuk-label",
                     content = Text(messages("loanDetails.fundValue.heading"))
                 )
             )
             .withCssClass("govuk-input--width-5")
             .withPrefix(PrefixOrSuffix(content = Text("£")))
+            .asNumeric()
         )
 
         @govukButton(
