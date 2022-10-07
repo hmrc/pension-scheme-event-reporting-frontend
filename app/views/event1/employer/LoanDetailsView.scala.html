@@ -36,21 +36,17 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-l">@messages("loanDetails.heading")</h1>
-
-
+        <h1 class="govuk-heading-xl">@messages("loanDetails.heading")</h1>
 
         @govukInput(
             InputViewModel(
                 field = form("loanAmount"),
                 label = Label(
-                    isPageHeading = true,
                     classes = "govuk-label",
                     content = Text(messages("loanDetails.loanAmount.heading"))
                 )
             )
-            .withWidth(TwoThirds)
-            .withCssClass("govuk-input--width-5")
+            .withWidth(OneQuarter)
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
@@ -58,13 +54,11 @@
             InputViewModel(
                 field = form("fundValue"),
                 label = Label(
-                    isPageHeading = true,
                     classes = "govuk-label",
                     content = Text(messages("loanDetails.fundValue.heading"))
                 )
             )
-            .withWidth(TwoThirds)
-            .withCssClass("govuk-input--width-5")
+            .withWidth(OneQuarter)
             .withPrefix(PrefixOrSuffix(content = Text("£")))
         )
 
