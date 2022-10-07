@@ -37,37 +37,24 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-xl">@messages("paymentValueAndDate.title")</h1>
+        <h1 class="govuk-heading-xl">@messages("paymentValueAndDate.heading")</h1>
 
         @govukInput(
-            Input(
-                id = "paymentValue",
-                name = "paymentValue",
-                label = Label(
-                isPageHeading = true,
-                classes = "govuk-label",
-                content = Text(
-                    messages("paymentValueAndDate.value.heading")
-                )
-            ),
-                classes = "govuk-input--width-5",
-                spellcheck = Some(false),
-                prefix = Some(PrefixOrSuffix(content = Text("£")))
+            InputViewModel(
+                field = form("paymentValue"),
+                label = Label(content = Text(messages("paymentValueAndDate.value.heading")))
             )
+            .withCssClass("govuk-input--width-5")
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
+            .asNumeric()
         )
 
         @govukDateInput(
-            DateInput(
-                id = "paymentDate",
-                namePrefix = Some("paymentDate"),
-                hint = Some(Hint(content = Text(messages("paymentValueAndDate.date.hint")))
-                ),
-                fieldset = Some(
-                    Fieldset(
-                        legend = Some(Legend(content = Text(messages("paymentValueAndDate.date.heading")), classes = "govuk-fieldset__legend", isPageHeading = false))
-                    )
-                )
+            DateViewModel(
+                field = form("paymentDate"),
+                legend = Legend(content = Text(messages("paymentValueAndDate.date.heading")))
             )
+            .withHint(Hint(content = Text(messages("paymentValueAndDate.date.hint"))))
         )
 
         @govukButton(
