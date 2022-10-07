@@ -110,7 +110,6 @@ trait Formatters {
 
       private val baseFormatter = stringFormatter(nothingEnteredKey)
 
-
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BigDecimal] =
         baseFormatter
           .bind(key, data)
@@ -118,7 +117,7 @@ trait Formatters {
           .right.flatMap {
           case s if !s.matches(numericRegexp) =>
             Left(Seq(FormError(key, notANumberKey, args)))
-          case s if !s.matches(noDecimalsKey) && !s.matches(intRegexp) =>
+          case s if !s.matches(noDecimalsKey) && !s.matches(decimal2DPRegexp) =>
             Left(Seq(FormError(key, noDecimalsKey, args)))
           case s =>
             Try(BigDecimal(s)) match {

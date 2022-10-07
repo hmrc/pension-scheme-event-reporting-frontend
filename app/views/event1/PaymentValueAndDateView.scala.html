@@ -47,7 +47,7 @@
                 isPageHeading = true,
                 classes = "govuk-label",
                 content = Text(
-                    messages("paymentValueAndDate.value.heading") // not quite right, class incorrect probably
+                    messages("paymentValueAndDate.value.heading")
                 )
             ),
                 classes = "govuk-input--width-5",
@@ -64,7 +64,7 @@
                 ),
                 fieldset = Some(
                     Fieldset(
-                        legend = Some(Legend(content = Text(messages("paymentValueAndDate.date.heading")), classes = "govuk-fieldset__legend", isPageHeading = false)) // again change class
+                        legend = Some(Legend(content = Text(messages("paymentValueAndDate.date.heading")), classes = "govuk-fieldset__legend", isPageHeading = false))
                     )
                 )
             )
