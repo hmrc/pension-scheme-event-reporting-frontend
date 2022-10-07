@@ -154,3 +154,15 @@ POST        /new-report/event-1-refund-details                          controll
 
 GET        /new-report/event-1-member-recipient-name                    controllers.event1.member.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-1-member-recipient-name                    controllers.event1.member.UnauthorisedPaymentRecipientNameController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-1-member-tangible-moveable-property          controllers.event1.MemberTangibleMoveablePropertyController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-member-tangible-moveable-property          controllers.event1.MemberTangibleMoveablePropertyController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-1-employer-tangible-moveable-property        controllers.event1.EmployerTangibleMoveablePropertyController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-employer-tangible-moveable-property        controllers.event1.EmployerTangibleMoveablePropertyController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-1-member-payment-description                 controllers.event1.MemberPaymentNatureDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-member-payment-description                 controllers.event1.MemberPaymentNatureDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-1-employer-payment-description               controllers.event1.EmployerPaymentNatureDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-employer-payment-description               controllers.event1.EmployerPaymentNatureDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
