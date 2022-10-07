@@ -51,7 +51,7 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validValue = LoanDetails(BigDecimal(12.12), BigDecimal(13.13))
+  private val validValue = LoanDetails(Some(BigDecimal(12.12)), Some(BigDecimal(13.13)))
 
   override def beforeEach: Unit = {
     super.beforeEach
@@ -125,7 +125,10 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
+            "loanAmount" -> "12.4",
+            "fundValue" -> "13.1"
+          )
 
         val view = application.injector.instanceOf[LoanDetailsView]
         val boundForm = form.bind(Map("value" -> ""))
@@ -133,7 +136,6 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

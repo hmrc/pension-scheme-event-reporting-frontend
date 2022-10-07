@@ -72,7 +72,7 @@ trait ModelGenerators {
       val list = for {
         loanAmount <- Seq(BigDecimal(12,33), BigDecimal(33.44))
         fundValue <- Seq(BigDecimal(12,33), BigDecimal(33.44))
-      } yield LoanDetails(loanAmount, fundValue)
+      } yield LoanDetails(Some(loanAmount), Some(fundValue))
 
       Gen.oneOf(list)
     }

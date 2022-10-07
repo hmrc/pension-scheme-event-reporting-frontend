@@ -132,6 +132,42 @@ trait Formatters {
     }
 
 
+  private[mappings] def optionBigDecimal2DPFormatter(invalidKey: String,
+                                                     decimalKey: String,
+                                                     args: Seq[String] = Seq.empty): Formatter[Option[BigDecimal]] =
+    new Formatter[Option[BigDecimal]] {
+
+      private val baseFormatter: Formatter[Option[String]] = optionalStringFormatter
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[BigDecimal]] =
+        baseFormatter
+          .bind(key, data)
+          .right.map(_.map(_.replace(",", "").replace(" ", "")))
+          .right.flatMap {
+          case s if s.isEmpty =>
+            Right(None)
+          case Some(s) if !s.matches(numericRegexp) =>
+            Left(Seq(FormError(key, invalidKey, args)))
+          case Some(s) if !s.matches(decimal2DPRegexp) && !s.matches(intRegexp) =>
+            Left(Seq(FormError(key, decimalKey, args)))
+          case Some(s) =>
+            Try(Option(BigDecimal(s))) match {
+              case Success(x) => Right(x)
+              case Failure(_) => Left(Seq(FormError(key, invalidKey, args)))
+            }
+          case None => Right(None)
+        }
+
+      override def unbind(key: String, value: Option[BigDecimal]): Map[String, String] =
+        value match {
+          case Some(str) =>
+            baseFormatter.unbind(key, Some(decimalFormat.format(str)))
+          case _ =>
+            Map.empty
+        }
+    }
+
+
   private[mappings] def enumerableFormatter[A](requiredKey: String, invalidKey: String,
                                                args: Seq[String] = Seq.empty)(implicit ev: Enumerable[A]): Formatter[A] =
     new Formatter[A] {

@@ -18,7 +18,7 @@ package models.event1.employer
 
 import play.api.libs.json.{Format, Json}
 
-case class LoanDetails(loanAmount: BigDecimal, fundValue: BigDecimal)
+case class LoanDetails(loanAmount: Option[BigDecimal], fundValue: Option[BigDecimal])
 
 object LoanDetails {
   implicit val formats: Format[LoanDetails] = Json.format[LoanDetails]

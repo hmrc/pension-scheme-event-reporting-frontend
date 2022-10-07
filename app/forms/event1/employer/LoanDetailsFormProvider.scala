@@ -21,7 +21,6 @@ import forms.mappings.{Mappings, Transforms}
 import models.event1.employer.LoanDetails
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.i18n.Messages
 
 import javax.inject.Inject
 
@@ -29,16 +28,16 @@ class LoanDetailsFormProvider @Inject() extends Mappings with Transforms {
 
   import LoanDetailsFormProvider._
 
-  def apply()(implicit messages: Messages): Form[LoanDetails] =
+  def apply(): Form[LoanDetails] =
     Form(
       mapping("loanAmount" ->
-        bigDecimal2DP("nowentered",
+        optionBigDecimal2DP(
           "loanDetails.loanAmount.notANumber",
           "loanDetails.loanAmount.noDecimals")
           .verifying(
             maximumValue[BigDecimal](maxPaymentValue, "loanDetails.loanAmount.amountTooHigh")
           ), "fundValue" ->
-        bigDecimal2DP("nowentered",
+        optionBigDecimal2DP(
           "loanDetails.fundValue.notANumber",
           "loanDetails.fundValue.noDecimals")
           .verifying(
