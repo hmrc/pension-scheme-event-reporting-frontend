@@ -16,14 +16,16 @@
 
 package controllers
 
-import connectors.UserAnswersCacheConnector
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import forms.EventSummaryFormProvider
 import models.enumeration.EventType
 import pages.{EventSummaryPage, Waypoints}
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Key, SummaryListRow, Text, Value}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.Message
 import views.html.EventSummaryView
 
 import javax.inject.Inject
@@ -34,22 +36,46 @@ class EventSummaryController @Inject()(
                                         identify: IdentifierAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
+                                        connector: EventReportingConnector,
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                         formProvider: EventSummaryFormProvider,
                                         view: EventSummaryView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.WindUp
+  private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
-    Ok(view(form, waypoints))
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify.async { implicit request =>
+    connector.getEventReportSummary(request.pstr).map{ seqOfEventTypes =>
+      val mappedEvents = seqOfEventTypes.map{ event =>
+        SummaryListRow(
+          key = Key(
+            content = Text("Event"),
+            classes = "govuk-visually-hidden"
+          ),
+          value = Value(
+            content = Text(Message(s"eventSummary.event${event.toString}")),
+            classes = "govuk-!-font-weight-bold govuk-!-width-full"
+          ),
+          actions = Some(Actions(
+            items = Seq(
+              ActionItem(
+                href = "",
+                content = Text("Change"),
+                visuallyHiddenText = Some(Message(s"eventSummary.${event.toString}"))
+              )
+            )
+          ))
+        )
+      }
+    Ok(view(form, waypoints, mappedEvents))
+    }
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, Nil))),
         value => {
           val originalUserAnswers = request.userAnswers
           val updatedAnswers = originalUserAnswers.setOrException(EventSummaryPage, value)
