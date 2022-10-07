@@ -25,7 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object UnauthorisedPaymentRecipientNameSummary  {
+object UnauthorisedPaymentRecipientNameSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
@@ -33,8 +33,8 @@ object UnauthorisedPaymentRecipientNameSummary  {
       answer =>
 
         SummaryListRowViewModel(
-          key     = "unauthorisedPaymentRecipientName.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key = "unauthorisedPaymentRecipientName.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.change.hidden"))

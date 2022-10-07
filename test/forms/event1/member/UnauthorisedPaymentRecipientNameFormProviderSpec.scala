@@ -25,7 +25,7 @@ class UnauthorisedPaymentRecipientNameFormProviderSpec extends StringFieldBehavi
 
   private val invalidKey = "unauthorisedPaymentRecipientName.error.invalid"
   private val lengthKey = "unauthorisedPaymentRecipientName.error.length"
-  private val maxLength = 160
+  private val maxLength = 150
 
   private val form = new UnauthorisedPaymentRecipientNameFormProvider()()
 
@@ -36,11 +36,11 @@ class UnauthorisedPaymentRecipientNameFormProviderSpec extends StringFieldBehavi
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      RegexpGen.from(regexPersonOrOrgName)
+      RegexpGen.from(regexMemberRecipientName)
     )
 
     "return errors when invalid data" in {
-      val dataItem = "-*%$£"
+      val dataItem = "*%$£"
       val result = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
       result.errors.headOption.map(_.message) mustBe Some(invalidKey)
     }
@@ -51,5 +51,11 @@ class UnauthorisedPaymentRecipientNameFormProviderSpec extends StringFieldBehavi
       maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
+
+    "bind empty data" in {
+      val result = form.bind(Map(fieldName -> "")).apply(fieldName)
+      result.value.value mustBe ""
+      result.errors mustBe empty
+    }
   }
 }

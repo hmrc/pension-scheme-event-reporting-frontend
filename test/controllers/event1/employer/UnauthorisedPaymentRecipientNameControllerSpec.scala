@@ -44,6 +44,7 @@ class UnauthorisedPaymentRecipientNameControllerSpec extends SpecBase with Befor
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.UnauthorisedPaymentRecipientNameController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -125,6 +126,27 @@ class UnauthorisedPaymentRecipientNameControllerSpec extends SpecBase with Befor
 
         val view = application.injector.instanceOf[UnauthorisedPaymentRecipientNameView]
         val boundForm = form.bind(Map("value" -> "$%"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
+
+    "must return bad request when entered data length is exceeded" in {
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
+
+      val invalidValue = "*" * 161
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", invalidValue))
+
+        val view = application.injector.instanceOf[UnauthorisedPaymentRecipientNameView]
+        val boundForm = form.bind(Map("value" -> invalidValue))
 
         val result = route(application, request).value
 

@@ -16,10 +16,10 @@
 
 package forms.event1.member
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class UnauthorisedPaymentRecipientNameFormProvider @Inject() extends Mappings {
 
@@ -28,8 +28,8 @@ class UnauthorisedPaymentRecipientNameFormProvider @Inject() extends Mappings {
       "value" -> optionalText()
         .verifying(
           firstError(
-            maxLength(160, "unauthorisedPaymentRecipientName.error.length"),
-            regexp(regexPersonOrOrgName, "unauthorisedPaymentRecipientName.error.invalid")
+            maxLength(150, "unauthorisedPaymentRecipientName.error.length"),
+            regexp(regexMemberRecipientName, "unauthorisedPaymentRecipientName.error.invalid")
           )
         )
     )

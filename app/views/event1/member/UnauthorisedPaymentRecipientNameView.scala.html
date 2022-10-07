@@ -19,11 +19,11 @@
 @import viewmodels.InputWidth._
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukButton: GovukButton
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukInput: GovukInput,
+        govukButton: GovukButton
 )
 
 @(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
@@ -41,8 +41,8 @@
                 field = form("value"),
                 label = LabelViewModel(messages("unauthorisedPaymentRecipientName.heading")).asPageHeading()
             )
-            .withWidth(TwoThirds)
-            .withHint(HintViewModel(messages("unauthorisedPaymentRecipientName.hint")))
+                    .withWidth(TwoThirds)
+                    .withHint(HintViewModel(messages("unauthorisedPaymentRecipientName.hint")))
         )
 
         @govukButton(
