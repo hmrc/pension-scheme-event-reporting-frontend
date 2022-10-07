@@ -41,9 +41,9 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
   private val loanAmountKey = "loanAmount"
   private val fundValueKey = "fundValue"
 
-  private val loanAmountNotANumberKey = "loanDetails.loanAmount.notANumber"
+  private val loanAmountNotANumberErrorKey = "loanDetails.loanAmount.notANumber"
 //  private val loanAmountNoDecimalsKey = "loanDetails.loanAmount.noDecimals"
-//  private val loanAmountAmountTooHighKey = "loanDetails.loanAmount.amountTooHigh"
+  private val loanAmountAmountTooHighErrorKey = "loanDetails.loanAmount.amountTooHigh"
 
   private def details(loanAmount: String = "12",
                       fundValue: String = "1.00"
@@ -53,23 +53,23 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
       fundValueKey -> fundValue
     )
 
-  "loanAmount" must {
+  "loanAmount" - {
 
     "not bind non-numeric numbers" in {
       forAll(nonNumerics -> "nonNumeric") {
         nonNumeric: String =>
           val result = form.bind(details(loanAmount = nonNumeric))
-          result.errors mustEqual Seq(FormError(loanAmountNotANumberKey, s"$loanAmountNotANumberKey.error.invalid"))
+          result.errors mustEqual Seq(FormError(loanAmountKey, loanAmountNotANumberErrorKey))
       }
     }
 
-//    "not bind decimals that are greater than 2 dp" in {
-    //      forAll(decimals -> "decimal") {
-    //        decimal: String =>
-    //          val result = form.bind(details(loanAmount = decimal))
-    //          result.errors mustEqual Seq(FormError(totalAmtOfTaxDueAtHigherRateKey, s"$messageKeyAmountTaxDueHigherRateKey.error.decimal"))
-    //      }
-    //    }
+    "not bind decimals that are greater than 2 dp" in {
+          forAll(decimals -> "decimal") {
+            decimal: String =>
+              val result = form.bind(details(loanAmount = decimal))
+              result.errors mustEqual Seq(FormError(loanAmountKey, loanAmountAmountTooHighErrorKey))
+          }
+        }
 //
 //    "not bind decimals below 0.00" in {
 //      forAll(decimalsBelowValue(BigDecimal("0.00")) -> "decimalBelowMin") {
@@ -102,31 +102,5 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
 //          result.value.flatMap(_.totalAmtOfTaxDueAtHigherRate) mustBe Some(BigDecimal(i))
 //      }
     }
-
-
-
-
-//  ".value" - {
-//
-//    val fieldName = "value"
-//
-//    behave like fieldThatBindsValidData(
-//      form,
-//      fieldName,
-//      stringsWithMaxLength(maxLength)
-//    )
-//
-//    behave like fieldWithMaxLength(
-//      form,
-//      fieldName,
-//      maxLength = maxLength,
-//      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-//    )
-//
-//    behave like mandatoryField(
-//      form,
-//      fieldName,
-//      requiredError = FormError(fieldName, requiredKey)
-//    )
-//  }
 }
+
