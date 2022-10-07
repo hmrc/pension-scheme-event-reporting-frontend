@@ -119,7 +119,6 @@ trait Formatters {
           case s if !s.matches(numericRegexp) =>
             Left(Seq(FormError(key, notANumberKey, args)))
           case s if !s.matches(noDecimalsKey) && !s.matches(intRegexp) =>
-            println("\n>>f:" + s)
             Left(Seq(FormError(key, noDecimalsKey, args)))
           case s =>
             Try(BigDecimal(s)) match {

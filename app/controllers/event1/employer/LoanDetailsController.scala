@@ -55,7 +55,6 @@ class LoanDetailsController @Inject()(val controllerComponents: MessagesControll
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
-          println("\n>>>" + formWithErrors)
           Future.successful(BadRequest(view(formWithErrors, waypoints)))
         },
         value => {

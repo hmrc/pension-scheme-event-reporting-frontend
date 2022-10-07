@@ -20,6 +20,7 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event1.employer.LoanDetailsFormProvider
 import models.UserAnswers
+import models.event1.employer.LoanDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
@@ -50,7 +51,7 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validValue = "abc"
+  private val validValue = LoanDetails(BigDecimal(12.12), BigDecimal(13.13))
 
   override def beforeEach: Unit = {
     super.beforeEach
@@ -103,7 +104,10 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
+            "loanAmount" -> "12",
+            "fundValue" -> "13"
+          )
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(LoanDetailsPage, validValue).success.value

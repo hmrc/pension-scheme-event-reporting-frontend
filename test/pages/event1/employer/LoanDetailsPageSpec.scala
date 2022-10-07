@@ -16,6 +16,7 @@
 
 package pages.event1.employer
 
+import models.event1.employer.LoanDetails
 import pages.behaviours.PageBehaviours
 
 
@@ -23,10 +24,10 @@ class LoanDetailsPageSpec extends PageBehaviours {
 
   "LoanDetailsPage" - {
 
-    beRetrievable[String](LoanDetailsPage)
+    beRetrievable[LoanDetails](LoanDetailsPage)
 
-    beSettable[String](LoanDetailsPage)
+    beSettable[LoanDetails](LoanDetailsPage)
 
-    beRemovable[String](LoanDetailsPage)
+    beRemovable[LoanDetails](LoanDetailsPage)
   }
 }
