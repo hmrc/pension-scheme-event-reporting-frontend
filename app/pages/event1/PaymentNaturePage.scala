@@ -20,7 +20,7 @@ import controllers.event1.routes
 import models.UserAnswers
 import models.enumeration.AddressJourneyType.Event1MemberPropertyAddressJourney
 import models.event1.PaymentNature
-import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, CourtOrConfiscationOrder, ResidentialPropertyHeld, TangibleMoveablePropertyHeld}
+import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld}
 import pages.event1.member.{MemberPaymentNatureDescriptionPage, MemberTangibleMoveablePropertyPage}
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath

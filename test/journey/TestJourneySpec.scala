@@ -23,7 +23,7 @@ import models.TestCheckBox.writes
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersDetails
-import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, CourtOrConfiscationOrder}
+import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.employer.PaymentNature.{ResidentialProperty, TangibleMoveableProperty}
 import models.event1.member.ReasonForTheOverpaymentOrWriteOff.DeathOfMember
@@ -33,7 +33,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.event1._
 import pages.event1.employer.CompanyDetailsPage
-import pages.event1.member.{BenefitsPaidEarlyPage, ErrorDescriptionPage, ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage, UnauthorisedPaymentRecipientNamePage}
+import pages.event1.member._
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckYourAnswersPage, EventSelectionPage, IndexPage}
