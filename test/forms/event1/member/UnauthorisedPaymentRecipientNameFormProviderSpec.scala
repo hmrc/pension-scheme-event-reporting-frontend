@@ -23,8 +23,8 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class UnauthorisedPaymentRecipientNameFormProviderSpec extends StringFieldBehaviours with Constraints {
 
-  private val invalidKey = "unauthorisedPaymentRecipientName.error.invalid"
-  private val lengthKey = "unauthorisedPaymentRecipientName.error.length"
+  private val invalidKey = "unauthorisedPaymentRecipientName.member.error.invalid"
+  private val lengthKey = "unauthorisedPaymentRecipientName.member.error.length"
   private val maxLength = 150
 
   private val form = new UnauthorisedPaymentRecipientNameFormProvider()()

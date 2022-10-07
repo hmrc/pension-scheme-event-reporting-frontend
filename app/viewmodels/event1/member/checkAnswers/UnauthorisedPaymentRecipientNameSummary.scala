@@ -33,11 +33,11 @@ object UnauthorisedPaymentRecipientNameSummary {
       answer =>
 
         SummaryListRowViewModel(
-          key = "unauthorisedPaymentRecipientName.checkYourAnswersLabel",
+          key = "unauthorisedPaymentRecipientName.member.checkYourAnswersLabel",
           value = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.change.hidden"))
+              .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.member.change.hidden"))
           )
         )
     }

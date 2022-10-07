@@ -434,3 +434,11 @@ refundOfContributions.other = Other
 refundOfContributions.checkYourAnswersLabel = Who received the refund?
 refundOfContributions.error.required = Select who received the refund
 refundOfContributions.change.hidden = Who received the refund?
+
+unauthorisedPaymentRecipientName.member.title = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.member.heading = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.member.checkYourAnswersLabel = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.member.error.invalid = The person name must only include letters, spaces, ampersands, grave accents, apostrophes, backslashes, hyphens, full stops and carets
+unauthorisedPaymentRecipientName.member.error.length = The person name must be 150 characters or fewer
+unauthorisedPaymentRecipientName.member.change.hidden = Change the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.member.hint = Recipient name (optional)
