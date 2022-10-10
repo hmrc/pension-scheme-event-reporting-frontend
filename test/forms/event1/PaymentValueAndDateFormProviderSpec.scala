@@ -16,21 +16,20 @@
 
 package forms.event1
 
+import base.SpecBase
 import forms.behaviours.IntFieldBehaviours
 import play.api.data.FormError
-import play.api.i18n.Messages
-import play.api.i18n.Messages.implicitMessagesProviderToMessages
 
 import java.time.LocalDate
 
-class PaymentValueAndDateFormProviderSpec extends IntFieldBehaviours {
+class PaymentValueAndDateFormProviderSpec extends IntFieldBehaviours with SpecBase {
 
   // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now.
   //  private val stubDate: LocalDate = LocalDate.now()
-  private val stubMin: LocalDate = LocalDate of(LocalDate.now().getYear, 4, 6)
-  private val stubMax: LocalDate = LocalDate of(LocalDate.now().getYear + 1, 4, 5)
+  private val stubMin: LocalDate = LocalDate of(2022, 4, 6)
+  private val stubMax: LocalDate = LocalDate of(2023, 4, 5)
 
-  private val form = new PaymentValueAndDateFormProvider(stubMin, stubMax)()
+  private val form = new PaymentValueAndDateFormProvider().apply(stubMin, stubMax)
 
   ".value" - {
 
