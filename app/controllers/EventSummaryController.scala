@@ -62,7 +62,7 @@ class EventSummaryController @Inject()(
               ActionItem(
                 href = "",
                 content = Text("Change"),
-                visuallyHiddenText = Some(Message(s"eventSummary.${event.toString}"))
+                visuallyHiddenText = Some(Message(s"eventSummary.event${event.toString}"))
               )
             )
           ))

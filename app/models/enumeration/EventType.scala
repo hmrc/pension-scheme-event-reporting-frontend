@@ -16,8 +16,6 @@
 
 package models.enumeration
 
-import models.EventSelection.values
-import models.{Enumerable, EventSelection}
 import play.api.mvc.QueryStringBindable
 
 sealed trait EventType
