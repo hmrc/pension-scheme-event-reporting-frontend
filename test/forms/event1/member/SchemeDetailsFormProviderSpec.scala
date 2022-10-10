@@ -21,7 +21,6 @@ import forms.behaviours.StringFieldBehaviours
 
 class SchemeDetailsFormProviderSpec extends StringFieldBehaviours {
 
-  private val validData = Some("abc")
   private val maxLength = 150
 
   private val form = new SchemeDetailsFormProvider()()
