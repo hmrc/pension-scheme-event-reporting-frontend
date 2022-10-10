@@ -31,12 +31,14 @@ class EventReportingConnectorSpec
     with Enumerable.Implicits {
 
   private val pstr = "123"
-  private val eventType = EventType.Event1
-  private val eventType2 = EventType.Event2
+  private val eventType: EventType = EventType.Event1
+  private val eventType2: EventType = EventType.Event2
 
   private val validResponse = Seq(
     eventType, eventType2
   )
+
+  import EventType.enumerable
 
   private val validResponseJson = Json.arr(
     eventType, eventType2
