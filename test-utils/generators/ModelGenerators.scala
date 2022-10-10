@@ -25,6 +25,8 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import uk.gov.hmrc.domain.Nino
 
+import scala.math.BigDecimal.RoundingMode
+
 trait ModelGenerators {
 
   implicit lazy val arbitraryReasonForTheOverpaymentOrWriteOff: Arbitrary[ReasonForTheOverpaymentOrWriteOff] =
@@ -70,8 +72,8 @@ trait ModelGenerators {
   implicit lazy val arbitraryLoanDetails: Arbitrary[LoanDetails] =
     Arbitrary {
       for {
-        loanAmount <- arbitrary[BigDecimal]
-        fundValue <- arbitrary[BigDecimal]
+        loanAmount <- arbitrary[BigDecimal].map(_.setScale(2, RoundingMode.FLOOR))
+        fundValue <- arbitrary[BigDecimal].map(_.setScale(2, RoundingMode.FLOOR))
       } yield LoanDetails(Some(loanAmount), Some(fundValue))
     }
 
