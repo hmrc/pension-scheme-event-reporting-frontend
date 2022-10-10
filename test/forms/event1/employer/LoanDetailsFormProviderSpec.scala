@@ -82,12 +82,12 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
       }
     }
 
-    "bind 0.00 when positive value bound to totalAmtOfTaxDueAtLowerRate" in {
+    "bind 0.00 when positive value bound" in {
       val result = form.bind(details(loanAmount = "0.00"))
       result.errors mustBe Seq.empty
     }
 
-    "bind integers to totalAmtOfTaxDueAtHigherRate" in {
+    "bind integers" in {
       forAll(intsInRange(0, 999999) -> "intInRange") {
         i =>
           val result = form.bind(details(loanAmount = i))
@@ -122,12 +122,12 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
       }
     }
 
-    "bind 0.00 when positive value bound to totalAmtOfTaxDueAtLowerRate" in {
+    "bind 0.00 when positive value" in {
       val result = form.bind(details(fundValue = "0.00"))
       result.errors mustBe Seq.empty
     }
 
-    "bind integers to totalAmtOfTaxDueAtHigherRate" in {
+    "bind integers" in {
       forAll(intsInRange(0, 999999) -> "intInRange") {
         i =>
           val result = form.bind(details(fundValue = i))

@@ -19,8 +19,7 @@ package generators
 import models._
 import models.event1.MembersDetails
 import models.event1.employer.{CompanyDetails, LoanDetails}
-import models.event1.member.ReasonForTheOverpaymentOrWriteOff
-import models.event1.member.RefundOfContributions
+import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import uk.gov.hmrc.domain.Nino

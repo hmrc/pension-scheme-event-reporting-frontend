@@ -45,6 +45,7 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.LoanDetailsController.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.LoanDetailsController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](

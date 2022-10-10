@@ -27,6 +27,7 @@ trait PageGenerators {
 
   implicit lazy val arbitraryLoanDetailsPage: Arbitrary[event1.employer.LoanDetailsPage.type] =
     Arbitrary(event1.employer.LoanDetailsPage)
+
   implicit lazy val arbitraryEmployerPaymentNatureDescriptionPage: Arbitrary[EmployerPaymentNatureDescriptionPage.type] =
     Arbitrary(employer.EmployerPaymentNatureDescriptionPage)
 

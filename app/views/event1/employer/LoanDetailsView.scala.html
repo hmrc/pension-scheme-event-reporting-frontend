@@ -16,14 +16,12 @@
 
 @import controllers.event1.employer.routes
 
-@import viewmodels.InputWidth._
-
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukButton: GovukButton
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukInput: GovukInput,
+        govukButton: GovukButton
 )
 
 @(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
@@ -45,9 +43,9 @@
                     content = Text(messages("loanDetails.loanAmount.heading"))
                 )
             )
-            .withCssClass("govuk-input--width-5")
-            .withPrefix(PrefixOrSuffix(content = Text("£")))
-            .asNumeric()
+                    .withCssClass("govuk-input--width-5")
+                    .withPrefix(PrefixOrSuffix(content = Text("£")))
+                    .asNumeric()
         )
 
         @govukInput(
@@ -57,9 +55,9 @@
                     content = Text(messages("loanDetails.fundValue.heading"))
                 )
             )
-            .withCssClass("govuk-input--width-5")
-            .withPrefix(PrefixOrSuffix(content = Text("£")))
-            .asNumeric()
+                    .withCssClass("govuk-input--width-5")
+                    .withPrefix(PrefixOrSuffix(content = Text("£")))
+                    .asNumeric()
         )
 
         @govukButton(

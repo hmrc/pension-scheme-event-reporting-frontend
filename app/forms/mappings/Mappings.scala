@@ -37,9 +37,9 @@ trait Mappings extends Formatters with Constraints {
     of(intFormatter(requiredKey, wholeNumberKey, nonNumericKey, args))
 
   protected def bigDecimal2DP(
-                        nothingEnteredKey: String = "error.nothingEntered",
-                        notANumberKey: String = "error.notANumber",
-                        noDecimalsKey: String = "error.noDecimals"): FieldMapping[BigDecimal] =
+                               nothingEnteredKey: String = "error.nothingEntered",
+                               notANumberKey: String = "error.notANumber",
+                               noDecimalsKey: String = "error.noDecimals"): FieldMapping[BigDecimal] =
     of(bigDecimal2DPFormatter(nothingEnteredKey, notANumberKey, noDecimalsKey))
 
 

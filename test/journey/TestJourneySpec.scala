@@ -33,8 +33,6 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, LoanDetailsPage}
-import pages.event1.member.{BenefitsPaidEarlyPage, ErrorDescriptionPage, ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage}
-import pages.event1.employer.CompanyDetailsPage
 import pages.event1.member._
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage

@@ -16,11 +16,11 @@
 
 package generators
 
-import java.time.{Instant, LocalDate, ZoneOffset}
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Gen, Shrink}
 
+import java.time.{Instant, LocalDate, ZoneOffset}
 import scala.math.BigDecimal.RoundingMode
 
 trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators {
@@ -74,13 +74,13 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
       .map[String](_.setScale(2, RoundingMode.FLOOR).toString())
 
   def intsLargerThanMaxValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat(x => x > Int.MaxValue)
+    arbitrary[BigInt] suchThat (x => x > Int.MaxValue)
 
   def intsSmallerThanMinValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat(x => x < Int.MinValue)
+    arbitrary[BigInt] suchThat (x => x < Int.MinValue)
 
   def nonNumerics: Gen[String] =
-    alphaStr suchThat(_.size > 0)
+    alphaStr suchThat (_.size > 0)
 
   def decimals: Gen[String] =
     arbitrary[BigDecimal]
@@ -89,19 +89,19 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
       .map(_.formatted("%f"))
 
   def intsBelowValue(value: Int): Gen[Int] =
-    arbitrary[Int] suchThat(_ < value)
+    arbitrary[Int] suchThat (_ < value)
 
   def intsAboveValue(value: Int): Gen[Int] =
-    arbitrary[Int] suchThat(_ > value)
+    arbitrary[Int] suchThat (_ > value)
 
   def intsOutsideRange(min: Int, max: Int): Gen[Int] =
-    arbitrary[Int] suchThat(x => x < min || x > max)
+    arbitrary[Int] suchThat (x => x < min || x > max)
 
   def nonBooleans: Gen[String] =
     arbitrary[String]
-      .suchThat (_.nonEmpty)
-      .suchThat (_ != "true")
-      .suchThat (_ != "false")
+      .suchThat(_.nonEmpty)
+      .suchThat(_ != "true")
+      .suchThat(_ != "false")
 
   def nonEmptyString: Gen[String] =
     arbitrary[String] suchThat (_.nonEmpty)

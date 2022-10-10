@@ -167,5 +167,5 @@ POST        /new-report/event-1-member-payment-description                 contr
 GET         /new-report/event-1-employer-payment-description               controllers.event1.EmployerPaymentNatureDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-employer-payment-description               controllers.event1.EmployerPaymentNatureDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /new-report/event-1-loan-details                        controllers.event1.employer.LoanDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/event-1-loan-details                        controllers.event1.employer.LoanDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-1-loan-details                               controllers.event1.employer.LoanDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-loan-details                               controllers.event1.employer.LoanDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

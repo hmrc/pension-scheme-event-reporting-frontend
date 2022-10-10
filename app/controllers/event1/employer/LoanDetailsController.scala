@@ -34,12 +34,12 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class LoanDetailsController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         userAnswersCacheConnector: UserAnswersCacheConnector,
-                                         formProvider: LoanDetailsFormProvider,
-                                         view: LoanDetailsView
-                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                      identify: IdentifierAction,
+                                      getData: DataRetrievalAction,
+                                      userAnswersCacheConnector: UserAnswersCacheConnector,
+                                      formProvider: LoanDetailsFormProvider,
+                                      view: LoanDetailsView
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
   private def form(implicit messages: Messages): Form[LoanDetails] = formProvider()

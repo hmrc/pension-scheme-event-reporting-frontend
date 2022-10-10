@@ -25,7 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object LoanDetailsSummary  {
+object LoanDetailsSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
@@ -33,8 +33,8 @@ object LoanDetailsSummary  {
       answer =>
 
         SummaryListRowViewModel(
-          key     = "loanDetails.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer.toString).toString),
+          key = "loanDetails.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlFormat.escape(answer.toString).toString),
           actions = Seq(
             ActionItemViewModel("site.change", LoanDetailsPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("loanDetails.change.hidden"))

@@ -21,8 +21,8 @@ import play.api.data.FormError
 import play.api.data.format.Formatter
 
 import java.text.DecimalFormat
-import scala.util.{Failure, Success, Try}
 import scala.util.control.Exception.nonFatalCatch
+import scala.util.{Failure, Success, Try}
 
 trait Formatters {
 
