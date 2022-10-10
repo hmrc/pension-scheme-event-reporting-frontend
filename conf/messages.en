@@ -453,6 +453,24 @@ refundOfContributions.checkYourAnswersLabel = Who received the refund?
 refundOfContributions.error.required = Select who received the refund
 refundOfContributions.change.hidden = Who received the refund?
 
+loanDetails.title = Loan details
+loanDetails.heading = Loan details
+loanDetails.checkYourAnswersLabel = loanDetails
+loanDetails.error.required = Enter loanDetails
+loanDetails.error.length = LoanDetails must be 100 characters or less
+loanDetails.change.hidden = LoanDetails
+
+loanDetails.loanAmount.notANumber = The loan amount must be an amount of money, like 123.45 or 156.00
+loanDetails.loanAmount.noDecimals = The loan amount must include pence, like 123.45 or 156.00
+loanDetails.loanAmount.amountTooHigh = The loan amount must be £999999999.99 or less
+
+loanDetails.fundValue.notANumber = The fund value must be an amount of money, like 123.45 or 156.00
+loanDetails.fundValue.noDecimals = The fund value must include pence, like 123.45 or 156.00
+loanDetails.fundValue.amountTooHigh = The fund value must be £999999999.99 or less
+
+loanDetails.loanAmount.heading = Amount of the loan (optional)
+loanDetails.fundValue.heading = Value of the fund (optional)
+
 unauthorisedPaymentRecipientName.member.title = What is the name of the person or organisation that received the unauthorised payment?
 unauthorisedPaymentRecipientName.member.heading = What is the name of the person or organisation that received the unauthorised payment?
 unauthorisedPaymentRecipientName.member.checkYourAnswersLabel = What is the name of the person or organisation that received the unauthorised payment?
