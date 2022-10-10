@@ -37,25 +37,25 @@ class EventReportingConnector @Inject()(
   def getEventReportSummary(pstr: String)
          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventType]] = {
 
-//    Future.successful(Seq(EventType.Event1, EventType.Event3))
-    val headers: Seq[(String, String)] = Seq(
-      "Content-Type" -> "application/json",
-      "pstr" -> pstr,
-      "reportVersionNumber" -> "001",
-      "reportStartDate" -> "21/01/22"
-    )
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-
-    http.GET[HttpResponse](eventRepSummaryUrl)(implicitly, hc, implicitly)
-      .recoverWith(mapExceptionsToStatus)
-      .map { response =>
-        response.status match {
-          case NOT_FOUND => Nil
-          case OK => response.json.as[Seq[EventType]]
-          case _ =>
-            throw new HttpException(response.body, response.status)
-        }
-      }
+    Future.successful(Seq(EventType.Event1, EventType.Event3))
+//    val headers: Seq[(String, String)] = Seq(
+//      "Content-Type" -> "application/json",
+//      "pstr" -> pstr,
+//      "reportVersionNumber" -> "001",
+//      "reportStartDate" -> "21/01/22"
+//    )
+//    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+//
+//    http.GET[HttpResponse](eventRepSummaryUrl)(implicitly, hc, implicitly)
+//      .recoverWith(mapExceptionsToStatus)
+//      .map { response =>
+//        response.status match {
+//          case NOT_FOUND => Nil
+//          case OK => response.json.as[Seq[EventType]]
+//          case _ =>
+//            throw new HttpException(response.body, response.status)
+//        }
+//      }
   }
 
   private def mapExceptionsToStatus: PartialFunction[Throwable, Future[HttpResponse]] = {
