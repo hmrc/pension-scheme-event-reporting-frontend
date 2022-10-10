@@ -26,7 +26,9 @@ sealed trait WhoWasTheTransferMade
 object WhoWasTheTransferMade extends Enumerable.Implicits {
 
   case object AnEmployerFinanced extends WithName("anEmployerFinanced") with WhoWasTheTransferMade
+
   case object NonRecognisedScheme extends WithName("nonRecognisedScheme") with WhoWasTheTransferMade
+
   case object Other extends WithName("other") with WhoWasTheTransferMade
 
   val values: Seq[WhoWasTheTransferMade] = Seq(
@@ -37,8 +39,8 @@ object WhoWasTheTransferMade extends Enumerable.Implicits {
     case (value, index) =>
       RadioItem(
         content = Text(messages(s"whoWasTheTransferMade.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
+        value = Some(value.toString),
+        id = Some(s"value_$index")
       )
   }
 

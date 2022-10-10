@@ -44,6 +44,7 @@ class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.SchemeDetailsController.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.SchemeDetailsController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -134,9 +135,5 @@ class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
-
-
-
-
   }
 }

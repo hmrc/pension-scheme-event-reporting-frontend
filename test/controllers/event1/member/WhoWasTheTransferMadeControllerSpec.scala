@@ -45,6 +45,7 @@ class WhoWasTheTransferMadeControllerSpec extends SpecBase with BeforeAndAfterEa
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.WhoWasTheTransferMadeController.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.WhoWasTheTransferMadeController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
