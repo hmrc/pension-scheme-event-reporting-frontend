@@ -16,16 +16,17 @@
 
 package pages.event1
 
+import models.event1.PaymentDetails
 import pages.behaviours.PageBehaviours
 
 class PaymentValueAndDatePageSpec extends PageBehaviours {
 
   "PaymentValueAndDatePage" - {
 
-    beRetrievable[Int](PaymentValueAndDatePage)
+    beRetrievable[PaymentDetails](PaymentValueAndDatePage)
 
-    beSettable[Int](PaymentValueAndDatePage)
+    beSettable[PaymentDetails](PaymentValueAndDatePage)
 
-    beRemovable[Int](PaymentValueAndDatePage)
+    beRemovable[PaymentDetails](PaymentValueAndDatePage)
   }
 }

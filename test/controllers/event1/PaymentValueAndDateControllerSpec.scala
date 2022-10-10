@@ -20,6 +20,7 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event1.PaymentValueAndDateFormProvider
 import models.UserAnswers
+import models.event1.PaymentDetails
 import pages.EmptyWaypoints
 import pages.event1.PaymentValueAndDatePage
 import org.mockito.ArgumentMatchers.any
@@ -56,7 +57,7 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validValue = 33
+  private val validValue = PaymentDetails(1000.00, LocalDate.now())
 
   override def beforeEach: Unit = {
     super.beforeEach
