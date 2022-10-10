@@ -16,10 +16,11 @@
 
 package forms.mappings
 
-import java.time.LocalDate
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.domain.Nino
 import utils.CountryOptions
+
+import java.time.LocalDate
 
 trait Constraints {
 
@@ -160,10 +161,4 @@ trait Constraints {
       case _ => Invalid(invalidKey)
     }
   }
-
-  protected def yearHas4Digits(errorKey: String): Constraint[LocalDate] =
-    Constraint {
-      case date if date.getYear >= 1000 => Valid
-      case _ => Invalid(errorKey)
-    }
 }
