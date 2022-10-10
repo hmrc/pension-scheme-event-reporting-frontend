@@ -17,15 +17,81 @@
 package generators
 
 import models._
-import models.event1.member.WhoWasTheTransferMade
+import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, WhoWasTheTransferMade}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
-import pages.event1.member.{BenefitsPaidEarlyPage, SchemeDetailsPage, WhoWasTheTransferMadePage}
+import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
+import pages.event1.member._
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
+
+  implicit lazy val arbitraryMemberUnauthorisedPaymentRecipientNameUserAnswersEntry:
+    Arbitrary[(pages.event1.member.UnauthorisedPaymentRecipientNamePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[pages.event1.member.UnauthorisedPaymentRecipientNamePage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryEmployerPaymentNatureDescriptionUserAnswersEntry: Arbitrary[(EmployerPaymentNatureDescriptionPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[EmployerPaymentNatureDescriptionPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryMemberPaymentNatureDescriptionUserAnswersEntry: Arbitrary[(MemberPaymentNatureDescriptionPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[MemberPaymentNatureDescriptionPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryEmployerTangibleMoveablePropertyUserAnswersEntry: Arbitrary[(EmployerTangibleMoveablePropertyPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[EmployerTangibleMoveablePropertyPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryMemberTangibleMoveablePropertyUserAnswersEntry: Arbitrary[(MemberTangibleMoveablePropertyPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[MemberTangibleMoveablePropertyPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryUnauthorisedPaymentRecipientNameUserAnswersEntry: Arbitrary[(UnauthorisedPaymentRecipientNamePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[UnauthorisedPaymentRecipientNamePage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryReasonForTheOverpaymentOrWriteOffUserAnswersEntry: Arbitrary[(ReasonForTheOverpaymentOrWriteOffPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[ReasonForTheOverpaymentOrWriteOffPage.type]
+        value <- arbitrary[ReasonForTheOverpaymentOrWriteOff].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryRefundOfContributionsUserAnswersEntry: Arbitrary[(RefundOfContributionsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[RefundOfContributionsPage.type]
+        value <- arbitrary[RefundOfContributions].map(Json.toJson(_))
+      } yield (page, value)
+    }
 
   implicit lazy val arbitrarySchemeDetailsUserAnswersEntry: Arbitrary[(SchemeDetailsPage.type, JsValue)] =
     Arbitrary {
@@ -46,7 +112,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryErrorDescriptionUserAnswersEntry: Arbitrary[(pages.event1.member.ErrorDescriptionPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event1.member.ErrorDescriptionPage.type]
+        page <- arbitrary[pages.event1.member.ErrorDescriptionPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
@@ -54,7 +120,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryBenefitsPaidEarlyUserAnswersEntry: Arbitrary[(BenefitsPaidEarlyPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[BenefitsPaidEarlyPage.type]
+        page <- arbitrary[BenefitsPaidEarlyPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }

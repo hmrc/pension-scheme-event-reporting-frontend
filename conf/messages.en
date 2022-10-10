@@ -325,6 +325,7 @@ address.postCode = Postcode (if UK)
 address.country = Country
 
 entityType.theCompany = the company
+entityType.theResidentialProperty = the residential property
 
 paymentNature.title = Nature of the payment or deemed payment
 paymentNature.heading = Nature of the payment or deemed payment
@@ -382,3 +383,80 @@ schemeDetails.checkYourAnswersLabel = Scheme details
 schemeDetails.error.required = Enter Scheme details
 schemeDetails.error.length = Scheme details must be 150 characters or less
 schemeDetails.change.hidden = Scheme details
+
+memberTangibleMoveableProperty.title = Give a brief description of the tangible moveable property
+memberTangibleMoveableProperty.heading = Give a brief description of the tangible moveable property
+memberTangibleMoveableProperty.hint = You can enter a maximum of 150 characters (optional).
+memberTangibleMoveableProperty.checkYourAnswersLabel = Give a brief description of the tangible moveable property
+memberTangibleMoveableProperty.error.length = The tangible moveable property must be 150 characters or fewer
+memberTangibleMoveableProperty.change.hidden = Give a brief description of the tangible moveable property
+
+employerTangibleMoveableProperty.title = Give a brief description of the tangible moveable property
+employerTangibleMoveableProperty.heading = Give a brief description of the tangible moveable property
+employerTangibleMoveableProperty.hint = You can enter a maximum of 150 characters (optional).
+employerTangibleMoveableProperty.checkYourAnswersLabel = Give a brief description of the tangible moveable property
+employerTangibleMoveableProperty.error.length = The tangible moveable property must be 150 characters or fewer
+employerTangibleMoveableProperty.change.hidden = Give a brief description of the tangible moveable property
+
+memberPaymentNatureDescription.title = Give a brief description of the nature of the payment
+memberPaymentNatureDescription.heading = Give a brief description of the nature of the payment
+memberPaymentNatureDescription.hint = You can enter a maximum of 150 characters (optional).
+memberPaymentNatureDescription.checkYourAnswersLabel = Give a brief description of the nature of the payment
+memberPaymentNatureDescription.error.length = The nature of the payment must be 150 characters or fewer
+memberPaymentNatureDescription.change.hidden = Give a brief description of the nature of the payment
+
+employerPaymentNatureDescription.title = Give a brief description of the nature of the payment
+employerPaymentNatureDescription.heading = Give a brief description of the nature of the payment
+employerPaymentNatureDescription.hint = You can enter a maximum of 150 characters (optional).
+employerPaymentNatureDescription.checkYourAnswersLabel = Give a brief description of the nature of the payment
+employerPaymentNatureDescription.error.length = The nature of the payment must be 150 characters or fewer
+employerPaymentNatureDescription.change.hidden = Give a brief description of the nature of the payment
+
+memberResidentialAddress.enterPostcode.entityName = the residential property
+residentialAddress.enterPostcode.title = What is the postcode of the residential property?
+residentialAddress.enterPostcode.h1 = What is the postcode of the residential property?
+
+residentialAddress.chooseAddress.title = What is the address of the residential property?
+residentialAddress.chooseAddress.h1 = What is the address of the residential property?
+
+residentialAddress.address.title = What is the address of the residential property?
+residentialAddress.address.h1 = What is the address of the residential property?
+memberResidentialAddress.chooseAddress.title = What is the address of the residential property?
+memberResidentialAddress.chooseAddress.h1 = What is the address of the residential property?
+
+memberResidentialAddress.address.title = What is the address of the residential property?
+memberResidentialAddress.address.h1 = What is the address of the residential property?
+
+unauthorisedPaymentRecipientName.title = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.heading = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.checkYourAnswersLabel = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.error.invalid = The recipient name must only include letters, spaces, ampersands, grave accents, apostrophes, backslashes, full stops and carets
+unauthorisedPaymentRecipientName.error.length = The company or organisation’s name must be 160 characters or fewer
+unauthorisedPaymentRecipientName.change.hidden = Change the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.hint = Recipient name (optional)
+
+reasonForTheOverpaymentOrWriteOff.title = What is the reason for the overpayment/write off?
+reasonForTheOverpaymentOrWriteOff.heading = What is the reason for the overpayment/write off?
+reasonForTheOverpaymentOrWriteOff.deathOfMember = Death of member
+reasonForTheOverpaymentOrWriteOff.deathOfDependent = Death of dependent
+reasonForTheOverpaymentOrWriteOff.dependentNoLongerQualifiedForPension = Dependent no longer qualified for pension
+reasonForTheOverpaymentOrWriteOff.other = Other
+reasonForTheOverpaymentOrWriteOff.checkYourAnswersLabel = What is the reason for the overpayment/write off?
+reasonForTheOverpaymentOrWriteOff.error.required = Select the reason for the overpayment/write off
+reasonForTheOverpaymentOrWriteOff.change.hidden = What is the reason for the overpayment/write off?
+
+refundOfContributions.title = Who received the refund?
+refundOfContributions.heading = Who received the refund?
+refundOfContributions.widowOrOrphan = A widow and/or orphan
+refundOfContributions.other = Other
+refundOfContributions.checkYourAnswersLabel = Who received the refund?
+refundOfContributions.error.required = Select who received the refund
+refundOfContributions.change.hidden = Who received the refund?
+
+unauthorisedPaymentRecipientName.member.title = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.member.heading = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.member.checkYourAnswersLabel = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.member.error.invalid = The person name must only include letters, spaces, ampersands, grave accents, apostrophes, backslashes, hyphens, full stops and carets
+unauthorisedPaymentRecipientName.member.error.length = The person name must be 150 characters or fewer
+unauthorisedPaymentRecipientName.member.change.hidden = Change the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.member.hint = Recipient name (optional)

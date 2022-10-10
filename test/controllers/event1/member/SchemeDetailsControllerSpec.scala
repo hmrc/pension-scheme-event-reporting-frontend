@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import forms.SchemeDetails.SchemeDetailsFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
+import org.mockito.Mockito.{times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints

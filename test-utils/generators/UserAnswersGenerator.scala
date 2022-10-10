@@ -21,7 +21,8 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
-import pages.event1.member.{BenefitsPaidEarlyPage, SchemeDetailsPage, WhoWasTheTransferMadePage}
+import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
+import pages.event1.member._
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
@@ -29,30 +30,38 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitrary[(event1.member.SchemeDetailsPage.type, JsValue)] ::
-    arbitrary[(event1.member.WhoWasTheTransferMadePage.type, JsValue)] ::
-    arbitrary[(event1.member.ErrorDescriptionPage.type, JsValue)] ::
-    arbitrary[(BenefitsPaidEarlyPage.type, JsValue)] ::
-    arbitrary[(event1.employer.PaymentNaturePage.type, JsValue)] ::
-    arbitrary[(event1.employer.CompanyDetailsPage.type, JsValue)] ::
-    arbitrary[(event1.BenefitInKindBriefDescriptionPage.type, JsValue)] ::
-    arbitrary[(event1.SchemeUnAuthPaySurchargeMemberPage.type, JsValue)] ::
-    arbitrary[(event1.ValueOfUnauthorisedPaymentPage.type, JsValue)] ::
-    arbitrary[(event1.DoYouHoldSignedMandatePage.type, JsValue)] ::
-    arbitrary[(event1.MembersDetailsPage.type, JsValue)] ::
-    arbitrary[(event1.WhoReceivedUnauthPaymentPage.type, JsValue)] ::
-    arbitrary[(event1.HowAddUnauthPaymentPage.type, JsValue)] ::
-    arbitrary[(event1.PaymentNaturePage.type, JsValue)] ::
-    arbitrary[(SchemeWindUpDatePage.type, JsValue)] ::
-    arbitrary[(event18.Event18ConfirmationPage.type, JsValue)] ::
-    arbitrary[(EventSummaryPage.type, JsValue)] ::
-    arbitrary[(EventSelectionPage.type, JsValue)] ::
-    arbitrary[(TestIntPagePage.type, JsValue)] ::
-    arbitrary[(TestStringPagePage.type, JsValue)] ::
-    arbitrary[(TestRadioButtonPage.type, JsValue)] ::
-    arbitrary[(TestCheckBoxPage.type, JsValue)] ::
-    arbitrary[(TestDatePage.type, JsValue)] ::
-    Nil
+      arbitrary[(event1.member.SchemeDetailsPage.type, JsValue)] ::
+      arbitrary[(event1.member.WhoWasTheTransferMadePage.type, JsValue)] ::
+      arbitrary[(event1.member.UnauthorisedPaymentRecipientNamePage.type, JsValue)] ::
+      arbitrary[(RefundOfContributionsPage.type, JsValue)] ::
+      arbitrary[(EmployerPaymentNatureDescriptionPage.type, JsValue)] ::
+      arbitrary[(MemberPaymentNatureDescriptionPage.type, JsValue)] ::
+      arbitrary[(EmployerTangibleMoveablePropertyPage.type, JsValue)] ::
+      arbitrary[(MemberTangibleMoveablePropertyPage.type, JsValue)] ::
+      arbitrary[(ReasonForTheOverpaymentOrWriteOffPage.type, JsValue)] ::
+      arbitrary[(UnauthorisedPaymentRecipientNamePage.type, JsValue)] ::
+      arbitrary[(event1.member.ErrorDescriptionPage.type, JsValue)] ::
+      arbitrary[(BenefitsPaidEarlyPage.type, JsValue)] ::
+      arbitrary[(event1.employer.PaymentNaturePage.type, JsValue)] ::
+      arbitrary[(event1.employer.CompanyDetailsPage.type, JsValue)] ::
+      arbitrary[(event1.BenefitInKindBriefDescriptionPage.type, JsValue)] ::
+      arbitrary[(event1.SchemeUnAuthPaySurchargeMemberPage.type, JsValue)] ::
+      arbitrary[(event1.ValueOfUnauthorisedPaymentPage.type, JsValue)] ::
+      arbitrary[(event1.DoYouHoldSignedMandatePage.type, JsValue)] ::
+      arbitrary[(event1.MembersDetailsPage.type, JsValue)] ::
+      arbitrary[(event1.WhoReceivedUnauthPaymentPage.type, JsValue)] ::
+      arbitrary[(event1.HowAddUnauthPaymentPage.type, JsValue)] ::
+      arbitrary[(event1.PaymentNaturePage.type, JsValue)] ::
+      arbitrary[(SchemeWindUpDatePage.type, JsValue)] ::
+      arbitrary[(event18.Event18ConfirmationPage.type, JsValue)] ::
+      arbitrary[(EventSummaryPage.type, JsValue)] ::
+      arbitrary[(EventSelectionPage.type, JsValue)] ::
+      arbitrary[(TestIntPagePage.type, JsValue)] ::
+      arbitrary[(TestStringPagePage.type, JsValue)] ::
+      arbitrary[(TestRadioButtonPage.type, JsValue)] ::
+      arbitrary[(TestCheckBoxPage.type, JsValue)] ::
+      arbitrary[(TestDatePage.type, JsValue)] ::
+      Nil
 
   implicit lazy val arbitraryUserData: Arbitrary[UserAnswers] = {
 
@@ -60,11 +69,11 @@ trait UserAnswersGenerator extends TryValues {
 
     Arbitrary {
       for {
-        data    <- generators match {
+        data <- generators match {
           case Nil => Gen.const(Map[QuestionPage[_], JsValue]())
-          case _   => Gen.mapOf(oneOf(generators))
+          case _ => Gen.mapOf(oneOf(generators))
         }
-      } yield UserAnswers (
+      } yield UserAnswers(
         data = data.foldLeft(Json.obj()) {
           case (obj, (path, value)) =>
             obj.setObject(path.path, value).get
