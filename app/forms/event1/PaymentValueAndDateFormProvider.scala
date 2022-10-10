@@ -32,6 +32,11 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
 
   import forms.event1.PaymentValueAndDateFormProvider._
 
+  // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now.
+  //  private val stubDate: LocalDate = LocalDate.now()
+  private val stubMin: LocalDate = LocalDate of(LocalDate.now().getYear, 4, 6)
+  private val stubMax: LocalDate = LocalDate of(LocalDate.now().getYear + 1, 4, 5)
+
   def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[PaymentDetails] =
     Form(
       mapping("paymentValue" ->
@@ -43,23 +48,24 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
           ), "paymentDate" ->
               localDate(
                   requiredKey = "paymentValueAndDate.date.error.nothingEntered",
-                  invalidKey = "paymentValueAndDate.date.error.outsideRelevantTaxYear",
-                  allRequiredKey = "paymentValueAndDate.date.error.noDayMonthOrYear",
-                  twoRequiredKey = "paymentValueAndDate.date.error.outsideDateRanges"
+                  twoRequiredKey = "paymentValueAndDate.date.error.noDayMonthOrYear",
+                  invalidKey = "paymentValueAndDate.date.error.outsideDateRanges",
+                  allRequiredKey = "paymentValueAndDate.date.error.noDayMonthOrYear"
               ).verifying(
                 /*
                   paymentValueAndDate.date.error.nothingEntered = Enter the date of payment or when benefit made available
+                  paymentValueAndDate.date.error.noDayMonthOrYear = The date must include a [day/month/year]
                   paymentValueAndDate.date.error.outsideDateRanges = Enter a real date
+                  paymentValueAndDate.date.error.outsideRelevantTaxYear = Date must be between 6 April [year] and 5 April [year]
                 */
-                minDate(min, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", formatDateDMY(min), formatDateDMY(max))),
-                maxDate(max, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", formatDateDMY(min), formatDateDMY(max))),
-                yearHas4Digits("paymentValueAndDate.date.error.noDayMonthOrYear")
+                minDate(stubMin, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", formatDateDMY(stubMin), formatDateDMY(stubMax))),
+                maxDate(stubMax, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", formatDateDMY(stubMin), formatDateDMY(stubMax))),
+                yearHas4Digits("paymentValueAndDate.date.error.outsideDateRanges")
               )
           )
       (PaymentDetails.apply)(PaymentDetails.unapply)
     )
 }
-
 
 object PaymentValueAndDateFormProvider {
   val maxPaymentValue: BigDecimal = 999999999.99
