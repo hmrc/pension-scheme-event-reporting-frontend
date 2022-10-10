@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.event1.employer
+package forms.event1.member
 
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
@@ -23,9 +23,9 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class UnauthorisedPaymentRecipientNameFormProviderSpec extends StringFieldBehaviours with Constraints {
 
-  private val invalidKey = "unauthorisedPaymentRecipientName.error.invalid"
-  private val lengthKey = "unauthorisedPaymentRecipientName.error.length"
-  private val maxLength = 160
+  private val invalidKey = "unauthorisedPaymentRecipientName.member.error.invalid"
+  private val lengthKey = "unauthorisedPaymentRecipientName.member.error.length"
+  private val maxLength = 150
 
   private val form = new UnauthorisedPaymentRecipientNameFormProvider()()
 
@@ -36,11 +36,11 @@ class UnauthorisedPaymentRecipientNameFormProviderSpec extends StringFieldBehavi
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      RegexpGen.from(regexPersonOrOrgName)
+      RegexpGen.from(regexMemberRecipientName)
     )
 
     "return errors when invalid data" in {
-      val dataItem = "-*%$£"
+      val dataItem = "*%$£"
       val result = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
       result.errors.headOption.map(_.message) mustBe Some(invalidKey)
     }

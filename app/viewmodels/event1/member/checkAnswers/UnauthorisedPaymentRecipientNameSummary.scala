@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package viewmodels.event1.checkAnswers
+package viewmodels.event1.member.checkAnswers
 
 import models.UserAnswers
-import pages.event1.employer.UnauthorisedPaymentRecipientNamePage
+import pages.event1.member.UnauthorisedPaymentRecipientNamePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -33,11 +33,11 @@ object UnauthorisedPaymentRecipientNameSummary {
       answer =>
 
         SummaryListRowViewModel(
-          key = "unauthorisedPaymentRecipientName.checkYourAnswersLabel",
+          key = "unauthorisedPaymentRecipientName.member.checkYourAnswersLabel",
           value = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.change.hidden"))
+              .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.member.change.hidden"))
           )
         )
     }

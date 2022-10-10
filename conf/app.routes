@@ -144,11 +144,16 @@ POST        /new-report/event-1-employer-property-address                  contr
 GET         /new-report/event-1-employer-property-manual-address           controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney)
 POST        /new-report/event-1-employer-property-manual-address           controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney)
 
+
+
 GET         /new-report/event-1-overpayment-details                        controllers.event1.member.ReasonForTheOverpaymentOrWriteOffController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-overpayment-details                        controllers.event1.member.ReasonForTheOverpaymentOrWriteOffController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-1-refund-details                             controllers.event1.member.RefundOfContributionsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-refund-details                             controllers.event1.member.RefundOfContributionsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-1-member-recipient-name                      controllers.event1.member.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-member-recipient-name                      controllers.event1.member.UnauthorisedPaymentRecipientNameController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-1-member-tangible-moveable-property          controllers.event1.MemberTangibleMoveablePropertyController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-member-tangible-moveable-property          controllers.event1.MemberTangibleMoveablePropertyController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

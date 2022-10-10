@@ -69,12 +69,10 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryLoanDetails: Arbitrary[LoanDetails] =
     Arbitrary {
-      val list = for {
-        loanAmount <- Seq(BigDecimal(12,33), BigDecimal(33.44))
-        fundValue <- Seq(BigDecimal(12,33), BigDecimal(33.44))
+      for {
+        loanAmount <- arbitrary[BigDecimal]
+        fundValue <- arbitrary[BigDecimal]
       } yield LoanDetails(Some(loanAmount), Some(fundValue))
-
-      Gen.oneOf(list)
     }
 
   implicit lazy val arbitraryCompanyDetails: Arbitrary[CompanyDetails] =
