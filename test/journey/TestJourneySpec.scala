@@ -25,14 +25,14 @@ import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersDetails
 import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
-import models.event1.employer.PaymentNature.{ResidentialProperty, TangibleMoveableProperty}
+import models.event1.employer.PaymentNature.{LoansExceeding50PercentOfFundValue, ResidentialProperty, TangibleMoveableProperty}
 import models.event1.member.ReasonForTheOverpaymentOrWriteOff.DeathOfMember
 import models.event1.member.RefundOfContributions.WidowOrOrphan
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.event1._
-import pages.event1.employer.CompanyDetailsPage
+import pages.event1.employer.{CompanyDetailsPage, LoanDetailsPage}
 import pages.event1.member._
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
@@ -202,6 +202,15 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         pageMustBe(IndexPage)
       )
   }
+
+  "testing nav to event1 loan details page" in {
+    startingFrom(pages.event1.employer.PaymentNaturePage)
+      .run(
+        submitAnswer(pages.event1.employer.PaymentNaturePage, LoansExceeding50PercentOfFundValue),
+        pageMustBe(LoanDetailsPage)
+      )
+  }
+
   "testing nav to event1 Refund of Contributions pages (member) and selecting Other option" in {
     startingFrom(PaymentNaturePage)
       .run(
