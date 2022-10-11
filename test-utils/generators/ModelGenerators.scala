@@ -22,9 +22,13 @@ import models.event1.employer.CompanyDetails
 import models.event1.member.WhoWasTheTransferMade
 import models.event1.member.ReasonForTheOverpaymentOrWriteOff
 import models.event1.member.RefundOfContributions
+import models.event1.employer.{CompanyDetails, LoanDetails}
+import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import uk.gov.hmrc.domain.Nino
+
+import scala.math.BigDecimal.RoundingMode
 
 trait ModelGenerators {
 
@@ -71,6 +75,14 @@ trait ModelGenerators {
       } yield MembersDetails(firstName, lastName, nino.nino)
 
       Gen.oneOf(list)
+    }
+
+  implicit lazy val arbitraryLoanDetails: Arbitrary[LoanDetails] =
+    Arbitrary {
+      for {
+        loanAmount <- arbitrary[BigDecimal].map(_.setScale(2, RoundingMode.FLOOR))
+        fundValue <- arbitrary[BigDecimal].map(_.setScale(2, RoundingMode.FLOOR))
+      } yield LoanDetails(Some(loanAmount), Some(fundValue))
     }
 
   implicit lazy val arbitraryCompanyDetails: Arbitrary[CompanyDetails] =

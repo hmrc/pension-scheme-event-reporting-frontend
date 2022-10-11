@@ -33,6 +33,9 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(event1.member.SchemeDetailsPage.type, JsValue)] ::
       arbitrary[(event1.member.WhoWasTheTransferMadePage.type, JsValue)] ::
       arbitrary[(event1.member.UnauthorisedPaymentRecipientNamePage.type, JsValue)] ::
+    arbitrary[(event1.employer.LoanDetailsPage.type, JsValue)] ::
+      arbitrary[(RefundOfContributionsPage.type, JsValue)] ::
+      arbitrary[(event1.member.UnauthorisedPaymentRecipientNamePage.type, JsValue)] ::
       arbitrary[(RefundOfContributionsPage.type, JsValue)] ::
       arbitrary[(EmployerPaymentNatureDescriptionPage.type, JsValue)] ::
       arbitrary[(MemberPaymentNatureDescriptionPage.type, JsValue)] ::

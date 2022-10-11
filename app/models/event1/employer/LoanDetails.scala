@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package forms.SchemeDetails
+package models.event1.employer
 
-import javax.inject.Inject
+import play.api.libs.json.{Format, Json}
 
-import forms.mappings.Mappings
-import play.api.data.Form
+case class LoanDetails(loanAmount: Option[BigDecimal], fundValue: Option[BigDecimal])
 
-class SchemeDetailsFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[Option[String]] =
-    Form(
-      "schemeName" -> optionalText()
-        .verifying(maxLength(150, "schemeDetails.error.length")),
-      "reference" -> optional
-    )
+object LoanDetails {
+  implicit val formats: Format[LoanDetails] = Json.format[LoanDetails]
 }

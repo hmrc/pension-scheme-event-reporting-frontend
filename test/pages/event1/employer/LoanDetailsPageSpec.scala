@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package forms.SchemeDetails
+package pages.event1.employer
 
-import javax.inject.Inject
+import models.event1.employer.LoanDetails
+import pages.behaviours.PageBehaviours
 
-import forms.mappings.Mappings
-import play.api.data.Form
 
-class SchemeDetailsFormProvider @Inject() extends Mappings {
+class LoanDetailsPageSpec extends PageBehaviours {
 
-  def apply(): Form[Option[String]] =
-    Form(
-      "schemeName" -> optionalText()
-        .verifying(maxLength(150, "schemeDetails.error.length")),
-      "reference" -> optional
-    )
+  "LoanDetailsPage" - {
+
+    beRetrievable[LoanDetails](LoanDetailsPage)
+
+    beSettable[LoanDetails](LoanDetailsPage)
+
+    beRemovable[LoanDetails](LoanDetailsPage)
+  }
 }

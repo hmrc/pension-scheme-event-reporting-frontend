@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package forms.SchemeDetails
+package pages.event1.employer
 
-import javax.inject.Inject
+import controllers.event1.employer.routes
+import models.event1.employer.LoanDetails
+import pages.{QuestionPage, Waypoints}
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-import forms.mappings.Mappings
-import play.api.data.Form
+case object LoanDetailsPage extends QuestionPage[LoanDetails] {
 
-class SchemeDetailsFormProvider @Inject() extends Mappings {
+  override def path: JsPath = JsPath \ toString
 
-  def apply(): Form[Option[String]] =
-    Form(
-      "schemeName" -> optionalText()
-        .verifying(maxLength(150, "schemeDetails.error.length")),
-      "reference" -> optional
-    )
+  override def toString: String = "loanDetails"
+
+  override def route(waypoints: Waypoints): Call =
+    routes.LoanDetailsController.onPageLoad(waypoints)
 }
