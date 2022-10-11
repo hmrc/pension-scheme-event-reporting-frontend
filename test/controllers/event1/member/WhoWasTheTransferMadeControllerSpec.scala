@@ -14,52 +14,50 @@
  * limitations under the License.
  */
 
-package controllers.event1.employer
+package controllers.event1.member
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event1.employer.LoanDetailsFormProvider
+import forms.event1.member.WhoWasTheTransferMadeFormProvider
 import models.UserAnswers
-import models.event1.employer.LoanDetails
+import models.event1.member.WhoWasTheTransferMade
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
-import pages.event1.employer.LoanDetailsPage
+import pages.event1.member.WhoWasTheTransferMadePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event1.employer.LoanDetailsView
+import views.html.event1.member.WhoWasTheTransferMadeView
 
 import scala.concurrent.Future
 
-class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
+class WhoWasTheTransferMadeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new LoanDetailsFormProvider()
+  private val formProvider = new WhoWasTheTransferMadeFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.LoanDetailsController.onPageLoad(waypoints).url
+  private def getRoute: String = routes.WhoWasTheTransferMadeController.onPageLoad(waypoints).url
 
-  private def postRoute: String = routes.LoanDetailsController.onSubmit(waypoints).url
+  private def postRoute: String = routes.WhoWasTheTransferMadeController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
-
-  private val validValue = LoanDetails(Some(BigDecimal(12.12)), Some(BigDecimal(13.13)))
 
   override def beforeEach: Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
 
-  "LoanDetails Controller" - {
+  "WhoWasTheTransferMade Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -70,7 +68,7 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[LoanDetailsView]
+        val view = application.injector.instanceOf[WhoWasTheTransferMadeView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
@@ -79,19 +77,19 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(LoanDetailsPage, validValue).success.value
+      val userAnswers = UserAnswers().set(WhoWasTheTransferMadePage, WhoWasTheTransferMade.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[LoanDetailsView]
+        val view = application.injector.instanceOf[WhoWasTheTransferMadeView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(WhoWasTheTransferMade.values.head), waypoints)(request, messages(application)).toString
       }
     }
 
@@ -105,16 +103,13 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
-            "loanAmount" -> "12",
-            "fundValue" -> "13"
-          )
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", WhoWasTheTransferMade.values.head.toString))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(LoanDetailsPage, validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(WhoWasTheTransferMadePage, WhoWasTheTransferMade.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual LoanDetailsPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual WhoWasTheTransferMadePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -126,14 +121,15 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
-            "loanAmount" -> "12.4",
-            "fundValue" -> "13.1"
-          )
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
+
+        val view = application.injector.instanceOf[WhoWasTheTransferMadeView]
+        val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

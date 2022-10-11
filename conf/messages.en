@@ -366,6 +366,25 @@ benefitInKindBriefDescription.checkYourAnswersLabel = Give a brief description o
 benefitInKindBriefDescription.error.length = You can enter a maximum of 150 characters (optional)
 benefitInKindBriefDescription.change.hidden = Give a brief description of the benefit in kind
 
+whoWasTheTransferMade.title = Who was the transfer made to?
+whoWasTheTransferMade.heading = Who was the transfer made to?
+whoWasTheTransferMade.anEmployerFinanced = An employer-financed retirement benefit scheme (EFRBS)
+whoWasTheTransferMade.nonRecognisedScheme = A non-recognised pension scheme which is not a qualifying overseas pension scheme
+whoWasTheTransferMade.other = Other
+whoWasTheTransferMade.checkYourAnswersLabel = Who was the transfer made to?
+whoWasTheTransferMade.error.required = Select who the transfer was made to
+whoWasTheTransferMade.change.hidden = Who was the transfer made to?
+
+schemeDetails.title = Scheme details
+schemeDetails.heading = Scheme details
+schemeDetails.schemeName = Scheme-name (optional)
+schemeDetails.reference = Reference (optional)
+schemeDetails.checkYourAnswersLabel = Scheme details
+schemeDetails.error.required = Enter Scheme details
+schemeDetails.error.name.length = Scheme-name must be 150 characters or less
+schemeDetails.error.ref.length = Reference must be 150 characters or less
+schemeDetails.change.hidden = Scheme details
+
 memberTangibleMoveableProperty.title = Give a brief description of the tangible moveable property
 memberTangibleMoveableProperty.heading = Give a brief description of the tangible moveable property
 memberTangibleMoveableProperty.hint = You can enter a maximum of 150 characters (optional).

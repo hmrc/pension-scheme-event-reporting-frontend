@@ -17,7 +17,7 @@
 package generators
 
 import models._
-import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions}
+import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, WhoWasTheTransferMade}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
@@ -97,6 +97,22 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       for {
         page <- arbitrary[RefundOfContributionsPage.type]
         value <- arbitrary[RefundOfContributions].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitrarySchemeDetailsUserAnswersEntry: Arbitrary[(SchemeDetailsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[pages.event1.member.SchemeDetailsPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryWhoWasTheTransferMadeUserAnswersEntry: Arbitrary[(WhoWasTheTransferMadePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[pages.event1.member.WhoWasTheTransferMadePage.type]
+        value <- arbitrary[WhoWasTheTransferMade].map(Json.toJson(_))
       } yield (page, value)
     }
 
