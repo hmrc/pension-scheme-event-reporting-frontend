@@ -19,8 +19,6 @@ package config
 import com.google.inject.{Inject, Singleton}
 import play.api.Configuration
 import play.api.i18n.Lang
-import play.api.mvc.RequestHeader
-import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
@@ -29,18 +27,19 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   private def loadConfig(key: String): String =
     configuration.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
+  private def getConfigString(key: String) = servicesConfig.getConfString(key,
+    throw new Exception(s"Could not find config '$key'"))
+
   val host: String = configuration.get[String]("host")
   val appName: String = configuration.get[String]("appName")
 
   lazy val eventReportingUrl: String = servicesConfig.baseUrl("pension-scheme-event-reporting")
   lazy val pensionsAdministratorUrl: String = servicesConfig.baseUrl("pension-administrator")
   lazy val addressLookUp: String = s"${servicesConfig.baseUrl("address-lookup")}"
-  lazy val contactUrl: String = s"${servicesConfig.baseUrl("contact-frontend")}"
 
   lazy val locationCanonicalList: String = loadConfig("location.canonical.list")
 
-  def feedbackUrl(implicit request: RequestHeader): String =
-    s"$contactUrl/contact/beta-feedback?service=PODS&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
+  val betaFeedbackUnauthenticatedUrl: String = getConfigString("contact-frontend.beta-feedback-url.unauthenticated")
 
   val loginUrl: String = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
