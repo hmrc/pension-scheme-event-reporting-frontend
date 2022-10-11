@@ -50,7 +50,5 @@ class SchemeDetailsFormProviderSpec extends StringFieldBehaviours {
       maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
-
-
-    }
+  }
 }

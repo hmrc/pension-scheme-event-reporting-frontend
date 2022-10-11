@@ -264,7 +264,6 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(WhoWasTheTransferMadePage, AnEmployerFinanced),
         pageMustBe(pages.event1.member.SchemeDetailsPage)
       )
-
   }
 
 }

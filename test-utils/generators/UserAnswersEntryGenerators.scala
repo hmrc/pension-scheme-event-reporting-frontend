@@ -36,8 +36,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryMemberUnauthorisedPaymentRecipientNameUserAnswersEntry:
-    Arbitrary[(pages.event1.member.UnauthorisedPaymentRecipientNamePage.type, JsValue)] =
+  implicit lazy val arbitraryMemberUnauthorisedPaymentRecipientNameUserAnswersEntry: Arbitrary[(pages.event1.member.UnauthorisedPaymentRecipientNamePage.type, JsValue)] =
     Arbitrary {
       for {
         page <- arbitrary[pages.event1.member.UnauthorisedPaymentRecipientNamePage.type]
