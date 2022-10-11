@@ -28,10 +28,10 @@ class SchemeDetailsFormProvider @Inject() extends Mappings {
   def apply(): Form[SchemeDetails] =
     Form(
       mapping(
-      "schemeName" -> optionalText()
-        .verifying(maxLength(150, "schemeDetails.error.name.length")),
-      "reference" -> optionalText()
-        .verifying(maxLength(150, "schemeDetails.error.ref.length"))
+        "schemeName" -> optionalText()
+          .verifying(maxLength(150, "schemeDetails.error.name.length")),
+        "reference" -> optionalText()
+          .verifying(maxLength(150, "schemeDetails.error.ref.length"))
       )(SchemeDetails.apply)(SchemeDetails.unapply)
     )
 }

@@ -145,8 +145,8 @@ class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(
-            "schemeName" -> "scheme name",
-            "reference" -> ("1234567890abc"*30)
+            "schemeName" -> ("a" * 151),
+            "reference" -> ("b" * 151)
           )
 
         val result = route(application, request).value

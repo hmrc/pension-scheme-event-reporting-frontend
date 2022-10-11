@@ -43,7 +43,7 @@ class SchemeDetailsController @Inject()(val controllerComponents: MessagesContro
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(SchemeDetailsPage)).fold(form){ v => form.fill(v) }
+    val preparedForm = request.userAnswers.flatMap(_.get(SchemeDetailsPage)).fold(form) { v => form.fill(v) }
     Ok(view(preparedForm, waypoints))
   }
 

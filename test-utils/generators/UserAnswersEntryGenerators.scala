@@ -103,7 +103,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitrarySchemeDetailsUserAnswersEntry: Arbitrary[(SchemeDetailsPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event1.member.SchemeDetailsPage.type]
+        page <- arbitrary[pages.event1.member.SchemeDetailsPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
@@ -111,7 +111,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryWhoWasTheTransferMadeUserAnswersEntry: Arbitrary[(WhoWasTheTransferMadePage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event1.member.WhoWasTheTransferMadePage.type]
+        page <- arbitrary[pages.event1.member.WhoWasTheTransferMadePage.type]
         value <- arbitrary[WhoWasTheTransferMade].map(Json.toJson(_))
       } yield (page, value)
     }

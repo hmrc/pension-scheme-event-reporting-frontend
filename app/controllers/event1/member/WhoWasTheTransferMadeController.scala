@@ -32,12 +32,12 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class WhoWasTheTransferMadeController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                          identify: IdentifierAction,
-                                          getData: DataRetrievalAction,
-                                          userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          formProvider: WhoWasTheTransferMadeFormProvider,
-                                          view: WhoWasTheTransferMadeView
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                userAnswersCacheConnector: UserAnswersCacheConnector,
+                                                formProvider: WhoWasTheTransferMadeFormProvider,
+                                                view: WhoWasTheTransferMadeView
+                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event1

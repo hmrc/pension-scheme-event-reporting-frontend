@@ -23,8 +23,8 @@ class SchemeDetailsFormProviderSpec extends StringFieldBehaviours {
 
   private val validData = "abc"
   private val maxLength = 150
-  private val lengthKey = "schemeDetails.error.name.length"
-  private def invalidData = "Point"*30
+  private val nameLengthErrorKey = "schemeDetails.error.name.length"
+  private val refLengthErrorKey = "schemeDetails.error.ref.length"
 
   private val form = new SchemeDetailsFormProvider()()
 
@@ -48,7 +48,31 @@ class SchemeDetailsFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      lengthError = FormError(fieldName, nameLengthErrorKey, Seq(maxLength))
+    )
+  }
+
+  ".reference" - {
+
+    val fieldName = "reference"
+
+    "bind non-empty data" in {
+      val result = form.bind(Map(fieldName -> validData)).apply(fieldName)
+      result.value.value mustBe validData
+      result.errors mustBe empty
+    }
+
+    "bind empty data" in {
+      val result = form.bind(Map(fieldName -> "")).apply(fieldName)
+      result.value.value mustBe ""
+      result.errors mustBe empty
+    }
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, refLengthErrorKey, Seq(maxLength))
     )
   }
 }
