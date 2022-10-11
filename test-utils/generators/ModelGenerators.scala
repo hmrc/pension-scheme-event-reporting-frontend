@@ -19,11 +19,8 @@ package generators
 import models._
 import models.event1.MembersDetails
 import models.event1.employer.CompanyDetails
-import models.event1.member.WhoWasTheTransferMade
-import models.event1.member.ReasonForTheOverpaymentOrWriteOff
-import models.event1.member.RefundOfContributions
+import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, SchemeDetails, WhoWasTheTransferMade}
 import models.event1.employer.{CompanyDetails, LoanDetails}
-import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import uk.gov.hmrc.domain.Nino
@@ -83,6 +80,16 @@ trait ModelGenerators {
         loanAmount <- arbitrary[BigDecimal].map(_.setScale(2, RoundingMode.FLOOR))
         fundValue <- arbitrary[BigDecimal].map(_.setScale(2, RoundingMode.FLOOR))
       } yield LoanDetails(Some(loanAmount), Some(fundValue))
+    }
+
+  implicit lazy val arbitrarySchemeDetails: Arbitrary[SchemeDetails] =
+    Arbitrary {
+      val list = for {
+        schemeName <- Seq("validSchemeName1", "validSchemeName2")
+        reference <- Seq("validReferenceNumber1", "validReferenceNumber2")
+      } yield SchemeDetails(Some(schemeName), Some(reference))
+
+      Gen.oneOf(list)
     }
 
   implicit lazy val arbitraryCompanyDetails: Arbitrary[CompanyDetails] =

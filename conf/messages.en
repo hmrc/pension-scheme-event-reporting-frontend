@@ -377,11 +377,12 @@ whoWasTheTransferMade.change.hidden = Who was the transfer made to?
 
 schemeDetails.title = Scheme details
 schemeDetails.heading = Scheme details
-schemeDetails.schemeName = Scheme name (optional)
+schemeDetails.schemeName = Scheme-name (optional)
 schemeDetails.reference = Reference (optional)
 schemeDetails.checkYourAnswersLabel = Scheme details
 schemeDetails.error.required = Enter Scheme details
-schemeDetails.error.length = Scheme details must be 150 characters or less
+schemeDetails.error.name.length = Scheme-name must be 150 characters or less
+schemeDetails.error.ref.length = Reference must be 150 characters or less
 schemeDetails.change.hidden = Scheme details
 
 memberTangibleMoveableProperty.title = Give a brief description of the tangible moveable property

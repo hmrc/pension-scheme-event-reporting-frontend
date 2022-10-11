@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package pages.event1.member
+package models.event1.member
 
-import models.event1.member.SchemeDetails
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{Format, Json}
 
 
-class SchemeDetailsPageSpec extends PageBehaviours {
+case class SchemeDetails(schemeName: Option[String], reference: Option[String])
 
-  "SchemeDetailsPage" - {
+object SchemeDetails {
 
-    beRetrievable[SchemeDetails](SchemeDetailsPage)
-
-    beSettable[SchemeDetails](SchemeDetailsPage)
-
-    beRemovable[SchemeDetails](SchemeDetailsPage)
-  }
+  implicit val format: Format[SchemeDetails] = Json.format[SchemeDetails]
 }
+

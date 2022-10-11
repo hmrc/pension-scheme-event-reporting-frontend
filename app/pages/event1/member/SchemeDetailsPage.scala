@@ -17,11 +17,12 @@
 package pages.event1.member
 
 import controllers.event1.member.routes
+import models.event1.member.SchemeDetails
 import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object SchemeDetailsPage extends QuestionPage[String] {
+case object SchemeDetailsPage extends QuestionPage[SchemeDetails] {
 
   override def path: JsPath = JsPath \ toString
 

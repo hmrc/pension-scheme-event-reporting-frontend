@@ -34,7 +34,7 @@ object SchemeDetailsSummary {
 
         SummaryListRowViewModel(
           key = "schemeDetails.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlFormat.escape(answer).toString),
+          value = ValueViewModel(HtmlFormat.escape(answer.toString).toString),
           actions = Seq(
             ActionItemViewModel("site.change", SchemeDetailsPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))

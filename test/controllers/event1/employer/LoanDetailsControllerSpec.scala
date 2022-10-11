@@ -131,9 +131,6 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
             "fundValue" -> "13.1"
           )
 
-        val view = application.injector.instanceOf[LoanDetailsView]
-        val boundForm = form.bind(Map("value" -> ""))
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST

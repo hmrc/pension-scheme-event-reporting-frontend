@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package forms.SchemeDetails
+package forms.event1.member
+
+import forms.mappings.Mappings
+import models.event1.member.SchemeDetails
+import play.api.data.Form
+import play.api.data.Forms.mapping
 
 import javax.inject.Inject
 
-import forms.mappings.Mappings
-import play.api.data.Form
-
 class SchemeDetailsFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Option[String]] =
+  def apply(): Form[SchemeDetails] =
     Form(
+      mapping(
       "schemeName" -> optionalText()
-        .verifying(maxLength(150, "schemeDetails.error.length")),
-      "reference" -> optional
+        .verifying(maxLength(150, "schemeDetails.error.name.length")),
+      "reference" -> optionalText()
+        .verifying(maxLength(150, "schemeDetails.error.ref.length"))
+      )(SchemeDetails.apply)(SchemeDetails.unapply)
     )
 }

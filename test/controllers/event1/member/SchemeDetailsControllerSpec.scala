@@ -18,10 +18,11 @@ package controllers.event1.member
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.SchemeDetails.SchemeDetailsFormProvider
+import forms.event1.member.SchemeDetailsFormProvider
 import models.UserAnswers
+import models.event1.member.SchemeDetails
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
@@ -50,7 +51,8 @@ class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validValue = Some("abc")
+  private val validValue = SchemeDetails(Some("abc"), Some(""))
+  private val emptyValue = SchemeDetails(Some(""), Some(""))
 
   override def beforeEach: Unit = {
     super.beforeEach
@@ -77,7 +79,7 @@ class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(SchemeDetailsPage, validValue.value).success.value
+      val userAnswers = UserAnswers().set(SchemeDetailsPage, validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -106,7 +108,7 @@ class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(SchemeDetailsPage, validValue.value).success.value
+        val updatedAnswers = emptyUserAnswers.set(SchemeDetailsPage, validValue).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual SchemeDetailsPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
@@ -127,16 +129,30 @@ class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(SchemeDetailsPage, "").success.value
+        val updatedAnswers = emptyUserAnswers.set(SchemeDetailsPage, emptyValue).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual SchemeDetailsPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
+    "must return bad request when invalid data is submitted" in {
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
 
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
+            "schemeName" -> "scheme name",
+            "reference" -> ("1234567890abc"*30)
+          )
 
+        val result = route(application, request).value
 
-
+        status(result) mustEqual BAD_REQUEST
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
   }
 }
