@@ -59,11 +59,6 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(event18.Event18ConfirmationPage.type, JsValue)] ::
       arbitrary[(EventSummaryPage.type, JsValue)] ::
       arbitrary[(EventSelectionPage.type, JsValue)] ::
-      arbitrary[(TestIntPagePage.type, JsValue)] ::
-      arbitrary[(TestStringPagePage.type, JsValue)] ::
-      arbitrary[(TestRadioButtonPage.type, JsValue)] ::
-      arbitrary[(TestCheckBoxPage.type, JsValue)] ::
-      arbitrary[(TestDatePage.type, JsValue)] ::
       Nil
 
   implicit lazy val arbitraryUserData: Arbitrary[UserAnswers] = {

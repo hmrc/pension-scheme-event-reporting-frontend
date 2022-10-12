@@ -251,44 +251,4 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
         value <- arbitrary[EventSelection].map(Json.toJson(_))
       } yield (page, value)
     }
-
-  implicit lazy val arbitraryTestIntPageUserAnswersEntry: Arbitrary[(TestIntPagePage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[TestIntPagePage.type]
-        value <- arbitrary[Int].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryTestStringPageUserAnswersEntry: Arbitrary[(TestStringPagePage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[TestStringPagePage.type]
-        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryTestRadioButtonUserAnswersEntry: Arbitrary[(TestRadioButtonPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[TestRadioButtonPage.type]
-        value <- arbitrary[TestRadioButton].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryTestCheckBoxUserAnswersEntry: Arbitrary[(TestCheckBoxPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[TestCheckBoxPage.type]
-        value <- arbitrary[TestCheckBox].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryDateUserAnswersEntry: Arbitrary[(TestDatePage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[TestDatePage.type]
-        value <- arbitrary[Int].map(Json.toJson(_))
-      } yield (page, value)
-    }
 }

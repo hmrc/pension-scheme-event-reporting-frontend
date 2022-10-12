@@ -19,8 +19,8 @@ package generators
 import org.scalacheck.Arbitrary
 import pages._
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
-import pages.event1.{employer, member}
 import pages.event1.member._
+import pages.event1.{employer, member}
 import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
@@ -112,19 +112,4 @@ trait PageGenerators {
 
   implicit lazy val arbitraryeventSelectionPage: Arbitrary[EventSelectionPage.type] =
     Arbitrary(EventSelectionPage)
-
-  implicit lazy val arbitraryTestIntPagePage: Arbitrary[TestIntPagePage.type] =
-    Arbitrary(TestIntPagePage)
-
-  implicit lazy val arbitraryTestStringPagePage: Arbitrary[TestStringPagePage.type] =
-    Arbitrary(TestStringPagePage)
-
-  implicit lazy val arbitraryTestRadioButtonPage: Arbitrary[TestRadioButtonPage.type] =
-    Arbitrary(TestRadioButtonPage)
-
-  implicit lazy val arbitraryTestCheckBoxPage: Arbitrary[TestCheckBoxPage.type] =
-    Arbitrary(TestCheckBoxPage)
-
-  implicit lazy val arbitraryDatePage: Arbitrary[TestDatePage.type] =
-    Arbitrary(TestDatePage)
 }
