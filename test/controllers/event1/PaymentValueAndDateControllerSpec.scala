@@ -102,7 +102,6 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
       }
     }
 
-    // TODO: fix
     "must save the answer and redirect to the next page when valid data is submitted" in {
 
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
@@ -114,7 +113,7 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(paymentDetails("1000.00", Some(LocalDate.now()) ):_*)
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(paymentDetails("1000.00", Some(LocalDate.of(2022, 5, 1)) ):_*)
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(PaymentValueAndDatePage, validValue).success.value
@@ -154,15 +153,15 @@ object PaymentValueAndDateControllerSpec {
   private def paymentDetails(
                               paymentValue: String = "1000.00",
                               paymentDate: Option[LocalDate] = None
-                            ): Map[String, String] = paymentDate match {
-    case Some(date) => Map(
-      paymentValueKey -> paymentValue,
-      paymentDateKey + ".day" -> s"${date.getDayOfMonth}",
-      paymentDateKey + ".month" -> s"${date.getMonth}",
-      paymentDateKey + ".year" -> s"${date.getYear}"
+                            ): Seq[(String, String)] = paymentDate match {
+    case Some(date) => Seq(
+      Tuple2(paymentValueKey, paymentValue),
+      Tuple2(paymentDateKey + ".day", s"${date.getDayOfMonth}"),
+      Tuple2(paymentDateKey + ".month", s"${date.getMonthValue}"),
+      Tuple2(paymentDateKey + ".year", s"${date.getYear}")
     )
-    case None => Map(
-      paymentValueKey -> paymentValue
-    )
+    case None =>
+      Seq(Tuple2(paymentValueKey, paymentValue))
+  }
 }
 
