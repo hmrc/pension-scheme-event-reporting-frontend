@@ -17,11 +17,18 @@
 package pages.event1
 
 import models.event1.PaymentDetails
+import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
+
+import java.time.LocalDate
 
 class PaymentValueAndDatePageSpec extends PageBehaviours {
 
   "PaymentValueAndDatePage" - {
+
+    implicit lazy val arbitraryPaymentValueAndDate: Arbitrary[PaymentDetails] = Arbitrary {
+        PaymentDetails(1000.00, LocalDate.now())
+    }
 
     beRetrievable[PaymentDetails](PaymentValueAndDatePage)
 
