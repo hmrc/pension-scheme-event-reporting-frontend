@@ -17,7 +17,9 @@
 package pages.event1.member
 
 import controllers.event1.member.routes
-import pages.{QuestionPage, Waypoints}
+import models.UserAnswers
+import pages.event1.{BenefitInKindBriefDescriptionPage, PaymentValueAndDatePage}
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -29,4 +31,11 @@ case object BenefitsPaidEarlyPage extends QuestionPage[String] {
 
   override def route(waypoints: Waypoints): Call =
     routes.BenefitsPaidEarlyController.onPageLoad(waypoints)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    answers.get(BenefitsPaidEarlyPage) match {
+      case Some(_) => PaymentValueAndDatePage
+      case _ => IndexPage
+    }
+  }
 }
