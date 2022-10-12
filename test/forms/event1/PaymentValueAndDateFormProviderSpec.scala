@@ -35,9 +35,10 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
   private val paymentValueKey = "paymentValue"
   private val paymentDateKey = "paymentDate"
   private val messageKeyPaymentValueKey = "paymentValueAndDate.value"
-  // private val messageKeyPaymentDateKey = "paymentValueAndDate.date" // not yet used
+  private val messageKeyPaymentDateKey = "paymentValueAndDate.date"
 
   val validDataGenerator: Gen[String] = decsInRangeWithCommas(0, 999999999.99)
+  val invalidDataGenerator: Gen[String] = intsInRangeWithCommas(0, 999999999)
 
   private def paymentDetails(
                               paymentValue: String = "1000.00",
@@ -46,7 +47,7 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
     case Some(date) => Map(
       paymentValueKey -> paymentValue,
       paymentDateKey + ".day" -> s"${date.getDayOfMonth}",
-      paymentDateKey + ".month" -> s"${date.getMonth}",
+      paymentDateKey + ".month" -> s"${date.getMonthValue}",
       paymentDateKey + ".year" -> s"${date.getYear}"
     )
     case None => Map(
@@ -56,11 +57,21 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
 
   "paymentValue" - {
 
+    "not bind no input" in {
+      val result = form.bind(paymentDetails(paymentValue = "", Some(LocalDate.now())))
+      result.errors mustEqual Seq(FormError(paymentValueKey, s"$messageKeyPaymentValueKey.error.nothingEntered"))
+    }
+
     "not bind non-numeric numbers" in {
-      forAll(nonNumerics -> "notANumber") {
-        nonNumeric: String =>
-          val result = form.bind(paymentDetails(paymentValue = nonNumeric, Some(LocalDate.now())))
-          result.errors mustEqual Seq(FormError(paymentValueKey, s"$messageKeyPaymentValueKey.error.notANumber"))
+      val result = form.bind(paymentDetails(paymentValue = "one,two.three", Some(LocalDate.now())))
+      result.errors mustEqual Seq(FormError(paymentValueKey, s"$messageKeyPaymentValueKey.error.notANumber"))
+    }
+
+    "not bind integers" in {
+      forAll(invalidDataGenerator -> "noDecimals") {
+        int: String =>
+          val result = form.bind(paymentDetails(paymentValue = int, Some(LocalDate.now())))
+          result.errors mustEqual Seq(FormError(paymentValueKey, s"$messageKeyPaymentValueKey.error.noDecimals"))
       }
     }
 
@@ -68,57 +79,43 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
       forAll(validDataGenerator -> "amountTooHigh") {
         number: String =>
           val result = form.bind(paymentDetails(paymentValue = number, Some(LocalDate.now())))
-          result.errors.head.key mustEqual messageKeyPaymentValueKey
+          result.errors.head.key mustEqual paymentValueKey
       }
     }
   }
 
-  //    behave like fieldThatBindsValidData(
-  //      form,
-  //      fieldName,
-  //      validDataGenerator
-  //    )
-  //
-  //    behave like bigDecimalField(
-  //      form,
-  //      fieldName,
-  //      nonNumericError  = FormError(fieldName, "paymentValueAndDate.value.error.notANumber"),
-  //      decimalsError = FormError(fieldName, "paymentValueAndDate.value.error.noDecimals")
-  //    )
-  //
-  //    behave like bigDecimalFieldWithRange(
-  //      form,
-  //      fieldName,
-  //      minimum       = minimum,
-  //      maximum       = maximum,
-  //      expectedError = FormError(fieldName, "paymentValueAndDate.value.error.amountTooHigh", Seq(minimum, maximum))
-  //    )
-  //
-  //    behave like mandatoryField(
-  //      form,
-  //      fieldName,
-  //      requiredError = FormError(fieldName, "paymentValueAndDate.value.error.nothingEntered")
-  //    )
-
   "paymentDate" - {
+
+    behave like mandatoryDateField(
+      form = form,
+      key = paymentDateKey,
+      requiredAllKey = "paymentValueAndDate.date.error.noDayMonthOrYear"
+    )
+
+//    behave like dateFieldDayMonthMissing(
+//      form = form,
+//      key = paymentDateKey,
+//      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.noDayMonthOrYear"))
+//    )
 
     behave like dateFieldWithMin(
       form = form,
       key = paymentDateKey,
       min = stubMin,
-      formError = FormError(paymentDateKey, "paymentValueAndDate.date.error.outsideRelevantTaxYear")
+      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear"))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = paymentDateKey,
       max = stubMax,
-      formError = FormError(paymentDateKey, "paymentValueAndDate.date.error.outsideRelevantTaxYear")
+      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear"))
     )
 
-    behave like mandatoryDateField(
-      form = form,
-      key = paymentDateKey,
-      requiredAllKey = "paymentValueAndDate.date.error.nothingEntered")
+//    behave like dateFieldYearNot4Digits(
+//      form,
+//      key = paymentDateKey,
+//      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.outsideDateRanges"))
+//    )
   }
 }
