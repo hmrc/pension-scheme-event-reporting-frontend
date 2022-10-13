@@ -56,56 +56,6 @@ signedOut.guidance = We did not save your answers.
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-test.error.required = You must enter a value here!
-test.title = TEST PAGE TITLE
-test.heading = TEST PAGE HEADING
-
-test.checkYourAnswersLabel = Test
-testDate.title = Date
-testDate.heading = Date
-testDate.hint = For example, 12 11 2007
-testDate.checkYourAnswersLabel = Date
-testDate.error.required.all = Enter the date
-testDate.error.required.two = The date must include {0} and {1}
-testDate.error.required = The date must include {0}
-testDate.error.invalid = Enter a real date
-testDate.change.hidden = Enter date
-
-testCheckBox.title = testCheckBox
-testCheckBox.heading = testCheckBox
-testCheckBox.option1 = Option 1
-testCheckBox.option2 = Option 2
-testCheckBox.checkYourAnswersLabel = testCheckBox
-testCheckBox.error.required = Select testCheckBox
-testCheckBox.change.hidden = TestCheckBox
-
-testRadioButton.title = testRadioButton
-testRadioButton.heading = testRadioButton
-testRadioButton.option1 = Option 1
-testRadioButton.option2 = Option 2
-testRadioButton.checkYourAnswersLabel = testRadioButton
-testRadioButton.error.required = Select testRadioButton
-testRadioButton.change.hidden = TestRadioButton
-
-testContentPage.title = testContentPage
-testContentPage.heading = testContentPage
-
-testStringPage.title = testStringPage
-testStringPage.heading = testStringPage
-testStringPage.checkYourAnswersLabel = testStringPage
-testStringPage.error.required = Enter testStringPage
-testStringPage.error.length = TestStringPage must be 100 characters or less
-testStringPage.change.hidden = TestStringPage
-
-testIntPage.title = TestIntPage
-testIntPage.heading = TestIntPage
-testIntPage.checkYourAnswersLabel = TestIntPage
-testIntPage.error.nonNumeric = Enter your testIntPage using numbers
-testIntPage.error.required = Enter your testIntPage
-testIntPage.error.wholeNumber = Enter your testIntPage using whole numbers
-testIntPage.error.outOfRange = TestIntPage must be between {0} and {1}
-testIntPage.change.hidden = TestIntPage
-
 eventSummary.title = Event report for tax year ending 5 April {0}
 eventSummary.heading = Event report for tax year ending 5 April {0}
 eventSummary.yesno.legend = Do you want to add another event?
@@ -325,6 +275,7 @@ address.postCode = Postcode (if UK)
 address.country = Country
 
 entityType.theCompany = the company
+entityType.theResidentialProperty = the residential property
 
 paymentNature.title = Nature of the payment or deemed payment
 paymentNature.heading = Nature of the payment or deemed payment
@@ -365,14 +316,63 @@ benefitInKindBriefDescription.checkYourAnswersLabel = Give a brief description o
 benefitInKindBriefDescription.error.length = You can enter a maximum of 150 characters (optional)
 benefitInKindBriefDescription.change.hidden = Give a brief description of the benefit in kind
 
-memberResidentialAddress.enterPostcode.entityName = the residential property
+whoWasTheTransferMade.title = Who was the transfer made to?
+whoWasTheTransferMade.heading = Who was the transfer made to?
+whoWasTheTransferMade.anEmployerFinanced = An employer-financed retirement benefit scheme (EFRBS)
+whoWasTheTransferMade.nonRecognisedScheme = A non-recognised pension scheme which is not a qualifying overseas pension scheme
+whoWasTheTransferMade.other = Other
+whoWasTheTransferMade.checkYourAnswersLabel = Who was the transfer made to?
+whoWasTheTransferMade.error.required = Select who the transfer was made to
+whoWasTheTransferMade.change.hidden = Who was the transfer made to?
 
-memberResidentialAddress.enterPostcode.title = What is the postcode of the residential property?
-memberResidentialAddress.enterPostcode.h1 = What is the postcode of the residential property?
+schemeDetails.title = Scheme details
+schemeDetails.heading = Scheme details
+schemeDetails.schemeName = Scheme-name (optional)
+schemeDetails.reference = Reference (optional)
+schemeDetails.checkYourAnswersLabel = Scheme details
+schemeDetails.error.required = Enter Scheme details
+schemeDetails.error.name.length = Scheme-name must be 150 characters or less
+schemeDetails.error.ref.length = Reference must be 150 characters or less
+schemeDetails.change.hidden = Scheme details
+
+memberTangibleMoveableProperty.title = Give a brief description of the tangible moveable property
+memberTangibleMoveableProperty.heading = Give a brief description of the tangible moveable property
+memberTangibleMoveableProperty.hint = You can enter a maximum of 150 characters (optional).
+memberTangibleMoveableProperty.checkYourAnswersLabel = Give a brief description of the tangible moveable property
+memberTangibleMoveableProperty.error.length = The tangible moveable property must be 150 characters or fewer
+memberTangibleMoveableProperty.change.hidden = Give a brief description of the tangible moveable property
+
+employerTangibleMoveableProperty.title = Give a brief description of the tangible moveable property
+employerTangibleMoveableProperty.heading = Give a brief description of the tangible moveable property
+employerTangibleMoveableProperty.hint = You can enter a maximum of 150 characters (optional).
+employerTangibleMoveableProperty.checkYourAnswersLabel = Give a brief description of the tangible moveable property
+employerTangibleMoveableProperty.error.length = The tangible moveable property must be 150 characters or fewer
+employerTangibleMoveableProperty.change.hidden = Give a brief description of the tangible moveable property
+
+memberPaymentNatureDescription.title = Give a brief description of the nature of the payment
+memberPaymentNatureDescription.heading = Give a brief description of the nature of the payment
+memberPaymentNatureDescription.hint = You can enter a maximum of 150 characters (optional).
+memberPaymentNatureDescription.checkYourAnswersLabel = Give a brief description of the nature of the payment
+memberPaymentNatureDescription.error.length = The nature of the payment must be 150 characters or fewer
+memberPaymentNatureDescription.change.hidden = Give a brief description of the nature of the payment
+
+employerPaymentNatureDescription.title = Give a brief description of the nature of the payment
+employerPaymentNatureDescription.heading = Give a brief description of the nature of the payment
+employerPaymentNatureDescription.hint = You can enter a maximum of 150 characters (optional).
+employerPaymentNatureDescription.checkYourAnswersLabel = Give a brief description of the nature of the payment
+employerPaymentNatureDescription.error.length = The nature of the payment must be 150 characters or fewer
+employerPaymentNatureDescription.change.hidden = Give a brief description of the nature of the payment
+
+residentialAddress.enterPostcode.title = What is the postcode of the residential property?
+residentialAddress.enterPostcode.h1 = What is the postcode of the residential property?
+residentialAddress.chooseAddress.title = What is the address of the residential property?
+residentialAddress.chooseAddress.h1 = What is the address of the residential property?
+residentialAddress.address.title = What is the address of the residential property?
+residentialAddress.address.h1 = What is the address of the residential property?
 
 memberResidentialAddress.chooseAddress.title = What is the address of the residential property?
 memberResidentialAddress.chooseAddress.h1 = What is the address of the residential property?
-
+memberResidentialAddress.enterPostcode.entityName = the residential property
 memberResidentialAddress.address.title = What is the address of the residential property?
 memberResidentialAddress.address.h1 = What is the address of the residential property?
 
@@ -394,3 +394,55 @@ paymentValueAndDate.date.error.noDayMonthOrYear = The date must include a day, m
 paymentValueAndDate.date.error.outsideDateRanges = Enter a real date
 paymentValueAndDate.date.error.outsideRelevantTaxYear = Date must be between 6 April [year] and 5 April [year]
 paymentValueAndDate.date.change.hidden = Enter the date of payment or when benefit made available
+
+unauthorisedPaymentRecipientName.title = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.heading = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.checkYourAnswersLabel = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.error.invalid = The recipient name must only include letters, spaces, ampersands, grave accents, apostrophes, backslashes, full stops and carets
+unauthorisedPaymentRecipientName.error.length = The company or organisation’s name must be 160 characters or fewer
+unauthorisedPaymentRecipientName.change.hidden = Change the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.hint = Recipient name (optional)
+
+unauthorisedPaymentRecipientName.member.title = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.member.heading = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.member.checkYourAnswersLabel = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.member.error.invalid = The person name must only include letters, spaces, ampersands, grave accents, apostrophes, backslashes, hyphens, full stops and carets
+unauthorisedPaymentRecipientName.member.error.length = The person name must be 150 characters or fewer
+unauthorisedPaymentRecipientName.member.change.hidden = Change the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.member.hint = Recipient name (optional)
+
+reasonForTheOverpaymentOrWriteOff.title = What is the reason for the overpayment/write off?
+reasonForTheOverpaymentOrWriteOff.heading = What is the reason for the overpayment/write off?
+reasonForTheOverpaymentOrWriteOff.deathOfMember = Death of member
+reasonForTheOverpaymentOrWriteOff.deathOfDependent = Death of dependent
+reasonForTheOverpaymentOrWriteOff.dependentNoLongerQualifiedForPension = Dependent no longer qualified for pension
+reasonForTheOverpaymentOrWriteOff.other = Other
+reasonForTheOverpaymentOrWriteOff.checkYourAnswersLabel = What is the reason for the overpayment/write off?
+reasonForTheOverpaymentOrWriteOff.error.required = Select the reason for the overpayment/write off
+reasonForTheOverpaymentOrWriteOff.change.hidden = What is the reason for the overpayment/write off?
+
+refundOfContributions.title = Who received the refund?
+refundOfContributions.heading = Who received the refund?
+refundOfContributions.widowOrOrphan = A widow and/or orphan
+refundOfContributions.other = Other
+refundOfContributions.checkYourAnswersLabel = Who received the refund?
+refundOfContributions.error.required = Select who received the refund
+refundOfContributions.change.hidden = Who received the refund?
+
+loanDetails.title = Loan details
+loanDetails.heading = Loan details
+loanDetails.checkYourAnswersLabel = loanDetails
+loanDetails.error.required = Enter loanDetails
+loanDetails.error.length = LoanDetails must be 100 characters or less
+loanDetails.change.hidden = LoanDetails
+
+loanDetails.loanAmount.notANumber = The loan amount must be an amount of money, like 123.45 or 156.00
+loanDetails.loanAmount.noDecimals = The loan amount must include pence, like 123.45 or 156.00
+loanDetails.loanAmount.amountTooHigh = The loan amount must be £999999999.99 or less
+
+loanDetails.fundValue.notANumber = The fund value must be an amount of money, like 123.45 or 156.00
+loanDetails.fundValue.noDecimals = The fund value must include pence, like 123.45 or 156.00
+loanDetails.fundValue.amountTooHigh = The fund value must be £999999999.99 or less
+
+loanDetails.loanAmount.heading = Amount of the loan (optional)
+loanDetails.fundValue.heading = Value of the fund (optional)

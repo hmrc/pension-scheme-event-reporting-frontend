@@ -17,10 +17,12 @@
 package generators
 
 import models._
+import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, WhoWasTheTransferMade}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
-import pages.event1.member.BenefitsPaidEarlyPage
+import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
+import pages.event1.member._
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
@@ -29,15 +31,103 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryPaymentValueAndDateUserAnswersEntry: Arbitrary[(pages.event1.PaymentValueAndDatePage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event1.PaymentValueAndDatePage.type]
+        page <- arbitrary[pages.event1.PaymentValueAndDatePage.type]
         value <- arbitrary[Int].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryLoanDetailsUserAnswersEntry: Arbitrary[(pages.event1.employer.LoanDetailsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[pages.event1.employer.LoanDetailsPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryMemberUnauthorisedPaymentRecipientNameUserAnswersEntry: Arbitrary[(pages.event1.member.UnauthorisedPaymentRecipientNamePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[pages.event1.member.UnauthorisedPaymentRecipientNamePage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryEmployerPaymentNatureDescriptionUserAnswersEntry: Arbitrary[(EmployerPaymentNatureDescriptionPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[EmployerPaymentNatureDescriptionPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryMemberPaymentNatureDescriptionUserAnswersEntry: Arbitrary[(MemberPaymentNatureDescriptionPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[MemberPaymentNatureDescriptionPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryEmployerTangibleMoveablePropertyUserAnswersEntry: Arbitrary[(EmployerTangibleMoveablePropertyPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[EmployerTangibleMoveablePropertyPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryMemberTangibleMoveablePropertyUserAnswersEntry: Arbitrary[(MemberTangibleMoveablePropertyPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[MemberTangibleMoveablePropertyPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryUnauthorisedPaymentRecipientNameUserAnswersEntry: Arbitrary[(UnauthorisedPaymentRecipientNamePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[UnauthorisedPaymentRecipientNamePage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryReasonForTheOverpaymentOrWriteOffUserAnswersEntry: Arbitrary[(ReasonForTheOverpaymentOrWriteOffPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[ReasonForTheOverpaymentOrWriteOffPage.type]
+        value <- arbitrary[ReasonForTheOverpaymentOrWriteOff].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryRefundOfContributionsUserAnswersEntry: Arbitrary[(RefundOfContributionsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[RefundOfContributionsPage.type]
+        value <- arbitrary[RefundOfContributions].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitrarySchemeDetailsUserAnswersEntry: Arbitrary[(SchemeDetailsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[pages.event1.member.SchemeDetailsPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryWhoWasTheTransferMadeUserAnswersEntry: Arbitrary[(WhoWasTheTransferMadePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[pages.event1.member.WhoWasTheTransferMadePage.type]
+        value <- arbitrary[WhoWasTheTransferMade].map(Json.toJson(_))
       } yield (page, value)
     }
 
   implicit lazy val arbitraryErrorDescriptionUserAnswersEntry: Arbitrary[(pages.event1.member.ErrorDescriptionPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event1.member.ErrorDescriptionPage.type]
+        page <- arbitrary[pages.event1.member.ErrorDescriptionPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
@@ -45,7 +135,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryBenefitsPaidEarlyUserAnswersEntry: Arbitrary[(BenefitsPaidEarlyPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[BenefitsPaidEarlyPage.type]
+        page <- arbitrary[BenefitsPaidEarlyPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
@@ -167,46 +257,6 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       for {
         page <- arbitrary[EventSelectionPage.type]
         value <- arbitrary[EventSelection].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryTestIntPageUserAnswersEntry: Arbitrary[(TestIntPagePage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[TestIntPagePage.type]
-        value <- arbitrary[Int].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryTestStringPageUserAnswersEntry: Arbitrary[(TestStringPagePage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[TestStringPagePage.type]
-        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryTestRadioButtonUserAnswersEntry: Arbitrary[(TestRadioButtonPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[TestRadioButtonPage.type]
-        value <- arbitrary[TestRadioButton].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryTestCheckBoxUserAnswersEntry: Arbitrary[(TestCheckBoxPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[TestCheckBoxPage.type]
-        value <- arbitrary[TestCheckBox].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryDateUserAnswersEntry: Arbitrary[(TestDatePage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[TestDatePage.type]
-        value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }
 }

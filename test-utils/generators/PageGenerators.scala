@@ -18,14 +18,48 @@ package generators
 
 import org.scalacheck.Arbitrary
 import pages._
-import pages.event1.member
-import pages.event1.member.BenefitsPaidEarlyPage
+import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
+import pages.event1.member._
+import pages.event1.{employer, member}
 import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
 
   implicit lazy val arbitraryPaymentValueAndDatePage: Arbitrary[event1.PaymentValueAndDatePage.type] =
     Arbitrary(event1.PaymentValueAndDatePage)
+
+  implicit lazy val arbitraryLoanDetailsPage: Arbitrary[event1.employer.LoanDetailsPage.type] =
+    Arbitrary(event1.employer.LoanDetailsPage)
+
+  implicit lazy val arbitraryEmployerPaymentNatureDescriptionPage: Arbitrary[EmployerPaymentNatureDescriptionPage.type] =
+    Arbitrary(employer.EmployerPaymentNatureDescriptionPage)
+
+  implicit lazy val arbitraryMemberPaymentNatureDescriptionPage: Arbitrary[MemberPaymentNatureDescriptionPage.type] =
+    Arbitrary(member.MemberPaymentNatureDescriptionPage)
+
+  implicit lazy val arbitraryEmployerTangibleMoveablePropertyPage: Arbitrary[EmployerTangibleMoveablePropertyPage.type] =
+    Arbitrary(employer.EmployerTangibleMoveablePropertyPage)
+
+  implicit lazy val arbitraryMemberTangibleMoveablePropertyPage: Arbitrary[MemberTangibleMoveablePropertyPage.type] =
+    Arbitrary(member.MemberTangibleMoveablePropertyPage)
+
+  implicit lazy val arbitraryMemberUnauthorisedPaymentRecipientNamePage: Arbitrary[event1.member.UnauthorisedPaymentRecipientNamePage.type] =
+    Arbitrary(event1.member.UnauthorisedPaymentRecipientNamePage)
+
+  implicit lazy val arbitraryUnauthorisedPaymentRecipientNamePage: Arbitrary[UnauthorisedPaymentRecipientNamePage.type] =
+    Arbitrary(employer.UnauthorisedPaymentRecipientNamePage)
+
+  implicit lazy val arbitraryReasonForTheOverpaymentOrWriteOffPage: Arbitrary[ReasonForTheOverpaymentOrWriteOffPage.type] =
+    Arbitrary(member.ReasonForTheOverpaymentOrWriteOffPage)
+
+  implicit lazy val arbitraryRefundOfContributionsPage: Arbitrary[RefundOfContributionsPage.type] =
+    Arbitrary(member.RefundOfContributionsPage)
+
+  implicit lazy val arbitrarySchemeDetailsPage: Arbitrary[SchemeDetailsPage.type] =
+    Arbitrary(event1.member.SchemeDetailsPage)
+
+  implicit lazy val arbitraryWhoWasTheTransferMadePage: Arbitrary[WhoWasTheTransferMadePage.type] =
+    Arbitrary(event1.member.WhoWasTheTransferMadePage)
 
   implicit lazy val arbitraryErrorDescriptionPage: Arbitrary[event1.member.ErrorDescriptionPage.type] =
     Arbitrary(event1.member.ErrorDescriptionPage)
@@ -81,19 +115,4 @@ trait PageGenerators {
 
   implicit lazy val arbitraryeventSelectionPage: Arbitrary[EventSelectionPage.type] =
     Arbitrary(EventSelectionPage)
-
-  implicit lazy val arbitraryTestIntPagePage: Arbitrary[TestIntPagePage.type] =
-    Arbitrary(TestIntPagePage)
-
-  implicit lazy val arbitraryTestStringPagePage: Arbitrary[TestStringPagePage.type] =
-    Arbitrary(TestStringPagePage)
-
-  implicit lazy val arbitraryTestRadioButtonPage: Arbitrary[TestRadioButtonPage.type] =
-    Arbitrary(TestRadioButtonPage)
-
-  implicit lazy val arbitraryTestCheckBoxPage: Arbitrary[TestCheckBoxPage.type] =
-    Arbitrary(TestCheckBoxPage)
-
-  implicit lazy val arbitraryDatePage: Arbitrary[TestDatePage.type] =
-    Arbitrary(TestDatePage)
 }

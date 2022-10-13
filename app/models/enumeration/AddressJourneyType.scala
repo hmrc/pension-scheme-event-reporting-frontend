@@ -48,6 +48,7 @@ abstract class WithJourneyTypeDetail(val eventType: EventType, val nodeName: Str
 
 object AddressJourneyType extends Enumerable.Implicits {
   private val entityTypeMessageKeyCompany = "entityType.theCompany"
+  private val entityTypeMessageKeyResidentialProperty = "entityType.theResidentialProperty"
   case object Event1EmployerAddressJourney extends WithJourneyTypeDetail(
     eventType = EventType.Event1,
     nodeName = "employerAddress",
@@ -61,21 +62,43 @@ object AddressJourneyType extends Enumerable.Implicits {
   case object Event1MemberPropertyAddressJourney extends WithJourneyTypeDetail(
     eventType = EventType.Event1,
     nodeName = "memberResidentialAddress",
-    entityTypeMessageKey = entityTypeMessageKeyCompany) {
-    override def entityName(ua: UserAnswers): Message = Message("memberResidentialAddress.enterPostcode.entityName")
+    entityTypeMessageKey = entityTypeMessageKeyResidentialProperty) {
+    override def entityName(ua: UserAnswers): Message = Message(entityTypeMessageKeyResidentialProperty)
     override def heading(whichPage: Page)(implicit
                                           request: DataRequest[AnyContent]): Message =
       whichPage match {
-        case EnterPostcodePage(_) => Message("memberResidentialAddress.enterPostcode.h1")
-        case ChooseAddressPage(_) => Message("memberResidentialAddress.chooseAddress.h1")
-        case ManualAddressPage(_) => Message("memberResidentialAddress.address.h1")
+        case EnterPostcodePage(_) => Message("residentialAddress.enterPostcode.h1")
+        case ChooseAddressPage(_) => Message("residentialAddress.chooseAddress.h1")
+        case ManualAddressPage(_) => Message("residentialAddress.address.h1")
       }
 
     override def title(whichPage: Page): Message =
       whichPage match {
-        case EnterPostcodePage(_) => Message("memberResidentialAddress.enterPostcode.title")
-        case ChooseAddressPage(_) => Message("memberResidentialAddress.chooseAddress.title")
-        case ManualAddressPage(_) => Message("memberResidentialAddress.address.title")
+        case EnterPostcodePage(_) => Message("residentialAddress.enterPostcode.title")
+        case ChooseAddressPage(_) => Message("residentialAddress.chooseAddress.title")
+        case ManualAddressPage(_) => Message("residentialAddress.address.title")
+      }
+  }
+
+  case object Event1EmployerPropertyAddressJourney extends WithJourneyTypeDetail(
+    eventType = EventType.Event1,
+    nodeName = "employerResidentialAddress",
+    entityTypeMessageKey = entityTypeMessageKeyResidentialProperty) {
+    override def entityName(ua: UserAnswers): Message = Message(entityTypeMessageKeyResidentialProperty)
+
+    override def heading(whichPage: Page)(implicit
+                                          request: DataRequest[AnyContent]): Message =
+      whichPage match {
+        case EnterPostcodePage(_) => Message("residentialAddress.enterPostcode.h1")
+        case ChooseAddressPage(_) => Message("residentialAddress.chooseAddress.h1")
+        case ManualAddressPage(_) => Message("residentialAddress.address.h1")
+      }
+
+    override def title(whichPage: Page): Message =
+      whichPage match {
+        case EnterPostcodePage(_) => Message("residentialAddress.enterPostcode.title")
+        case ChooseAddressPage(_) => Message("residentialAddress.chooseAddress.title")
+        case ManualAddressPage(_) => Message("residentialAddress.address.title")
       }
   }
 

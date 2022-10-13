@@ -19,24 +19,21 @@ package journey
 import data.SampleData.{companyDetails, seqAddresses, seqTolerantAddresses}
 import generators.ModelGenerators
 import models.EventSelection._
-import models.TestCheckBox.writes
-import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
+import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersDetails
-import models.event1.PaymentNature.ErrorCalcTaxFreeLumpSums
-import models.event1.PaymentNature.BenefitInKind
-import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly}
+import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, TransferToNonRegPensionScheme}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
+import models.event1.employer.PaymentNature.{LoansExceeding50PercentOfFundValue, ResidentialProperty, TangibleMoveableProperty}
+import models.event1.member.ReasonForTheOverpaymentOrWriteOff.DeathOfMember
+import models.event1.member.RefundOfContributions.WidowOrOrphan
+import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.event1._
-import pages.event1.employer.CompanyDetailsPage
-import pages.event1.member.ErrorDescriptionPage
-import pages.event1.{WhatYouWillNeedPage, _}
-import pages.event1.employer.CompanyDetailsPage
-import pages.event1._
-import pages.event1.member.BenefitsPaidEarlyPage
+import pages.event1.employer.{CompanyDetailsPage, LoanDetailsPage}
+import pages.event1.member._
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckYourAnswersPage, EventSelectionPage, IndexPage}
@@ -63,44 +60,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       )
   }
 
-  "test event1 journey (member), payment nature is benefits paid early" in {
-
-    val membersDetails = arbitrary[MembersDetails].sample
-
-    startingFrom(EventSelectionPage)
-      .run(
-        submitAnswer(EventSelectionPage, Event1),
-        submitAnswer(HowAddUnauthPaymentPage, Manual),
-        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
-        next,
-        submitAnswer(MembersDetailsPage, membersDetails.get),
-        submitAnswer(DoYouHoldSignedMandatePage, true),
-        submitAnswer(ValueOfUnauthorisedPaymentPage, true),
-        submitAnswer(SchemeUnAuthPaySurchargeMemberPage, false),
-        submitAnswer(pages.event1.PaymentNaturePage, BenefitsPaidEarly),
-        submitAnswer(BenefitsPaidEarlyPage, ""),
-        pageMustBe(IndexPage)
-      )
-  }
-
-  "test event1 journey for unauthorised payment less than 25%" in {
-
-    val membersDetails = arbitrary[MembersDetails].sample
-
-    startingFrom(EventSelectionPage)
-      .run(
-        submitAnswer(EventSelectionPage, Event1),
-        submitAnswer(HowAddUnauthPaymentPage, Manual),
-        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
-        next,
-        submitAnswer(MembersDetailsPage, membersDetails.get),
-        submitAnswer(DoYouHoldSignedMandatePage, true),
-        submitAnswer(ValueOfUnauthorisedPaymentPage, false),
-        pageMustBe(pages.event1.PaymentNaturePage)
-      )
-  }
-
-  "test event1 member-journey for unauthorised payment more than 25% when Scheme Unauthorized Payment Surcharge true" in {
+  "test event1 journey (member), payment nature page" in {
 
     val membersDetails = arbitrary[MembersDetails].sample
 
@@ -118,92 +78,91 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       )
   }
 
-  "test event1 member-journey for error description" in {
-
-    val membersDetails = arbitrary[MembersDetails].sample
-
-    startingFrom(EventSelectionPage)
+  "test event1 journey for Do You Hold Signed Mandate is false" in {
+    startingFrom(DoYouHoldSignedMandatePage)
       .run(
-        submitAnswer(EventSelectionPage, Event1),
-        submitAnswer(HowAddUnauthPaymentPage, Manual),
-        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
-        next,
-        submitAnswer(MembersDetailsPage, membersDetails.get),
-        submitAnswer(DoYouHoldSignedMandatePage, true),
-        submitAnswer(ValueOfUnauthorisedPaymentPage, false),
-        submitAnswer(pages.event1.PaymentNaturePage, ErrorCalcTaxFreeLumpSums),
-        pageMustBe(ErrorDescriptionPage)
+        submitAnswer(DoYouHoldSignedMandatePage, false),
+        submitAnswer(ValueOfUnauthorisedPaymentPage, true),
+        submitAnswer(SchemeUnAuthPaySurchargeMemberPage, true),
+        pageMustBe(pages.event1.PaymentNaturePage)
       )
   }
 
-
-  "test event1 member-journey for unauthorised payment more than 25% when Scheme Unauthorized Payment Surcharge false" in {
-
-    val membersDetails = arbitrary[MembersDetails].sample
-
-    startingFrom(EventSelectionPage)
+  "test event1 journey for unauthorised payment less than 25%" in {
+    startingFrom(ValueOfUnauthorisedPaymentPage)
       .run(
-        submitAnswer(EventSelectionPage, Event1),
-        submitAnswer(HowAddUnauthPaymentPage, Manual),
-        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
-        next,
-        submitAnswer(MembersDetailsPage, membersDetails.get),
-        submitAnswer(DoYouHoldSignedMandatePage, true),
+        submitAnswer(ValueOfUnauthorisedPaymentPage, false),
+        pageMustBe(pages.event1.PaymentNaturePage)
+      )
+  }
+
+  "test event1 member-journey when Scheme Unauthorized Payment Surcharge false" in {
+    startingFrom(ValueOfUnauthorisedPaymentPage)
+      .run(
         submitAnswer(ValueOfUnauthorisedPaymentPage, true),
         submitAnswer(SchemeUnAuthPaySurchargeMemberPage, false),
         pageMustBe(pages.event1.PaymentNaturePage)
       )
   }
 
-  "test event1 member-journey for benefit in kind - empty" in {
-    val membersDetails = arbitrary[MembersDetails].sample
-
-    val paymentNatureJourney =
-      journeyOf(
-        submitAnswer(EventSelectionPage, Event1),
-        submitAnswer(HowAddUnauthPaymentPage, Manual),
-        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
-        next,
-        submitAnswer(MembersDetailsPage, membersDetails.get),
-        submitAnswer(DoYouHoldSignedMandatePage, true),
-        submitAnswer(ValueOfUnauthorisedPaymentPage, false),
+  "test event1 member-journey for error calc tax free lump sum" in {
+    startingFrom(pages.event1.PaymentNaturePage)
+      .run(
+        submitAnswer(pages.event1.PaymentNaturePage, ErrorCalcTaxFreeLumpSums),
+        submitAnswer(ErrorDescriptionPage, ""),
+        pageMustBe(IndexPage)
       )
 
-    startingFrom(EventSelectionPage)
+    startingFrom(pages.event1.PaymentNaturePage)
       .run(
-        paymentNatureJourney,
-        submitAnswer(pages.event1.PaymentNaturePage, BenefitInKind),
-        submitAnswer(BenefitInKindBriefDescriptionPage, ""),
+        submitAnswer(pages.event1.PaymentNaturePage, ErrorCalcTaxFreeLumpSums),
+        submitAnswer(ErrorDescriptionPage, "valid - description"),
         pageMustBe(IndexPage)
       )
   }
 
-  "test event1 member-journey for benefit in kind - with some description" in {
-    val membersDetails = arbitrary[MembersDetails].sample
-
-    val paymentNatureJourney =
-      journeyOf(
-        submitAnswer(EventSelectionPage, Event1),
-        submitAnswer(HowAddUnauthPaymentPage, Manual),
-        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
-        pageMustBe(WhatYouWillNeedPage),
-        next,
-        submitAnswer(MembersDetailsPage, membersDetails.get),
-        submitAnswer(DoYouHoldSignedMandatePage, true),
-        submitAnswer(ValueOfUnauthorisedPaymentPage, false),
+  "test event1 member-journey for benefits paid early" in {
+    startingFrom(pages.event1.PaymentNaturePage)
+      .run(
+        submitAnswer(pages.event1.PaymentNaturePage, BenefitsPaidEarly),
+        submitAnswer(BenefitsPaidEarlyPage, ""),
+        pageMustBe(IndexPage)
       )
 
-    startingFrom(EventSelectionPage)
+    startingFrom(pages.event1.PaymentNaturePage)
       .run(
-        paymentNatureJourney,
+        submitAnswer(pages.event1.PaymentNaturePage, BenefitsPaidEarly),
+        submitAnswer(BenefitsPaidEarlyPage, "valid - description"),
+        pageMustBe(IndexPage)
+      )
+  }
+
+  "test event1 member-journey for benefit in kind - empty and description" in {
+    startingFrom(pages.event1.PaymentNaturePage)
+      .run(
+        submitAnswer(pages.event1.PaymentNaturePage, BenefitInKind),
+        submitAnswer(BenefitInKindBriefDescriptionPage, ""),
+        pageMustBe(IndexPage)
+      )
+
+    startingFrom(pages.event1.PaymentNaturePage)
+      .run(
         submitAnswer(pages.event1.PaymentNaturePage, BenefitInKind),
         submitAnswer(BenefitInKindBriefDescriptionPage, "valid - description"),
         pageMustBe(IndexPage)
       )
   }
 
-  "test event1 journey (employer)" in {
+  "test event1 journey (member), payment nature is reason for the overpayment/writeOff" in {
+    startingFrom(pages.event1.PaymentNaturePage)
+      .run(
+        submitAnswer(pages.event1.PaymentNaturePage, OverpaymentOrWriteOff),
+        submitAnswer(ReasonForTheOverpaymentOrWriteOffPage, DeathOfMember),
+        pageMustBe(IndexPage)
+      )
+  }
 
+  "test event1 journey (employer)" in {
     startingFrom(EventSelectionPage)
       .run(
         submitAnswer(EventSelectionPage, Event1),
@@ -220,4 +179,90 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         pageMustBe(employer.PaymentNaturePage)
       )
   }
+
+  "test nav to event1 residential property pages (member & employer)" in {
+    startingFrom(PaymentNaturePage)
+      .run(
+        submitAnswer(PaymentNaturePage, ResidentialPropertyHeld),
+        pageMustBe(pages.address.EnterPostcodePage(Event1MemberPropertyAddressJourney))
+      )
+
+    startingFrom(pages.event1.employer.PaymentNaturePage)
+      .run(
+        submitAnswer(pages.event1.employer.PaymentNaturePage, ResidentialProperty),
+        pageMustBe(pages.address.EnterPostcodePage(Event1EmployerPropertyAddressJourney))
+      )
+  }
+
+  "testing nav to event1 Refund of Contributions pages (member) and selecting Widow and/or Orphan option before continuing" in {
+    startingFrom(PaymentNaturePage)
+      .run(
+        submitAnswer(PaymentNaturePage, RefundOfContributions),
+        submitAnswer(RefundOfContributionsPage, WidowOrOrphan),
+        pageMustBe(IndexPage)
+      )
+  }
+
+  "testing nav to event1 loan details page" in {
+    startingFrom(pages.event1.employer.PaymentNaturePage)
+      .run(
+        submitAnswer(pages.event1.employer.PaymentNaturePage, LoansExceeding50PercentOfFundValue),
+        pageMustBe(LoanDetailsPage)
+      )
+  }
+
+  "testing nav to event1 Refund of Contributions pages (member) and selecting Other option" in {
+    startingFrom(PaymentNaturePage)
+      .run(
+        submitAnswer(PaymentNaturePage, RefundOfContributions),
+        submitAnswer(RefundOfContributionsPage, models.event1.member.RefundOfContributions.Other),
+        pageMustBe(IndexPage)
+      )
+  }
+
+  "test nav to event1 Unauthorised Payment Recipient Name page(member) and Selecting Court order payment/confiscation order" in {
+    startingFrom(PaymentNaturePage)
+      .run(
+        submitAnswer(PaymentNaturePage, CourtOrConfiscationOrder),
+        pageMustBe(UnauthorisedPaymentRecipientNamePage)
+      )
+  }
+
+  "test navigation to event1 tangible moveable property and payment nature description pages for member" in {
+    startingFrom(pages.event1.PaymentNaturePage)
+      .run(
+        submitAnswer(PaymentNaturePage, TangibleMoveablePropertyHeld),
+        pageMustBe(pages.event1.member.MemberTangibleMoveablePropertyPage)
+      )
+
+    startingFrom(pages.event1.PaymentNaturePage)
+      .run(
+        submitAnswer(PaymentNaturePage, Other),
+        pageMustBe(pages.event1.member.MemberPaymentNatureDescriptionPage)
+      )
+  }
+
+  "test navigation to event1 tangible moveable property and payment nature description pages for employer" in {
+    startingFrom(pages.event1.employer.PaymentNaturePage)
+      .run(
+        submitAnswer(pages.event1.employer.PaymentNaturePage, TangibleMoveableProperty),
+        pageMustBe(pages.event1.employer.EmployerTangibleMoveablePropertyPage)
+      )
+
+    startingFrom(pages.event1.employer.PaymentNaturePage)
+      .run(
+        submitAnswer(pages.event1.employer.PaymentNaturePage, models.event1.employer.PaymentNature.Other),
+        pageMustBe(pages.event1.employer.EmployerPaymentNatureDescriptionPage)
+      )
+  }
+
+  "test navigation to event1 Transfer to non-registered pension scheme journey for member" in {
+    startingFrom(pages.event1.PaymentNaturePage)
+      .run(
+        submitAnswer(PaymentNaturePage, TransferToNonRegPensionScheme),
+        submitAnswer(WhoWasTheTransferMadePage, AnEmployerFinanced),
+        pageMustBe(pages.event1.member.SchemeDetailsPage)
+      )
+  }
+
 }
