@@ -115,14 +115,4 @@ trait ModelGenerators {
     Arbitrary {
       Gen.oneOf(EventSelection.values)
     }
-
-  implicit lazy val arbitraryTestRadioButton: Arbitrary[TestRadioButton] =
-    Arbitrary {
-      Gen.oneOf(TestRadioButton.values)
-    }
-
-  implicit lazy val arbitraryTestCheckBox: Arbitrary[TestCheckBox] =
-    Arbitrary {
-      Gen.oneOf(TestCheckBox.values)
-    }
 }
