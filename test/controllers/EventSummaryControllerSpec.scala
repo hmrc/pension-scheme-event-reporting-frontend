@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import connectors.EventReportingConnector
 import forms.EventSummaryFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
@@ -25,36 +25,36 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
-import pages.{EmptyWaypoints, EventSummaryPage, TestYesNoPage}
+import pages.{EmptyWaypoints, EventSummaryPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Key, SummaryListRow, Text, Value}
+import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.Message
 import viewmodels.govuk.SummaryListFluency
+import views.html.EventSummaryView
 
 import scala.concurrent.Future
-import views.html.EventSummaryView
 
 class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach{
   private val mockEventReportSummaryConnector = mock[EventReportingConnector]
   private val waypoints = EmptyWaypoints
   private def postRoute: String = routes.EventSummaryController.onSubmit(waypoints).url
 
-  override protected def beforeEach(): Unit = {
-    reset(mockEventReportSummaryConnector)
-  }
-
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[EventReportingConnector].toInstance(mockEventReportSummaryConnector)
   )
+
+  override protected def beforeEach(): Unit = {
+    reset(mockEventReportSummaryConnector)
+  }
 
   "Event Summary Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val ua = emptyUserAnswers.setOrException(TestYesNoPage, true)
+      val ua = emptyUserAnswers.setOrException(EventSummaryPage, true)
 
       val seqOfEvents = Seq(EventType.Event1, EventType.Event2)
 
