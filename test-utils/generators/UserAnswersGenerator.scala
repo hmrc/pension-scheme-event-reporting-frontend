@@ -30,7 +30,13 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitrary[(RefundOfContributionsPage.type, JsValue)] ::
+    arbitrary[(event1.member.SchemeDetailsPage.type, JsValue)] ::
+      arbitrary[(event1.member.WhoWasTheTransferMadePage.type, JsValue)] ::
+      arbitrary[(event1.member.UnauthorisedPaymentRecipientNamePage.type, JsValue)] ::
+      arbitrary[(event1.employer.LoanDetailsPage.type, JsValue)] ::
+      arbitrary[(RefundOfContributionsPage.type, JsValue)] ::
+      arbitrary[(event1.member.UnauthorisedPaymentRecipientNamePage.type, JsValue)] ::
+      arbitrary[(RefundOfContributionsPage.type, JsValue)] ::
       arbitrary[(EmployerPaymentNatureDescriptionPage.type, JsValue)] ::
       arbitrary[(MemberPaymentNatureDescriptionPage.type, JsValue)] ::
       arbitrary[(EmployerTangibleMoveablePropertyPage.type, JsValue)] ::
@@ -53,11 +59,6 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(event18.Event18ConfirmationPage.type, JsValue)] ::
       arbitrary[(EventSummaryPage.type, JsValue)] ::
       arbitrary[(EventSelectionPage.type, JsValue)] ::
-      arbitrary[(TestIntPagePage.type, JsValue)] ::
-      arbitrary[(TestStringPagePage.type, JsValue)] ::
-      arbitrary[(TestRadioButtonPage.type, JsValue)] ::
-      arbitrary[(TestCheckBoxPage.type, JsValue)] ::
-      arbitrary[(TestDatePage.type, JsValue)] ::
       Nil
 
   implicit lazy val arbitraryUserData: Arbitrary[UserAnswers] = {

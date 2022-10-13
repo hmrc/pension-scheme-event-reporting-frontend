@@ -56,56 +56,6 @@ signedOut.guidance = We did not save your answers.
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-test.error.required = You must enter a value here!
-test.title = TEST PAGE TITLE
-test.heading = TEST PAGE HEADING
-
-test.checkYourAnswersLabel = Test
-testDate.title = Date
-testDate.heading = Date
-testDate.hint = For example, 12 11 2007
-testDate.checkYourAnswersLabel = Date
-testDate.error.required.all = Enter the date
-testDate.error.required.two = The date must include {0} and {1}
-testDate.error.required = The date must include {0}
-testDate.error.invalid = Enter a real date
-testDate.change.hidden = Enter date
-
-testCheckBox.title = testCheckBox
-testCheckBox.heading = testCheckBox
-testCheckBox.option1 = Option 1
-testCheckBox.option2 = Option 2
-testCheckBox.checkYourAnswersLabel = testCheckBox
-testCheckBox.error.required = Select testCheckBox
-testCheckBox.change.hidden = TestCheckBox
-
-testRadioButton.title = testRadioButton
-testRadioButton.heading = testRadioButton
-testRadioButton.option1 = Option 1
-testRadioButton.option2 = Option 2
-testRadioButton.checkYourAnswersLabel = testRadioButton
-testRadioButton.error.required = Select testRadioButton
-testRadioButton.change.hidden = TestRadioButton
-
-testContentPage.title = testContentPage
-testContentPage.heading = testContentPage
-
-testStringPage.title = testStringPage
-testStringPage.heading = testStringPage
-testStringPage.checkYourAnswersLabel = testStringPage
-testStringPage.error.required = Enter testStringPage
-testStringPage.error.length = TestStringPage must be 100 characters or less
-testStringPage.change.hidden = TestStringPage
-
-testIntPage.title = TestIntPage
-testIntPage.heading = TestIntPage
-testIntPage.checkYourAnswersLabel = TestIntPage
-testIntPage.error.nonNumeric = Enter your testIntPage using numbers
-testIntPage.error.required = Enter your testIntPage
-testIntPage.error.wholeNumber = Enter your testIntPage using whole numbers
-testIntPage.error.outOfRange = TestIntPage must be between {0} and {1}
-testIntPage.change.hidden = TestIntPage
-
 eventSummary.title = Event report for tax year ending 5 April {0}
 eventSummary.heading = Event report for tax year ending 5 April {0}
 eventSummary.yesno.legend = Do you want to add another event?
@@ -388,6 +338,25 @@ benefitInKindBriefDescription.checkYourAnswersLabel = Give a brief description o
 benefitInKindBriefDescription.error.length = You can enter a maximum of 150 characters (optional)
 benefitInKindBriefDescription.change.hidden = Give a brief description of the benefit in kind
 
+whoWasTheTransferMade.title = Who was the transfer made to?
+whoWasTheTransferMade.heading = Who was the transfer made to?
+whoWasTheTransferMade.anEmployerFinanced = An employer-financed retirement benefit scheme (EFRBS)
+whoWasTheTransferMade.nonRecognisedScheme = A non-recognised pension scheme which is not a qualifying overseas pension scheme
+whoWasTheTransferMade.other = Other
+whoWasTheTransferMade.checkYourAnswersLabel = Who was the transfer made to?
+whoWasTheTransferMade.error.required = Select who the transfer was made to
+whoWasTheTransferMade.change.hidden = Who was the transfer made to?
+
+schemeDetails.title = Scheme details
+schemeDetails.heading = Scheme details
+schemeDetails.schemeName = Scheme-name (optional)
+schemeDetails.reference = Reference (optional)
+schemeDetails.checkYourAnswersLabel = Scheme details
+schemeDetails.error.required = Enter Scheme details
+schemeDetails.error.name.length = Scheme-name must be 150 characters or less
+schemeDetails.error.ref.length = Reference must be 150 characters or less
+schemeDetails.change.hidden = Scheme details
+
 memberTangibleMoveableProperty.title = Give a brief description of the tangible moveable property
 memberTangibleMoveableProperty.heading = Give a brief description of the tangible moveable property
 memberTangibleMoveableProperty.hint = You can enter a maximum of 150 characters (optional).
@@ -416,18 +385,16 @@ employerPaymentNatureDescription.checkYourAnswersLabel = Give a brief descriptio
 employerPaymentNatureDescription.error.length = The nature of the payment must be 150 characters or fewer
 employerPaymentNatureDescription.change.hidden = Give a brief description of the nature of the payment
 
-memberResidentialAddress.enterPostcode.entityName = the residential property
 residentialAddress.enterPostcode.title = What is the postcode of the residential property?
 residentialAddress.enterPostcode.h1 = What is the postcode of the residential property?
-
 residentialAddress.chooseAddress.title = What is the address of the residential property?
 residentialAddress.chooseAddress.h1 = What is the address of the residential property?
-
 residentialAddress.address.title = What is the address of the residential property?
 residentialAddress.address.h1 = What is the address of the residential property?
+
 memberResidentialAddress.chooseAddress.title = What is the address of the residential property?
 memberResidentialAddress.chooseAddress.h1 = What is the address of the residential property?
-
+memberResidentialAddress.enterPostcode.entityName = the residential property
 memberResidentialAddress.address.title = What is the address of the residential property?
 memberResidentialAddress.address.h1 = What is the address of the residential property?
 
@@ -456,3 +423,29 @@ refundOfContributions.other = Other
 refundOfContributions.checkYourAnswersLabel = Who received the refund?
 refundOfContributions.error.required = Select who received the refund
 refundOfContributions.change.hidden = Who received the refund?
+
+loanDetails.title = Loan details
+loanDetails.heading = Loan details
+loanDetails.checkYourAnswersLabel = loanDetails
+loanDetails.error.required = Enter loanDetails
+loanDetails.error.length = LoanDetails must be 100 characters or less
+loanDetails.change.hidden = LoanDetails
+
+loanDetails.loanAmount.notANumber = The loan amount must be an amount of money, like 123.45 or 156.00
+loanDetails.loanAmount.noDecimals = The loan amount must include pence, like 123.45 or 156.00
+loanDetails.loanAmount.amountTooHigh = The loan amount must be £999999999.99 or less
+
+loanDetails.fundValue.notANumber = The fund value must be an amount of money, like 123.45 or 156.00
+loanDetails.fundValue.noDecimals = The fund value must include pence, like 123.45 or 156.00
+loanDetails.fundValue.amountTooHigh = The fund value must be £999999999.99 or less
+
+loanDetails.loanAmount.heading = Amount of the loan (optional)
+loanDetails.fundValue.heading = Value of the fund (optional)
+
+unauthorisedPaymentRecipientName.member.title = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.member.heading = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.member.checkYourAnswersLabel = What is the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.member.error.invalid = The person name must only include letters, spaces, ampersands, grave accents, apostrophes, backslashes, hyphens, full stops and carets
+unauthorisedPaymentRecipientName.member.error.length = The person name must be 150 characters or fewer
+unauthorisedPaymentRecipientName.member.change.hidden = Change the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.member.hint = Recipient name (optional)

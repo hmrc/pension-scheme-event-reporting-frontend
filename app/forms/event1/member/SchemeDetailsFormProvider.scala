@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package models
+package forms.event1.member
 
-import play.api.mvc.JavascriptLiteral
+import forms.mappings.Mappings
+import models.event1.member.SchemeDetails
+import play.api.data.Form
+import play.api.data.Forms.mapping
 
-sealed trait Mode
+import javax.inject.Inject
 
-case object CheckMode extends Mode
+class SchemeDetailsFormProvider @Inject() extends Mappings {
 
-case object NormalMode extends Mode
-
-object Mode {
-
-  implicit val jsLiteral: JavascriptLiteral[Mode] = {
-    case NormalMode => "NormalMode"
-    case CheckMode => "CheckMode"
-  }
+  def apply(): Form[SchemeDetails] =
+    Form(
+      mapping(
+        "schemeName" -> optionalText()
+          .verifying(maxLength(150, "schemeDetails.error.name.length")),
+        "reference" -> optionalText()
+          .verifying(maxLength(150, "schemeDetails.error.ref.length"))
+      )(SchemeDetails.apply)(SchemeDetails.unapply)
+    )
 }

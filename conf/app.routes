@@ -17,29 +17,6 @@ GET         /sign-out                                                      contr
 GET         /signed-out                                                    controllers.auth.SignedOutController.onPageLoad
 GET         /keep-alive                                                    controllers.KeepAliveController.keepAlive
 
-GET         /testyesno                                                     controllers.TestYesNoController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /testyesno                                                     controllers.TestYesNoController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
-
-GET         /testdate                                                      controllers.TestDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /testdate                                                      controllers.TestDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
-
-GET         /testcheckbox                                                  controllers.TestCheckBoxController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /testcheckbox                                                  controllers.TestCheckBoxController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
-
-GET         /testCheckBox                                                  controllers.TestCheckBoxController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /testCheckBox                                                  controllers.TestCheckBoxController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
-
-GET         /testRadioButton                                               controllers.TestRadioButtonController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /testRadioButton                                               controllers.TestRadioButtonController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
-
-GET         /testContentPage                                               controllers.TestContentPageController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-
-GET         /testStringPage                                                controllers.TestStringPageController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /testStringPage                                                controllers.TestStringPageController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
-
-GET         /testIntPage                                                   controllers.TestIntPageController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /testIntPage                                                   controllers.TestIntPageController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
-
 GET         /event-selection                                               controllers.EventSelectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /event-selection                                               controllers.EventSelectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 GET         /event-summary                                                 controllers.EventSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
@@ -150,6 +127,9 @@ POST        /new-report/event-1-overpayment-details                        contr
 GET         /new-report/event-1-refund-details                             controllers.event1.member.RefundOfContributionsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-refund-details                             controllers.event1.member.RefundOfContributionsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
+GET         /new-report/event-1-member-recipient-name                      controllers.event1.member.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-member-recipient-name                      controllers.event1.member.UnauthorisedPaymentRecipientNameController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
 GET         /new-report/event-1-member-tangible-moveable-property          controllers.event1.MemberTangibleMoveablePropertyController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-member-tangible-moveable-property          controllers.event1.MemberTangibleMoveablePropertyController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
@@ -161,3 +141,12 @@ POST        /new-report/event-1-member-payment-description                 contr
 
 GET         /new-report/event-1-employer-payment-description               controllers.event1.EmployerPaymentNatureDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-employer-payment-description               controllers.event1.EmployerPaymentNatureDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-1-loan-details                               controllers.event1.employer.LoanDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-loan-details                               controllers.event1.employer.LoanDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-1-transfer-recipient                         controllers.event1.member.WhoWasTheTransferMadeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-transfer-recipient                         controllers.event1.member.WhoWasTheTransferMadeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-1-scheme-details                             controllers.event1.member.SchemeDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-scheme-details                             controllers.event1.member.SchemeDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

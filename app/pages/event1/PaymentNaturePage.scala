@@ -20,7 +20,7 @@ import controllers.event1.routes
 import models.UserAnswers
 import models.enumeration.AddressJourneyType.Event1MemberPropertyAddressJourney
 import models.event1.PaymentNature
-import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld}
+import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, TransferToNonRegPensionScheme}
 import pages.event1.member.{MemberPaymentNatureDescriptionPage, MemberTangibleMoveablePropertyPage}
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
@@ -42,10 +42,12 @@ case object PaymentNaturePage extends QuestionPage[PaymentNature] {
       case Some(ErrorCalcTaxFreeLumpSums) => pages.event1.member.ErrorDescriptionPage
       case Some(ResidentialPropertyHeld) => pages.address.EnterPostcodePage(Event1MemberPropertyAddressJourney)
       case Some(BenefitsPaidEarly) => pages.event1.member.BenefitsPaidEarlyPage
+      case Some(TransferToNonRegPensionScheme) => pages.event1.member.WhoWasTheTransferMadePage
       case Some(TangibleMoveablePropertyHeld) => MemberTangibleMoveablePropertyPage
       case Some(Other) => MemberPaymentNatureDescriptionPage
       case Some(OverpaymentOrWriteOff) => pages.event1.member.ReasonForTheOverpaymentOrWriteOffPage
       case Some(RefundOfContributions) => pages.event1.member.RefundOfContributionsPage
+      case Some(CourtOrConfiscationOrder) => pages.event1.member.UnauthorisedPaymentRecipientNamePage
       case _ => IndexPage
     }
   }

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package viewmodels.event1.checkAnswers
+package viewmodels.event1.employer.checkAnswers
 
 import models.UserAnswers
-import pages.event1.employer.UnauthorisedPaymentRecipientNamePage
+import pages.event1.employer.LoanDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -25,19 +25,19 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object UnauthorisedPaymentRecipientNameSummary {
+object LoanDetailsSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(UnauthorisedPaymentRecipientNamePage).map {
+    answers.get(LoanDetailsPage).map {
       answer =>
 
         SummaryListRowViewModel(
-          key = "unauthorisedPaymentRecipientName.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key = "loanDetails.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlFormat.escape(answer.toString).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.change.hidden"))
+            ActionItemViewModel("site.change", LoanDetailsPage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("loanDetails.change.hidden"))
           )
         )
     }

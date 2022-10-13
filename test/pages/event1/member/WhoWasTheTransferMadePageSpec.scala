@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package models
+package pages.event1.member
 
-import play.api.mvc.JavascriptLiteral
+import models.event1.member.WhoWasTheTransferMade
+import pages.behaviours.PageBehaviours
 
-sealed trait Mode
+class WhoWasTheTransferMadeSpec extends PageBehaviours {
 
-case object CheckMode extends Mode
+  "WhoWasTheTransferMadePage" - {
 
-case object NormalMode extends Mode
+    beRetrievable[WhoWasTheTransferMade](WhoWasTheTransferMadePage)
 
-object Mode {
+    beSettable[WhoWasTheTransferMade](WhoWasTheTransferMadePage)
 
-  implicit val jsLiteral: JavascriptLiteral[Mode] = {
-    case NormalMode => "NormalMode"
-    case CheckMode => "CheckMode"
+    beRemovable[WhoWasTheTransferMade](WhoWasTheTransferMadePage)
   }
 }

@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package models
+package pages.event1.member
 
-import play.api.mvc.JavascriptLiteral
+import models.event1.member.SchemeDetails
+import pages.behaviours.PageBehaviours
 
-sealed trait Mode
 
-case object CheckMode extends Mode
+class SchemeDetailsPageSpec extends PageBehaviours {
 
-case object NormalMode extends Mode
+  "SchemeDetailsPage" - {
 
-object Mode {
+    beRetrievable[SchemeDetails](SchemeDetailsPage)
 
-  implicit val jsLiteral: JavascriptLiteral[Mode] = {
-    case NormalMode => "NormalMode"
-    case CheckMode => "CheckMode"
+    beSettable[SchemeDetails](SchemeDetailsPage)
+
+    beRemovable[SchemeDetails](SchemeDetailsPage)
   }
 }

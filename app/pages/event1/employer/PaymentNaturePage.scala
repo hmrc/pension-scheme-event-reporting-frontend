@@ -20,7 +20,7 @@ import controllers.event1.employer.routes
 import models.UserAnswers
 import models.enumeration.AddressJourneyType.Event1EmployerPropertyAddressJourney
 import models.event1.employer.PaymentNature
-import models.event1.employer.PaymentNature.{CourtOrder, Other, ResidentialProperty, TangibleMoveableProperty}
+import models.event1.employer.PaymentNature.{CourtOrder, LoansExceeding50PercentOfFundValue, Other, ResidentialProperty, TangibleMoveableProperty}
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -37,6 +37,7 @@ case object PaymentNaturePage extends QuestionPage[PaymentNature] {
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(PaymentNaturePage) match {
       case Some(TangibleMoveableProperty) => EmployerTangibleMoveablePropertyPage
+      case Some(LoansExceeding50PercentOfFundValue) => LoanDetailsPage
       case Some(Other) => EmployerPaymentNatureDescriptionPage
       case Some(CourtOrder) => UnauthorisedPaymentRecipientNamePage
       case Some(ResidentialProperty) => pages.address.EnterPostcodePage(Event1EmployerPropertyAddressJourney)

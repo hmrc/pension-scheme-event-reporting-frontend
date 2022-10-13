@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package models
+package pages.event1.employer
 
-import play.api.mvc.JavascriptLiteral
+import controllers.event1.employer.routes
+import models.event1.employer.LoanDetails
+import pages.{QuestionPage, Waypoints}
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-sealed trait Mode
+case object LoanDetailsPage extends QuestionPage[LoanDetails] {
 
-case object CheckMode extends Mode
+  override def path: JsPath = JsPath \ toString
 
-case object NormalMode extends Mode
+  override def toString: String = "loanDetails"
 
-object Mode {
-
-  implicit val jsLiteral: JavascriptLiteral[Mode] = {
-    case NormalMode => "NormalMode"
-    case CheckMode => "CheckMode"
-  }
+  override def route(waypoints: Waypoints): Call =
+    routes.LoanDetailsController.onPageLoad(waypoints)
 }

@@ -19,21 +19,21 @@ package journey
 import data.SampleData.{companyDetails, seqAddresses, seqTolerantAddresses}
 import generators.ModelGenerators
 import models.EventSelection._
-import models.TestCheckBox.writes
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersDetails
-import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld}
+import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, TransferToNonRegPensionScheme}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
-import models.event1.employer.PaymentNature.{ResidentialProperty, TangibleMoveableProperty}
+import models.event1.employer.PaymentNature.{LoansExceeding50PercentOfFundValue, ResidentialProperty, TangibleMoveableProperty}
 import models.event1.member.ReasonForTheOverpaymentOrWriteOff.DeathOfMember
 import models.event1.member.RefundOfContributions.WidowOrOrphan
+import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.event1._
-import pages.event1.employer.CompanyDetailsPage
-import pages.event1.member.{BenefitsPaidEarlyPage, ErrorDescriptionPage, ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage}
+import pages.event1.employer.{CompanyDetailsPage, LoanDetailsPage}
+import pages.event1.member._
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckYourAnswersPage, EventSelectionPage, IndexPage}
@@ -202,12 +202,29 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         pageMustBe(IndexPage)
       )
   }
+
+  "testing nav to event1 loan details page" in {
+    startingFrom(pages.event1.employer.PaymentNaturePage)
+      .run(
+        submitAnswer(pages.event1.employer.PaymentNaturePage, LoansExceeding50PercentOfFundValue),
+        pageMustBe(LoanDetailsPage)
+      )
+  }
+
   "testing nav to event1 Refund of Contributions pages (member) and selecting Other option" in {
     startingFrom(PaymentNaturePage)
       .run(
         submitAnswer(PaymentNaturePage, RefundOfContributions),
         submitAnswer(RefundOfContributionsPage, models.event1.member.RefundOfContributions.Other),
         pageMustBe(IndexPage)
+      )
+  }
+
+  "test nav to event1 Unauthorised Payment Recipient Name page(member) and Selecting Court order payment/confiscation order" in {
+    startingFrom(PaymentNaturePage)
+      .run(
+        submitAnswer(PaymentNaturePage, CourtOrConfiscationOrder),
+        pageMustBe(UnauthorisedPaymentRecipientNamePage)
       )
   }
 
@@ -238,4 +255,14 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         pageMustBe(pages.event1.employer.EmployerPaymentNatureDescriptionPage)
       )
   }
+
+  "test navigation to event1 Transfer to non-registered pension scheme journey for member" in {
+    startingFrom(pages.event1.PaymentNaturePage)
+      .run(
+        submitAnswer(PaymentNaturePage, TransferToNonRegPensionScheme),
+        submitAnswer(WhoWasTheTransferMadePage, AnEmployerFinanced),
+        pageMustBe(pages.event1.member.SchemeDetailsPage)
+      )
+  }
+
 }

@@ -20,10 +20,16 @@ import models.Enumerable
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
+import java.text.DecimalFormat
 import scala.util.control.Exception.nonFatalCatch
+import scala.util.{Failure, Success, Try}
 
 trait Formatters {
 
+  private[mappings] val numericRegexp = """^-?(\-?)(\d*)(\.?)(\d*)$"""
+  private[mappings] val intRegexp = """^-?(\d*)$"""
+  private[mappings] val decimal2DPRegexp = """^-?(\d*\.\d{2})$"""
+  private[mappings] val decimalFormat = new DecimalFormat("0.00")
 
   private[mappings] val optionalStringFormatter: Formatter[Option[String]] = new Formatter[Option[String]] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] =
@@ -94,6 +100,71 @@ trait Formatters {
 
       override def unbind(key: String, value: Int) =
         baseFormatter.unbind(key, value.toString)
+    }
+
+  private[mappings] def bigDecimal2DPFormatter(nothingEnteredKey: String,
+                                               notANumberKey: String,
+                                               noDecimalsKey: String,
+                                               args: Seq[String] = Seq.empty): Formatter[BigDecimal] =
+    new Formatter[BigDecimal] {
+
+      private val baseFormatter = stringFormatter(nothingEnteredKey)
+
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BigDecimal] =
+        baseFormatter
+          .bind(key, data)
+          .right.map(_.replace(",", "").replace(" ", ""))
+          .right.flatMap {
+          case s if !s.matches(numericRegexp) =>
+            Left(Seq(FormError(key, notANumberKey, args)))
+          case s if !s.matches(noDecimalsKey) && !s.matches(intRegexp) =>
+            Left(Seq(FormError(key, noDecimalsKey, args)))
+          case s =>
+            Try(BigDecimal(s)) match {
+              case Success(x) => Right(x)
+              case Failure(_) => Left(Seq(FormError(key, notANumberKey, args)))
+            }
+        }
+
+      override def unbind(key: String, value: BigDecimal): Map[String, String] =
+        baseFormatter.unbind(key, decimalFormat.format(value))
+    }
+
+
+  private[mappings] def optionBigDecimal2DPFormatter(invalidKey: String,
+                                                     decimalKey: String,
+                                                     args: Seq[String] = Seq.empty): Formatter[Option[BigDecimal]] =
+    new Formatter[Option[BigDecimal]] {
+
+      private val baseFormatter: Formatter[Option[String]] = optionalStringFormatter
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[BigDecimal]] =
+        baseFormatter
+          .bind(key, data)
+          .right.map(_.map(_.replace(",", "").replace(" ", "")))
+          .right.flatMap {
+          case s if s.isEmpty =>
+            Right(None)
+          case Some(s) if !s.matches(numericRegexp) =>
+            Left(Seq(FormError(key, invalidKey, args)))
+          case Some(s) if !s.matches(decimal2DPRegexp) && !s.matches(intRegexp) =>
+            Left(Seq(FormError(key, decimalKey, args)))
+          case Some(s) =>
+            Try(Option(BigDecimal(s))) match {
+              case Success(x) => Right(x)
+              case Failure(_) => Left(Seq(FormError(key, invalidKey, args)))
+            }
+          case None => Right(None)
+        }
+
+      override def unbind(key: String, value: Option[BigDecimal]): Map[String, String] =
+        value match {
+          case Some(str) =>
+            baseFormatter.unbind(key, Some(decimalFormat.format(str)))
+          case _ =>
+            Map.empty
+        }
     }
 
 

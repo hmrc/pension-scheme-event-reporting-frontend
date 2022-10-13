@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package models
+package forms.event1.member
 
-import play.api.mvc.JavascriptLiteral
+import forms.mappings.Mappings
+import models.event1.member.WhoWasTheTransferMade
+import play.api.data.Form
 
-sealed trait Mode
+import javax.inject.Inject
 
-case object CheckMode extends Mode
+class WhoWasTheTransferMadeFormProvider @Inject() extends Mappings {
 
-case object NormalMode extends Mode
-
-object Mode {
-
-  implicit val jsLiteral: JavascriptLiteral[Mode] = {
-    case NormalMode => "NormalMode"
-    case CheckMode => "CheckMode"
-  }
+  def apply(): Form[WhoWasTheTransferMade] =
+    Form(
+      "value" -> enumerable[WhoWasTheTransferMade]("whoWasTheTransferMade.error.required")
+    )
 }

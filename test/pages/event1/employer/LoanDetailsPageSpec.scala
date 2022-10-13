@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package models
+package pages.event1.employer
 
-import play.api.mvc.JavascriptLiteral
+import models.event1.employer.LoanDetails
+import pages.behaviours.PageBehaviours
 
-sealed trait Mode
 
-case object CheckMode extends Mode
+class LoanDetailsPageSpec extends PageBehaviours {
 
-case object NormalMode extends Mode
+  "LoanDetailsPage" - {
 
-object Mode {
+    beRetrievable[LoanDetails](LoanDetailsPage)
 
-  implicit val jsLiteral: JavascriptLiteral[Mode] = {
-    case NormalMode => "NormalMode"
-    case CheckMode => "CheckMode"
+    beSettable[LoanDetails](LoanDetailsPage)
+
+    beRemovable[LoanDetails](LoanDetailsPage)
   }
 }

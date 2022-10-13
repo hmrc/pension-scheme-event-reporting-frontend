@@ -25,8 +25,9 @@ import java.time.LocalDate
 trait Constraints {
 
   val regexName = """^[a-zA-Z &`\-\'\.^]{1,35}$"""
-  val regexPersonOrOrgName = """^[a-zA-Z &`\'\.^\\]{1,160}$"""
+  val regexPersonOrOrgName = """^[a-zA-Z &`\'\.^\\]{0,160}$"""
   val regexSurname = """^[a-zA-Z &`\\\-\'\.^]{1,35}$"""
+  val regexMemberRecipientName = """^[a-zA-Z &`\\\-\'\.^]{0,150}$"""
   val regexPostcode = """^[A-Z]{1,2}[0-9][0-9A-Z]?\s?[0-9][A-Z]{2}$"""
   val regexPostCodeNonUk = """^([0-9]+-)*[0-9]+$"""
   val regexAddressLine = """^[A-Za-z0-9 &!'‘’(),./\u2014\u2013\u2010\u002d]{1,35}$"""

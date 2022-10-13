@@ -18,28 +18,34 @@ package generators
 
 import models._
 import models.event1.MembersDetails
-import models.event1.employer.CompanyDetails
-import models.event1.member.ReasonForTheOverpaymentOrWriteOff
-import models.event1.member.RefundOfContributions
+import models.event1.employer.{CompanyDetails, LoanDetails}
+import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, SchemeDetails, WhoWasTheTransferMade}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import uk.gov.hmrc.domain.Nino
+
+import scala.math.BigDecimal.RoundingMode
 
 trait ModelGenerators {
 
   implicit lazy val arbitraryReasonForTheOverpaymentOrWriteOff: Arbitrary[ReasonForTheOverpaymentOrWriteOff] =
     Arbitrary {
-      Gen.oneOf(ReasonForTheOverpaymentOrWriteOff.values.toSeq)
+      Gen.oneOf(ReasonForTheOverpaymentOrWriteOff.values)
     }
 
   implicit lazy val arbitraryRefundOfContributions: Arbitrary[RefundOfContributions] =
     Arbitrary {
-      Gen.oneOf(event1.member.RefundOfContributions.values.toSeq)
+      Gen.oneOf(event1.member.RefundOfContributions.values)
+    }
+
+  implicit lazy val arbitraryWhoWasTheTransferMade: Arbitrary[WhoWasTheTransferMade] =
+    Arbitrary {
+      Gen.oneOf(event1.member.WhoWasTheTransferMade.values)
     }
 
   implicit lazy val arbitraryEmployerPaymentNature: Arbitrary[event1.employer.PaymentNature] =
     Arbitrary {
-      Gen.oneOf(event1.employer.PaymentNature.values.toSeq)
+      Gen.oneOf(event1.employer.PaymentNature.values)
     }
 
   implicit lazy val arbitraryNino: Arbitrary[Nino] = Arbitrary {
@@ -67,6 +73,24 @@ trait ModelGenerators {
       Gen.oneOf(list)
     }
 
+  implicit lazy val arbitraryLoanDetails: Arbitrary[LoanDetails] =
+    Arbitrary {
+      for {
+        loanAmount <- arbitrary[BigDecimal].map(_.setScale(2, RoundingMode.FLOOR))
+        fundValue <- arbitrary[BigDecimal].map(_.setScale(2, RoundingMode.FLOOR))
+      } yield LoanDetails(Some(loanAmount), Some(fundValue))
+    }
+
+  implicit lazy val arbitrarySchemeDetails: Arbitrary[SchemeDetails] =
+    Arbitrary {
+      val list = for {
+        schemeName <- Seq("validSchemeName1", "validSchemeName2")
+        reference <- Seq("validReferenceNumber1", "validReferenceNumber2")
+      } yield SchemeDetails(Some(schemeName), Some(reference))
+
+      Gen.oneOf(list)
+    }
+
   implicit lazy val arbitraryCompanyDetails: Arbitrary[CompanyDetails] =
     Arbitrary {
       val list = for {
@@ -90,15 +114,5 @@ trait ModelGenerators {
   implicit lazy val arbitraryeventSelection: Arbitrary[EventSelection] =
     Arbitrary {
       Gen.oneOf(EventSelection.values)
-    }
-
-  implicit lazy val arbitraryTestRadioButton: Arbitrary[TestRadioButton] =
-    Arbitrary {
-      Gen.oneOf(TestRadioButton.values)
-    }
-
-  implicit lazy val arbitraryTestCheckBox: Arbitrary[TestCheckBox] =
-    Arbitrary {
-      Gen.oneOf(TestCheckBox.values)
     }
 }

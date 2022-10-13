@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package models
+package pages.event1.member
 
-import play.api.mvc.JavascriptLiteral
+import pages.behaviours.PageBehaviours
 
-sealed trait Mode
 
-case object CheckMode extends Mode
+class UnauthorisedPaymentRecipientNamePageSpec extends PageBehaviours {
 
-case object NormalMode extends Mode
+  "UnauthorisedPaymentRecipientNamePage" - {
 
-object Mode {
+    beRetrievable[String](UnauthorisedPaymentRecipientNamePage)
 
-  implicit val jsLiteral: JavascriptLiteral[Mode] = {
-    case NormalMode => "NormalMode"
-    case CheckMode => "CheckMode"
+    beSettable[String](UnauthorisedPaymentRecipientNamePage)
+
+    beRemovable[String](UnauthorisedPaymentRecipientNamePage)
   }
 }

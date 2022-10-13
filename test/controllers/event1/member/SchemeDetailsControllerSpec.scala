@@ -14,51 +14,53 @@
  * limitations under the License.
  */
 
-package controllers.event1.employer
+package controllers.event1.member
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event1.employer.UnauthorisedPaymentRecipientNameFormProvider
+import forms.event1.member.SchemeDetailsFormProvider
 import models.UserAnswers
+import models.event1.member.SchemeDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
-import pages.event1.employer.UnauthorisedPaymentRecipientNamePage
+import pages.event1.member.SchemeDetailsPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event1.employer.UnauthorisedPaymentRecipientNameView
+import views.html.event1.member.SchemeDetailsView
 
 import scala.concurrent.Future
 
-class UnauthorisedPaymentRecipientNameControllerSpec extends SpecBase with BeforeAndAfterEach {
+class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new UnauthorisedPaymentRecipientNameFormProvider()
+  private val formProvider = new SchemeDetailsFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints).url
+  private def getRoute: String = routes.SchemeDetailsController.onPageLoad(waypoints).url
 
-  private def postRoute: String = routes.UnauthorisedPaymentRecipientNameController.onSubmit(waypoints).url
+  private def postRoute: String = routes.SchemeDetailsController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validValue = "abc"
+  private val validValue = SchemeDetails(Some("abc"), Some(""))
+  private val emptyValue = SchemeDetails(Some(""), Some(""))
 
   override def beforeEach: Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
 
-  "UnauthorisedPaymentRecipientName Controller" - {
+  "SchemeDetails Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -69,7 +71,7 @@ class UnauthorisedPaymentRecipientNameControllerSpec extends SpecBase with Befor
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[UnauthorisedPaymentRecipientNameView]
+        val view = application.injector.instanceOf[SchemeDetailsView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
@@ -78,19 +80,19 @@ class UnauthorisedPaymentRecipientNameControllerSpec extends SpecBase with Befor
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(UnauthorisedPaymentRecipientNamePage, validValue).success.value
+      val userAnswers = UserAnswers().set(SchemeDetailsPage, validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[UnauthorisedPaymentRecipientNameView]
+        val view = application.injector.instanceOf[SchemeDetailsView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(Some(validValue)), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validValue), waypoints)(request, messages(application)).toString
       }
     }
 
@@ -104,17 +106,37 @@ class UnauthorisedPaymentRecipientNameControllerSpec extends SpecBase with Befor
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "bla"))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(UnauthorisedPaymentRecipientNamePage, validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(SchemeDetailsPage, validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual UnauthorisedPaymentRecipientNamePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual SchemeDetailsPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
+    "must save the answer and redirect to the next page when valid data is submitted (empty value)" in {
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
+
+        val result = route(application, request).value
+        val updatedAnswers = emptyUserAnswers.set(SchemeDetailsPage, emptyValue).success.value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual SchemeDetailsPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+      }
+    }
     "must return bad request when invalid data is submitted" in {
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
@@ -122,36 +144,14 @@ class UnauthorisedPaymentRecipientNameControllerSpec extends SpecBase with Befor
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "$%"))
-
-        val view = application.injector.instanceOf[UnauthorisedPaymentRecipientNameView]
-        val boundForm = form.bind(Map("value" -> "$%"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
-      }
-    }
-
-    "must return bad request when entered data length is exceeded" in {
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-
-      val invalidValue = "*" * 161
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", invalidValue))
-
-        val view = application.injector.instanceOf[UnauthorisedPaymentRecipientNameView]
-        val boundForm = form.bind(Map("value" -> invalidValue))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
+            "schemeName" -> ("a" * 151),
+            "reference" -> ("b" * 151)
+          )
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package models
+package models.event1.employer
 
-import play.api.mvc.JavascriptLiteral
+import play.api.libs.json.{Format, Json}
 
-sealed trait Mode
+case class LoanDetails(loanAmount: Option[BigDecimal], fundValue: Option[BigDecimal])
 
-case object CheckMode extends Mode
-
-case object NormalMode extends Mode
-
-object Mode {
-
-  implicit val jsLiteral: JavascriptLiteral[Mode] = {
-    case NormalMode => "NormalMode"
-    case CheckMode => "CheckMode"
-  }
+object LoanDetails {
+  implicit val formats: Format[LoanDetails] = Json.format[LoanDetails]
 }

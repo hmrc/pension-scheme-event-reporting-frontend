@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package models
+package models.event1.member
 
-import play.api.mvc.JavascriptLiteral
+import play.api.libs.json.{Format, Json}
 
-sealed trait Mode
 
-case object CheckMode extends Mode
+case class SchemeDetails(schemeName: Option[String], reference: Option[String])
 
-case object NormalMode extends Mode
+object SchemeDetails {
 
-object Mode {
-
-  implicit val jsLiteral: JavascriptLiteral[Mode] = {
-    case NormalMode => "NormalMode"
-    case CheckMode => "CheckMode"
-  }
+  implicit val format: Format[SchemeDetails] = Json.format[SchemeDetails]
 }
+

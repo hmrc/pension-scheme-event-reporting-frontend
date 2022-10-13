@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package models
+package forms.event1.member
 
-import play.api.mvc.JavascriptLiteral
+import forms.mappings.Mappings
+import play.api.data.Form
 
-sealed trait Mode
+import javax.inject.Inject
 
-case object CheckMode extends Mode
+class UnauthorisedPaymentRecipientNameFormProvider @Inject() extends Mappings {
 
-case object NormalMode extends Mode
-
-object Mode {
-
-  implicit val jsLiteral: JavascriptLiteral[Mode] = {
-    case NormalMode => "NormalMode"
-    case CheckMode => "CheckMode"
-  }
+  def apply(): Form[Option[String]] =
+    Form(
+      "value" -> optionalText()
+        .verifying(
+          firstError(
+            maxLength(150, "unauthorisedPaymentRecipientName.member.error.length"),
+            regexp(regexMemberRecipientName, "unauthorisedPaymentRecipientName.member.error.invalid")
+          )
+        )
+    )
 }
