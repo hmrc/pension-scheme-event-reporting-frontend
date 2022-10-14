@@ -15,7 +15,6 @@
  *@
 
 @import controllers.event1.routes
-
 @import viewmodels.InputWidth._
 
 @this(
@@ -34,7 +33,7 @@
     @formHelper(action = routes.PaymentValueAndDateController.onSubmit(waypoints), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("paymentDate" -> "paymentDate.day")))
         }
 
         <h1 class="govuk-heading-xl">@messages("paymentValueAndDate.heading")</h1>
@@ -44,7 +43,7 @@
                 field = form("paymentValue"),
                 label = Label(content = Text(messages("paymentValueAndDate.value.heading")))
             )
-            .withCssClass("govuk-input--width-5")
+            .withWidth(OneQuarter)
             .withPrefix(PrefixOrSuffix(content = Text("£")))
             .asNumeric()
         )

@@ -39,7 +39,7 @@ object EventSelectionSummary  {
         )
 
         SummaryListRowViewModel(
-          key     = "EventSelection.checkYourAnswersLabel",
+          key     = KeyViewModel("EventSelection.checkYourAnswersLabel").withCssClass("govuk-!-width-one-half"),
           value   = value,
           actions = Seq(
             ActionItemViewModel("site.change", EventSelectionPage.changeLink(waypoints, sourcePage).url)

@@ -34,7 +34,7 @@ object SchemeWindUpDateSummary  {
       answer =>
 
         SummaryListRowViewModel(
-          key     = "schemeWindUpDate.checkYourAnswersLabel",
+          key     = KeyViewModel("schemeWindUpDate.checkYourAnswersLabel").withCssClass("govuk-!-width-one-half"),
           value   = ValueViewModel(DateHelper.formatDateDMYWithSlash(answer)),
           actions = Seq(
             ActionItemViewModel("site.change", SchemeWindUpDatePage.changeLink(waypoints, sourcePage).url)

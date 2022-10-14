@@ -33,7 +33,7 @@ object EventSummarySummary  {
         val value = if (answer) "site.yes" else "site.no"
 
         SummaryListRowViewModel(
-          key     = "eventSummary.checkYourAnswersLabel",
+          key     = KeyViewModel("eventSummary.checkYourAnswersLabel").withCssClass("govuk-!-width-one-half"),
           value   = ValueViewModel(value),
           actions = Seq(
             ActionItemViewModel("site.change", EventSummaryPage.changeLink(waypoints, sourcePage).url)

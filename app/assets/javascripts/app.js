@@ -30,16 +30,4 @@ document.addEventListener('DOMContentLoaded', function(event) {
         });
     }
 
-    // handle paymentDate focus
-    var paymentDate = document.querySelector('#paymentDate');
-    var links = document.querySelectorAll('.govuk-error-summary__list li a');
-    if (paymentDate !== null && links !== null) {
-        links.forEach(amendLink);
-        function amendLink(link){
-            if(link.href.includes("#paymentDate")){
-                link.href = link.href + ".day";
-            }
-        }
-    }
-
 });

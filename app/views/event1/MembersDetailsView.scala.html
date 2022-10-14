@@ -43,7 +43,7 @@
                 field = form("firstName"),
                 label = LabelViewModel(messages("membersDetails.firstName.heading"))
             )
-            .withWidth(TwoThirds)
+            .withWidth(OneHalf)
         )
 
         @govukInput(
@@ -51,7 +51,7 @@
                 field = form("lastName"),
                 label = LabelViewModel(messages("membersDetails.lastName.heading"))
             )
-            .withWidth(TwoThirds)
+            .withWidth(OneHalf)
         )
 
         @govukInput(
@@ -59,7 +59,8 @@
                 field = form("nino"),
                 label = LabelViewModel(messages("membersDetails.nino.heading"))
             )
-            .withWidth(OneThird).withHint(HintViewModel(messages("membersDetails.nino.hint")))
+            .withWidth(OneQuarter)
+            .withHint(HintViewModel(messages("membersDetails.nino.hint")))
         )
 
         @govukButton(
