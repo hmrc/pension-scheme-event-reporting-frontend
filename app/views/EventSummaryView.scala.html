@@ -15,6 +15,7 @@
  *@
 
 @import models.enumeration.EventType
+
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
@@ -24,7 +25,7 @@
     govukSummaryList : GovukSummaryList
 )
 
-@(form: Form[_], waypoints: Waypoints, seqSummaryListRow:  Seq[SummaryListRow])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, seqSummaryListRow: Seq[SummaryListRow])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("eventSummary.title", "2023"))) {
 
@@ -35,7 +36,48 @@
         }
 
         <span class="govuk-caption-xl">Company pension scheme ABC</span>
-        <h1 class="govuk-heading-l">@messages("eventSummary.heading", "2023")</h1>
+
+        <h1 class="govuk-heading-xl">@messages("eventSummary.heading", "2023")</h1>
+
+        <div class="govuk-form-group">
+            <dl class="govuk-summary-list hmrc-list-with-actions hmrc-list-with-actions--short">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key govuk-!-font-weight-bold hmrc-summary-list__key govuk-!-width-full">
+                        Event 18: Scheme chargeable payment
+                    </dt>
+                    <dd class="govuk-summary-list__actions hmrc-summary-list__actions">
+                        <ul class="govuk-summary-list__actions-list">
+                            <li class="govuk-summary-list__actions-list-item">
+                                <a class="govuk-link" href="#">
+                                    <span aria-hidden="true">Change</span>
+                                    <span class="govuk-visually-hidden">Change Event 18: Scheme chargeable payment</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </dd>
+                </div>
+            </dl>
+        </div>
+
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(
+                        content = Text("Event 18: Scheme chargeable payment"),
+                        classes = "govuk-!-width-full"
+                    ),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = "/pension-scheme-event-reporting-frontend/new-report/event-18-confirmation?waypoints=event-18-check-answers",
+                                content = Text("Change"),
+                                visuallyHiddenText = Some("Event 18: Scheme chargeable payment")
+                            )
+                        )
+                    ))
+                )
+            )
+        ))
 
         @govukSummaryList(SummaryList(
             rows = seqSummaryListRow
