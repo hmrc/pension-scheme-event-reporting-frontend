@@ -47,13 +47,14 @@ class EventSummaryController @Inject()(
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify.async { implicit request =>
     connector.getEventReportSummary(request.pstr).map{ seqOfEventTypes =>
       val mappedEvents = seqOfEventTypes.map{ event =>
+        val eventMessageKey = Message(s"eventSummary.event${event.toString}")
         SummaryListRow(
           key = Key(
             content = Text("Event"),
             classes = "govuk-visually-hidden"
           ),
           value = Value(
-            content = Text(Message(s"eventSummary.event${event.toString}")),
+            content = Text(eventMessageKey),
             classes = "govuk-!-font-weight-bold govuk-!-width-full"
           ),
           actions = Some(Actions(
@@ -61,7 +62,7 @@ class EventSummaryController @Inject()(
               ActionItem(
                 href = "",
                 content = Text("Change"),
-                visuallyHiddenText = Some(Message(s"eventSummary.event${event.toString}"))
+                visuallyHiddenText = Some(eventMessageKey)
               )
             )
           ))

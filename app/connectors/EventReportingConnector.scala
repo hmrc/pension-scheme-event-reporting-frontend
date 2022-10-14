@@ -49,7 +49,8 @@ class EventReportingConnector @Inject()(
       .map { response =>
         response.status match {
           case NOT_FOUND => Nil
-          case OK => response.json.as[Seq[EventType]]
+          case OK =>
+            response.json.as[Seq[EventType]]
           case _ =>
             throw new HttpException(response.body, response.status)
         }
