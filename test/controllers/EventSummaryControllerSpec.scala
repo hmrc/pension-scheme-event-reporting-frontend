@@ -37,9 +37,10 @@ import views.html.EventSummaryView
 
 import scala.concurrent.Future
 
-class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach{
+class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach {
   private val mockEventReportSummaryConnector = mock[EventReportingConnector]
   private val waypoints = EmptyWaypoints
+
   private def postRoute: String = routes.EventSummaryController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -74,7 +75,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
         val formProvider = new EventSummaryFormProvider()
         val form = formProvider()
 
-        val mappedEvents = seqOfEvents.map{ event =>
+        val mappedEvents = seqOfEvents.map { event =>
           val eventMessageKey = Message(s"eventSummary.event${event.toString}")
           SummaryListRow(
             key = Key(
@@ -84,9 +85,12 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
             actions = Some(Actions(
               items = Seq(
                 ActionItem(
-                  href = "",
-                  content = Text("Change"),
-                  visuallyHiddenText = Some(eventMessageKey)
+                  content = Text(Message("site.change")),
+                  href = "#"
+                ),
+                ActionItem(
+                  content = Text(Message("site.remove")),
+                  href = "#"
                 )
               )
             ))

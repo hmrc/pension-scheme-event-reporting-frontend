@@ -26,16 +26,15 @@ import uk.gov.hmrc.http._
 import scala.concurrent.{ExecutionContext, Future}
 
 class EventReportingConnector @Inject()(
-                                           config: FrontendAppConfig,
-                                           http: HttpClient
-                                         ) {
+                                         config: FrontendAppConfig,
+                                         http: HttpClient
+                                       ) {
 
   private def eventRepSummaryUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/event-summary"
 
   def getEventReportSummary(pstr: String)
-         (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventType]] = {
+                           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventType]] = {
 
-//    Future.successful(Seq(EventType.Event1, EventType.Event3))
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
