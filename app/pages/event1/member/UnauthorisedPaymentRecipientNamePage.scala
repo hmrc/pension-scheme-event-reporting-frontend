@@ -37,4 +37,5 @@ case object UnauthorisedPaymentRecipientNamePage extends QuestionPage[String] {
       case Some(_) => PaymentValueAndDatePage
       case _ => IndexPage
     }
-  }}
+  }
+}

@@ -16,7 +16,9 @@
 
 package pages.event1.employer
 
-import pages.{QuestionPage, Waypoints}
+import models.UserAnswers
+import pages.event1.PaymentValueAndDatePage
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,4 +30,11 @@ case object UnauthorisedPaymentRecipientNamePage extends QuestionPage[String] {
 
   override def route(waypoints: Waypoints): Call =
     controllers.event1.employer.routes.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    answers.get(UnauthorisedPaymentRecipientNamePage) match {
+      case Some(_) => PaymentValueAndDatePage
+      case _ => IndexPage
+    }
+  }
 }

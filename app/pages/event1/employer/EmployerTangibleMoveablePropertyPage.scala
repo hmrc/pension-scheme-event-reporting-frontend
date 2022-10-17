@@ -17,7 +17,9 @@
 package pages.event1.employer
 
 import controllers.event1.routes
-import pages.{QuestionPage, Waypoints}
+import models.UserAnswers
+import pages.event1.PaymentValueAndDatePage
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -29,4 +31,11 @@ case object EmployerTangibleMoveablePropertyPage extends QuestionPage[String] {
 
   override def route(waypoints: Waypoints): Call =
     routes.EmployerTangibleMoveablePropertyController.onPageLoad(waypoints)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    answers.get(EmployerTangibleMoveablePropertyPage) match {
+      case Some(_) => PaymentValueAndDatePage
+      case _ => IndexPage
+    }
+  }
 }
