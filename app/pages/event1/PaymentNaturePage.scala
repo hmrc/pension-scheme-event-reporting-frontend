@@ -36,18 +36,20 @@ case object PaymentNaturePage extends QuestionPage[PaymentNature] {
   def route(waypoints: Waypoints): Call =
     routes.PaymentNatureController.onPageLoad(waypoints)
 
+  // scalastyle:off
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(PaymentNaturePage) match {
       case Some(BenefitInKind) => BenefitInKindBriefDescriptionPage
-      case Some(ErrorCalcTaxFreeLumpSums) => pages.event1.member.ErrorDescriptionPage
-      case Some(ResidentialPropertyHeld) => pages.address.EnterPostcodePage(Event1MemberPropertyAddressJourney)
-      case Some(BenefitsPaidEarly) => pages.event1.member.BenefitsPaidEarlyPage
       case Some(TransferToNonRegPensionScheme) => pages.event1.member.WhoWasTheTransferMadePage
-      case Some(TangibleMoveablePropertyHeld) => MemberTangibleMoveablePropertyPage
-      case Some(Other) => MemberPaymentNatureDescriptionPage
-      case Some(OverpaymentOrWriteOff) => pages.event1.member.ReasonForTheOverpaymentOrWriteOffPage
+      case Some(ErrorCalcTaxFreeLumpSums) => pages.event1.member.ErrorDescriptionPage
+      case Some(BenefitsPaidEarly) => pages.event1.member.BenefitsPaidEarlyPage
       case Some(RefundOfContributions) => pages.event1.member.RefundOfContributionsPage
+      case Some(OverpaymentOrWriteOff) => pages.event1.member.ReasonForTheOverpaymentOrWriteOffPage
+      // TODO: Think about this routing...
+      case Some(ResidentialPropertyHeld) => pages.address.EnterPostcodePage(Event1MemberPropertyAddressJourney)
+      case Some(TangibleMoveablePropertyHeld) => MemberTangibleMoveablePropertyPage
       case Some(CourtOrConfiscationOrder) => pages.event1.member.UnauthorisedPaymentRecipientNamePage
+      case Some(Other) => MemberPaymentNatureDescriptionPage
       case _ => IndexPage
     }
   }

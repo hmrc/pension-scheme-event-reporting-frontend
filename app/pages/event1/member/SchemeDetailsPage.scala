@@ -17,8 +17,10 @@
 package pages.event1.member
 
 import controllers.event1.member.routes
+import models.UserAnswers
 import models.event1.member.SchemeDetails
-import pages.{QuestionPage, Waypoints}
+import pages.event1.PaymentValueAndDatePage
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -30,4 +32,11 @@ case object SchemeDetailsPage extends QuestionPage[SchemeDetails] {
 
   override def route(waypoints: Waypoints): Call =
     routes.SchemeDetailsController.onPageLoad(waypoints)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    answers.get(SchemeDetailsPage) match {
+      case Some(_) => PaymentValueAndDatePage
+      case _ => IndexPage
+    }
+  }
 }

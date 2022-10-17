@@ -38,6 +38,7 @@ case class ChooseAddressPage(addressJourneyType: AddressJourneyType) extends Que
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     addressJourneyType match {
       case Event1EmployerAddressJourney => PaymentNaturePage
+
       case _ => super.nextPageNormalMode(waypoints, answers)
     }
   }
