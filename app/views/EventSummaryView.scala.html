@@ -41,6 +41,7 @@
 
         <div class="govuk-form-group">
             <dl class="govuk-summary-list hmrc-list-with-actions hmrc-list-with-actions--short">
+                <!-- loop start here -->
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key govuk-!-font-weight-bold hmrc-summary-list__key govuk-!-width-full">
                         Event 18: Scheme chargeable payment
@@ -56,32 +57,9 @@
                         </ul>
                     </dd>
                 </div>
+                <!-- loop end here -->
             </dl>
         </div>
-
-        @govukSummaryList(SummaryList(
-            rows = Seq(
-                SummaryListRow(
-                    key = Key(
-                        content = Text("Event 18: Scheme chargeable payment"),
-                        classes = "govuk-!-width-full"
-                    ),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = "/pension-scheme-event-reporting-frontend/new-report/event-18-confirmation?waypoints=event-18-check-answers",
-                                content = Text("Change"),
-                                visuallyHiddenText = Some("Event 18: Scheme chargeable payment")
-                            )
-                        )
-                    ))
-                )
-            )
-        ))
-
-        @govukSummaryList(SummaryList(
-            rows = seqSummaryListRow
-        ))
 
         @govukRadios(
             RadiosViewModel.yesNo(
