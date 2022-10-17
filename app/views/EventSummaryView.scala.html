@@ -17,15 +17,14 @@
 @import models.enumeration.EventType
 
 @this(
-        layout: templates.Layout,
-        formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios: GovukRadios,
-        govukButton: GovukButton,
-        govukSummaryList: GovukSummaryList
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios: GovukRadios,
+    govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, seqSummaryListRow: Seq[SummaryListRow])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, events: Seq[SummaryListRow])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("eventSummary.title", "2023"))) {
 
@@ -39,33 +38,7 @@
 
         <h1 class="govuk-heading-xl">@messages("eventSummary.heading", "2023")</h1>
 
-        <div class="govuk-form-group">
-            <dl class="govuk-summary-list hmrc-list-with-actions hmrc-list-with-actions--short">
-            @seqSummaryListRow.map { event =>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key govuk-!-font-weight-bold hmrc-summary-list__key govuk-!-width-full">
-                        @event.key.content.asHtml
-                    </dt>
-                    @event.actions.map { actions =>
-                        <dd class="govuk-summary-list__actions hmrc-summary-list__actions">
-                            <ul class="govuk-summary-list__actions-list">
-                                @actions.items.map { item =>
-                                    <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="#">
-                                            <span aria-hidden="true">@item.content.asHtml</span>
-                                            @item.visuallyHiddenText.map{ hintText =>
-                                                <span class="govuk-visually-hidden">@hintText.asHtml</span>
-                                            }
-                                        </a>
-                                    </li>
-                                }
-                            </ul>
-                        </dd>
-                    }
-                </div>
-            }
-            </dl>
-        </div>
+        @components.entity_list(events)
 
         @govukRadios(
             RadiosViewModel.yesNo(

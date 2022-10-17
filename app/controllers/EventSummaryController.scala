@@ -47,17 +47,19 @@ class EventSummaryController @Inject()(
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify.async { implicit request =>
     connector.getEventReportSummary(request.pstr).map{ seqOfEventTypes =>
       val mappedEvents = seqOfEventTypes.map{ event =>
-        val eventMessageKey = Message(s"eventSummary.event${event.toString}")
         SummaryListRow(
           key = Key(
-            content = Text(eventMessageKey)
+            content = Text(Message(s"eventSummary.event${event.toString}"))
           ),
           actions = Some(Actions(
             items = Seq(
               ActionItem(
-                href = "",
-                content = Text("Change"),
-                visuallyHiddenText = Some(eventMessageKey)
+                content = Text(Message("site.change")),
+                href = "#foo"
+              ),
+              ActionItem(
+                content = Text(Message("site.remove")),
+                href = "#bar"
               )
             )
           ))
