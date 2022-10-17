@@ -55,11 +55,11 @@ class EventSummaryController @Inject()(
             items = Seq(
               ActionItem(
                 content = Text(Message("site.change")),
-                href = "#foo"
+                href = "#"
               ),
               ActionItem(
                 content = Text(Message("site.remove")),
-                href = "#bar"
+                href = "#"
               )
             )
           ))
