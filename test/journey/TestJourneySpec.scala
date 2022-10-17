@@ -31,7 +31,7 @@ import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
-import pages.event1._
+import pages.event1.{member, _}
 import pages.event1.employer.{CompanyDetailsPage, LoanDetailsPage}
 import pages.event1.member._
 import pages.event18.Event18ConfirmationPage
@@ -74,7 +74,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, true),
         submitAnswer(SchemeUnAuthPaySurchargeMemberPage, true),
-        pageMustBe(pages.event1.PaymentNaturePage)
+        pageMustBe(member.PaymentNaturePage)
       )
   }
 
@@ -84,7 +84,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(DoYouHoldSignedMandatePage, false),
         submitAnswer(ValueOfUnauthorisedPaymentPage, true),
         submitAnswer(SchemeUnAuthPaySurchargeMemberPage, true),
-        pageMustBe(pages.event1.PaymentNaturePage)
+        pageMustBe(member.PaymentNaturePage)
       )
   }
 
@@ -92,7 +92,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
     startingFrom(ValueOfUnauthorisedPaymentPage)
       .run(
         submitAnswer(ValueOfUnauthorisedPaymentPage, false),
-        pageMustBe(pages.event1.PaymentNaturePage)
+        pageMustBe(member.PaymentNaturePage)
       )
   }
 
@@ -101,22 +101,22 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       .run(
         submitAnswer(ValueOfUnauthorisedPaymentPage, true),
         submitAnswer(SchemeUnAuthPaySurchargeMemberPage, false),
-        pageMustBe(pages.event1.PaymentNaturePage)
+        pageMustBe(member.PaymentNaturePage)
       )
   }
 
   "test event1 member-journey for error calc tax free lump sum" in {
-    startingFrom(pages.event1.PaymentNaturePage)
+    startingFrom(member.PaymentNaturePage)
       .run(
-        submitAnswer(pages.event1.PaymentNaturePage, ErrorCalcTaxFreeLumpSums),
+        submitAnswer(member.PaymentNaturePage, ErrorCalcTaxFreeLumpSums),
         submitAnswer(ErrorDescriptionPage, ""),
         submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
         pageMustBe(IndexPage)
       )
 
-    startingFrom(pages.event1.PaymentNaturePage)
+    startingFrom(member.PaymentNaturePage)
       .run(
-        submitAnswer(pages.event1.PaymentNaturePage, ErrorCalcTaxFreeLumpSums),
+        submitAnswer(member.PaymentNaturePage, ErrorCalcTaxFreeLumpSums),
         submitAnswer(ErrorDescriptionPage, "valid - description"),
         submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
         pageMustBe(IndexPage)
@@ -124,17 +124,17 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
   }
 
   "test event1 member-journey for benefits paid early" in {
-    startingFrom(pages.event1.PaymentNaturePage)
+    startingFrom(member.PaymentNaturePage)
       .run(
-        submitAnswer(pages.event1.PaymentNaturePage, BenefitsPaidEarly),
+        submitAnswer(member.PaymentNaturePage, BenefitsPaidEarly),
         submitAnswer(BenefitsPaidEarlyPage, ""),
         submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
         pageMustBe(IndexPage)
       )
 
-    startingFrom(pages.event1.PaymentNaturePage)
+    startingFrom(member.PaymentNaturePage)
       .run(
-        submitAnswer(pages.event1.PaymentNaturePage, BenefitsPaidEarly),
+        submitAnswer(member.PaymentNaturePage, BenefitsPaidEarly),
         submitAnswer(BenefitsPaidEarlyPage, "valid - description"),
         submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
         pageMustBe(IndexPage)
@@ -142,17 +142,17 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
   }
 
   "test event1 member-journey for benefit in kind - empty and description" in {
-    startingFrom(pages.event1.PaymentNaturePage)
+    startingFrom(member.PaymentNaturePage)
       .run(
-        submitAnswer(pages.event1.PaymentNaturePage, BenefitInKind),
+        submitAnswer(member.PaymentNaturePage, BenefitInKind),
         submitAnswer(BenefitInKindBriefDescriptionPage, ""),
         submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
         pageMustBe(IndexPage)
       )
 
-    startingFrom(pages.event1.PaymentNaturePage)
+    startingFrom(member.PaymentNaturePage)
       .run(
-        submitAnswer(pages.event1.PaymentNaturePage, BenefitInKind),
+        submitAnswer(member.PaymentNaturePage, BenefitInKind),
         submitAnswer(BenefitInKindBriefDescriptionPage, "valid - description"),
         submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
         pageMustBe(IndexPage)
@@ -160,9 +160,9 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
   }
 
   "test event1 journey (member), payment nature is reason for the overpayment/writeOff" in {
-    startingFrom(pages.event1.PaymentNaturePage)
+    startingFrom(member.PaymentNaturePage)
       .run(
-        submitAnswer(pages.event1.PaymentNaturePage, OverpaymentOrWriteOff),
+        submitAnswer(member.PaymentNaturePage, OverpaymentOrWriteOff),
         submitAnswer(ReasonForTheOverpaymentOrWriteOffPage, DeathOfMember),
         submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
         pageMustBe(IndexPage)
@@ -238,13 +238,13 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
   }
 
   "test navigation to event1 tangible moveable property and payment nature description pages for member" in {
-    startingFrom(pages.event1.PaymentNaturePage)
+    startingFrom(member.PaymentNaturePage)
       .run(
         submitAnswer(PaymentNaturePage, TangibleMoveablePropertyHeld),
         pageMustBe(pages.event1.member.MemberTangibleMoveablePropertyPage)
       )
 
-    startingFrom(pages.event1.PaymentNaturePage)
+    startingFrom(member.PaymentNaturePage)
       .run(
         submitAnswer(PaymentNaturePage, Other),
         pageMustBe(pages.event1.member.MemberPaymentNatureDescriptionPage)
@@ -266,7 +266,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
   }
 
   "test navigation to event1 Transfer to non-registered pension scheme journey for member" in {
-    startingFrom(pages.event1.PaymentNaturePage)
+    startingFrom(member.PaymentNaturePage)
       .run(
         submitAnswer(PaymentNaturePage, TransferToNonRegPensionScheme),
         submitAnswer(WhoWasTheTransferMadePage, AnEmployerFinanced),

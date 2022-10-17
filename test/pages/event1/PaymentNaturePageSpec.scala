@@ -18,6 +18,7 @@ package pages.event1
 
 import models.event1.PaymentNature
 import pages.behaviours.PageBehaviours
+import pages.event1.member.PaymentNaturePage
 
 class PaymentNatureSpec extends PageBehaviours {
 

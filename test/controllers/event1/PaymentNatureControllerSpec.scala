@@ -22,11 +22,11 @@ import forms.event1.PaymentNatureFormProvider
 import models.UserAnswers
 import models.event1.PaymentNature
 import pages.EmptyWaypoints
-import pages.event1.PaymentNaturePage
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.{mock, reset, times, verify, never}
 import org.scalatest.BeforeAndAfterEach
+import pages.event1.member.PaymentNaturePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest

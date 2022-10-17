@@ -20,8 +20,8 @@ import controllers.address.routes
 import models.UserAnswers
 import models.address.Address
 import models.enumeration.AddressJourneyType
-import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
-import pages.event1.employer.PaymentNaturePage
+import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1MemberPropertyAddressJourney}
+import pages.event1.PaymentValueAndDatePage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -37,10 +37,8 @@ case class ChooseAddressPage(addressJourneyType: AddressJourneyType) extends Que
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     addressJourneyType match {
-      case Event1EmployerAddressJourney => PaymentNaturePage
-
+      case Event1EmployerAddressJourney | Event1MemberPropertyAddressJourney => PaymentValueAndDatePage
       case _ => super.nextPageNormalMode(waypoints, answers)
     }
   }
-
 }
