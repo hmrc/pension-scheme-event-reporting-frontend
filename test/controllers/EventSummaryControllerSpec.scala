@@ -75,21 +75,18 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
         val form = formProvider()
 
         val mappedEvents = seqOfEvents.map{ event =>
+          val eventMessageKey = Message(s"eventSummary.event${event.toString}")
           SummaryListRow(
             key = Key(
-              content = Text("Event"),
-              classes = "govuk-visually-hidden"
-            ),
-            value = Value(
-              content = Text(Message(s"eventSummary.event${event.toString}")),
-              classes = "govuk-!-font-weight-bold govuk-!-width-full"
+              content = Text(eventMessageKey),
+              classes = "govuk-!-width-full"
             ),
             actions = Some(Actions(
               items = Seq(
                 ActionItem(
                   href = "",
                   content = Text("Change"),
-                  visuallyHiddenText = Some(Message(s"eventSummary.event${event.toString}"))
+                  visuallyHiddenText = Some(eventMessageKey)
                 )
               )
             ))

@@ -50,8 +50,7 @@ class EventSummaryController @Inject()(
         val eventMessageKey = Message(s"eventSummary.event${event.toString}")
         SummaryListRow(
           key = Key(
-            content = Text(eventMessageKey),
-            classes = "govuk-!-width-full"
+            content = Text(eventMessageKey)
           ),
           actions = Some(Actions(
             items = Seq(

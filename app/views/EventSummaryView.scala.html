@@ -17,12 +17,12 @@
 @import models.enumeration.EventType
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    govukSummaryList : GovukSummaryList
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton,
+        govukSummaryList: GovukSummaryList
 )
 
 @(form: Form[_], waypoints: Waypoints, seqSummaryListRow: Seq[SummaryListRow])(implicit request: Request[_], messages: Messages)
@@ -41,23 +41,29 @@
 
         <div class="govuk-form-group">
             <dl class="govuk-summary-list hmrc-list-with-actions hmrc-list-with-actions--short">
-                <!-- loop start here -->
+            @seqSummaryListRow.map { event =>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key govuk-!-font-weight-bold hmrc-summary-list__key govuk-!-width-full">
-                        Event 18: Scheme chargeable payment
+                        @event.key.content.asHtml
                     </dt>
-                    <dd class="govuk-summary-list__actions hmrc-summary-list__actions">
-                        <ul class="govuk-summary-list__actions-list">
-                            <li class="govuk-summary-list__actions-list-item">
-                                <a class="govuk-link" href="#">
-                                    <span aria-hidden="true">Change</span>
-                                    <span class="govuk-visually-hidden">Change Event 18: Scheme chargeable payment</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </dd>
+                    @event.actions.map { actions =>
+                        <dd class="govuk-summary-list__actions hmrc-summary-list__actions">
+                            <ul class="govuk-summary-list__actions-list">
+                                @actions.items.map { item =>
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a class="govuk-link" href="#">
+                                            <span aria-hidden="true">@item.content.asHtml</span>
+                                            @item.visuallyHiddenText.map{ hintText =>
+                                                <span class="govuk-visually-hidden">@hintText.asHtml</span>
+                                            }
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </dd>
+                    }
                 </div>
-                <!-- loop end here -->
+            }
             </dl>
         </div>
 
