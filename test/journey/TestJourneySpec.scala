@@ -21,7 +21,7 @@ import generators.ModelGenerators
 import models.EventSelection._
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.event1.HowAddUnauthPayment.Manual
-import models.event1.MembersDetails
+import models.event1.{MembersDetails, PaymentDetails}
 import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, TransferToNonRegPensionScheme}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.employer.PaymentNature.{LoansExceeding50PercentOfFundValue, ResidentialProperty, TangibleMoveableProperty}
@@ -110,6 +110,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       .run(
         submitAnswer(pages.event1.PaymentNaturePage, ErrorCalcTaxFreeLumpSums),
         submitAnswer(ErrorDescriptionPage, ""),
+        submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
         pageMustBe(IndexPage)
       )
 
@@ -117,6 +118,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       .run(
         submitAnswer(pages.event1.PaymentNaturePage, ErrorCalcTaxFreeLumpSums),
         submitAnswer(ErrorDescriptionPage, "valid - description"),
+        submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
         pageMustBe(IndexPage)
       )
   }
@@ -126,6 +128,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       .run(
         submitAnswer(pages.event1.PaymentNaturePage, BenefitsPaidEarly),
         submitAnswer(BenefitsPaidEarlyPage, ""),
+        submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
         pageMustBe(IndexPage)
       )
 
@@ -133,6 +136,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       .run(
         submitAnswer(pages.event1.PaymentNaturePage, BenefitsPaidEarly),
         submitAnswer(BenefitsPaidEarlyPage, "valid - description"),
+        submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
         pageMustBe(IndexPage)
       )
   }
@@ -142,6 +146,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       .run(
         submitAnswer(pages.event1.PaymentNaturePage, BenefitInKind),
         submitAnswer(BenefitInKindBriefDescriptionPage, ""),
+        submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
         pageMustBe(IndexPage)
       )
 
@@ -149,6 +154,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       .run(
         submitAnswer(pages.event1.PaymentNaturePage, BenefitInKind),
         submitAnswer(BenefitInKindBriefDescriptionPage, "valid - description"),
+        submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
         pageMustBe(IndexPage)
       )
   }
@@ -158,6 +164,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       .run(
         submitAnswer(pages.event1.PaymentNaturePage, OverpaymentOrWriteOff),
         submitAnswer(ReasonForTheOverpaymentOrWriteOffPage, DeathOfMember),
+        submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
         pageMustBe(IndexPage)
       )
   }
@@ -199,6 +206,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       .run(
         submitAnswer(PaymentNaturePage, RefundOfContributions),
         submitAnswer(RefundOfContributionsPage, WidowOrOrphan),
+        submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
         pageMustBe(IndexPage)
       )
   }
@@ -216,6 +224,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       .run(
         submitAnswer(PaymentNaturePage, RefundOfContributions),
         submitAnswer(RefundOfContributionsPage, models.event1.member.RefundOfContributions.Other),
+        submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
         pageMustBe(IndexPage)
       )
   }
