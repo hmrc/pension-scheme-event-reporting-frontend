@@ -28,7 +28,7 @@ import viewmodels.implicits._
 
 object MembersDetailsSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def rowFullName(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MembersDetailsPage).map {
       answer =>
@@ -36,6 +36,22 @@ object MembersDetailsSummary  {
         val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(answer.fullName)).toString))
         SummaryListRowViewModel(
           key     = "membersDetails.checkYourAnswersLabel",
+          value   = value,
+          actions = Seq(
+            ActionItemViewModel("site.change", MembersDetailsPage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("membersDetails.change.hidden"))
+          )
+        )
+    }
+
+  def rowNino(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(MembersDetailsPage).map {
+      answer =>
+
+        val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(answer.nino)).toString))
+        SummaryListRowViewModel(
+          key     = "membersDetails.checkYourAnswersLabel.nino",
           value   = value,
           actions = Seq(
             ActionItemViewModel("site.change", MembersDetailsPage.changeLink(waypoints, sourcePage).url)

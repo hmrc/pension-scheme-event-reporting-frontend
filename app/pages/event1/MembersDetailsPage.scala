@@ -17,9 +17,9 @@
 package pages.event1
 
 import controllers.event1.routes
-import models.{CheckMode, UserAnswers}
+import models.UserAnswers
 import models.event1.MembersDetails
-import pages.{AddItemPage, CheckAnswersPage, Page, PageAndWaypoints, QuestionPage, WaypointPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -34,14 +34,4 @@ case object MembersDetailsPage extends QuestionPage[MembersDetails] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     DoYouHoldSignedMandatePage
-
-  override def changeLink(waypoints: Waypoints, sourcePage: WaypointPage): PageAndWaypoints = {
-    sourcePage match {
-      case p: CheckAnswersPage =>
-        val ff = PageAndWaypoints(this, waypoints.setNextWaypoint(p.waypoint))
-        ff
-      case p: AddItemPage =>
-        PageAndWaypoints(this, waypoints.setNextWaypoint(p.waypoint(CheckMode)))
-    }
-  }
 }
