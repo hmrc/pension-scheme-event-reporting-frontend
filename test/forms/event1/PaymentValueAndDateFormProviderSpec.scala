@@ -22,6 +22,7 @@ import org.scalacheck.Gen
 import play.api.data.FormError
 
 import java.time.LocalDate
+import scala.collection
 
 class PaymentValueAndDateFormProviderSpec extends SpecBase
   with BigDecimalFieldBehaviours with DateBehavioursTrait {
@@ -37,6 +38,7 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
   private val messageKeyPaymentValueKey = "paymentValueAndDate.value"
   private val messageKeyPaymentDateKey = "paymentValueAndDate.date"
 
+  // scalastyle:off magic.number
   val validDataGenerator: Gen[String] = decsInRangeWithCommas(0, 999999999.99)
   val invalidDataGenerator: Gen[String] = intsInRangeWithCommas(0, 999999999)
 
@@ -89,14 +91,14 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
     behave like mandatoryDateField(
       form = form,
       key = paymentDateKey,
-      requiredAllKey = "paymentValueAndDate.date.error.noDayMonthOrYear"
+      requiredAllKey = "paymentValueAndDate.date.error.nothingEntered"
     )
-
-//    behave like dateFieldDayMonthMissing(
-//      form = form,
-//      key = paymentDateKey,
-//      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.noDayMonthOrYear"))
-//    )
+    
+    behave like dateFieldYearNot4Digits(
+      form = form,
+      key = paymentDateKey,
+      formError = FormError(paymentDateKey, "paymentValueAndDate.date.error.outsideDateRanges")
+    )
 
     behave like dateFieldWithMin(
       form = form,
@@ -111,11 +113,5 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
       max = stubMax,
       formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear"))
     )
-
-//    behave like dateFieldYearNot4Digits(
-//      form,
-//      key = paymentDateKey,
-//      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.outsideDateRanges"))
-//    )
   }
 }
