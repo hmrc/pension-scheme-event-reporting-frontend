@@ -36,12 +36,9 @@ case object MembersDetailsPage extends QuestionPage[MembersDetails] {
     DoYouHoldSignedMandatePage
 
   override def changeLink(waypoints: Waypoints, sourcePage: WaypointPage): PageAndWaypoints = {
-    println("\n>>>>CYALLL" + sourcePage)
     sourcePage match {
       case p: CheckAnswersPage =>
-        println("\n>>>>CYA" + p.waypoint)
         val ff = PageAndWaypoints(this, waypoints.setNextWaypoint(p.waypoint))
-        println("\n>>>>CYAddddddd" + ff)
         ff
       case p: AddItemPage =>
         PageAndWaypoints(this, waypoints.setNextWaypoint(p.waypoint(CheckMode)))
