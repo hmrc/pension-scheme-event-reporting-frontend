@@ -33,7 +33,7 @@ object MembersDetailsSummary  {
     answers.get(MembersDetailsPage).map {
       answer =>
 
-        val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"membersDetails.$answer")).toString))
+        val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(answer.fullName)).toString))
 
         SummaryListRowViewModel(
           key     = "membersDetails.checkYourAnswersLabel",
