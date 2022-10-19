@@ -44,7 +44,6 @@ case object PaymentNaturePage extends QuestionPage[PaymentNature] {
       case Some(BenefitsPaidEarly) => pages.event1.member.BenefitsPaidEarlyPage
       case Some(RefundOfContributions) => pages.event1.member.RefundOfContributionsPage
       case Some(OverpaymentOrWriteOff) => pages.event1.member.ReasonForTheOverpaymentOrWriteOffPage
-      // TODO: Think about this routing...
       case Some(ResidentialPropertyHeld) => pages.address.EnterPostcodePage(Event1MemberPropertyAddressJourney)
       case Some(TangibleMoveablePropertyHeld) => MemberTangibleMoveablePropertyPage
       case Some(CourtOrConfiscationOrder) => pages.event1.member.UnauthorisedPaymentRecipientNamePage

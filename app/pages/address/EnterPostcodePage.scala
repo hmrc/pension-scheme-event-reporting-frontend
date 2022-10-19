@@ -36,5 +36,4 @@ case class EnterPostcodePage(addressJourneyType: AddressJourneyType) extends Que
   final override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     ChooseAddressPage(addressJourneyType)
   }
-
 }

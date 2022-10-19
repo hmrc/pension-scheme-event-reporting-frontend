@@ -18,7 +18,7 @@ package pages.event1.member
 
 import controllers.event1.member.routes
 import models.UserAnswers
-import pages.event1.{BenefitInKindBriefDescriptionPage, PaymentValueAndDatePage}
+import pages.event1.PaymentValueAndDatePage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
@@ -33,9 +33,6 @@ case object ErrorDescriptionPage extends QuestionPage[String] {
     routes.ErrorDescriptionController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(ErrorDescriptionPage) match {
-      case Some(_) => PaymentValueAndDatePage
-      case _ => IndexPage
-    }
+    PaymentValueAndDatePage
   }
 }

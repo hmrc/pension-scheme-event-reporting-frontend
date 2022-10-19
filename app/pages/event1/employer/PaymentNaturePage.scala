@@ -37,7 +37,6 @@ case object PaymentNaturePage extends QuestionPage[PaymentNature] {
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(PaymentNaturePage) match {
       case Some(LoansExceeding50PercentOfFundValue) => LoanDetailsPage
-      // TODO: Think about...
       case Some(ResidentialProperty) => pages.address.EnterPostcodePage(Event1EmployerPropertyAddressJourney)
       case Some(TangibleMoveableProperty) => EmployerTangibleMoveablePropertyPage
       case Some(CourtOrder) => UnauthorisedPaymentRecipientNamePage

@@ -17,7 +17,9 @@
 package pages.event1.member
 
 import controllers.event1.routes
-import pages.{QuestionPage, Waypoints}
+import models.UserAnswers
+import pages.event1.PaymentValueAndDatePage
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -29,4 +31,8 @@ case object MemberPaymentNatureDescriptionPage extends QuestionPage[String] {
 
   override def route(waypoints: Waypoints): Call =
     routes.MemberPaymentNatureDescriptionController.onPageLoad(waypoints)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    PaymentValueAndDatePage
+  }
 }

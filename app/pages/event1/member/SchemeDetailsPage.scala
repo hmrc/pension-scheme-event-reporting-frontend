@@ -34,9 +34,6 @@ case object SchemeDetailsPage extends QuestionPage[SchemeDetails] {
     routes.SchemeDetailsController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(SchemeDetailsPage) match {
-      case Some(_) => PaymentValueAndDatePage
-      case _ => IndexPage
-    }
+    PaymentValueAndDatePage
   }
 }

@@ -33,9 +33,6 @@ case object UnauthorisedPaymentRecipientNamePage extends QuestionPage[String] {
     routes.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(UnauthorisedPaymentRecipientNamePage) match {
-      case Some(_) => PaymentValueAndDatePage
-      case _ => IndexPage
-    }
+    PaymentValueAndDatePage
   }
 }

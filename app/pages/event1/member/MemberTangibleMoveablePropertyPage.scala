@@ -33,9 +33,6 @@ case object MemberTangibleMoveablePropertyPage extends QuestionPage[String] {
     routes.MemberTangibleMoveablePropertyController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(MemberTangibleMoveablePropertyPage) match {
-      case Some(_) => PaymentValueAndDatePage
-      case _ => IndexPage
-    }
+    PaymentValueAndDatePage
   }
 }

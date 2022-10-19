@@ -33,9 +33,6 @@ case object EmployerPaymentNatureDescriptionPage extends QuestionPage[String] {
     routes.EmployerPaymentNatureDescriptionController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(EmployerPaymentNatureDescriptionPage) match {
-      case Some(_) => PaymentValueAndDatePage
-      case _ => IndexPage
-    }
+    PaymentValueAndDatePage
   }
 }
