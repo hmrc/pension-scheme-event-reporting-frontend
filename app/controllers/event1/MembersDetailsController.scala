@@ -43,6 +43,7 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    println( "\nNOT HERE")
     val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }

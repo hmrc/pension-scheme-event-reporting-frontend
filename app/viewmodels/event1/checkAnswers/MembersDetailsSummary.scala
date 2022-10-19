@@ -34,7 +34,7 @@ object MembersDetailsSummary  {
       answer =>
 
         val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(answer.fullName)).toString))
-
+println("\n>>FDFDFD")
         SummaryListRowViewModel(
           key     = "membersDetails.checkYourAnswersLabel",
           value   = value,
