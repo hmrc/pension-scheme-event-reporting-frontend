@@ -47,10 +47,10 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
             maximumValue[BigDecimal](maxPaymentValue, "paymentValueAndDate.value.error.amountTooHigh")
           ), "paymentDate" ->
               localDate(
-                  requiredKey = "paymentValueAndDate.date.error.nothingEntered",
+                  requiredKey = "paymentValueAndDate.date.error.noDayMonthOrYear",
                   twoRequiredKey = "paymentValueAndDate.date.error.noDayMonthOrYear",
                   invalidKey = "paymentValueAndDate.date.error.outsideDateRanges",
-                  allRequiredKey = "paymentValueAndDate.date.error.noDayMonthOrYear"
+                  allRequiredKey = "paymentValueAndDate.date.error.nothingEntered"
               ).verifying(
                 minDate(stubMin, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", formatDateDMY(stubMin), formatDateDMY(stubMax))),
                 maxDate(stubMax, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", formatDateDMY(stubMin), formatDateDMY(stubMax))),
