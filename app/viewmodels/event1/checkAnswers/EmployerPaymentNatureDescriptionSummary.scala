@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event1.checkAnswers
 
 import models.UserAnswers
 import pages.event1.employer.EmployerPaymentNatureDescriptionPage
