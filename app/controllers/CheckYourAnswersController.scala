@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.{Event18ConfirmationSummary, SchemeWindUpDateSummary}
-import viewmodels.event1.checkAnswers.{DoYouHoldSignedMandateSummary, MemberPaymentNatureDescriptionSummary, MembersDetailsSummary, PaymentNatureSummary, ValueOfUnauthorisedPaymentSummary}
+import viewmodels.event1.checkAnswers.{DoYouHoldSignedMandateSummary, EmployerPaymentNatureDescriptionSummary, MemberPaymentNatureDescriptionSummary, MembersDetailsSummary, PaymentNatureSummary, ValueOfUnauthorisedPaymentSummary}
 import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
@@ -65,7 +65,8 @@ class CheckYourAnswersController @Inject()(
       MemberPaymentNatureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       CompanyDetailsSummary.rowCompanyName(request.userAnswers, waypoints, sourcePage).toSeq ++
       CompanyDetailsSummary.rowCompanyNumber(request.userAnswers, waypoints, sourcePage).toSeq ++
-      EmployerPaymentNatureSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      EmployerPaymentNatureSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      EmployerPaymentNatureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
 
   private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
     SchemeWindUpDateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
