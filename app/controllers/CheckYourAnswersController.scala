@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.address.checkAnswers.ChooseAddressSummary
-//import viewmodels.address.checkAnswers.ChooseAddressSummary
+import viewmodels.event1.employer.checkAnswers.LoanDetailsSummary
 import viewmodels.checkAnswers.{Event18ConfirmationSummary, SchemeWindUpDateSummary}
 import viewmodels.event1.checkAnswers._
 import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
@@ -69,6 +69,8 @@ class CheckYourAnswersController @Inject()(
       CompanyDetailsSummary.rowCompanyNumber(request.userAnswers, waypoints, sourcePage).toSeq ++
       EmployerPaymentNatureSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       EmployerPaymentNatureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      LoanDetailsSummary.rowLoanAmount(request.userAnswers, waypoints, sourcePage).toSeq ++
+      LoanDetailsSummary.rowFundValue(request.userAnswers, waypoints, sourcePage).toSeq ++
       ChooseAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1EmployerAddressJourney).toSeq
 
   private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =

@@ -20,21 +20,41 @@ import models.UserAnswers
 import pages.event1.employer.LoanDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
+import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object LoanDetailsSummary {
 
+  private def loanDetailsAnswer(loanAmount: Option[BigDecimal])(implicit messages: Messages): Html = {
+    def loanDetailsToHtml(amountVal: BigDecimal): String = s"£$amountVal"
+
+    def optionalAmountToHtml(optionalAmount: Option[BigDecimal]): String = optionalAmount match {
+      case Some(amount) => loanDetailsToHtml(amount)
+      case None => ""
+    }
+
+    Html(
+      optionalAmountToHtml(loanAmount)
+    )
+  }
+
   def rowLoanAmount(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
+                   (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(LoanDetailsPage).map {
       answer =>
 
+        val value = ValueViewModel(
+          HtmlContent(
+            loanDetailsAnswer(answer.loanAmount)
+          )
+        )
+
         SummaryListRowViewModel(
           key = "loanDetails.CYA.loanAmountLabel",
-          value = ValueViewModel(HtmlFormat.escape(answer.loanAmount.toString).toString),
+          value = value,
           actions = Seq(
             ActionItemViewModel("site.change", LoanDetailsPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("loanDetails.change.hidden"))
@@ -43,13 +63,19 @@ object LoanDetailsSummary {
     }
 
   def rowFundValue(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
+                  (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(LoanDetailsPage).map {
       answer =>
 
+        val value = ValueViewModel(
+          HtmlContent(
+            loanDetailsAnswer(answer.fundValue)
+          )
+        )
+
         SummaryListRowViewModel(
           key = "loanDetails.CYA.fundValueLabel",
-          value = ValueViewModel(HtmlFormat.escape(answer.fundValue.toString).toString),
+          value = value,
           actions = Seq(
             ActionItemViewModel("site.change", LoanDetailsPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("loanDetails.change.hidden"))
