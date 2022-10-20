@@ -413,6 +413,8 @@ loanDetails.checkYourAnswersLabel = loanDetails
 loanDetails.error.required = Enter loanDetails
 loanDetails.error.length = LoanDetails must be 100 characters or less
 loanDetails.change.hidden = LoanDetails
+loanDetails.CYA.loanAmountLabel = Loan Amount
+loanDetails.CYA.fundValueLabel = Fund Amount
 
 loanDetails.loanAmount.notANumber = The loan amount must be an amount of money, like 123.45 or 156.00
 loanDetails.loanAmount.noDecimals = The loan amount must include pence, like 123.45 or 156.00

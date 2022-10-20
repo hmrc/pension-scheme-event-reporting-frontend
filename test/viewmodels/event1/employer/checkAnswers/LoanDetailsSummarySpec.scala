@@ -16,44 +16,60 @@
 
 package viewmodels.event1.employer.checkAnswers
 
+import base.SpecBase
+import data.SampleData.loanDetails
 import models.UserAnswers
+import models.enumeration.EventType.Event1
 import pages.event1.employer.LoanDetailsPage
-import pages.{CheckAnswersPage, Waypoints}
-import play.api.i18n.Messages
+import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
+import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
-object LoanDetailsSummary {
 
-  def rowLoanAmount(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(LoanDetailsPage).map {
-      answer =>
+class LoanDetailsSummarySpec extends SpecBase with SummaryListFluency {
 
+/*
+  "rowLoanAmount" - {
+
+    "must display correct information" in {
+
+      val answer = UserAnswers().setOrException(LoanDetailsPage, loanDetails)
+      val waypoints: Waypoints = EmptyWaypoints
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+
+      LoanDetailsSummary.rowLoanAmount(answer, waypoints, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "loanDetails.CYA.loanAmountLabel",
-          value = ValueViewModel(HtmlFormat.escape(answer.loanAmount.toString).toString),
+          value = ValueViewModel(HtmlFormat.escape(loanDetails.loanAmount.toString).toString),
           actions = Seq(
             ActionItemViewModel("site.change", LoanDetailsPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("loanDetails.change.hidden"))
           )
         )
+      )
     }
+  }*/
 
-  def rowFundValue(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(LoanDetailsPage).map {
-      answer =>
 
+  "rowFundValue" - {
+
+    "must display correct information" in {
+
+      val answer = UserAnswers().setOrException(LoanDetailsPage, loanDetails)
+      val waypoints: Waypoints = EmptyWaypoints
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+
+      LoanDetailsSummary.rowLoanAmount(answer, waypoints, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "loanDetails.CYA.fundValueLabel",
-          value = ValueViewModel(HtmlFormat.escape(answer.fundValue.toString).toString),
+          value = ValueViewModel(HtmlFormat.escape(loanDetails.fundValue.toString).toString),
           actions = Seq(
             ActionItemViewModel("site.change", LoanDetailsPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("loanDetails.change.hidden"))
           )
         )
+      )
     }
+  }
 }
