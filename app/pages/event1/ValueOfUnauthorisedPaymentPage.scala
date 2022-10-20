@@ -18,9 +18,10 @@ package pages.event1
 
 import controllers.event1.routes
 import models.UserAnswers
+import models.enumeration.EventType.Event1
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{CheckYourAnswersPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 
 case object ValueOfUnauthorisedPaymentPage extends QuestionPage[Boolean] {
 
@@ -35,6 +36,13 @@ case object ValueOfUnauthorisedPaymentPage extends QuestionPage[Boolean] {
     answers.get(this).map {
       case true  => SchemeUnAuthPaySurchargeMemberPage
       case false => PaymentNaturePage
+    }.orRecover
+  }
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
+    updatedAnswers.get(this).map {
+      case true  => SchemeUnAuthPaySurchargeMemberPage
+      case false => CheckYourAnswersPage(Event1)
     }.orRecover
   }
 }
