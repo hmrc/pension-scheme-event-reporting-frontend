@@ -41,7 +41,6 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
   private val waypoints = EmptyWaypoints
 
   // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now.
-  //  private val stubDate: LocalDate = LocalDate.now()
   private val stubMin: LocalDate = LocalDate of(LocalDate.now().getYear, 4, 6)
   private val stubMax: LocalDate = LocalDate of(LocalDate.now().getYear + 1, 4, 5)
 

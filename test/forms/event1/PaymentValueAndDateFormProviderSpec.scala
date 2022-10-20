@@ -22,7 +22,6 @@ import org.scalacheck.Gen
 import play.api.data.FormError
 
 import java.time.LocalDate
-import scala.collection
 
 class PaymentValueAndDateFormProviderSpec extends SpecBase
   with BigDecimalFieldBehaviours with DateBehavioursTrait {
@@ -36,7 +35,6 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
   private val paymentValueKey = "paymentValue"
   private val paymentDateKey = "paymentDate"
   private val messageKeyPaymentValueKey = "paymentValueAndDate.value"
-  private val messageKeyPaymentDateKey = "paymentValueAndDate.date"
 
   // scalastyle:off magic.number
   val validDataGenerator: Gen[String] = decsInRangeWithCommas(0, 999999999.99)
