@@ -30,7 +30,7 @@ import viewmodels.implicits._
 class CompanyDetailsSummarySpec extends SpecBase with SummaryListFluency {
 
 
-  "row" - {
+  "rowCompanyName" - {
 
     "must display correct information" in {
 
@@ -38,10 +38,32 @@ class CompanyDetailsSummarySpec extends SpecBase with SummaryListFluency {
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
-      CompanyDetailsSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      CompanyDetailsSummary.rowCompanyName(answer, waypoints, sourcePage) mustBe Some(
         SummaryListRowViewModel(
-          key = "companyDetails.checkYourAnswersLabel",
+          key = "companyDetails.CYA.companyName",
           value = ValueViewModel(HtmlFormat.escape(companyDetails.companyName).toString),
+          actions = Seq(
+            ActionItemViewModel("site.change", CompanyDetailsPage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("companyDetails.change.hidden"))
+          )
+        )
+      )
+    }
+  }
+
+
+  "rowCompanyNumber" - {
+
+    "must display correct information" in {
+
+      val answer = UserAnswers().setOrException(CompanyDetailsPage, companyDetails)
+      val waypoints: Waypoints = EmptyWaypoints
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+
+      CompanyDetailsSummary.rowCompanyNumber(answer, waypoints, sourcePage) mustBe Some(
+        SummaryListRowViewModel(
+          key = "companyDetails.CYA.companyNumber",
+          value = ValueViewModel(HtmlFormat.escape(companyDetails.companyNumber).toString),
           actions = Seq(
             ActionItemViewModel("site.change", CompanyDetailsPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("companyDetails.change.hidden"))

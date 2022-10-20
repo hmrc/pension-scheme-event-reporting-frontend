@@ -229,6 +229,9 @@ companyDetails.companyNumber.error.length = The company or organisation’s comp
 companyDetails.companyNumber.error.invalidCharacters = The company or organisation’s company number must only include letters and numbers, like 01234567 or AB123456
 companyDetails.change.hidden = CompanyDetails
 
+companyDetails.CYA.companyName = Company or organisation name
+companyDetails.CYA.companyNumber = Company number
+
 enterPostcode.title = What is {0}’s postcode?
 enterPostcode.heading = What is {0}’s postcode?
 enterPostcode.checkYourAnswersLabel = What is x’s postcode?
