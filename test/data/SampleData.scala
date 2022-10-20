@@ -48,6 +48,15 @@ object SampleData {
     )
   )
 
+  val employerAddress: Address = Address(
+    addressLine1 = "addr11",
+    addressLine2 = "addr12",
+    addressLine3 = Some("addr13"),
+    addressLine4 = Some("addr14"),
+    postcode = Some("zz11zz"),
+    country = "GB"
+  )
+
   val seqTolerantAddresses: Seq[TolerantAddress] = Seq[TolerantAddress](
     TolerantAddress(
       addressLine1 = Some("addr11"),

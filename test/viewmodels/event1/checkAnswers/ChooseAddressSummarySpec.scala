@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 
-package viewmodels.address.checkAnswers
+package viewmodels.event1.checkAnswers
 
+import base.SpecBase
+import data.SampleData.employerAddress
 import models.UserAnswers
 import models.address.Address
 import models.enumeration.AddressJourneyType
+import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
+import models.enumeration.EventType.Event1
 import pages.address.{EnterPostcodePage, ManualAddressPage}
-import pages.{CheckAnswersPage, Waypoints}
+import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
+import viewmodels.address.checkAnswers.ChooseAddressSummary
+import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
-object ChooseAddressSummary {
+
+class ChooseAddressSummarySpec extends SpecBase with SummaryListFluency {
 
   private def addressAnswer(addr: Address)(implicit messages: Messages): Html = {
     def addrLineToHtml(l: String): String = s"""<span class="govuk-!-display-block">$l</span>"""
@@ -48,18 +53,24 @@ object ChooseAddressSummary {
     )
   }
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, addressJourneyType: AddressJourneyType)
-         (implicit messages: Messages): Option[SummaryListRow] = {
 
-    answers.get(ManualAddressPage(addressJourneyType)).map {
-      answer =>
+  "row" - {
 
-        val value = ValueViewModel(
-          HtmlContent(
-            addressAnswer(answer)
-          )
+    "must display correct information" in {
+
+      val addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney
+      val answer = UserAnswers().setOrException(ManualAddressPage(addressJourneyType), employerAddress)
+      val waypoints: Waypoints = EmptyWaypoints
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+
+
+      val value = ValueViewModel(
+        HtmlContent(
+          addressAnswer(employerAddress)
         )
+      )
 
+      ChooseAddressSummary.row(answer, waypoints, sourcePage, addressJourneyType) mustBe Some(
         SummaryListRowViewModel(
           key = "companyDetails.CYA.companyAddress",
           value = value,
@@ -68,6 +79,7 @@ object ChooseAddressSummary {
               .withVisuallyHiddenText(messages("enterPostcode.change.hidden"))
           )
         )
+      )
     }
   }
 }
