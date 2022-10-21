@@ -29,12 +29,7 @@ import viewmodels.implicits._
 object LoanDetailsSummary {
 
   private def loanDetailsAnswer(loanAmount: Option[BigDecimal])(implicit messages: Messages): Html = {
-    def loanDetailsToHtml(amountVal: BigDecimal): String = amountVal.isWhole() match {
-      case true =>
-        s"£$amountVal.00"
-      case _ =>
-        s"£$amountVal"
-    }
+    def loanDetailsToHtml(amountVal: BigDecimal): String = s"£$amountVal"
 
     def optionalAmountToHtml(optionalAmount: Option[BigDecimal]): String = optionalAmount match {
       case Some(amount) => loanDetailsToHtml(amount)

@@ -14,39 +14,44 @@
  * limitations under the License.
  */
 
-package viewmodels.event1.checkAnswers
+package viewmodels.event1.member.checkAnswers
 
 import base.SpecBase
 import models.UserAnswers
 import models.enumeration.EventType.Event1
-import pages.event1.employer.UnauthorisedPaymentRecipientNamePage
+import pages.event1.member.UnauthorisedPaymentRecipientNamePage
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
 import play.twirl.api.HtmlFormat
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
 
-class UnauthorisedPaymentRecipientNameSummarySpec extends SpecBase with SummaryListFluency {
+class MemberUnauthorisedPaymentRecipientNameSummarySpec extends SpecBase with SummaryListFluency {
 
 
   "row" - {
 
     "must display correct information for unauthorised payment recipient name" in {
 
-      val answer = UserAnswers().setOrException(UnauthorisedPaymentRecipientNamePage, "Martin")
+      val name = "Harry"
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val answer = UserAnswers().setOrException(UnauthorisedPaymentRecipientNamePage, name)
 
-      UnauthorisedPaymentRecipientNameSummary.row(answer, waypoints, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
-          key = "unauthorisedPaymentRecipientName.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlFormat.escape("Martin").toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.change.hidden"))
+      answer match {
+        case memberJourney if answer.isDefined(UnauthorisedPaymentRecipientNamePage) =>
+          MemberUnauthorisedPaymentRecipientNameSummary.row(answer, waypoints, sourcePage) mustBe Some(
+            SummaryListRowViewModel(
+              key = "unauthorisedPaymentRecipientName.member.checkYourAnswersLabel",
+              value = ValueViewModel(HtmlFormat.escape(name).toString),
+              actions = Seq(
+                ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage.changeLink(waypoints, sourcePage).url)
+                  .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.member.change.hidden"))
+              )
+            )
           )
-        )
-      )
+        case _ => None
+      }
     }
   }
 }

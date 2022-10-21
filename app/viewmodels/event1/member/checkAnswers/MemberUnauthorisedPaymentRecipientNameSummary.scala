@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package viewmodels.event1.checkAnswers
+package viewmodels.event1.member.checkAnswers
 
 import models.UserAnswers
-import pages.event1.employer.UnauthorisedPaymentRecipientNamePage
+import pages.event1.member.UnauthorisedPaymentRecipientNamePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -25,20 +25,24 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object UnauthorisedPaymentRecipientNameSummary {
+object MemberUnauthorisedPaymentRecipientNameSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(UnauthorisedPaymentRecipientNamePage).map {
-      answer =>
+         (implicit messages: Messages): Option[SummaryListRow] = answers match {
 
-        SummaryListRowViewModel(
-          key = "unauthorisedPaymentRecipientName.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.change.hidden"))
+    case memberJourney if answers.isDefined(UnauthorisedPaymentRecipientNamePage) =>
+      answers.get(UnauthorisedPaymentRecipientNamePage).map {
+        answer =>
+
+          SummaryListRowViewModel(
+            key = "unauthorisedPaymentRecipientName.member.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlFormat.escape(answer).toString),
+            actions = Seq(
+              ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage.changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.member.change.hidden"))
+            )
           )
-        )
-    }
+      }
+    case _ => None
+  }
 }

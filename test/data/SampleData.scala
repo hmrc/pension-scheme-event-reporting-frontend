@@ -82,7 +82,7 @@ object SampleData {
 
   def booleanCYAVal(value: Boolean) = if (value) "site.yes" else "site.no"
 
-  val loanDetails : LoanDetails = LoanDetails(Some(BigDecimal(10.00)), Some(BigDecimal(20.00)))
+  val loanDetails : LoanDetails = LoanDetails(Some(BigDecimal(10.00)), Some(BigDecimal(20.57)))
 
   val schemeDetails: SchemeDetails = SchemeDetails(Some("SchemeName"), Some("SchemeReference"))
 }

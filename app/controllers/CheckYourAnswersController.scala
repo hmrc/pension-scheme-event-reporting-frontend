@@ -30,8 +30,8 @@ import viewmodels.address.checkAnswers.ChooseAddressSummary
 import viewmodels.event1.employer.checkAnswers.LoanDetailsSummary
 import viewmodels.checkAnswers.{Event18ConfirmationSummary, SchemeWindUpDateSummary}
 import viewmodels.event1.checkAnswers._
-import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
-import viewmodels.event1.member.checkAnswers.{RefundOfContributionsSummary, SchemeDetailsSummary}
+import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, EmployerUnauthorisedPaymentRecipientNameSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
+import viewmodels.event1.member.checkAnswers.{RefundOfContributionsSummary, SchemeDetailsSummary, MemberUnauthorisedPaymentRecipientNameSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -45,6 +45,7 @@ class CheckYourAnswersController @Inject()(
                                           ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
+
 
     val thisPage = CheckYourAnswersPage(eventType)
     val waypoints = EmptyWaypoints
@@ -78,10 +79,11 @@ class CheckYourAnswersController @Inject()(
       EmployerTangibleMoveablePropertySummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       MemberTangibleMoveablePropertySummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       ReasonForTheOverpaymentOrWriteOffSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      UnauthorisedPaymentRecipientNameSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      EmployerUnauthorisedPaymentRecipientNameSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       RefundOfContributionsSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       SchemeDetailsSummary.rowSchemeName(request.userAnswers, waypoints, sourcePage).toSeq ++
       SchemeDetailsSummary.rowSchemeReference(request.userAnswers, waypoints, sourcePage).toSeq ++
+      MemberUnauthorisedPaymentRecipientNameSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       ChooseAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1EmployerAddressJourney).toSeq
 
   private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =

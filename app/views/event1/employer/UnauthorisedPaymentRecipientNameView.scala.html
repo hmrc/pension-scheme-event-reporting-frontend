@@ -28,7 +28,7 @@
 
 @(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("unauthorisedPaymentRecipientName.title"))) {
+@layout(pageTitle = title(form, messages("unauthorisedPaymentRecipientName.employer.title"))) {
 
     @formHelper(action = routes.UnauthorisedPaymentRecipientNameController.onSubmit(waypoints)) {
 
@@ -39,10 +39,10 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("unauthorisedPaymentRecipientName.heading")).asPageHeading()
+                label = LabelViewModel(messages("unauthorisedPaymentRecipientName.employer.heading")).asPageHeading()
             )
             .withWidth(TwoThirds)
-            .withHint(HintViewModel(messages("unauthorisedPaymentRecipientName.hint")))
+            .withHint(HintViewModel(messages("unauthorisedPaymentRecipientName.employer.hint")))
         )
 
         @govukButton(
