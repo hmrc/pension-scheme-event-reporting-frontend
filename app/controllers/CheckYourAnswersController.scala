@@ -63,6 +63,7 @@ class CheckYourAnswersController @Inject()(
       MembersDetailsSummary.rowNino(request.userAnswers, waypoints, sourcePage).toSeq ++
       DoYouHoldSignedMandateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       ValueOfUnauthorisedPaymentSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      SchemeUnAuthPaySurchargeMemberSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       PaymentNatureSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       MemberPaymentNatureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       CompanyDetailsSummary.rowCompanyName(request.userAnswers, waypoints, sourcePage).toSeq ++
