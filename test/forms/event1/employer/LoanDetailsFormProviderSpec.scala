@@ -49,7 +49,7 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
   private val fundValueNoDecimalsKey = "loanDetails.fundValue.noDecimals"
   private val fundValueAmountTooHighErrorKey = "loanDetails.fundValue.amountTooHigh"
 
-  private def details(loanAmount: String = "12",
+  private def details(loanAmount: String = "12.34",
                       fundValue: String = "1.00"
                      ): Map[String, String] =
     Map(
