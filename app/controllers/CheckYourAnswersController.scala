@@ -71,6 +71,7 @@ class CheckYourAnswersController @Inject()(
       EmployerPaymentNatureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       LoanDetailsSummary.rowLoanAmount(request.userAnswers, waypoints, sourcePage).toSeq ++
       LoanDetailsSummary.rowFundValue(request.userAnswers, waypoints, sourcePage).toSeq ++
+      BenefitInKindBriefDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       ChooseAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1EmployerAddressJourney).toSeq
 
   private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
