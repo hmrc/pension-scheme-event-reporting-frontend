@@ -16,28 +16,27 @@
 
 package viewmodels.checkAnswers
 
-import helpers.DateHelper
 import models.UserAnswers
-import pages.eventWindUp.SchemeWindUpDatePage
+import pages.event1.PaymentValueAndDatePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object SchemeWindUpDateSummary {
+object PaymentValueAndDateSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SchemeWindUpDatePage).map {
+    answers.get(PaymentValueAndDatePage).map {
       answer =>
 
         SummaryListRowViewModel(
-          key = KeyViewModel("schemeWindUpDate.checkYourAnswersLabel").withCssClass("govuk-!-width-one-half"),
-          value = ValueViewModel(DateHelper.formatDateDMYWithSlash(answer)),
+          key = "paymentValueAndDate.checkYourAnswersLabel",
+          value = ValueViewModel(answer.toString),
           actions = Seq(
-            ActionItemViewModel("site.change", SchemeWindUpDatePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("schemeWindUpDate.change.hidden"))
+            ActionItemViewModel("site.change", PaymentValueAndDatePage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("paymentValueAndDate.change.hidden"))
           )
         )
     }

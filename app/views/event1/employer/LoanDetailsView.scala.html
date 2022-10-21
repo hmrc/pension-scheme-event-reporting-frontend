@@ -15,6 +15,7 @@
  *@
 
 @import controllers.event1.employer.routes
+@import viewmodels.InputWidth._
 
 @this(
         layout: templates.Layout,
@@ -43,9 +44,9 @@
                     content = Text(messages("loanDetails.loanAmount.heading"))
                 )
             )
-                    .withCssClass("govuk-input--width-5")
-                    .withPrefix(PrefixOrSuffix(content = Text("£")))
-                    .asNumeric()
+            .withWidth(OneQuarter)
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
+            .asNumeric()
         )
 
         @govukInput(
@@ -55,9 +56,9 @@
                     content = Text(messages("loanDetails.fundValue.heading"))
                 )
             )
-                    .withCssClass("govuk-input--width-5")
-                    .withPrefix(PrefixOrSuffix(content = Text("£")))
-                    .asNumeric()
+            .withWidth(OneQuarter)
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
+            .asNumeric()
         )
 
         @govukButton(

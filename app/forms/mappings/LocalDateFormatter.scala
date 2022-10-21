@@ -26,9 +26,9 @@ import scala.util.{Failure, Success, Try}
 
 private[mappings] class LocalDateFormatter(
                                             invalidKey: String,
-                                            allRequiredKey: String,
-                                            twoRequiredKey: String,
-                                            requiredKey: String,
+                                            oneDateComponentMissingKey: String,
+                                            twoDateComponentsMissingKey: String,
+                                            threeDateComponentsMissingKey: String,
                                             taxYearValidationDetail: Option[TaxYearValidationDetail],
                                             args: Seq[String] = Seq.empty
                                           ) extends Formatter[LocalDate] with Formatters {
@@ -92,11 +92,11 @@ private[mappings] class LocalDateFormatter(
             }
         }
       case 2 =>
-        Left(List(FormError(key, requiredKey, missingFields ++ args)))
+        Left(List(FormError(key, oneDateComponentMissingKey, missingFields ++ args)))
       case 1 =>
-        Left(List(FormError(key, twoRequiredKey, missingFields ++ args)))
+        Left(List(FormError(key, twoDateComponentsMissingKey, missingFields ++ args)))
       case _ =>
-        Left(List(FormError(key, allRequiredKey, args)))
+        Left(List(FormError(key, threeDateComponentsMissingKey, args)))
     }
   }
 

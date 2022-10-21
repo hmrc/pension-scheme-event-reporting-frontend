@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package pages.event1.member
+package pages.event1
 
 import controllers.event1.routes
-import models.UserAnswers
-import pages.event1.PaymentValueAndDatePage
-import pages.{Page, QuestionPage, Waypoints}
+import models.event1.PaymentDetails
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.{QuestionPage, Waypoints}
 
-case object MemberTangibleMoveablePropertyPage extends QuestionPage[String] {
+case object PaymentValueAndDatePage extends QuestionPage[PaymentDetails] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "memberTangibleMoveableProperty"
+  override def toString: String = "paymentValueAndDate"
 
   override def route(waypoints: Waypoints): Call =
-    routes.MemberTangibleMoveablePropertyController.onPageLoad(waypoints)
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    PaymentValueAndDatePage
-  }
+    routes.PaymentValueAndDateController.onPageLoad(waypoints)
 }

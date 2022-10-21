@@ -49,6 +49,7 @@ abstract class WithJourneyTypeDetail(val eventType: EventType, val nodeName: Str
 object AddressJourneyType extends Enumerable.Implicits {
   private val entityTypeMessageKeyCompany = "entityType.theCompany"
   private val entityTypeMessageKeyResidentialProperty = "entityType.theResidentialProperty"
+
   case object Event1EmployerAddressJourney extends WithJourneyTypeDetail(
     eventType = EventType.Event1,
     nodeName = "employerAddress",

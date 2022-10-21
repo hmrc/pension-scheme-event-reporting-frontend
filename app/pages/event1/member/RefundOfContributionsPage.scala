@@ -17,8 +17,10 @@
 package pages.event1.member
 
 import controllers.event1.member.routes
+import models.UserAnswers
 import models.event1.member.RefundOfContributions
-import pages.{QuestionPage, Waypoints}
+import pages.event1.PaymentValueAndDatePage
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -30,5 +32,9 @@ case object RefundOfContributionsPage extends QuestionPage[RefundOfContributions
 
   override def route(waypoints: Waypoints): Call = {
     routes.RefundOfContributionsController.onPageLoad(waypoints)
+  }
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    PaymentValueAndDatePage
   }
 }
