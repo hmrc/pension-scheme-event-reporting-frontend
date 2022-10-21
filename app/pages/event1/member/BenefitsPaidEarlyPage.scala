@@ -33,9 +33,6 @@ case object BenefitsPaidEarlyPage extends QuestionPage[String] {
     routes.BenefitsPaidEarlyController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(BenefitsPaidEarlyPage) match {
-      case Some(_) => PaymentValueAndDatePage
-      case _ => IndexPage
-    }
+    PaymentValueAndDatePage
   }
 }

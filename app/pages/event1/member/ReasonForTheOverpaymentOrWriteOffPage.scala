@@ -34,9 +34,6 @@ case object ReasonForTheOverpaymentOrWriteOffPage extends QuestionPage[ReasonFor
     routes.ReasonForTheOverpaymentOrWriteOffController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(ReasonForTheOverpaymentOrWriteOffPage) match {
-      case Some(_) => PaymentValueAndDatePage
-      case _ => IndexPage
-    }
+    PaymentValueAndDatePage
   }
 }

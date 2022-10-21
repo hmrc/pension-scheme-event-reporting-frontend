@@ -34,9 +34,6 @@ case object LoanDetailsPage extends QuestionPage[LoanDetails] {
     routes.LoanDetailsController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(LoanDetailsPage) match {
-      case Some(_) => PaymentValueAndDatePage
-      case _ => IndexPage
-    }
+    PaymentValueAndDatePage
   }
 }

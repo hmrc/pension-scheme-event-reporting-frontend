@@ -117,7 +117,7 @@ trait Formatters {
           .right.flatMap {
           case s if !s.matches(numericRegexp) =>
             Left(Seq(FormError(key, notANumberKey, args)))
-          case s if !s.matches(noDecimalsKey) && !s.matches(decimal2DPRegexp) =>
+          case s if !s.matches(decimal2DPRegexp) => // && !s.matches(intRegexp)
             Left(Seq(FormError(key, noDecimalsKey, args)))
           case s =>
             Try(BigDecimal(s)) match {

@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
             defaultValue: "",
             selectElement: selectEl
         })
-        // fix to ensure error when blank
         document.querySelector('input[role="combobox"]').addEventListener('keydown', function(e){
             if (e.which != 13 && e.which != 9) {
                 selectEl.value = "";

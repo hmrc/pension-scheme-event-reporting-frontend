@@ -35,9 +35,6 @@ case object RefundOfContributionsPage extends QuestionPage[RefundOfContributions
   }
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(RefundOfContributionsPage) match {
-      case Some(_) => PaymentValueAndDatePage
-      case _ => IndexPage
-    }
+    PaymentValueAndDatePage
   }
 }

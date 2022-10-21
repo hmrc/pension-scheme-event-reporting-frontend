@@ -32,9 +32,6 @@ case object BenefitInKindBriefDescriptionPage extends QuestionPage[String] {
     routes.BenefitInKindBriefDescriptionController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(BenefitInKindBriefDescriptionPage) match {
-      case Some(_) => PaymentValueAndDatePage
-      case _ => IndexPage
-    }
+    PaymentValueAndDatePage
   }
 }
