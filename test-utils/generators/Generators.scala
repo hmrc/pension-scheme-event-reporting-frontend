@@ -16,11 +16,11 @@
 
 package generators
 
-import java.time.{Instant, LocalDate, ZoneOffset}
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Gen, Shrink}
 
+import java.time.{Instant, LocalDate, ZoneOffset}
 import scala.math.BigDecimal.RoundingMode
 
 trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators {
@@ -77,8 +77,8 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
         BigDecimal(list.mkString).setScale(2, RoundingMode.FLOOR).toString
     )
 
-    def decimalsOutsideRange(min: BigDecimal, max: BigDecimal): Gen[BigDecimal] =
-      arbitrary[BigDecimal] suchThat (x => x < min || x > max)
+  def decimalsOutsideRange(min: BigDecimal, max: BigDecimal): Gen[BigDecimal] =
+    arbitrary[BigDecimal] suchThat (x => x < min || x > max)
 
   def intsLargerThanMaxValue: Gen[BigInt] =
     arbitrary[BigInt] suchThat (x => x > Int.MaxValue)

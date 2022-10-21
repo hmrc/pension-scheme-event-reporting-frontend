@@ -19,9 +19,9 @@ package pages.event1.member
 import controllers.event1.member.routes
 import models.UserAnswers
 import pages.event1.PaymentValueAndDatePage
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
 
 case object ErrorDescriptionPage extends QuestionPage[String] {
 
