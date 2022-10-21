@@ -17,14 +17,14 @@
 package viewmodels.checkAnswers
 
 import models.UserAnswers
-import pages.{CheckAnswersPage, Waypoints}
 import pages.event1.PaymentValueAndDatePage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object PaymentValueAndDateSummary  {
+object PaymentValueAndDateSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
@@ -32,8 +32,8 @@ object PaymentValueAndDateSummary  {
       answer =>
 
         SummaryListRowViewModel(
-          key     = "paymentValueAndDate.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.toString),
+          key = "paymentValueAndDate.checkYourAnswersLabel",
+          value = ValueViewModel(answer.toString),
           actions = Seq(
             ActionItemViewModel("site.change", PaymentValueAndDatePage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("paymentValueAndDate.change.hidden"))

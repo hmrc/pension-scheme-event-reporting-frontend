@@ -91,7 +91,7 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
       key = paymentDateKey,
       requiredAllKey = "paymentValueAndDate.date.error.nothingEntered"
     )
-    
+
     behave like dateFieldYearNot4Digits(
       form = form,
       key = paymentDateKey,

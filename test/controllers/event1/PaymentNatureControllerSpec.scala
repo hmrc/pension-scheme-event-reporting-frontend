@@ -21,17 +21,18 @@ import connectors.UserAnswersCacheConnector
 import forms.event1.PaymentNatureFormProvider
 import models.UserAnswers
 import models.event1.PaymentNature
-import pages.EmptyWaypoints
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.mockito.MockitoSugar.{mock, reset, times, verify, never}
+import org.mockito.MockitoSugar.{mock, never, reset, times, verify}
 import org.scalatest.BeforeAndAfterEach
+import pages.EmptyWaypoints
 import pages.event1.member.PaymentNaturePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.event1.PaymentNatureView
+
 import scala.concurrent.Future
 
 class PaymentNatureControllerSpec extends SpecBase with BeforeAndAfterEach {
@@ -44,6 +45,7 @@ class PaymentNatureControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.PaymentNatureController.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.PaymentNatureController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](

@@ -19,9 +19,9 @@ package pages.event1
 import controllers.event1.routes
 import models.UserAnswers
 import pages.event1.member.PaymentNaturePage
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Page, QuestionPage, Waypoints}
 
 case object ValueOfUnauthorisedPaymentPage extends QuestionPage[Boolean] {
 
@@ -34,7 +34,7 @@ case object ValueOfUnauthorisedPaymentPage extends QuestionPage[Boolean] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
-      case true  => SchemeUnAuthPaySurchargeMemberPage
+      case true => SchemeUnAuthPaySurchargeMemberPage
       case false => PaymentNaturePage
     }.orRecover
   }

@@ -21,12 +21,12 @@ import connectors.UserAnswersCacheConnector
 import forms.event1.PaymentValueAndDateFormProvider
 import models.UserAnswers
 import models.event1.PaymentDetails
-import pages.EmptyWaypoints
-import pages.event1.PaymentValueAndDatePage
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
+import pages.EmptyWaypoints
+import pages.event1.PaymentValueAndDatePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -50,6 +50,7 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.PaymentValueAndDateController.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.PaymentValueAndDateController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -112,7 +113,7 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(paymentDetails("1000.00", Some(LocalDate.of(2022, 5, 1)) ):_*)
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(paymentDetails("1000.00", Some(LocalDate.of(2022, 5, 1))): _*)
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(PaymentValueAndDatePage, validValue).success.value
