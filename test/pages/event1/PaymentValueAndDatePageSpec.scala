@@ -16,18 +16,24 @@
 
 package pages.event1
 
-import models.event1.PaymentNature
+import models.event1.PaymentDetails
+import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
-import pages.event1.member.PaymentNaturePage
 
-class PaymentNatureSpec extends PageBehaviours {
+import java.time.LocalDate
 
-  "PaymentNaturePage" - {
+class PaymentValueAndDatePageSpec extends PageBehaviours {
 
-    beRetrievable[PaymentNature](PaymentNaturePage)
+  "PaymentValueAndDatePage" - {
 
-    beSettable[PaymentNature](PaymentNaturePage)
+    implicit lazy val arbitraryPaymentValueAndDate: Arbitrary[PaymentDetails] = Arbitrary {
+        PaymentDetails(1000.00, LocalDate.now())
+    }
 
-    beRemovable[PaymentNature](PaymentNaturePage)
+    beRetrievable[PaymentDetails](PaymentValueAndDatePage)
+
+    beSettable[PaymentDetails](PaymentValueAndDatePage)
+
+    beRemovable[PaymentDetails](PaymentValueAndDatePage)
   }
 }

@@ -17,8 +17,8 @@
 package viewmodels.checkAnswers
 
 import models.UserAnswers
+import pages.event1.member.PaymentNaturePage
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event1.PaymentNaturePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -26,7 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object PaymentNatureSummary  {
+object PaymentNatureSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
@@ -40,8 +40,8 @@ object PaymentNatureSummary  {
         )
 
         SummaryListRowViewModel(
-          key     = "paymentNature.checkYourAnswersLabel",
-          value   = value,
+          key = "paymentNature.checkYourAnswersLabel",
+          value = value,
           actions = Seq(
             ActionItemViewModel("site.change", PaymentNaturePage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("paymentNature.change.hidden"))

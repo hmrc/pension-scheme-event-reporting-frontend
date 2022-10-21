@@ -29,9 +29,9 @@ class SchemeWindUpDateFormProvider @Inject() extends Mappings {
     Form(
       "value" -> localDate(
         invalidKey = "schemeWindUpDate.error.invalid",
-        allRequiredKey = "schemeWindUpDate.error.required.all",
-        twoRequiredKey = "schemeWindUpDate.error.required.two",
-        requiredKey = "schemeWindUpDate.error.required",
+        threeDateComponentsMissingKey = "schemeWindUpDate.error.required.all",
+        twoDateComponentsMissingKey = "schemeWindUpDate.error.required.two",
+        oneDateComponentMissingKey = "schemeWindUpDate.error.required",
         taxYearValidationDetail = Some(TaxYearValidationDetail(
           invalidKey = "schemeWindUpDate.error.outside.taxYear",
           taxYear = taxYear
