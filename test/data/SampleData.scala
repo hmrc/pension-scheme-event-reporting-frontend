@@ -19,6 +19,7 @@ package data
 import models.address.{Address, TolerantAddress}
 import models.event1.MembersDetails
 import models.event1.employer.{CompanyDetails, LoanDetails}
+import models.event1.member.SchemeDetails
 import utils.{CountryOptions, InputOption}
 
 object SampleData {
@@ -82,4 +83,6 @@ object SampleData {
   def booleanCYAVal(value: Boolean) = if (value) "site.yes" else "site.no"
 
   val loanDetails : LoanDetails = LoanDetails(Some(BigDecimal(10.00)), Some(BigDecimal(20.00)))
+
+  val schemeDetails: SchemeDetails = SchemeDetails(Some("SchemeName"), Some("SchemeReference"))
 }

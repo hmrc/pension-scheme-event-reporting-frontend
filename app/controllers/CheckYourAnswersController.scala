@@ -31,7 +31,7 @@ import viewmodels.event1.employer.checkAnswers.LoanDetailsSummary
 import viewmodels.checkAnswers.{Event18ConfirmationSummary, SchemeWindUpDateSummary}
 import viewmodels.event1.checkAnswers._
 import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
-import viewmodels.event1.member.checkAnswers.RefundOfContributionsSummary
+import viewmodels.event1.member.checkAnswers.{RefundOfContributionsSummary, SchemeDetailsSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -80,6 +80,8 @@ class CheckYourAnswersController @Inject()(
       ReasonForTheOverpaymentOrWriteOffSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       UnauthorisedPaymentRecipientNameSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       RefundOfContributionsSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      SchemeDetailsSummary.rowSchemeName(request.userAnswers, waypoints, sourcePage).toSeq ++
+      SchemeDetailsSummary.rowSchemeReference(request.userAnswers, waypoints, sourcePage).toSeq ++
       ChooseAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1EmployerAddressJourney).toSeq
 
   private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =

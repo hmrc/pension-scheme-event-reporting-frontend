@@ -16,17 +16,20 @@
 
 package viewmodels.event1.member.checkAnswers
 
+import base.SpecBase
+import data.SampleData.schemeDetails
 import models.UserAnswers
+import models.enumeration.EventType.Event1
 import pages.event1.member.SchemeDetailsPage
-import pages.{CheckAnswersPage, Waypoints}
+import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
+import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
-object SchemeDetailsSummary {
+
+class SchemeDetailsSummarySpec extends SpecBase with SummaryListFluency {
 
   private def schemeDetailsAnswer(detail: Option[String])(implicit messages: Messages): Html = {
     def schemeDetailsToHtml(value: String): String = s"$value"
@@ -41,17 +44,21 @@ object SchemeDetailsSummary {
     )
   }
 
-  def rowSchemeName(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-                   (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SchemeDetailsPage).map {
-      answer =>
+  "rowSchemeName" - {
 
-        val value = ValueViewModel(
-          HtmlContent(
-            schemeDetailsAnswer(answer.schemeName)
-          )
+    "must display correct information for Scheme Name" in {
+
+      val answer = UserAnswers().setOrException(SchemeDetailsPage, schemeDetails)
+      val waypoints: Waypoints = EmptyWaypoints
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+
+      val value = ValueViewModel(
+        HtmlContent(
+          schemeDetailsAnswer(schemeDetails.schemeName)
         )
+      )
 
+      SchemeDetailsSummary.rowSchemeName(answer, waypoints, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "schemeDetails.checkYourAnswersLabel",
           value = value,
@@ -60,19 +67,25 @@ object SchemeDetailsSummary {
               .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
           )
         )
+      )
     }
+  }
 
-  def rowSchemeReference(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-                        (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SchemeDetailsPage).map {
-      answer =>
+  "rowSchemeReference" - {
 
-        val value = ValueViewModel(
-          HtmlContent(
-            schemeDetailsAnswer(answer.reference)
-          )
+    "must display correct information for Scheme Reference" in {
+
+      val answer = UserAnswers().setOrException(SchemeDetailsPage, schemeDetails)
+      val waypoints: Waypoints = EmptyWaypoints
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+
+      val value = ValueViewModel(
+        HtmlContent(
+          schemeDetailsAnswer(schemeDetails.reference)
         )
+      )
 
+      SchemeDetailsSummary.rowSchemeReference(answer, waypoints, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "schemeDetails.checkYourAnswersLabel",
           value = value,
@@ -81,5 +94,7 @@ object SchemeDetailsSummary {
               .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
           )
         )
+      )
     }
+  }
 }
