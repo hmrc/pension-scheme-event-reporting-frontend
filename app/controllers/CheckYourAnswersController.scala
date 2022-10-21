@@ -77,6 +77,7 @@ class CheckYourAnswersController @Inject()(
       EmployerTangibleMoveablePropertySummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       MemberTangibleMoveablePropertySummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       ReasonForTheOverpaymentOrWriteOffSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      UnauthorisedPaymentRecipientNameSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       ChooseAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1EmployerAddressJourney).toSeq
 
   private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
