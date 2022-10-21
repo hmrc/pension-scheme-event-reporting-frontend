@@ -21,8 +21,8 @@ import play.api.data.FormError
 import play.api.data.format.Formatter
 
 import java.text.DecimalFormat
-import scala.util.{Failure, Success, Try}
 import scala.util.control.Exception.nonFatalCatch
+import scala.util.{Failure, Success, Try}
 
 trait Formatters {
 
@@ -117,7 +117,7 @@ trait Formatters {
           .right.flatMap {
           case s if !s.matches(numericRegexp) =>
             Left(Seq(FormError(key, notANumberKey, args)))
-          case s if !s.matches(decimal2DPRegexp) => // && !s.matches(intRegexp)
+          case s if !s.matches(decimal2DPRegexp) =>
             Left(Seq(FormError(key, noDecimalsKey, args)))
           case s =>
             Try(BigDecimal(s)) match {
@@ -146,7 +146,7 @@ trait Formatters {
             Right(None)
           case Some(s) if !s.matches(numericRegexp) =>
             Left(Seq(FormError(key, invalidKey, args)))
-          case Some(s) if !s.matches(decimal2DPRegexp) && !s.matches(intRegexp) =>
+          case Some(s) if !s.matches(decimal2DPRegexp) =>
             Left(Seq(FormError(key, decimalKey, args)))
           case Some(s) =>
             Try(Option(BigDecimal(s))) match {
