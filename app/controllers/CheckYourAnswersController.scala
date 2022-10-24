@@ -27,11 +27,10 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.address.checkAnswers.ChooseAddressSummary
-import viewmodels.event1.employer.checkAnswers.LoanDetailsSummary
-import viewmodels.checkAnswers.{Event18ConfirmationSummary, PaymentValueAndDateSummary, SchemeWindUpDateSummary}
+import viewmodels.checkAnswers.{Event18ConfirmationSummary, SchemeWindUpDateSummary}
 import viewmodels.event1.checkAnswers._
-import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, EmployerUnauthorisedPaymentRecipientNameSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
-import viewmodels.event1.member.checkAnswers.{MemberUnauthorisedPaymentRecipientNameSummary, RefundOfContributionsSummary, SchemeDetailsSummary}
+import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, EmployerUnauthorisedPaymentRecipientNameSummary, LoanDetailsSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
+import viewmodels.event1.member.checkAnswers.{ErrorDescriptionSummary, MemberUnauthorisedPaymentRecipientNameSummary, RefundOfContributionsSummary, SchemeDetailsSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -67,6 +66,7 @@ class CheckYourAnswersController @Inject()(
       ValueOfUnauthorisedPaymentSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       SchemeUnAuthPaySurchargeMemberSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       PaymentNatureSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      ErrorDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       MemberPaymentNatureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       CompanyDetailsSummary.rowCompanyName(request.userAnswers, waypoints, sourcePage).toSeq ++
       CompanyDetailsSummary.rowCompanyNumber(request.userAnswers, waypoints, sourcePage).toSeq ++

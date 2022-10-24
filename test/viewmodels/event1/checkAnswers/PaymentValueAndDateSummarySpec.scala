@@ -21,40 +21,66 @@ import models.UserAnswers
 import models.enumeration.EventType.Event1
 import models.event1.PaymentDetails
 import pages.event1.PaymentValueAndDatePage
-import pages.event1.member.BenefitInKindBriefDescriptionPage
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
-import play.twirl.api.HtmlFormat
-import viewmodels.checkAnswers.PaymentValueAndDateSummary
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 class PaymentValueAndDateSummarySpec extends SpecBase with SummaryListFluency {
 
 
-  "row" - {
+  "rowPaymentValue" - {
 
-    /*
-      Some(SummaryListRow(Key(Text(Payment value and date),),Value(Text(PaymentDetails(1000.0,2022-10-24)),),,Some(Actions(,List(ActionItem(/new-report/event-1-payment-details?waypoints=event-1-check-answers,Text(Change),Some(Payment value and date),,Map()))))))
-      Some(SummaryListRow(Key(Text(Payment value and date),),Value(Text(PaymentDetails(1000.0,2022-10-24)),),,Some(Actions(,List(ActionItem(/new-report/event-1-benefit-in-kind?waypoints=event-1-check-answers,Text(Change),Some(Payment value and date),,Map()))))))
-    */
+    "must display correct information for the payment value" in {
 
-    "must display correct information" in {
       val paymentDetails = PaymentDetails(1000.00, LocalDate.now())
 
       val answer = UserAnswers().setOrException(PaymentValueAndDatePage, paymentDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
-      PaymentValueAndDateSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      val paymentValueAsString = if (paymentDetails.paymentValue.isWhole()) {
+        s"£${paymentDetails.paymentValue}.00"
+      } else {
+        s"£${paymentDetails.paymentValue}"
+      }
+
+      PaymentValueAndDateSummary.rowPaymentValue(answer, waypoints, sourcePage) mustBe Some(
         SummaryListRowViewModel(
-          key = "paymentValueAndDate.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlFormat.escape(paymentDetails.toString).toString),
+          key = "Payment value",
+          value = ValueViewModel(paymentValueAsString),
           actions = Seq(
             ActionItemViewModel("site.change", PaymentValueAndDatePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentValueAndDate.checkYourAnswersLabel"))
+              .withVisuallyHiddenText(messages("paymentValueAndDate.value.change.hidden"))
+          )
+        )
+      )
+    }
+  }
+
+  "rowPaymentDate" - {
+
+    "must display correct information for the payment date" in {
+
+      val paymentDetails = PaymentDetails(1000.00, LocalDate.now())
+
+      val answer = UserAnswers().setOrException(PaymentValueAndDatePage, paymentDetails)
+      val waypoints: Waypoints = EmptyWaypoints
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+
+      val date = paymentDetails.paymentDate
+      val format = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+      PaymentValueAndDateSummary.rowPaymentDate(answer, waypoints, sourcePage) mustBe Some(
+        SummaryListRowViewModel(
+          key = "Payment date",
+          value = ValueViewModel((format.format(date))),
+          actions = Seq(
+            ActionItemViewModel("site.change", PaymentValueAndDatePage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("paymentValueAndDate.date.change.hidden"))
           )
         )
       )
