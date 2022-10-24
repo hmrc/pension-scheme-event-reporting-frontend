@@ -151,8 +151,8 @@ object PaymentValueAndDateControllerSpec {
   private val paymentDateKey = "paymentDate"
 
   private def paymentDetails(
-                              paymentValue: String = "1000.00",
-                              paymentDate: Option[LocalDate] = None
+                              paymentValue: String,
+                              paymentDate: Option[LocalDate]
                             ): Seq[(String, String)] = paymentDate match {
     case Some(date) => Seq(
       Tuple2(paymentValueKey, paymentValue),

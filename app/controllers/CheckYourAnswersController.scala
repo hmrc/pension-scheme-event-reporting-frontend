@@ -30,7 +30,7 @@ import viewmodels.address.checkAnswers.ChooseAddressSummary
 import viewmodels.checkAnswers.{Event18ConfirmationSummary, SchemeWindUpDateSummary}
 import viewmodels.event1.checkAnswers._
 import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, EmployerUnauthorisedPaymentRecipientNameSummary, LoanDetailsSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
-import viewmodels.event1.member.checkAnswers.{MemberUnauthorisedPaymentRecipientNameSummary, RefundOfContributionsSummary, SchemeDetailsSummary}
+import viewmodels.event1.member.checkAnswers.{ErrorDescriptionSummary, MemberUnauthorisedPaymentRecipientNameSummary, RefundOfContributionsSummary, SchemeDetailsSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 

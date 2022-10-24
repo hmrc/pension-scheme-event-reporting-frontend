@@ -30,6 +30,8 @@ object CheckYourAnswersPage {
     override def route(waypoints: Waypoints): Call = {
       routes.CheckYourAnswersController.onPageLoad(eventType)
     }
+
+    override def toString: String = "CheckYourAnswersPage"
   }
 
   val event18: CheckAnswersPage = CheckYourAnswersPage(Event18)

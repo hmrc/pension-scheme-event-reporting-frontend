@@ -16,32 +16,26 @@
 
 package viewmodels.event1.checkAnswers
 
+import forms.mappings.Formatters
 import models.UserAnswers
 import pages.event1.PaymentValueAndDatePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-import java.time.format.DateTimeFormatter
-
-object PaymentValueAndDateSummary {
+object PaymentValueAndDateSummary extends Formatters {
 
   def rowPaymentValue(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
                      (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(PaymentValueAndDatePage).map {
       answer =>
 
-        val paymentValueAsString = if (answer.paymentValue.isWhole()) {
-          s"£${answer.paymentValue}.00"
-        } else {
-          s"£${answer.paymentValue}"
-        }
-
         SummaryListRowViewModel(
           key = "Payment value",
-          value = ValueViewModel(paymentValueAsString),
+          value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer.paymentValue)}")),
           actions = Seq(
             ActionItemViewModel("site.change", PaymentValueAndDatePage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("paymentValueAndDate.value.change.hidden"))
@@ -54,12 +48,9 @@ object PaymentValueAndDateSummary {
     answers.get(PaymentValueAndDatePage).map {
       answer =>
 
-        val date = answer.paymentDate
-        val format = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-
         SummaryListRowViewModel(
           key = "Payment date",
-          value = ValueViewModel((format.format(date))),
+          value = ValueViewModel(dateFormatter.format(answer.paymentDate)),
           actions = Seq(
             ActionItemViewModel("site.change", PaymentValueAndDatePage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("paymentValueAndDate.date.change.hidden"))

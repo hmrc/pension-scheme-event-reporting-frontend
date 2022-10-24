@@ -21,7 +21,7 @@ import models.enumeration.EventType.Event1
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
-import pages.event1.BenefitInKindBriefDescriptionPage
+import pages.event1.member.BenefitInKindBriefDescriptionPage
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages

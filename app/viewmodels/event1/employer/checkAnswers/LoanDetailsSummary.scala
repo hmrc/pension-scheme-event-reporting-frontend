@@ -16,6 +16,7 @@
 
 package viewmodels.event1.employer.checkAnswers
 
+import forms.mappings.Formatters
 import models.UserAnswers
 import pages.event1.employer.LoanDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
@@ -26,25 +27,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object LoanDetailsSummary {
-
-  private def loanDetailsAnswer(loanAmount: Option[BigDecimal])(implicit messages: Messages): Html = {
-
-    def loanDetailsToHtml(amountVal: BigDecimal): String = if (amountVal.isWhole()) {
-      s"£$amountVal.00"
-    } else {
-      s"£${amountVal}"
-    }
-
-    def optionalAmountToHtml(optionalAmount: Option[BigDecimal]): String = optionalAmount match {
-      case Some(amount) => loanDetailsToHtml(amount)
-      case None => ""
-    }
-
-    Html(
-      optionalAmountToHtml(loanAmount)
-    )
-  }
+object LoanDetailsSummary extends Formatters {
 
   def rowLoanAmount(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
                    (implicit messages: Messages): Option[SummaryListRow] =
@@ -53,7 +36,7 @@ object LoanDetailsSummary {
 
         val value = ValueViewModel(
           HtmlContent(
-            loanDetailsAnswer(answer.loanAmount.map(_.setScale(2)))
+            Html(answer.loanAmount.map(t => s"£${currencyFormatter.format(t)}").getOrElse(""))
           )
         )
 
@@ -74,7 +57,7 @@ object LoanDetailsSummary {
 
         val value = ValueViewModel(
           HtmlContent(
-            loanDetailsAnswer(answer.fundValue.map(_.setScale(2)))
+            Html(answer.fundValue.map(t => s"£${currencyFormatter.format(t)}").getOrElse(""))
           )
         )
 

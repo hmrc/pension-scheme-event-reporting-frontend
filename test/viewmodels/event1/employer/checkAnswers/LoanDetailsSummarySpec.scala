@@ -36,35 +36,17 @@ class LoanDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValues
 
   private implicit val messages: Messages = stubMessages()
 
-  private def loanDetailsAnswer(loanAmount: Option[BigDecimal])(implicit messages: Messages): Html = {
-    def loanDetailsToHtml(amountVal: BigDecimal): String = amountVal.isWhole() match {
-      case true =>
-        s"£${amountVal.toInt}.00"
-      case _ =>
-        s"£$amountVal"
-    }
-
-    def optionalAmountToHtml(optionalAmount: Option[BigDecimal]): String = optionalAmount match {
-      case Some(amount) => loanDetailsToHtml(amount)
-      case None => ""
-    }
-
-    Html(
-      optionalAmountToHtml(loanAmount)
-    )
-  }
-
   "rowLoanAmount" - {
 
     "must display correct information for loan amount" in {
-
+      val loanAmountValue = "£10.00"
       val answer = UserAnswers().setOrException(LoanDetailsPage, loanDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
       val value = ValueViewModel(
         HtmlContent(
-          loanDetailsAnswer(loanDetails.loanAmount)
+          Html(loanAmountValue)
         )
       )
 
@@ -81,14 +63,14 @@ class LoanDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValues
     }
 
     "must display correct information for fund value" in {
-
+      val fundValue = "£20.57"
       val answer = UserAnswers().setOrException(LoanDetailsPage, loanDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
       val value = ValueViewModel(
         HtmlContent(
-          loanDetailsAnswer(loanDetails.fundValue)
+          Html(fundValue)
         )
       )
 

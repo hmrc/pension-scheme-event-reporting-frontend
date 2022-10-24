@@ -22,6 +22,8 @@ import models.enumeration.EventType.Event1
 import models.event1.PaymentDetails
 import pages.event1.PaymentValueAndDatePage
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
@@ -36,22 +38,17 @@ class PaymentValueAndDateSummarySpec extends SpecBase with SummaryListFluency {
 
     "must display correct information for the payment value" in {
 
-      val paymentDetails = PaymentDetails(1000.00, LocalDate.now())
+      val paymentDetails = PaymentDetails(1000000.00, LocalDate.now())
+      val paymentDetailsValue = "£1,000,000.00"
 
       val answer = UserAnswers().setOrException(PaymentValueAndDatePage, paymentDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
-      val paymentValueAsString = if (paymentDetails.paymentValue.isWhole()) {
-        s"£${paymentDetails.paymentValue}.00"
-      } else {
-        s"£${paymentDetails.paymentValue}"
-      }
-
       PaymentValueAndDateSummary.rowPaymentValue(answer, waypoints, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "Payment value",
-          value = ValueViewModel(paymentValueAsString),
+          value = ValueViewModel(HtmlContent(Html(paymentDetailsValue))),
           actions = Seq(
             ActionItemViewModel("site.change", PaymentValueAndDatePage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("paymentValueAndDate.value.change.hidden"))
@@ -77,7 +74,7 @@ class PaymentValueAndDateSummarySpec extends SpecBase with SummaryListFluency {
       PaymentValueAndDateSummary.rowPaymentDate(answer, waypoints, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "Payment date",
-          value = ValueViewModel((format.format(date))),
+          value = ValueViewModel(format.format(date)),
           actions = Seq(
             ActionItemViewModel("site.change", PaymentValueAndDatePage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("paymentValueAndDate.date.change.hidden"))
