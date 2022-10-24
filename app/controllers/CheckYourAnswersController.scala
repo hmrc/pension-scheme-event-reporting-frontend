@@ -27,10 +27,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.address.checkAnswers.ChooseAddressSummary
-import viewmodels.event1.employer.checkAnswers.LoanDetailsSummary
 import viewmodels.checkAnswers.{Event18ConfirmationSummary, SchemeWindUpDateSummary}
 import viewmodels.event1.checkAnswers._
-import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, EmployerUnauthorisedPaymentRecipientNameSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
+import viewmodels.event1.employer.checkAnswers.{LoanDetailsSummary, CompanyDetailsSummary, EmployerUnauthorisedPaymentRecipientNameSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
 import viewmodels.event1.member.checkAnswers.{RefundOfContributionsSummary, SchemeDetailsSummary, MemberUnauthorisedPaymentRecipientNameSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
@@ -45,7 +44,6 @@ class CheckYourAnswersController @Inject()(
                                           ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
-
 
     val thisPage = CheckYourAnswersPage(eventType)
     val waypoints = EmptyWaypoints

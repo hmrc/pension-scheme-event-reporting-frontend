@@ -16,16 +16,19 @@
 
 package viewmodels.event1.checkAnswers
 
-import base.SpecBase
 import data.SampleData.employerAddress
 import models.UserAnswers
 import models.address.Address
 import models.enumeration.AddressJourneyType
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.enumeration.EventType.Event1
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.{OptionValues, TryValues}
 import pages.address.{EnterPostcodePage, ManualAddressPage}
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.address.checkAnswers.ChooseAddressSummary
@@ -33,7 +36,9 @@ import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
 
-class ChooseAddressSummarySpec extends SpecBase with SummaryListFluency {
+class ChooseAddressSummarySpec extends AnyFreeSpec with Matchers with OptionValues with TryValues with SummaryListFluency {
+
+  private implicit val messages: Messages = stubMessages()
 
   private def addressAnswer(addr: Address)(implicit messages: Messages): Html = {
     def addrLineToHtml(l: String): String = s"""<span class="govuk-!-display-block">$l</span>"""

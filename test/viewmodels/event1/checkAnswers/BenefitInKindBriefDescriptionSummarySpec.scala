@@ -16,20 +16,23 @@
 
 package viewmodels.event1.checkAnswers
 
-import base.SpecBase
-import data.SampleData.memberDetails
 import models.UserAnswers
 import models.enumeration.EventType.Event1
-import pages.event1.{BenefitInKindBriefDescriptionPage, MembersDetailsPage}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.{OptionValues, TryValues}
+import pages.event1.BenefitInKindBriefDescriptionPage
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
 
-class BenefitInKindBriefDescriptionSummarySpec extends SpecBase with SummaryListFluency {
+class BenefitInKindBriefDescriptionSummarySpec extends AnyFreeSpec with Matchers with OptionValues with TryValues with SummaryListFluency {
 
+  private implicit val messages: Messages = stubMessages()
 
   "row" - {
 

@@ -48,7 +48,7 @@ object LoanDetailsSummary {
 
         val value = ValueViewModel(
           HtmlContent(
-            loanDetailsAnswer(answer.loanAmount)
+            loanDetailsAnswer(answer.loanAmount.map(_.setScale(2)))
           )
         )
 
@@ -69,7 +69,7 @@ object LoanDetailsSummary {
 
         val value = ValueViewModel(
           HtmlContent(
-            loanDetailsAnswer(answer.fundValue)
+            loanDetailsAnswer(answer.fundValue.map(_.setScale(2)))
           )
         )
 

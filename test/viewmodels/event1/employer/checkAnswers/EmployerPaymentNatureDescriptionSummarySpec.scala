@@ -16,17 +16,23 @@
 
 package viewmodels.event1.employer.checkAnswers
 
-import base.SpecBase
 import models.UserAnswers
 import models.enumeration.EventType.Event1
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.{OptionValues, TryValues}
 import pages.event1.employer.EmployerPaymentNatureDescriptionPage
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
 import viewmodels.event1.checkAnswers.EmployerPaymentNatureDescriptionSummary
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
-class EmployerPaymentNatureDescriptionSummarySpec extends SpecBase with SummaryListFluency {
+class EmployerPaymentNatureDescriptionSummarySpec extends AnyFreeSpec with Matchers with OptionValues with TryValues with SummaryListFluency {
+
+  private implicit val messages: Messages = stubMessages()
 
   "row" - {
 

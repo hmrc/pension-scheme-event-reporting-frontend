@@ -16,23 +16,33 @@
 
 package viewmodels.event1.employer.checkAnswers
 
-import base.SpecBase
 import data.SampleData.loanDetails
 import models.UserAnswers
 import models.enumeration.EventType.Event1
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.{OptionValues, TryValues}
 import pages.event1.employer.LoanDetailsPage
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
 
-class LoanDetailsSummarySpec extends SpecBase with SummaryListFluency {
+class LoanDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValues with TryValues with SummaryListFluency {
+
+  private implicit val messages: Messages = stubMessages()
 
   private def loanDetailsAnswer(loanAmount: Option[BigDecimal])(implicit messages: Messages): Html = {
-    def loanDetailsToHtml(amountVal: BigDecimal): String = s"£$amountVal"
+    def loanDetailsToHtml(amountVal: BigDecimal): String = amountVal.isWhole() match {
+      case true =>
+        s"£${amountVal.toInt}.00"
+      case _ =>
+        s"£$amountVal"
+    }
 
     def optionalAmountToHtml(optionalAmount: Option[BigDecimal]): String = optionalAmount match {
       case Some(amount) => loanDetailsToHtml(amount)
