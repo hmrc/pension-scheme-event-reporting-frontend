@@ -28,6 +28,14 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
+  implicit lazy val arbitraryPaymentValueAndDateUserAnswersEntry: Arbitrary[(pages.event1.PaymentValueAndDatePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[pages.event1.PaymentValueAndDatePage.type]
+        value <- arbitrary[Int].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryLoanDetailsUserAnswersEntry: Arbitrary[(pages.event1.employer.LoanDetailsPage.type, JsValue)] =
     Arbitrary {
       for {
@@ -156,10 +164,10 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryBenefitInKindBriefDescriptionUserAnswersEntry: Arbitrary[(pages.event1.BenefitInKindBriefDescriptionPage.type, JsValue)] =
+  implicit lazy val arbitraryBenefitInKindBriefDescriptionUserAnswersEntry: Arbitrary[(BenefitInKindBriefDescriptionPage.type, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.event1.BenefitInKindBriefDescriptionPage.type]
+        page <- arbitrary[BenefitInKindBriefDescriptionPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
@@ -212,10 +220,10 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryPaymentNatureUserAnswersEntry: Arbitrary[(pages.event1.PaymentNaturePage.type, JsValue)] =
+  implicit lazy val arbitraryPaymentNatureUserAnswersEntry: Arbitrary[(PaymentNaturePage.type, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.event1.PaymentNaturePage.type]
+        page <- arbitrary[PaymentNaturePage.type]
         value <- arbitrary[models.event1.PaymentNature].map(Json.toJson(_))
       } yield (page, value)
     }

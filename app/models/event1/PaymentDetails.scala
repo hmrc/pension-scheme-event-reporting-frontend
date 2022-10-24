@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package pages.event1
+package models.event1
 
-import pages.behaviours.PageBehaviours
-import pages.event1.member.BenefitInKindBriefDescriptionPage
+import play.api.libs.json.{Json, Format}
 
+import java.time.LocalDate
 
-class BenefitInKindBriefDescriptionPageSpec extends PageBehaviours {
+case class PaymentDetails(paymentValue: BigDecimal, paymentDate: LocalDate)
 
-  "BenefitInKindBriefDescriptionPage" - {
-
-    beRetrievable[String](BenefitInKindBriefDescriptionPage)
-
-    beSettable[String](BenefitInKindBriefDescriptionPage)
-
-    beRemovable[String](BenefitInKindBriefDescriptionPage)
-  }
+object PaymentDetails {
+  implicit val format: Format[PaymentDetails] = Json.format[PaymentDetails]
 }
+

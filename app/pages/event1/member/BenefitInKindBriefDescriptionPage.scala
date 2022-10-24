@@ -23,14 +23,14 @@ import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object MemberTangibleMoveablePropertyPage extends QuestionPage[String] {
+case object BenefitInKindBriefDescriptionPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "memberTangibleMoveableProperty"
+  override def toString: String = "benefitInKindBriefDescription"
 
   override def route(waypoints: Waypoints): Call =
-    routes.MemberTangibleMoveablePropertyController.onPageLoad(waypoints)
+    routes.BenefitInKindBriefDescriptionController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     PaymentValueAndDatePage

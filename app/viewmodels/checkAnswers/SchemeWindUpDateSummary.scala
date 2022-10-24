@@ -17,7 +17,6 @@
 package viewmodels.checkAnswers
 
 import helpers.DateHelper
-
 import models.UserAnswers
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckAnswersPage, Waypoints}
@@ -26,7 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object SchemeWindUpDateSummary  {
+object SchemeWindUpDateSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
@@ -34,8 +33,8 @@ object SchemeWindUpDateSummary  {
       answer =>
 
         SummaryListRowViewModel(
-          key     = "schemeWindUpDate.checkYourAnswersLabel",
-          value   = ValueViewModel(DateHelper.formatDateDMYWithSlash(answer)),
+          key = KeyViewModel("schemeWindUpDate.checkYourAnswersLabel").withCssClass("govuk-!-width-one-half"),
+          value = ValueViewModel(DateHelper.formatDateDMYWithSlash(answer)),
           actions = Seq(
             ActionItemViewModel("site.change", SchemeWindUpDatePage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("schemeWindUpDate.change.hidden"))

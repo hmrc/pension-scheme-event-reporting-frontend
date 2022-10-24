@@ -31,18 +31,18 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
   private val formWithoutTaxYear = Form(
     "value" -> localDate(
-      requiredKey = "error.required",
-      allRequiredKey = "error.required.all",
-      twoRequiredKey = "error.required.two",
+      oneDateComponentMissingKey = "error.required",
+      twoDateComponentsMissingKey = "error.required.two",
+      threeDateComponentsMissingKey = "error.required.all",
       invalidKey = "error.invalid"
     )
   )
 
   private val formWithTaxYear = Form(
     "value" -> localDate(
-      requiredKey = "error.required",
-      allRequiredKey = "error.required.all",
-      twoRequiredKey = "error.required.two",
+      oneDateComponentMissingKey = "error.required",
+      twoDateComponentsMissingKey = "error.required.two",
+      threeDateComponentsMissingKey = "error.required.all",
       invalidKey = "error.invalid",
       taxYearValidationDetail = Some(TaxYearValidationDetail(
         invalidKey = "error.outside",

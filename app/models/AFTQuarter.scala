@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package pages.event1
+package models
 
-import pages.behaviours.PageBehaviours
-import pages.event1.member.BenefitInKindBriefDescriptionPage
+import play.api.libs.json.{Format, Json}
 
+import java.time.LocalDate
 
-class BenefitInKindBriefDescriptionPageSpec extends PageBehaviours {
+case class AFTQuarter(startDate: LocalDate, endDate: LocalDate)
 
-  "BenefitInKindBriefDescriptionPage" - {
+object AFTQuarter {
 
-    beRetrievable[String](BenefitInKindBriefDescriptionPage)
-
-    beSettable[String](BenefitInKindBriefDescriptionPage)
-
-    beRemovable[String](BenefitInKindBriefDescriptionPage)
-  }
+  implicit lazy val formats: Format[AFTQuarter] =
+    Json.format[AFTQuarter]
 }

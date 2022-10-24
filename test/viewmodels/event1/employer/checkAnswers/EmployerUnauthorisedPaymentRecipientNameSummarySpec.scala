@@ -44,7 +44,7 @@ class EmployerUnauthorisedPaymentRecipientNameSummarySpec extends AnyFreeSpec wi
       val answer = UserAnswers().setOrException(UnauthorisedPaymentRecipientNamePage, name)
 
       answer match {
-        case employerJourney if answer.isDefined(UnauthorisedPaymentRecipientNamePage) =>
+        case employerJourney if answer.toString.contains("""whoReceivedUnauthPayment":"employer""") =>
           EmployerUnauthorisedPaymentRecipientNameSummary.row(answer, waypoints, sourcePage) mustBe Some(
             SummaryListRowViewModel(
               key = "unauthorisedPaymentRecipientName.employer.checkYourAnswersLabel",

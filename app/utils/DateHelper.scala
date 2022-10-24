@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package pages.event1
+package utils
 
-import pages.behaviours.PageBehaviours
-import pages.event1.member.BenefitInKindBriefDescriptionPage
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.concurrent.atomic.AtomicReference
 
+object DateHelper {
 
-class BenefitInKindBriefDescriptionPageSpec extends PageBehaviours {
+  val dateFormatterDMY: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 
-  "BenefitInKindBriefDescriptionPage" - {
+  def formatDateDMY(date: LocalDate): String = date.format(dateFormatterDMY)
 
-    beRetrievable[String](BenefitInKindBriefDescriptionPage)
+  private val mockDate: AtomicReference[Option[LocalDate]] = new AtomicReference(None)
 
-    beSettable[String](BenefitInKindBriefDescriptionPage)
-
-    beRemovable[String](BenefitInKindBriefDescriptionPage)
-  }
+  def today: LocalDate = mockDate.get().getOrElse(LocalDate.now())
 }

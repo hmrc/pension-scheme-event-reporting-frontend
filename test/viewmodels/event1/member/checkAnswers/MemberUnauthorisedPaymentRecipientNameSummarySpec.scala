@@ -28,6 +28,10 @@ import viewmodels.implicits._
 
 class MemberUnauthorisedPaymentRecipientNameSummarySpec extends SpecBase with SummaryListFluency {
 
+  /*
+  None was not equal to
+  Some(SummaryListRow(Key(Text(What is the name of the person or organisation that received the unauthorised payment?),),Value(Text(Harry),),,Some(Actions(,List(ActionItem(/new-report/event-1-member-recipient-name?waypoints=event-1-check-answers,Text(Change),Some(Change the name of the person or organisation that received the unauthorised payment?),,Map()))))))
+   */
 
   "row" - {
 
@@ -39,7 +43,7 @@ class MemberUnauthorisedPaymentRecipientNameSummarySpec extends SpecBase with Su
       val answer = UserAnswers().setOrException(UnauthorisedPaymentRecipientNamePage, name)
 
       answer match {
-        case memberJourney if answer.isDefined(UnauthorisedPaymentRecipientNamePage) =>
+        case memberJourney if answer.toString.contains("""whoReceivedUnauthPayment":"member""") =>
           MemberUnauthorisedPaymentRecipientNameSummary.row(answer, waypoints, sourcePage) mustBe Some(
             SummaryListRowViewModel(
               key = "unauthorisedPaymentRecipientName.member.checkYourAnswersLabel",

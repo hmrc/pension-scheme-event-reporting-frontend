@@ -17,8 +17,8 @@
 package viewmodels.event1.checkAnswers
 
 import models.UserAnswers
+import pages.event1.member.BenefitInKindBriefDescriptionPage
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event1.BenefitInKindBriefDescriptionPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow

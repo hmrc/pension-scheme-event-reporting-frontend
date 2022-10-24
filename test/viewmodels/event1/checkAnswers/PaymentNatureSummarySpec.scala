@@ -22,7 +22,7 @@ import models.event1.PaymentNature
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
-import pages.event1.PaymentNaturePage
+import pages.event1.member.PaymentNaturePage
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages

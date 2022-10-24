@@ -15,7 +15,6 @@
  *@
 
 @import controllers.event1.routes
-
 @import viewmodels.InputWidth._
 
 @this(
@@ -23,44 +22,38 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    govukDateInput: GovukDateInput
 )
 
 @(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("membersDetails.title"))) {
+@layout(pageTitle = title(form, messages("paymentValueAndDate.title"))) {
 
-    @formHelper(action = routes.MembersDetailsController.onSubmit(waypoints)) {
+    @formHelper(action = routes.PaymentValueAndDateController.onSubmit(waypoints), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("paymentDate" -> "paymentDate.day")))
         }
 
-        <h1 class="govuk-heading-xl">@messages("membersDetails.heading")</h1>
+        <h1 class="govuk-heading-xl">@messages("paymentValueAndDate.heading")</h1>
 
         @govukInput(
             InputViewModel(
-                field = form("firstName"),
-                label = LabelViewModel(messages("membersDetails.firstName.heading"))
-            )
-            .withWidth(OneHalf)
-        )
-
-        @govukInput(
-            InputViewModel(
-                field = form("lastName"),
-                label = LabelViewModel(messages("membersDetails.lastName.heading"))
-            )
-            .withWidth(OneHalf)
-        )
-
-        @govukInput(
-            InputViewModel(
-                field = form("nino"),
-                label = LabelViewModel(messages("membersDetails.nino.heading"))
+                field = form("paymentValue"),
+                label = Label(content = Text(messages("paymentValueAndDate.value.heading")))
             )
             .withWidth(OneQuarter)
-            .withHint(HintViewModel(messages("membersDetails.nino.hint")))
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
+            .asNumeric()
+        )
+
+        @govukDateInput(
+            DateViewModel(
+                field = form("paymentDate"),
+                legend = Legend(content = Text(messages("paymentValueAndDate.date.heading")))
+            )
+            .withHint(Hint(content = Text(messages("paymentValueAndDate.date.hint"))))
         )
 
         @govukButton(

@@ -16,17 +16,24 @@
 
 package pages.event1
 
-import controllers.event1.routes
-import pages.{QuestionPage, Waypoints}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.event1.PaymentDetails
+import org.scalacheck.Arbitrary
+import pages.behaviours.PageBehaviours
 
-case object BenefitInKindBriefDescriptionPage extends QuestionPage[String] {
+import java.time.LocalDate
 
-  override def path: JsPath = JsPath \ toString
+class PaymentValueAndDatePageSpec extends PageBehaviours {
 
-  override def toString: String = "benefitInKindBriefDescription"
+  "PaymentValueAndDatePage" - {
 
-  override def route(waypoints: Waypoints): Call =
-    routes.BenefitInKindBriefDescriptionController.onPageLoad(waypoints)
+    implicit lazy val arbitraryPaymentValueAndDate: Arbitrary[PaymentDetails] = Arbitrary {
+        PaymentDetails(1000.00, LocalDate.now())
+    }
+
+    beRetrievable[PaymentDetails](PaymentValueAndDatePage)
+
+    beSettable[PaymentDetails](PaymentValueAndDatePage)
+
+    beRemovable[PaymentDetails](PaymentValueAndDatePage)
+  }
 }
