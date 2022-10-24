@@ -23,6 +23,7 @@ import pages.eventWindUp.SchemeWindUpDatePage
 import models.EventSelection._
 import pages.event1.HowAddUnauthPaymentPage
 import pages.event18.Event18ConfirmationPage
+import pages.event23.HowAddDualAllowancePage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -39,6 +40,7 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
     answers.get(this) match {
       case Some(Event1) => HowAddUnauthPaymentPage
       case Some(Event18) => Event18ConfirmationPage
+      case Some(Event23) => HowAddDualAllowancePage
       case Some(EventWoundUp) => SchemeWindUpDatePage
       case _ => EventSelectionPage
     }

@@ -19,7 +19,7 @@ package controllers.event23
 import base.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event1.WhatYouWillNeedView
+import views.html.event23.WhatYouWillNeedView
 
 class WhatYouWillNeedControllerSpec extends SpecBase {
 

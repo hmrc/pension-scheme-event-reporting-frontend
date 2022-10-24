@@ -18,15 +18,15 @@ package controllers.event23
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.event1.MembersDetailsFormProvider
+import forms.event23.MembersDetailsFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
-import pages.event1.MembersDetailsPage
+import pages.event23.MembersDetailsPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event1.MembersDetailsView
+import views.html.event23.MembersDetailsView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

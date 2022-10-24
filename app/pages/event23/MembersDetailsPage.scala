@@ -16,7 +16,7 @@
 
 package pages.event23
 
-import controllers.event1.routes
+import controllers.event23.routes
 import models.UserAnswers
 import models.event23.MembersDetails
 import pages.{IndexPage, Page, QuestionPage, Waypoints}

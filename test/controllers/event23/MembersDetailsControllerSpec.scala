@@ -45,9 +45,9 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.event23.MembersDetailsController.onPageLoad(waypoints).url
+  private def getRoute: String = routes.MembersDetailsController.onPageLoad(waypoints).url
 
-  private def postRoute: String = routes.event23.MembersDetailsController.onSubmit(waypoints).url
+  private def postRoute: String = routes.MembersDetailsController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)

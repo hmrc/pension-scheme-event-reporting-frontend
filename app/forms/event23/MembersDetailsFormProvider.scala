@@ -18,7 +18,7 @@ package forms.event23
 
 import forms.event23.PersonNameFormProvider.{firstNameLength, lastNameLength}
 import forms.mappings.{Mappings, Transforms}
-import models.event1.MembersDetails
+import models.event23.MembersDetails
 import play.api.data.Form
 import play.api.data.Forms.mapping
 
