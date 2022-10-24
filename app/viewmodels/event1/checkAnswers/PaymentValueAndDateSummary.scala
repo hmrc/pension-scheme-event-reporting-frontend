@@ -24,19 +24,47 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
+import java.time.LocalDate
+import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
+import scala.util.Try
+
 object PaymentValueAndDateSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def rowPaymentValue(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(PaymentValueAndDatePage).map {
       answer =>
 
+        val paymentValueAsString = if (answer.paymentValue.isWhole()) {
+          s"£${answer.paymentValue}.00"
+        } else {
+          s"£${answer.paymentValue}"
+        }
+
         SummaryListRowViewModel(
-          key = "paymentValueAndDate.checkYourAnswersLabel",
-          value = ValueViewModel(answer.toString),
+          key = "Payment value",
+          value = ValueViewModel(paymentValueAsString),
           actions = Seq(
             ActionItemViewModel("site.change", PaymentValueAndDatePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentValueAndDate.change.hidden"))
+              .withVisuallyHiddenText(messages("paymentValueAndDate.value.change.hidden"))
+          )
+        )
+    }
+
+  def rowPaymentDate(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(PaymentValueAndDatePage).map {
+      answer =>
+
+        val d = answer.paymentDate
+        val f = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+        SummaryListRowViewModel(
+          key = "Payment date",
+          value = ValueViewModel((f.format(d))),
+          actions = Seq(
+            ActionItemViewModel("site.change", PaymentValueAndDatePage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("paymentValueAndDate.date.change.hidden"))
           )
         )
     }

@@ -20,7 +20,8 @@ import base.SpecBase
 import data.SampleData.memberDetails
 import models.UserAnswers
 import models.enumeration.EventType.Event1
-import pages.event1.{BenefitInKindBriefDescriptionPage, MembersDetailsPage}
+import pages.event1.MembersDetailsPage
+import pages.event1.member.BenefitInKindBriefDescriptionPage
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent

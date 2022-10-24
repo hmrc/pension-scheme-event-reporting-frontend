@@ -22,7 +22,7 @@ import forms.event1.BenefitInKindBriefDescriptionFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
-import pages.event1.BenefitInKindBriefDescriptionPage
+import pages.event1.member.BenefitInKindBriefDescriptionPage
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Format.GenericFormat
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

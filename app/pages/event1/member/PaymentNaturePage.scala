@@ -21,7 +21,6 @@ import models.UserAnswers
 import models.enumeration.AddressJourneyType.Event1MemberPropertyAddressJourney
 import models.event1.PaymentNature
 import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, TransferToNonRegPensionScheme}
-import pages.event1.BenefitInKindBriefDescriptionPage
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
