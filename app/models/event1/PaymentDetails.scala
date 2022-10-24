@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package pages.event1
+package models.event1
 
-import models.event1.PaymentNature
-import pages.behaviours.PageBehaviours
-import pages.event1.member.PaymentNaturePage
+import play.api.libs.json.{Json, Format}
 
-class PaymentNatureSpec extends PageBehaviours {
+import java.time.LocalDate
 
-  "PaymentNaturePage" - {
+case class PaymentDetails(paymentValue: BigDecimal, paymentDate: LocalDate)
 
-    beRetrievable[PaymentNature](PaymentNaturePage)
-
-    beSettable[PaymentNature](PaymentNaturePage)
-
-    beRemovable[PaymentNature](PaymentNaturePage)
-  }
+object PaymentDetails {
+  implicit val format: Format[PaymentDetails] = Json.format[PaymentDetails]
 }
+

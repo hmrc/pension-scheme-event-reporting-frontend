@@ -49,7 +49,7 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
   private val fundValueNoDecimalsKey = "loanDetails.fundValue.noDecimals"
   private val fundValueAmountTooHighErrorKey = "loanDetails.fundValue.amountTooHigh"
 
-  private def details(loanAmount: String = "12",
+  private def details(loanAmount: String = "12.34",
                       fundValue: String = "1.00"
                      ): Map[String, String] =
     Map(
@@ -87,12 +87,11 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
       result.errors mustBe Seq.empty
     }
 
-    "bind integers" in {
-      forAll(intsInRange(0, 999999) -> "intInRange") {
-        i =>
-          val result = form.bind(details(loanAmount = i))
-          result.errors mustBe Seq.empty
-          result.value.flatMap(_.loanAmount) mustBe Some(BigDecimal(i))
+    "not bind integers" in {
+      forAll(intsInRange(0, 999999) -> "noDecimals") {
+        int: String =>
+          val result = form.bind(details(loanAmount = int))
+          result.errors mustEqual Seq(FormError(loanAmountKey, loanAmountNoDecimalsKey))
       }
     }
   }
@@ -127,12 +126,11 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
       result.errors mustBe Seq.empty
     }
 
-    "bind integers" in {
-      forAll(intsInRange(0, 999999) -> "intInRange") {
-        i =>
-          val result = form.bind(details(fundValue = i))
-          result.errors mustBe Seq.empty
-          result.value.flatMap(_.fundValue) mustBe Some(BigDecimal(i))
+    "not bind integers" in {
+      forAll(intsInRange(0, 999999) -> "noDecimals") {
+        int: String =>
+          val result = form.bind(details(fundValue = int))
+          result.errors mustEqual Seq(FormError(fundValueKey, fundValueNoDecimalsKey))
       }
     }
   }

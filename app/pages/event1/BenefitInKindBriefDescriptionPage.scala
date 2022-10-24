@@ -17,7 +17,8 @@
 package pages.event1
 
 import controllers.event1.routes
-import pages.{QuestionPage, Waypoints}
+import models.UserAnswers
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -29,4 +30,8 @@ case object BenefitInKindBriefDescriptionPage extends QuestionPage[String] {
 
   override def route(waypoints: Waypoints): Call =
     routes.BenefitInKindBriefDescriptionController.onPageLoad(waypoints)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    PaymentValueAndDatePage
+  }
 }

@@ -52,14 +52,23 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     genIntersperseString(numberGen, ",")
   }
 
+  def decsInRangeWithCommas(min: BigDecimal, max: BigDecimal): Gen[String] = {
+    val numberGen = choose[BigDecimal](min, max).map(_.toString)
+    genIntersperseString(numberGen, ",")
+  }
+
   def intsInRange(min: Int, max: Int): Gen[String] = {
     choose[Int](min, max).map(_.toString)
-
   }
 
   def decimalsBelowValue(value: BigDecimal): Gen[String] =
     arbitrary[BigDecimal]
       .suchThat(_ < value)
+      .map[String](_.setScale(2, RoundingMode.FLOOR).toString())
+
+  def decimalsAboveValue(value: BigDecimal): Gen[String] =
+    arbitrary[BigDecimal]
+      .suchThat(_ > value)
       .map[String](_.setScale(2, RoundingMode.FLOOR).toString())
 
   def longDecimalString(length: Int): Gen[String] =
@@ -68,10 +77,8 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
         BigDecimal(list.mkString).setScale(2, RoundingMode.FLOOR).toString
     )
 
-  def decimalsAboveValue(value: BigDecimal): Gen[String] =
-    arbitrary[BigDecimal]
-      .suchThat(_ > value)
-      .map[String](_.setScale(2, RoundingMode.FLOOR).toString())
+  def decimalsOutsideRange(min: BigDecimal, max: BigDecimal): Gen[BigDecimal] =
+    arbitrary[BigDecimal] suchThat (x => x < min || x > max)
 
   def intsLargerThanMaxValue: Gen[BigInt] =
     arbitrary[BigInt] suchThat (x => x > Int.MaxValue)

@@ -110,7 +110,6 @@ trait Formatters {
 
       private val baseFormatter = stringFormatter(nothingEnteredKey)
 
-
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BigDecimal] =
         baseFormatter
           .bind(key, data)
@@ -118,7 +117,7 @@ trait Formatters {
           .right.flatMap {
           case s if !s.matches(numericRegexp) =>
             Left(Seq(FormError(key, notANumberKey, args)))
-          case s if !s.matches(noDecimalsKey) && !s.matches(intRegexp) =>
+          case s if !s.matches(decimal2DPRegexp) =>
             Left(Seq(FormError(key, noDecimalsKey, args)))
           case s =>
             Try(BigDecimal(s)) match {
@@ -130,7 +129,6 @@ trait Formatters {
       override def unbind(key: String, value: BigDecimal): Map[String, String] =
         baseFormatter.unbind(key, decimalFormat.format(value))
     }
-
 
   private[mappings] def optionBigDecimal2DPFormatter(invalidKey: String,
                                                      decimalKey: String,
@@ -148,7 +146,7 @@ trait Formatters {
             Right(None)
           case Some(s) if !s.matches(numericRegexp) =>
             Left(Seq(FormError(key, invalidKey, args)))
-          case Some(s) if !s.matches(decimal2DPRegexp) && !s.matches(intRegexp) =>
+          case Some(s) if !s.matches(decimal2DPRegexp) =>
             Left(Seq(FormError(key, decimalKey, args)))
           case Some(s) =>
             Try(Option(BigDecimal(s))) match {
@@ -166,7 +164,6 @@ trait Formatters {
             Map.empty
         }
     }
-
 
   private[mappings] def enumerableFormatter[A](requiredKey: String, invalidKey: String,
                                                args: Seq[String] = Seq.empty)(implicit ev: Enumerable[A]): Formatter[A] =

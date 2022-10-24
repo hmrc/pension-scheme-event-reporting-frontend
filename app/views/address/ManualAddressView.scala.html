@@ -83,11 +83,11 @@
             .withWidth(OneQuarter)
         )
 
-        <div class="govuk-!-width-one-half">
+        <div class="govuk-!-width-two-thirds">
             @govukSelect(Select(
                 id = "country",
                 name = "country",
-                classes = "govuk-!-width-one-half country",
+                classes = "govuk-!-width-two-thirds country",
                 items = Seq(SelectItem(value = Some(""))) ++
                 options.map(valueOption =>
                     SelectItem(

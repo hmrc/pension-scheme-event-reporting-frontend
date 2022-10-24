@@ -17,13 +17,13 @@
 package viewmodels.checkAnswers
 
 import models.UserAnswers
-import pages.{EventSummaryPage, CheckAnswersPage, Waypoints}
+import pages.{CheckAnswersPage, EventSummaryPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object EventSummarySummary  {
+object EventSummarySummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
@@ -33,8 +33,8 @@ object EventSummarySummary  {
         val value = if (answer) "site.yes" else "site.no"
 
         SummaryListRowViewModel(
-          key     = "eventSummary.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
+          key = KeyViewModel("eventSummary.checkYourAnswersLabel").withCssClass("govuk-!-width-one-half"),
+          value = ValueViewModel(value),
           actions = Seq(
             ActionItemViewModel("site.change", EventSummaryPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("eventSummary.change.hidden"))

@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package pages.event1
+package utils
 
-import models.event1.PaymentNature
-import pages.behaviours.PageBehaviours
-import pages.event1.member.PaymentNaturePage
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.concurrent.atomic.AtomicReference
 
-class PaymentNatureSpec extends PageBehaviours {
+object DateHelper {
 
-  "PaymentNaturePage" - {
+  val dateFormatterDMY: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 
-    beRetrievable[PaymentNature](PaymentNaturePage)
+  def formatDateDMY(date: LocalDate): String = date.format(dateFormatterDMY)
 
-    beSettable[PaymentNature](PaymentNaturePage)
+  private val mockDate: AtomicReference[Option[LocalDate]] = new AtomicReference(None)
 
-    beRemovable[PaymentNature](PaymentNaturePage)
-  }
+  def today: LocalDate = mockDate.get().getOrElse(LocalDate.now())
 }

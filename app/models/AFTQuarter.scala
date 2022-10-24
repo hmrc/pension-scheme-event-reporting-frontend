@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package pages.event1
+package models
 
-import models.event1.PaymentNature
-import pages.behaviours.PageBehaviours
-import pages.event1.member.PaymentNaturePage
+import play.api.libs.json.{Format, Json}
 
-class PaymentNatureSpec extends PageBehaviours {
+import java.time.LocalDate
 
-  "PaymentNaturePage" - {
+case class AFTQuarter(startDate: LocalDate, endDate: LocalDate)
 
-    beRetrievable[PaymentNature](PaymentNaturePage)
+object AFTQuarter {
 
-    beSettable[PaymentNature](PaymentNaturePage)
-
-    beRemovable[PaymentNature](PaymentNaturePage)
-  }
+  implicit lazy val formats: Format[AFTQuarter] =
+    Json.format[AFTQuarter]
 }

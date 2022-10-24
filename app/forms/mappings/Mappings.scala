@@ -37,10 +37,11 @@ trait Mappings extends Formatters with Constraints {
     of(intFormatter(requiredKey, wholeNumberKey, nonNumericKey, args))
 
   protected def bigDecimal2DP(
-                               nothingEnteredKey: String = "error.nothingEntered",
-                               notANumberKey: String = "error.notANumber",
-                               noDecimalsKey: String = "error.noDecimals"): FieldMapping[BigDecimal] =
-    of(bigDecimal2DPFormatter(nothingEnteredKey, notANumberKey, noDecimalsKey))
+                        nothingEnteredKey: String = "error.nothingEntered",
+                        notANumberKey: String = "error.notANumber",
+                        noDecimalsKey: String = "error.noDecimals",
+                        args: Seq[String] = Seq.empty): FieldMapping[BigDecimal] =
+    of(bigDecimal2DPFormatter(nothingEnteredKey, notANumberKey, noDecimalsKey, args))
 
 
   protected def optionBigDecimal2DP(invalidKey: String = "error.invalid",
@@ -60,10 +61,11 @@ trait Mappings extends Formatters with Constraints {
 
   protected def localDate(
                            invalidKey: String,
-                           allRequiredKey: String,
-                           twoRequiredKey: String,
-                           requiredKey: String,
+                           oneDateComponentMissingKey: String,
+                           twoDateComponentsMissingKey: String,
+                           threeDateComponentsMissingKey: String,
                            taxYearValidationDetail: Option[TaxYearValidationDetail] = None,
                            args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
-    of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, taxYearValidationDetail, args))
+    of(new LocalDateFormatter(invalidKey, oneDateComponentMissingKey, twoDateComponentsMissingKey,
+      threeDateComponentsMissingKey, taxYearValidationDetail, args))
 }
