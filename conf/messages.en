@@ -131,6 +131,15 @@ event18Confirmation.error.required = You must tick the box to continue
 event18Confirmation.change.hidden = Event18Confirmation
 event18Confirmation.summary.title = Event 18: Scheme chargeable payment
 
+howAddDualAllowance.title = How do you want to add the dual annual allowances details?
+howAddDualAllowance.heading = How do you want to add the dual annual allowances details?
+howAddDualAllowance.manual = Manually enter the details
+howAddDualAllowance.fileUpload = Upload a file
+howAddDualAllowance.checkYourAnswersLabel = How do you want to add the dual annual allowances details?
+howAddDualAllowance.error.required = Select how you want to add the dual annual allowances details
+howAddDualAllowance.change.hidden = How do you want to add the dual annual allowances details?
+howAddDualAllowance.fileUpload.hint = Uploading a file will overwrite any data you have previously added for this event
+
 howAddUnauthPayment.title = How do you want to add the unauthorised payment details?
 howAddUnauthPayment.heading = How do you want to add the unauthorised payment details?
 howAddUnauthPayment.manual = Manually enter the details
@@ -174,6 +183,15 @@ whatYouWillNeed.item3 = if the value of the unauthorised payment is more than 25
 whatYouWillNeed.item4 = if the scheme is paying the unauthorised payment surcharge on behalf of the member
 whatYouWillNeed.item5 = the nature of the payment
 whatYouWillNeed.item6 = the payment value and date
+
+whatYouWillNeed.event23.title = What you will need
+whatYouWillNeed.event23.heading = What you will need
+whatYouWillNeed.event23.p = To report a dual annual allowances event you will need the following for each member:
+whatYouWillNeed.event23.item1 = their name
+whatYouWillNeed.event23.item2 = their National Insurance number
+whatYouWillNeed.event23.item3 = the tax year in which the money purchase pension savings statement was issued
+whatYouWillNeed.event23.item4 = the total of the member's pension input amounts for money purchase arrangements under the scheme in the relevant tax year
+
 
 membersDetails.title = Member’s details
 membersDetails.heading = Member’s details

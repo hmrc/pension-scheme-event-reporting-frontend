@@ -62,16 +62,33 @@ trait ModelGenerators {
       Gen.oneOf(event1.WhoReceivedUnauthPayment.values)
     }
 
-  implicit lazy val arbitraryMembersDetails: Arbitrary[MembersDetails] =
+  implicit lazy val arbitraryMembersDetails: Arbitrary[event1.MembersDetails] =
     Arbitrary {
       val list = for {
         firstName <- Seq("validFirstName1", "validFirstName2")
         lastName <- Seq("validLastName1", "validLastName2")
         nino <- arbitrary[Nino].sample
-      } yield MembersDetails(firstName, lastName, nino.nino)
+      } yield event1.MembersDetails(firstName, lastName, nino.nino)
 
       Gen.oneOf(list)
     }
+
+  implicit lazy val arbitraryEvent23MembersDetails: Arbitrary[event23.MembersDetails] =
+    Arbitrary {
+      val list = for {
+        firstName <- Seq("validFirstName1", "validFirstName2")
+        lastName <- Seq("validLastName1", "validLastName2")
+        nino <- arbitrary[Nino].sample
+      } yield event23.MembersDetails(firstName, lastName, nino.nino)
+
+      Gen.oneOf(list)
+    }
+
+  implicit lazy val arbitraryHowAddDualAllowance: Arbitrary[event23.HowAddDualAllowance] =
+    Arbitrary {
+      Gen.oneOf(event23.HowAddDualAllowance.values)
+    }
+
 
   implicit lazy val arbitraryLoanDetails: Arbitrary[LoanDetails] =
     Arbitrary {
