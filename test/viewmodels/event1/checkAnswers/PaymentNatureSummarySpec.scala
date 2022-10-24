@@ -20,7 +20,7 @@ import base.SpecBase
 import models.UserAnswers
 import models.enumeration.EventType.Event1
 import models.event1.PaymentNature
-import pages.event1.PaymentNaturePage
+import pages.event1.member.PaymentNaturePage
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
