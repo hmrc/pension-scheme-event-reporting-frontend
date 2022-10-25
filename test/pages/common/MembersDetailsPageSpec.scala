@@ -16,17 +16,29 @@
 
 package pages.common
 
+import models.common.MembersDetails
+import models.enumeration.EventType.{Event1, Event23}
 import pages.behaviours.PageBehaviours
 
 
 class MembersDetailsPageSpec extends PageBehaviours {
 
-//  "MembersDetailsPage" - {
-//
-//    beRetrievable[MembersDetails](MembersDetailsPage())
-//
-//    beSettable[MembersDetails](MembersDetailsPage)
-//
-//    beRemovable[MembersDetails](MembersDetailsPage)
-//  }
+  "MembersDetailsPage" - {
+
+    "event1" - {
+      beRetrievable[MembersDetails](MembersDetailsPage(Event1))
+
+      beSettable[MembersDetails](MembersDetailsPage(Event1))
+
+      beRemovable[MembersDetails](MembersDetailsPage(Event1))
+    }
+    "event23" - {
+
+      beRetrievable[MembersDetails](MembersDetailsPage(Event23))
+
+      beSettable[MembersDetails](MembersDetailsPage(Event23))
+
+      beRemovable[MembersDetails](MembersDetailsPage(Event23))
+    }
+  }
 }
