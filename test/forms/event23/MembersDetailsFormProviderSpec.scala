@@ -72,7 +72,7 @@ class MembersDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      RegexpGen.from(regexName)
+      RegexpGen.from(regexSurname)
     )
 
     behave like fieldWithMaxLength(
@@ -92,7 +92,7 @@ class MembersDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
       form,
       fieldName,
       invalidString = "1A",
-      error = FormError(fieldName, invalidKey, Seq(regexName))
+      error = FormError(fieldName, invalidKey, Seq(regexSurname))
     )
   }
 
