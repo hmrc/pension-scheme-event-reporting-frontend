@@ -68,6 +68,11 @@ class ChooseAddressSummarySpec extends AnyFreeSpec with Matchers with OptionValu
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
+      val rowKey = if(addressJourneyType != Event1EmployerAddressJourney){
+        "residentialAddress.address.title"
+      } else {
+        "companyDetails.CYA.companyAddress"
+      }
 
       val value = ValueViewModel(
         HtmlContent(
@@ -77,7 +82,7 @@ class ChooseAddressSummarySpec extends AnyFreeSpec with Matchers with OptionValu
 
       ChooseAddressSummary.row(answer, waypoints, sourcePage, addressJourneyType) mustBe Some(
         SummaryListRowViewModel(
-          key = "companyDetails.CYA.companyAddress",
+          key = rowKey,
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType).changeLink(waypoints, sourcePage).url)

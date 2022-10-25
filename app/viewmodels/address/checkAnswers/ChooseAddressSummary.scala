@@ -19,6 +19,7 @@ package viewmodels.address.checkAnswers
 import models.UserAnswers
 import models.address.Address
 import models.enumeration.AddressJourneyType
+import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import pages.address.{EnterPostcodePage, ManualAddressPage}
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -51,6 +52,12 @@ object ChooseAddressSummary {
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, addressJourneyType: AddressJourneyType)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
+    val rowKey = if(addressJourneyType != Event1EmployerAddressJourney){
+      "residentialAddress.address.title"
+    } else {
+      "companyDetails.CYA.companyAddress"
+    }
+
     answers.get(ManualAddressPage(addressJourneyType)).map {
       answer =>
 
@@ -61,7 +68,7 @@ object ChooseAddressSummary {
         )
 
         SummaryListRowViewModel(
-          key = "companyDetails.CYA.companyAddress",
+          key = rowKey,
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType).changeLink(waypoints, sourcePage).url)
