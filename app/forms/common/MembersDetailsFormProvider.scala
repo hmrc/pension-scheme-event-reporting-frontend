@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package forms.event1
+package forms.common
 
-import forms.event1.PersonNameFormProvider.{firstNameLength, lastNameLength}
+import forms.common.PersonNameFormProvider.{firstNameLength, lastNameLength}
 import forms.mappings.{Mappings, Transforms}
-import models.event1.MembersDetails
+import models.common.MembersDetails
 import play.api.data.Form
 import play.api.data.Forms.mapping
 

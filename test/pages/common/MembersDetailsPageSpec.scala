@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package pages.event1
+package pages.common
 
-import models.event1.MembersDetails
+import models.common.MembersDetails
 import pages.behaviours.PageBehaviours
 
 

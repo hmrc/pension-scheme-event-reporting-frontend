@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package forms.event23
+package forms.common
 
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
-import models.event23.MembersDetails
+import models.common.MembersDetails
 import play.api.data.FormError
 import wolfendale.scalacheck.regexp.RegexpGen
 

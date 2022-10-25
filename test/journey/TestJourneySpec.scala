@@ -19,9 +19,10 @@ package journey
 import data.SampleData.{companyDetails, seqAddresses, seqTolerantAddresses}
 import generators.ModelGenerators
 import models.EventSelection._
+import models.common.MembersDetails
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.event1.HowAddUnauthPayment.Manual
-import models.event1.{MembersDetails, PaymentDetails}
+import models.event1.PaymentDetails
 import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, TransferToNonRegPensionScheme}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.employer.PaymentNature.{LoansExceeding50PercentOfFundValue, ResidentialProperty, TangibleMoveableProperty}
@@ -31,7 +32,8 @@ import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
-import pages.event1.{member, _}
+import pages.common.MembersDetailsPage
+import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, LoanDetailsPage}
 import pages.event1.member._
 import pages.event18.Event18ConfirmationPage
@@ -281,7 +283,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(EventSelectionPage, Event23),
         submitAnswer(HowAddDualAllowancePage, models.event23.HowAddDualAllowance.Manual),
         next,
-        pageMustBe(pages.event23.MembersDetailsPage)
+        pageMustBe(pages.common.MembersDetailsPage)
       )
   }
 

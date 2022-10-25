@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package pages.event1
+package pages.common
 
-import controllers.event1.routes
 import models.UserAnswers
-import models.event1.MembersDetails
-import pages.{Page, QuestionPage, Waypoints}
+import models.common.MembersDetails
+import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney.eventType
+import models.enumeration.EventType.{Event1, Event23}
+import pages.event1.DoYouHoldSignedMandatePage
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -30,8 +32,13 @@ case object MembersDetailsPage extends QuestionPage[MembersDetails] {
   override def toString: String = "membersDetails"
 
   override def route(waypoints: Waypoints): Call =
-    routes.MembersDetailsController.onPageLoad(waypoints)
+    controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, eventType)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    DoYouHoldSignedMandatePage
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    eventType match {
+      case Event1  => DoYouHoldSignedMandatePage
+      case Event23 => IndexPage
+      case _ => super.nextPageNormalMode(waypoints, answers)
+    }
+  }
 }

@@ -17,7 +17,7 @@
 package generators
 
 import models._
-import models.event1.MembersDetails
+import models.common.MembersDetails
 import models.event1.employer.{CompanyDetails, LoanDetails}
 import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, SchemeDetails, WhoWasTheTransferMade}
 import org.scalacheck.Arbitrary.arbitrary
@@ -62,24 +62,13 @@ trait ModelGenerators {
       Gen.oneOf(event1.WhoReceivedUnauthPayment.values)
     }
 
-  implicit lazy val arbitraryMembersDetails: Arbitrary[event1.MembersDetails] =
+  implicit lazy val arbitraryMembersDetails: Arbitrary[MembersDetails] =
     Arbitrary {
       val list = for {
         firstName <- Seq("validFirstName1", "validFirstName2")
         lastName <- Seq("validLastName1", "validLastName2")
         nino <- arbitrary[Nino].sample
-      } yield event1.MembersDetails(firstName, lastName, nino.nino)
-
-      Gen.oneOf(list)
-    }
-
-  implicit lazy val arbitraryEvent23MembersDetails: Arbitrary[event23.MembersDetails] =
-    Arbitrary {
-      val list = for {
-        firstName <- Seq("validFirstName1", "validFirstName2")
-        lastName <- Seq("validLastName1", "validLastName2")
-        nino <- arbitrary[Nino].sample
-      } yield event23.MembersDetails(firstName, lastName, nino.nino)
+      } yield MembersDetails(firstName, lastName, nino.nino)
 
       Gen.oneOf(list)
     }

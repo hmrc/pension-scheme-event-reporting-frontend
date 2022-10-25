@@ -18,6 +18,7 @@ package generators
 
 import org.scalacheck.Arbitrary
 import pages._
+import pages.common.MembersDetailsPage
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.event1.{employer, member}
@@ -27,9 +28,6 @@ trait PageGenerators {
 
   implicit lazy val arbitraryHowAddDualAllowancePage: Arbitrary[event23.HowAddDualAllowancePage.type] =
     Arbitrary(event23.HowAddDualAllowancePage)
-
-  implicit lazy val arbitraryEvent23MembersDetailsPage: Arbitrary[event23.MembersDetailsPage.type] =
-    Arbitrary(event23.MembersDetailsPage)
 
   implicit lazy val arbitraryPaymentValueAndDatePage: Arbitrary[event1.PaymentValueAndDatePage.type] =
     Arbitrary(event1.PaymentValueAndDatePage)
@@ -98,8 +96,8 @@ trait PageGenerators {
   implicit lazy val arbitraryDoYouHoldSignedMandatePage: Arbitrary[event1.DoYouHoldSignedMandatePage.type] =
     Arbitrary(event1.DoYouHoldSignedMandatePage)
 
-  implicit lazy val arbitraryMembersDetailsPage: Arbitrary[event1.MembersDetailsPage.type] =
-    Arbitrary(event1.MembersDetailsPage)
+  implicit lazy val arbitraryMembersDetailsPage: Arbitrary[MembersDetailsPage.type] =
+    Arbitrary(MembersDetailsPage)
 
   implicit lazy val arbitraryWhoReceivedUnauthPaymentPage: Arbitrary[event1.WhoReceivedUnauthPaymentPage.type] =
     Arbitrary(event1.WhoReceivedUnauthPaymentPage)

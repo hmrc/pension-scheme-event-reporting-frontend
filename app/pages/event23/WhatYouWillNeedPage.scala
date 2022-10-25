@@ -18,6 +18,7 @@ package pages.event23
 
 import controllers.event23.routes
 import models.UserAnswers
+import pages.common.MembersDetailsPage
 import pages.{Page, Waypoints}
 import play.api.mvc.Call
 
