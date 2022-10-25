@@ -33,7 +33,7 @@ object PaymentNature extends Enumerable.Implicits {
 
   case object CourtOrder extends WithName("courtOrder") with PaymentNature
 
-  case object Other extends WithName("other") with PaymentNature
+  case object Other extends WithName("employerOther") with PaymentNature
 
   val values: Seq[PaymentNature] = Seq(
     LoansExceeding50PercentOfFundValue, ResidentialProperty, TangibleMoveableProperty, CourtOrder, Other

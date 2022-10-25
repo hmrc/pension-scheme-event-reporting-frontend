@@ -30,7 +30,7 @@ object EmployerUnauthorisedPaymentRecipientNameSummary {
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =  answers match {
 
-    case employerJourney if answers.toString.contains("""whoReceivedUnauthPayment":"employer""") =>
+    case employerJourney if (answers.data \ "whoReceivedUnauthPayment").as[String] == "employer" =>
       answers.get(UnauthorisedPaymentRecipientNamePage).map {
         answer =>
 

@@ -53,7 +53,7 @@ object SchemeDetailsSummary {
         )
 
         SummaryListRowViewModel(
-          key = "schemeDetails.checkYourAnswersLabel",
+          key = "Scheme name",
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", SchemeDetailsPage.changeLink(waypoints, sourcePage).url)
@@ -74,7 +74,7 @@ object SchemeDetailsSummary {
         )
 
         SummaryListRowViewModel(
-          key = "schemeDetails.checkYourAnswersLabel",
+          key = "Reference",
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", SchemeDetailsPage.changeLink(waypoints, sourcePage).url)

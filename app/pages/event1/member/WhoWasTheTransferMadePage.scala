@@ -19,7 +19,7 @@ package pages.event1.member
 import controllers.event1.member.routes
 import models.UserAnswers
 import models.event1.member.WhoWasTheTransferMade
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -33,6 +33,10 @@ case object WhoWasTheTransferMadePage extends QuestionPage[WhoWasTheTransferMade
     routes.WhoWasTheTransferMadeController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    SchemeDetailsPage
+  }
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
     SchemeDetailsPage
   }
 }

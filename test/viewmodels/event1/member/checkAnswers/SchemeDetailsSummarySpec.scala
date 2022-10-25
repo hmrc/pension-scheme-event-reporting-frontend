@@ -60,7 +60,7 @@ class SchemeDetailsSummarySpec extends SpecBase with SummaryListFluency {
 
       SchemeDetailsSummary.rowSchemeName(answer, waypoints, sourcePage) mustBe Some(
         SummaryListRowViewModel(
-          key = "schemeDetails.checkYourAnswersLabel",
+          key = "Scheme name",
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", SchemeDetailsPage.changeLink(waypoints, sourcePage).url)
@@ -87,7 +87,7 @@ class SchemeDetailsSummarySpec extends SpecBase with SummaryListFluency {
 
       SchemeDetailsSummary.rowSchemeReference(answer, waypoints, sourcePage) mustBe Some(
         SummaryListRowViewModel(
-          key = "schemeDetails.checkYourAnswersLabel",
+          key = "Reference",
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", SchemeDetailsPage.changeLink(waypoints, sourcePage).url)
