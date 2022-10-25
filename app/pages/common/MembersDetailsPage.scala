@@ -18,14 +18,14 @@ package pages.common
 
 import models.UserAnswers
 import models.common.MembersDetails
-import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney.eventType
+import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event23}
 import pages.event1.DoYouHoldSignedMandatePage
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object MembersDetailsPage extends QuestionPage[MembersDetails] {
+case class MembersDetailsPage(eventType: EventType) extends QuestionPage[MembersDetails] {
 
   override def path: JsPath = JsPath \ toString
 

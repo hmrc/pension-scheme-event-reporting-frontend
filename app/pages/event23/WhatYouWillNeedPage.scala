@@ -18,6 +18,7 @@ package pages.event23
 
 import controllers.event23.routes
 import models.UserAnswers
+import models.enumeration.EventType
 import pages.common.MembersDetailsPage
 import pages.{Page, Waypoints}
 import play.api.mvc.Call
@@ -28,5 +29,5 @@ case object WhatYouWillNeedPage extends Page {
     routes.WhatYouWillNeedController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    MembersDetailsPage
+    MembersDetailsPage(EventType.Event23)
 }

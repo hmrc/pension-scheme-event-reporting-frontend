@@ -17,6 +17,7 @@
 package viewmodels.checkAnswers
 
 import models.UserAnswers
+import models.enumeration.EventType
 import pages.common.MembersDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -28,9 +29,9 @@ import viewmodels.implicits._
 
 object MembersDetailsSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MembersDetailsPage).map {
+    answers.get(MembersDetailsPage(eventType)).map {
       answer =>
 
         val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"membersDetails.$answer")).toString))
@@ -39,7 +40,7 @@ object MembersDetailsSummary  {
           key     = "membersDetails.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", MembersDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", MembersDetailsPage(eventType).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("membersDetails.change.hidden"))
           )
         )

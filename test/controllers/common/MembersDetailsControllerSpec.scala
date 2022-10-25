@@ -87,7 +87,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       "must populate the view correctly on a GET when the question has previously been answered" in {
 
-        val userAnswers = UserAnswers().set(MembersDetailsPage, validValue).success.value
+        val userAnswers = UserAnswers().set(MembersDetailsPage(event1), validValue).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -116,10 +116,10 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
             FakeRequest(POST, postRouteEvent1).withFormUrlEncodedBody(("firstName", validValue.firstName), ("lastName", validValue.lastName), ("nino", validValue.nino))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(MembersDetailsPage, validValue).success.value
+          val updatedAnswers = emptyUserAnswers.set(MembersDetailsPage(event1), validValue).success.value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual MembersDetailsPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          redirectLocation(result).value mustEqual MembersDetailsPage(event1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
           verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
         }
       }
@@ -194,7 +194,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       "must populate the view correctly on a GET when the question has previously been answered" in {
 
-        val userAnswers = UserAnswers().set(MembersDetailsPage, validValue).success.value
+        val userAnswers = UserAnswers().set(MembersDetailsPage(event23), validValue).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -223,10 +223,10 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
             FakeRequest(POST, postRouteEvent23).withFormUrlEncodedBody(("firstName", validValue.firstName), ("lastName", validValue.lastName), ("nino", validValue.nino))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(MembersDetailsPage, validValue).success.value
+          val updatedAnswers = emptyUserAnswers.set(MembersDetailsPage(event23), validValue).success.value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual MembersDetailsPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          redirectLocation(result).value mustEqual MembersDetailsPage(event23).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
           verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
         }
       }

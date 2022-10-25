@@ -21,6 +21,7 @@ import generators.ModelGenerators
 import models.EventSelection._
 import models.common.MembersDetails
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
+import models.enumeration.EventType
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.PaymentDetails
 import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, TransferToNonRegPensionScheme}
@@ -73,7 +74,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(HowAddUnauthPaymentPage, Manual),
         submitAnswer(WhoReceivedUnauthPaymentPage, Member),
         next,
-        submitAnswer(MembersDetailsPage, membersDetails.get),
+        submitAnswer(MembersDetailsPage(EventType.Event1), membersDetails.get),
         submitAnswer(DoYouHoldSignedMandatePage, true),
         submitAnswer(ValueOfUnauthorisedPaymentPage, true),
         submitAnswer(SchemeUnAuthPaySurchargeMemberPage, true),
@@ -283,7 +284,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(EventSelectionPage, Event23),
         submitAnswer(HowAddDualAllowancePage, models.event23.HowAddDualAllowance.Manual),
         next,
-        pageMustBe(pages.common.MembersDetailsPage)
+        pageMustBe(pages.common.MembersDetailsPage(EventType.Event23))
       )
   }
 

@@ -18,6 +18,7 @@ package generators
 
 import models._
 import models.common.MembersDetails
+import models.enumeration.EventType
 import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, WhoWasTheTransferMade}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
@@ -198,13 +199,13 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryMembersDetailsUserAnswersEntry: Arbitrary[(MembersDetailsPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[MembersDetailsPage.type]
-        value <- arbitrary[MembersDetails].map(Json.toJson(_))
-      } yield (page, value)
-    }
+//  implicit lazy val arbitraryMembersDetailsUserAnswersEntry: Arbitrary[(MembersDetailsPage.type, JsValue)] =
+//    Arbitrary {
+//      for {
+//        page <- arbitrary[MembersDetailsPage.type]
+//        value <- arbitrary[MembersDetails].map(Json.toJson(_))
+//      } yield (page, value)
+//    }
 
   implicit lazy val arbitraryHowAddDualAllowanceUserAnswersEntry: Arbitrary[(pages.event23.HowAddDualAllowancePage.type, JsValue)] =
     Arbitrary {

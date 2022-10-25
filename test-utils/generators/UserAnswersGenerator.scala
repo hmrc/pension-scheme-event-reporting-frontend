@@ -41,7 +41,7 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(event1.SchemeUnAuthPaySurchargeMemberPage.type, JsValue)] ::
     arbitrary[(event1.ValueOfUnauthorisedPaymentPage.type, JsValue)] ::
     arbitrary[(event1.DoYouHoldSignedMandatePage.type, JsValue)] ::
-    arbitrary[(MembersDetailsPage.type, JsValue)] ::
+//    arbitrary[(MembersDetailsPage.type, JsValue)] ::
     arbitrary[(event1.WhoReceivedUnauthPaymentPage.type, JsValue)] ::
     arbitrary[(event1.HowAddUnauthPaymentPage.type, JsValue)] ::
     arbitrary[(PaymentNaturePage.type, JsValue)] ::
