@@ -30,7 +30,7 @@ import viewmodels.address.checkAnswers.ChooseAddressSummary
 import viewmodels.checkAnswers.{Event18ConfirmationSummary, SchemeWindUpDateSummary}
 import viewmodels.event1.checkAnswers._
 import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, EmployerUnauthorisedPaymentRecipientNameSummary, LoanDetailsSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
-import viewmodels.event1.member.checkAnswers.{ErrorDescriptionSummary, MemberUnauthorisedPaymentRecipientNameSummary, RefundOfContributionsSummary, SchemeDetailsSummary}
+import viewmodels.event1.member.checkAnswers._
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -58,36 +58,40 @@ class CheckYourAnswersController @Inject()(
     Ok(view(SummaryListViewModel(rows = rows)))
   }
 
-  private def buildEvent1CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, sourcePage).toSeq ++
+  // scalastyle:off
+  private def buildEvent1CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+
+    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, sourcePage).toSeq ++ //Basic Member details section
       MembersDetailsSummary.rowNino(request.userAnswers, waypoints, sourcePage).toSeq ++
       DoYouHoldSignedMandateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       ValueOfUnauthorisedPaymentSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       SchemeUnAuthPaySurchargeMemberSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       PaymentNatureSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      ErrorDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      MemberPaymentNatureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      CompanyDetailsSummary.rowCompanyName(request.userAnswers, waypoints, sourcePage).toSeq ++
+      CompanyDetailsSummary.rowCompanyName(request.userAnswers, waypoints, sourcePage).toSeq ++ //Basic Employer details section
       CompanyDetailsSummary.rowCompanyNumber(request.userAnswers, waypoints, sourcePage).toSeq ++
+      ChooseAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1EmployerAddressJourney).toSeq ++
       EmployerPaymentNatureSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      EmployerPaymentNatureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      LoanDetailsSummary.rowLoanAmount(request.userAnswers, waypoints, sourcePage).toSeq ++
-      LoanDetailsSummary.rowFundValue(request.userAnswers, waypoints, sourcePage).toSeq ++
-      BenefitInKindBriefDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      BenefitsPaidEarlySummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      EmployerTangibleMoveablePropertySummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      MemberTangibleMoveablePropertySummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      ReasonForTheOverpaymentOrWriteOffSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      EmployerUnauthorisedPaymentRecipientNameSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      RefundOfContributionsSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      BenefitInKindBriefDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++ //Member Payment nature specific section
+      WhoWasTheTransferMadeSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++ //TODO: Write the spec file for this.
       SchemeDetailsSummary.rowSchemeName(request.userAnswers, waypoints, sourcePage).toSeq ++
       SchemeDetailsSummary.rowSchemeReference(request.userAnswers, waypoints, sourcePage).toSeq ++
-      MemberUnauthorisedPaymentRecipientNameSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      ChooseAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1EmployerAddressJourney).toSeq ++
-      ChooseAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1EmployerPropertyAddressJourney).toSeq ++
+      ErrorDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      BenefitsPaidEarlySummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      RefundOfContributionsSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      ReasonForTheOverpaymentOrWriteOffSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
       ChooseAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1MemberPropertyAddressJourney).toSeq ++
-      PaymentValueAndDateSummary.rowPaymentValue(request.userAnswers, waypoints, sourcePage).toSeq ++
+      MemberTangibleMoveablePropertySummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      MemberUnauthorisedPaymentRecipientNameSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      MemberPaymentNatureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      LoanDetailsSummary.rowLoanAmount(request.userAnswers, waypoints, sourcePage).toSeq ++ //Employer Payment nature specific section
+      LoanDetailsSummary.rowFundValue(request.userAnswers, waypoints, sourcePage).toSeq ++
+      ChooseAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1EmployerPropertyAddressJourney).toSeq ++
+      EmployerTangibleMoveablePropertySummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      EmployerUnauthorisedPaymentRecipientNameSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      EmployerPaymentNatureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      PaymentValueAndDateSummary.rowPaymentValue(request.userAnswers, waypoints, sourcePage).toSeq ++ //Payment value and date section
       PaymentValueAndDateSummary.rowPaymentDate(request.userAnswers, waypoints, sourcePage).toSeq
+  }
 
 
   private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
