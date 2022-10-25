@@ -61,6 +61,27 @@ class CheckYourAnswersController @Inject()(
   // scalastyle:off
   private def buildEvent1CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
 
+    /*
+        val maybeEmployer = request.userAnswers.toString.contains("""whoReceivedUnauthPayment":"employer""")
+
+          val x = event1BasicMemberDetailsSection(waypoints, sourcePage).map {
+            case Some(_) =>
+
+          }
+
+        val maybeApi1826 = eventReportCacheRepository.getByKeys(Map("pstr" -> pstr, "apiTypes" -> Api1826.toString)).map {
+          case Some(data) => compileEventReportSummary(pstr, data).map(_ => NoContent)
+          case _ => Future.successful(Ok)
+        }.flatten
+
+
+        val maybeEmployerRows = if (maybeEmployer) {
+          event1BasicEmployerDetailsSection(waypoints, sourcePage)
+        } else {
+          Seq(SummaryListRow())
+        }
+        maybeMemberRows ++ maybeEmployerRows ++
+    */
     MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, sourcePage).toSeq ++ //Basic Member details section
       MembersDetailsSummary.rowNino(request.userAnswers, waypoints, sourcePage).toSeq ++
       DoYouHoldSignedMandateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
@@ -93,7 +114,31 @@ class CheckYourAnswersController @Inject()(
       PaymentValueAndDateSummary.rowPaymentDate(request.userAnswers, waypoints, sourcePage).toSeq
   }
 
+  /*
+  private def event1BasicMemberDetailsSection(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Option[Seq[SummaryListRow]] = {
 
+
+    if (request.userAnswers.toString.contains("""whoReceivedUnauthPayment":"member""")) {
+      Some(
+          MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, sourcePage).toSeq ++ //Basic Member details section
+          MembersDetailsSummary.rowNino(request.userAnswers, waypoints, sourcePage).toSeq ++
+          DoYouHoldSignedMandateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+          ValueOfUnauthorisedPaymentSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+          SchemeUnAuthPaySurchargeMemberSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+          PaymentNatureSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      )
+    } else {
+      None
+    }
+  }
+
+  private def event1BasicEmployerDetailsSection(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
+    CompanyDetailsSummary.rowCompanyName(request.userAnswers, waypoints, sourcePage).toSeq ++ //Basic Employer details section
+      CompanyDetailsSummary.rowCompanyNumber(request.userAnswers, waypoints, sourcePage).toSeq ++
+      ChooseAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1EmployerAddressJourney).toSeq ++
+      EmployerPaymentNatureSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+
+*/
   private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
     SchemeWindUpDateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
 
