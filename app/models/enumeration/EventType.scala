@@ -16,7 +16,7 @@
 
 package models.enumeration
 
-import play.api.mvc.QueryStringBindable
+import play.api.mvc.{JavascriptLiteral, QueryStringBindable}
 
 sealed trait EventType
 
@@ -86,4 +86,6 @@ object EventType extends Enumerable.Implicits {
       override def unbind(key: String, value: EventType): String =
         stringBinder.unbind(key, value.toString)
     }
+    
+  implicit val jsLiteral: JavascriptLiteral[EventType] = (value: EventType) => value.toString
 }
