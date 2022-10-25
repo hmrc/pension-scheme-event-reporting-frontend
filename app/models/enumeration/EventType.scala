@@ -86,4 +86,7 @@ object EventType extends Enumerable.Implicits {
       override def unbind(key: String, value: EventType): String =
         stringBinder.unbind(key, value.toString)
     }
+
+  implicit val enumerable: Enumerable[EventType] =
+    Enumerable(values.map(v => v.toString -> v): _*)
 }

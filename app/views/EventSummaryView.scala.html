@@ -19,11 +19,10 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    govukSummaryList : GovukSummaryList
+    govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, events: Seq[SummaryListRow])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("eventSummary.title", "2023"))) {
 
@@ -34,42 +33,10 @@
         }
 
         <span class="govuk-caption-xl">Company pension scheme ABC</span>
-        <h1 class="govuk-heading-l">@messages("eventSummary.heading", "2023")</h1>
 
-        @govukSummaryList(SummaryList(
-            rows = Seq(
-                SummaryListRow(
-                    key = Key(
-                        content = Text("Event 18: Scheme chargeable payment"),
-                        classes = "govuk-!-width-full"
-                    ),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = "/pension-scheme-event-reporting-frontend/new-report/event-18-confirmation?waypoints=event-18-check-answers",
-                                content = Text("Change"),
-                                visuallyHiddenText = Some("Event 18: Scheme chargeable payment")
-                            )
-                        )
-                    ))
-                ),
-                SummaryListRow(
-                    key = Key(
-                        content = Text("Scheme has wound up"),
-                        classes = "govuk-!-width-full"
-                    ),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = "/pension-scheme-event-reporting-frontend/windup?waypoints=event-0-check-answers",
-                                content = Text("Change"),
-                                visuallyHiddenText = Some("Scheme has wound up")
-                            )
-                        )
-                    ))
-                )
-            )
-        ))
+        <h1 class="govuk-heading-xl">@messages("eventSummary.heading", "2023")</h1>
+
+        @components.entity_list(events)
 
         @govukRadios(
             RadiosViewModel.yesNo(
