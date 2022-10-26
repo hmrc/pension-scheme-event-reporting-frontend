@@ -87,24 +87,6 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
     }
   }
 
-  "nonNegValue" - {
-
-    "must return Valid for a number greater than the minimum threshold (0)" in {
-      val result = nonNegValue(0, "error.neg").apply(20)
-      result mustEqual Valid
-    }
-
-    "must return Valid for a number equal to the minimum threshold" in {
-      val result = nonNegValue(0, "error.neg").apply(0)
-      result mustEqual Valid
-    }
-
-    "must return Invalid for a number below the threshold" in {
-      val result = nonNegValue(0, "error.neg").apply(-2)
-      result mustEqual Invalid("error.neg", 0)
-    }
-  }
-
   "regexp" - {
 
     "must return Valid for an input that matches the expression" in {

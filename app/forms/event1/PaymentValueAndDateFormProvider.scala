@@ -44,7 +44,7 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
           "paymentValueAndDate.value.error.noDecimals")
           .verifying(
             maximumValue[BigDecimal](maxPaymentValue, "paymentValueAndDate.value.error.amountTooHigh"),
-              nonNegValue[BigDecimal](0, "paymentValueAndDate.value.error.negative")
+              minimumValue[BigDecimal](0, "paymentValueAndDate.value.error.negative")
           ), "paymentDate" ->
               localDate(
                 oneDateComponentMissingKey = "paymentValueAndDate.date.error.noDayMonthOrYear",
