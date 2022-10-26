@@ -26,7 +26,7 @@ import play.api.mvc.Call
 
 case class WhoReceivedUnauthPaymentPage(index: Int) extends QuestionPage[WhoReceivedUnauthPayment] {
 
-  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
+  override def path: JsPath = MembersOrEmployersPage(index).path \ WhoReceivedUnauthPaymentPage.toString
 
   override def toString: String = "whoReceivedUnauthPayment"
 
@@ -40,3 +40,7 @@ case class WhoReceivedUnauthPaymentPage(index: Int) extends QuestionPage[WhoRece
       case _ => this
     }
 }
+
+//object WhoReceivedUnauthPaymentPage {
+//  override lazy val toString: String = "whoReceivedUnauthPayment"
+//}

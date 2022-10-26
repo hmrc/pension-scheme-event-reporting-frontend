@@ -29,7 +29,7 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
-  val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+  val generators: Seq[Gen[(QuestionPage[_], JsValue)]] = {
     arbitrary[(event1.PaymentValueAndDatePage.type, JsValue)] ::
     arbitrary[(event1.member.ErrorDescriptionPage.type, JsValue)] ::
     arbitrary[(BenefitsPaidEarlyPage.type, JsValue)] ::
@@ -40,7 +40,6 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(event1.ValueOfUnauthorisedPaymentPage.type, JsValue)] ::
     arbitrary[(event1.DoYouHoldSignedMandatePage.type, JsValue)] ::
     arbitrary[(event1.MembersDetailsPage.type, JsValue)] ::
-    arbitrary[(event1.WhoReceivedUnauthPaymentPage.type, JsValue)] ::
     arbitrary[(event1.HowAddUnauthPaymentPage.type, JsValue)] ::
     arbitrary[(PaymentNaturePage.type, JsValue)] ::
     arbitrary[(SchemeWindUpDatePage.type, JsValue)] ::
@@ -61,6 +60,7 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(ReasonForTheOverpaymentOrWriteOffPage.type, JsValue)] ::
     arbitrary[(UnauthorisedPaymentRecipientNamePage.type, JsValue)] ::
     Nil
+  }
 
   implicit lazy val arbitraryUserData: Arbitrary[UserAnswers] = {
 

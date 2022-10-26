@@ -70,7 +70,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       .run(
         submitAnswer(EventSelectionPage, Event1),
         submitAnswer(HowAddUnauthPaymentPage, Manual),
-        submitAnswer(WhoReceivedUnauthPaymentPage, Member),
+        submitAnswer(WhoReceivedUnauthPaymentPage(0), Member),
         next,
         submitAnswer(MembersDetailsPage, membersDetails.get),
         submitAnswer(DoYouHoldSignedMandatePage, true),
@@ -176,7 +176,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       .run(
         submitAnswer(EventSelectionPage, Event1),
         submitAnswer(HowAddUnauthPaymentPage, Manual),
-        submitAnswer(WhoReceivedUnauthPaymentPage, Employer),
+        submitAnswer(WhoReceivedUnauthPaymentPage(0), Employer),
         pageMustBe(employer.WhatYouWillNeedPage)
       )
 
