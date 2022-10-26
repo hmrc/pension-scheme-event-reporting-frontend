@@ -68,7 +68,7 @@ trait Constraints {
 
         import ev._
 
-        if (input > minimum) {
+        if (input >= minimum) {
           Valid
         } else {
           Invalid(errorKey, minimum)
