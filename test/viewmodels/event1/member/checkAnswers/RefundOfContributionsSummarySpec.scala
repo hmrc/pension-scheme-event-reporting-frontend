@@ -16,20 +16,25 @@
 
 package viewmodels.event1.member.checkAnswers
 
-import base.SpecBase
 import models.UserAnswers
 import models.enumeration.EventType.Event1
 import models.event1.member.RefundOfContributions
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.{OptionValues, TryValues}
 import pages.event1.member.RefundOfContributionsPage
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
 
-class RefundOfContributionsSummarySpec extends SpecBase with SummaryListFluency {
+class RefundOfContributionsSummarySpec extends AnyFreeSpec with Matchers with OptionValues with TryValues with SummaryListFluency {
 
+  private implicit val messages: Messages = stubMessages()
 
   "row" - {
 

@@ -16,22 +16,23 @@
 
 package viewmodels.event1.member.checkAnswers
 
-import base.SpecBase
 import models.UserAnswers
 import models.enumeration.EventType.Event1
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.{OptionValues, TryValues}
 import pages.event1.member.UnauthorisedPaymentRecipientNamePage
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
 
-class MemberUnauthorisedPaymentRecipientNameSummarySpec extends SpecBase with SummaryListFluency {
+class MemberUnauthorisedPaymentRecipientNameSummarySpec extends AnyFreeSpec with Matchers with OptionValues with TryValues with SummaryListFluency {
 
-  /*
-  None was not equal to
-  Some(SummaryListRow(Key(Text(What is the name of the person or organisation that received the unauthorised payment?),),Value(Text(Harry),),,Some(Actions(,List(ActionItem(/new-report/event-1-member-recipient-name?waypoints=event-1-check-answers,Text(Change),Some(Change the name of the person or organisation that received the unauthorised payment?),,Map()))))))
-   */
+  private implicit val messages: Messages = stubMessages()
 
   "row" - {
 

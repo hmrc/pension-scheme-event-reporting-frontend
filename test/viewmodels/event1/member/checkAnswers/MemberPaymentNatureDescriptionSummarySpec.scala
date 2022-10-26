@@ -19,14 +19,21 @@ package viewmodels.event1.member.checkAnswers
 import base.SpecBase
 import models.UserAnswers
 import models.enumeration.EventType.Event1
+import org.scalatest.{OptionValues, TryValues}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 import pages.event1.member.MemberPaymentNatureDescriptionPage
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
 import viewmodels.event1.checkAnswers.MemberPaymentNatureDescriptionSummary
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
-class MemberPaymentNatureDescriptionSummarySpec extends SpecBase with SummaryListFluency {
+class MemberPaymentNatureDescriptionSummarySpec extends AnyFreeSpec with Matchers with OptionValues with TryValues with SummaryListFluency {
+
+  private implicit val messages: Messages = stubMessages()
 
   "row" - {
 

@@ -16,20 +16,25 @@
 
 package viewmodels.event1.member.checkAnswers
 
-import base.SpecBase
 import data.SampleData.schemeDetails
 import models.UserAnswers
 import models.enumeration.EventType.Event1
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.{OptionValues, TryValues}
 import pages.event1.member.SchemeDetailsPage
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
 
-class SchemeDetailsSummarySpec extends SpecBase with SummaryListFluency {
+class SchemeDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValues with TryValues with SummaryListFluency {
+
+  private implicit val messages: Messages = stubMessages()
 
   private def schemeDetailsAnswer(detail: Option[String])(implicit messages: Messages): Html = {
     def schemeDetailsToHtml(value: String): String = s"$value"
