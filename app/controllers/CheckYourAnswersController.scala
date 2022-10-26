@@ -59,10 +59,23 @@ class CheckYourAnswersController @Inject()(
   }
 
 
-
   private def event1MemberJourney(implicit request: DataRequest[AnyContent]): Boolean = {
-    if ((request.userAnswers.data \ "whoReceivedUnauthPayment").as[String] == "member") { true }
-    else { false }
+    if ((request.userAnswers.data \ "whoReceivedUnauthPayment").as[String] == "member") {
+      true
+    }
+    else {
+      false
+    }
+  }
+
+  private def schemeUnAuthPaySurchargeRow(waypoints: Waypoints, sourcePage: CheckAnswersPage)
+                                         (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+    if ((request.userAnswers.data \ "valueOfUnauthorisedPayment").as[Boolean]) {
+      SchemeUnAuthPaySurchargeMemberSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+    }
+    else {
+      Nil
+    }
   }
 
   // scalastyle:off
@@ -73,7 +86,7 @@ class CheckYourAnswersController @Inject()(
         MembersDetailsSummary.rowNino(request.userAnswers, waypoints, sourcePage).toSeq ++
         DoYouHoldSignedMandateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
         ValueOfUnauthorisedPaymentSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-        SchemeUnAuthPaySurchargeMemberSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+        schemeUnAuthPaySurchargeRow(waypoints, sourcePage) ++
         PaymentNatureSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
     } else {
       CompanyDetailsSummary.rowCompanyName(request.userAnswers, waypoints, sourcePage).toSeq ++
@@ -125,16 +138,16 @@ class CheckYourAnswersController @Inject()(
       }
     }
 
-      val paymentValueAndDateRows =
-        PaymentValueAndDateSummary.rowPaymentValue(request.userAnswers, waypoints, sourcePage).toSeq ++
-          PaymentValueAndDateSummary.rowPaymentDate(request.userAnswers, waypoints, sourcePage).toSeq
+    val paymentValueAndDateRows =
+      PaymentValueAndDateSummary.rowPaymentValue(request.userAnswers, waypoints, sourcePage).toSeq ++
+        PaymentValueAndDateSummary.rowPaymentDate(request.userAnswers, waypoints, sourcePage).toSeq
 
-      basicMemberOrEmployerRows ++ memberOrEmployerPaymentNatureRows ++ paymentValueAndDateRows
-    }
-
-    private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
-      SchemeWindUpDateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
-
-    private def buildEvent18CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
-      Event18ConfirmationSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+    basicMemberOrEmployerRows ++ memberOrEmployerPaymentNatureRows ++ paymentValueAndDateRows
   }
+
+  private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
+    SchemeWindUpDateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+
+  private def buildEvent18CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
+    Event18ConfirmationSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+}
