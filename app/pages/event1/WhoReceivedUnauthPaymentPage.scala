@@ -31,7 +31,7 @@ case class WhoReceivedUnauthPaymentPage(index: Int) extends QuestionPage[WhoRece
   override def toString: String = "whoReceivedUnauthPayment"
 
   override def route(waypoints: Waypoints): Call =
-    routes.WhoReceivedUnauthPaymentController.onPageLoad(waypoints, 0)
+    routes.WhoReceivedUnauthPaymentController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
