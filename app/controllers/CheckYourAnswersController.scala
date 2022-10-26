@@ -78,7 +78,8 @@ class CheckYourAnswersController @Inject()(
     }
   }
 
-  // scalastyle:off
+  // scalastyle:off cyclomatic.complexity
+  // scalastyle:off method.length
   private def buildEvent1CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
 
     val basicMemberOrEmployerRows = if (event1MemberJourney) {

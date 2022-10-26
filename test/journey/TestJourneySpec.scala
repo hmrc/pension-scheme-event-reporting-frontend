@@ -24,6 +24,7 @@ import models.enumeration.EventType
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, TransferToNonRegPensionScheme}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
+import models.event1.employer.LoanDetails
 import models.event1.employer.PaymentNature.{LoansExceeding50PercentOfFundValue, ResidentialProperty, TangibleMoveableProperty}
 import models.event1.member.ReasonForTheOverpaymentOrWriteOff.DeathOfMember
 import models.event1.member.RefundOfContributions.WidowOrOrphan
@@ -33,7 +34,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.event1._
-import pages.event1.employer.{CompanyDetailsPage, LoanDetailsPage}
+import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, LoanDetailsPage}
 import pages.event1.member._
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
@@ -275,4 +276,31 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       )
   }
 
+  "testing nav to CYA page after changing payment nature from Benefit in kind to refund of contributions option" in {
+    startingFrom(PaymentNaturePage)
+      .run(
+        submitAnswer(PaymentNaturePage, BenefitInKind),
+        submitAnswer(BenefitInKindBriefDescriptionPage, "valid - description"),
+        submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
+        goToChangeAnswer(PaymentNaturePage),
+        submitAnswer(PaymentNaturePage, RefundOfContributions),
+        submitAnswer(RefundOfContributionsPage, models.event1.member.RefundOfContributions.Other),
+        submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
+        comparePageMustBeAsString(CheckYourAnswersPage(EventType.Event1))
+      )
+  }
+
+  "testing nav to CYA page after changing payment nature from loans exceeding 50 percent of fund value to tangible moveable property option for employer" in {
+    startingFrom(employer.PaymentNaturePage)
+      .run(
+        submitAnswer(employer.PaymentNaturePage, LoansExceeding50PercentOfFundValue),
+        submitAnswer(LoanDetailsPage, LoanDetails(Some(1000.00), Some(2000.22))),
+        submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
+        goToChangeAnswer(employer.PaymentNaturePage),
+        submitAnswer(employer.PaymentNaturePage, TangibleMoveableProperty),
+        submitAnswer(EmployerTangibleMoveablePropertyPage, "tangible moveable"),
+        submitAnswer(PaymentValueAndDatePage, PaymentDetails(3000.00, LocalDate.now())),
+        comparePageMustBeAsString(CheckYourAnswersPage(EventType.Event1))
+      )
+  }
 }
