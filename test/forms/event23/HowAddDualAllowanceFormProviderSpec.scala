@@ -32,7 +32,7 @@ class HowAddDualAllowanceFormProviderSpec extends OptionFieldBehaviours {
     behave like optionsField[HowAddDualAllowance](
       form,
       fieldName,
-      validValues  = HowAddDualAllowance.values,
+      validValues = HowAddDualAllowance.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

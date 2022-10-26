@@ -37,7 +37,7 @@ class HowAddDualAllowanceController @Inject()(val controllerComponents: Messages
                                               userAnswersCacheConnector: UserAnswersCacheConnector,
                                               formProvider: HowAddDualAllowanceFormProvider,
                                               view: HowAddDualAllowanceView
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event23

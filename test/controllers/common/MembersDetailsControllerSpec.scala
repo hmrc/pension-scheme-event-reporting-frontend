@@ -18,11 +18,10 @@ package controllers.common
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import controllers.routes
 import forms.common.MembersDetailsFormProvider
-import models.enumeration.EventType
 import models.UserAnswers
 import models.common.MembersDetails
+import models.enumeration.EventType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
@@ -51,8 +50,11 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRouteEvent1: String = routes.MembersDetailsController.onPageLoad(waypoints, event1).url
+
   private def postRouteEvent1: String = routes.MembersDetailsController.onSubmit(waypoints, event1).url
+
   private def getRouteEvent23: String = routes.MembersDetailsController.onPageLoad(waypoints, event23).url
+
   private def postRouteEvent23: String = routes.MembersDetailsController.onSubmit(waypoints, event23).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -144,37 +146,8 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
           verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
         }
       }
-
-      // TODO These tests should be enabled when we have redirect to JourneyRecoveryController functionality
-      /*    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, getRoute)
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
     }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute)
-            .withFormUrlEncodedBody(("firstName", validValue.firstName), ("lastName", validValue.lastName), ("nino", validValue.nino))
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }*/
-    }
-    "event23" -{
+    "event23" - {
 
       "must return OK and the correct view for a GET" in {
 
@@ -251,35 +224,6 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
           verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
         }
       }
-
-      // TODO These tests should be enabled when we have redirect to JourneyRecoveryController functionality
-      /*    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, getRoute)
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute)
-            .withFormUrlEncodedBody(("firstName", validValue.firstName), ("lastName", validValue.lastName), ("nino", validValue.nino))
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }*/
     }
   }
 }

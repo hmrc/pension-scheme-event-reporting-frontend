@@ -21,21 +21,21 @@
 
 @(continueUrl: String)(implicit request: Request[_], messages: Messages)
 
-    @layout(pageTitle = titleNoForm(messages("whatYouWillNeed.event23.title"))) {
+@layout(pageTitle = titleNoForm(messages("whatYouWillNeed.event23.title"))) {
 
-        <h1 class="govuk-heading-xl">@messages("whatYouWillNeed.event23.heading")</h1>
+    <h1 class="govuk-heading-xl">@messages("whatYouWillNeed.event23.heading")</h1>
 
-        <p class="govuk-body">@messages("whatYouWillNeed.event23.p")</p>
+    <p class="govuk-body">@messages("whatYouWillNeed.event23.p")</p>
 
-        <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("whatYouWillNeed.event23.item1")</li>
-            <li>@messages("whatYouWillNeed.event23.item2")</li>
-            <li>@messages("whatYouWillNeed.event23.item3")</li>
-            <li>@messages("whatYouWillNeed.event23.item4")</li>
-        </ul>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("whatYouWillNeed.event23.item1")</li>
+        <li>@messages("whatYouWillNeed.event23.item2")</li>
+        <li>@messages("whatYouWillNeed.event23.item3")</li>
+        <li>@messages("whatYouWillNeed.event23.item4")</li>
+    </ul>
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit")).asLink(continueUrl)
-        )
+    @govukButton(
+        ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit")).asLink(continueUrl)
+    )
 
-    }
+}

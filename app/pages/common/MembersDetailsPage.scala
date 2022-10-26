@@ -36,7 +36,7 @@ case class MembersDetailsPage(eventType: EventType) extends QuestionPage[Members
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     eventType match {
-      case Event1  => DoYouHoldSignedMandatePage
+      case Event1 => DoYouHoldSignedMandatePage
       case Event23 => IndexPage
       case _ => super.nextPageNormalMode(waypoints, answers)
     }

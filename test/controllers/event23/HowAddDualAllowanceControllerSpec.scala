@@ -16,10 +16,10 @@
 
 package controllers.event23
 
-import models.UserAnswers
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event23.HowAddDualAllowanceFormProvider
+import models.UserAnswers
 import models.event23.HowAddDualAllowance
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, times, verify, when}
@@ -45,6 +45,7 @@ class HowAddDualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.HowAddDualAllowanceController.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.HowAddDualAllowanceController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](

@@ -20,7 +20,6 @@ import models.common.MembersDetails
 import models.enumeration.EventType.{Event1, Event23}
 import pages.behaviours.PageBehaviours
 
-
 class MembersDetailsPageSpec extends PageBehaviours {
 
   "MembersDetailsPage" - {
@@ -32,8 +31,8 @@ class MembersDetailsPageSpec extends PageBehaviours {
 
       beRemovable[MembersDetails](MembersDetailsPage(Event1))
     }
-    "event23" - {
 
+    "event23" - {
       beRetrievable[MembersDetails](MembersDetailsPage(Event23))
 
       beSettable[MembersDetails](MembersDetailsPage(Event23))

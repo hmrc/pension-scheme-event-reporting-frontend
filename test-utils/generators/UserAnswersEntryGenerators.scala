@@ -18,7 +18,6 @@ package generators
 
 import models._
 import models.common.MembersDetails
-import models.enumeration.EventType
 import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, WhoWasTheTransferMade}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary

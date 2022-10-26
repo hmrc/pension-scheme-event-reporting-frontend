@@ -16,17 +16,18 @@
 
 package models.event23
 
+import models.{Enumerable, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import models.{Enumerable, WithName}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 sealed trait HowAddDualAllowance
 
 object HowAddDualAllowance extends Enumerable.Implicits {
 
   case object Manual extends WithName("manual") with HowAddDualAllowance
+
   case object FileUpload extends WithName("fileUpload") with HowAddDualAllowance
 
   val values: Seq[HowAddDualAllowance] = Seq(
@@ -37,9 +38,9 @@ object HowAddDualAllowance extends Enumerable.Implicits {
     case (value, index) =>
       RadioItem(
         content = Text(messages(s"howAddDualAllowance.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index"),
-        hint    = if (value == FileUpload) Some(Hint(content = Text(messages("howAddDualAllowance.fileUpload.hint")))) else None,
+        value = Some(value.toString),
+        id = Some(s"value_$index"),
+        hint = if (value == FileUpload) Some(Hint(content = Text(messages("howAddDualAllowance.fileUpload.hint")))) else None,
         disabled = value == FileUpload
       )
   }

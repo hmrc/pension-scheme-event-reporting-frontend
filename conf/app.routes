@@ -155,7 +155,6 @@ POST        /new-report/event-1-transfer-recipient                         contr
 GET         /new-report/event-1-scheme-details                             controllers.event1.member.SchemeDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-scheme-details                             controllers.event1.member.SchemeDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-
 GET         /new-report/event-23-entry-type                                controllers.event23.HowAddDualAllowanceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-23-entry-type                                controllers.event23.HowAddDualAllowanceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 

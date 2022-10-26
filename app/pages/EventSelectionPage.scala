@@ -17,13 +17,12 @@
 package pages
 
 import controllers.routes
-import models.EventSelection.EventWoundUp
+import models.EventSelection.{EventWoundUp, _}
 import models.{EventSelection, UserAnswers}
-import pages.eventWindUp.SchemeWindUpDatePage
-import models.EventSelection._
 import pages.event1.HowAddUnauthPaymentPage
 import pages.event18.Event18ConfirmationPage
 import pages.event23.HowAddDualAllowancePage
+import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

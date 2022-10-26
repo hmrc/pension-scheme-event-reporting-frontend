@@ -78,7 +78,6 @@ trait ModelGenerators {
       Gen.oneOf(event23.HowAddDualAllowance.values)
     }
 
-
   implicit lazy val arbitraryLoanDetails: Arbitrary[LoanDetails] =
     Arbitrary {
       for {
