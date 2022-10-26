@@ -32,7 +32,7 @@ case object HowAddUnauthPaymentPage extends QuestionPage[HowAddUnauthPayment] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
-      case Some(Manual) => WhoReceivedUnauthPaymentPage
+      case Some(Manual) => WhoReceivedUnauthPaymentPage(0)
       case _ => this
     }
 

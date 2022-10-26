@@ -30,7 +30,7 @@ object WhoReceivedUnauthPaymentSummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(WhoReceivedUnauthPaymentPage).map {
+    answers.get(WhoReceivedUnauthPaymentPage(0)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -43,7 +43,7 @@ object WhoReceivedUnauthPaymentSummary  {
           key     = "whoReceivedUnauthPayment.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", WhoReceivedUnauthPaymentPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", WhoReceivedUnauthPaymentPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("whoReceivedUnauthPayment.change.hidden"))
           )
         )

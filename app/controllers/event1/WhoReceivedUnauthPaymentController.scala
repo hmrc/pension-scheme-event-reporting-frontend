@@ -19,7 +19,7 @@ package controllers.event1
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.WhoReceivedUnauthPaymentFormProvider
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import models.enumeration.EventType
 import pages.Waypoints
 import pages.event1.WhoReceivedUnauthPaymentPage
@@ -42,21 +42,21 @@ class WhoReceivedUnauthPaymentController @Inject()(val controllerComponents: Mes
   private val form = formProvider()
   private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(WhoReceivedUnauthPaymentPage)).fold(form)(form.fill)
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(_.get(WhoReceivedUnauthPaymentPage(index))).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(WhoReceivedUnauthPaymentPage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(WhoReceivedUnauthPaymentPage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(WhoReceivedUnauthPaymentPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(WhoReceivedUnauthPaymentPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )
