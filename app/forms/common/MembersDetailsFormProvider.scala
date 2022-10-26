@@ -37,7 +37,7 @@ class MembersDetailsFormProvider @Inject() extends Mappings with Transforms {
           text("membersDetails.error.lastName.required").verifying(
             firstError(
               maxLength(lastNameLength, "membersDetails.error.lastName.length"),
-              regexp(regexSurname, "membersDetails.error.lastName.invalid"))
+              regexp(regexName, "membersDetails.error.lastName.invalid"))
           ),
         "nino" ->
           text("membersDetails.error.nino.required")
