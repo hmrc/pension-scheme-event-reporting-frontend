@@ -37,7 +37,8 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
-      case Some(Event1) => HowAddUnauthPaymentPage
+      // TODO: Calculate index
+      case Some(Event1) => HowAddUnauthPaymentPage(0)
       case Some(Event18) => Event18ConfirmationPage
       case Some(EventWoundUp) => SchemeWindUpDatePage
       case _ => EventSelectionPage

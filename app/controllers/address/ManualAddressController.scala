@@ -57,8 +57,8 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
           addressJourneyType,
           addressJourneyType.title(page),
           addressJourneyType.heading(page),
-          countryOptions.options),
-        index
+          countryOptions.options,
+          index)
       )
     }
 
@@ -75,8 +75,9 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
                   waypoints,
                   addressJourneyType,
                   addressJourneyType.title(page),
-                  addressJourneyType.heading(page), countryOptions.options),
-                index
+                  addressJourneyType.heading(page), countryOptions.options,
+                  index
+                )
               )
             )
           },

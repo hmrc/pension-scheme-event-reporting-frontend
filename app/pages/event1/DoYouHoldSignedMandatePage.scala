@@ -18,7 +18,7 @@ package pages.event1
 
 import controllers.event1.routes
 import models.UserAnswers
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{MembersOrEmployersPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -32,6 +32,6 @@ case class DoYouHoldSignedMandatePage(index: Int) extends QuestionPage[Boolean] 
     routes.DoYouHoldSignedMandateController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    ValueOfUnauthorisedPaymentPage
+    ValueOfUnauthorisedPaymentPage(index)
   }
 }

@@ -16,7 +16,7 @@
 
 package viewmodels.event1.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.{CheckAnswersPage, Waypoints}
 import pages.event1.HowAddUnauthPaymentPage
 import play.api.i18n.Messages
@@ -28,9 +28,9 @@ import viewmodels.implicits._
 
 object HowAddUnauthPaymentSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(HowAddUnauthPaymentPage).map {
+    answers.get(HowAddUnauthPaymentPage(index)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -43,7 +43,7 @@ object HowAddUnauthPaymentSummary  {
           key     = "howAddUnauthPayment.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", HowAddUnauthPaymentPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", HowAddUnauthPaymentPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("howAddUnauthPayment.change.hidden"))
           )
         )

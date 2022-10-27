@@ -19,7 +19,7 @@ package controllers.event1.member
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.member.SchemeDetailsFormProvider
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import models.enumeration.EventType
 import pages.Waypoints
 import pages.event1.member.SchemeDetailsPage
@@ -43,7 +43,7 @@ class SchemeDetailsController @Inject()(val controllerComponents: MessagesContro
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(SchemeDetailsPage)).fold(form) { v => form.fill(v) }
+    val preparedForm = request.userAnswers.flatMap(_.get(SchemeDetailsPage(index))).fold(form) { v => form.fill(v) }
     Ok(view(preparedForm, waypoints, index))
   }
 
@@ -55,8 +55,8 @@ class SchemeDetailsController @Inject()(val controllerComponents: MessagesContro
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = (value.schemeName, value.reference) match {
-            case (None, None) => originalUserAnswers.removeOrException(SchemeDetailsPage)
-            case _ => originalUserAnswers.setOrException(SchemeDetailsPage, value)
+            case (None, None) => originalUserAnswers.removeOrException(SchemeDetailsPage(index))
+            case _ => originalUserAnswers.setOrException(SchemeDetailsPage(index), value)
           }
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(SchemeDetailsPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)

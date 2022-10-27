@@ -16,7 +16,7 @@
 
 package viewmodels.event1.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.{CheckAnswersPage, Waypoints}
 import pages.event1.MembersDetailsPage
 import play.api.i18n.Messages
@@ -28,9 +28,9 @@ import viewmodels.implicits._
 
 object MembersDetailsSummary  {
 
-  def rowFullName(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def rowFullName(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MembersDetailsPage).map {
+    answers.get(MembersDetailsPage(index)).map {
       answer =>
 
         val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(answer.fullName)).toString))
@@ -38,15 +38,15 @@ object MembersDetailsSummary  {
           key     = "membersDetails.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", MembersDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", MembersDetailsPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("membersDetails.change.hidden"))
           )
         )
     }
 
-  def rowNino(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def rowNino(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MembersDetailsPage).map {
+    answers.get(MembersDetailsPage(index)).map {
       answer =>
 
         val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(answer.nino)).toString))
@@ -54,7 +54,7 @@ object MembersDetailsSummary  {
           key     = "membersDetails.checkYourAnswersLabel.nino",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", MembersDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", MembersDetailsPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("membersDetails.change.hidden"))
           )
         )

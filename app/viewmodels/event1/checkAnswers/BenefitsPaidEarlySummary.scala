@@ -16,7 +16,7 @@
 
 package viewmodels.event1.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.event1.member.BenefitsPaidEarlyPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -27,16 +27,16 @@ import viewmodels.implicits._
 
 object BenefitsPaidEarlySummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(BenefitsPaidEarlyPage).map {
+    answers.get(BenefitsPaidEarlyPage(index)).map {
       answer =>
 
         SummaryListRowViewModel(
           key     = "benefitsPaidEarly.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", BenefitsPaidEarlyPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", BenefitsPaidEarlyPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("benefitsPaidEarly.change.hidden"))
           )
         )

@@ -16,7 +16,7 @@
 
 package viewmodels.event1.employer.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.event1.employer.UnauthorisedPaymentRecipientNamePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -27,18 +27,18 @@ import viewmodels.implicits._
 
 object EmployerUnauthorisedPaymentRecipientNameSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =  answers match {
 
     case employerJourney if (answers.data \ "whoReceivedUnauthPayment").as[String] == "employer" =>
-      answers.get(UnauthorisedPaymentRecipientNamePage).map {
+      answers.get(UnauthorisedPaymentRecipientNamePage(index)).map {
         answer =>
 
           SummaryListRowViewModel(
             key = "unauthorisedPaymentRecipientName.employer.checkYourAnswersLabel",
             value = ValueViewModel(HtmlFormat.escape(answer).toString),
             actions = Seq(
-              ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage.changeLink(waypoints, sourcePage).url)
+              ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage(index).changeLink(waypoints, sourcePage).url)
                 .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.employer.change.hidden"))
             )
           )

@@ -26,7 +26,7 @@ GET         /new-report/event-18-confirmation                              contr
 POST        /new-report/event-18-confirmation                              controllers.event18.Event18ConfirmationController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-windup-check-your-answers                    controllers.CheckYourAnswersController.onPageLoad(eventType: EventType = EventType.WindUp)
-GET         /new-report/:index/event-1-check-your-answers                         controllers.CheckYourAnswersController.onPageLoad(eventType: EventType = EventType.Event1)
+GET         /new-report/:index/event-1-check-your-answers                  controllers.CheckYourAnswersController.onPageLoadWithIndex(eventType: EventType = EventType.Event1, index: Index)
 GET         /new-report/event-2-check-your-answers                         controllers.CheckYourAnswersController.onPageLoad(eventType: EventType = EventType.Event2)
 GET         /new-report/event-3-check-your-answers                         controllers.CheckYourAnswersController.onPageLoad(eventType: EventType = EventType.Event3)
 GET         /new-report/event-4-check-your-answers                         controllers.CheckYourAnswersController.onPageLoad(eventType: EventType = EventType.Event4)
@@ -54,7 +54,7 @@ POST        /new-report/:index/event-1-entry-type                               
 GET         /new-report/:index/event-1-payment-type                               controllers.event1.WhoReceivedUnauthPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /new-report/:index/event-1-payment-type                               controllers.event1.WhoReceivedUnauthPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
-GET         /windup                                                        controllers.eventWindUp.SchemeWindUpDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+GET         /windup                                                        controllers.eventWindUp.SchemeWindUpDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /windup                                                        controllers.eventWindUp.SchemeWindUpDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/:index/event-1-member-payment-nature                      controllers.event1.PaymentNatureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)

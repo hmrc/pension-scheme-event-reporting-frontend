@@ -19,7 +19,7 @@ package pages.event1
 import controllers.event1.routes
 import models.UserAnswers
 import models.event1.MembersDetails
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{MembersOrEmployersPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -33,5 +33,5 @@ case class MembersDetailsPage(index: Int) extends QuestionPage[MembersDetails] {
     routes.MembersDetailsController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    DoYouHoldSignedMandatePage
+    DoYouHoldSignedMandatePage(index)
 }

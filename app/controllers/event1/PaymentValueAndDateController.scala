@@ -57,7 +57,7 @@ class PaymentValueAndDateController @Inject()(val controllerComponents: Messages
   private val stubDate: LocalDate = LocalDate.now()
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(PaymentValueAndDatePage)) match {
+    val preparedForm = request.userAnswers.flatMap(_.get(PaymentValueAndDatePage(index))) match {
       case Some(value) => form(startDate = stubDate).fill(value)
       case None => form(stubDate)
     }
@@ -72,7 +72,7 @@ class PaymentValueAndDateController @Inject()(val controllerComponents: Messages
 
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(PaymentValueAndDatePage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(PaymentValueAndDatePage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(PaymentValueAndDatePage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }

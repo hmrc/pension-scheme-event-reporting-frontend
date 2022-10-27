@@ -46,7 +46,7 @@ class ValueOfUnauthorisedPaymentController @Inject()(
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
-    val preparedForm = request.userAnswers.get(ValueOfUnauthorisedPaymentPage).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.get(ValueOfUnauthorisedPaymentPage(index)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, index))
   }
 
@@ -56,7 +56,7 @@ class ValueOfUnauthorisedPaymentController @Inject()(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers
-          val updatedAnswers = originalUserAnswers.setOrException(ValueOfUnauthorisedPaymentPage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(ValueOfUnauthorisedPaymentPage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
           Redirect(ValueOfUnauthorisedPaymentPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
         }

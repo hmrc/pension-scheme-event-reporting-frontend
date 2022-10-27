@@ -16,7 +16,7 @@
 
 package viewmodels.event1.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.{CheckAnswersPage, Waypoints}
 import pages.event1.SchemeUnAuthPaySurchargeMemberPage
 import play.api.i18n.Messages
@@ -26,9 +26,9 @@ import viewmodels.implicits._
 
 object SchemeUnAuthPaySurchargeMemberSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SchemeUnAuthPaySurchargeMemberPage).map {
+    answers.get(SchemeUnAuthPaySurchargeMemberPage(index)).map {
       answer =>
 
         val value = if (answer) "site.yes" else "site.no"
@@ -37,7 +37,7 @@ object SchemeUnAuthPaySurchargeMemberSummary  {
           key     = "schemeUnAuthPaySurchargeMember.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", SchemeUnAuthPaySurchargeMemberPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", SchemeUnAuthPaySurchargeMemberPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("schemeUnAuthPaySurchargeMember.change.hidden"))
           )
         )

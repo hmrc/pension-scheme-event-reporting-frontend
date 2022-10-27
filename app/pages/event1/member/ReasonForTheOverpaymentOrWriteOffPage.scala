@@ -20,7 +20,7 @@ import controllers.event1.member.routes
 import models.UserAnswers
 import models.event1.member.ReasonForTheOverpaymentOrWriteOff
 import pages.event1.PaymentValueAndDatePage
-import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{MembersOrEmployersPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

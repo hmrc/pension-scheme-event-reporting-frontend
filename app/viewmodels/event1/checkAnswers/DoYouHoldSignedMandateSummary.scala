@@ -16,7 +16,7 @@
 
 package viewmodels.event1.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.{CheckAnswersPage, Waypoints}
 import pages.event1.DoYouHoldSignedMandatePage
 import play.api.i18n.Messages
@@ -26,9 +26,9 @@ import viewmodels.implicits._
 
 object DoYouHoldSignedMandateSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DoYouHoldSignedMandatePage).map {
+    answers.get(DoYouHoldSignedMandatePage(index)).map {
       answer =>
 
         val value = if (answer) "site.yes" else "site.no"
@@ -37,7 +37,7 @@ object DoYouHoldSignedMandateSummary  {
           key     = "doYouHoldSignedMandate.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", DoYouHoldSignedMandatePage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", DoYouHoldSignedMandatePage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("doYouHoldSignedMandate.change.hidden"))
           )
         )

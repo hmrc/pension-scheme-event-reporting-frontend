@@ -47,7 +47,7 @@ class LoanDetailsController @Inject()(val controllerComponents: MessagesControll
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(LoanDetailsPage)).fold(form(implicitly))(form(implicitly).fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(LoanDetailsPage(index))).fold(form(implicitly))(form(implicitly).fill)
     Ok(view(preparedForm, waypoints, index))
   }
 
@@ -59,7 +59,7 @@ class LoanDetailsController @Inject()(val controllerComponents: MessagesControll
         },
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(LoanDetailsPage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(LoanDetailsPage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(LoanDetailsPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }

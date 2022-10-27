@@ -43,7 +43,7 @@ class MemberTangibleMoveablePropertyController @Inject()(val controllerComponent
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(MemberTangibleMoveablePropertyPage)).fold(form) { v => form.fill(Some(v)) }
+    val preparedForm = request.userAnswers.flatMap(_.get(MemberTangibleMoveablePropertyPage(index))).fold(form) { v => form.fill(Some(v)) }
     Ok(view(preparedForm, waypoints, index))
   }
 
@@ -55,8 +55,8 @@ class MemberTangibleMoveablePropertyController @Inject()(val controllerComponent
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = value match {
-            case Some(v) => originalUserAnswers.setOrException(MemberTangibleMoveablePropertyPage, v)
-            case None => originalUserAnswers.removeOrException(MemberTangibleMoveablePropertyPage)
+            case Some(v) => originalUserAnswers.setOrException(MemberTangibleMoveablePropertyPage(index), v)
+            case None => originalUserAnswers.removeOrException(MemberTangibleMoveablePropertyPage(index))
           }
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(MemberTangibleMoveablePropertyPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)

@@ -16,7 +16,7 @@
 
 package viewmodels.event1.member.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.event1.member.WhoWasTheTransferMadePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -28,9 +28,9 @@ import viewmodels.implicits._
 
 object WhoWasTheTransferMadeSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(WhoWasTheTransferMadePage).map {
+    answers.get(WhoWasTheTransferMadePage(index)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -43,7 +43,7 @@ object WhoWasTheTransferMadeSummary {
           key = "whoWasTheTransferMade.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", WhoWasTheTransferMadePage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", WhoWasTheTransferMadePage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("whoWasTheTransferMade.change.hidden"))
           )
         )

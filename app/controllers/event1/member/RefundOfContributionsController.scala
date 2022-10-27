@@ -19,7 +19,7 @@ package controllers.event1.member
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.member.RefundOfContributionsFormProvider
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import models.enumeration.EventType
 import pages.Waypoints
 import pages.event1.member.RefundOfContributionsPage
@@ -43,7 +43,7 @@ class RefundOfContributionsController @Inject()(val controllerComponents: Messag
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(RefundOfContributionsPage)).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(RefundOfContributionsPage(index))).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, index))
   }
 
@@ -54,7 +54,7 @@ class RefundOfContributionsController @Inject()(val controllerComponents: Messag
           Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(RefundOfContributionsPage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(RefundOfContributionsPage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(RefundOfContributionsPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }

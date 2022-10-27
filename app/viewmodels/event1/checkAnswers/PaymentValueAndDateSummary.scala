@@ -17,7 +17,7 @@
 package viewmodels.event1.checkAnswers
 
 import forms.mappings.Formatters
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.event1.PaymentValueAndDatePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -28,31 +28,31 @@ import viewmodels.implicits._
 
 object PaymentValueAndDateSummary extends Formatters {
 
-  def rowPaymentValue(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def rowPaymentValue(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
                      (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(PaymentValueAndDatePage).map {
+    answers.get(PaymentValueAndDatePage(index)).map {
       answer =>
 
         SummaryListRowViewModel(
           key = "Payment value",
           value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer.paymentValue)}")),
           actions = Seq(
-            ActionItemViewModel("site.change", PaymentValueAndDatePage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", PaymentValueAndDatePage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("paymentValueAndDate.value.change.hidden"))
           )
         )
     }
 
-  def rowPaymentDate(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def rowPaymentDate(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
                     (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(PaymentValueAndDatePage).map {
+    answers.get(PaymentValueAndDatePage(index)).map {
       answer =>
 
         SummaryListRowViewModel(
           key = "Payment date",
           value = ValueViewModel(dateFormatter.format(answer.paymentDate)),
           actions = Seq(
-            ActionItemViewModel("site.change", PaymentValueAndDatePage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", PaymentValueAndDatePage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("paymentValueAndDate.date.change.hidden"))
           )
         )

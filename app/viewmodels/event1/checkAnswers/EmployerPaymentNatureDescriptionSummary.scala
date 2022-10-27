@@ -16,7 +16,7 @@
 
 package viewmodels.event1.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.event1.employer.EmployerPaymentNatureDescriptionPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -27,16 +27,16 @@ import viewmodels.implicits._
 
 object EmployerPaymentNatureDescriptionSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(EmployerPaymentNatureDescriptionPage).map {
+    answers.get(EmployerPaymentNatureDescriptionPage(index)).map {
       answer =>
 
         SummaryListRowViewModel(
           key = "employerPaymentNatureDescription.checkYourAnswersLabel",
           value = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", EmployerPaymentNatureDescriptionPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", EmployerPaymentNatureDescriptionPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("employerPaymentNatureDescription.change.hidden"))
           )
         )

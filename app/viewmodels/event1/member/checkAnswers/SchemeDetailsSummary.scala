@@ -16,7 +16,7 @@
 
 package viewmodels.event1.member.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.event1.member.SchemeDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -41,9 +41,9 @@ object SchemeDetailsSummary {
     )
   }
 
-  def rowSchemeName(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def rowSchemeName(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
                    (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SchemeDetailsPage).map {
+    answers.get(SchemeDetailsPage(index)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -56,15 +56,15 @@ object SchemeDetailsSummary {
           key = "Scheme name",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", SchemeDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", SchemeDetailsPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
           )
         )
     }
 
-  def rowSchemeReference(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def rowSchemeReference(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
                         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SchemeDetailsPage).map {
+    answers.get(SchemeDetailsPage(index)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -77,7 +77,7 @@ object SchemeDetailsSummary {
           key = "Reference",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", SchemeDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", SchemeDetailsPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
           )
         )

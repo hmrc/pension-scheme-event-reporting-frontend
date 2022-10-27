@@ -46,7 +46,7 @@ class SchemeUnAuthPaySurchargeMemberController @Inject()(
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
-    val preparedForm = request.userAnswers.get(SchemeUnAuthPaySurchargeMemberPage).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.get(SchemeUnAuthPaySurchargeMemberPage(index)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, index))
   }
 
@@ -56,7 +56,7 @@ class SchemeUnAuthPaySurchargeMemberController @Inject()(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers
-          val updatedAnswers = originalUserAnswers.setOrException(SchemeUnAuthPaySurchargeMemberPage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(SchemeUnAuthPaySurchargeMemberPage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
           Redirect(SchemeUnAuthPaySurchargeMemberPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
         }

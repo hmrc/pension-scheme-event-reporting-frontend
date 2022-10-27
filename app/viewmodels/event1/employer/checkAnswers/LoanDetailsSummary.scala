@@ -17,7 +17,7 @@
 package viewmodels.event1.employer.checkAnswers
 
 import forms.mappings.Formatters
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.event1.employer.LoanDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -29,9 +29,9 @@ import viewmodels.implicits._
 
 object LoanDetailsSummary extends Formatters {
 
-  def rowLoanAmount(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def rowLoanAmount(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
                    (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(LoanDetailsPage).map {
+    answers.get(LoanDetailsPage(index)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -44,15 +44,15 @@ object LoanDetailsSummary extends Formatters {
           key = "loanDetails.CYA.loanAmountLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", LoanDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", LoanDetailsPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("loanDetails.change.hidden"))
           )
         )
     }
 
-  def rowFundValue(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def rowFundValue(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
                   (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(LoanDetailsPage).map {
+    answers.get(LoanDetailsPage(index)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -65,7 +65,7 @@ object LoanDetailsSummary extends Formatters {
           key = "loanDetails.CYA.fundValueLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", LoanDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", LoanDetailsPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("loanDetails.change.hidden"))
           )
         )

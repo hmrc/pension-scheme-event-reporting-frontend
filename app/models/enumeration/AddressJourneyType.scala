@@ -54,8 +54,14 @@ object AddressJourneyType extends Enumerable.Implicits {
     eventType = EventType.Event1,
     nodeName = "employerAddress",
     entityTypeMessageKey = entityTypeMessageKeyCompany) {
-    override def entityName(ua: UserAnswers): Message = ua.get(CompanyDetailsPage) match {
-      case Some(cd) => Literal(cd.companyName)
+//    override def entityName(ua: UserAnswers): Message = ua.get(CompanyDetailsPage) match {
+//      case Some(cd) => Literal(cd.companyName)
+//      case _ => Message(entityTypeMessageKeyCompany)
+//    }
+
+    // TODO: 7630 Correct index below
+    override def entityName(ua: UserAnswers): Message = ua.get(CompanyDetailsPage(0)) match {
+      case Some(cd) => Literal("DUMMY")
       case _ => Message(entityTypeMessageKeyCompany)
     }
   }
@@ -68,16 +74,16 @@ object AddressJourneyType extends Enumerable.Implicits {
     override def heading(whichPage: Page)(implicit
                                           request: DataRequest[AnyContent]): Message =
       whichPage match {
-        case EnterPostcodePage(_) => Message("residentialAddress.enterPostcode.h1")
-        case ChooseAddressPage(_) => Message("residentialAddress.chooseAddress.h1")
-        case ManualAddressPage(_) => Message("residentialAddress.address.h1")
+        case EnterPostcodePage(_, _) => Message("residentialAddress.enterPostcode.h1")
+        case ChooseAddressPage(_, _) => Message("residentialAddress.chooseAddress.h1")
+        case ManualAddressPage(_, _) => Message("residentialAddress.address.h1")
       }
 
     override def title(whichPage: Page): Message =
       whichPage match {
-        case EnterPostcodePage(_) => Message("residentialAddress.enterPostcode.title")
-        case ChooseAddressPage(_) => Message("residentialAddress.chooseAddress.title")
-        case ManualAddressPage(_) => Message("residentialAddress.address.title")
+        case EnterPostcodePage(_, _) => Message("residentialAddress.enterPostcode.title")
+        case ChooseAddressPage(_, _) => Message("residentialAddress.chooseAddress.title")
+        case ManualAddressPage(_, _) => Message("residentialAddress.address.title")
       }
   }
 
@@ -90,16 +96,16 @@ object AddressJourneyType extends Enumerable.Implicits {
     override def heading(whichPage: Page)(implicit
                                           request: DataRequest[AnyContent]): Message =
       whichPage match {
-        case EnterPostcodePage(_) => Message("residentialAddress.enterPostcode.h1")
-        case ChooseAddressPage(_) => Message("residentialAddress.chooseAddress.h1")
-        case ManualAddressPage(_) => Message("residentialAddress.address.h1")
+        case EnterPostcodePage(_, _) => Message("residentialAddress.enterPostcode.h1")
+        case ChooseAddressPage(_, _) => Message("residentialAddress.chooseAddress.h1")
+        case ManualAddressPage(_, _) => Message("residentialAddress.address.h1")
       }
 
     override def title(whichPage: Page): Message =
       whichPage match {
-        case EnterPostcodePage(_) => Message("residentialAddress.enterPostcode.title")
-        case ChooseAddressPage(_) => Message("residentialAddress.chooseAddress.title")
-        case ManualAddressPage(_) => Message("residentialAddress.address.title")
+        case EnterPostcodePage(_, _) => Message("residentialAddress.enterPostcode.title")
+        case ChooseAddressPage(_, _) => Message("residentialAddress.chooseAddress.title")
+        case ManualAddressPage(_, _) => Message("residentialAddress.address.title")
       }
   }
 

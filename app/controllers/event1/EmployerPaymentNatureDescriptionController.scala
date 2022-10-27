@@ -43,7 +43,7 @@ class EmployerPaymentNatureDescriptionController @Inject()(val controllerCompone
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(EmployerPaymentNatureDescriptionPage)).fold(form) { v => form.fill(Some(v)) }
+    val preparedForm = request.userAnswers.flatMap(_.get(EmployerPaymentNatureDescriptionPage(index))).fold(form) { v => form.fill(Some(v)) }
     Ok(view(preparedForm, waypoints, index))
   }
 
@@ -55,8 +55,8 @@ class EmployerPaymentNatureDescriptionController @Inject()(val controllerCompone
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = value match {
-            case Some(v) => originalUserAnswers.setOrException(EmployerPaymentNatureDescriptionPage, v)
-            case None => originalUserAnswers.removeOrException(EmployerPaymentNatureDescriptionPage)
+            case Some(v) => originalUserAnswers.setOrException(EmployerPaymentNatureDescriptionPage(index), v)
+            case None => originalUserAnswers.removeOrException(EmployerPaymentNatureDescriptionPage(index))
           }
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(EmployerPaymentNatureDescriptionPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)

@@ -24,23 +24,19 @@ import pages.{MembersOrEmployersPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class WhoReceivedUnauthPaymentPage(index: Int)(index: Int) extends QuestionPage[WhoReceivedUnauthPayment] {
+case class WhoReceivedUnauthPaymentPage(index: Int) extends QuestionPage[WhoReceivedUnauthPayment] {
 
   override def path: JsPath = MembersOrEmployersPage(index).path \ WhoReceivedUnauthPaymentPage.toString
 
   override def toString: String = "whoReceivedUnauthPayment"
 
   override def route(waypoints: Waypoints): Call =
-    routes.WhoReceivedUnauthPaymentController.onPageLoad(waypoints, index, index)
+    routes.WhoReceivedUnauthPaymentController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
-      case Some(Member) => pages.event1.WhatYouWillNeedPage
-      case Some(Employer) => pages.event1.employer.WhatYouWillNeedPage
+      case Some(Member) => pages.event1.WhatYouWillNeedPage(index)
+      case Some(Employer) => pages.event1.employer.WhatYouWillNeedPage(index)
       case _ => this
     }
 }
-
-//object WhoReceivedUnauthPaymentPage {
-//  override lazy val toString: String = "whoReceivedUnauthPayment"
-//}

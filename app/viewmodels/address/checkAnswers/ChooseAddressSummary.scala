@@ -16,7 +16,7 @@
 
 package viewmodels.address.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import models.address.Address
 import models.enumeration.AddressJourneyType
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
@@ -49,7 +49,7 @@ object ChooseAddressSummary {
     )
   }
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, addressJourneyType: AddressJourneyType)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, addressJourneyType: AddressJourneyType)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
     val rowKey = if(addressJourneyType != Event1EmployerAddressJourney){
@@ -58,7 +58,7 @@ object ChooseAddressSummary {
       "companyDetails.CYA.companyAddress"
     }
 
-    answers.get(ManualAddressPage(addressJourneyType)).map {
+    answers.get(ManualAddressPage(addressJourneyType, index)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -71,7 +71,7 @@ object ChooseAddressSummary {
           key = rowKey,
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType, index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("enterPostcode.change.hidden"))
           )
         )

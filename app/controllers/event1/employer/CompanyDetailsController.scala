@@ -43,7 +43,7 @@ class CompanyDetailsController @Inject()(val controllerComponents: MessagesContr
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(CompanyDetailsPage)).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(CompanyDetailsPage(index))).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, index))
   }
 
@@ -54,7 +54,7 @@ class CompanyDetailsController @Inject()(val controllerComponents: MessagesContr
           Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(CompanyDetailsPage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(CompanyDetailsPage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(CompanyDetailsPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }

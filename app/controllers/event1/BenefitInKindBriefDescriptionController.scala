@@ -44,7 +44,7 @@ class BenefitInKindBriefDescriptionController @Inject()(val controllerComponents
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(BenefitInKindBriefDescriptionPage)).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(BenefitInKindBriefDescriptionPage(index))).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, index))
   }
 
@@ -55,7 +55,7 @@ class BenefitInKindBriefDescriptionController @Inject()(val controllerComponents
           Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(BenefitInKindBriefDescriptionPage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(BenefitInKindBriefDescriptionPage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(BenefitInKindBriefDescriptionPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }

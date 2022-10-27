@@ -43,7 +43,7 @@ class PaymentNatureController @Inject()(val controllerComponents: MessagesContro
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(PaymentNaturePage)).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(PaymentNaturePage(index))).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, index))
   }
 
@@ -54,7 +54,7 @@ class PaymentNatureController @Inject()(val controllerComponents: MessagesContro
           Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(PaymentNaturePage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(PaymentNaturePage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(PaymentNaturePage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }

@@ -43,7 +43,7 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
 
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
-      request.userAnswers.get(EnterPostcodePage(addressJourneyType)) match {
+      request.userAnswers.get(EnterPostcodePage(addressJourneyType, index)) match {
         case Some(addresses) =>
           val form = formProvider(addresses)
           val page = ChooseAddressPage(addressJourneyType, index)
@@ -61,7 +61,7 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
     (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
       implicit request =>
         val page = ChooseAddressPage(addressJourneyType, index)
-        request.userAnswers.get(EnterPostcodePage(addressJourneyType)) match {
+        request.userAnswers.get(EnterPostcodePage(addressJourneyType, index)) match {
           case Some(addresses) =>
             val form = formProvider(addresses)
             form.bindFromRequest().fold(
@@ -84,7 +84,7 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
                 val originalUserAnswers = request.userAnswers
                 addresses(value).toAddress match {
                   case Some(address) =>
-                    val updatedAnswers = originalUserAnswers.setOrException(ManualAddressPage(addressJourneyType), address)
+                    val updatedAnswers = originalUserAnswers.setOrException(ManualAddressPage(addressJourneyType, index), address)
                     userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, updatedAnswers).map { _ =>
                       Redirect(page.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
                     }

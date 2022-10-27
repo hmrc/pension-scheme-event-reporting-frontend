@@ -21,7 +21,7 @@ import models.UserAnswers
 import models.enumeration.AddressJourneyType.Event1EmployerPropertyAddressJourney
 import models.event1.employer.PaymentNature
 import models.event1.employer.PaymentNature.{CourtOrder, LoansExceeding50PercentOfFundValue, Other, ResidentialProperty, TangibleMoveableProperty}
-import pages.{IndexPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{IndexPage, MembersOrEmployersPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -35,23 +35,23 @@ case class PaymentNaturePage(index: Int) extends QuestionPage[PaymentNature] {
     routes.PaymentNatureController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(PaymentNaturePage) match {
-      case Some(LoansExceeding50PercentOfFundValue) => LoanDetailsPage
-      case Some(ResidentialProperty) => pages.address.EnterPostcodePage(Event1EmployerPropertyAddressJourney)
-      case Some(TangibleMoveableProperty) => EmployerTangibleMoveablePropertyPage
-      case Some(CourtOrder) => UnauthorisedPaymentRecipientNamePage
-      case Some(Other) => EmployerPaymentNatureDescriptionPage
+    answers.get(PaymentNaturePage(index)) match {
+      case Some(LoansExceeding50PercentOfFundValue) => LoanDetailsPage(index)
+      case Some(ResidentialProperty) => pages.address.EnterPostcodePage(Event1EmployerPropertyAddressJourney, index)
+      case Some(TangibleMoveableProperty) => EmployerTangibleMoveablePropertyPage(index)
+      case Some(CourtOrder) => UnauthorisedPaymentRecipientNamePage(index)
+      case Some(Other) => EmployerPaymentNatureDescriptionPage(index)
       case _ => IndexPage
     }
   }
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
-    updatedAnswers.get(PaymentNaturePage) match {
-      case Some(LoansExceeding50PercentOfFundValue) => LoanDetailsPage
-      case Some(ResidentialProperty) => pages.address.EnterPostcodePage(Event1EmployerPropertyAddressJourney)
-      case Some(TangibleMoveableProperty) => EmployerTangibleMoveablePropertyPage
-      case Some(CourtOrder) => UnauthorisedPaymentRecipientNamePage
-      case Some(Other) => EmployerPaymentNatureDescriptionPage
+    updatedAnswers.get(PaymentNaturePage(index)) match {
+      case Some(LoansExceeding50PercentOfFundValue) => LoanDetailsPage(index)
+      case Some(ResidentialProperty) => pages.address.EnterPostcodePage(Event1EmployerPropertyAddressJourney, index)
+      case Some(TangibleMoveableProperty) => EmployerTangibleMoveablePropertyPage(index)
+      case Some(CourtOrder) => UnauthorisedPaymentRecipientNamePage(index)
+      case Some(Other) => EmployerPaymentNatureDescriptionPage(index)
       case _ => IndexPage
     }
   }

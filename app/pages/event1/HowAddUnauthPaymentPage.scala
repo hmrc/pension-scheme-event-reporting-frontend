@@ -22,7 +22,7 @@ import models.event1.HowAddUnauthPayment
 import models.event1.HowAddUnauthPayment.Manual
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{MembersOrEmployersPage, Page, QuestionPage, Waypoints}
 
 case class HowAddUnauthPaymentPage(index: Int) extends QuestionPage[HowAddUnauthPayment] {
 
@@ -32,7 +32,7 @@ case class HowAddUnauthPaymentPage(index: Int) extends QuestionPage[HowAddUnauth
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
-      case Some(Manual) => WhoReceivedUnauthPaymentPage(0)
+      case Some(Manual) => WhoReceivedUnauthPaymentPage(index)
       case _ => this
     }
 
