@@ -23,10 +23,10 @@ class PaymentNatureSpec extends PageBehaviours {
 
   "PaymentNaturePage" - {
 
-    beRetrievable[PaymentNature](PaymentNaturePage)
+    beRetrievable[PaymentNature](PaymentNaturePage(0))
 
-    beSettable[PaymentNature](PaymentNaturePage)
+    beSettable[PaymentNature](PaymentNaturePage(0))
 
-    beRemovable[PaymentNature](PaymentNaturePage)
+    beRemovable[PaymentNature](PaymentNaturePage(0))
   }
 }

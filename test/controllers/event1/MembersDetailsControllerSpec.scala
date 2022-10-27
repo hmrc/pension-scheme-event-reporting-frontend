@@ -45,9 +45,9 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.MembersDetailsController.onPageLoad(waypoints).url
+  private def getRoute: String = routes.MembersDetailsController.onPageLoad(waypoints, 0).url
 
-  private def postRoute: String = routes.MembersDetailsController.onSubmit(waypoints).url
+  private def postRoute: String = routes.MembersDetailsController.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -74,13 +74,13 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[MembersDetailsView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(MembersDetailsPage, validValue).success.value
+      val userAnswers = UserAnswers().set(MembersDetailsPage(0), validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -92,7 +92,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -109,10 +109,10 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("firstName", validValue.firstName), ("lastName", validValue.lastName), ("nino", validValue.nino))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(MembersDetailsPage, validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(MembersDetailsPage(0), validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MembersDetailsPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual MembersDetailsPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -133,7 +133,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

@@ -43,9 +43,9 @@ class EmployerTangibleMoveablePropertyControllerSpec extends SpecBase with Befor
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.EmployerTangibleMoveablePropertyController.onPageLoad(waypoints).url
+  private def getRoute: String = routes.EmployerTangibleMoveablePropertyController.onPageLoad(waypoints, 0).url
 
-  private def postRoute: String = routes.EmployerTangibleMoveablePropertyController.onSubmit(waypoints).url
+  private def postRoute: String = routes.EmployerTangibleMoveablePropertyController.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -72,13 +72,13 @@ class EmployerTangibleMoveablePropertyControllerSpec extends SpecBase with Befor
         val view = application.injector.instanceOf[EmployerTangibleMoveablePropertyView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(EmployerTangibleMoveablePropertyPage, validValue).success.value
+      val userAnswers = UserAnswers().set(EmployerTangibleMoveablePropertyPage(0), validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -90,7 +90,7 @@ class EmployerTangibleMoveablePropertyControllerSpec extends SpecBase with Befor
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(Some(validValue)), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(Some(validValue)), waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -107,10 +107,10 @@ class EmployerTangibleMoveablePropertyControllerSpec extends SpecBase with Befor
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "abcdef"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(EmployerTangibleMoveablePropertyPage, validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(EmployerTangibleMoveablePropertyPage(0), validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual EmployerTangibleMoveablePropertyPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual EmployerTangibleMoveablePropertyPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -128,10 +128,10 @@ class EmployerTangibleMoveablePropertyControllerSpec extends SpecBase with Befor
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(EmployerTangibleMoveablePropertyPage, validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(EmployerTangibleMoveablePropertyPage(0), validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual EmployerTangibleMoveablePropertyPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual EmployerTangibleMoveablePropertyPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }

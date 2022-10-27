@@ -43,9 +43,9 @@ class MemberPaymentNatureDescriptionControllerSpec extends SpecBase with BeforeA
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.MemberPaymentNatureDescriptionController.onPageLoad(waypoints).url
+  private def getRoute: String = routes.MemberPaymentNatureDescriptionController.onPageLoad(waypoints, 0).url
 
-  private def postRoute: String = routes.MemberPaymentNatureDescriptionController.onSubmit(waypoints).url
+  private def postRoute: String = routes.MemberPaymentNatureDescriptionController.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -72,13 +72,13 @@ class MemberPaymentNatureDescriptionControllerSpec extends SpecBase with BeforeA
         val view = application.injector.instanceOf[MemberPaymentNatureDescriptionView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(MemberPaymentNatureDescriptionPage, validValue).success.value
+      val userAnswers = UserAnswers().set(MemberPaymentNatureDescriptionPage(0), validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -90,7 +90,7 @@ class MemberPaymentNatureDescriptionControllerSpec extends SpecBase with BeforeA
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(Some(validValue)), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(Some(validValue)), waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -107,10 +107,10 @@ class MemberPaymentNatureDescriptionControllerSpec extends SpecBase with BeforeA
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "abcdef"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(MemberPaymentNatureDescriptionPage, validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(MemberPaymentNatureDescriptionPage(0), validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MemberPaymentNatureDescriptionPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual MemberPaymentNatureDescriptionPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -128,10 +128,10 @@ class MemberPaymentNatureDescriptionControllerSpec extends SpecBase with BeforeA
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(MemberPaymentNatureDescriptionPage, validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(MemberPaymentNatureDescriptionPage(0), validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MemberPaymentNatureDescriptionPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual MemberPaymentNatureDescriptionPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }

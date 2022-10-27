@@ -23,10 +23,10 @@ class RefundOfContributionsSpec extends PageBehaviours {
 
   "RefundOfContributionsPage" - {
 
-    beRetrievable[RefundOfContributions](RefundOfContributionsPage)
+    beRetrievable[RefundOfContributions](RefundOfContributionsPage(0))
 
-    beSettable[RefundOfContributions](RefundOfContributionsPage)
+    beSettable[RefundOfContributions](RefundOfContributionsPage(0))
 
-    beRemovable[RefundOfContributions](RefundOfContributionsPage)
+    beRemovable[RefundOfContributions](RefundOfContributionsPage(0))
   }
 }

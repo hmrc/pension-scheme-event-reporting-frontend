@@ -24,10 +24,10 @@ class CompanyDetailsPageSpec extends PageBehaviours {
 
   "CompanyDetailsPage" - {
 
-    beRetrievable[CompanyDetails](CompanyDetailsPage)
+    beRetrievable[CompanyDetails](CompanyDetailsPage(0))
 
-    beSettable[CompanyDetails](CompanyDetailsPage)
+    beSettable[CompanyDetails](CompanyDetailsPage(0))
 
-    beRemovable[CompanyDetails](CompanyDetailsPage)
+    beRemovable[CompanyDetails](CompanyDetailsPage(0))
   }
 }

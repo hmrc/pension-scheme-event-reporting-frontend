@@ -43,9 +43,9 @@ class EmployerPaymentNatureDescriptionControllerSpec extends SpecBase with Befor
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.EmployerPaymentNatureDescriptionController.onPageLoad(waypoints).url
+  private def getRoute: String = routes.EmployerPaymentNatureDescriptionController.onPageLoad(waypoints, 0).url
 
-  private def postRoute: String = routes.EmployerPaymentNatureDescriptionController.onSubmit(waypoints).url
+  private def postRoute: String = routes.EmployerPaymentNatureDescriptionController.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -72,13 +72,13 @@ class EmployerPaymentNatureDescriptionControllerSpec extends SpecBase with Befor
         val view = application.injector.instanceOf[EmployerPaymentNatureDescriptionView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(EmployerPaymentNatureDescriptionPage, validValue).success.value
+      val userAnswers = UserAnswers().set(EmployerPaymentNatureDescriptionPage(0), validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -90,7 +90,7 @@ class EmployerPaymentNatureDescriptionControllerSpec extends SpecBase with Befor
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(Some(validValue)), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(Some(validValue)), waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -107,10 +107,10 @@ class EmployerPaymentNatureDescriptionControllerSpec extends SpecBase with Befor
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "abcdef"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(EmployerPaymentNatureDescriptionPage, validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(EmployerPaymentNatureDescriptionPage(0), validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual EmployerPaymentNatureDescriptionPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual EmployerPaymentNatureDescriptionPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -128,10 +128,10 @@ class EmployerPaymentNatureDescriptionControllerSpec extends SpecBase with Befor
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(EmployerPaymentNatureDescriptionPage, validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(EmployerPaymentNatureDescriptionPage(0), validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual EmployerPaymentNatureDescriptionPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual EmployerPaymentNatureDescriptionPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }

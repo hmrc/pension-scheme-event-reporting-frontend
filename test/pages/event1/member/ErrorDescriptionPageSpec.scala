@@ -23,10 +23,10 @@ class ErrorDescriptionPageSpec extends PageBehaviours {
 
   "ErrorDescriptionPage" - {
 
-    beRetrievable[String](ErrorDescriptionPage)
+    beRetrievable[String](ErrorDescriptionPage(0))
 
-    beSettable[String](ErrorDescriptionPage)
+    beSettable[String](ErrorDescriptionPage(0))
 
-    beRemovable[String](ErrorDescriptionPage)
+    beRemovable[String](ErrorDescriptionPage(0))
   }
 }

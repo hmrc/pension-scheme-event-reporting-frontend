@@ -22,10 +22,10 @@ class DoYouHoldSignedMandatePageSpec extends PageBehaviours {
 
   "DoYouHoldSignedMandatePage" - {
 
-    beRetrievable[Boolean](DoYouHoldSignedMandatePage)
+    beRetrievable[Boolean](DoYouHoldSignedMandatePage(0))
 
-    beSettable[Boolean](DoYouHoldSignedMandatePage)
+    beSettable[Boolean](DoYouHoldSignedMandatePage(0))
 
-    beRemovable[Boolean](DoYouHoldSignedMandatePage)
+    beRemovable[Boolean](DoYouHoldSignedMandatePage(0))
   }
 }

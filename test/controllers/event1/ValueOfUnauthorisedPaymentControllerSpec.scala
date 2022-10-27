@@ -43,9 +43,9 @@ class ValueOfUnauthorisedPaymentControllerSpec extends SpecBase with BeforeAndAf
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.ValueOfUnauthorisedPaymentController.onPageLoad(waypoints).url
+  private def getRoute: String = routes.ValueOfUnauthorisedPaymentController.onPageLoad(waypoints, 0).url
 
-  private def postRoute: String = routes.ValueOfUnauthorisedPaymentController.onSubmit(waypoints).url
+  private def postRoute: String = routes.ValueOfUnauthorisedPaymentController.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -71,14 +71,14 @@ class ValueOfUnauthorisedPaymentControllerSpec extends SpecBase with BeforeAndAf
         val view = application.injector.instanceOf[ValueOfUnauthorisedPaymentView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
       }
     }
 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(ValueOfUnauthorisedPaymentPage, true).success.value
+      val userAnswers = UserAnswers().set(ValueOfUnauthorisedPaymentPage(0), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -90,7 +90,7 @@ class ValueOfUnauthorisedPaymentControllerSpec extends SpecBase with BeforeAndAf
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -107,10 +107,10 @@ class ValueOfUnauthorisedPaymentControllerSpec extends SpecBase with BeforeAndAf
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(ValueOfUnauthorisedPaymentPage, true).success.value
+        val updatedAnswers = emptyUserAnswers.set(ValueOfUnauthorisedPaymentPage(0), true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ValueOfUnauthorisedPaymentPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual ValueOfUnauthorisedPaymentPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -131,7 +131,7 @@ class ValueOfUnauthorisedPaymentControllerSpec extends SpecBase with BeforeAndAf
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
       }
     }

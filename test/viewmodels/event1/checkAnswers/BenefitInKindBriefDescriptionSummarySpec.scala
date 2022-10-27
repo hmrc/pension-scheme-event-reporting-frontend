@@ -38,16 +38,16 @@ class BenefitInKindBriefDescriptionSummarySpec extends AnyFreeSpec with Matchers
 
     "must display correct information" in {
 
-      val answer = UserAnswers().setOrException(BenefitInKindBriefDescriptionPage, "brief description of the benefit in kind")
+      val answer = UserAnswers().setOrException(BenefitInKindBriefDescriptionPage(0), "brief description of the benefit in kind")
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
-      BenefitInKindBriefDescriptionSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      BenefitInKindBriefDescriptionSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "benefitInKindBriefDescription.checkYourAnswersLabel",
           value = ValueViewModel(HtmlFormat.escape("brief description of the benefit in kind").toString),
           actions = Seq(
-            ActionItemViewModel("site.change", BenefitInKindBriefDescriptionPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", BenefitInKindBriefDescriptionPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("benefitInKindBriefDescription.change.hidden"))
           )
         )

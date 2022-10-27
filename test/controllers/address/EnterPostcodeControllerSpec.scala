@@ -46,9 +46,9 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockAddressLookupConnector = mock[AddressLookupConnector]
 
-  private def getRoute: String = routes.EnterPostcodeController.onPageLoad(waypoints, Event1EmployerAddressJourney).url
+  private def getRoute: String = routes.EnterPostcodeController.onPageLoad(waypoints, Event1EmployerAddressJourney, 0).url
 
-  private def postRoute: String = routes.EnterPostcodeController.onSubmit(waypoints, Event1EmployerAddressJourney).url
+  private def postRoute: String = routes.EnterPostcodeController.onSubmit(waypoints, Event1EmployerAddressJourney, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
@@ -65,7 +65,7 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must return OK and the correct view for a GET" in {
 
-      val ua = emptyUserAnswers.setOrException(CompanyDetailsPage, companyDetails)
+      val ua = emptyUserAnswers.setOrException(CompanyDetailsPage(0), companyDetails)
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -79,7 +79,7 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints, Event1EmployerAddressJourney,
           messages("enterPostcode.title", "the company"),
-          messages("enterPostcode.heading", companyDetails.companyName))(request, messages(application)).toString
+          messages("enterPostcode.heading", companyDetails.companyName), 0)(request, messages(application)).toString
       }
     }
 
@@ -96,10 +96,10 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach {
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "zz11zz"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.setOrException(EnterPostcodePage(Event1EmployerAddressJourney), seqTolerantAddresses)
+        val updatedAnswers = emptyUserAnswers.setOrException(EnterPostcodePage(Event1EmployerAddressJourney, 0), seqTolerantAddresses)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual EnterPostcodePage(Event1EmployerAddressJourney).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual EnterPostcodePage(Event1EmployerAddressJourney, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }

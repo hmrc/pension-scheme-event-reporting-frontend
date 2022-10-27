@@ -24,10 +24,10 @@ class LoanDetailsPageSpec extends PageBehaviours {
 
   "LoanDetailsPage" - {
 
-    beRetrievable[LoanDetails](LoanDetailsPage)
+    beRetrievable[LoanDetails](LoanDetailsPage(0))
 
-    beSettable[LoanDetails](LoanDetailsPage)
+    beSettable[LoanDetails](LoanDetailsPage(0))
 
-    beRemovable[LoanDetails](LoanDetailsPage)
+    beRemovable[LoanDetails](LoanDetailsPage(0))
   }
 }

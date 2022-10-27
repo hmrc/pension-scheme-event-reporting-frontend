@@ -24,10 +24,10 @@ class EmployerPaymentNatureDescriptionPageSpec extends PageBehaviours {
 
   "EmployerPaymentNatureDescriptionPage" - {
 
-    beRetrievable[String](EmployerPaymentNatureDescriptionPage)
+    beRetrievable[String](EmployerPaymentNatureDescriptionPage(0))
 
-    beSettable[String](EmployerPaymentNatureDescriptionPage)
+    beSettable[String](EmployerPaymentNatureDescriptionPage(0))
 
-    beRemovable[String](EmployerPaymentNatureDescriptionPage)
+    beRemovable[String](EmployerPaymentNatureDescriptionPage(0))
   }
 }

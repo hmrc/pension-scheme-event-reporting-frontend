@@ -24,10 +24,10 @@ class MembersDetailsPageSpec extends PageBehaviours {
 
   "MembersDetailsPage" - {
 
-    beRetrievable[MembersDetails](MembersDetailsPage)
+    beRetrievable[MembersDetails](MembersDetailsPage(0))
 
-    beSettable[MembersDetails](MembersDetailsPage)
+    beSettable[MembersDetails](MembersDetailsPage(0))
 
-    beRemovable[MembersDetails](MembersDetailsPage)
+    beRemovable[MembersDetails](MembersDetailsPage(0))
   }
 }
