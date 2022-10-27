@@ -14,8 +14,8 @@
  * limitations under the License.
  *@
 
-@import controllers.event1.routes
-
+@import controllers.routes
+@import models.enumeration.EventType
 @import viewmodels.InputWidth._
 
 @this(
@@ -26,11 +26,12 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
+
+@(form: Form[_], waypoints: Waypoints, eventType: EventType)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("membersDetails.title"))) {
 
-    @formHelper(action = routes.MembersDetailsController.onSubmit(waypoints)) {
+    @formHelper(action = controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
