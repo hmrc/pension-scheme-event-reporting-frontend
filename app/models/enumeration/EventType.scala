@@ -16,7 +16,7 @@
 
 package models.enumeration
 
-import play.api.mvc.{JavascriptLiteral, QueryStringBindable}
+import play.api.mvc.{JavascriptLiteral, PathBindable, QueryStringBindable}
 
 sealed trait EventType
 
@@ -86,6 +86,18 @@ object EventType extends Enumerable.Implicits {
       override def unbind(key: String, value: EventType): String =
         stringBinder.unbind(key, value.toString)
     }
+
+  implicit def pathBinder(implicit stringBinder: PathBindable[String]): PathBindable[EventType] = new PathBindable[EventType] {
+
+    override def bind(key: String, value: String): Either[String, EventType] = {
+      EventType.getEventType(value)
+        .map(Right(_))
+        .getOrElse(Left(s"Unable to bind parameter $value as EventType"))
+    }
+
+    override def unbind(key: String, value: EventType): String =
+      stringBinder.unbind(key, value.toString)
+  }
 
   implicit val jsLiteral: JavascriptLiteral[EventType] = (value: EventType) => value.toString
 
