@@ -39,6 +39,7 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
   // scalastyle:off magic.number
   val validDataGenerator: Gen[String] = decsInRangeWithCommas(0, 999999999.99)
   val invalidDataGenerator: Gen[String] = intsInRangeWithCommas(0, 999999999)
+  val negativeValueDataGenerator: Gen[Int] = intsBelowValue(0)
 
   private def paymentDetails(
                               paymentValue: String = "1000.00",
@@ -79,6 +80,14 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
       forAll(validDataGenerator -> "amountTooHigh") {
         number: String =>
           val result = form.bind(paymentDetails(paymentValue = number, Some(LocalDate.now())))
+          result.errors.head.key mustEqual paymentValueKey
+      }
+    }
+
+    "not bind numbers below 0" in {
+      forAll(negativeValueDataGenerator -> "negative") {
+        number: Int =>
+          val result = form.bind(paymentDetails(paymentValue = number.toString, Some(LocalDate.now())))
           result.errors.head.key mustEqual paymentValueKey
       }
     }
