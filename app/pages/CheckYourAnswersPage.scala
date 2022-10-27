@@ -17,6 +17,7 @@
 package pages
 
 import controllers.routes
+import models.Index
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event18, WindUp}
 import play.api.mvc.Call
@@ -29,6 +30,17 @@ object CheckYourAnswersPage {
 
     override def route(waypoints: Waypoints): Call = {
       routes.CheckYourAnswersController.onPageLoad(eventType)
+    }
+
+    override def toString: String = "CheckYourAnswersPage"
+  }
+
+  def applyWithIndex(eventType: EventType, index: Int): CheckAnswersPage = new CheckAnswersPage {
+
+    override val urlFragment: String = s"event-${eventType.toString}-check-answers"
+
+    override def route(waypoints: Waypoints): Call = {
+      routes.CheckYourAnswersController.onPageLoadWithIndex(Index(index))
     }
 
     override def toString: String = "CheckYourAnswersPage"

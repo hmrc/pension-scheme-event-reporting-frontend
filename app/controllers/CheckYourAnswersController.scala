@@ -21,8 +21,11 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import models.Index
 import models.enumeration.EventType.{Event1, Event18, WindUp}
 import models.enumeration.{AddressJourneyType, EventType}
+import models.event1.WhoReceivedUnauthPayment.Member
 import models.requests.DataRequest
-import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import pages.event1.member.PaymentNaturePage
+import pages.event1.{ValueOfUnauthorisedPaymentPage, WhoReceivedUnauthPaymentPage}
+import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, MembersOrEmployersPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -47,22 +50,22 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad(eventType: EventType): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
 
-    val thisPage = CheckYourAnswersPage(eventType)
-    val waypoints = EmptyWaypoints
+      val thisPage = CheckYourAnswersPage(eventType)
+      val waypoints = EmptyWaypoints
 
-    val rows = eventType match {
-      case WindUp => buildEventWindUpCYARows(waypoints, thisPage)
-      case Event18 => buildEvent18CYARows(waypoints, thisPage)
-      case _ => Nil
+      val rows = eventType match {
+        case WindUp => buildEventWindUpCYARows(waypoints, thisPage)
+        case Event18 => buildEvent18CYARows(waypoints, thisPage)
+        case _ => Nil
+      }
+
+      Ok(view(SummaryListViewModel(rows = rows)))
     }
-
-    Ok(view(SummaryListViewModel(rows = rows)))
-  }
 
   def onPageLoadWithIndex(eventType: EventType, index: Index): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
 
-      val thisPage = CheckYourAnswersPage(eventType)
+      val thisPage = CheckYourAnswersPage.applyWithIndex(eventType, index)
       val waypoints = EmptyWaypoints
 
       val rows = eventType match {
@@ -74,30 +77,42 @@ class CheckYourAnswersController @Inject()(
     }
 
 
-  private def event1MemberJourney(implicit request: DataRequest[AnyContent]): Boolean = {
-    if ((request.userAnswers.data \ "whoReceivedUnauthPayment").as[String] == "member") {
-      true
+  private def event1MemberJourney(index: Int)(implicit request: DataRequest[AnyContent]): Boolean = {
+    request.userAnswers.get(WhoReceivedUnauthPaymentPage(index)) match {
+      case Some(Member) => true
+      case _ => false
     }
-    else {
-      false
-    }
+
+    //    if ((request.userAnswers.data \ "whoReceivedUnauthPayment").as[String] == "member") {
+    //      true
+    //    }
+    //    else {
+    //      false
+    //    }
   }
 
   private def schemeUnAuthPaySurchargeRow(waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
                                          (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    if ((request.userAnswers.data \ "valueOfUnauthorisedPayment").as[Boolean]) {
-      SchemeUnAuthPaySurchargeMemberSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
+
+
+    request.userAnswers.get(ValueOfUnauthorisedPaymentPage(index)) match {
+      case Some(true) => SchemeUnAuthPaySurchargeMemberSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
+      case _ => Nil
     }
-    else {
-      Nil
-    }
+
+    //    if ((request.userAnswers.data \ "valueOfUnauthorisedPayment").as[Boolean]) {
+    //      SchemeUnAuthPaySurchargeMemberSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
+    //    }
+    //    else {
+    //      Nil
+    //    }
   }
 
   // scalastyle:off cyclomatic.complexity
   // scalastyle:off method.length
   private def buildEvent1CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage,
                                  index: Int)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    val basicMemberOrEmployerRows = if (event1MemberJourney) {
+    val basicMemberOrEmployerRows = if (event1MemberJourney(index)) {
       MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage).toSeq ++
         MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage).toSeq ++
         DoYouHoldSignedMandateSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
@@ -113,7 +128,7 @@ class CheckYourAnswersController @Inject()(
     }
 
     val memberOrEmployerPaymentNatureRows = {
-      val paymentNatureKey = (request.userAnswers.data \ "paymentNature").as[String]
+      val paymentNatureKey = request.userAnswers.data.as[String]((MembersOrEmployersPage(index).path \ "paymentNature").read[String])
       paymentNatureKey match {
         case "benefitInKind" =>
           BenefitInKindBriefDescriptionSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
