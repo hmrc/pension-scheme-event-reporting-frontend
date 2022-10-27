@@ -38,16 +38,16 @@ class DoYouHoldSignedMandateSummarySpec extends AnyFreeSpec with Matchers with O
 
     "must redirect to the CYA page when true" in {
 
-      val answer = UserAnswers().setOrException(DoYouHoldSignedMandatePage, true)
+      val answer = UserAnswers().setOrException(DoYouHoldSignedMandatePage(0), true)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
-      DoYouHoldSignedMandateSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      DoYouHoldSignedMandateSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "doYouHoldSignedMandate.checkYourAnswersLabel",
           value = ValueViewModel(booleanCYAVal(true)),
           actions = Seq(
-            ActionItemViewModel("site.change", DoYouHoldSignedMandatePage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", DoYouHoldSignedMandatePage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("doYouHoldSignedMandate.change.hidden"))
           )
         )
@@ -56,16 +56,16 @@ class DoYouHoldSignedMandateSummarySpec extends AnyFreeSpec with Matchers with O
 
     "must redirect to the CYA page when false" in {
 
-      val answer = UserAnswers().setOrException(DoYouHoldSignedMandatePage, false)
+      val answer = UserAnswers().setOrException(DoYouHoldSignedMandatePage(0), false)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
-      DoYouHoldSignedMandateSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      DoYouHoldSignedMandateSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "doYouHoldSignedMandate.checkYourAnswersLabel",
           value = ValueViewModel(booleanCYAVal(false)),
           actions = Seq(
-            ActionItemViewModel("site.change", DoYouHoldSignedMandatePage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", DoYouHoldSignedMandatePage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("doYouHoldSignedMandate.change.hidden"))
           )
         )

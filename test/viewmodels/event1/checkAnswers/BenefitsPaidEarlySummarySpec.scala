@@ -47,7 +47,7 @@ class BenefitsPaidEarlySummarySpec extends AnyFreeSpec with Matchers with Option
           key = "benefitsPaidEarly.checkYourAnswersLabel",
           value = ValueViewModel(HtmlFormat.escape("brief description of why the benefits are being paid early").toString),
           actions = Seq(
-            ActionItemViewModel("site.change", BenefitsPaidEarlyPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", BenefitsPaidEarlyPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("benefitsPaidEarly.change.hidden"))
           )
         )

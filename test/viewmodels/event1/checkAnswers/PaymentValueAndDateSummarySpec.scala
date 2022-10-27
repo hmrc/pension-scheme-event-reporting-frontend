@@ -47,16 +47,16 @@ class PaymentValueAndDateSummarySpec extends AnyFreeSpec with Matchers with Opti
       val paymentDetails = PaymentDetails(1000000.00, LocalDate.now())
       val paymentDetailsValue = "£1,000,000.00"
 
-      val answer = UserAnswers().setOrException(PaymentValueAndDatePage, paymentDetails)
+      val answer = UserAnswers().setOrException(PaymentValueAndDatePage(0), paymentDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
-      PaymentValueAndDateSummary.rowPaymentValue(answer, waypoints, sourcePage) mustBe Some(
+      PaymentValueAndDateSummary.rowPaymentValue(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "Payment value",
           value = ValueViewModel(HtmlContent(Html(paymentDetailsValue))),
           actions = Seq(
-            ActionItemViewModel("site.change", PaymentValueAndDatePage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", PaymentValueAndDatePage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("paymentValueAndDate.value.change.hidden"))
           )
         )
@@ -70,19 +70,19 @@ class PaymentValueAndDateSummarySpec extends AnyFreeSpec with Matchers with Opti
 
       val paymentDetails = PaymentDetails(1000.00, LocalDate.now())
 
-      val answer = UserAnswers().setOrException(PaymentValueAndDatePage, paymentDetails)
+      val answer = UserAnswers().setOrException(PaymentValueAndDatePage(0), paymentDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
       val date = paymentDetails.paymentDate
       val format = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-      PaymentValueAndDateSummary.rowPaymentDate(answer, waypoints, sourcePage) mustBe Some(
+      PaymentValueAndDateSummary.rowPaymentDate(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "Payment date",
           value = ValueViewModel(format.format(date)),
           actions = Seq(
-            ActionItemViewModel("site.change", PaymentValueAndDatePage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", PaymentValueAndDatePage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("paymentValueAndDate.date.change.hidden"))
           )
         )

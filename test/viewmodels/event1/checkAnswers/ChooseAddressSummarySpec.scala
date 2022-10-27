@@ -64,7 +64,7 @@ class ChooseAddressSummarySpec extends AnyFreeSpec with Matchers with OptionValu
     "must display correct information" in {
 
       val addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney
-      val answer = UserAnswers().setOrException(ManualAddressPage(addressJourneyType), employerAddress)
+      val answer = UserAnswers().setOrException(ManualAddressPage(addressJourneyType, 0), employerAddress)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
@@ -80,12 +80,12 @@ class ChooseAddressSummarySpec extends AnyFreeSpec with Matchers with OptionValu
         )
       )
 
-      ChooseAddressSummary.row(answer, waypoints, sourcePage, addressJourneyType) mustBe Some(
+      ChooseAddressSummary.row(answer, waypoints,0, sourcePage, addressJourneyType) mustBe Some(
         SummaryListRowViewModel(
           key = rowKey,
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType, 0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("enterPostcode.change.hidden"))
           )
         )

@@ -40,7 +40,7 @@ class HowAddUnauthPaymentSummarySpec extends AnyFreeSpec with Matchers with Opti
 
     "must display correct information for who received the unauthorised payment or deemed unauthorised payment (Manual)" in {
 
-      val answer = UserAnswers().setOrException(HowAddUnauthPaymentPage, HowAddUnauthPayment.Manual)
+      val answer = UserAnswers().setOrException(HowAddUnauthPaymentPage(0), HowAddUnauthPayment.Manual)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
@@ -50,12 +50,12 @@ class HowAddUnauthPaymentSummarySpec extends AnyFreeSpec with Matchers with Opti
         )
       )
 
-      HowAddUnauthPaymentSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      HowAddUnauthPaymentSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "howAddUnauthPayment.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", HowAddUnauthPaymentPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", HowAddUnauthPaymentPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("howAddUnauthPayment.change.hidden"))
           )
         )
@@ -64,7 +64,7 @@ class HowAddUnauthPaymentSummarySpec extends AnyFreeSpec with Matchers with Opti
 
     "must display correct information for who received the unauthorised payment or deemed unauthorised payment (FileUpload)" in {
 
-      val answer = UserAnswers().setOrException(HowAddUnauthPaymentPage, HowAddUnauthPayment.FileUpload)
+      val answer = UserAnswers().setOrException(HowAddUnauthPaymentPage(0), HowAddUnauthPayment.FileUpload)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
@@ -74,12 +74,12 @@ class HowAddUnauthPaymentSummarySpec extends AnyFreeSpec with Matchers with Opti
         )
       )
 
-      HowAddUnauthPaymentSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      HowAddUnauthPaymentSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "howAddUnauthPayment.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", HowAddUnauthPaymentPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", HowAddUnauthPaymentPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("howAddUnauthPayment.change.hidden"))
           )
         )
