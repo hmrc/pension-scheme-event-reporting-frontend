@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.event1
+package controllers.common
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.event1.MembersDetailsFormProvider
-import models.{Index, UserAnswers}
+import forms.common.MembersDetailsFormProvider
+import models.Index.indexToInt
 import models.enumeration.EventType
+import models.{Index, UserAnswers}
 import pages.Waypoints
-import pages.event1.MembersDetailsPage
+import pages.common.MembersDetailsPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event1.MembersDetailsView
+import views.html.common.MembersDetailsView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,23 +41,22 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(index))).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, index))
+  def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, indexToInt(index)))).fold(form)(form.fill)
+    Ok(view(preparedForm, waypoints, eventType, index))
   }
 
-  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(MembersDetailsPage(index), value)
+          val updatedAnswers = originalUserAnswers.setOrException(MembersDetailsPage(eventType, index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(MembersDetailsPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(MembersDetailsPage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

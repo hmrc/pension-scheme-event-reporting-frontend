@@ -14,53 +14,56 @@
  * limitations under the License.
  */
 
-package controllers.event1
+package controllers.event23
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event1.MembersDetailsFormProvider
+import forms.event23.HowAddDualAllowanceFormProvider
 import models.UserAnswers
-import models.event1.MembersDetails
+import models.event23.HowAddDualAllowance
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
-import pages.event1.MembersDetailsPage
+import pages.event23.HowAddDualAllowancePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event1.MembersDetailsView
+import views.html.event23.HowAddDualAllowanceView
 
 import scala.concurrent.Future
 
-
-class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
+class HowAddDualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new MembersDetailsFormProvider()
+  private val formProvider = new HowAddDualAllowanceFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
+<<<<<<< HEAD:test/controllers/event1/MembersDetailsControllerSpec.scala
   private def getRoute: String = routes.MembersDetailsController.onPageLoad(waypoints, 0).url
 
   private def postRoute: String = routes.MembersDetailsController.onSubmit(waypoints, 0).url
+=======
+  private def getRoute: String = routes.HowAddDualAllowanceController.onPageLoad(waypoints).url
+
+  private def postRoute: String = routes.HowAddDualAllowanceController.onSubmit(waypoints).url
+>>>>>>> c82eb80c87950d8ee4d4965fce60d2ec0337ed20:test/controllers/event23/HowAddDualAllowanceControllerSpec.scala
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
-
-  private val validValue = MembersDetails("Joe", "Blogs", "AA123456D")
 
   override def beforeEach: Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
 
-  "MembersDetails Controller" - {
+  "Test Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -71,7 +74,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[MembersDetailsView]
+        val view = application.injector.instanceOf[HowAddDualAllowanceView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
@@ -80,19 +83,27 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
+<<<<<<< HEAD:test/controllers/event1/MembersDetailsControllerSpec.scala
       val userAnswers = UserAnswers().set(MembersDetailsPage(0), validValue).success.value
+=======
+      val userAnswers = UserAnswers().set(HowAddDualAllowancePage, HowAddDualAllowance.values.head).success.value
+>>>>>>> c82eb80c87950d8ee4d4965fce60d2ec0337ed20:test/controllers/event23/HowAddDualAllowanceControllerSpec.scala
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[MembersDetailsView]
+        val view = application.injector.instanceOf[HowAddDualAllowanceView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
+<<<<<<< HEAD:test/controllers/event1/MembersDetailsControllerSpec.scala
         contentAsString(result) mustEqual view(form.fill(validValue), waypoints, 0)(request, messages(application)).toString
+=======
+        contentAsString(result) mustEqual view(form.fill(HowAddDualAllowance.values.head), waypoints)(request, messages(application)).toString
+>>>>>>> c82eb80c87950d8ee4d4965fce60d2ec0337ed20:test/controllers/event23/HowAddDualAllowanceControllerSpec.scala
       }
     }
 
@@ -106,29 +117,35 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("firstName", validValue.firstName), ("lastName", validValue.lastName), ("nino", validValue.nino))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", HowAddDualAllowance.values.head.toString))
 
         val result = route(application, request).value
+<<<<<<< HEAD:test/controllers/event1/MembersDetailsControllerSpec.scala
         val updatedAnswers = emptyUserAnswers.set(MembersDetailsPage(0), validValue).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual MembersDetailsPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+=======
+        val updatedAnswers = emptyUserAnswers.set(HowAddDualAllowancePage, HowAddDualAllowance.values.head).success.value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual HowAddDualAllowancePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+>>>>>>> c82eb80c87950d8ee4d4965fce60d2ec0337ed20:test/controllers/event23/HowAddDualAllowanceControllerSpec.scala
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
     "must return bad request when invalid data is submitted" in {
-
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
           .build()
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("firstName", "%"), ("lastName", ""), ("nino", "abc"))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[MembersDetailsView]
-        val boundForm = form.bind(Map("firstName" -> "%", "lastName" -> "", "nino" -> "abc"))
+        val view = application.injector.instanceOf[HowAddDualAllowanceView]
+        val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value
 
@@ -137,34 +154,5 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
-
-    // TODO These tests should be enabled when we have redirect to JourneyRecoveryController functionality
-/*    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, getRoute)
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute)
-            .withFormUrlEncodedBody(("firstName", validValue.firstName), ("lastName", validValue.lastName), ("nino", validValue.nino))
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }*/
   }
 }

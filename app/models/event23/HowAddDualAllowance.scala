@@ -14,40 +14,38 @@
  * limitations under the License.
  */
 
-package models.event1.employer
+package models.event23
 
 import models.{Enumerable, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-sealed trait PaymentNature
+sealed trait HowAddDualAllowance
 
-object PaymentNature extends Enumerable.Implicits {
+object HowAddDualAllowance extends Enumerable.Implicits {
 
-  case object LoansExceeding50PercentOfFundValue extends WithName("loansExceeding50PercentOfFundValue") with PaymentNature
+  case object Manual extends WithName("manual") with HowAddDualAllowance
 
-  case object ResidentialProperty extends WithName("residentialProperty") with PaymentNature
+  case object FileUpload extends WithName("fileUpload") with HowAddDualAllowance
 
-  case object TangibleMoveableProperty extends WithName("tangibleMoveableProperty") with PaymentNature
-
-  case object CourtOrder extends WithName("courtOrder") with PaymentNature
-
-  case object EmployerOther extends WithName("employerOther") with PaymentNature
-
-  val values: Seq[PaymentNature] = Seq(
-    LoansExceeding50PercentOfFundValue, ResidentialProperty, TangibleMoveableProperty, CourtOrder, EmployerOther
+  val values: Seq[HowAddDualAllowance] = Seq(
+    Manual, FileUpload
   )
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
       RadioItem(
-        content = Text(messages(s"paymentNature.${value.toString}")),
+        content = Text(messages(s"howAddDualAllowance.${value.toString}")),
         value = Some(value.toString),
-        id = Some(s"value_$index")
+        id = Some(s"value_$index"),
+        hint = if (value == FileUpload) Some(Hint(content = Text(messages("howAddDualAllowance.fileUpload.hint")))) else None,
+        disabled = value == FileUpload
       )
   }
 
-  implicit val enumerable: Enumerable[PaymentNature] =
+  implicit val enumerable: Enumerable[HowAddDualAllowance] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }
+

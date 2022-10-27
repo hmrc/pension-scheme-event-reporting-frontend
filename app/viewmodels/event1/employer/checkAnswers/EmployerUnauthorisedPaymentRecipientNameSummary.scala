@@ -48,23 +48,5 @@ object EmployerUnauthorisedPaymentRecipientNameSummary {
         }
       case _ => None
     }
-
-//    answers match {
-//
-//      case employerJourney if (answers.data \ "whoReceivedUnauthPayment").as[String] == "employer" =>
-//        answers.get(UnauthorisedPaymentRecipientNamePage(index)).map {
-//          answer =>
-//
-//            SummaryListRowViewModel(
-//              key = "unauthorisedPaymentRecipientName.employer.checkYourAnswersLabel",
-//              value = ValueViewModel(HtmlFormat.escape(answer).toString),
-//              actions = Seq(
-//                ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage(index).changeLink(waypoints, sourcePage).url)
-//                  .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.employer.change.hidden"))
-//              )
-//            )
-//        }
-//      case _ => None
-//    }
   }
 }

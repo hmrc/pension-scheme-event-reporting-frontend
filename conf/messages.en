@@ -153,6 +153,15 @@ event18Confirmation.error.required = You must tick the box to continue
 event18Confirmation.change.hidden = Event18Confirmation
 event18Confirmation.summary.title = Event 18: Scheme chargeable payment
 
+howAddDualAllowance.title = How do you want to add the dual annual allowances details?
+howAddDualAllowance.heading = How do you want to add the dual annual allowances details?
+howAddDualAllowance.manual = Manually enter the details
+howAddDualAllowance.fileUpload = Upload a file
+howAddDualAllowance.checkYourAnswersLabel = How do you want to add the dual annual allowances details?
+howAddDualAllowance.error.required = Select how you want to add the dual annual allowances details
+howAddDualAllowance.change.hidden = How do you want to add the dual annual allowances details?
+howAddDualAllowance.fileUpload.hint = Uploading a file will overwrite any data you have previously added for this event
+
 howAddUnauthPayment.title = How do you want to add the unauthorised payment details?
 howAddUnauthPayment.heading = How do you want to add the unauthorised payment details?
 howAddUnauthPayment.manual = Manually enter the details
@@ -197,6 +206,15 @@ whatYouWillNeed.item4 = if the scheme is paying the unauthorised payment surchar
 whatYouWillNeed.item5 = the nature of the payment
 whatYouWillNeed.item6 = the payment value and date
 
+whatYouWillNeed.event23.title = What you will need
+whatYouWillNeed.event23.heading = What you will need
+whatYouWillNeed.event23.p = To report a dual annual allowances event you will need the following for each member:
+whatYouWillNeed.event23.item1 = their name
+whatYouWillNeed.event23.item2 = their National Insurance number
+whatYouWillNeed.event23.item3 = the tax year in which the money purchase pension savings statement was issued
+whatYouWillNeed.event23.item4 = the total of the member's pension input amounts for money purchase arrangements under the scheme in the relevant tax year
+
+
 membersDetails.title = Member’s details
 membersDetails.heading = Member’s details
 membersDetails.firstName.heading = First name
@@ -211,7 +229,7 @@ membersDetails.error.nino.required = Enter the member’s National Insurance num
 membersDetails.error.firstName.length = The member’s first name must be 35 characters or fewer
 membersDetails.error.lastName.length = The member’s last name must be 35 characters or fewer
 membersDetails.error.firstName.invalid = The member’s first name must only include letters, spaces, ampersands, grave accents, apostrophes, hyphens, full stops and carets
-membersDetails.error.lastName.invalid = The member’s last name must only include letters, spaces, ampersands, grave accents, apostrophes, backslashes, hyphens, full stops and carets
+membersDetails.error.lastName.invalid = The member’s last name must only include letters, spaces, ampersands, grave accents, apostrophes, hyphens, full stops and carets
 membersDetails.error.nino.invalid = Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ123456C
 membersDetails.change.hidden = Member’s details
 

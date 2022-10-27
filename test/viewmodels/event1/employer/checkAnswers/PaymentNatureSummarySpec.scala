@@ -134,15 +134,15 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
       )
     }
 
-    "must display correct information for Other option" in {
+    "must display correct information for EmployerOther option" in {
 
-      val answer = UserAnswers().setOrException(PaymentNaturePage(0), PaymentNature.Other)
+      val answer = UserAnswers().setOrException(PaymentNaturePage(0), PaymentNature.EmployerOther)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
       val value = ValueViewModel(
         HtmlContent(
-          HtmlFormat.escape(messages(s"paymentNature.${PaymentNature.Other}"))
+          HtmlFormat.escape(messages(s"paymentNature.${PaymentNature.EmployerOther}"))
         )
       )
 

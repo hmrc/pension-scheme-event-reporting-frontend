@@ -14,34 +14,29 @@
  * limitations under the License.
  */
 
-package pages
+package pages.event23
 
-import controllers.routes
-import models.EventSelection.{EventWoundUp, _}
-import models.{EventSelection, UserAnswers}
-import pages.event1.HowAddUnauthPaymentPage
-import pages.event18.Event18ConfirmationPage
-import pages.event23.HowAddDualAllowancePage
-import pages.eventWindUp.SchemeWindUpDatePage
+import controllers.event23.routes
+import models.UserAnswers
+import models.event23.HowAddDualAllowance
+import models.event23.HowAddDualAllowance.Manual
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object EventSelectionPage extends QuestionPage[EventSelection] {
+case object HowAddDualAllowancePage extends QuestionPage[HowAddDualAllowance] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "EventSelection"
-
-  override def route(waypoints: Waypoints): Call =
-    routes.EventSelectionController.onPageLoad(waypoints)
+  override def toString: String = "howAddDualAllowance"
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
-      // TODO: Calculate index
-      case Some(Event1) => HowAddUnauthPaymentPage(0)
-      case Some(Event18) => Event18ConfirmationPage
-      case Some(Event23) => HowAddDualAllowancePage
-      case Some(EventWoundUp) => SchemeWindUpDatePage
-      case _ => EventSelectionPage
+      case Some(Manual) => WhatYouWillNeedPage
+      case _ => this
     }
+
+  override def route(waypoints: Waypoints): Call = {
+    routes.HowAddDualAllowanceController.onPageLoad(waypoints)
+  }
 }

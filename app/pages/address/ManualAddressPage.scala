@@ -19,11 +19,12 @@ package pages.address
 import controllers.address.routes
 import models.UserAnswers
 import models.address.Address
-import models.enumeration.AddressJourneyType
+import models.enumeration.{AddressJourneyType, EventType}
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import pages.event1.PaymentValueAndDatePage
 import pages.event1.employer.PaymentNaturePage
 import pages.{MembersOrEmployersPage, Page, QuestionPage, Waypoints}
+import pages.{CheckYourAnswersPage, NonEmptyWaypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -41,6 +42,14 @@ case class ManualAddressPage(addressJourneyType: AddressJourneyType, index: Int)
       case Event1EmployerAddressJourney => PaymentNaturePage(index)
       case Event1MemberPropertyAddressJourney | Event1EmployerPropertyAddressJourney => PaymentValueAndDatePage(index)
       case _ => super.nextPageNormalMode(waypoints, answers)
+    }
+  }
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
+    addressJourneyType match {
+      case Event1EmployerAddressJourney => CheckYourAnswersPage(EventType.Event1)
+      case Event1MemberPropertyAddressJourney  | Event1EmployerPropertyAddressJourney => PaymentValueAndDatePage(index)
+      case _ => super.nextPageNormalMode(waypoints, updatedAnswers)
     }
   }
 

@@ -21,6 +21,7 @@ lazy val root = (project in file("."))
     RoutesKeys.routesImport ++= Seq(
       "models._",
       "models.enumeration.EventType",
+      "models.enumeration.EventType._",
       "models.enumeration.AddressJourneyType",
       "models.enumeration.AddressJourneyType._",
       "pages.Waypoints",

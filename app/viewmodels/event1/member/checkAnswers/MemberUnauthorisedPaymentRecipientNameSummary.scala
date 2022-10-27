@@ -32,6 +32,7 @@ object MemberUnauthorisedPaymentRecipientNameSummary {
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
+    // TODO
     answers.get(WhoReceivedUnauthPaymentPage(index)) match {
       case Some(Member) =>
         answers.get(UnauthorisedPaymentRecipientNamePage(index)).map {
@@ -49,22 +50,5 @@ object MemberUnauthorisedPaymentRecipientNameSummary {
       case _ => None
     }
 
-//    answers match {
-//
-//      case memberJourney if (answers.data \ "whoReceivedUnauthPayment").as[String] == "member" =>
-//        answers.get(UnauthorisedPaymentRecipientNamePage(index)).map {
-//          answer =>
-//
-//            SummaryListRowViewModel(
-//              key = "unauthorisedPaymentRecipientName.member.checkYourAnswersLabel",
-//              value = ValueViewModel(HtmlFormat.escape(answer).toString),
-//              actions = Seq(
-//                ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage(index).changeLink(waypoints, sourcePage).url)
-//                  .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.member.change.hidden"))
-//              )
-//            )
-//        }
-//      case _ => None
-//    }
   }
 }

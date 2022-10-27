@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.event1
+package models.common
 
 import play.api.libs.json.{Json, OFormat}
 
@@ -27,4 +27,3 @@ object MembersDetails {
 
   implicit val format: OFormat[MembersDetails] = Json.format[MembersDetails]
 }
-

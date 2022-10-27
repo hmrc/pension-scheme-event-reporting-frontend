@@ -62,9 +62,6 @@ POST        /new-report/:index/event-1-member-payment-nature                    
 
 GET         /new-report/:index/event-1-member-need                                controllers.event1.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
-GET         /new-report/:index/event-1-member-details                             controllers.event1.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
-POST        /new-report/:index/event-1-member-details                             controllers.event1.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
-
 GET         /new-report/:index/event-1-mandate                                    controllers.event1.DoYouHoldSignedMandateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /new-report/:index/event-1-mandate                                    controllers.event1.DoYouHoldSignedMandateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
@@ -156,4 +153,16 @@ POST        /new-report/:index/event-1-transfer-recipient                       
 
 GET         /new-report/:index/event-1-scheme-details                             controllers.event1.member.SchemeDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /new-report/:index/event-1-scheme-details                             controllers.event1.member.SchemeDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
+GET         /new-report/event-23-entry-type                                controllers.event23.HowAddDualAllowanceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-23-entry-type                                controllers.event23.HowAddDualAllowanceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-23-what-need                                 controllers.event23.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/:index/event-23-member-details                            controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
+POST        /new-report/:index/event-23-member-details                            controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
+
+GET         /new-report/:index/event-1-member-details                             controllers.event1.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST        /new-report/:index/event-1-member-details                             controllers.event1.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
 

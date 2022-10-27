@@ -17,7 +17,7 @@
 package generators
 
 import models._
-import models.event1.MembersDetails
+import models.common.MembersDetails
 import models.event1.employer.{CompanyDetails, LoanDetails}
 import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, SchemeDetails, WhoWasTheTransferMade}
 import org.scalacheck.Arbitrary.arbitrary
@@ -71,6 +71,11 @@ trait ModelGenerators {
       } yield MembersDetails(firstName, lastName, nino.nino)
 
       Gen.oneOf(list)
+    }
+
+  implicit lazy val arbitraryHowAddDualAllowance: Arbitrary[event23.HowAddDualAllowance] =
+    Arbitrary {
+      Gen.oneOf(event23.HowAddDualAllowance.values)
     }
 
   implicit lazy val arbitraryLoanDetails: Arbitrary[LoanDetails] =

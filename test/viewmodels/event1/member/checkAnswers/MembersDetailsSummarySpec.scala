@@ -22,13 +22,13 @@ import models.enumeration.EventType.Event1
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
-import pages.event1.MembersDetailsPage
+import pages.common.MembersDetailsPage
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import viewmodels.event1.checkAnswers.MembersDetailsSummary
+import viewmodels.checkAnswers.MembersDetailsSummary
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
@@ -42,17 +42,17 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
 
     "must display correct information" in {
 
-      val answers = UserAnswers().setOrException(MembersDetailsPage(0), memberDetails)
+      val answers = UserAnswers().setOrException(MembersDetailsPage(Event1, 0), memberDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
       val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(memberDetails.fullName)).toString))
 
-      MembersDetailsSummary.rowFullName(answers, waypoints, 0, sourcePage) mustBe Some(
+      MembersDetailsSummary.rowFullName(answers, waypoints, sourcePage, Event1, 0) mustBe Some(
         SummaryListRowViewModel(
           key = "membersDetails.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", MembersDetailsPage(0).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", MembersDetailsPage(Event1, 0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("membersDetails.change.hidden"))
           )
         )
@@ -64,17 +64,17 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
 
     "must display correct information" in {
 
-      val answers = UserAnswers().setOrException(MembersDetailsPage(0), memberDetails)
+      val answers = UserAnswers().setOrException(MembersDetailsPage(Event1, 0), memberDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
       val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(memberDetails.nino)).toString))
 
-      MembersDetailsSummary.rowNino(answers, waypoints, 0, sourcePage) mustBe Some(
+      MembersDetailsSummary.rowNino(answers, waypoints, sourcePage, Event1, 0) mustBe Some(
         SummaryListRowViewModel(
           key = "membersDetails.checkYourAnswersLabel.nino",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", MembersDetailsPage(0).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", MembersDetailsPage(Event1, 0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("membersDetails.change.hidden"))
           )
         )

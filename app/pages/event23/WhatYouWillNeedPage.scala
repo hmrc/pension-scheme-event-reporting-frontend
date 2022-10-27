@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package pages.event1
+package pages.event23
 
-import controllers.event1.routes
+import controllers.event23.routes
 import models.UserAnswers
-import models.event1.MembersDetails
-import pages.{MembersOrEmployersPage, Page, QuestionPage, Waypoints}
-import play.api.libs.json.JsPath
+import models.enumeration.EventType
+import pages.common.MembersDetailsPage
+import pages.{Page, Waypoints}
 import play.api.mvc.Call
 
-case class MembersDetailsPage(index: Int) extends QuestionPage[MembersDetails] {
-
-  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
-
-  override def toString: String = "membersDetails"
+case object WhatYouWillNeedPage extends Page {
 
   override def route(waypoints: Waypoints): Call =
-    routes.MembersDetailsController.onPageLoad(waypoints, index)
+    routes.WhatYouWillNeedController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    DoYouHoldSignedMandatePage(index)
+    MembersDetailsPage(EventType.Event23, 0)
 }

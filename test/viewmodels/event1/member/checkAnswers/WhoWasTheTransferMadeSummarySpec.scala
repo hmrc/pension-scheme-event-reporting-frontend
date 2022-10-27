@@ -85,7 +85,7 @@ class WhoWasTheTransferMadeSummarySpec extends AnyFreeSpec with Matchers with Op
       )
     }
 
-    "must display correct information for Other option" in {
+    "must display correct information for EmployerOther option" in {
 
       val answer = UserAnswers().setOrException(WhoWasTheTransferMadePage(0), WhoWasTheTransferMade.Other)
       val waypoints: Waypoints = EmptyWaypoints

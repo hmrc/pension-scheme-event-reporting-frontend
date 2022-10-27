@@ -21,16 +21,20 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import models.Index
 import models.enumeration.EventType.{Event1, Event18, WindUp}
 import models.enumeration.{AddressJourneyType, EventType}
+import models.event1.PaymentNature._
 import models.event1.WhoReceivedUnauthPayment.Member
+import models.event1.employer.PaymentNature._
 import models.requests.DataRequest
+import pages.event1.employer.{PaymentNaturePage => EmployerPaymentNaturePage}
+import pages.event1.member.{PaymentNaturePage => MemberPaymentNaturePage}
 import pages.event1.{ValueOfUnauthorisedPaymentPage, WhoReceivedUnauthPaymentPage}
-import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, MembersOrEmployersPage, Waypoints}
+import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.address.checkAnswers.ChooseAddressSummary
-import viewmodels.checkAnswers.{Event18ConfirmationSummary, SchemeWindUpDateSummary}
+import viewmodels.checkAnswers.{Event18ConfirmationSummary, MembersDetailsSummary, SchemeWindUpDateSummary}
 import viewmodels.event1.checkAnswers._
 import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, EmployerUnauthorisedPaymentRecipientNameSummary, LoanDetailsSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
 import viewmodels.event1.member.checkAnswers._
@@ -81,13 +85,6 @@ class CheckYourAnswersController @Inject()(
       case Some(Member) => true
       case _ => false
     }
-
-    //    if ((request.userAnswers.data \ "whoReceivedUnauthPayment").as[String] == "member") {
-    //      true
-    //    }
-    //    else {
-    //      false
-    //    }
   }
 
   private def schemeUnAuthPaySurchargeRow(waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
@@ -98,13 +95,6 @@ class CheckYourAnswersController @Inject()(
       case Some(true) => SchemeUnAuthPaySurchargeMemberSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
       case _ => Nil
     }
-
-    //    if ((request.userAnswers.data \ "valueOfUnauthorisedPayment").as[Boolean]) {
-    //      SchemeUnAuthPaySurchargeMemberSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
-    //    }
-    //    else {
-    //      Nil
-    //    }
   }
 
   // scalastyle:off cyclomatic.complexity
@@ -112,8 +102,8 @@ class CheckYourAnswersController @Inject()(
   private def buildEvent1CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage,
                                  index: Int)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     val basicMemberOrEmployerRows = if (event1MemberJourney(index)) {
-      MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage).toSeq ++
-        MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage).toSeq ++
+      MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event1).toSeq ++
+        MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event1).toSeq ++
         DoYouHoldSignedMandateSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
         ValueOfUnauthorisedPaymentSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
         schemeUnAuthPaySurchargeRow(waypoints, index, sourcePage) ++
@@ -127,43 +117,40 @@ class CheckYourAnswersController @Inject()(
     }
 
     val memberOrEmployerPaymentNatureRows = {
-      val paymentNatureKey = request.userAnswers.data.as[String]((MembersOrEmployersPage(index).path \ "paymentNature").read[String])
-      paymentNatureKey match {
-        case "benefitInKind" =>
+      (request.userAnswers.get(EmployerPaymentNaturePage(index)), request.userAnswers.get(MemberPaymentNaturePage(index))) match {
+        case (_, Some(BenefitInKind)) =>
           BenefitInKindBriefDescriptionSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
-        case "transferToNonRegPensionScheme" =>
+        case (_, Some(TransferToNonRegPensionScheme)) =>
           WhoWasTheTransferMadeSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
             SchemeDetailsSummary.rowSchemeName(request.userAnswers, waypoints, index, sourcePage).toSeq ++
             SchemeDetailsSummary.rowSchemeReference(request.userAnswers, waypoints, index, sourcePage).toSeq
-        case "errorCalcTaxFreeLumpSums" =>
+        case (_, Some(ErrorCalcTaxFreeLumpSums)) =>
           ErrorDescriptionSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
-        case "benefitsPaidEarly" =>
+        case (_, Some(BenefitsPaidEarly)) =>
           BenefitsPaidEarlySummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
-        case "refundOfContributions" =>
+        case (_, Some(RefundOfContributions)) =>
           RefundOfContributionsSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
-        case "overpaymentOrWriteOff" =>
+        case (_, Some(OverpaymentOrWriteOff)) =>
           ReasonForTheOverpaymentOrWriteOffSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
-        case "residentialPropertyHeld" =>
+        case (_, Some(ResidentialPropertyHeld)) =>
           ReasonForTheOverpaymentOrWriteOffSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
-            ChooseAddressSummary.row(request.userAnswers, waypoints, index, sourcePage,
-              AddressJourneyType.Event1MemberPropertyAddressJourney).toSeq
-        case "tangibleMoveablePropertyHeld" =>
+            ChooseAddressSummary.row(request.userAnswers, waypoints, index, sourcePage, AddressJourneyType.Event1MemberPropertyAddressJourney).toSeq
+        case (_, Some(TangibleMoveablePropertyHeld)) =>
           MemberTangibleMoveablePropertySummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
-        case "courtOrConfiscationOrder" =>
+        case (_, Some(CourtOrConfiscationOrder)) =>
           MemberUnauthorisedPaymentRecipientNameSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
-        case "memberOther" =>
+        case (_, Some(MemberOther)) =>
           MemberPaymentNatureDescriptionSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
-        case "loansExceeding50PercentOfFundValue" =>
+        case (Some(LoansExceeding50PercentOfFundValue), _) =>
           LoanDetailsSummary.rowLoanAmount(request.userAnswers, waypoints, index, sourcePage).toSeq ++
             LoanDetailsSummary.rowFundValue(request.userAnswers, waypoints, index, sourcePage).toSeq
-        case "residentialProperty" =>
-          ChooseAddressSummary.row(request.userAnswers, waypoints, index, sourcePage,
-            AddressJourneyType.Event1EmployerPropertyAddressJourney).toSeq
-        case "tangibleMoveableProperty" =>
+        case (Some(ResidentialProperty), _) =>
+          ChooseAddressSummary.row(request.userAnswers, waypoints, index, sourcePage, AddressJourneyType.Event1EmployerPropertyAddressJourney).toSeq
+        case (Some(TangibleMoveableProperty), _) =>
           EmployerTangibleMoveablePropertySummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
-        case "courtOrder" =>
+        case (Some(CourtOrder), _) =>
           EmployerUnauthorisedPaymentRecipientNameSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
-        case "employerOther" =>
+        case (Some(EmployerOther), _) =>
           EmployerPaymentNatureDescriptionSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
         case _ => Nil
       }

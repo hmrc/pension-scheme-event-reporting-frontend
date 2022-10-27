@@ -20,7 +20,7 @@ import controllers.event1.routes
 import models.UserAnswers
 import models.enumeration.AddressJourneyType.Event1MemberPropertyAddressJourney
 import models.event1.PaymentNature
-import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, TransferToNonRegPensionScheme}
+import models.event1.PaymentNature._
 import pages.{IndexPage, MembersOrEmployersPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -29,7 +29,7 @@ case class PaymentNaturePage(index: Int) extends QuestionPage[PaymentNature] {
 
   override def path: JsPath = MembersOrEmployersPage(index).path \ toString
 
-  override def toString: String = "paymentNature"
+  override def toString: String = "paymentNatureMember"
 
   def route(waypoints: Waypoints): Call =
     routes.PaymentNatureController.onPageLoad(waypoints, index)
@@ -46,7 +46,7 @@ case class PaymentNaturePage(index: Int) extends QuestionPage[PaymentNature] {
       case Some(ResidentialPropertyHeld) => pages.address.EnterPostcodePage(Event1MemberPropertyAddressJourney, index)
       case Some(TangibleMoveablePropertyHeld) => MemberTangibleMoveablePropertyPage(index)
       case Some(CourtOrConfiscationOrder) => pages.event1.member.UnauthorisedPaymentRecipientNamePage(index)
-      case Some(Other) => MemberPaymentNatureDescriptionPage(index)
+      case Some(MemberOther) => MemberPaymentNatureDescriptionPage(index)
       case _ => IndexPage
     }
   }
@@ -62,7 +62,7 @@ case class PaymentNaturePage(index: Int) extends QuestionPage[PaymentNature] {
       case Some(ResidentialPropertyHeld) => pages.address.EnterPostcodePage(Event1MemberPropertyAddressJourney, index)
       case Some(TangibleMoveablePropertyHeld) => MemberTangibleMoveablePropertyPage(index)
       case Some(CourtOrConfiscationOrder) => pages.event1.member.UnauthorisedPaymentRecipientNamePage(index)
-      case Some(Other) => MemberPaymentNatureDescriptionPage(index)
+      case Some(MemberOther) => MemberPaymentNatureDescriptionPage(index)
       case _ => IndexPage
     }
   }

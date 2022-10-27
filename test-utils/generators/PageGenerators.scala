@@ -14,28 +14,13 @@
  * limitations under the License.
  */
 
-/*
- * Copyright 2022 HM Revenue & Customs
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package generators
 
 import models.Index
 import models.enumeration.AddressJourneyType
 import org.scalacheck.Arbitrary
 import pages._
+import pages.common.MembersDetailsPage
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.event1.{employer, member}
@@ -45,7 +30,8 @@ trait PageGenerators {
 
   implicit lazy val arbitraryPaymentValueAndDatePage: Arbitrary[event1.PaymentValueAndDatePage] =
     Arbitrary(event1.PaymentValueAndDatePage(Index(0)))
-
+  implicit lazy val arbitraryHowAddDualAllowancePage: Arbitrary[event23.HowAddDualAllowancePage.type] =
+    Arbitrary(event23.HowAddDualAllowancePage)
   implicit lazy val arbitraryLoanDetailsPage: Arbitrary[event1.employer.LoanDetailsPage] =
     Arbitrary(event1.employer.LoanDetailsPage(Index(0)))
 
@@ -110,8 +96,8 @@ trait PageGenerators {
   implicit lazy val arbitraryDoYouHoldSignedMandatePage: Arbitrary[event1.DoYouHoldSignedMandatePage] =
     Arbitrary(event1.DoYouHoldSignedMandatePage(Index(0)))
 
-  implicit lazy val arbitraryMembersDetailsPage: Arbitrary[event1.MembersDetailsPage] =
-    Arbitrary(event1.MembersDetailsPage(Index(0)))
+  implicit lazy val arbitraryMembersDetailsPage: Arbitrary[MembersDetailsPage.type] =
+    Arbitrary(MembersDetailsPage)
 
   implicit lazy val arbitraryWhoReceivedUnauthPaymentPage: Arbitrary[event1.WhoReceivedUnauthPaymentPage] =
     Arbitrary(event1.WhoReceivedUnauthPaymentPage(Index(0)))
