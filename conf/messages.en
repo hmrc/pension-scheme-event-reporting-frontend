@@ -486,3 +486,17 @@ loanDetails.fundValue.amountTooHigh = The fund value must be £999999999.99 or l
 
 loanDetails.loanAmount.heading = Amount of the loan (optional)
 loanDetails.fundValue.heading = Value of the fund (optional)
+
+unauthPaymentAndSanctionCharges.title = Paying unauthorised payment and scheme sanction charges
+unauthPaymentAndSanctionCharges.heading = Paying unauthorised payment and scheme sanction charges
+unauthPaymentAndSanctionCharges.p1 = The unauthorised payments you report may be subject to charges.
+unauthPaymentAndSanctionCharges.p2 = When you submit the event report, HMRC will review the details and raise any applicable charges. This usually happens within X weeks/days of submission but might take longer than that.
+unauthPaymentAndSanctionCharges.p3 = Once any applicable charges have been raised, they will be available to view in the scheme’s financial overview on the Managing Pension Schemes service. This will include:
+unauthPaymentAndSanctionCharges.bullet1 = the total scheme sanction charge for the unauthorised payments
+unauthPaymentAndSanctionCharges.bullet2 = a charge reference for the total scheme sanction charge
+unauthPaymentAndSanctionCharges.bullet3 = if applicable, the total member unauthorised payment charge (including any surcharge) for all unauthorised payments
+unauthPaymentAndSanctionCharges.bullet4 = if applicable, a charge reference for the total member unauthorised payment charge
+unauthPaymentAndSanctionCharges.h2 = How to pay
+unauthPaymentAndSanctionCharges.p4 = Check your scheme’s financial overview regularly following submission to see if it has been updated with any applicable charges. Then use the appropriate charge reference(s) when paying any member unauthorised payment or scheme sanction charge.
+unauthPaymentAndSanctionCharges.p5 = You will also receive paper notice(s) for any charges raised.
+

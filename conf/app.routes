@@ -164,3 +164,5 @@ POST        /new-report/event-23-member-details                            contr
 
 GET         /new-report/event-1-member-details                             controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1)
 POST        /new-report/event-1-member-details                             controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1)
+
+GET         /new-report/event-1-paying-charges                             controllers.event1.UnauthPaymentAndSanctionChargesController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
