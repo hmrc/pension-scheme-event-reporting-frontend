@@ -85,7 +85,7 @@ class ChooseAddressSummarySpec extends AnyFreeSpec with Matchers with OptionValu
           key = rowKey,
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType, 0).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType, 0).changeLink(waypoints,  sourcePage).url)
               .withVisuallyHiddenText(messages("enterPostcode.change.hidden"))
           )
         )

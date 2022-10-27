@@ -40,7 +40,7 @@ class ReasonForTheOverpaymentOrWriteOffSummarySpec extends AnyFreeSpec with Matc
 
     "must display correct information for reason for the overpayment/write off (Death of member)" in {
 
-      val answer = UserAnswers().setOrException(ReasonForTheOverpaymentOrWriteOffPage, ReasonForTheOverpaymentOrWriteOff.DeathOfMember)
+      val answer = UserAnswers().setOrException(ReasonForTheOverpaymentOrWriteOffPage(0), ReasonForTheOverpaymentOrWriteOff.DeathOfMember)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
@@ -50,12 +50,12 @@ class ReasonForTheOverpaymentOrWriteOffSummarySpec extends AnyFreeSpec with Matc
         )
       )
 
-      ReasonForTheOverpaymentOrWriteOffSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      ReasonForTheOverpaymentOrWriteOffSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "reasonForTheOverpaymentOrWriteOff.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", ReasonForTheOverpaymentOrWriteOffPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", ReasonForTheOverpaymentOrWriteOffPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("reasonForTheOverpaymentOrWriteOff.change.hidden"))
           )
         )
@@ -64,7 +64,7 @@ class ReasonForTheOverpaymentOrWriteOffSummarySpec extends AnyFreeSpec with Matc
 
     "must display correct information for reason for the overpayment/write off (Death of dependent)" in {
 
-      val answer = UserAnswers().setOrException(ReasonForTheOverpaymentOrWriteOffPage, ReasonForTheOverpaymentOrWriteOff.DeathOfDependent)
+      val answer = UserAnswers().setOrException(ReasonForTheOverpaymentOrWriteOffPage(0), ReasonForTheOverpaymentOrWriteOff.DeathOfDependent)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
@@ -74,12 +74,12 @@ class ReasonForTheOverpaymentOrWriteOffSummarySpec extends AnyFreeSpec with Matc
         )
       )
 
-      ReasonForTheOverpaymentOrWriteOffSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      ReasonForTheOverpaymentOrWriteOffSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "reasonForTheOverpaymentOrWriteOff.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", ReasonForTheOverpaymentOrWriteOffPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", ReasonForTheOverpaymentOrWriteOffPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("reasonForTheOverpaymentOrWriteOff.change.hidden"))
           )
         )
@@ -88,7 +88,7 @@ class ReasonForTheOverpaymentOrWriteOffSummarySpec extends AnyFreeSpec with Matc
 
     "must display correct information for reason for the overpayment/write off (Dependent No Longer Qualified For Pension)" in {
 
-      val answer = UserAnswers().setOrException(ReasonForTheOverpaymentOrWriteOffPage, ReasonForTheOverpaymentOrWriteOff.DependentNoLongerQualifiedForPension)
+      val answer = UserAnswers().setOrException(ReasonForTheOverpaymentOrWriteOffPage(0), ReasonForTheOverpaymentOrWriteOff.DependentNoLongerQualifiedForPension)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
@@ -98,12 +98,12 @@ class ReasonForTheOverpaymentOrWriteOffSummarySpec extends AnyFreeSpec with Matc
         )
       )
 
-      ReasonForTheOverpaymentOrWriteOffSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      ReasonForTheOverpaymentOrWriteOffSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "reasonForTheOverpaymentOrWriteOff.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", ReasonForTheOverpaymentOrWriteOffPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", ReasonForTheOverpaymentOrWriteOffPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("reasonForTheOverpaymentOrWriteOff.change.hidden"))
           )
         )
@@ -112,7 +112,7 @@ class ReasonForTheOverpaymentOrWriteOffSummarySpec extends AnyFreeSpec with Matc
 
     "must display correct information for reason for the overpayment/write off (Other)" in {
 
-      val answer = UserAnswers().setOrException(ReasonForTheOverpaymentOrWriteOffPage, ReasonForTheOverpaymentOrWriteOff.Other)
+      val answer = UserAnswers().setOrException(ReasonForTheOverpaymentOrWriteOffPage(0), ReasonForTheOverpaymentOrWriteOff.Other)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
@@ -122,12 +122,12 @@ class ReasonForTheOverpaymentOrWriteOffSummarySpec extends AnyFreeSpec with Matc
         )
       )
 
-      ReasonForTheOverpaymentOrWriteOffSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      ReasonForTheOverpaymentOrWriteOffSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "reasonForTheOverpaymentOrWriteOff.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", ReasonForTheOverpaymentOrWriteOffPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", ReasonForTheOverpaymentOrWriteOffPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("reasonForTheOverpaymentOrWriteOff.change.hidden"))
           )
         )

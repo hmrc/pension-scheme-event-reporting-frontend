@@ -41,16 +41,16 @@ class MemberUnauthorisedPaymentRecipientNameSummarySpec extends AnyFreeSpec with
       val name = "Harry"
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
-      val answer = UserAnswers().setOrException(UnauthorisedPaymentRecipientNamePage, name)
+      val answer = UserAnswers().setOrException(UnauthorisedPaymentRecipientNamePage(0), name)
 
       answer match {
         case memberJourney if answer.toString.contains("""whoReceivedUnauthPayment":"member""") =>
-          MemberUnauthorisedPaymentRecipientNameSummary.row(answer, waypoints, sourcePage) mustBe Some(
+          MemberUnauthorisedPaymentRecipientNameSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
             SummaryListRowViewModel(
               key = "unauthorisedPaymentRecipientName.member.checkYourAnswersLabel",
               value = ValueViewModel(HtmlFormat.escape(name).toString),
               actions = Seq(
-                ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage.changeLink(waypoints, sourcePage).url)
+                ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage(0).changeLink(waypoints, sourcePage).url)
                   .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.member.change.hidden"))
               )
             )

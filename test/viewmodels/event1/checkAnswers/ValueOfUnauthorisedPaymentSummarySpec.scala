@@ -38,16 +38,16 @@ class ValueOfUnauthorisedPaymentSummarySpec extends AnyFreeSpec with Matchers wi
 
     "should display correct information if value is true" in {
 
-      val answer = UserAnswers().setOrException(ValueOfUnauthorisedPaymentPage, true)
+      val answer = UserAnswers().setOrException(ValueOfUnauthorisedPaymentPage(0), true)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
-      ValueOfUnauthorisedPaymentSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      ValueOfUnauthorisedPaymentSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "valueOfUnauthorisedPayment.checkYourAnswersLabel",
           value = ValueViewModel(booleanCYAVal(true)),
           actions = Seq(
-            ActionItemViewModel("site.change", ValueOfUnauthorisedPaymentPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", ValueOfUnauthorisedPaymentPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("valueOfUnauthorisedPayment.change.hidden"))
           )
         )
@@ -56,16 +56,16 @@ class ValueOfUnauthorisedPaymentSummarySpec extends AnyFreeSpec with Matchers wi
 
     "should display correct information if value is false" in {
 
-      val answer = UserAnswers().setOrException(ValueOfUnauthorisedPaymentPage, false)
+      val answer = UserAnswers().setOrException(ValueOfUnauthorisedPaymentPage(0), false)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
-      ValueOfUnauthorisedPaymentSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      ValueOfUnauthorisedPaymentSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "valueOfUnauthorisedPayment.checkYourAnswersLabel",
           value = ValueViewModel(booleanCYAVal(false)),
           actions = Seq(
-            ActionItemViewModel("site.change", ValueOfUnauthorisedPaymentPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", ValueOfUnauthorisedPaymentPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("valueOfUnauthorisedPayment.change.hidden"))
           )
         )

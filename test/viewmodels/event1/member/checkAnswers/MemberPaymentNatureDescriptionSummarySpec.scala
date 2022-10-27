@@ -39,16 +39,16 @@ class MemberPaymentNatureDescriptionSummarySpec extends AnyFreeSpec with Matcher
 
     "must display correct information for member payment nature description option" in {
 
-      val answer = UserAnswers().setOrException(MemberPaymentNatureDescriptionPage, "brief description of the nature of the payment")
+      val answer = UserAnswers().setOrException(MemberPaymentNatureDescriptionPage(0), "brief description of the nature of the payment")
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
-      MemberPaymentNatureDescriptionSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      MemberPaymentNatureDescriptionSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "memberPaymentNatureDescription.checkYourAnswersLabel",
           value = ValueViewModel(HtmlFormat.escape("brief description of the nature of the payment").toString),
           actions = Seq(
-            ActionItemViewModel("site.change", MemberPaymentNatureDescriptionPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", MemberPaymentNatureDescriptionPage(0).changeLink(waypoints,  sourcePage).url)
               .withVisuallyHiddenText(messages("memberPaymentNatureDescription.change.hidden"))
           )
         )

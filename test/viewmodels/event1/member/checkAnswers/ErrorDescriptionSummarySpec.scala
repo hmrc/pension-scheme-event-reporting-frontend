@@ -38,16 +38,16 @@ class ErrorDescriptionSummarySpec extends AnyFreeSpec with Matchers with OptionV
 
     "must display correct information for the error description" in {
 
-      val answer = UserAnswers().setOrException(ErrorDescriptionPage, "brief description of the error")
+      val answer = UserAnswers().setOrException(ErrorDescriptionPage(0), "brief description of the error")
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
-      ErrorDescriptionSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      ErrorDescriptionSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "errorDescription.checkYourAnswersLabel",
           value = ValueViewModel(HtmlFormat.escape("brief description of the error").toString),
           actions = Seq(
-            ActionItemViewModel("site.change", ErrorDescriptionPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", ErrorDescriptionPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("errorDescription.change.hidden"))
           )
         )

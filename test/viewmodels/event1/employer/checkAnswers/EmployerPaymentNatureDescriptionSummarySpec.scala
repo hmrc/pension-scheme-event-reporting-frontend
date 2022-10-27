@@ -38,16 +38,16 @@ class EmployerPaymentNatureDescriptionSummarySpec extends AnyFreeSpec with Match
 
     "must display correct information for employer payment nature description option" in {
 
-      val answer = UserAnswers().setOrException(EmployerPaymentNatureDescriptionPage, "brief description of the nature of the payment")
+      val answer = UserAnswers().setOrException(EmployerPaymentNatureDescriptionPage(0), "brief description of the nature of the payment")
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
-      EmployerPaymentNatureDescriptionSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      EmployerPaymentNatureDescriptionSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "employerPaymentNatureDescription.checkYourAnswersLabel",
           value = ValueViewModel(HtmlFormat.escape("brief description of the nature of the payment").toString),
           actions = Seq(
-            ActionItemViewModel("site.change", EmployerPaymentNatureDescriptionPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", EmployerPaymentNatureDescriptionPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("employerPaymentNatureDescription.change.hidden"))
           )
         )

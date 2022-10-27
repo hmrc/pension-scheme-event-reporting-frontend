@@ -39,16 +39,16 @@ class CompanyDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
 
     "must display correct information" in {
 
-      val answer = UserAnswers().setOrException(CompanyDetailsPage, companyDetails)
+      val answer = UserAnswers().setOrException(CompanyDetailsPage(0), companyDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
-      CompanyDetailsSummary.rowCompanyName(answer, waypoints, sourcePage) mustBe Some(
+      CompanyDetailsSummary.rowCompanyName(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "companyDetails.CYA.companyName",
           value = ValueViewModel(HtmlFormat.escape(companyDetails.companyName).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", CompanyDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", CompanyDetailsPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("companyDetails.change.hidden"))
           )
         )
@@ -61,16 +61,16 @@ class CompanyDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
 
     "must display correct information" in {
 
-      val answer = UserAnswers().setOrException(CompanyDetailsPage, companyDetails)
+      val answer = UserAnswers().setOrException(CompanyDetailsPage(0), companyDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
 
-      CompanyDetailsSummary.rowCompanyNumber(answer, waypoints, sourcePage) mustBe Some(
+      CompanyDetailsSummary.rowCompanyNumber(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "companyDetails.CYA.companyNumber",
           value = ValueViewModel(HtmlFormat.escape(companyDetails.companyNumber).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", CompanyDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", CompanyDetailsPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("companyDetails.change.hidden"))
           )
         )
