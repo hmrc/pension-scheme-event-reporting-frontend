@@ -16,12 +16,11 @@
 
 package viewmodels.event1.member.checkAnswers
 
-import base.SpecBase
 import models.UserAnswers
 import models.enumeration.EventType.Event1
-import org.scalatest.{OptionValues, TryValues}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.{OptionValues, TryValues}
 import pages.event1.member.MemberPaymentNatureDescriptionPage
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages

@@ -33,10 +33,10 @@ object PaymentNature extends Enumerable.Implicits {
 
   case object CourtOrder extends WithName("courtOrder") with PaymentNature
 
-  case object Other extends WithName("employerOther") with PaymentNature
+  case object EmployerOther extends WithName("employerOther") with PaymentNature
 
   val values: Seq[PaymentNature] = Seq(
-    LoansExceeding50PercentOfFundValue, ResidentialProperty, TangibleMoveableProperty, CourtOrder, Other
+    LoansExceeding50PercentOfFundValue, ResidentialProperty, TangibleMoveableProperty, CourtOrder, EmployerOther
   )
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {

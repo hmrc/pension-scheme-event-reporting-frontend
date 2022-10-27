@@ -24,7 +24,7 @@ import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Even
 import models.enumeration.EventType
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.PaymentDetails
-import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, TransferToNonRegPensionScheme}
+import models.event1.PaymentNature._
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.employer.LoanDetails
 import models.event1.employer.PaymentNature.{LoansExceeding50PercentOfFundValue, ResidentialProperty, TangibleMoveableProperty}
@@ -224,7 +224,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       )
   }
 
-  "testing nav to event1 Refund of Contributions pages (member) and selecting Other option" in {
+  "testing nav to event1 Refund of Contributions pages (member) and selecting EmployerOther option" in {
     startingFrom(PaymentNaturePage)
       .run(
         submitAnswer(PaymentNaturePage, RefundOfContributions),
@@ -251,7 +251,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
 
     startingFrom(member.PaymentNaturePage)
       .run(
-        submitAnswer(PaymentNaturePage, Other),
+        submitAnswer(PaymentNaturePage, MemberOther),
         pageMustBe(pages.event1.member.MemberPaymentNatureDescriptionPage)
       )
   }
@@ -265,7 +265,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
 
     startingFrom(pages.event1.employer.PaymentNaturePage)
       .run(
-        submitAnswer(pages.event1.employer.PaymentNaturePage, models.event1.employer.PaymentNature.Other),
+        submitAnswer(pages.event1.employer.PaymentNaturePage, models.event1.employer.PaymentNature.EmployerOther),
         pageMustBe(pages.event1.employer.EmployerPaymentNatureDescriptionPage)
       )
   }

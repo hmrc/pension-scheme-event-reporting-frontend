@@ -16,37 +16,46 @@
 
 package models.event1
 
+import models.{Enumerable, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import models.{Enumerable,WithName}
 
 sealed trait PaymentNature
 
 object PaymentNature extends Enumerable.Implicits {
 
-  case object BenefitInKind extends                 WithName("benefitInKind") with PaymentNature
+  case object BenefitInKind extends WithName("benefitInKind") with PaymentNature
+
   case object TransferToNonRegPensionScheme extends WithName("transferToNonRegPensionScheme") with PaymentNature
-  case object ErrorCalcTaxFreeLumpSums extends      WithName("errorCalcTaxFreeLumpSums") with PaymentNature
-  case object BenefitsPaidEarly extends             WithName("benefitsPaidEarly") with PaymentNature
-  case object RefundOfContributions extends         WithName("refundOfContributions") with PaymentNature
-  case object OverpaymentOrWriteOff extends         WithName("overpaymentOrWriteOff") with PaymentNature
-  case object ResidentialPropertyHeld extends       WithName("residentialPropertyHeld") with PaymentNature
-  case object TangibleMoveablePropertyHeld extends  WithName("tangibleMoveablePropertyHeld") with PaymentNature
-  case object CourtOrConfiscationOrder extends      WithName("courtOrConfiscationOrder") with PaymentNature
-  case object Other extends                         WithName("memberOther") with PaymentNature
+
+  case object ErrorCalcTaxFreeLumpSums extends WithName("errorCalcTaxFreeLumpSums") with PaymentNature
+
+  case object BenefitsPaidEarly extends WithName("benefitsPaidEarly") with PaymentNature
+
+  case object RefundOfContributions extends WithName("refundOfContributions") with PaymentNature
+
+  case object OverpaymentOrWriteOff extends WithName("overpaymentOrWriteOff") with PaymentNature
+
+  case object ResidentialPropertyHeld extends WithName("residentialPropertyHeld") with PaymentNature
+
+  case object TangibleMoveablePropertyHeld extends WithName("tangibleMoveablePropertyHeld") with PaymentNature
+
+  case object CourtOrConfiscationOrder extends WithName("courtOrConfiscationOrder") with PaymentNature
+
+  case object MemberOther extends WithName("memberOther") with PaymentNature
 
   val values: Seq[PaymentNature] = Seq(
     BenefitInKind, TransferToNonRegPensionScheme, ErrorCalcTaxFreeLumpSums, BenefitsPaidEarly, RefundOfContributions,
-    OverpaymentOrWriteOff, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, CourtOrConfiscationOrder, Other
+    OverpaymentOrWriteOff, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, CourtOrConfiscationOrder, MemberOther
   )
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
       RadioItem(
         content = Text(messages(s"paymentNature.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
+        value = Some(value.toString),
+        id = Some(s"value_$index")
       )
   }
 

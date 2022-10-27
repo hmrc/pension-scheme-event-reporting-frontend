@@ -110,7 +110,7 @@ class ReasonForTheOverpaymentOrWriteOffSummarySpec extends AnyFreeSpec with Matc
       )
     }
 
-    "must display correct information for reason for the overpayment/write off (Other)" in {
+    "must display correct information for reason for the overpayment/write off (EmployerOther)" in {
 
       val answer = UserAnswers().setOrException(ReasonForTheOverpaymentOrWriteOffPage, ReasonForTheOverpaymentOrWriteOff.Other)
       val waypoints: Waypoints = EmptyWaypoints

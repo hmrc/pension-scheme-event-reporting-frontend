@@ -62,7 +62,7 @@ class RefundOfContributionsSummarySpec extends AnyFreeSpec with Matchers with Op
       )
     }
 
-    "must display correct information for refund of contributions (Other)" in {
+    "must display correct information for refund of contributions (EmployerOther)" in {
 
       val answer = UserAnswers().setOrException(RefundOfContributionsPage, RefundOfContributions.Other)
       val waypoints: Waypoints = EmptyWaypoints
