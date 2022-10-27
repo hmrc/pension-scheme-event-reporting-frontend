@@ -37,9 +37,9 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
   private val messageKeyPaymentValueKey = "paymentValueAndDate.value"
 
   // scalastyle:off magic.number
-  val validDataGenerator: Gen[String] = decsInRangeWithCommas(0, 999999999.99)
+  val tooBigNoDataGenerator: Gen[String] = decimalsAboveValue(999999999.99)
   val invalidDataGenerator: Gen[String] = intsInRangeWithCommas(0, 999999999)
-  val negativeValueDataGenerator: Gen[Int] = intsBelowValue(0)
+  val negativeValueDataGenerator: Gen[String] = decimalsBelowValue(0)
 
   private def paymentDetails(
                               paymentValue: String = "1000.00",
@@ -77,18 +77,18 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
     }
 
     "not bind outside the range 0 to 999999999.99" in {
-      forAll(validDataGenerator -> "amountTooHigh") {
+      forAll(tooBigNoDataGenerator -> "amountTooHigh") {
         number: String =>
           val result = form.bind(paymentDetails(paymentValue = number, Some(LocalDate.now())))
-          result.errors.head.key mustEqual paymentValueKey
+          result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyPaymentValueKey.error.amountTooHigh")
       }
     }
 
     "not bind numbers below 0" in {
       forAll(negativeValueDataGenerator -> "negative") {
-        number: Int =>
-          val result = form.bind(paymentDetails(paymentValue = number.toString, Some(LocalDate.now())))
-          result.errors.head.key mustEqual paymentValueKey
+        number: String =>
+          val result = form.bind(paymentDetails(paymentValue = number, Some(LocalDate.now())))
+          result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyPaymentValueKey.error.negative")
       }
     }
   }
