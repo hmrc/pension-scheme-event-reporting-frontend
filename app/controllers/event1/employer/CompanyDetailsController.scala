@@ -21,7 +21,7 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.employer.CompanyDetailsFormProvider
 import models.{Index, UserAnswers}
 import models.enumeration.EventType
-import pages.Waypoints
+import pages.{PageAndWaypoints, Waypoints}
 import pages.event1.employer.CompanyDetailsPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -56,7 +56,9 @@ class CompanyDetailsController @Inject()(val controllerComponents: MessagesContr
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(CompanyDetailsPage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(CompanyDetailsPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            val xx: PageAndWaypoints = CompanyDetailsPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers)
+            println( "\n>>>" + xx)
+            Redirect(xx.route)
           }
         }
       )

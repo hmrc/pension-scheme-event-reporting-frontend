@@ -16,7 +16,9 @@
 
 package viewmodels.event1.member.checkAnswers
 
+import models.event1.WhoReceivedUnauthPayment.Member
 import models.{Index, UserAnswers}
+import pages.event1.WhoReceivedUnauthPaymentPage
 import pages.event1.member.UnauthorisedPaymentRecipientNamePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -28,21 +30,41 @@ import viewmodels.implicits._
 object MemberUnauthorisedPaymentRecipientNameSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] = answers match {
+         (implicit messages: Messages): Option[SummaryListRow] = {
 
-    case memberJourney if (answers.data \ "whoReceivedUnauthPayment").as[String] == "member" =>
-      answers.get(UnauthorisedPaymentRecipientNamePage(index)).map {
-        answer =>
+    answers.get(WhoReceivedUnauthPaymentPage(index)) match {
+      case Some(Member) =>
+        answers.get(UnauthorisedPaymentRecipientNamePage(index)).map {
+          answer =>
 
-          SummaryListRowViewModel(
-            key = "unauthorisedPaymentRecipientName.member.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlFormat.escape(answer).toString),
-            actions = Seq(
-              ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage(index).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.member.change.hidden"))
+            SummaryListRowViewModel(
+              key = "unauthorisedPaymentRecipientName.member.checkYourAnswersLabel",
+              value = ValueViewModel(HtmlFormat.escape(answer).toString),
+              actions = Seq(
+                ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage(index).changeLink(waypoints, sourcePage).url)
+                  .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.member.change.hidden"))
+              )
             )
-          )
-      }
-    case _ => None
+        }
+      case _ => None
+    }
+
+//    answers match {
+//
+//      case memberJourney if (answers.data \ "whoReceivedUnauthPayment").as[String] == "member" =>
+//        answers.get(UnauthorisedPaymentRecipientNamePage(index)).map {
+//          answer =>
+//
+//            SummaryListRowViewModel(
+//              key = "unauthorisedPaymentRecipientName.member.checkYourAnswersLabel",
+//              value = ValueViewModel(HtmlFormat.escape(answer).toString),
+//              actions = Seq(
+//                ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage(index).changeLink(waypoints, sourcePage).url)
+//                  .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.member.change.hidden"))
+//              )
+//            )
+//        }
+//      case _ => None
+//    }
   }
 }

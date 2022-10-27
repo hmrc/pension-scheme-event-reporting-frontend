@@ -23,7 +23,6 @@ import models.enumeration.EventType.{Event1, Event18, WindUp}
 import models.enumeration.{AddressJourneyType, EventType}
 import models.event1.WhoReceivedUnauthPayment.Member
 import models.requests.DataRequest
-import pages.event1.member.PaymentNaturePage
 import pages.event1.{ValueOfUnauthorisedPaymentPage, WhoReceivedUnauthPaymentPage}
 import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, MembersOrEmployersPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
