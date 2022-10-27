@@ -43,6 +43,7 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
 
   private val loanAmountNotANumberErrorKey = "loanDetails.loanAmount.notANumber"
   private val loanAmountNoDecimalsKey = "loanDetails.loanAmount.noDecimals"
+  private val loanAmountNegativeKey = "loanDetails.loanAmount.negative"
   private val loanAmountAmountTooHighErrorKey = "loanDetails.loanAmount.amountTooHigh"
 
   private val fundValueNotANumberErrorKey = "loanDetails.fundValue.notANumber"
@@ -72,6 +73,14 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
         decimal: String =>
           val result = form.bind(details(loanAmount = decimal))
           result.errors mustEqual Seq(FormError(loanAmountKey, loanAmountNoDecimalsKey))
+      }
+    }
+
+    "not bind negative values" in {
+      forAll(decimalsBelowValue(0) -> "negative") {
+        decimal: String =>
+          val result = form.bind(details(loanAmount = decimal))
+          result.errors.headOption.map(_.message) mustEqual Some(loanAmountNegativeKey)
       }
     }
 
