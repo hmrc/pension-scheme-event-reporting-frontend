@@ -55,7 +55,7 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
           waypoints,
           addressJourneyType,
           addressJourneyType.title(page),
-          addressJourneyType.heading(page),
+          addressJourneyType.heading(page, index),
           index
         )
       )
@@ -74,7 +74,7 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
                 waypoints,
                 addressJourneyType,
                 addressJourneyType.title(page),
-                addressJourneyType.heading(page),
+                addressJourneyType.heading(page, index),
                 index
               )
             )

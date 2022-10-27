@@ -28,9 +28,9 @@ import viewmodels.Message.Literal
 sealed trait AddressJourneyType {
   val eventType: EventType
   val nodeName: String
-  def entityName(ua:UserAnswers):Message
+  def entityName(ua:UserAnswers, index: Int):Message
 
-  def heading(whichPage: Page)(implicit request: DataRequest[AnyContent]): Message
+  def heading(whichPage: Page, index: Int)(implicit request: DataRequest[AnyContent]): Message
 
   def title(whichPage: Page): Message
 }
@@ -38,9 +38,9 @@ sealed trait AddressJourneyType {
 abstract class WithJourneyTypeDetail(val eventType: EventType, val nodeName: String, entityTypeMessageKey: String) extends AddressJourneyType {
   override def toString: String = s"event${this.eventType.toString}.$nodeName"
 
-  override def heading(whichPage: Page)(implicit
+  override def heading(whichPage: Page, index: Int)(implicit
                                           request: DataRequest[AnyContent]): Message =
-    Message(s"${whichPage.toString}.heading", this.entityName(request.userAnswers))
+    Message(s"${whichPage.toString}.heading", this.entityName(request.userAnswers, index))
 
   override def title(whichPage: Page): Message = Message(s"${whichPage.toString}.title",
     Message(entityTypeMessageKey))
@@ -54,14 +54,8 @@ object AddressJourneyType extends Enumerable.Implicits {
     eventType = EventType.Event1,
     nodeName = "employerAddress",
     entityTypeMessageKey = entityTypeMessageKeyCompany) {
-//    override def entityName(ua: UserAnswers): Message = ua.get(CompanyDetailsPage) match {
-//      case Some(cd) => Literal(cd.companyName)
-//      case _ => Message(entityTypeMessageKeyCompany)
-//    }
-
-    // TODO: 7630 Correct index below
-    override def entityName(ua: UserAnswers): Message = ua.get(CompanyDetailsPage(0)) match {
-      case Some(cd) => Literal("DUMMY")
+    override def entityName(ua: UserAnswers, index: Int): Message = ua.get(CompanyDetailsPage(index)) match {
+      case Some(cd) => Literal(cd.companyName)
       case _ => Message(entityTypeMessageKeyCompany)
     }
   }
@@ -70,8 +64,8 @@ object AddressJourneyType extends Enumerable.Implicits {
     eventType = EventType.Event1,
     nodeName = "memberResidentialAddress",
     entityTypeMessageKey = entityTypeMessageKeyResidentialProperty) {
-    override def entityName(ua: UserAnswers): Message = Message(entityTypeMessageKeyResidentialProperty)
-    override def heading(whichPage: Page)(implicit
+    override def entityName(ua: UserAnswers, index: Int): Message = Message(entityTypeMessageKeyResidentialProperty)
+    override def heading(whichPage: Page, index: Int)(implicit
                                           request: DataRequest[AnyContent]): Message =
       whichPage match {
         case EnterPostcodePage(_, _) => Message("residentialAddress.enterPostcode.h1")
@@ -91,9 +85,9 @@ object AddressJourneyType extends Enumerable.Implicits {
     eventType = EventType.Event1,
     nodeName = "employerResidentialAddress",
     entityTypeMessageKey = entityTypeMessageKeyResidentialProperty) {
-    override def entityName(ua: UserAnswers): Message = Message(entityTypeMessageKeyResidentialProperty)
+    override def entityName(ua: UserAnswers, index: Int): Message = Message(entityTypeMessageKeyResidentialProperty)
 
-    override def heading(whichPage: Page)(implicit
+    override def heading(whichPage: Page, index: Int)(implicit
                                           request: DataRequest[AnyContent]): Message =
       whichPage match {
         case EnterPostcodePage(_, _) => Message("residentialAddress.enterPostcode.h1")

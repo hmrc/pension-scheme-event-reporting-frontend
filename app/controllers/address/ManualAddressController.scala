@@ -56,7 +56,7 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
           waypoints,
           addressJourneyType,
           addressJourneyType.title(page),
-          addressJourneyType.heading(page),
+          addressJourneyType.heading(page, index),
           countryOptions.options,
           index)
       )
@@ -71,11 +71,11 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
             Future.successful(
               BadRequest(
                 view(
-                  addArgsToErrors(formWithErrors, addressJourneyType.entityName(request.userAnswers)),
+                  addArgsToErrors(formWithErrors, addressJourneyType.entityName(request.userAnswers, index)),
                   waypoints,
                   addressJourneyType,
                   addressJourneyType.title(page),
-                  addressJourneyType.heading(page), countryOptions.options,
+                  addressJourneyType.heading(page, index), countryOptions.options,
                   index
                 )
               )

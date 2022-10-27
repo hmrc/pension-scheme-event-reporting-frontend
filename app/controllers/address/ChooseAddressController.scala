@@ -49,7 +49,7 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
           val page = ChooseAddressPage(addressJourneyType, index)
           Ok(view(form, waypoints, addressJourneyType,
             addressJourneyType.title(page),
-            addressJourneyType.heading(page),
+            addressJourneyType.heading(page, index),
             addresses,
             index
           ))
@@ -73,7 +73,7 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
                       waypoints,
                       addressJourneyType,
                       addressJourneyType.title(page),
-                      addressJourneyType.heading(page),
+                      addressJourneyType.heading(page, index),
                       addresses,
                       index
                     )
