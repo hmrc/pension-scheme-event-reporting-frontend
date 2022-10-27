@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package pages.event1
+package pages.event23
 
-import controllers.event1.routes
-import models.UserAnswers
-import models.enumeration.EventType
-import pages.common.MembersDetailsPage
-import pages.{Page, Waypoints}
-import play.api.mvc.Call
+import models.event23.HowAddDualAllowance
+import pages.behaviours.PageBehaviours
 
-case object WhatYouWillNeedPage extends Page {
+class HowAddDualAllowanceSpec extends PageBehaviours {
 
-  override def route(waypoints: Waypoints): Call =
-    routes.WhatYouWillNeedController.onPageLoad(waypoints)
+  "HowAddDualAllowancePage" - {
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    MembersDetailsPage(EventType.Event1)
+    beRetrievable[HowAddDualAllowance](HowAddDualAllowancePage)
+
+    beSettable[HowAddDualAllowance](HowAddDualAllowancePage)
+
+    beRemovable[HowAddDualAllowance](HowAddDualAllowancePage)
+  }
 }

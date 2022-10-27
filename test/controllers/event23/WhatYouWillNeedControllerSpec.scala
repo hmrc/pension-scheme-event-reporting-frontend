@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.event1
+package controllers.event23
 
 import base.SpecBase
 import models.enumeration.EventType
 import pages.EmptyWaypoints
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event1.WhatYouWillNeedView
+import views.html.event23.WhatYouWillNeedView
 
 class WhatYouWillNeedControllerSpec extends SpecBase {
 
   private val waypoints = EmptyWaypoints
-  private val event1 = EventType.Event1
+  private val event23 = EventType.Event23
 
   "WhatYouWillNeed Controller" - {
 
@@ -43,7 +43,7 @@ class WhatYouWillNeedControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[WhatYouWillNeedView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, event1).url)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, event23).url)(request, messages(application)).toString
       }
     }
   }

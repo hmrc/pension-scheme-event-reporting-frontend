@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package viewmodels.event1.checkAnswers
+package viewmodels.checkAnswers
 
 import models.UserAnswers
+import models.enumeration.EventType
+import pages.common.MembersDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event1.MembersDetailsPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -26,20 +27,20 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MembersDetailsSummary  {
+object MembersDetailsSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MembersDetailsPage).map {
+    answers.get(MembersDetailsPage(eventType)).map {
       answer =>
 
         val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"membersDetails.$answer")).toString))
 
         SummaryListRowViewModel(
-          key     = "membersDetails.checkYourAnswersLabel",
-          value   = value,
+          key = "membersDetails.checkYourAnswersLabel",
+          value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", MembersDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", MembersDetailsPage(eventType).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("membersDetails.change.hidden"))
           )
         )
