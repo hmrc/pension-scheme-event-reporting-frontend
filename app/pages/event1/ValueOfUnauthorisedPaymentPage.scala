@@ -25,14 +25,14 @@ import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 
-case object ValueOfUnauthorisedPaymentPage extends QuestionPage[Boolean] {
+case class ValueOfUnauthorisedPaymentPage(index: Int) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
 
   override def toString: String = "valueOfUnauthorisedPayment"
 
   override def route(waypoints: Waypoints): Call =
-    routes.ValueOfUnauthorisedPaymentController.onPageLoad(waypoints)
+    routes.ValueOfUnauthorisedPaymentController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {

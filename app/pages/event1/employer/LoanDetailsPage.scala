@@ -24,20 +24,20 @@ import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object LoanDetailsPage extends QuestionPage[LoanDetails] {
+case class LoanDetailsPage(index: Int) extends QuestionPage[LoanDetails] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
 
   override def toString: String = "loanDetails"
 
   override def route(waypoints: Waypoints): Call =
-    routes.LoanDetailsController.onPageLoad(waypoints)
+    routes.LoanDetailsController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    PaymentValueAndDatePage
+    PaymentValueAndDatePage(index)
   }
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
-    PaymentValueAndDatePage
+    PaymentValueAndDatePage(index)
   }
 }

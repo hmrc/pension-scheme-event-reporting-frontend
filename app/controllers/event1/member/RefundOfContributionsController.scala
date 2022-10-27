@@ -42,21 +42,21 @@ class RefundOfContributionsController @Inject()(val controllerComponents: Messag
   private val form = formProvider()
   private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(RefundOfContributionsPage)).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints))
+    Ok(view(preparedForm, waypoints, index))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(RefundOfContributionsPage, value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(RefundOfContributionsPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(RefundOfContributionsPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

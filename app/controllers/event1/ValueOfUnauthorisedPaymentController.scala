@@ -20,6 +20,8 @@ import connectors.UserAnswersCacheConnector
 import models.enumeration.EventType
 import controllers.actions._
 import forms.event1.ValueOfUnauthorisedPaymentFormProvider
+import models.Index
+
 import javax.inject.Inject
 import pages.Waypoints
 import pages.event1.ValueOfUnauthorisedPaymentPage
@@ -43,20 +45,20 @@ class ValueOfUnauthorisedPaymentController @Inject()(
   private val form = formProvider()
   private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
     val preparedForm = request.userAnswers.get(ValueOfUnauthorisedPaymentPage).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints))
+    Ok(view(preparedForm, waypoints, index))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
+  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers
           val updatedAnswers = originalUserAnswers.setOrException(ValueOfUnauthorisedPaymentPage, value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-          Redirect(ValueOfUnauthorisedPaymentPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+          Redirect(ValueOfUnauthorisedPaymentPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
         }
       }
     )

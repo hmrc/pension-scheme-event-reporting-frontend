@@ -25,11 +25,11 @@
         govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("loanDetails.title"))) {
 
-    @formHelper(action = routes.LoanDetailsController.onSubmit(waypoints)) {
+    @formHelper(action = routes.LoanDetailsController.onSubmit(waypoints, index)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

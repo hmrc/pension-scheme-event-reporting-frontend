@@ -23,14 +23,14 @@ import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object WhoWasTheTransferMadePage extends QuestionPage[WhoWasTheTransferMade] {
+case class WhoWasTheTransferMadePage(index: Int) extends QuestionPage[WhoWasTheTransferMade] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
 
   override def toString: String = "whoWasTheTransferMade"
 
   override def route(waypoints: Waypoints): Call =
-    routes.WhoWasTheTransferMadeController.onPageLoad(waypoints)
+    routes.WhoWasTheTransferMadeController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     SchemeDetailsPage

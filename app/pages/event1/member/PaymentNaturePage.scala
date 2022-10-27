@@ -25,14 +25,14 @@ import pages.{IndexPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object PaymentNaturePage extends QuestionPage[PaymentNature] {
+case class PaymentNaturePage(index: Int) extends QuestionPage[PaymentNature] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
 
   override def toString: String = "paymentNature"
 
   def route(waypoints: Waypoints): Call =
-    routes.PaymentNatureController.onPageLoad(waypoints)
+    routes.PaymentNatureController.onPageLoad(waypoints, index)
 
   // scalastyle:off
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {

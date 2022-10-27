@@ -23,14 +23,14 @@ import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object MembersDetailsPage extends QuestionPage[MembersDetails] {
+case class MembersDetailsPage(index: Int) extends QuestionPage[MembersDetails] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
 
   override def toString: String = "membersDetails"
 
   override def route(waypoints: Waypoints): Call =
-    routes.MembersDetailsController.onPageLoad(waypoints)
+    routes.MembersDetailsController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     DoYouHoldSignedMandatePage

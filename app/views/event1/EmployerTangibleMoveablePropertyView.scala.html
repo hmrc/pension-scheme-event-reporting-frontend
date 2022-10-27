@@ -24,11 +24,11 @@
         govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("employerTangibleMoveableProperty.title"))) {
 
-    @formHelper(action = routes.EmployerTangibleMoveablePropertyController.onSubmit(waypoints)) {
+    @formHelper(action = routes.EmployerTangibleMoveablePropertyController.onSubmit(waypoints, index)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

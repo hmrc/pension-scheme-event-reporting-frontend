@@ -19,25 +19,25 @@ package pages.event1.employer
 import controllers.event1.routes
 import models.UserAnswers
 import pages.event1.PaymentValueAndDatePage
-import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{MembersOrEmployersPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object EmployerPaymentNatureDescriptionPage extends QuestionPage[String] {
+case class EmployerPaymentNatureDescriptionPage(index: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
 
   override def toString: String = "employerPaymentNatureDescription"
 
   override def route(waypoints: Waypoints): Call =
-    routes.EmployerPaymentNatureDescriptionController.onPageLoad(waypoints)
+    routes.EmployerPaymentNatureDescriptionController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    PaymentValueAndDatePage
+    PaymentValueAndDatePage(index)
   }
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
-    PaymentValueAndDatePage
+    PaymentValueAndDatePage(index)
   }
 
 }

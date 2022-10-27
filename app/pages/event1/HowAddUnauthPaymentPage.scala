@@ -24,9 +24,9 @@ import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import pages.{Page, QuestionPage, Waypoints}
 
-case object HowAddUnauthPaymentPage extends QuestionPage[HowAddUnauthPayment] {
+case class HowAddUnauthPaymentPage(index: Int) extends QuestionPage[HowAddUnauthPayment] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
 
   override def toString: String = "howAddUnauthPayment"
 
@@ -37,6 +37,6 @@ case object HowAddUnauthPaymentPage extends QuestionPage[HowAddUnauthPayment] {
     }
 
   override def route(waypoints: Waypoints): Call = {
-    routes.HowAddUnauthPaymentController.onPageLoad(waypoints)
+    routes.HowAddUnauthPaymentController.onPageLoad(waypoints, index)
   }
 }
