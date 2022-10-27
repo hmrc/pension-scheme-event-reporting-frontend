@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package models.event1
+package pages.event23
 
-import play.api.libs.json.{Json, OFormat}
+import controllers.event23.routes
+import models.UserAnswers
+import models.enumeration.EventType
+import pages.common.MembersDetailsPage
+import pages.{Page, Waypoints}
+import play.api.mvc.Call
 
+case object WhatYouWillNeedPage extends Page {
 
-case class MembersDetails(firstName: String, lastName: String, nino: String){
-  def fullName = s"$firstName $lastName"
+  override def route(waypoints: Waypoints): Call =
+    routes.WhatYouWillNeedController.onPageLoad(waypoints)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    MembersDetailsPage(EventType.Event23)
 }
-
-object MembersDetails {
-
-  implicit val format: OFormat[MembersDetails] = Json.format[MembersDetails]
-}
-

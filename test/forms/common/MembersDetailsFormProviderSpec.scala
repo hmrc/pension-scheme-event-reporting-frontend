@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package forms.event1
+package forms.common
 
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
-import models.event1.MembersDetails
+import models.common.MembersDetails
 import play.api.data.FormError
 import wolfendale.scalacheck.regexp.RegexpGen
 
@@ -72,7 +72,7 @@ class MembersDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      RegexpGen.from(regexSurname)
+      RegexpGen.from(regexName)
     )
 
     behave like fieldWithMaxLength(
@@ -92,7 +92,7 @@ class MembersDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
       form,
       fieldName,
       invalidString = "1A",
-      error = FormError(fieldName, invalidKey, Seq(regexSurname))
+      error = FormError(fieldName, invalidKey, Seq(regexName))
     )
   }
 

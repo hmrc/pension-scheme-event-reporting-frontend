@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.event1
+package controllers.event23
 
 import controllers.actions._
 import models.enumeration.EventType
@@ -22,7 +22,7 @@ import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event1.WhatYouWillNeedView
+import views.html.event23.WhatYouWillNeedView
 
 import javax.inject.Inject
 
@@ -35,7 +35,7 @@ class WhatYouWillNeedController @Inject()(
                                            view: WhatYouWillNeedView
                                          ) extends FrontendBaseController with I18nSupport {
 
-  private val eventType = EventType.Event1
+  private val eventType = EventType.Event23
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) {
     implicit request =>

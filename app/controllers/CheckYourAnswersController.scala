@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.address.checkAnswers.ChooseAddressSummary
-import viewmodels.checkAnswers.{Event18ConfirmationSummary, SchemeWindUpDateSummary}
+import viewmodels.checkAnswers.{Event18ConfirmationSummary, MembersDetailsSummary, SchemeWindUpDateSummary}
 import viewmodels.event1.checkAnswers._
 import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, EmployerUnauthorisedPaymentRecipientNameSummary, LoanDetailsSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
 import viewmodels.event1.member.checkAnswers._
@@ -83,8 +83,8 @@ class CheckYourAnswersController @Inject()(
   private def buildEvent1CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
 
     val basicMemberOrEmployerRows = if (event1MemberJourney) {
-      MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, sourcePage).toSeq ++
-        MembersDetailsSummary.rowNino(request.userAnswers, waypoints, sourcePage).toSeq ++
+      MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, sourcePage, Event1).toSeq ++
+        MembersDetailsSummary.rowNino(request.userAnswers, waypoints, sourcePage, Event1).toSeq ++
         DoYouHoldSignedMandateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
         ValueOfUnauthorisedPaymentSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
         schemeUnAuthPaySurchargeRow(waypoints, sourcePage) ++
