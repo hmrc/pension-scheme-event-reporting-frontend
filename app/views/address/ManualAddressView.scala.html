@@ -31,11 +31,11 @@
     govukSelect: GovukSelect
 )
 
-@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String, options: Seq[InputOption])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String, options: Seq[InputOption], index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, pageTitle)) {
 
-    @formHelper(action = routes.ManualAddressController.onSubmit(waypoints, addressJourneyType)) {
+    @formHelper(action = routes.ManualAddressController.onSubmit(waypoints, addressJourneyType, index)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

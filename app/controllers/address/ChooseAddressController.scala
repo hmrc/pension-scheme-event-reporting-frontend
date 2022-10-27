@@ -19,6 +19,7 @@ package controllers.address
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.address.ChooseAddressFormProvider
+import models.Index
 import models.enumeration.AddressJourneyType
 import pages.Waypoints
 import pages.address.{ChooseAddressPage, EnterPostcodePage, ManualAddressPage}
@@ -40,25 +41,26 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
-  def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
       request.userAnswers.get(EnterPostcodePage(addressJourneyType)) match {
         case Some(addresses) =>
           val form = formProvider(addresses)
-          val page = ChooseAddressPage(addressJourneyType)
+          val page = ChooseAddressPage(addressJourneyType, index)
           Ok(view(form, waypoints, addressJourneyType,
             addressJourneyType.title(page),
             addressJourneyType.heading(page),
-            addresses
+            addresses,
+            index
           ))
         case _ => Redirect(controllers.routes.IndexController.onPageLoad.url)
       }
     }
 
-  def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
       implicit request =>
-        val page = ChooseAddressPage(addressJourneyType)
+        val page = ChooseAddressPage(addressJourneyType, index)
         request.userAnswers.get(EnterPostcodePage(addressJourneyType)) match {
           case Some(addresses) =>
             val form = formProvider(addresses)
@@ -72,7 +74,8 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
                       addressJourneyType,
                       addressJourneyType.title(page),
                       addressJourneyType.heading(page),
-                      addresses
+                      addresses,
+                      index
                     )
                   )
                 )

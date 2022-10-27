@@ -19,6 +19,7 @@ package controllers.address
 import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.address.EnterPostcodeFormProvider
+import models.Index
 import models.enumeration.AddressJourneyType
 import models.requests.DataRequest
 import pages.Waypoints
@@ -45,24 +46,25 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
 
   private val form = formProvider()
 
-  def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
-      val page = EnterPostcodePage(addressJourneyType)
+      val page = EnterPostcodePage(addressJourneyType, index)
       Ok(
         view(
           form,
           waypoints,
           addressJourneyType,
           addressJourneyType.title(page),
-          addressJourneyType.heading(page)
+          addressJourneyType.heading(page),
+          index
         )
       )
     }
 
-  def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
       implicit request =>
-        val page = EnterPostcodePage(addressJourneyType)
+        val page = EnterPostcodePage(addressJourneyType, index)
 
         def renderView(formForRender: Form[String]): Future[Result] = {
           Future.successful(
@@ -72,7 +74,8 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
                 waypoints,
                 addressJourneyType,
                 addressJourneyType.title(page),
-                addressJourneyType.heading(page)
+                addressJourneyType.heading(page),
+                index
               )
             )
           )
