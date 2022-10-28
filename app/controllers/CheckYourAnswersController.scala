@@ -86,77 +86,95 @@ class CheckYourAnswersController @Inject()(
     }
   }
 
-  // scalastyle:off cyclomatic.complexity
-  // scalastyle:off method.length
   private def buildEvent1CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
 
     val basicMemberOrEmployerRows = if (event1MemberJourney) {
-      MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, sourcePage, Event1).toSeq ++
-        MembersDetailsSummary.rowNino(request.userAnswers, waypoints, sourcePage, Event1).toSeq ++
-        DoYouHoldSignedMandateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-        ValueOfUnauthorisedPaymentSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-        schemeUnAuthPaySurchargeRow(waypoints, sourcePage) ++
-        PaymentNatureSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      event1BasicMemberDetailsRows(waypoints, sourcePage)
     } else {
-      CompanyDetailsSummary.rowCompanyName(request.userAnswers, waypoints, sourcePage).toSeq ++
-        CompanyDetailsSummary.rowCompanyNumber(request.userAnswers, waypoints, sourcePage).toSeq ++
-        ChooseAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1EmployerAddressJourney).toSeq ++
-        EmployerPaymentNatureSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      event1BasicEmployerDetailsRows(waypoints, sourcePage)
     }
 
     val memberOrEmployerPaymentNatureRows = {
-
       if (event1MemberJourney) {
-        request.userAnswers.get(MemberPaymentNaturePage) match {
-          case Some(BenefitInKind) =>
-            BenefitInKindBriefDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
-          case Some(TransferToNonRegPensionScheme) =>
-            WhoWasTheTransferMadeSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-              SchemeDetailsSummary.rowSchemeName(request.userAnswers, waypoints, sourcePage).toSeq ++
-              SchemeDetailsSummary.rowSchemeReference(request.userAnswers, waypoints, sourcePage).toSeq
-          case Some(ErrorCalcTaxFreeLumpSums) =>
-            ErrorDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
-          case Some(BenefitsPaidEarly) =>
-            BenefitsPaidEarlySummary.row(request.userAnswers, waypoints, sourcePage).toSeq
-          case Some(RefundOfContributions) =>
-            RefundOfContributionsSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
-          case Some(OverpaymentOrWriteOff) =>
-            ReasonForTheOverpaymentOrWriteOffSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
-          case Some(ResidentialPropertyHeld) =>
-            ReasonForTheOverpaymentOrWriteOffSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-              ChooseAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1MemberPropertyAddressJourney).toSeq
-          case Some(TangibleMoveablePropertyHeld) =>
-            MemberTangibleMoveablePropertySummary.row(request.userAnswers, waypoints, sourcePage).toSeq
-          case Some(CourtOrConfiscationOrder) =>
-            MemberUnauthorisedPaymentRecipientNameSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
-          case Some(MemberOther) =>
-            MemberPaymentNatureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
-          case _ => Nil
-        }
+        event1MemberPaymentNatureRows(waypoints, sourcePage)
       } else {
-        request.userAnswers.get(EmployerPaymentNaturePage) match {
-          case Some(LoansExceeding50PercentOfFundValue) =>
-            LoanDetailsSummary.rowLoanAmount(request.userAnswers, waypoints, sourcePage).toSeq ++
-              LoanDetailsSummary.rowFundValue(request.userAnswers, waypoints, sourcePage).toSeq
-          case Some(ResidentialProperty) =>
-            ChooseAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1EmployerPropertyAddressJourney).toSeq
-          case Some(TangibleMoveableProperty) =>
-            EmployerTangibleMoveablePropertySummary.row(request.userAnswers, waypoints, sourcePage).toSeq
-          case Some(CourtOrder) =>
-            EmployerUnauthorisedPaymentRecipientNameSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
-          case Some(EmployerOther) =>
-            EmployerPaymentNatureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
-          case _ => Nil
-        }
+        event1EmployerPaymentNatureRows(waypoints, sourcePage)
       }
     }
 
-    val paymentValueAndDateRows =
-      PaymentValueAndDateSummary.rowPaymentValue(request.userAnswers, waypoints, sourcePage).toSeq ++
-        PaymentValueAndDateSummary.rowPaymentDate(request.userAnswers, waypoints, sourcePage).toSeq
+    val paymentValueAndDateRows = event1PaymentValueAndDateRows(waypoints, sourcePage)
 
     basicMemberOrEmployerRows ++ memberOrEmployerPaymentNatureRows ++ paymentValueAndDateRows
   }
+
+  private def event1BasicMemberDetailsRows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
+                                          (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
+    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, sourcePage, Event1).toSeq ++
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, sourcePage, Event1).toSeq ++
+      DoYouHoldSignedMandateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      ValueOfUnauthorisedPaymentSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+      schemeUnAuthPaySurchargeRow(waypoints, sourcePage) ++
+      PaymentNatureSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+
+  private def event1BasicEmployerDetailsRows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
+                                          (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
+    CompanyDetailsSummary.rowCompanyName(request.userAnswers, waypoints, sourcePage).toSeq ++
+      CompanyDetailsSummary.rowCompanyNumber(request.userAnswers, waypoints, sourcePage).toSeq ++
+      ChooseAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1EmployerAddressJourney).toSeq ++
+      EmployerPaymentNatureSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+
+  // scalastyle:off cyclomatic.complexity
+  private def event1MemberPaymentNatureRows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
+                                           (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
+    request.userAnswers.get(MemberPaymentNaturePage) match {
+      case Some(BenefitInKind) =>
+        BenefitInKindBriefDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      case Some(TransferToNonRegPensionScheme) =>
+        WhoWasTheTransferMadeSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+          SchemeDetailsSummary.rowSchemeName(request.userAnswers, waypoints, sourcePage).toSeq ++
+          SchemeDetailsSummary.rowSchemeReference(request.userAnswers, waypoints, sourcePage).toSeq
+      case Some(ErrorCalcTaxFreeLumpSums) =>
+        ErrorDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      case Some(BenefitsPaidEarly) =>
+        BenefitsPaidEarlySummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      case Some(RefundOfContributions) =>
+        RefundOfContributionsSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      case Some(OverpaymentOrWriteOff) =>
+        ReasonForTheOverpaymentOrWriteOffSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      case Some(ResidentialPropertyHeld) =>
+        ReasonForTheOverpaymentOrWriteOffSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
+          ChooseAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1MemberPropertyAddressJourney).toSeq
+      case Some(TangibleMoveablePropertyHeld) =>
+        MemberTangibleMoveablePropertySummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      case Some(CourtOrConfiscationOrder) =>
+        MemberUnauthorisedPaymentRecipientNameSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      case Some(MemberOther) =>
+        MemberPaymentNatureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      case _ => Nil
+    }
+
+  private def event1EmployerPaymentNatureRows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
+                                           (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
+    request.userAnswers.get(EmployerPaymentNaturePage) match {
+      case Some(LoansExceeding50PercentOfFundValue) =>
+        LoanDetailsSummary.rowLoanAmount(request.userAnswers, waypoints, sourcePage).toSeq ++
+          LoanDetailsSummary.rowFundValue(request.userAnswers, waypoints, sourcePage).toSeq
+      case Some(ResidentialProperty) =>
+        ChooseAddressSummary.row(request.userAnswers, waypoints, sourcePage, AddressJourneyType.Event1EmployerPropertyAddressJourney).toSeq
+      case Some(TangibleMoveableProperty) =>
+        EmployerTangibleMoveablePropertySummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      case Some(CourtOrder) =>
+        EmployerUnauthorisedPaymentRecipientNameSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      case Some(EmployerOther) =>
+        EmployerPaymentNatureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      case _ => Nil
+    }
+
+  private def event1PaymentValueAndDateRows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
+                                           (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
+    PaymentValueAndDateSummary.rowPaymentValue(request.userAnswers, waypoints, sourcePage).toSeq ++
+      PaymentValueAndDateSummary.rowPaymentDate(request.userAnswers, waypoints, sourcePage).toSeq
+
 
   private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
     SchemeWindUpDateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
