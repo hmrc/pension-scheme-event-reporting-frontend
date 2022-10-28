@@ -35,13 +35,15 @@ class LoanDetailsFormProvider @Inject() extends Mappings with Transforms {
           "loanDetails.loanAmount.notANumber",
           "loanDetails.loanAmount.noDecimals")
           .verifying(
-            maximumValue[BigDecimal](maxPaymentValue, "loanDetails.loanAmount.amountTooHigh")
+            maximumValue[BigDecimal](maxPaymentValue, "loanDetails.loanAmount.amountTooHigh"),
+            minimumValue[BigDecimal](0, "loanDetails.loanAmount.negative")
           ), "fundValue" ->
         optionBigDecimal2DP(
           "loanDetails.fundValue.notANumber",
           "loanDetails.fundValue.noDecimals")
           .verifying(
-            maximumValue[BigDecimal](maxPaymentValue, "loanDetails.fundValue.amountTooHigh")
+            maximumValue[BigDecimal](maxPaymentValue, "loanDetails.fundValue.amountTooHigh"),
+            minimumValue[BigDecimal](0, "loanDetails.fundValue.negative")
           )
       )
       (LoanDetails.apply)(LoanDetails.unapply)
