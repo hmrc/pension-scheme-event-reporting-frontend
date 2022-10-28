@@ -25,7 +25,7 @@ import play.api.mvc.Call
 case class  CheckYourAnswersPage(eventType: EventType, index: Option[Index]) extends CheckAnswersPage  {
     override val urlFragment: String =
       index match {
-        case Some(i) => s"event-${eventType.toString}-check-answers-${i.id}"
+        case Some(i) => s"event-${eventType.toString}-check-answers-${i.display}"
         case _ => s"event-${eventType.toString}-check-answers"
       }
 
@@ -49,7 +49,7 @@ object CheckYourAnswersPage {
 
     s match {
       case pattern(indexDisplay) =>
-        Some(CheckYourAnswersPage(eventType, Some(Index(indexDisplay.toInt))).waypoint)
+        Some(CheckYourAnswersPage(eventType, Some(Index(indexDisplay.toInt - 1))).waypoint)
       case _ =>
         None
     }

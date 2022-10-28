@@ -27,8 +27,7 @@ POST        /new-report/event-18-confirmation                              contr
 
 GET         /new-report/event-windup-check-your-answers                    controllers.CheckYourAnswersController.onPageLoad(eventType: EventType = EventType.WindUp)
 GET         /new-report/:index/event-1-check-your-answers                  controllers.CheckYourAnswersController.onPageLoadWithIndex(eventType: EventType = EventType.Event1, index: Index)
-GET         /new-report/:index/event-2-check-your-answers                  controllers.CheckYourAnswersController.onPageLoadWithIndex(eventType: EventType = EventType.Event2, index: Index)
-GET         /new-report/event-1-check-your-answers                         controllers.CheckYourAnswersController.onPageLoad(eventType: EventType = EventType.Event1)
+
 GET         /new-report/event-2-check-your-answers                         controllers.CheckYourAnswersController.onPageLoad(eventType: EventType = EventType.Event2)
 GET         /new-report/event-3-check-your-answers                         controllers.CheckYourAnswersController.onPageLoad(eventType: EventType = EventType.Event3)
 GET         /new-report/event-4-check-your-answers                         controllers.CheckYourAnswersController.onPageLoad(eventType: EventType = EventType.Event4)
@@ -167,10 +166,12 @@ POST        /new-report/event-23-member-details                            contr
 GET         /new-report/:index/event-1-member-details                     controllers.common.MembersDetailsController.onPageLoadWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1, index: Index)
 POST        /new-report/:index/event-1-member-details                     controllers.common.MembersDetailsController.onSubmitWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1, index: Index)
 
-# BELOW ARE DUMMIES - WE WILL GET ERRORS UNTIL WE HAVE 2 MEMBER DETAILS PAGES OF EACH TYPE
+# BELOW ARE DUMMIES - DUE TO HOW ROUTES WORKS WE WILL GET COMPILE ERRORS UNTIL WE HAVE 2 CONTROLLERS OF EACH TYPE:-
 
 GET         /new-report/event-2-member-details                            controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2)
 POST        /new-report/event-2-member-details                            controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2)
 
 GET         /new-report/:index/event-2-member-details                     controllers.common.MembersDetailsController.onPageLoadWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index)
 POST        /new-report/:index/event-2-member-details                     controllers.common.MembersDetailsController.onSubmitWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index)
+
+GET         /new-report/:index/event-2-check-your-answers                  controllers.CheckYourAnswersController.onPageLoadWithIndex(eventType: EventType = EventType.Event2, index: Index)

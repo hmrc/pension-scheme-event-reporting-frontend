@@ -20,7 +20,9 @@ import play.api.mvc.PathBindable
 
 import scala.language.implicitConversions
 
-case class Index(id: Int)
+case class Index(id: Int) {
+  def display: Int = id + 1
+}
 
 object Index {
 

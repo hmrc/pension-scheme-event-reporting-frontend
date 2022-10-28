@@ -21,15 +21,19 @@ import models.common.MembersDetails
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event23}
 import pages.event1.DoYouHoldSignedMandatePage
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{IndexPage, MembersOrEmployersPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class MembersDetailsPage(eventType: EventType, index: Option[Int]) extends QuestionPage[MembersDetails] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = {
+    index match {
+      case Some(i) => MembersOrEmployersPage(i).path \ MembersDetailsPage.toString
+      case _ => JsPath \ toString
+    }
 
-  override def toString: String = "membersDetails"
+  }
 
   override def route(waypoints: Waypoints): Call = {
     index match {
@@ -46,4 +50,8 @@ case class MembersDetailsPage(eventType: EventType, index: Option[Int]) extends 
       case _ => super.nextPageNormalMode(waypoints, answers)
     }
   }
+}
+
+object MembersDetailsPage {
+  override def toString: String = "membersDetails"
 }
