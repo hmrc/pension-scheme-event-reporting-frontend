@@ -32,16 +32,26 @@ object MemberUnauthorisedPaymentRecipientNameSummary {
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
-    (answers.get(WhoReceivedUnauthPaymentPage), answers.get(UnauthorisedPaymentRecipientNamePage)) match {
-      case (Some(Member), Some(answer)) =>
-        Some(SummaryListRowViewModel(
-          key = "unauthorisedPaymentRecipientName.member.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.member.change.hidden"))
+    val maybeUnauthPaymentRecipientDefined = answers.get(UnauthorisedPaymentRecipientNamePage)
+
+    val value = maybeUnauthPaymentRecipientDefined match {
+      case Some(_) =>
+        ValueViewModel(HtmlFormat.escape(maybeUnauthPaymentRecipientDefined.get).toString)
+      case None =>
+        ValueViewModel("")
+    }
+
+    answers.get(WhoReceivedUnauthPaymentPage) match {
+      case Some(Member) =>
+        Some(
+          SummaryListRowViewModel(
+            key = "unauthorisedPaymentRecipientName.member.checkYourAnswersLabel",
+            value = value,
+            actions = Seq(
+              ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage.changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.member.change.hidden"))
+            )
           )
-        )
         )
       case _ => None
     }

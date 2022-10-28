@@ -109,11 +109,11 @@ class CheckYourAnswersController @Inject()(
       if (event1MemberJourney) {
         request.userAnswers.get(MemberPaymentNaturePage) match {
           case Some(BenefitInKind) =>
-            BenefitInKindBriefDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq //Works
+            BenefitInKindBriefDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
           case Some(TransferToNonRegPensionScheme) =>
             WhoWasTheTransferMadeSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-              SchemeDetailsSummary.rowSchemeName(request.userAnswers, waypoints, sourcePage).toSeq ++ //Works
-              SchemeDetailsSummary.rowSchemeReference(request.userAnswers, waypoints, sourcePage).toSeq //Works
+              SchemeDetailsSummary.rowSchemeName(request.userAnswers, waypoints, sourcePage).toSeq ++
+              SchemeDetailsSummary.rowSchemeReference(request.userAnswers, waypoints, sourcePage).toSeq
           case Some(ErrorCalcTaxFreeLumpSums) =>
             ErrorDescriptionSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
           case Some(BenefitsPaidEarly) =>

@@ -30,10 +30,8 @@ object BenefitInKindBriefDescriptionSummary {
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
-    val value = answers.get(BenefitInKindBriefDescriptionPage).map {
-
-      answer =>
-        if (answer.length > 0) {
+    val value = answers.get(BenefitInKindBriefDescriptionPage) map { answer =>
+        if (!answer.isBlank) {
           ValueViewModel(HtmlFormat.escape(answer).toString)
         } else {
           ValueViewModel("")

@@ -25,20 +25,28 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object BenefitsPaidEarlySummary  {
+object BenefitsPaidEarlySummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(BenefitsPaidEarlyPage).map {
-      answer =>
+         (implicit messages: Messages): Option[SummaryListRow] = {
 
-        SummaryListRowViewModel(
-          key     = "benefitsPaidEarly.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", BenefitsPaidEarlyPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("benefitsPaidEarly.change.hidden"))
-          )
-        )
+    val value = answers.get(BenefitsPaidEarlyPage) map { answer =>
+      if (!answer.isBlank) {
+        ValueViewModel(HtmlFormat.escape(answer).toString)
+      } else {
+        ValueViewModel("")
+      }
     }
+
+    Some(
+      SummaryListRowViewModel(
+        key = "benefitsPaidEarly.checkYourAnswersLabel",
+        value = value.get,
+        actions = Seq(
+          ActionItemViewModel("site.change", BenefitsPaidEarlyPage.changeLink(waypoints, sourcePage).url)
+            .withVisuallyHiddenText(messages("benefitsPaidEarly.change.hidden"))
+        )
+      )
+    )
+  }
 }
