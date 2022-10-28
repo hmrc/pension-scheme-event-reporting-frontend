@@ -489,3 +489,10 @@ loanDetails.fundValue.negative = The fund value must not be a negative amount of
 
 loanDetails.loanAmount.heading = Amount of the loan (optional)
 loanDetails.fundValue.heading = Value of the fund (optional)
+
+testDate.heading = Test Only Date Tool
+testDate.title = Test Only Date Tool
+testDate.hint = For example, 22 09 2022
+testDate.error.noDayMonthOrYear = The date must include a day, month and year
+testDate.error.nothingEntered = Enter the mock date
+testDate.error.outsideDateRanges = Enter a real date
