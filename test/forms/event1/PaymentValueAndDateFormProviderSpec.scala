@@ -37,7 +37,6 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
   private val messageKeyPaymentValueKey = "paymentValueAndDate.value"
 
   // scalastyle:off magic.number
-  val tooBigNoDataGenerator: Gen[String] = decimalsAboveValue(999999999.99)
   val invalidDataGenerator: Gen[String] = intsInRangeWithCommas(0, 999999999)
   val negativeValueDataGenerator: Gen[String] = decimalsBelowValue(0)
 
