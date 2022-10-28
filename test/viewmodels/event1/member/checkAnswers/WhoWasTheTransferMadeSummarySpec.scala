@@ -41,7 +41,7 @@ class WhoWasTheTransferMadeSummarySpec extends AnyFreeSpec with Matchers with Op
 
       val answer = UserAnswers().setOrException(WhoWasTheTransferMadePage(0), WhoWasTheTransferMade.AnEmployerFinanced)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -65,7 +65,7 @@ class WhoWasTheTransferMadeSummarySpec extends AnyFreeSpec with Matchers with Op
 
       val answer = UserAnswers().setOrException(WhoWasTheTransferMadePage(0), WhoWasTheTransferMade.NonRecognisedScheme)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -89,7 +89,7 @@ class WhoWasTheTransferMadeSummarySpec extends AnyFreeSpec with Matchers with Op
 
       val answer = UserAnswers().setOrException(WhoWasTheTransferMadePage(0), WhoWasTheTransferMade.Other)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(

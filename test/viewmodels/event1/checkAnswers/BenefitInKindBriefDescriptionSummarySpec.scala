@@ -40,7 +40,7 @@ class BenefitInKindBriefDescriptionSummarySpec extends AnyFreeSpec with Matchers
 
       val answer = UserAnswers().setOrException(BenefitInKindBriefDescriptionPage(0), "brief description of the benefit in kind")
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       BenefitInKindBriefDescriptionSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(

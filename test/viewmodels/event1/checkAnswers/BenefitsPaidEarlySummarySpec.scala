@@ -40,7 +40,7 @@ class BenefitsPaidEarlySummarySpec extends AnyFreeSpec with Matchers with Option
 
       val answer = UserAnswers().setOrException(BenefitsPaidEarlyPage(0), "brief description of why the benefits are being paid early")
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       BenefitsPaidEarlySummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(

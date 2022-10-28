@@ -19,34 +19,42 @@ package pages
 import controllers.routes
 import models.Index
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event18, WindUp}
+import models.enumeration.EventType.{Event18, WindUp}
 import play.api.mvc.Call
+
+case class  CheckYourAnswersPage(eventType: EventType, index: Option[Index]) extends CheckAnswersPage  {
+    override val urlFragment: String =
+      index match {
+        case Some(i) => s"event-${eventType.toString}-check-answers-${i.id}"
+        case _ => s"event-${eventType.toString}-check-answers"
+      }
+
+
+    override def route(waypoints: Waypoints): Call = {
+      index match {
+        case Some(i) => routes.CheckYourAnswersController.onPageLoadWithIndex(eventType, i)
+        case _ => routes.CheckYourAnswersController.onPageLoad(eventType)
+      }
+
+    }
+
+    override def toString: String = "CheckYourAnswersPage"
+
+}
 
 object CheckYourAnswersPage {
 
-  def apply(eventType: EventType): CheckAnswersPage = new CheckAnswersPage {
+  def waypointFromString(eventType: EventType, s: String): Option[Waypoint] = {
+    val pattern = """event-1-check-answers-(\d{1,6})""".r.anchored
 
-    override val urlFragment: String = s"event-${eventType.toString}-check-answers"
-
-    override def route(waypoints: Waypoints): Call = {
-      routes.CheckYourAnswersController.onPageLoad(eventType)
+    s match {
+      case pattern(indexDisplay) =>
+        Some(CheckYourAnswersPage(eventType, Some(Index(indexDisplay.toInt))).waypoint)
+      case _ =>
+        None
     }
-
-    override def toString: String = "CheckYourAnswersPage"
   }
 
-  def applyWithIndex(eventType: EventType, index: Int): CheckAnswersPage = new CheckAnswersPage {
-
-    override val urlFragment: String = s"event-${eventType.toString}-check-answers"
-
-    override def route(waypoints: Waypoints): Call = {
-      routes.CheckYourAnswersController.onPageLoadWithIndex(eventType, Index(index))
-    }
-
-    override def toString: String = "CheckYourAnswersPage"
-  }
-
-  val event18: CheckAnswersPage = CheckYourAnswersPage(Event18)
-  val event1: CheckAnswersPage = CheckYourAnswersPage(Event1)
-  val windUp: CheckAnswersPage = CheckYourAnswersPage(WindUp)
+  val event18: CheckAnswersPage = CheckYourAnswersPage(Event18, None)
+  val windUp: CheckAnswersPage = CheckYourAnswersPage(WindUp, None)
 }

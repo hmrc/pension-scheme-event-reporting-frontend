@@ -40,7 +40,7 @@ class DoYouHoldSignedMandateSummarySpec extends AnyFreeSpec with Matchers with O
 
       val answer = UserAnswers().setOrException(DoYouHoldSignedMandatePage(0), true)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       DoYouHoldSignedMandateSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
@@ -58,7 +58,7 @@ class DoYouHoldSignedMandateSummarySpec extends AnyFreeSpec with Matchers with O
 
       val answer = UserAnswers().setOrException(DoYouHoldSignedMandatePage(0), false)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       DoYouHoldSignedMandateSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(

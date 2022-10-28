@@ -53,7 +53,7 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad(eventType: EventType): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
 
-      val thisPage = CheckYourAnswersPage(eventType)
+      val thisPage = CheckYourAnswersPage(eventType, None)
       val waypoints = EmptyWaypoints
 
       val rows = eventType match {
@@ -68,7 +68,7 @@ class CheckYourAnswersController @Inject()(
   def onPageLoadWithIndex(eventType: EventType, index: Index): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
 
-      val thisPage = CheckYourAnswersPage.applyWithIndex(eventType, index)
+      val thisPage = CheckYourAnswersPage(eventType, Some(index))
       val waypoints = EmptyWaypoints
 
       val rows = eventType match {

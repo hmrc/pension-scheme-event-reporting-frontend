@@ -40,7 +40,7 @@ class ValueOfUnauthorisedPaymentSummarySpec extends AnyFreeSpec with Matchers wi
 
       val answer = UserAnswers().setOrException(ValueOfUnauthorisedPaymentPage(0), true)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       ValueOfUnauthorisedPaymentSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
@@ -58,7 +58,7 @@ class ValueOfUnauthorisedPaymentSummarySpec extends AnyFreeSpec with Matchers wi
 
       val answer = UserAnswers().setOrException(ValueOfUnauthorisedPaymentPage(0), false)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       ValueOfUnauthorisedPaymentSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(

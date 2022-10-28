@@ -40,7 +40,7 @@ class MemberUnauthorisedPaymentRecipientNameSummarySpec extends AnyFreeSpec with
 
       val name = "Harry"
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
       val answer = UserAnswers().setOrException(UnauthorisedPaymentRecipientNamePage(0), name)
 
       answer match {

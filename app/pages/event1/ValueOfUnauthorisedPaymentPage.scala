@@ -44,7 +44,7 @@ case class ValueOfUnauthorisedPaymentPage(index: Int) extends QuestionPage[Boole
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
     updatedAnswers.get(this).map {
       case true  => SchemeUnAuthPaySurchargeMemberPage(index)
-      case false => CheckYourAnswersPage(Event1)
+      case false => CheckYourAnswersPage(Event1, Some(index))
     }.orRecover
   }
 }

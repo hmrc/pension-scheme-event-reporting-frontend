@@ -41,7 +41,7 @@ class CompanyDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
 
       val answer = UserAnswers().setOrException(CompanyDetailsPage(0), companyDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       CompanyDetailsSummary.rowCompanyName(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
@@ -63,7 +63,7 @@ class CompanyDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
 
       val answer = UserAnswers().setOrException(CompanyDetailsPage(0), companyDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       CompanyDetailsSummary.rowCompanyNumber(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(

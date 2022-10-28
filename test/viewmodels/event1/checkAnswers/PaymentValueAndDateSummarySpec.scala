@@ -49,7 +49,7 @@ class PaymentValueAndDateSummarySpec extends AnyFreeSpec with Matchers with Opti
 
       val answer = UserAnswers().setOrException(PaymentValueAndDatePage(0), paymentDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       PaymentValueAndDateSummary.rowPaymentValue(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
@@ -72,7 +72,7 @@ class PaymentValueAndDateSummarySpec extends AnyFreeSpec with Matchers with Opti
 
       val answer = UserAnswers().setOrException(PaymentValueAndDatePage(0), paymentDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val date = paymentDetails.paymentDate
       val format = DateTimeFormatter.ofPattern("dd/MM/yyyy")

@@ -80,11 +80,12 @@ object Waypoints {
       case h :: t => NonEmptyWaypoints(NonEmptyList(h, t))
     }
 
-  def fromString(s: String): Option[Waypoints] =
+  def fromString(s: String): Option[Waypoints] = {
     s.split(',').toList
       .map(Waypoint.fromString)
       .sequence
       .map(apply)
+  }
 
   implicit def queryStringBindable(implicit stringBinder: QueryStringBindable[String]): QueryStringBindable[Waypoints] =
     new QueryStringBindable[Waypoints] {
@@ -92,8 +93,6 @@ object Waypoints {
       override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Waypoints]] = {
         params.get(key).map {
           data =>
-            println( "\n>>>1>" + key)
-            println( "\n>>>2>" + params)
             Waypoints.fromString(data.head)
               .map(Right(_))
               .getOrElse(Left(s"Unable to bind parameter ${data.head} as waypoints"))

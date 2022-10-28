@@ -41,7 +41,7 @@ class EmployerTangibleMoveablePropertySummarySpec extends AnyFreeSpec with Match
 
       val answer = UserAnswers().setOrException(EmployerTangibleMoveablePropertyPage(0), "brief description of the tangible moveable property")
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       EmployerTangibleMoveablePropertySummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(

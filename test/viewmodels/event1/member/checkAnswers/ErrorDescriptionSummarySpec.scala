@@ -40,7 +40,7 @@ class ErrorDescriptionSummarySpec extends AnyFreeSpec with Matchers with OptionV
 
       val answer = UserAnswers().setOrException(ErrorDescriptionPage(0), "brief description of the error")
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       ErrorDescriptionSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(

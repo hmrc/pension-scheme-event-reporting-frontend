@@ -17,6 +17,7 @@
 package pages
 
 import models.Mode
+import models.enumeration.EventType.Event1
 
 case class Waypoint(
                      page: WaypointPage,
@@ -32,44 +33,14 @@ object Waypoint {
   See claim-child-benefit-frontend project for examples of how this is used.
    */
 
-
-  /*
-
-  object Waypoint {
-
-    private val fragments: Map[String, Waypoint] =
-      Map(
-        CheckYourAnswersPage.urlFragment                         -> CheckYourAnswersPage.waypoint,
-        AddApplicantPreviousFamilyNamePage.normalModeUrlFragment -> AddApplicantPreviousFamilyNamePage.waypoint(NormalMode),
-        AddApplicantPreviousFamilyNamePage.checkModeUrlFragment  -> AddApplicantPreviousFamilyNamePage.waypoint(CheckMode),
-        AddChildPage.normalModeUrlFragment                       -> AddChildPage.waypoint(NormalMode),
-        AddChildPage.checkModeUrlFragment                        -> AddChildPage.waypoint(CheckMode)
-      )
-
-    def fromString(s: String): Option[Waypoint] =
-      fragments.get(s)
-        .orElse(CheckChildDetailsPage.waypointFromString(s))
-        .orElse(AddChildPreviousNamePage.waypointFromString(s))
-  }
-
-   */
-
   private val fragments: Map[String, Waypoint] =
     Map(
       CheckYourAnswersPage.event18.urlFragment -> CheckYourAnswersPage.event18.waypoint,
-      CheckYourAnswersPage.windUp.urlFragment -> CheckYourAnswersPage.windUp.waypoint,
-      CheckYourAnswersPage.event1.urlFragment -> CheckYourAnswersPage.event1.waypoint
+      CheckYourAnswersPage.windUp.urlFragment -> CheckYourAnswersPage.windUp.waypoint
     )
 
   def fromString(s: String): Option[Waypoint] = {
-    println( "\n>>>" + s)
     fragments.get(s)
+      .orElse(CheckYourAnswersPage.waypointFromString(Event1, s))
   }
-
-  /*
-  def fromString(s: String): Option[Waypoint] =
-    fragments.get(s)
-      .orElse(CheckChildDetailsPage.waypointFromString(s))
-      .orElse(AddChildPreviousNamePage.waypointFromString(s))
-   */
 }

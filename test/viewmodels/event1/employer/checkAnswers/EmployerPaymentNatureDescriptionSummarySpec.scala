@@ -40,7 +40,7 @@ class EmployerPaymentNatureDescriptionSummarySpec extends AnyFreeSpec with Match
 
       val answer = UserAnswers().setOrException(EmployerPaymentNatureDescriptionPage(0), "brief description of the nature of the payment")
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       EmployerPaymentNatureDescriptionSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(

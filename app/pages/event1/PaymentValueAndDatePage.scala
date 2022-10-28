@@ -34,5 +34,5 @@ case class PaymentValueAndDatePage(index: Int) extends QuestionPage[PaymentDetai
     routes.PaymentValueAndDateController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    CheckYourAnswersPage.applyWithIndex(EventType.Event1, index)
+    CheckYourAnswersPage(EventType.Event1, Some(index))
 }

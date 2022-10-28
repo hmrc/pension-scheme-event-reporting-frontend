@@ -42,7 +42,7 @@ class RefundOfContributionsSummarySpec extends AnyFreeSpec with Matchers with Op
 
       val answer = UserAnswers().setOrException(RefundOfContributionsPage(0), RefundOfContributions.WidowOrOrphan)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -66,7 +66,7 @@ class RefundOfContributionsSummarySpec extends AnyFreeSpec with Matchers with Op
 
       val answer = UserAnswers().setOrException(RefundOfContributionsPage(0), RefundOfContributions.Other)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(

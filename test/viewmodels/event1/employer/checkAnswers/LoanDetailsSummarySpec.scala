@@ -42,7 +42,7 @@ class LoanDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValues
       val loanAmountValue = "£10.00"
       val answer = UserAnswers().setOrException(LoanDetailsPage(0), loanDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -66,7 +66,7 @@ class LoanDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValues
       val fundValue = "£20.57"
       val answer = UserAnswers().setOrException(LoanDetailsPage(0), loanDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(

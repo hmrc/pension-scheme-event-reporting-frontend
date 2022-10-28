@@ -42,7 +42,7 @@ class WhoReceivedUnauthPaymentSummarySpec extends AnyFreeSpec with Matchers with
 
       val answer = UserAnswers().setOrException(WhoReceivedUnauthPaymentPage(0), WhoReceivedUnauthPayment.Member)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -66,7 +66,7 @@ class WhoReceivedUnauthPaymentSummarySpec extends AnyFreeSpec with Matchers with
 
       val answer = UserAnswers().setOrException(WhoReceivedUnauthPaymentPage(0), WhoReceivedUnauthPayment.Employer)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(

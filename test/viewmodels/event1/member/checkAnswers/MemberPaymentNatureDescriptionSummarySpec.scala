@@ -40,7 +40,7 @@ class MemberPaymentNatureDescriptionSummarySpec extends AnyFreeSpec with Matcher
 
       val answer = UserAnswers().setOrException(MemberPaymentNatureDescriptionPage(0), "brief description of the nature of the payment")
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       MemberPaymentNatureDescriptionSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(

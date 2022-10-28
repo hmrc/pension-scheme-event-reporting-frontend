@@ -44,7 +44,7 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
 
       val answers = UserAnswers().setOrException(MembersDetailsPage(Event1, Some(0)), memberDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
       val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(memberDetails.fullName)).toString))
 
       MembersDetailsSummary.rowFullName(answers, waypoints, Some(0), sourcePage, Event1) mustBe Some(
@@ -66,7 +66,7 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
 
       val answers = UserAnswers().setOrException(MembersDetailsPage(Event1, Some(0)), memberDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
       val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(memberDetails.nino)).toString))
 
       MembersDetailsSummary.rowNino(answers, waypoints, Some(0), sourcePage, Event1) mustBe Some(

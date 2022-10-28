@@ -66,7 +66,7 @@ class ChooseAddressSummarySpec extends AnyFreeSpec with Matchers with OptionValu
       val addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney
       val answer = UserAnswers().setOrException(ManualAddressPage(addressJourneyType, 0), employerAddress)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val rowKey = if(addressJourneyType != Event1EmployerAddressJourney){
         "residentialAddress.address.title"
