@@ -77,12 +77,12 @@ object Waypoints {
       case h :: t => NonEmptyWaypoints(NonEmptyList(h, t))
     }
 
-  def fromString(s: String): Option[Waypoints] = {
+  def fromString(s: String): Option[Waypoints] =
     s.split(',').toList
       .map(Waypoint.fromString)
       .sequence
       .map(apply)
-  }
+
 
   implicit def queryStringBindable(implicit stringBinder: QueryStringBindable[String]): QueryStringBindable[Waypoints] =
     new QueryStringBindable[Waypoints] {

@@ -21,11 +21,12 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.common.MembersDetailsFormProvider
 import models.Index.indexToInt
 import models.enumeration.EventType
+import models.requests.OptionalDataRequest
 import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.common.MembersDetailsPage
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.common.MembersDetailsView
 
@@ -52,34 +53,42 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
     Ok(view(preparedForm, waypoints, eventType, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType)))
   }
 
-  def onSubmitWithIndex(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, controllers.common.routes.MembersDetailsController.onSubmitWithIndex(waypoints, eventType, index)))),
-        value => {
-          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(MembersDetailsPage(eventType, Some(index)), value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(MembersDetailsPage(eventType, Some(index)).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
-          }
-        }
+      doOnSubmit(
+        waypoints,
+        eventType,
+        MembersDetailsPage(eventType, None),
+        controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType)
       )
   }
 
-  def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmitWithIndex(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType)))),
-        value => {
-          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(MembersDetailsPage(eventType, None), value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(MembersDetailsPage(eventType, None).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
-          }
-        }
+      doOnSubmit(
+        waypoints,
+        eventType,
+        MembersDetailsPage(eventType, Some(index)),
+        controllers.common.routes.MembersDetailsController.onSubmitWithIndex(waypoints, eventType, index)
       )
   }
+
+  private def doOnSubmit(waypoints: Waypoints,
+                          eventType: EventType,
+                          page: MembersDetailsPage,
+                          postCall: => Call
+                         )(implicit request: OptionalDataRequest[_]): Future[Result] =
+    form.bindFromRequest().fold(
+      formWithErrors =>
+        Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, postCall))),
+      value => {
+        val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+        val updatedAnswers = originalUserAnswers.setOrException(page, value)
+        userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+          Redirect(page.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+        }
+      }
+    )
+
 
 }

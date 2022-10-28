@@ -39,8 +39,11 @@ object Waypoint {
       CheckYourAnswersPage.windUp.urlFragment -> CheckYourAnswersPage.windUp.waypoint
     )
 
-  def fromString(s: String): Option[Waypoint] = {
+  /*
+  All CYA page objects which have an index should be added below. Those without an index should be added above.
+   */
+  def fromString(s: String): Option[Waypoint] =
     fragments.get(s)
       .orElse(CheckYourAnswersPage.waypointFromString(Event1, s))
-  }
+
 }

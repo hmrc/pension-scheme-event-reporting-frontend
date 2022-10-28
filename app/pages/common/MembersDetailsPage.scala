@@ -27,21 +27,17 @@ import play.api.mvc.Call
 
 case class MembersDetailsPage(eventType: EventType, index: Option[Int]) extends QuestionPage[MembersDetails] {
 
-  override def path: JsPath = {
+  override def path: JsPath =
     index match {
       case Some(i) => MembersOrEmployersPage(i).path \ MembersDetailsPage.toString
       case _ => JsPath \ toString
     }
 
-  }
-
-  override def route(waypoints: Waypoints): Call = {
+  override def route(waypoints: Waypoints): Call =
     index match {
       case Some(i) => controllers.common.routes.MembersDetailsController.onPageLoadWithIndex(waypoints, eventType, i)
       case None => controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, eventType)
     }
-
-  }
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     (eventType, index) match {

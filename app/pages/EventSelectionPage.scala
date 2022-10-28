@@ -37,8 +37,7 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
-      // TODO: Calculate index
-      case Some(Event1) => HowAddUnauthPaymentPage(0)
+      case Some(Event1) => HowAddUnauthPaymentPage(0) // TODO: PODS-7616 Index needs to be calculated. For now hard code as zero.
       case Some(Event18) => Event18ConfirmationPage
       case Some(Event23) => HowAddDualAllowancePage
       case Some(EventWoundUp) => SchemeWindUpDatePage
