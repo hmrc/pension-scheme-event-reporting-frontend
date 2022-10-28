@@ -12,5 +12,5 @@
 # Add all the application routes to the prod.routes file
 ->          /                                                             prod.Routes
 
-GET         /manage-pension-scheme-event-report/test-only/set-date        controllers.testOnly.DateTestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /manage-pension-scheme-event-report/test-only/set-date        controllers.testOnly.DateTestController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /manage-pension-scheme-event-report/test-only/set-date        controllers.testOnly.DateTestController.onPageLoad()
+POST        /manage-pension-scheme-event-report/test-only/set-date        controllers.testOnly.DateTestController.onSubmit()

@@ -18,7 +18,6 @@ package controllers.testOnly
 
 import com.google.inject.Inject
 import forms.testOnly.DateTestFormProvider
-import pages.Waypoints
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -34,16 +33,16 @@ class DateTestController @Inject()(val controllerComponents: MessagesControllerC
 
   private val form = formProvider()
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = Action.async { implicit request =>
+  def onPageLoad(): Action[AnyContent] = Action.async { implicit request =>
     val preparedForm = DateHelper.overriddenDate.map(form.fill).getOrElse(form)
-    Future(Ok(view(preparedForm, waypoints)))
+    Future(Ok(view(preparedForm)))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = Action.async {
+  def onSubmit(): Action[AnyContent] = Action.async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints))),
+          Future.successful(BadRequest(view(formWithErrors))),
         value => {
           DateHelper.setDate(Some(value))
           Future.successful(Redirect(controllers.testOnly.routes.DateTestController.onPageLoad().url))

@@ -24,11 +24,11 @@
         govukDateInput: GovukDateInput
 )
 
-@(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
+@(form: Form[_])(implicit request: Request[_], messages: Messages)
 
     @layout(pageTitle = title(form, messages("testDate.title"))) {
 
-        @formHelper(action = routes.DateTestController.onSubmit(waypoints), 'autoComplete -> "off") {
+        @formHelper(action = routes.DateTestController.onSubmit(), 'autoComplete -> "off") {
 
             @if(form.errors.nonEmpty) {
                 @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("testDate" -> "testDate.day")))
