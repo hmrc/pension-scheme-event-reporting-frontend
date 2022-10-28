@@ -42,44 +42,51 @@ object SchemeDetailsSummary {
   }
 
   def rowSchemeName(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
-                   (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SchemeDetailsPage(index)).map {
-      answer =>
+                   (implicit messages: Messages): Option[SummaryListRow] = {
 
-        val value = ValueViewModel(
+
+    val value = answers.get(SchemeDetailsPage(index)).map {
+
+      answer =>
+        ValueViewModel(
           HtmlContent(
             schemeDetailsAnswer(answer.schemeName)
           )
         )
-
-        SummaryListRowViewModel(
-          key = "Scheme name",
-          value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", SchemeDetailsPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
-          )
-        )
     }
+    Some(
+      SummaryListRowViewModel(
+        key = "Scheme name",
+        value = value.getOrElse(ValueViewModel("")),
+        actions = Seq(
+          ActionItemViewModel("site.change", SchemeDetailsPage(index).changeLink(waypoints, sourcePage).url)
+            .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
+        )
+      )
+    )
+  }
 
   def rowSchemeReference(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
-                        (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SchemeDetailsPage(index)).map {
-      answer =>
+                        (implicit messages: Messages): Option[SummaryListRow] = {
 
-        val value = ValueViewModel(
+    val value = answers.get(SchemeDetailsPage(index)).map {
+
+      answer =>
+        ValueViewModel(
           HtmlContent(
             schemeDetailsAnswer(answer.reference)
           )
         )
-
-        SummaryListRowViewModel(
-          key = "Reference",
-          value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", SchemeDetailsPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
-          )
-        )
     }
+    Some(
+      SummaryListRowViewModel(
+        key = "Reference",
+        value = value.getOrElse(ValueViewModel("")),
+        actions = Seq(
+          ActionItemViewModel("site.change", SchemeDetailsPage(index).changeLink(waypoints, sourcePage).url)
+            .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
+        )
+      )
+    )
+  }
 }

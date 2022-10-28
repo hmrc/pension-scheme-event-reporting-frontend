@@ -19,9 +19,9 @@ package controllers.event1.employer
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.employer.CompanyDetailsFormProvider
-import models.{Index, UserAnswers}
 import models.enumeration.EventType
-import pages.{PageAndWaypoints, Waypoints}
+import models.{Index, UserAnswers}
+import pages.Waypoints
 import pages.event1.employer.CompanyDetailsPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

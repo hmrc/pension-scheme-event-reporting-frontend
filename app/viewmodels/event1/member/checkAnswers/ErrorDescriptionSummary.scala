@@ -28,17 +28,26 @@ import viewmodels.implicits._
 object ErrorDescriptionSummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ErrorDescriptionPage(index)).map {
-      answer =>
+         (implicit messages: Messages): Option[SummaryListRow] = {
 
-        SummaryListRowViewModel(
-          key     = "errorDescription.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", ErrorDescriptionPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("errorDescription.change.hidden"))
-          )
-        )
+    val maybeErrorDescDefined = answers.get(ErrorDescriptionPage(index))
+
+    val value = maybeErrorDescDefined match {
+      case Some(_) =>
+          ValueViewModel(HtmlFormat.escape(maybeErrorDescDefined.get).toString)
+      case None =>
+        ValueViewModel("")
     }
+
+    Some(
+      SummaryListRowViewModel(
+        key     = "errorDescription.checkYourAnswersLabel",
+        value   = value,
+        actions = Seq(
+          ActionItemViewModel("site.change", ErrorDescriptionPage(index).changeLink(waypoints, sourcePage).url)
+            .withVisuallyHiddenText(messages("errorDescription.change.hidden"))
+        )
+      )
+    )
+  }
 }

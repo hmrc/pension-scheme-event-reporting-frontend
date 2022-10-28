@@ -28,17 +28,25 @@ import viewmodels.implicits._
 object EmployerPaymentNatureDescriptionSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(EmployerPaymentNatureDescriptionPage(index)).map {
-      answer =>
+         (implicit messages: Messages): Option[SummaryListRow] = {
 
-        SummaryListRowViewModel(
-          key = "employerPaymentNatureDescription.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", EmployerPaymentNatureDescriptionPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("employerPaymentNatureDescription.change.hidden"))
-          )
-        )
+    val maybeOtherDescDefined = answers.get(EmployerPaymentNatureDescriptionPage(index))
+
+    val value = maybeOtherDescDefined match {
+      case Some(_) =>
+        ValueViewModel(HtmlFormat.escape(maybeOtherDescDefined.get).toString)
+      case None =>
+        ValueViewModel("")
     }
+    Some(
+      SummaryListRowViewModel(
+        key = "employerPaymentNatureDescription.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel("site.change", EmployerPaymentNatureDescriptionPage(index).changeLink(waypoints, sourcePage).url)
+            .withVisuallyHiddenText(messages("employerPaymentNatureDescription.change.hidden"))
+        )
+      )
+    )
+  }
 }

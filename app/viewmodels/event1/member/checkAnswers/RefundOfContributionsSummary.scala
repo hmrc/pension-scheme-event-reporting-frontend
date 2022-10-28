@@ -30,7 +30,8 @@ import viewmodels.implicits._
 object RefundOfContributionsSummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
+         (implicit messages: Messages): Option[SummaryListRow] = {
+
     answers.get(RefundOfContributionsPage(index)).map {
       answer =>
 
@@ -49,5 +50,6 @@ object RefundOfContributionsSummary  {
           )
         )
     }
+  }
 }
 

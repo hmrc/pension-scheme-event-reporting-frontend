@@ -25,20 +25,28 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object BenefitInKindBriefDescriptionSummary  {
+object BenefitInKindBriefDescriptionSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(BenefitInKindBriefDescriptionPage(index)).map {
-      answer =>
+         (implicit messages: Messages): Option[SummaryListRow] = {
 
-        SummaryListRowViewModel(
-          key     = "benefitInKindBriefDescription.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", BenefitInKindBriefDescriptionPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("benefitInKindBriefDescription.change.hidden"))
-          )
-        )
+  val value = answers.get(BenefitInKindBriefDescriptionPage(index)) map { answer =>
+        if (!answer.isBlank) {
+          ValueViewModel(HtmlFormat.escape(answer).toString)
+        } else {
+          ValueViewModel("")
+        }
     }
+
+    Some(
+      SummaryListRowViewModel(
+        key = "benefitInKindBriefDescription.checkYourAnswersLabel",
+        value = value.get,
+        actions = Seq(
+          ActionItemViewModel("site.change", BenefitInKindBriefDescriptionPage(index).changeLink(waypoints, sourcePage).url)
+            .withVisuallyHiddenText(messages("benefitInKindBriefDescription.change.hidden"))
+        )
+      )
+    )
+  }
 }

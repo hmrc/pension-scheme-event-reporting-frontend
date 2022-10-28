@@ -28,17 +28,26 @@ import viewmodels.implicits._
 object MemberTangibleMoveablePropertySummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MemberTangibleMoveablePropertyPage(index)).map {
-      answer =>
+         (implicit messages: Messages): Option[SummaryListRow] = {
 
-        SummaryListRowViewModel(
-          key = "memberTangibleMoveableProperty.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", MemberTangibleMoveablePropertyPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("memberTangibleMoveableProperty.change.hidden"))
-          )
-        )
+    val maybeTangibleDescriptionDefined = answers.get(MemberTangibleMoveablePropertyPage(index))
+
+    val value = maybeTangibleDescriptionDefined match {
+      case Some(_) =>
+        ValueViewModel(HtmlFormat.escape(maybeTangibleDescriptionDefined.get).toString)
+      case None =>
+        ValueViewModel("")
     }
+
+    Some(
+      SummaryListRowViewModel(
+        key = "memberTangibleMoveableProperty.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel("site.change", MemberTangibleMoveablePropertyPage(index).changeLink(waypoints, sourcePage).url)
+            .withVisuallyHiddenText(messages("memberTangibleMoveableProperty.change.hidden"))
+        )
+      )
+    )
+  }
 }
