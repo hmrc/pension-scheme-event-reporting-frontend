@@ -749,3 +749,10 @@ country.ZW = Zimbabwe
 country.JM = Jamaica
 country.EE = Estonia
 
+
+testDate.heading = Test Only Date Tool
+testDate.title = Test Only Date Tool
+testDate.hint = For example, 22 09 2022
+testDate.error.noDayMonthOrYear = The date must include a day, month and year
+testDate.error.nothingEntered = Enter the mock date
+testDate.error.outsideDateRanges = Enter a real date
