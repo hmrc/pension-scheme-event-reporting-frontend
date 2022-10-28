@@ -40,7 +40,7 @@ object CheckYourAnswersPage {
     override val urlFragment: String = s"event-${eventType.toString}-check-answers"
 
     override def route(waypoints: Waypoints): Call = {
-      routes.CheckYourAnswersController.onPageLoadWithIndex(Index(index))
+      routes.CheckYourAnswersController.onPageLoadWithIndex(eventType, Index(index))
     }
 
     override def toString: String = "CheckYourAnswersPage"
