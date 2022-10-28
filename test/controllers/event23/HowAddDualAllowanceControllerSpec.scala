@@ -44,15 +44,9 @@ class HowAddDualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-<<<<<<< HEAD:test/controllers/event1/MembersDetailsControllerSpec.scala
-  private def getRoute: String = routes.MembersDetailsController.onPageLoad(waypoints, 0).url
-
-  private def postRoute: String = routes.MembersDetailsController.onSubmit(waypoints, 0).url
-=======
   private def getRoute: String = routes.HowAddDualAllowanceController.onPageLoad(waypoints).url
 
   private def postRoute: String = routes.HowAddDualAllowanceController.onSubmit(waypoints).url
->>>>>>> c82eb80c87950d8ee4d4965fce60d2ec0337ed20:test/controllers/event23/HowAddDualAllowanceControllerSpec.scala
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -77,17 +71,13 @@ class HowAddDualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach
         val view = application.injector.instanceOf[HowAddDualAllowanceView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-<<<<<<< HEAD:test/controllers/event1/MembersDetailsControllerSpec.scala
-      val userAnswers = UserAnswers().set(MembersDetailsPage(0), validValue).success.value
-=======
       val userAnswers = UserAnswers().set(HowAddDualAllowancePage, HowAddDualAllowance.values.head).success.value
->>>>>>> c82eb80c87950d8ee4d4965fce60d2ec0337ed20:test/controllers/event23/HowAddDualAllowanceControllerSpec.scala
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -99,11 +89,7 @@ class HowAddDualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach
         val result = route(application, request).value
 
         status(result) mustEqual OK
-<<<<<<< HEAD:test/controllers/event1/MembersDetailsControllerSpec.scala
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, 0)(request, messages(application)).toString
-=======
         contentAsString(result) mustEqual view(form.fill(HowAddDualAllowance.values.head), waypoints)(request, messages(application)).toString
->>>>>>> c82eb80c87950d8ee4d4965fce60d2ec0337ed20:test/controllers/event23/HowAddDualAllowanceControllerSpec.scala
       }
     }
 
@@ -120,17 +106,10 @@ class HowAddDualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", HowAddDualAllowance.values.head.toString))
 
         val result = route(application, request).value
-<<<<<<< HEAD:test/controllers/event1/MembersDetailsControllerSpec.scala
-        val updatedAnswers = emptyUserAnswers.set(MembersDetailsPage(0), validValue).success.value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MembersDetailsPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-=======
         val updatedAnswers = emptyUserAnswers.set(HowAddDualAllowancePage, HowAddDualAllowance.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual HowAddDualAllowancePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
->>>>>>> c82eb80c87950d8ee4d4965fce60d2ec0337ed20:test/controllers/event23/HowAddDualAllowanceControllerSpec.scala
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -150,7 +129,7 @@ class HowAddDualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

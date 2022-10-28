@@ -159,10 +159,16 @@ POST        /new-report/event-23-entry-type                                contr
 
 GET         /new-report/event-23-what-need                                 controllers.event23.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET         /new-report/:index/event-23-member-details                            controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
-POST        /new-report/:index/event-23-member-details                            controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
+GET         /new-report/event-23-member-details                            controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
+POST        /new-report/event-23-member-details                            controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 
-GET         /new-report/:index/event-1-member-details                             controllers.event1.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
-POST        /new-report/:index/event-1-member-details                             controllers.event1.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+GET         /new-report/:index/event-1-member-details                     controllers.common.MembersDetailsController.onPageLoadWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1, index: Index)
+POST        /new-report/:index/event-1-member-details                     controllers.common.MembersDetailsController.onSubmitWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1, index: Index)
 
+# BELOW ARE DUMMIES - WE WILL GET ERRORS UNTIL WE HAVE 2 MEMBER DETAILS PAGES OF EACH TYPE
 
+GET         /new-report/event-2-member-details                            controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2)
+POST        /new-report/event-2-member-details                            controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2)
+
+GET         /new-report/:index/event-2-member-details                     controllers.common.MembersDetailsController.onPageLoadWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index)
+POST        /new-report/:index/event-2-member-details                     controllers.common.MembersDetailsController.onSubmitWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index)

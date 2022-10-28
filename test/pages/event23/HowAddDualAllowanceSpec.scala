@@ -25,16 +25,8 @@ class HowAddDualAllowanceSpec extends PageBehaviours {
 
     beRetrievable[HowAddDualAllowance](HowAddDualAllowancePage)
 
-<<<<<<< HEAD:test/pages/event1/MembersDetailsPageSpec.scala
-    beRetrievable[MembersDetails](MembersDetailsPage(0))
-
-    beSettable[MembersDetails](MembersDetailsPage(0))
-
-    beRemovable[MembersDetails](MembersDetailsPage(0))
-=======
     beSettable[HowAddDualAllowance](HowAddDualAllowancePage)
 
     beRemovable[HowAddDualAllowance](HowAddDualAllowancePage)
->>>>>>> c82eb80c87950d8ee4d4965fce60d2ec0337ed20:test/pages/event23/HowAddDualAllowanceSpec.scala
   }
 }

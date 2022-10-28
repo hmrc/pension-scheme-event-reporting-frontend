@@ -39,6 +39,15 @@ object Waypoint {
       CheckYourAnswersPage.event1.urlFragment -> CheckYourAnswersPage.event1.waypoint
     )
 
+  def fromString(s: String): Option[Waypoint] = {
+    println( "\n>>>" + s)
+    fragments.get(s)
+  }
+
+  /*
   def fromString(s: String): Option[Waypoint] =
     fragments.get(s)
+      .orElse(CheckChildDetailsPage.waypointFromString(s))
+      .orElse(AddChildPreviousNamePage.waypointFromString(s))
+   */
 }

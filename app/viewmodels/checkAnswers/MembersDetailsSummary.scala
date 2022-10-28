@@ -29,7 +29,7 @@ import viewmodels.implicits._
 
 object MembersDetailsSummary {
 
-  def rowFullName(answers: UserAnswers, waypoints: Waypoints, index: Int, sourcePage: CheckAnswersPage, eventType: EventType)
+  def rowFullName(answers: UserAnswers, waypoints: Waypoints, index: Option[Int], sourcePage: CheckAnswersPage, eventType: EventType)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MembersDetailsPage(eventType, index)).map {
       answer =>
@@ -45,7 +45,7 @@ object MembersDetailsSummary {
         )
     }
 
-  def rowNino(answers: UserAnswers, waypoints: Waypoints, index: Int, sourcePage: CheckAnswersPage, eventType: EventType)
+  def rowNino(answers: UserAnswers, waypoints: Waypoints, index: Option[Int], sourcePage: CheckAnswersPage, eventType: EventType)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MembersDetailsPage(eventType, index)).map {
       answer =>

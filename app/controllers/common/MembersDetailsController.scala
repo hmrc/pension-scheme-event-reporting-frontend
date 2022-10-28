@@ -42,21 +42,41 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
 
   private val form = formProvider()
 
-  def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, indexToInt(index)))).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, eventType, index))
+  def onPageLoadWithIndex(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, Some(indexToInt(index))))).fold(form)(form.fill)
+    Ok(view(preparedForm, waypoints, eventType, controllers.common.routes.MembersDetailsController.onSubmitWithIndex(waypoints, eventType, index)))
   }
 
-  def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, None))).fold(form)(form.fill)
+    Ok(view(preparedForm, waypoints, eventType, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType)))
+  }
+
+  def onSubmitWithIndex(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, index))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, controllers.common.routes.MembersDetailsController.onSubmitWithIndex(waypoints, eventType, index)))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(MembersDetailsPage(eventType, index), value)
+          val updatedAnswers = originalUserAnswers.setOrException(MembersDetailsPage(eventType, Some(index)), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(MembersDetailsPage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(MembersDetailsPage(eventType, Some(index)).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+          }
+        }
+      )
+  }
+
+  def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)).async {
+    implicit request =>
+      form.bindFromRequest().fold(
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType)))),
+        value => {
+          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+          val updatedAnswers = originalUserAnswers.setOrException(MembersDetailsPage(eventType, None), value)
+          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+            Redirect(MembersDetailsPage(eventType, None).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

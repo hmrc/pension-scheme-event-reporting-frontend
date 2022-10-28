@@ -102,8 +102,8 @@ class CheckYourAnswersController @Inject()(
   private def buildEvent1CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage,
                                  index: Int)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     val basicMemberOrEmployerRows = if (event1MemberJourney(index)) {
-      MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event1).toSeq ++
-        MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event1).toSeq ++
+      MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, Some(index), sourcePage, Event1).toSeq ++
+        MembersDetailsSummary.rowNino(request.userAnswers, waypoints, Some(index), sourcePage, Event1).toSeq ++
         DoYouHoldSignedMandateSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
         ValueOfUnauthorisedPaymentSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
         schemeUnAuthPaySurchargeRow(waypoints, index, sourcePage) ++

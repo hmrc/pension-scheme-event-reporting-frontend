@@ -27,11 +27,11 @@
 )
 
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, submitUrl: Call)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("membersDetails.title"))) {
 
-    @formHelper(action = controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index)) {
+    @formHelper(action = submitUrl) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

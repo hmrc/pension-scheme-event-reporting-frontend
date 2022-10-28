@@ -56,9 +56,7 @@ class CompanyDetailsController @Inject()(val controllerComponents: MessagesContr
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(CompanyDetailsPage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            val xx: PageAndWaypoints = CompanyDetailsPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers)
-            println( "\n>>>" + xx)
-            Redirect(xx.route)
+            Redirect(CompanyDetailsPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

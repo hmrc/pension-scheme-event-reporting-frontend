@@ -92,6 +92,8 @@ object Waypoints {
       override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Waypoints]] = {
         params.get(key).map {
           data =>
+            println( "\n>>>1>" + key)
+            println( "\n>>>2>" + params)
             Waypoints.fromString(data.head)
               .map(Right(_))
               .getOrElse(Left(s"Unable to bind parameter ${data.head} as waypoints"))

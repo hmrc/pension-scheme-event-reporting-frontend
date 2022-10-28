@@ -25,19 +25,24 @@ import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class MembersDetailsPage(eventType: EventType, index: Int) extends QuestionPage[MembersDetails] {
+case class MembersDetailsPage(eventType: EventType, index: Option[Int]) extends QuestionPage[MembersDetails] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "membersDetails"
 
-  override def route(waypoints: Waypoints): Call =
-    controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, eventType, index)
+  override def route(waypoints: Waypoints): Call = {
+    index match {
+      case Some(i) => controllers.common.routes.MembersDetailsController.onPageLoadWithIndex(waypoints, eventType, i)
+      case None => controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, eventType)
+    }
+
+  }
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    eventType match {
-      case Event1 => DoYouHoldSignedMandatePage(index)
-      case Event23 => IndexPage
+    (eventType, index) match {
+      case (Event1, Some(index)) => DoYouHoldSignedMandatePage(index)
+      case (Event23, None) => IndexPage
       case _ => super.nextPageNormalMode(waypoints, answers)
     }
   }

@@ -18,6 +18,7 @@ package generators
 
 import models.Index
 import models.enumeration.AddressJourneyType
+import models.enumeration.EventType.Event1
 import org.scalacheck.Arbitrary
 import pages._
 import pages.common.MembersDetailsPage
@@ -96,8 +97,8 @@ trait PageGenerators {
   implicit lazy val arbitraryDoYouHoldSignedMandatePage: Arbitrary[event1.DoYouHoldSignedMandatePage] =
     Arbitrary(event1.DoYouHoldSignedMandatePage(Index(0)))
 
-  implicit lazy val arbitraryMembersDetailsPage: Arbitrary[MembersDetailsPage.type] =
-    Arbitrary(MembersDetailsPage)
+  implicit lazy val arbitraryMembersDetailsPage: Arbitrary[MembersDetailsPage] =
+    Arbitrary(MembersDetailsPage(Event1, Some(0)))
 
   implicit lazy val arbitraryWhoReceivedUnauthPaymentPage: Arbitrary[event1.WhoReceivedUnauthPaymentPage] =
     Arbitrary(event1.WhoReceivedUnauthPaymentPage(Index(0)))

@@ -75,7 +75,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(HowAddUnauthPaymentPage(0), Manual),
         submitAnswer(WhoReceivedUnauthPaymentPage(0), Member),
         next,
-        submitAnswer(MembersDetailsPage(EventType.Event1, 0), membersDetails.get),
+        submitAnswer(MembersDetailsPage(EventType.Event1, Some(0)), membersDetails.get),
         submitAnswer(DoYouHoldSignedMandatePage(0), true),
         submitAnswer(ValueOfUnauthorisedPaymentPage(0), true),
         submitAnswer(SchemeUnAuthPaySurchargeMemberPage(0), true),
@@ -285,7 +285,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(EventSelectionPage, Event23),
         submitAnswer(HowAddDualAllowancePage, models.event23.HowAddDualAllowance.Manual),
         next,
-        pageMustBe(pages.common.MembersDetailsPage(EventType.Event23))
+        pageMustBe(pages.common.MembersDetailsPage(EventType.Event23, None))
       )
   }
 
