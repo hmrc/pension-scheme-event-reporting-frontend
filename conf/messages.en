@@ -500,3 +500,12 @@ unauthPaymentAndSanctionCharges.h2 = How to pay
 unauthPaymentAndSanctionCharges.p4 = Check your scheme’s financial overview regularly following submission to see if it has been updated with any applicable charges. Then use the appropriate charge reference(s) when paying any member unauthorised payment or scheme sanction charge.
 unauthPaymentAndSanctionCharges.p5 = You will also receive paper notice(s) for any charges raised.
 
+unauthPaymentSummary.title = Unauthorised payments for tax year ending 5 April {0}
+unauthPaymentSummary.heading = Unauthorised payments for tax year ending 5 April {0}
+unauthPaymentSummary.yesno.legend = Do you want to add another unauthorised payment?
+unauthPaymentSummary.checkYourAnswersLabel = Check your answers
+unauthPaymentSummary.error.required = Select yes if you want to add another unauthorised payment
+unauthPaymentSummary.change.hidden = Unauthorised payment summary
+unauthPaymentSummary.table.header1 = Member or company name
+unauthPaymentSummary.table.header2 = Unauthorised payment value
+
