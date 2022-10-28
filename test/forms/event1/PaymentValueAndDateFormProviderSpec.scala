@@ -76,12 +76,16 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
       }
     }
 
+    "bind within the range 0 to 999999999.99" in {
+      val number = "999999999.99"
+          val result = form.bind(paymentDetails(paymentValue = number, Some(LocalDate.now())))
+          result.errors mustEqual Nil
+    }
+
     "not bind outside the range 0 to 999999999.99" in {
-      forAll(tooBigNoDataGenerator -> "amountTooHigh") {
-        number: String =>
+      val number = "1000000000.00"
           val result = form.bind(paymentDetails(paymentValue = number, Some(LocalDate.now())))
           result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyPaymentValueKey.error.amountTooHigh")
-      }
     }
 
     "not bind numbers below 0" in {
