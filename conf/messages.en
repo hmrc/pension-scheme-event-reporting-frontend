@@ -438,6 +438,7 @@ paymentValueAndDate.value.error.nothingEntered = Enter the payment value
 paymentValueAndDate.value.error.notANumber = The payment value must be an amount of money, like 123.45 or 156.00
 paymentValueAndDate.value.error.noDecimals = The payment value must include pence, like 123.45 or 156.00
 paymentValueAndDate.value.error.amountTooHigh = The payment value must be £999999999.99 or less
+paymentValueAndDate.value.error.negative = The payment value must not be a negative amount of money, like -123.45 or -156.00
 paymentValueAndDate.value.change.hidden = Enter the payment value
 
 paymentValueAndDate.date.heading = Date of payment or when benefit made available
@@ -486,10 +487,12 @@ loanDetails.CYA.fundValueLabel = Fund Amount
 loanDetails.loanAmount.notANumber = The loan amount must be an amount of money, like 123.45 or 156.00
 loanDetails.loanAmount.noDecimals = The loan amount must include pence, like 123.45 or 156.00
 loanDetails.loanAmount.amountTooHigh = The loan amount must be £999999999.99 or less
+loanDetails.loanAmount.negative = The loan amount must not be a negative amount of money, like -123.45 or -156.00
 
 loanDetails.fundValue.notANumber = The fund value must be an amount of money, like 123.45 or 156.00
 loanDetails.fundValue.noDecimals = The fund value must include pence, like 123.45 or 156.00
 loanDetails.fundValue.amountTooHigh = The fund value must be £999999999.99 or less
+loanDetails.fundValue.negative = The fund value must not be a negative amount of money, like -123.45 or -156.00
 
 loanDetails.loanAmount.heading = Amount of the loan (optional)
 loanDetails.fundValue.heading = Value of the fund (optional)
