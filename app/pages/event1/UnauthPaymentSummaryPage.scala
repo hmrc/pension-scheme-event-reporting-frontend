@@ -18,6 +18,7 @@ package pages.event1
 
 import controllers.event1.routes
 import models.UserAnswers
+import pages.event1.member.WhoWasTheTransferMadePage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -32,7 +33,10 @@ case object UnauthPaymentSummaryPage extends QuestionPage[Boolean] {
     routes.UnauthPaymentSummaryController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    UnauthPaymentAndSanctionChargesPage
+    answers.get(UnauthPaymentSummaryPage) match {
+      case Some(true) => WhoWasTheTransferMadePage(answers.memberOrEmployerSummaryEvent1.count(_ => true))
+      case _ => UnauthPaymentAndSanctionChargesPage
+    }
   }
 }
 

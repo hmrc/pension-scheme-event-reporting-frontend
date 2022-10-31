@@ -41,4 +41,6 @@ case class CompanyDetailsPage(index: Int) extends QuestionPage[CompanyDetails] {
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
     CheckYourAnswersPage(Event1, Some(index))
+
+
 }

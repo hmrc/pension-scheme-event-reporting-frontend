@@ -16,9 +16,11 @@
 
 package pages.event1
 
+import com.google.common.collect.Multimaps.index
+import models.UserAnswers
 import models.event1.MemberOrEmployerSummary
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
-import pages.{QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.{JsPath, Reads}
 import play.api.mvc.Call
 import play.api.libs.functional.syntax._
@@ -33,49 +35,6 @@ case object MembersOrEmployersPage extends QuestionPage[Seq[MemberOrEmployerSumm
   override def toString: String = "membersOrEmployers"
 
   override def route(waypoints: Waypoints): Call = controllers.routes.IndexController.onPageLoad
-
-  /*
-  * "event1" : {
-            "membersOrEmployers" : [
-                {
-                    "howAddUnauthPayment" : "manual",
-                    "whoReceivedUnauthPayment" : "member",
-                    "membersDetails" : {
-                        "firstName" : "a",
-                        "lastName" : "a",
-                        "nino" : "CS121212C"
-                    },
-                    "doYouHoldSignedMandate" : true,
-                    "valueOfUnauthorisedPayment" : false,
-                    "paymentNatureMember" : "memberOther",
-                    "memberPaymentNatureDescription" : "dsds",
-                    "paymentValueAndDate" : {
-                        "paymentValue" : 12.12,
-                        "paymentDate" : "2022-05-01"
-                    }
-                }
-            ]
-        }
-        *
-        *
-        "event1": {
-              "companyDetails": {
-                "companyName": "Test Co.",
-                "companyNumber": "01234567"
-              },
-              "employerAddress": {
-                "address": {
-                  "addressLine1": "10 Other Place",
-                  "addressLine2": "Some District",
-                  "addressLine3": "Anytown",
-                  "postcode": "ZZ1 1ZZ",
-                  "country": "GB"
-                }
-              }
-            }*
-        *
-  * */
-
 
   private def fail[A]: Reads[A] = Reads.failed[A]("Unknown value")
 
