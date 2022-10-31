@@ -20,7 +20,8 @@ import controllers.address.routes
 import models.UserAnswers
 import models.address.TolerantAddress
 import models.enumeration.AddressJourneyType
-import pages.{MembersOrEmployersPage, Page, QuestionPage, Waypoints}
+import pages.event1.MembersOrEmployersPage
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

@@ -20,7 +20,7 @@ import controllers.event1.routes
 import models.UserAnswers
 import models.event1.WhoReceivedUnauthPayment
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
-import pages.{MembersOrEmployersPage, Page, QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

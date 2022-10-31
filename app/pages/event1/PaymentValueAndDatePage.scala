@@ -20,7 +20,7 @@ import controllers.event1.routes
 import models.UserAnswers
 import models.enumeration.EventType
 import models.event1.PaymentDetails
-import pages.{CheckYourAnswersPage, MembersOrEmployersPage, Page, QuestionPage, Waypoints}
+import pages.{CheckYourAnswersPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

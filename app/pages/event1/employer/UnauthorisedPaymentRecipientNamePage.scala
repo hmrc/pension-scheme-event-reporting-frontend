@@ -17,8 +17,8 @@
 package pages.event1.employer
 
 import models.UserAnswers
-import pages.event1.PaymentValueAndDatePage
-import pages.{MembersOrEmployersPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.event1.{MembersOrEmployersPage, PaymentValueAndDatePage}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

@@ -21,7 +21,8 @@ import models.UserAnswers
 import models.enumeration.AddressJourneyType.Event1MemberPropertyAddressJourney
 import models.event1.PaymentNature
 import models.event1.PaymentNature._
-import pages.{IndexPage, MembersOrEmployersPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.event1.MembersOrEmployersPage
+import pages.{IndexPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

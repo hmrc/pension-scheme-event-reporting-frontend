@@ -20,8 +20,8 @@ import models.UserAnswers
 import models.common.MembersDetails
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event23}
-import pages.event1.DoYouHoldSignedMandatePage
-import pages.{IndexPage, MembersOrEmployersPage, Page, QuestionPage, Waypoints}
+import pages.event1.{DoYouHoldSignedMandatePage, MembersOrEmployersPage}
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

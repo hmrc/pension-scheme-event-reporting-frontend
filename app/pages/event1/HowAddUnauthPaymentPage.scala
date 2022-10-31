@@ -22,7 +22,7 @@ import models.event1.HowAddUnauthPayment
 import models.event1.HowAddUnauthPayment.Manual
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{MembersOrEmployersPage, Page, QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 
 case class HowAddUnauthPaymentPage(index: Int) extends QuestionPage[HowAddUnauthPayment] {
 
