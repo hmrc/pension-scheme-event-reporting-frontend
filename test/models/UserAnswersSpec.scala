@@ -31,5 +31,6 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers {
         Seq(MemberOrEmployerSummary(SampleData.memberDetails.fullName, BigDecimal(857.00), 0),
           MemberOrEmployerSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00), 1))
     }
+
   }
 }

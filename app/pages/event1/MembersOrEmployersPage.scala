@@ -17,16 +17,21 @@
 package pages.event1
 
 import models.event1.MemberOrEmployerSummary
-import pages.common.MembersDetailsPage
+import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.{JsPath, Reads}
 import play.api.mvc.Call
-import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
+import play.api.libs.functional.syntax._
+import play.api.libs.json.Reads._
+import play.api.libs.json._
 
 case object MembersOrEmployersPage extends QuestionPage[Seq[MemberOrEmployerSummary]] {
-  def apply(index: Int) : JsPath = path \ index
+  def apply(index: Int): JsPath = path \ index
+
   def path: JsPath = JsPath \ "event1" \ toString
+
   override def toString: String = "membersOrEmployers"
+
   override def route(waypoints: Waypoints): Call = controllers.routes.IndexController.onPageLoad
 
   /*
@@ -51,22 +56,61 @@ case object MembersOrEmployersPage extends QuestionPage[Seq[MemberOrEmployerSumm
                 }
             ]
         }
+        *
+        *
+        "event1": {
+              "companyDetails": {
+                "companyName": "Test Co.",
+                "companyNumber": "01234567"
+              },
+              "employerAddress": {
+                "address": {
+                  "addressLine1": "10 Other Place",
+                  "addressLine2": "Some District",
+                  "addressLine3": "Anytown",
+                  "postcode": "ZZ1 1ZZ",
+                  "country": "GB"
+                }
+              }
+            }*
+        *
   * */
-  val readsMemberOrEmployerSummary: Reads[MemberOrEmployerSummary] =
-    ((JsPath \ MembersDetailsPage.toString \ "firstName") and
-      (JsPath \ MembersDetailsPage.toString \ "lastName") and
-      (JsPath \ PaymentValueAndDatePage.toString \ "paymentValue"))(a, b)
 
-  implicit val reads: Reads[Seq[MemberOrEmployerSummary]] = {
-      path.read[Seq[MemberOrEmployerSummary]](Reads.seq(readsMemberOrEmployerSummary))
+
+  private def fail[A]: Reads[A] = Reads.failed[A]("Unknown value")
+
+  private val readsMemberSummary: Reads[MemberOrEmployerSummary] =
+    (
+      (JsPath \ "membersDetails" \ "firstName").read[String] and
+      (JsPath \ "membersDetails" \ "lastName").read[String] and
+      (JsPath \ "paymentValueAndDate" \ "paymentValue").read[BigDecimal]
+      ) (
+      (firstName, lastName, paymentValue) => MemberOrEmployerSummary(firstName + " " + lastName, paymentValue, 0)
+    )
+
+  private val readsEmployerSummary: Reads[MemberOrEmployerSummary] =
+    (
+      (JsPath \ "event1" \ "companyDetails" \ "companyName").read[String] and
+        (JsPath \ "paymentValueAndDate" \ "paymentValue").read[BigDecimal]
+      ) (
+      (companyName, paymentValue) => MemberOrEmployerSummary(companyName, paymentValue, 0)
+    )
+
+  private val readsMemberOrEmployer: Reads[MemberOrEmployerSummary] = {
+    (JsPath \ WhoReceivedUnauthPaymentPage.toString).read[String].flatMap{
+      case Member.toString => readsMemberSummary
+      case Employer.toString => readsEmployerSummary
+      case e => fail
+    }
   }
-  //    JsPath.read[String].flatMap {
-//      case aop if mappings.keySet.contains(aop) => Reads(_ => JsSuccess(mappings.apply(aop)))
-//      case invalidValue => Reads(_ => JsError(s"Invalid administrator or practitioner type: $invalidValue"))
-//    }
+
+
+  implicit val readsMemberOrEmployerSummary: Reads[Seq[MemberOrEmployerSummary]] = {
+    path.read[Seq[MemberOrEmployerSummary]](Reads.seq(readsMemberOrEmployer)).map{ xx =>
+      xx.zipWithIndex.map{ case (d, i) =>
+        d copy (index = i)
+      }
+    }
+  }
 
 }
-
-
-
-

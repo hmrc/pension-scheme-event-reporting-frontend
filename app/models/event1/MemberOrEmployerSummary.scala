@@ -16,4 +16,10 @@
 
 package models.event1
 
+import play.api.libs.json.{Format, Json}
+
 case class MemberOrEmployerSummary( name: String, unauthorisedPaymentValue: BigDecimal, index: Int )
+
+object MemberOrEmployerSummary {
+  implicit lazy val formats: Format[MemberOrEmployerSummary] = Json.format[MemberOrEmployerSummary]
+}

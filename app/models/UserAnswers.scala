@@ -92,23 +92,6 @@ final case class UserAnswers(
   }
 
   def memberOrEmployerSummaryEvent1:Seq[MemberOrEmployerSummary] = {
-    get(MembersOrEmployersPage).toSeq.flatten
-
-    Seq(
-      MemberOrEmployerSummary("Member1", BigDecimal(44.44), 0)
-    )
+    data.as[Seq[MemberOrEmployerSummary]](MembersOrEmployersPage.readsMemberOrEmployerSummary)
   }
-
-  /*
-  def allEstablishers(mode: Mode): Seq[Establisher[_]] = {
-    json.validate[Seq[Establisher[_]]](readEstablishers(mode)) match {
-      case JsSuccess(establishers, _) =>
-        establishers
-      case JsError(errors) =>
-        logger.warn(s"Invalid json while reading all the establishers for addEstablisher: $errors")
-        Nil
-    }
-  }
-   */
-
 }
