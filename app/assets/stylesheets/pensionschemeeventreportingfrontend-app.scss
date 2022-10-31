@@ -1,6 +1,6 @@
 @import "lib/govuk-frontend/govuk/base";
 @import 'location-autocomplete.min';
 
-.autocomplete__wrapper ul, .autocomplete__wrapper li {
-  font-family: "nta",Arial,sans-serif;
+.govuk-radios__input:disabled~.govuk-radios__hint {
+  color: inherit;
 }
