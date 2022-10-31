@@ -61,7 +61,7 @@ class UnauthPaymentSummaryController @Inject()(
           actions = Some(Actions(
             items = Seq(
               ActionItem(
-                content = Text(Message("site.change")),
+                content = Text(Message("site.view")),
                 href = "#"
               ),
               ActionItem(

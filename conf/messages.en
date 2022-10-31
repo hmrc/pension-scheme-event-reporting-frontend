@@ -3,6 +3,7 @@ service.name = Managing pension schemes
 site.back = Back
 site.remove = Remove
 site.change = Change
+site.view = View
 site.no = No
 site.yes = Yes
 site.continue = Continue
