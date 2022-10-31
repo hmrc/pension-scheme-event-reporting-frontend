@@ -16,16 +16,13 @@
 
 package pages.event1
 
-import com.google.common.collect.Multimaps.index
-import models.UserAnswers
 import models.event1.MemberOrEmployerSummary
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
-import pages.{Page, QuestionPage, Waypoints}
-import play.api.libs.json.{JsPath, Reads}
-import play.api.mvc.Call
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
-import play.api.libs.json._
+import play.api.libs.json.{JsPath, Reads}
+import play.api.mvc.Call
 
 case object MembersOrEmployersPage extends QuestionPage[Seq[MemberOrEmployerSummary]] {
   def apply(index: Int): JsPath = path \ index
