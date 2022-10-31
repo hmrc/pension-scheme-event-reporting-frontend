@@ -17,7 +17,9 @@
 package data
 
 import models.address.{Address, TolerantAddress}
-import models.event1.employer.CompanyDetails
+import models.common.MembersDetails
+import models.event1.employer.{CompanyDetails, LoanDetails}
+import models.event1.member.SchemeDetails
 import utils.{CountryOptions, InputOption}
 
 object SampleData {
@@ -47,6 +49,15 @@ object SampleData {
     )
   )
 
+  val employerAddress: Address = Address(
+    addressLine1 = "addr11",
+    addressLine2 = "addr12",
+    addressLine3 = Some("addr13"),
+    addressLine4 = Some("addr14"),
+    postcode = Some("zz11zz"),
+    country = "GB"
+  )
+
   val seqTolerantAddresses: Seq[TolerantAddress] = Seq[TolerantAddress](
     TolerantAddress(
       addressLine1 = Some("addr11"),
@@ -66,4 +77,12 @@ object SampleData {
     )
   )
   val companyDetails: CompanyDetails = CompanyDetails("Company Name", "12345678")
+
+  val memberDetails: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567V")
+
+  def booleanCYAVal(value: Boolean) = if (value) "site.yes" else "site.no"
+
+  val loanDetails: LoanDetails = LoanDetails(Some(BigDecimal(10.00)), Some(BigDecimal(20.57)))
+
+  val schemeDetails: SchemeDetails = SchemeDetails(Some("SchemeName"), Some("SchemeReference"))
 }

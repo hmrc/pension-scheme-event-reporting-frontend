@@ -41,8 +41,8 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
   val negativeValueDataGenerator: Gen[String] = decimalsBelowValue(0)
 
   private def paymentDetails(
-                              paymentValue: String = "1000.00",
-                              paymentDate: Option[LocalDate] = None
+                              paymentValue: String,
+                              paymentDate: Option[LocalDate]
                             ): Map[String, String] = paymentDate match {
     case Some(date) => Map(
       paymentValueKey -> paymentValue,

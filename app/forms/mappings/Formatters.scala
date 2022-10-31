@@ -21,15 +21,22 @@ import play.api.data.FormError
 import play.api.data.format.Formatter
 
 import java.text.DecimalFormat
+import java.time.format.DateTimeFormatter
+import java.util.{Currency, Locale}
 import scala.util.control.Exception.nonFatalCatch
 import scala.util.{Failure, Success, Try}
 
 trait Formatters {
 
   private[mappings] val numericRegexp = """^-?(\-?)(\d*)(\.?)(\d*)$"""
-  private[mappings] val intRegexp = """^-?(\d*)$"""
   private[mappings] val decimal2DPRegexp = """^-?(\d*\.\d{2})$"""
   private[mappings] val decimalFormat = new DecimalFormat("0.00")
+
+  val currencyFormatter = new DecimalFormat()
+  currencyFormatter.setCurrency(Currency.getInstance(Locale.UK))
+  currencyFormatter.setMinimumFractionDigits(2)
+
+  val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
   private[mappings] val optionalStringFormatter: Formatter[Option[String]] = new Formatter[Option[String]] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] =

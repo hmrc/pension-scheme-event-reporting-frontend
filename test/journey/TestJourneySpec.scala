@@ -24,8 +24,9 @@ import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Even
 import models.enumeration.EventType
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.PaymentDetails
-import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, TransferToNonRegPensionScheme}
+import models.event1.PaymentNature._
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
+import models.event1.employer.LoanDetails
 import models.event1.employer.PaymentNature.{LoansExceeding50PercentOfFundValue, ResidentialProperty, TangibleMoveableProperty}
 import models.event1.member.ReasonForTheOverpaymentOrWriteOff.DeathOfMember
 import models.event1.member.RefundOfContributions.WidowOrOrphan
@@ -35,12 +36,12 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.common.MembersDetailsPage
 import pages.event1._
-import pages.event1.employer.{CompanyDetailsPage, LoanDetailsPage}
+import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, LoanDetailsPage}
 import pages.event1.member._
 import pages.event18.Event18ConfirmationPage
 import pages.event23.HowAddDualAllowancePage
 import pages.eventWindUp.SchemeWindUpDatePage
-import pages.{CheckYourAnswersPage, EventSelectionPage, IndexPage}
+import pages.{CheckYourAnswersPage, EventSelectionPage}
 
 import java.time.LocalDate
 
@@ -115,7 +116,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(member.PaymentNaturePage, ErrorCalcTaxFreeLumpSums),
         submitAnswer(ErrorDescriptionPage, ""),
         submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
-        pageMustBe(IndexPage)
+        comparePageMustBeAsString(CheckYourAnswersPage(EventType.Event1))
       )
 
     startingFrom(member.PaymentNaturePage)
@@ -123,7 +124,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(member.PaymentNaturePage, ErrorCalcTaxFreeLumpSums),
         submitAnswer(ErrorDescriptionPage, "valid - description"),
         submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
-        pageMustBe(IndexPage)
+        comparePageMustBeAsString(CheckYourAnswersPage(EventType.Event1))
       )
   }
 
@@ -133,7 +134,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(member.PaymentNaturePage, BenefitsPaidEarly),
         submitAnswer(BenefitsPaidEarlyPage, ""),
         submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
-        pageMustBe(IndexPage)
+        comparePageMustBeAsString(CheckYourAnswersPage(EventType.Event1))
       )
 
     startingFrom(member.PaymentNaturePage)
@@ -141,7 +142,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(member.PaymentNaturePage, BenefitsPaidEarly),
         submitAnswer(BenefitsPaidEarlyPage, "valid - description"),
         submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
-        pageMustBe(IndexPage)
+        comparePageMustBeAsString(CheckYourAnswersPage(EventType.Event1))
       )
   }
 
@@ -151,7 +152,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(member.PaymentNaturePage, BenefitInKind),
         submitAnswer(BenefitInKindBriefDescriptionPage, ""),
         submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
-        pageMustBe(IndexPage)
+        comparePageMustBeAsString(CheckYourAnswersPage(EventType.Event1))
       )
 
     startingFrom(member.PaymentNaturePage)
@@ -159,7 +160,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(member.PaymentNaturePage, BenefitInKind),
         submitAnswer(BenefitInKindBriefDescriptionPage, "valid - description"),
         submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
-        pageMustBe(IndexPage)
+        comparePageMustBeAsString(CheckYourAnswersPage(EventType.Event1))
       )
   }
 
@@ -169,7 +170,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(member.PaymentNaturePage, OverpaymentOrWriteOff),
         submitAnswer(ReasonForTheOverpaymentOrWriteOffPage, DeathOfMember),
         submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
-        pageMustBe(IndexPage)
+        comparePageMustBeAsString(CheckYourAnswersPage(EventType.Event1))
       )
   }
 
@@ -211,7 +212,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(PaymentNaturePage, RefundOfContributions),
         submitAnswer(RefundOfContributionsPage, WidowOrOrphan),
         submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
-        pageMustBe(IndexPage)
+        comparePageMustBeAsString(CheckYourAnswersPage(EventType.Event1))
       )
   }
 
@@ -223,13 +224,13 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       )
   }
 
-  "testing nav to event1 Refund of Contributions pages (member) and selecting Other option" in {
+  "testing nav to event1 Refund of Contributions pages (member) and selecting EmployerOther option" in {
     startingFrom(PaymentNaturePage)
       .run(
         submitAnswer(PaymentNaturePage, RefundOfContributions),
         submitAnswer(RefundOfContributionsPage, models.event1.member.RefundOfContributions.Other),
         submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
-        pageMustBe(IndexPage)
+        comparePageMustBeAsString(CheckYourAnswersPage(EventType.Event1))
       )
   }
 
@@ -250,7 +251,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
 
     startingFrom(member.PaymentNaturePage)
       .run(
-        submitAnswer(PaymentNaturePage, Other),
+        submitAnswer(PaymentNaturePage, MemberOther),
         pageMustBe(pages.event1.member.MemberPaymentNatureDescriptionPage)
       )
   }
@@ -264,7 +265,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
 
     startingFrom(pages.event1.employer.PaymentNaturePage)
       .run(
-        submitAnswer(pages.event1.employer.PaymentNaturePage, models.event1.employer.PaymentNature.Other),
+        submitAnswer(pages.event1.employer.PaymentNaturePage, models.event1.employer.PaymentNature.EmployerOther),
         pageMustBe(pages.event1.employer.EmployerPaymentNatureDescriptionPage)
       )
   }
@@ -288,4 +289,31 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       )
   }
 
+  "testing nav to CYA page after changing payment nature from Benefit in kind to refund of contributions option" in {
+    startingFrom(PaymentNaturePage)
+      .run(
+        submitAnswer(PaymentNaturePage, BenefitInKind),
+        submitAnswer(BenefitInKindBriefDescriptionPage, "valid - description"),
+        submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
+        goToChangeAnswer(PaymentNaturePage),
+        submitAnswer(PaymentNaturePage, RefundOfContributions),
+        submitAnswer(RefundOfContributionsPage, models.event1.member.RefundOfContributions.Other),
+        submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
+        comparePageMustBeAsString(CheckYourAnswersPage(EventType.Event1))
+      )
+  }
+
+  "testing nav to CYA page after changing payment nature from loans exceeding 50 percent of fund value to tangible moveable property option for employer" in {
+    startingFrom(employer.PaymentNaturePage)
+      .run(
+        submitAnswer(employer.PaymentNaturePage, LoansExceeding50PercentOfFundValue),
+        submitAnswer(LoanDetailsPage, LoanDetails(Some(1000.00), Some(2000.22))),
+        submitAnswer(PaymentValueAndDatePage, PaymentDetails(1000.00, LocalDate.now())),
+        goToChangeAnswer(employer.PaymentNaturePage),
+        submitAnswer(employer.PaymentNaturePage, TangibleMoveableProperty),
+        submitAnswer(EmployerTangibleMoveablePropertyPage, "tangible moveable"),
+        submitAnswer(PaymentValueAndDatePage, PaymentDetails(3000.00, LocalDate.now())),
+        comparePageMustBeAsString(CheckYourAnswersPage(EventType.Event1))
+      )
+  }
 }

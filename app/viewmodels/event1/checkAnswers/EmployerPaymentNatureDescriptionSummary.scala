@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event1.checkAnswers
 
 import models.UserAnswers
 import pages.event1.employer.EmployerPaymentNatureDescriptionPage
@@ -28,17 +28,23 @@ import viewmodels.implicits._
 object EmployerPaymentNatureDescriptionSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(EmployerPaymentNatureDescriptionPage).map {
-      answer =>
+         (implicit messages: Messages): Option[SummaryListRow] = {
 
-        SummaryListRowViewModel(
-          key = "employerPaymentNatureDescription.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", EmployerPaymentNatureDescriptionPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("employerPaymentNatureDescription.change.hidden"))
-          )
+    answers.get(EmployerPaymentNatureDescriptionPage) map { answer =>
+      val value = if (!answer.isBlank) {
+        ValueViewModel(HtmlFormat.escape(answer).toString)
+      } else {
+        ValueViewModel("")
+      }
+
+      SummaryListRowViewModel(
+        key = "employerPaymentNatureDescription.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel("site.change", EmployerPaymentNatureDescriptionPage.changeLink(waypoints, sourcePage).url)
+            .withVisuallyHiddenText(messages("employerPaymentNatureDescription.change.hidden"))
         )
+      )
     }
+  }
 }

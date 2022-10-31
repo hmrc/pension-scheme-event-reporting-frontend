@@ -14,31 +14,38 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event1.member.checkAnswers
 
 import models.UserAnswers
-import pages.{CheckAnswersPage, Waypoints}
 import pages.event1.member.ErrorDescriptionPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object ErrorDescriptionSummary  {
+object ErrorDescriptionSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
+         (implicit messages: Messages): Option[SummaryListRow] = {
+
     answers.get(ErrorDescriptionPage).map {
       answer =>
+        val value = if (!answer.isBlank) {
+          ValueViewModel(HtmlFormat.escape(answer).toString)
+        } else {
+          ValueViewModel("")
+        }
 
         SummaryListRowViewModel(
-          key     = "errorDescription.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key = "errorDescription.checkYourAnswersLabel",
+          value = value,
           actions = Seq(
             ActionItemViewModel("site.change", ErrorDescriptionPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("errorDescription.change.hidden"))
           )
         )
     }
+  }
 }

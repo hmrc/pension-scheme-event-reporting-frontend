@@ -19,7 +19,9 @@ package models.common
 import play.api.libs.json.{Json, OFormat}
 
 
-case class MembersDetails(firstName: String, lastName: String, nino: String)
+case class MembersDetails(firstName: String, lastName: String, nino: String) {
+  def fullName = s"$firstName $lastName"
+}
 
 object MembersDetails {
 

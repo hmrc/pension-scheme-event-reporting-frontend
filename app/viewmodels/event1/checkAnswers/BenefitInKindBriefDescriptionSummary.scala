@@ -14,31 +14,39 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event1.checkAnswers
 
 import models.UserAnswers
+import pages.event1.member.BenefitInKindBriefDescriptionPage
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event1.BenefitInKindBriefDescriptionPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object BenefitInKindBriefDescriptionSummary  {
+object BenefitInKindBriefDescriptionSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(BenefitInKindBriefDescriptionPage).map {
+         (implicit messages: Messages): Option[SummaryListRow] = {
+
+    answers.get(BenefitInKindBriefDescriptionPage) map {
       answer =>
 
+        val value = if (!answer.isBlank) {
+          ValueViewModel(HtmlFormat.escape(answer).toString)
+        } else {
+          ValueViewModel("")
+        }
+
         SummaryListRowViewModel(
-          key     = "benefitInKindBriefDescription.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key = "benefitInKindBriefDescription.checkYourAnswersLabel",
+          value = value,
           actions = Seq(
             ActionItemViewModel("site.change", BenefitInKindBriefDescriptionPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("benefitInKindBriefDescription.change.hidden"))
           )
         )
     }
+  }
 }

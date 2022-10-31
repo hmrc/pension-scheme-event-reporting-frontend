@@ -20,8 +20,8 @@ import controllers.event1.employer.routes
 import models.UserAnswers
 import models.enumeration.AddressJourneyType.Event1EmployerPropertyAddressJourney
 import models.event1.employer.PaymentNature
-import models.event1.employer.PaymentNature.{CourtOrder, LoansExceeding50PercentOfFundValue, Other, ResidentialProperty, TangibleMoveableProperty}
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import models.event1.employer.PaymentNature.{CourtOrder, LoansExceeding50PercentOfFundValue, EmployerOther, ResidentialProperty, TangibleMoveableProperty}
+import pages.{IndexPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -29,7 +29,7 @@ case object PaymentNaturePage extends QuestionPage[PaymentNature] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "paymentNature"
+  override def toString: String = "paymentNatureEmployer"
 
   override def route(waypoints: Waypoints): Call =
     routes.PaymentNatureController.onPageLoad(waypoints)
@@ -40,7 +40,18 @@ case object PaymentNaturePage extends QuestionPage[PaymentNature] {
       case Some(ResidentialProperty) => pages.address.EnterPostcodePage(Event1EmployerPropertyAddressJourney)
       case Some(TangibleMoveableProperty) => EmployerTangibleMoveablePropertyPage
       case Some(CourtOrder) => UnauthorisedPaymentRecipientNamePage
-      case Some(Other) => EmployerPaymentNatureDescriptionPage
+      case Some(EmployerOther) => EmployerPaymentNatureDescriptionPage
+      case _ => IndexPage
+    }
+  }
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
+    updatedAnswers.get(PaymentNaturePage) match {
+      case Some(LoansExceeding50PercentOfFundValue) => LoanDetailsPage
+      case Some(ResidentialProperty) => pages.address.EnterPostcodePage(Event1EmployerPropertyAddressJourney)
+      case Some(TangibleMoveableProperty) => EmployerTangibleMoveablePropertyPage
+      case Some(CourtOrder) => UnauthorisedPaymentRecipientNamePage
+      case Some(EmployerOther) => EmployerPaymentNatureDescriptionPage
       case _ => IndexPage
     }
   }

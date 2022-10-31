@@ -28,8 +28,8 @@ class UnauthorisedPaymentRecipientNameFormProvider @Inject() extends Mappings {
       "value" -> optionalText()
         .verifying(
           firstError(
-            maxLength(160, "unauthorisedPaymentRecipientName.error.length"),
-            regexp(regexPersonOrOrgName, "unauthorisedPaymentRecipientName.error.invalid")
+            maxLength(160, "unauthorisedPaymentRecipientName.employer.error.length"),
+            regexp(regexPersonOrOrgName, "unauthorisedPaymentRecipientName.employer.error.invalid")
           )
         )
     )

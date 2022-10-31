@@ -28,5 +28,15 @@ class WaypointSpec extends AnyFreeSpec with Matchers with OptionValues {
 
       Waypoint.fromString("event-18-check-answers").value mustEqual CheckYourAnswersPage.event18.waypoint
     }
+
+    "must return CheckYourAnswers for event 1 when given its waypoint" in {
+
+      Waypoint.fromString("event-1-check-answers").value mustEqual CheckYourAnswersPage.event1.waypoint
+    }
+
+    "must return CheckYourAnswers for event wind up when given its waypoint" in {
+
+      Waypoint.fromString("event-0-check-answers").value mustEqual CheckYourAnswersPage.windUp.waypoint
+    }
   }
 }

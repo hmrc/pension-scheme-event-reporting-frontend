@@ -43,14 +43,29 @@ import viewmodels.implicits._
 
 object CompanyDetailsSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def rowCompanyName(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(CompanyDetailsPage).map {
       answer =>
 
         SummaryListRowViewModel(
-          key = "companyDetails.checkYourAnswersLabel",
+          key = "companyDetails.CYA.companyName",
           value = ValueViewModel(HtmlFormat.escape(answer.companyName).toString),
+          actions = Seq(
+            ActionItemViewModel("site.change", CompanyDetailsPage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("companyDetails.change.hidden"))
+          )
+        )
+    }
+
+  def rowCompanyNumber(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(CompanyDetailsPage).map {
+      answer =>
+
+        SummaryListRowViewModel(
+          key = "companyDetails.CYA.companyNumber",
+          value = ValueViewModel(HtmlFormat.escape(answer.companyNumber).toString),
           actions = Seq(
             ActionItemViewModel("site.change", CompanyDetailsPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("companyDetails.change.hidden"))

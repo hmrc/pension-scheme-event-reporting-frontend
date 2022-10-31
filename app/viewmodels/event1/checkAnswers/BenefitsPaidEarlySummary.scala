@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event1.checkAnswers
 
 import models.UserAnswers
 import pages.event1.member.BenefitsPaidEarlyPage
@@ -25,20 +25,26 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object BenefitsPaidEarlySummary  {
+object BenefitsPaidEarlySummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(BenefitsPaidEarlyPage).map {
-      answer =>
+         (implicit messages: Messages): Option[SummaryListRow] = {
 
+    answers.get(BenefitsPaidEarlyPage) map {
+      answer =>
+        val value = if (!answer.isBlank) {
+          ValueViewModel(HtmlFormat.escape(answer).toString)
+        } else {
+          ValueViewModel("")
+        }
         SummaryListRowViewModel(
-          key     = "benefitsPaidEarly.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key = "benefitsPaidEarly.checkYourAnswersLabel",
+          value = value,
           actions = Seq(
             ActionItemViewModel("site.change", BenefitsPaidEarlyPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("benefitsPaidEarly.change.hidden"))
           )
         )
     }
+  }
 }

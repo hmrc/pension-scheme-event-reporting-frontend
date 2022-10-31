@@ -20,25 +20,73 @@ import models.UserAnswers
 import pages.event1.member.SchemeDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
+import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object SchemeDetailsSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SchemeDetailsPage).map {
-      answer =>
+  private def schemeDetailsAnswer(detail: Option[String])(implicit messages: Messages): Html = {
+    def schemeDetailsToHtml(value: String): String = s"$value"
 
-        SummaryListRowViewModel(
-          key = "schemeDetails.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlFormat.escape(answer.toString).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", SchemeDetailsPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
+    def optionalDetailToHtml(optionalSchemeDetail: Option[String]): String = optionalSchemeDetail match {
+      case Some(schemeDet) => schemeDetailsToHtml(schemeDet)
+      case None => ""
+    }
+
+    Html(
+      optionalDetailToHtml(detail)
+    )
+  }
+
+  def rowSchemeName(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+                   (implicit messages: Messages): Option[SummaryListRow] = {
+
+
+    val value = answers.get(SchemeDetailsPage).map {
+
+      answer =>
+        ValueViewModel(
+          HtmlContent(
+            schemeDetailsAnswer(answer.schemeName)
           )
         )
     }
+    Some(
+      SummaryListRowViewModel(
+        key = "Scheme name",
+        value = value.getOrElse(ValueViewModel("")),
+        actions = Seq(
+          ActionItemViewModel("site.change", SchemeDetailsPage.changeLink(waypoints, sourcePage).url)
+            .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
+        )
+      )
+    )
+  }
+
+  def rowSchemeReference(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+                        (implicit messages: Messages): Option[SummaryListRow] = {
+
+    val value = answers.get(SchemeDetailsPage).map {
+
+      answer =>
+        ValueViewModel(
+          HtmlContent(
+            schemeDetailsAnswer(answer.reference)
+          )
+        )
+    }
+    Some(
+      SummaryListRowViewModel(
+        key = "Reference",
+        value = value.getOrElse(ValueViewModel("")),
+        actions = Seq(
+          ActionItemViewModel("site.change", SchemeDetailsPage.changeLink(waypoints, sourcePage).url)
+            .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
+        )
+      )
+    )
+  }
 }
