@@ -16,11 +16,19 @@
 
 package data
 
+import models.UserAnswers
 import models.address.{Address, TolerantAddress}
 import models.common.MembersDetails
+import models.enumeration.EventType.Event1
+import models.event1.PaymentDetails
 import models.event1.employer.{CompanyDetails, LoanDetails}
 import models.event1.member.SchemeDetails
+import pages.common.MembersDetailsPage
+import pages.event1.PaymentValueAndDatePage
+import pages.event1.employer.CompanyDetailsPage
 import utils.{CountryOptions, InputOption}
+
+import java.time.LocalDate
 
 object SampleData {
   private val options: Seq[InputOption] = Seq(
@@ -85,4 +93,10 @@ object SampleData {
   val loanDetails: LoanDetails = LoanDetails(Some(BigDecimal(10.00)), Some(BigDecimal(20.57)))
 
   val schemeDetails: SchemeDetails = SchemeDetails(Some("SchemeName"), Some("SchemeReference"))
+
+  val userAnswersWithOneMemberAndEmployer: UserAnswers = UserAnswers()
+    .setOrException(PaymentValueAndDatePage(0), PaymentDetails(BigDecimal(857.00), LocalDate.of(2022, 11, 9)))
+    .setOrException(MembersDetailsPage(Event1, Some(0)), memberDetails)
+    .setOrException(PaymentValueAndDatePage(1), PaymentDetails(BigDecimal(7687.00), LocalDate.of(2022, 11, 9)))
+    .setOrException(CompanyDetailsPage(1), companyDetails)
 }
