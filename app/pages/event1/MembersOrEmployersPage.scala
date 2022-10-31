@@ -16,18 +16,25 @@
 
 package pages.event1
 
-import pages.{Page, Waypoints}
-import play.api.libs.json.JsPath
+import models.event1.MemberOrEmployerSummary
+import pages.{QuestionPage, Waypoints}
+import play.api.libs.json.{JsPath, Reads}
 import play.api.mvc.Call
 
-case class MembersOrEmployersPage(index: Int) extends Page  {
-  def path: JsPath = JsPath \ "event1" \ MembersOrEmployersPage.toString \ index
-
-  override def route(waypoints: Waypoints): Call = controllers.routes.IndexController.onPageLoad
-}
-
-object MembersOrEmployersPage {
+case object MembersOrEmployersPage extends QuestionPage[Seq[MemberOrEmployerSummary]] {
+  def apply(index: Int) : JsPath = path \ index
+  def path: JsPath = JsPath \ "event1" \ toString
   override def toString: String = "membersOrEmployers"
+  override def route(waypoints: Waypoints): Call = controllers.routes.IndexController.onPageLoad
+
+  implicit val reads: Reads[Seq[MemberOrEmployerSummary]] = ???
+//    JsPath.read[String].flatMap {
+//      case aop if mappings.keySet.contains(aop) => Reads(_ => JsSuccess(mappings.apply(aop)))
+//      case invalidValue => Reads(_ => JsError(s"Invalid administrator or practitioner type: $invalidValue"))
+//    }
+
 }
+
+
 
 

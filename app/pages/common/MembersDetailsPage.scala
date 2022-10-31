@@ -29,7 +29,7 @@ case class MembersDetailsPage(eventType: EventType, index: Option[Int]) extends 
 
   override def path: JsPath =
     index match {
-      case Some(i) => MembersOrEmployersPage(i).path \ MembersDetailsPage.toString
+      case Some(i) => MembersOrEmployersPage(i) \ MembersDetailsPage.toString
       case _ => JsPath \ toString
     }
 

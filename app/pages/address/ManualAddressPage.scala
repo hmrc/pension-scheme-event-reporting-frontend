@@ -30,7 +30,7 @@ import play.api.mvc.Call
 
 case class ManualAddressPage(addressJourneyType: AddressJourneyType, index: Int) extends QuestionPage[Address] {
 
-  override def path: JsPath = MembersOrEmployersPage(index).path \ s"event${addressJourneyType.eventType.toString}" \ addressJourneyType.nodeName \ toString
+  override def path: JsPath = MembersOrEmployersPage(index) \ s"event${addressJourneyType.eventType.toString}" \ addressJourneyType.nodeName \ toString
 
   override def toString: String = "address"
 

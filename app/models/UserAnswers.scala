@@ -18,6 +18,7 @@ package models
 
 import models.event1.MemberOrEmployerSummary
 import pages.QuestionPage
+import pages.event1.MembersOrEmployersPage
 import play.api.libs.json._
 import queries.{Derivable, Gettable, Settable}
 
@@ -29,6 +30,9 @@ final case class UserAnswers(
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
+
+  def get(path: JsPath)(implicit rds: Reads[JsValue]): Option[JsValue] =
+    Reads.optionNoError(Reads.at(path)).reads(data).getOrElse(None)
 
   def get[A, B](derivable: Derivable[A, B])(implicit rds: Reads[A]): Option[B] =
     Reads.optionNoError(Reads.at(derivable.path))
@@ -88,6 +92,7 @@ final case class UserAnswers(
   }
 
   def memberOrEmployerSummaryEvent1:Seq[MemberOrEmployerSummary] = {
+    get(MembersOrEmployersPage).toSeq.flatten
 
     Seq(
       MemberOrEmployerSummary("Member1", BigDecimal(44.44), 0)
