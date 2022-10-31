@@ -14,31 +14,39 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event1.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
+import pages.event1.member.BenefitInKindBriefDescriptionPage
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event1.BenefitInKindBriefDescriptionPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object BenefitInKindBriefDescriptionSummary  {
+object BenefitInKindBriefDescriptionSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(BenefitInKindBriefDescriptionPage).map {
-      answer =>
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] = {
 
-        SummaryListRowViewModel(
-          key     = "benefitInKindBriefDescription.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", BenefitInKindBriefDescriptionPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("benefitInKindBriefDescription.change.hidden"))
-          )
-        )
+  val value = answers.get(BenefitInKindBriefDescriptionPage(index)) map { answer =>
+        if (answer.isEmpty) {
+          ValueViewModel("")
+        } else {
+          ValueViewModel(HtmlFormat.escape(answer).toString)
+        }
     }
+
+    Some(
+      SummaryListRowViewModel(
+        key = "benefitInKindBriefDescription.checkYourAnswersLabel",
+        value = value.get,
+        actions = Seq(
+          ActionItemViewModel("site.change", BenefitInKindBriefDescriptionPage(index).changeLink(waypoints, sourcePage).url)
+            .withVisuallyHiddenText(messages("benefitInKindBriefDescription.change.hidden"))
+        )
+      )
+    )
+  }
 }

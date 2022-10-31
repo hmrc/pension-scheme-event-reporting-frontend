@@ -23,10 +23,10 @@ class ReasonForTheOverpaymentOrWriteOffSpec extends PageBehaviours {
 
   "ReasonForTheOverpaymentOrWriteOffPage" - {
 
-    beRetrievable[ReasonForTheOverpaymentOrWriteOff](ReasonForTheOverpaymentOrWriteOffPage)
+    beRetrievable[ReasonForTheOverpaymentOrWriteOff](ReasonForTheOverpaymentOrWriteOffPage(0))
 
-    beSettable[ReasonForTheOverpaymentOrWriteOff](ReasonForTheOverpaymentOrWriteOffPage)
+    beSettable[ReasonForTheOverpaymentOrWriteOff](ReasonForTheOverpaymentOrWriteOffPage(0))
 
-    beRemovable[ReasonForTheOverpaymentOrWriteOff](ReasonForTheOverpaymentOrWriteOffPage)
+    beRemovable[ReasonForTheOverpaymentOrWriteOff](ReasonForTheOverpaymentOrWriteOffPage(0))
   }
 }

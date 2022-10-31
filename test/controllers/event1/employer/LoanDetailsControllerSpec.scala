@@ -44,9 +44,9 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.LoanDetailsController.onPageLoad(waypoints).url
+  private def getRoute: String = routes.LoanDetailsController.onPageLoad(waypoints, 0).url
 
-  private def postRoute: String = routes.LoanDetailsController.onSubmit(waypoints).url
+  private def postRoute: String = routes.LoanDetailsController.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -73,13 +73,13 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[LoanDetailsView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(LoanDetailsPage, validValue).success.value
+      val userAnswers = UserAnswers().set(LoanDetailsPage(0), validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -91,7 +91,7 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -111,10 +111,10 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
           )
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(LoanDetailsPage, validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(LoanDetailsPage(0), validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual LoanDetailsPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual LoanDetailsPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }

@@ -27,11 +27,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, pageTitle)) {
 
-    @formHelper(action = routes.EnterPostcodeController.onSubmit(waypoints, addressJourneyType)) {
+    @formHelper(action = routes.EnterPostcodeController.onSubmit(waypoints, addressJourneyType, index)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -46,7 +46,7 @@
         )
 
         <p class="govuk-body">
-            @messages("enterPostcode.hint") <a href="@routes.ManualAddressController.onPageLoad(waypoints, addressJourneyType).url" class="govuk-link">@messages("enterPostcode.link")</a>.
+            @messages("enterPostcode.hint") <a href="@routes.ManualAddressController.onPageLoad(waypoints, addressJourneyType, index).url" class="govuk-link">@messages("enterPostcode.link")</a>.
         </p>
 
         @govukButton(

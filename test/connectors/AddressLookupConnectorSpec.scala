@@ -73,7 +73,7 @@ class AddressLookupConnectorSpec extends AsyncWordSpec
             |"county":"Somerset",
             |"subdivision":{"code":"GB-ENG","name":"England","B":""},
             |"town":"Anytown",
-            |"lines":["10 Other Place","Some District"]}
+            |"lines":["10 EmployerOther Place","Some District"]}
             |},
             |{"Y":"",
             |"uprn":990091234514,
@@ -85,14 +85,14 @@ class AddressLookupConnectorSpec extends AsyncWordSpec
             |"county":"Somerset",
             |"subdivision":{"code":"GB-ENG","name":"England","R":""},
             |"town":"Anytown",
-            |"lines":["2 Other Place","Some District"],"D":""}
+            |"lines":["2 EmployerOther Place","Some District"],"D":""}
             |}
             |]
             |""".stripMargin
 
         val tolerantAddressSample = Seq(
-          TolerantAddress(Some("10 Other Place"), Some("Some District"), Some("Anytown"), Some("Somerset"), Some("ZZ1 1ZZ"), Some("UK")),
-          TolerantAddress(Some("2 Other Place"), Some("Some District"), Some("Anytown"), Some("Somerset"), Some("ZZ1 1ZZ"), Some("UK"))
+          TolerantAddress(Some("10 EmployerOther Place"), Some("Some District"), Some("Anytown"), Some("Somerset"), Some("ZZ1 1ZZ"), Some("UK")),
+          TolerantAddress(Some("2 EmployerOther Place"), Some("Some District"), Some("Anytown"), Some("Somerset"), Some("ZZ1 1ZZ"), Some("UK"))
         )
 
         server.stubFor(
@@ -139,13 +139,13 @@ class AddressLookupConnectorSpec extends AsyncWordSpec
             |"county":"Somerset",
             |"subdivision":{"code":"GB-ENG","name":"England","R":""},
             |"town":"Anytown",
-            |"lines":["2 Other Place","Some District"],"D":""}
+            |"lines":["2 EmployerOther Place","Some District"],"D":""}
             |}
             |]
             |""".stripMargin
 
         val tolerantAddressSample = Seq(
-          TolerantAddress(Some("2 Other Place"), Some("Some District"), Some("Anytown"), Some("Somerset"), Some("ZZ1 1ZZ"), Some("UK"))
+          TolerantAddress(Some("2 EmployerOther Place"), Some("Some District"), Some("Anytown"), Some("Somerset"), Some("ZZ1 1ZZ"), Some("UK"))
         )
 
         server.stubFor(

@@ -24,10 +24,10 @@ class BenefitsPaidEarlyPageSpec extends PageBehaviours {
 
   "BenefitsPaidEarlyPage" - {
 
-    beRetrievable[String](BenefitsPaidEarlyPage)
+    beRetrievable[String](BenefitsPaidEarlyPage(0))
 
-    beSettable[String](BenefitsPaidEarlyPage)
+    beSettable[String](BenefitsPaidEarlyPage(0))
 
-    beRemovable[String](BenefitsPaidEarlyPage)
+    beRemovable[String](BenefitsPaidEarlyPage(0))
   }
 }

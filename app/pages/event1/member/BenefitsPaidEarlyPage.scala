@@ -18,21 +18,26 @@ package pages.event1.member
 
 import controllers.event1.member.routes
 import models.UserAnswers
-import pages.event1.PaymentValueAndDatePage
-import pages.{Page, QuestionPage, Waypoints}
+import pages.event1.{MembersOrEmployersPage, PaymentValueAndDatePage}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object BenefitsPaidEarlyPage extends QuestionPage[String] {
+case class BenefitsPaidEarlyPage(index: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
 
   override def toString: String = "benefitsPaidEarly"
 
   override def route(waypoints: Waypoints): Call =
-    routes.BenefitsPaidEarlyController.onPageLoad(waypoints)
+    routes.BenefitsPaidEarlyController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    PaymentValueAndDatePage
+    PaymentValueAndDatePage(index)
   }
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
+    PaymentValueAndDatePage(index)
+  }
+
 }

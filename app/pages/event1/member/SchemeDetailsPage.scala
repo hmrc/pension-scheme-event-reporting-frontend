@@ -19,21 +19,26 @@ package pages.event1.member
 import controllers.event1.member.routes
 import models.UserAnswers
 import models.event1.member.SchemeDetails
-import pages.event1.PaymentValueAndDatePage
-import pages.{Page, QuestionPage, Waypoints}
+import pages.event1.{MembersOrEmployersPage, PaymentValueAndDatePage}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object SchemeDetailsPage extends QuestionPage[SchemeDetails] {
+case class SchemeDetailsPage(index: Int) extends QuestionPage[SchemeDetails] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
 
   override def toString: String = "schemeDetails"
 
   override def route(waypoints: Waypoints): Call =
-    routes.SchemeDetailsController.onPageLoad(waypoints)
+    routes.SchemeDetailsController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    PaymentValueAndDatePage
+    PaymentValueAndDatePage(index)
   }
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
+    PaymentValueAndDatePage(index)
+  }
+
 }

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event1.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.event1.employer.EmployerPaymentNatureDescriptionPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -27,18 +27,26 @@ import viewmodels.implicits._
 
 object EmployerPaymentNatureDescriptionSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(EmployerPaymentNatureDescriptionPage).map {
-      answer =>
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] = {
 
-        SummaryListRowViewModel(
-          key = "employerPaymentNatureDescription.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", EmployerPaymentNatureDescriptionPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("employerPaymentNatureDescription.change.hidden"))
-          )
-        )
+    val maybeOtherDescDefined = answers.get(EmployerPaymentNatureDescriptionPage(index))
+
+    val value = maybeOtherDescDefined match {
+      case Some(_) =>
+        ValueViewModel(HtmlFormat.escape(maybeOtherDescDefined.get).toString)
+      case None =>
+        ValueViewModel("")
     }
+    Some(
+      SummaryListRowViewModel(
+        key = "employerPaymentNatureDescription.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel("site.change", EmployerPaymentNatureDescriptionPage(index).changeLink(waypoints, sourcePage).url)
+            .withVisuallyHiddenText(messages("employerPaymentNatureDescription.change.hidden"))
+        )
+      )
+    )
+  }
 }

@@ -17,21 +17,44 @@
 package pages
 
 import controllers.routes
+import models.Index
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event18, WindUp}
 import play.api.mvc.Call
 
-object CheckYourAnswersPage {
+case class  CheckYourAnswersPage(eventType: EventType, index: Option[Index]) extends CheckAnswersPage  {
+    override val urlFragment: String =
+      index match {
+        case Some(i) => s"event-${eventType.toString}-check-answers-${i.display}"
+        case _ => s"event-${eventType.toString}-check-answers"
+      }
 
-  def apply(eventType: EventType): CheckAnswersPage = new CheckAnswersPage {
-
-    override val urlFragment: String = s"event-${eventType.toString}-check-answers"
 
     override def route(waypoints: Waypoints): Call = {
-      routes.CheckYourAnswersController.onPageLoad(eventType)
+      index match {
+        case Some(i) => routes.CheckYourAnswersController.onPageLoadWithIndex(eventType, i)
+        case _ => routes.CheckYourAnswersController.onPageLoad(eventType)
+      }
+
+    }
+
+    override def toString: String = "CheckYourAnswersPage"
+
+}
+
+object CheckYourAnswersPage {
+
+  def waypointFromString(eventType: EventType, s: String): Option[Waypoint] = {
+    val pattern = """event-1-check-answers-(\d{1,6})""".r.anchored
+
+    s match {
+      case pattern(indexDisplay) =>
+        Some(CheckYourAnswersPage(eventType, Some(Index(indexDisplay.toInt - 1))).waypoint)
+      case _ =>
+        None
     }
   }
 
-  val event18: CheckAnswersPage = CheckYourAnswersPage(Event18)
-  val windUp: CheckAnswersPage = CheckYourAnswersPage(WindUp)
+  val event18: CheckAnswersPage = CheckYourAnswersPage(Event18, None)
+  val windUp: CheckAnswersPage = CheckYourAnswersPage(WindUp, None)
 }

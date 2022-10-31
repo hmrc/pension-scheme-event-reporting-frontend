@@ -45,12 +45,9 @@ case class NonEmptyWaypoints(waypoints: NonEmptyList[Waypoint]) extends Waypoint
     (currentPage, targetPage) match {
       case (a: AddToListQuestionPage, b: AddToListQuestionPage) if a.section == b.section =>
         this
-
       case (_, targetPage: AddToListQuestionPage) =>
         setNextWaypoint(targetPage.addItemWaypoint)
-
-      case _ =>
-        if (next.page == targetPage) remove else this
+      case _ => if (next.page == targetPage) remove else this
     }
 
   override def toString: String = waypoints.toList.map(_.urlFragment).mkString(",")
@@ -85,6 +82,7 @@ object Waypoints {
       .map(Waypoint.fromString)
       .sequence
       .map(apply)
+
 
   implicit def queryStringBindable(implicit stringBinder: QueryStringBindable[String]): QueryStringBindable[Waypoints] =
     new QueryStringBindable[Waypoints] {

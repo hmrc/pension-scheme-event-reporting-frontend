@@ -24,10 +24,10 @@ class SchemeDetailsPageSpec extends PageBehaviours {
 
   "SchemeDetailsPage" - {
 
-    beRetrievable[SchemeDetails](SchemeDetailsPage)
+    beRetrievable[SchemeDetails](SchemeDetailsPage(0))
 
-    beSettable[SchemeDetails](SchemeDetailsPage)
+    beSettable[SchemeDetails](SchemeDetailsPage(0))
 
-    beRemovable[SchemeDetails](SchemeDetailsPage)
+    beRemovable[SchemeDetails](SchemeDetailsPage(0))
   }
 }

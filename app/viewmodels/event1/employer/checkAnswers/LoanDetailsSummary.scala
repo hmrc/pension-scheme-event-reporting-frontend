@@ -16,27 +16,56 @@
 
 package viewmodels.event1.employer.checkAnswers
 
-import models.UserAnswers
+import forms.mappings.Formatters
+import models.{Index, UserAnswers}
 import pages.event1.employer.LoanDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
+import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object LoanDetailsSummary {
+object LoanDetailsSummary extends Formatters {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(LoanDetailsPage).map {
+  def rowLoanAmount(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+                   (implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(LoanDetailsPage(index)).map {
       answer =>
 
+        val value = ValueViewModel(
+          HtmlContent(
+            Html(answer.loanAmount.map(t => s"£${currencyFormatter.format(t)}").getOrElse(""))
+          )
+        )
+
         SummaryListRowViewModel(
-          key = "loanDetails.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlFormat.escape(answer.toString).toString),
+          key = "loanDetails.CYA.loanAmountLabel",
+          value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", LoanDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", LoanDetailsPage(index).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("loanDetails.change.hidden"))
+          )
+        )
+    }
+
+  def rowFundValue(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+                  (implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(LoanDetailsPage(index)).map {
+      answer =>
+
+        val value = ValueViewModel(
+          HtmlContent(
+            Html(answer.fundValue.map(t => s"£${currencyFormatter.format(t)}").getOrElse(""))
+          )
+        )
+
+        SummaryListRowViewModel(
+          key = "loanDetails.CYA.fundValueLabel",
+          value = value,
+          actions = Seq(
+            ActionItemViewModel("site.change", LoanDetailsPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("loanDetails.change.hidden"))
           )
         )

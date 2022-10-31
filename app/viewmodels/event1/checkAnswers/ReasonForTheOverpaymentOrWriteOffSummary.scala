@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event1.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.event1.member.ReasonForTheOverpaymentOrWriteOffPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -28,9 +28,9 @@ import viewmodels.implicits._
 
 object ReasonForTheOverpaymentOrWriteOffSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ReasonForTheOverpaymentOrWriteOffPage).map {
+    answers.get(ReasonForTheOverpaymentOrWriteOffPage(index)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -43,7 +43,7 @@ object ReasonForTheOverpaymentOrWriteOffSummary {
           key = "reasonForTheOverpaymentOrWriteOff.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", ReasonForTheOverpaymentOrWriteOffPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", ReasonForTheOverpaymentOrWriteOffPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("reasonForTheOverpaymentOrWriteOff.change.hidden"))
           )
         )

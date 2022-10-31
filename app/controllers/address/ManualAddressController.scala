@@ -19,6 +19,7 @@ package controllers.address
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.address.ManualAddressFormProvider
+import models.Index
 import models.address.Address
 import models.enumeration.AddressJourneyType
 import pages.Waypoints
@@ -45,9 +46,9 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
 
   private val form: Form[Address] = formProvider()
 
-  def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
-      val page = ManualAddressPage(addressJourneyType)
+      val page = ManualAddressPage(addressJourneyType, index)
       val preparedForm = request.userAnswers.get(page).fold(form)(form.fill)
       Ok(
         view(
@@ -55,25 +56,28 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
           waypoints,
           addressJourneyType,
           addressJourneyType.title(page),
-          addressJourneyType.heading(page),
-          countryOptions.options)
+          addressJourneyType.heading(page, index),
+          countryOptions.options,
+          index)
       )
     }
 
-  def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
       implicit request =>
-        val page = ManualAddressPage(addressJourneyType)
+        val page = ManualAddressPage(addressJourneyType, index)
         form.bindFromRequest().fold(
           formWithErrors => {
             Future.successful(
               BadRequest(
                 view(
-                  addArgsToErrors(formWithErrors, addressJourneyType.entityName(request.userAnswers)),
+                  addArgsToErrors(formWithErrors, addressJourneyType.entityName(request.userAnswers, index)),
                   waypoints,
                   addressJourneyType,
                   addressJourneyType.title(page),
-                  addressJourneyType.heading(page), countryOptions.options)
+                  addressJourneyType.heading(page, index), countryOptions.options,
+                  index
+                )
               )
             )
           },

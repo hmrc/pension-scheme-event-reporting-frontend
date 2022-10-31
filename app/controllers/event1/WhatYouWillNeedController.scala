@@ -17,7 +17,9 @@
 package controllers.event1
 
 import controllers.actions._
+import models.Index
 import models.enumeration.EventType
+import models.enumeration.EventType.Event1
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,8 +39,8 @@ class WhatYouWillNeedController @Inject()(
 
   private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) {
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) {
     implicit request =>
-      Ok(view(controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, eventType).url))
+      Ok(view(controllers.common.routes.MembersDetailsController.onPageLoadWithIndex(waypoints, Event1, index).url))
   }
 }

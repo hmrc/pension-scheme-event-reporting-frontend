@@ -24,19 +24,19 @@ import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object WhoReceivedUnauthPaymentPage extends QuestionPage[WhoReceivedUnauthPayment] {
+case class WhoReceivedUnauthPaymentPage(index: Int) extends QuestionPage[WhoReceivedUnauthPayment] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
 
   override def toString: String = "whoReceivedUnauthPayment"
 
   override def route(waypoints: Waypoints): Call =
-    routes.WhoReceivedUnauthPaymentController.onPageLoad(waypoints)
+    routes.WhoReceivedUnauthPaymentController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
-      case Some(Member) => pages.event1.WhatYouWillNeedPage
-      case Some(Employer) => pages.event1.employer.WhatYouWillNeedPage
+      case Some(Member) => pages.event1.WhatYouWillNeedPage(index)
+      case Some(Employer) => pages.event1.employer.WhatYouWillNeedPage(index)
       case _ => this
     }
 }

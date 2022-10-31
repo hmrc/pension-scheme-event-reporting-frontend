@@ -23,7 +23,7 @@ import org.scalacheck.{Gen, Shrink}
 import java.time.{Instant, LocalDate, ZoneOffset}
 import scala.math.BigDecimal.RoundingMode
 
-trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators {
+trait Generators extends PageGenerators with ModelGenerators with UserAnswersEntryGenerators {
 
   implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
 

@@ -14,29 +14,46 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event1.checkAnswers
 
-import models.UserAnswers
+import forms.mappings.Formatters
+import models.{Index, UserAnswers}
 import pages.event1.PaymentValueAndDatePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object PaymentValueAndDateSummary {
+object PaymentValueAndDateSummary extends Formatters {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(PaymentValueAndDatePage).map {
+  def rowPaymentValue(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+                     (implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(PaymentValueAndDatePage(index)).map {
       answer =>
 
         SummaryListRowViewModel(
-          key = "paymentValueAndDate.checkYourAnswersLabel",
-          value = ValueViewModel(answer.toString),
+          key = "Payment value",
+          value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer.paymentValue)}")),
           actions = Seq(
-            ActionItemViewModel("site.change", PaymentValueAndDatePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentValueAndDate.change.hidden"))
+            ActionItemViewModel("site.change", PaymentValueAndDatePage(index).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("paymentValueAndDate.value.change.hidden"))
+          )
+        )
+    }
+
+  def rowPaymentDate(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+                    (implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(PaymentValueAndDatePage(index)).map {
+      answer =>
+
+        SummaryListRowViewModel(
+          key = "Payment date",
+          value = ValueViewModel(dateFormatter.format(answer.paymentDate)),
+          actions = Seq(
+            ActionItemViewModel("site.change", PaymentValueAndDatePage(index).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("paymentValueAndDate.date.change.hidden"))
           )
         )
     }

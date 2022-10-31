@@ -47,9 +47,9 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.ManualAddressController.onPageLoad(waypoints, Event1EmployerAddressJourney).url
+  private def getRoute: String = routes.ManualAddressController.onPageLoad(waypoints, Event1EmployerAddressJourney, 0).url
 
-  private def postRoute: String = routes.ManualAddressController.onSubmit(waypoints, Event1EmployerAddressJourney).url
+  private def postRoute: String = routes.ManualAddressController.onSubmit(waypoints, Event1EmployerAddressJourney, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
@@ -67,7 +67,7 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must return OK and the correct view for a GET" in {
 
-      val ua = emptyUserAnswers.setOrException(CompanyDetailsPage, companyDetails)
+      val ua = emptyUserAnswers.setOrException(CompanyDetailsPage(0), companyDetails)
 
       val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
 
@@ -81,14 +81,14 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints, Event1EmployerAddressJourney,
           Messages("address.title", entityType),
-          Messages("address.heading", companyDetails.companyName), countryOptions.options)(request, messages(application)).toString
+          Messages("address.heading", companyDetails.companyName), countryOptions.options, 0)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val ua = emptyUserAnswers.setOrException(CompanyDetailsPage, companyDetails)
-        .setOrException(ManualAddressPage(Event1EmployerAddressJourney), seqAddresses.head)
+      val ua = emptyUserAnswers.setOrException(CompanyDetailsPage(0), companyDetails)
+        .setOrException(ManualAddressPage(Event1EmployerAddressJourney, 0), seqAddresses.head)
 
       val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
 
@@ -102,7 +102,7 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form.fill(seqAddresses.head), waypoints, Event1EmployerAddressJourney,
           Messages("address.title", entityType),
-          Messages("address.heading", companyDetails.companyName), countryOptions.options)(request, messages(application)).toString
+          Messages("address.heading", companyDetails.companyName), countryOptions.options, 0)(request, messages(application)).toString
       }
     }
 
@@ -110,7 +110,7 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
-      val ua = emptyUserAnswers.setOrException(CompanyDetailsPage, companyDetails)
+      val ua = emptyUserAnswers.setOrException(CompanyDetailsPage(0), companyDetails)
 
       val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
 
@@ -126,17 +126,17 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
           )
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(ChooseAddressPage(Event1EmployerAddressJourney), seqAddresses.head).success.value
+        val updatedAnswers = emptyUserAnswers.set(ChooseAddressPage(Event1EmployerAddressJourney, 0), seqAddresses.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ChooseAddressPage(Event1EmployerAddressJourney)
+        redirectLocation(result).value mustEqual ChooseAddressPage(Event1EmployerAddressJourney, 0)
           .navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
     "must return bad request when invalid data is submitted" in {
-      val ua = emptyUserAnswers.setOrException(CompanyDetailsPage, companyDetails)
+      val ua = emptyUserAnswers.setOrException(CompanyDetailsPage(0), companyDetails)
 
       val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
 

@@ -24,10 +24,10 @@ class MemberTangibleMoveablePropertyPageSpec extends PageBehaviours {
 
   "MemberTangibleMoveablePropertyPage" - {
 
-    beRetrievable[String](MemberTangibleMoveablePropertyPage)
+    beRetrievable[String](MemberTangibleMoveablePropertyPage(0))
 
-    beSettable[String](MemberTangibleMoveablePropertyPage)
+    beSettable[String](MemberTangibleMoveablePropertyPage(0))
 
-    beRemovable[String](MemberTangibleMoveablePropertyPage)
+    beRemovable[String](MemberTangibleMoveablePropertyPage(0))
   }
 }

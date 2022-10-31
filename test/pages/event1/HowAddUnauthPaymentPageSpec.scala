@@ -23,10 +23,10 @@ class HowAddUnauthPaymentSpec extends PageBehaviours {
 
   "HowAddUnauthPaymentPage" - {
 
-    beRetrievable[HowAddUnauthPayment](HowAddUnauthPaymentPage)
+    beRetrievable[HowAddUnauthPayment](HowAddUnauthPaymentPage(0))
 
-    beSettable[HowAddUnauthPayment](HowAddUnauthPaymentPage)
+    beSettable[HowAddUnauthPayment](HowAddUnauthPaymentPage(0))
 
-    beRemovable[HowAddUnauthPayment](HowAddUnauthPaymentPage)
+    beRemovable[HowAddUnauthPayment](HowAddUnauthPaymentPage(0))
   }
 }

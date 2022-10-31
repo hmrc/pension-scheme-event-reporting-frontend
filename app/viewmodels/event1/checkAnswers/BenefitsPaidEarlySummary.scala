@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event1.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.event1.member.BenefitsPaidEarlyPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -25,20 +25,28 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object BenefitsPaidEarlySummary  {
+object BenefitsPaidEarlySummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(BenefitsPaidEarlyPage).map {
-      answer =>
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] = {
 
-        SummaryListRowViewModel(
-          key     = "benefitsPaidEarly.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", BenefitsPaidEarlyPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("benefitsPaidEarly.change.hidden"))
-          )
-        )
+    val value = answers.get(BenefitsPaidEarlyPage(index)) map { answer =>
+      if (answer.isEmpty) {
+        ValueViewModel("")
+      } else {
+        ValueViewModel(HtmlFormat.escape(answer).toString)
+      }
     }
+
+    Some(
+      SummaryListRowViewModel(
+        key = "benefitsPaidEarly.checkYourAnswersLabel",
+        value = value.get,
+        actions = Seq(
+          ActionItemViewModel("site.change", BenefitsPaidEarlyPage(index).changeLink(waypoints, sourcePage).url)
+            .withVisuallyHiddenText(messages("benefitsPaidEarly.change.hidden"))
+        )
+      )
+    )
+  }
 }

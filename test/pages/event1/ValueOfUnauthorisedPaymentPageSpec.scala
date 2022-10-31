@@ -22,10 +22,10 @@ class ValueOfUnauthorisedPaymentPageSpec extends PageBehaviours {
 
   "ValueOfUnauthorisedPaymentPage" - {
 
-    beRetrievable[Boolean](ValueOfUnauthorisedPaymentPage)
+    beRetrievable[Boolean](ValueOfUnauthorisedPaymentPage(0))
 
-    beSettable[Boolean](ValueOfUnauthorisedPaymentPage)
+    beSettable[Boolean](ValueOfUnauthorisedPaymentPage(0))
 
-    beRemovable[Boolean](ValueOfUnauthorisedPaymentPage)
+    beRemovable[Boolean](ValueOfUnauthorisedPaymentPage(0))
   }
 }

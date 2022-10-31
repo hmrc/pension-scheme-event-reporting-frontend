@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event1.member.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.{CheckAnswersPage, Waypoints}
 import pages.event1.member.ErrorDescriptionPage
 import play.api.i18n.Messages
@@ -27,18 +27,27 @@ import viewmodels.implicits._
 
 object ErrorDescriptionSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ErrorDescriptionPage).map {
-      answer =>
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] = {
 
-        SummaryListRowViewModel(
-          key     = "errorDescription.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", ErrorDescriptionPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("errorDescription.change.hidden"))
-          )
-        )
+    val maybeErrorDescDefined = answers.get(ErrorDescriptionPage(index))
+
+    val value = maybeErrorDescDefined match {
+      case Some(_) =>
+          ValueViewModel(HtmlFormat.escape(maybeErrorDescDefined.get).toString)
+      case None =>
+        ValueViewModel("")
     }
+
+    Some(
+      SummaryListRowViewModel(
+        key     = "errorDescription.checkYourAnswersLabel",
+        value   = value,
+        actions = Seq(
+          ActionItemViewModel("site.change", ErrorDescriptionPage(index).changeLink(waypoints, sourcePage).url)
+            .withVisuallyHiddenText(messages("errorDescription.change.hidden"))
+        )
+      )
+    )
+  }
 }

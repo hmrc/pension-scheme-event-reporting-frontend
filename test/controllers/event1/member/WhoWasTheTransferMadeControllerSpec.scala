@@ -44,9 +44,9 @@ class WhoWasTheTransferMadeControllerSpec extends SpecBase with BeforeAndAfterEa
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.WhoWasTheTransferMadeController.onPageLoad(waypoints).url
+  private def getRoute: String = routes.WhoWasTheTransferMadeController.onPageLoad(waypoints, 0).url
 
-  private def postRoute: String = routes.WhoWasTheTransferMadeController.onSubmit(waypoints).url
+  private def postRoute: String = routes.WhoWasTheTransferMadeController.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -71,13 +71,13 @@ class WhoWasTheTransferMadeControllerSpec extends SpecBase with BeforeAndAfterEa
         val view = application.injector.instanceOf[WhoWasTheTransferMadeView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(WhoWasTheTransferMadePage, WhoWasTheTransferMade.values.head).success.value
+      val userAnswers = UserAnswers().set(WhoWasTheTransferMadePage(0), WhoWasTheTransferMade.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -89,7 +89,7 @@ class WhoWasTheTransferMadeControllerSpec extends SpecBase with BeforeAndAfterEa
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(WhoWasTheTransferMade.values.head), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(WhoWasTheTransferMade.values.head), waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -106,10 +106,10 @@ class WhoWasTheTransferMadeControllerSpec extends SpecBase with BeforeAndAfterEa
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", WhoWasTheTransferMade.values.head.toString))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(WhoWasTheTransferMadePage, WhoWasTheTransferMade.values.head).success.value
+        val updatedAnswers = emptyUserAnswers.set(WhoWasTheTransferMadePage(0), WhoWasTheTransferMade.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual WhoWasTheTransferMadePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual WhoWasTheTransferMadePage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -129,7 +129,7 @@ class WhoWasTheTransferMadeControllerSpec extends SpecBase with BeforeAndAfterEa
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

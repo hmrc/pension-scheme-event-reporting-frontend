@@ -30,10 +30,10 @@ class PaymentValueAndDatePageSpec extends PageBehaviours {
         PaymentDetails(1000.00, LocalDate.now())
     }
 
-    beRetrievable[PaymentDetails](PaymentValueAndDatePage)
+    beRetrievable[PaymentDetails](PaymentValueAndDatePage(0))
 
-    beSettable[PaymentDetails](PaymentValueAndDatePage)
+    beSettable[PaymentDetails](PaymentValueAndDatePage(0))
 
-    beRemovable[PaymentDetails](PaymentValueAndDatePage)
+    beRemovable[PaymentDetails](PaymentValueAndDatePage(0))
   }
 }

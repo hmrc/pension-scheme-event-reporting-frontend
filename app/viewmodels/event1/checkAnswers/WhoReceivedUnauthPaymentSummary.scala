@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event1.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.{CheckAnswersPage, Waypoints}
 import pages.event1.WhoReceivedUnauthPaymentPage
 import play.api.i18n.Messages
@@ -28,9 +28,9 @@ import viewmodels.implicits._
 
 object WhoReceivedUnauthPaymentSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(WhoReceivedUnauthPaymentPage).map {
+    answers.get(WhoReceivedUnauthPaymentPage(index)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -43,7 +43,7 @@ object WhoReceivedUnauthPaymentSummary  {
           key     = "whoReceivedUnauthPayment.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", WhoReceivedUnauthPaymentPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", WhoReceivedUnauthPaymentPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("whoReceivedUnauthPayment.change.hidden"))
           )
         )

@@ -19,28 +19,37 @@ package pages.address
 import controllers.address.routes
 import models.UserAnswers
 import models.address.Address
-import models.enumeration.AddressJourneyType
+import models.enumeration.{AddressJourneyType, EventType}
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
-import pages.event1.PaymentValueAndDatePage
+import pages.event1.{MembersOrEmployersPage, PaymentValueAndDatePage}
 import pages.event1.employer.PaymentNaturePage
 import pages.{Page, QuestionPage, Waypoints}
+import pages.{CheckYourAnswersPage, NonEmptyWaypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ManualAddressPage(addressJourneyType: AddressJourneyType) extends QuestionPage[Address] {
+case class ManualAddressPage(addressJourneyType: AddressJourneyType, index: Int) extends QuestionPage[Address] {
 
-  override def path: JsPath = JsPath \ s"event${addressJourneyType.eventType.toString}" \ addressJourneyType.nodeName \ toString
+  override def path: JsPath = MembersOrEmployersPage(index).path \ s"event${addressJourneyType.eventType.toString}" \ addressJourneyType.nodeName \ toString
 
   override def toString: String = "address"
 
   override def route(waypoints: Waypoints): Call =
-    routes.ManualAddressController.onPageLoad(waypoints, addressJourneyType)
+    routes.ManualAddressController.onPageLoad(waypoints, addressJourneyType, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     addressJourneyType match {
-      case Event1EmployerAddressJourney => PaymentNaturePage
-      case Event1MemberPropertyAddressJourney | Event1EmployerPropertyAddressJourney => PaymentValueAndDatePage
+      case Event1EmployerAddressJourney => PaymentNaturePage(index)
+      case Event1MemberPropertyAddressJourney | Event1EmployerPropertyAddressJourney => PaymentValueAndDatePage(index)
       case _ => super.nextPageNormalMode(waypoints, answers)
+    }
+  }
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
+    addressJourneyType match {
+      case Event1EmployerAddressJourney => CheckYourAnswersPage(EventType.Event1, Some(index))
+      case Event1MemberPropertyAddressJourney  | Event1EmployerPropertyAddressJourney => PaymentValueAndDatePage(index)
+      case _ => super.nextPageNormalMode(waypoints, updatedAnswers)
     }
   }
 

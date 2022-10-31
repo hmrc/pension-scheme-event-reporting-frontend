@@ -47,9 +47,9 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.ChooseAddressController.onPageLoad(waypoints, Event1EmployerAddressJourney).url
+  private def getRoute: String = routes.ChooseAddressController.onPageLoad(waypoints, Event1EmployerAddressJourney, 0).url
 
-  private def postRoute: String = routes.ChooseAddressController.onSubmit(waypoints, Event1EmployerAddressJourney).url
+  private def postRoute: String = routes.ChooseAddressController.onSubmit(waypoints, Event1EmployerAddressJourney, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -64,8 +64,8 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must return OK and the correct view for a GET" in {
       val ua = emptyUserAnswers
-        .setOrException(EnterPostcodePage(Event1EmployerAddressJourney), seqTolerantAddresses)
-        .setOrException(CompanyDetailsPage, companyDetails)
+        .setOrException(EnterPostcodePage(Event1EmployerAddressJourney, 0), seqTolerantAddresses)
+        .setOrException(CompanyDetailsPage(0), companyDetails)
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -81,7 +81,7 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
           view(form, waypoints, Event1EmployerAddressJourney,
             messages("chooseAddress.title", "the company"),
             messages("chooseAddress.heading", companyDetails.companyName),
-            seqTolerantAddresses)(request, messages(application)).toString
+            seqTolerantAddresses, 0)(request, messages(application)).toString
       }
     }
 
@@ -91,7 +91,7 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
       when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any()))
         .thenReturn(Future.successful(()))
 
-      val ua = emptyUserAnswers.setOrException(EnterPostcodePage(Event1EmployerAddressJourney), seqTolerantAddresses)
+      val ua = emptyUserAnswers.setOrException(EnterPostcodePage(Event1EmployerAddressJourney, 0), seqTolerantAddresses)
 
       val application =
         applicationBuilder(userAnswers = Some(ua), extraModules)
@@ -102,18 +102,18 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach {
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "0"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(ChooseAddressPage(Event1EmployerAddressJourney), seqAddresses.head).success.value
+        val updatedAnswers = emptyUserAnswers.set(ChooseAddressPage(Event1EmployerAddressJourney, 0), seqAddresses.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ChooseAddressPage(Event1EmployerAddressJourney)
-          .navigate(waypoints, ua.setOrException(ChooseAddressPage(Event1EmployerAddressJourney), seqAddresses.head), updatedAnswers).url
+        redirectLocation(result).value mustEqual ChooseAddressPage(Event1EmployerAddressJourney, 0)
+          .navigate(waypoints, ua.setOrException(ChooseAddressPage(Event1EmployerAddressJourney, 0), seqAddresses.head), updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
-        uaCaptor.getValue.get(ManualAddressPage(Event1EmployerAddressJourney)) mustBe Some(seqAddresses.head)
+        uaCaptor.getValue.get(ManualAddressPage(Event1EmployerAddressJourney, 0)) mustBe Some(seqAddresses.head)
       }
     }
 
     "must return bad request when invalid data is submitted" in {
-      val ua = emptyUserAnswers.setOrException(EnterPostcodePage(Event1EmployerAddressJourney), seqTolerantAddresses)
+      val ua = emptyUserAnswers.setOrException(EnterPostcodePage(Event1EmployerAddressJourney, 0), seqTolerantAddresses)
 
       val application =
         applicationBuilder(userAnswers = Some(ua), extraModules)

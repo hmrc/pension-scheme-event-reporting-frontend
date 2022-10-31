@@ -20,35 +20,52 @@ import controllers.event1.routes
 import models.UserAnswers
 import models.enumeration.AddressJourneyType.Event1MemberPropertyAddressJourney
 import models.event1.PaymentNature
-import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, Other, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, TransferToNonRegPensionScheme}
-import pages.event1.BenefitInKindBriefDescriptionPage
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import models.event1.PaymentNature._
+import pages.event1.MembersOrEmployersPage
+import pages.{IndexPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object PaymentNaturePage extends QuestionPage[PaymentNature] {
+case class PaymentNaturePage(index: Int) extends QuestionPage[PaymentNature] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
 
-  override def toString: String = "paymentNature"
+  override def toString: String = "paymentNatureMember"
 
   def route(waypoints: Waypoints): Call =
-    routes.PaymentNatureController.onPageLoad(waypoints)
+    routes.PaymentNatureController.onPageLoad(waypoints, index)
 
   // scalastyle:off
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(PaymentNaturePage) match {
-      case Some(BenefitInKind) => BenefitInKindBriefDescriptionPage
-      case Some(TransferToNonRegPensionScheme) => pages.event1.member.WhoWasTheTransferMadePage
-      case Some(ErrorCalcTaxFreeLumpSums) => pages.event1.member.ErrorDescriptionPage
-      case Some(BenefitsPaidEarly) => pages.event1.member.BenefitsPaidEarlyPage
-      case Some(RefundOfContributions) => pages.event1.member.RefundOfContributionsPage
-      case Some(OverpaymentOrWriteOff) => pages.event1.member.ReasonForTheOverpaymentOrWriteOffPage
-      case Some(ResidentialPropertyHeld) => pages.address.EnterPostcodePage(Event1MemberPropertyAddressJourney)
-      case Some(TangibleMoveablePropertyHeld) => MemberTangibleMoveablePropertyPage
-      case Some(CourtOrConfiscationOrder) => pages.event1.member.UnauthorisedPaymentRecipientNamePage
-      case Some(Other) => MemberPaymentNatureDescriptionPage
+    answers.get(PaymentNaturePage(index)) match {
+      case Some(BenefitInKind) => BenefitInKindBriefDescriptionPage(index)
+      case Some(TransferToNonRegPensionScheme) => pages.event1.member.WhoWasTheTransferMadePage(index)
+      case Some(ErrorCalcTaxFreeLumpSums) => pages.event1.member.ErrorDescriptionPage(index)
+      case Some(BenefitsPaidEarly) => pages.event1.member.BenefitsPaidEarlyPage(index)
+      case Some(RefundOfContributions) => pages.event1.member.RefundOfContributionsPage(index)
+      case Some(OverpaymentOrWriteOff) => pages.event1.member.ReasonForTheOverpaymentOrWriteOffPage(index)
+      case Some(ResidentialPropertyHeld) => pages.address.EnterPostcodePage(Event1MemberPropertyAddressJourney, index)
+      case Some(TangibleMoveablePropertyHeld) => MemberTangibleMoveablePropertyPage(index)
+      case Some(CourtOrConfiscationOrder) => pages.event1.member.UnauthorisedPaymentRecipientNamePage(index)
+      case Some(MemberOther) => MemberPaymentNatureDescriptionPage(index)
       case _ => IndexPage
     }
   }
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
+    updatedAnswers.get(PaymentNaturePage(index)) match {
+      case Some(BenefitInKind) => BenefitInKindBriefDescriptionPage(index)
+      case Some(TransferToNonRegPensionScheme) => pages.event1.member.WhoWasTheTransferMadePage(index)
+      case Some(ErrorCalcTaxFreeLumpSums) => pages.event1.member.ErrorDescriptionPage(index)
+      case Some(BenefitsPaidEarly) => pages.event1.member.BenefitsPaidEarlyPage(index)
+      case Some(RefundOfContributions) => pages.event1.member.RefundOfContributionsPage(index)
+      case Some(OverpaymentOrWriteOff) => pages.event1.member.ReasonForTheOverpaymentOrWriteOffPage(index)
+      case Some(ResidentialPropertyHeld) => pages.address.EnterPostcodePage(Event1MemberPropertyAddressJourney, index)
+      case Some(TangibleMoveablePropertyHeld) => MemberTangibleMoveablePropertyPage(index)
+      case Some(CourtOrConfiscationOrder) => pages.event1.member.UnauthorisedPaymentRecipientNamePage(index)
+      case Some(MemberOther) => MemberPaymentNatureDescriptionPage(index)
+      case _ => IndexPage
+    }
+  }
+
 }

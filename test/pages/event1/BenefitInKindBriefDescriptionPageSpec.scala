@@ -17,16 +17,17 @@
 package pages.event1
 
 import pages.behaviours.PageBehaviours
+import pages.event1.member.BenefitInKindBriefDescriptionPage
 
 
 class BenefitInKindBriefDescriptionPageSpec extends PageBehaviours {
 
   "BenefitInKindBriefDescriptionPage" - {
 
-    beRetrievable[String](BenefitInKindBriefDescriptionPage)
+    beRetrievable[String](BenefitInKindBriefDescriptionPage(0))
 
-    beSettable[String](BenefitInKindBriefDescriptionPage)
+    beSettable[String](BenefitInKindBriefDescriptionPage(0))
 
-    beRemovable[String](BenefitInKindBriefDescriptionPage)
+    beRemovable[String](BenefitInKindBriefDescriptionPage(0))
   }
 }
