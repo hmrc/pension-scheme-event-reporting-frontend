@@ -26,7 +26,7 @@ import play.api.mvc.Call
 
 case class WhoReceivedUnauthPaymentPage(index: Int) extends QuestionPage[WhoReceivedUnauthPayment] {
 
-  override def path: JsPath = MembersOrEmployersPage(index).path \ WhoReceivedUnauthPaymentPage.toString
+  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
 
   override def toString: String = "whoReceivedUnauthPayment"
 
