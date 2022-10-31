@@ -22,12 +22,22 @@ import forms.event1.UnauthPaymentSummaryFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import models.event1.employer.CompanyDetails
+
+import models.{Index, UserAnswers}
+import pages.event1.member.BenefitInKindBriefDescriptionPage
+import pages.{CheckAnswersPage, Waypoints}
+import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.govuk.summarylist._
+import viewmodels.implicits._
 import pages.Waypoints
 import pages.common.MembersDetailsPage
 import pages.event1.UnauthPaymentSummaryPage
 import pages.event1.employer.CompanyDetailsPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.Message
@@ -50,14 +60,16 @@ class UnauthPaymentSummaryController @Inject()(
   private val form = formProvider()
   private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
+    val mappedMemberOrEmployer = request.userAnswers.memberOrEmployerSummaryEvent1.map { memberOrEmployerSummary =>
 
-    connector.getEventReportSummary(request.pstr).map { seqOfEventTypes =>
-      val mappedEvents = seqOfEventTypes.map { event =>
+      val value = ValueViewModel(HtmlFormat.escape(memberOrEmployerSummary.unauthorisedPaymentValue.toString()).toString)
+
         SummaryListRow(
           key = Key(
-            content = Text(Message(s"unauthPaymentSummary.name${event.toString}"))
+            content = Text(memberOrEmployerSummary.name)
           ),
+          value = value,
           actions = Some(Actions(
             items = Seq(
               ActionItem(
@@ -72,14 +84,17 @@ class UnauthPaymentSummaryController @Inject()(
           ))
         )
       }
-      Ok(view(form, waypoints, mappedEvents))
-    }
+    val total = request.userAnswers.memberOrEmployerSummaryEvent1.map(_.unauthorisedPaymentValue).sum
+      Ok(view(form, waypoints, mappedMemberOrEmployer, total))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = identify {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors => BadRequest(view(formWithErrors, waypoints, Nil)),
+        formWithErrors => {
+          val total = request.userAnswers.memberOrEmployerSummaryEvent1.map(_.unauthorisedPaymentValue).sum
+          BadRequest(view(formWithErrors, waypoints, Nil, total))
+        },
         value => {
           val userAnswerUpdated = UserAnswers().setOrException(UnauthPaymentSummaryPage, value)
           Redirect(UnauthPaymentSummaryPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)}

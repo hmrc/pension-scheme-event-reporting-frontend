@@ -16,6 +16,7 @@
 
 package models
 
+import models.event1.MemberOrEmployerSummary
 import pages.QuestionPage
 import play.api.libs.json._
 import queries.{Derivable, Gettable, Settable}
@@ -85,5 +86,24 @@ final case class UserAnswers(
       case Failure(ex) => throw ex
     }
   }
+
+  def memberOrEmployerSummaryEvent1:Seq[MemberOrEmployerSummary] = {
+
+    Seq(
+      MemberOrEmployerSummary("Member1", BigDecimal(44.44), 0)
+    )
+  }
+
+  /*
+  def allEstablishers(mode: Mode): Seq[Establisher[_]] = {
+    json.validate[Seq[Establisher[_]]](readEstablishers(mode)) match {
+      case JsSuccess(establishers, _) =>
+        establishers
+      case JsError(errors) =>
+        logger.warn(s"Invalid json while reading all the establishers for addEstablisher: $errors")
+        Nil
+    }
+  }
+   */
 
 }

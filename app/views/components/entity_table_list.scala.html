@@ -16,38 +16,41 @@
 
 @*TODO Fix UI of the table*@
 
-@(events: Seq[SummaryListRow], colOne: String, colTwo: String)(implicit messages: Messages)
+@(seqSummaryListRow: Seq[SummaryListRow], colOne: String, colTwo: String, total: BigDecimal)(implicit messages: Messages)
 
 <table class="govuk-table">
     <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">@messages(colOne)</th>
-            <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages(colTwo)</th>
-            <th scope="col" class="govuk-table__header govuk-table__header--numeric"></th>
-        </tr>
+    <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">@messages(colOne)</th>
+        <th scope="col" class="govuk-table__header">@messages(colTwo)</th>
+        <th scope="col" class="govuk-table__header"></th>
+    </tr>
     </thead>
-    @events.map { event =>
-        <tbody class="govuk-table__body">
+    <tbody class="govuk-table__body">
+    @seqSummaryListRow.map { summaryListRow =>
+
             <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">@event.key.content.asHtml</th>
-                @event.actions.map { actions =>
-                    <td class="govuk-table__cell govuk-table__cell--numeric">£95</td>
-                @actions.items.map { item =>
-                    <td class="govuk-table__cell govuk-table__cell--numeric">
-                        <a class="govuk-link" href="@item.href">
-                            <span aria-hidden="true">@item.content.asHtml</span>
-                            <span class="govuk-visually-hidden">@item.content.asHtml @event.key.content.asHtml</span>
-                        </a>
+                <th scope="row" class="govuk-table__header govuk-!-font-weight-regular govuk-!-width-one-half">@summaryListRow.key.content.asHtml</th>
+                @summaryListRow.actions.map { actions =>
+                    <td class="govuk-table__cell govuk-!-width-one-quarter">&pound;@summaryListRow.value.content.asHtml</td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-width-one-quarter">
+                        <ul class="govuk-summary-list__actions-list">
+                            @actions.items.map { item =>
+                            <li class="govuk-summary-list__actions-list-item">
+                                <a class="govuk-link" href="@item.href">
+                                    <span aria-hidden="true">@item.content.asHtml</span>
+                                    <span class="govuk-visually-hidden">@item.content.asHtml @summaryListRow.key.content.asHtml</span>
+                                </a>
+                            </li>
+                            }
+                        </ul>
                     </td>
                 }
-                }
             </tr>
-        </tbody>
     }
-    <tbody class="govuk-table__body">
     <tr class="govuk-table__row">
-        <td class="govuk-table__cell govuk-table__cell--numeric">@messages("entity_list_table.total")</td>
-        <td class="govuk-table__cell govuk-table__cell--numeric"></td>
+        <td class="govuk-table__cell govuk-table__cell--numeric"><strong>@messages("entity_list_table.total")</strong></td>
+        <td class="govuk-table__cell" colspan="2"><strong>&pound;@total</strong></td>
     </tr>
     </tbody>
 </table>
