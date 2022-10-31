@@ -16,69 +16,35 @@
 
 @*TODO Fix UI of the table*@
 
-@(events: Seq[SummaryListRow])(implicit messages: Messages)
+@(events: Seq[SummaryListRow], colOne: String, colTwo: String)(implicit messages: Messages)
 
-<div class="govuk-form-group">
-    <table id="items" class="govuk-table govuk-!-width-full" role="grid">
-        <thred role="govuk-table__head">
-            <th id="member-or-company-header" class="govuk-table__header govuk-!-width-one-half" scope="col">@messages("unauthPaymentSummary.table.header1")</th>
-
-            <th id="payment-header" class="govuk-table__header govuk-!-width-one-quarter" scope="col">@messages("unauthPaymentSummary.table.header2")</th>
-
-            <th id="empty" class="govuk-table__header govuk-!-width-one-quarter" scope="col"></th>
-
-        </thred>
-        @events.map { event =>
-            <div class="govuk-summary-list__row govuk-!-width-full">
-
-
+<table class="govuk-table">
+    <caption class="govuk-table__caption govuk-table__caption--m"></caption>
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">@messages(colOne)</th>
+            <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages(colTwo)</th>
+            <th scope="col" class="govuk-table__header govuk-table__header--numeric"></th>
+        </tr>
+    </thead>
+    @events.map { event =>
+        <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">@event.key.content.asHtml</th>
                 @event.actions.map { actions =>
-
-                    <tbody class="govuk-table__body">
-                        <tr class="govuk-table__row">
-                            @actions.items.map { item =>
-                                <td class="govuk-table__cell govuk-!-width-one-half">
-                                    @event.key.content.asHtml
-                                </td>
-
-                                <td class= "govuk-table__cell govuk-!-width-one-quarter govuk-table__header--numeric">
-                                @messages("£13.00")
-                                </td>
-
-                                <td class= "govuk-table__cell govuk-!-width-one-quarter">
-                                    <a class="govuk-link" href="@item.href">
-                                        <span aria-hidden="true">@item.content.asHtml</span>
-                                        <span class="govuk-visually-hidden">@item.content.asHtml @event.key.content.asHtml</span>
-                                    </a>
-                                </td>
-                            }
-
-                        </tr>
-                    </tbody>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">£95</td>
+                @actions.items.map { item =>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">
+                        <a class="govuk-link" href="@item.href">
+                            <span aria-hidden="true">@item.content.asHtml</span>
+                            <span class="govuk-visually-hidden">@item.content.asHtml @event.key.content.asHtml</span>
+                        </a>
+                    </td>
                 }
+                }
+            </tr>
 
-            </div>
-        }
-        @*        @events.map { event =>*@
-        @*            <div class="govuk-summary-list__row">*@
-        @*                <dt class="govuk-summary-list__key govuk-!-font-weight-bold hmrc-summary-list__key govuk-!-width-full">*@
-        @*                    @event.key.content.asHtml*@
-        @*                </dt>*@
-        @*                @event.actions.map { actions =>*@
-        @*                    <dd class="govuk-summary-list__actions hmrc-summary-list__actions">*@
-        @*                        <ul class="govuk-summary-list__actions-list">*@
-        @*                            @actions.items.map { item =>*@
-        @*                                <li class="govuk-summary-list__actions-list-item">*@
-        @*                                    <a class="govuk-link" href="@item.href">*@
-        @*                                        <span aria-hidden="true">@item.content.asHtml</span>*@
-        @*                                        <span class="govuk-visually-hidden">@item.content.asHtml @event.key.content.asHtml</span>*@
-        @*                                    </a>*@
-        @*                                </li>*@
-        @*                            }*@
-        @*                        </ul>*@
-        @*                    </dd>*@
-        @*                }*@
-        @*            </div>*@
-        @*       }*@
-    </table>
-</div>
+        </tbody>
+    }
+</table>
+     
