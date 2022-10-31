@@ -29,7 +29,6 @@ import scala.util.{Failure, Success, Try}
 trait Formatters {
 
   private[mappings] val numericRegexp = """^-?(\-?)(\d*)(\.?)(\d*)$"""
-  private[mappings] val intRegexp = """^-?(\d*)$"""
   private[mappings] val decimal2DPRegexp = """^-?(\d*\.\d{2})$"""
   private[mappings] val decimalFormat = new DecimalFormat("0.00")
 

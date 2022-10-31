@@ -30,23 +30,23 @@ object BenefitInKindBriefDescriptionSummary {
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
-    val value = answers.get(BenefitInKindBriefDescriptionPage) map { answer =>
-        if (!answer.isBlank) {
+    answers.get(BenefitInKindBriefDescriptionPage) map {
+      answer =>
+
+        val value = if (!answer.isBlank) {
           ValueViewModel(HtmlFormat.escape(answer).toString)
         } else {
           ValueViewModel("")
         }
-    }
 
-    Some(
-      SummaryListRowViewModel(
-        key = "benefitInKindBriefDescription.checkYourAnswersLabel",
-        value = value.get,
-        actions = Seq(
-          ActionItemViewModel("site.change", BenefitInKindBriefDescriptionPage.changeLink(waypoints, sourcePage).url)
-            .withVisuallyHiddenText(messages("benefitInKindBriefDescription.change.hidden"))
+        SummaryListRowViewModel(
+          key = "benefitInKindBriefDescription.checkYourAnswersLabel",
+          value = value,
+          actions = Seq(
+            ActionItemViewModel("site.change", BenefitInKindBriefDescriptionPage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("benefitInKindBriefDescription.change.hidden"))
+          )
         )
-      )
-    )
+    }
   }
 }

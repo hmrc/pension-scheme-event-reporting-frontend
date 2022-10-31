@@ -91,7 +91,7 @@ trait JourneyHelpers extends Matchers with TryValues with OptionValues {
       page mustEqual expectedPage
     }
 
-  // TODO : We should find a better comparison for CYA pages, In CYA page, we creating new object each time we want to have it.
+  // TODO : We should find a better comparison for CYA pages, In CYA page, we are creating new object each time we want to have it.
   def comparePageMustBeAsString(expectedPage: Page)(implicit position: Position): JourneyStep[Unit] =
     getPage.map { page =>
       page.toString mustEqual expectedPage.toString

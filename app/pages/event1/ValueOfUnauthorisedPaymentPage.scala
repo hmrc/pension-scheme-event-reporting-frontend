@@ -24,7 +24,6 @@ import pages.{CheckYourAnswersPage, NonEmptyWaypoints, Page, QuestionPage, Waypo
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-
 case object ValueOfUnauthorisedPaymentPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString

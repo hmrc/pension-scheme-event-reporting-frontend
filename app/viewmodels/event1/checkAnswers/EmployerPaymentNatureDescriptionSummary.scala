@@ -30,15 +30,13 @@ object EmployerPaymentNatureDescriptionSummary {
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
-    val maybeOtherDescDefined = answers.get(EmployerPaymentNatureDescriptionPage)
-
-    val value = maybeOtherDescDefined match {
-      case Some(_) =>
-        ValueViewModel(HtmlFormat.escape(maybeOtherDescDefined.get).toString)
-      case None =>
+    answers.get(EmployerPaymentNatureDescriptionPage) map { answer =>
+      val value = if (!answer.isBlank) {
+        ValueViewModel(HtmlFormat.escape(answer).toString)
+      } else {
         ValueViewModel("")
-    }
-    Some(
+      }
+
       SummaryListRowViewModel(
         key = "employerPaymentNatureDescription.checkYourAnswersLabel",
         value = value,
@@ -47,6 +45,6 @@ object EmployerPaymentNatureDescriptionSummary {
             .withVisuallyHiddenText(messages("employerPaymentNatureDescription.change.hidden"))
         )
       )
-    )
+    }
   }
 }

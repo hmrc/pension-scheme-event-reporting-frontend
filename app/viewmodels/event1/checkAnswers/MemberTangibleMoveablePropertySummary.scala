@@ -30,24 +30,22 @@ object MemberTangibleMoveablePropertySummary {
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
-    val maybeTangibleDescriptionDefined = answers.get(MemberTangibleMoveablePropertyPage)
+    answers.get(MemberTangibleMoveablePropertyPage).map {
+      answer =>
+        val value = if (!answer.isBlank) {
+          ValueViewModel(HtmlFormat.escape(answer).toString)
+        } else {
+          ValueViewModel("")
+        }
 
-    val value = maybeTangibleDescriptionDefined match {
-      case Some(_) =>
-        ValueViewModel(HtmlFormat.escape(maybeTangibleDescriptionDefined.get).toString)
-      case None =>
-        ValueViewModel("")
-    }
-
-    Some(
-      SummaryListRowViewModel(
-        key = "memberTangibleMoveableProperty.checkYourAnswersLabel",
-        value = value,
-        actions = Seq(
-          ActionItemViewModel("site.change", MemberTangibleMoveablePropertyPage.changeLink(waypoints, sourcePage).url)
-            .withVisuallyHiddenText(messages("memberTangibleMoveableProperty.change.hidden"))
+        SummaryListRowViewModel(
+          key = "memberTangibleMoveableProperty.checkYourAnswersLabel",
+          value = value,
+          actions = Seq(
+            ActionItemViewModel("site.change", MemberTangibleMoveablePropertyPage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("memberTangibleMoveableProperty.change.hidden"))
+          )
         )
-      )
-    )
+    }
   }
 }

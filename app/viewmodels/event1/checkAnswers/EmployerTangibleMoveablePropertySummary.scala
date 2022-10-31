@@ -18,7 +18,6 @@ package viewmodels.event1.checkAnswers
 
 import models.UserAnswers
 import pages.event1.employer.EmployerTangibleMoveablePropertyPage
-import pages.event1.member.MemberTangibleMoveablePropertyPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -30,23 +29,22 @@ object EmployerTangibleMoveablePropertySummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] = {
-    val maybeTangibleDescriptionDefined = answers.get(EmployerTangibleMoveablePropertyPage)
+    answers.get(EmployerTangibleMoveablePropertyPage).map {
+      answer =>
+        val value = if (!answer.isBlank) {
+          ValueViewModel(HtmlFormat.escape(answer).toString)
+        } else {
+          ValueViewModel("")
+        }
 
-    val value = maybeTangibleDescriptionDefined match {
-      case Some(_) =>
-        ValueViewModel(HtmlFormat.escape(maybeTangibleDescriptionDefined.get).toString)
-      case None =>
-        ValueViewModel("")
-    }
-    Some(
-      SummaryListRowViewModel(
-        key = "employerTangibleMoveableProperty.checkYourAnswersLabel",
-        value = value,
-        actions = Seq(
-          ActionItemViewModel("site.change", EmployerTangibleMoveablePropertyPage.changeLink(waypoints, sourcePage).url)
-            .withVisuallyHiddenText(messages("employerTangibleMoveableProperty.change.hidden"))
+        SummaryListRowViewModel(
+          key = "employerTangibleMoveableProperty.checkYourAnswersLabel",
+          value = value,
+          actions = Seq(
+            ActionItemViewModel("site.change", EmployerTangibleMoveablePropertyPage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("employerTangibleMoveableProperty.change.hidden"))
+          )
         )
-      )
-    )
+    }
   }
 }

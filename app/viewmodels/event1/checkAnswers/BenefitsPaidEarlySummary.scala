@@ -30,23 +30,21 @@ object BenefitsPaidEarlySummary {
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
-    val value = answers.get(BenefitsPaidEarlyPage) map { answer =>
-      if (!answer.isBlank) {
-        ValueViewModel(HtmlFormat.escape(answer).toString)
-      } else {
-        ValueViewModel("")
-      }
-    }
-
-    Some(
-      SummaryListRowViewModel(
-        key = "benefitsPaidEarly.checkYourAnswersLabel",
-        value = value.get,
-        actions = Seq(
-          ActionItemViewModel("site.change", BenefitsPaidEarlyPage.changeLink(waypoints, sourcePage).url)
-            .withVisuallyHiddenText(messages("benefitsPaidEarly.change.hidden"))
+    answers.get(BenefitsPaidEarlyPage) map {
+      answer =>
+        val value = if (!answer.isBlank) {
+          ValueViewModel(HtmlFormat.escape(answer).toString)
+        } else {
+          ValueViewModel("")
+        }
+        SummaryListRowViewModel(
+          key = "benefitsPaidEarly.checkYourAnswersLabel",
+          value = value,
+          actions = Seq(
+            ActionItemViewModel("site.change", BenefitsPaidEarlyPage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("benefitsPaidEarly.change.hidden"))
+          )
         )
-      )
-    )
+    }
   }
 }
