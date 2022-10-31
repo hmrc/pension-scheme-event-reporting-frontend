@@ -16,31 +16,22 @@
 
 package controllers.event1
 
-import connectors.{EventReportingConnector, UnauthPaymentConnector, UserAnswersCacheConnector}
+import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.event1.UnauthPaymentSummaryFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
-import models.event1.employer.CompanyDetails
-
-import models.{Index, UserAnswers}
-import pages.event1.member.BenefitInKindBriefDescriptionPage
-import pages.{CheckAnswersPage, Waypoints}
-import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 import pages.Waypoints
-import pages.common.MembersDetailsPage
 import pages.event1.UnauthPaymentSummaryPage
-import pages.event1.employer.CompanyDetailsPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.Aliases._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.Message
+import viewmodels.govuk.summarylist._
+import viewmodels.implicits._
 import views.html.event1.UnauthPaymentSummaryView
 
 import javax.inject.Inject
@@ -51,7 +42,6 @@ class UnauthPaymentSummaryController @Inject()(
                                         identify: IdentifierAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
-                                        connector: EventReportingConnector,
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                         formProvider: UnauthPaymentSummaryFormProvider,
                                         view: UnauthPaymentSummaryView

@@ -17,9 +17,11 @@
 package pages.event1
 
 import models.event1.MemberOrEmployerSummary
+import pages.common.MembersDetailsPage
 import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.{JsPath, Reads}
 import play.api.mvc.Call
+import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 
 case object MembersOrEmployersPage extends QuestionPage[Seq[MemberOrEmployerSummary]] {
   def apply(index: Int) : JsPath = path \ index
@@ -27,8 +29,38 @@ case object MembersOrEmployersPage extends QuestionPage[Seq[MemberOrEmployerSumm
   override def toString: String = "membersOrEmployers"
   override def route(waypoints: Waypoints): Call = controllers.routes.IndexController.onPageLoad
 
-  implicit val reads: Reads[Seq[MemberOrEmployerSummary]] = ???
-//    JsPath.read[String].flatMap {
+  /*
+  * "event1" : {
+            "membersOrEmployers" : [
+                {
+                    "howAddUnauthPayment" : "manual",
+                    "whoReceivedUnauthPayment" : "member",
+                    "membersDetails" : {
+                        "firstName" : "a",
+                        "lastName" : "a",
+                        "nino" : "CS121212C"
+                    },
+                    "doYouHoldSignedMandate" : true,
+                    "valueOfUnauthorisedPayment" : false,
+                    "paymentNatureMember" : "memberOther",
+                    "memberPaymentNatureDescription" : "dsds",
+                    "paymentValueAndDate" : {
+                        "paymentValue" : 12.12,
+                        "paymentDate" : "2022-05-01"
+                    }
+                }
+            ]
+        }
+  * */
+  val readsMemberOrEmployerSummary: Reads[MemberOrEmployerSummary] =
+    ((JsPath \ MembersDetailsPage.toString \ "firstName") and
+      (JsPath \ MembersDetailsPage.toString \ "lastName") and
+      (JsPath \ PaymentValueAndDatePage.toString \ "paymentValue"))(a, b)
+
+  implicit val reads: Reads[Seq[MemberOrEmployerSummary]] = {
+      path.read[Seq[MemberOrEmployerSummary]](Reads.seq(readsMemberOrEmployerSummary))
+  }
+  //    JsPath.read[String].flatMap {
 //      case aop if mappings.keySet.contains(aop) => Reads(_ => JsSuccess(mappings.apply(aop)))
 //      case invalidValue => Reads(_ => JsError(s"Invalid administrator or practitioner type: $invalidValue"))
 //    }
