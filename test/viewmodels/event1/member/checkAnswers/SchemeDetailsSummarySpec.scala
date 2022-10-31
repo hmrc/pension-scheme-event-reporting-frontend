@@ -36,7 +36,7 @@ class SchemeDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValu
 
   private implicit val messages: Messages = stubMessages()
 
-  private def schemeDetailsAnswer(detail: Option[String])(implicit messages: Messages): Html = {
+  private def schemeDetailsAnswer(detail: Option[String]): Html = {
     def schemeDetailsToHtml(value: String): String = s"$value"
 
     def optionalDetailToHtml(optionalSchemeDetail: Option[String]): String = optionalSchemeDetail match {
