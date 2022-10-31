@@ -19,7 +19,6 @@
 @(events: Seq[SummaryListRow], colOne: String, colTwo: String)(implicit messages: Messages)
 
 <table class="govuk-table">
-    <caption class="govuk-table__caption govuk-table__caption--m"></caption>
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header">@messages(colOne)</th>
@@ -30,7 +29,7 @@
     @events.map { event =>
         <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">@event.key.content.asHtml</th>
+                <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">@event.key.content.asHtml</th>
                 @event.actions.map { actions =>
                     <td class="govuk-table__cell govuk-table__cell--numeric">£95</td>
                 @actions.items.map { item =>
@@ -43,8 +42,12 @@
                 }
                 }
             </tr>
-
         </tbody>
     }
+    <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+        <td class="govuk-table__cell govuk-table__cell--numeric">@messages("entity_list_table.total")</td>
+        <td class="govuk-table__cell govuk-table__cell--numeric"></td>
+    </tr>
+    </tbody>
 </table>
-     

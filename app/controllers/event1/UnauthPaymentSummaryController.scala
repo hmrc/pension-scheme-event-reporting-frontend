@@ -52,16 +52,6 @@ class UnauthPaymentSummaryController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
 
-    //    val ua = request.userAnswers.get
-    //    val memberName = ua.get(MembersDetailsPage(eventType)).map {
-    //      member =>
-    //        (member.firstName, member.lastName).toString()
-    //    }
-    //    val companyName = ua.get(CompanyDetailsPage).map {
-    //      company =>
-    //        company.companyName
-    //    }
-
     connector.getEventReportSummary(request.pstr).map { seqOfEventTypes =>
       val mappedEvents = seqOfEventTypes.map { event =>
         SummaryListRow(

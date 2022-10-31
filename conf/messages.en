@@ -509,3 +509,5 @@ unauthPaymentSummary.change.hidden = Unauthorised payment summary
 unauthPaymentSummary.table.header1 = Member or company name
 unauthPaymentSummary.table.header2 = Unauthorised payment value
 
+entity_list_table.total = Total
+
