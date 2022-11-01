@@ -30,22 +30,22 @@ object MemberPaymentNatureDescriptionSummary {
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
-    answers.get(MemberPaymentNatureDescriptionPage(index)).map {
-      answer =>
-        val value = if (!answer.isBlank) {
-          ValueViewModel(HtmlFormat.escape(answer).toString)
-        } else {
-          ValueViewModel("")
-        }
-
-        SummaryListRowViewModel(
-          key = "memberPaymentNatureDescription.checkYourAnswersLabel",
-          value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", MemberPaymentNatureDescriptionPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("memberPaymentNatureDescription.change.hidden"))
-          )
-        )
+    val valueViewModel = answers.get(MemberPaymentNatureDescriptionPage(index)) match {
+      case Some(value) =>
+        ValueViewModel(HtmlFormat.escape(value).toString)
+      case None =>
+        ValueViewModel("")
     }
+
+    Some(
+      SummaryListRowViewModel(
+        key = "memberPaymentNatureDescription.checkYourAnswersLabel",
+        value = valueViewModel,
+        actions = Seq(
+          ActionItemViewModel("site.change", MemberPaymentNatureDescriptionPage(index).changeLink(waypoints, sourcePage).url)
+            .withVisuallyHiddenText(messages("memberPaymentNatureDescription.change.hidden"))
+        )
+      )
+    )
   }
 }

@@ -29,22 +29,22 @@ object EmployerTangibleMoveablePropertySummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] = {
-    answers.get(EmployerTangibleMoveablePropertyPage(index)).map {
-      answer =>
-        val value = if (!answer.isBlank) {
-          ValueViewModel(HtmlFormat.escape(answer).toString)
-        } else {
-          ValueViewModel("")
-        }
 
-        SummaryListRowViewModel(
-          key = "employerTangibleMoveableProperty.checkYourAnswersLabel",
-          value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", EmployerTangibleMoveablePropertyPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("employerTangibleMoveableProperty.change.hidden"))
-          )
-        )
+    val valueViewModel = answers.get(EmployerTangibleMoveablePropertyPage(index)) match {
+      case Some(value) =>
+        ValueViewModel(HtmlFormat.escape(value).toString)
+      case None =>
+        ValueViewModel("")
     }
+
+    Some(
+      SummaryListRowViewModel(
+        key = "employerTangibleMoveableProperty.checkYourAnswersLabel",
+        value = valueViewModel,
+        actions = Seq(
+          ActionItemViewModel("site.change", EmployerTangibleMoveablePropertyPage(index).changeLink(waypoints, sourcePage).url)
+            .withVisuallyHiddenText(messages("employerTangibleMoveableProperty.change.hidden"))
+        )
+      ))
   }
 }

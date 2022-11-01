@@ -30,21 +30,22 @@ object EmployerPaymentNatureDescriptionSummary {
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
-    answers.get(EmployerPaymentNatureDescriptionPage(index)) map { answer =>
-      val value = if (!answer.isBlank) {
-        ValueViewModel(HtmlFormat.escape(answer).toString)
-      } else {
+    val valueViewModel = answers.get(EmployerPaymentNatureDescriptionPage(index)) match {
+      case Some(value) =>
+        ValueViewModel(HtmlFormat.escape(value).toString)
+      case None =>
         ValueViewModel("")
-      }
+    }
 
+    Some(
       SummaryListRowViewModel(
         key = "employerPaymentNatureDescription.checkYourAnswersLabel",
-        value = value,
+        value = valueViewModel,
         actions = Seq(
           ActionItemViewModel("site.change", EmployerPaymentNatureDescriptionPage(index).changeLink(waypoints, sourcePage).url)
             .withVisuallyHiddenText(messages("employerPaymentNatureDescription.change.hidden"))
         )
       )
-    }
+    )
   }
 }

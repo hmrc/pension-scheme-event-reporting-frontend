@@ -30,22 +30,22 @@ object ErrorDescriptionSummary {
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
-    answers.get(ErrorDescriptionPage(index)).map {
-      answer =>
-        val value = if (!answer.isBlank) {
-          ValueViewModel(HtmlFormat.escape(answer).toString)
-        } else {
-          ValueViewModel("")
-        }
-
-        SummaryListRowViewModel(
-          key = "errorDescription.checkYourAnswersLabel",
-          value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", ErrorDescriptionPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("errorDescription.change.hidden"))
-          )
-        )
+    val valueViewModel = answers.get(ErrorDescriptionPage(index)) match {
+      case Some(value) =>
+        ValueViewModel(HtmlFormat.escape(value).toString)
+      case None =>
+        ValueViewModel("")
     }
+
+    Some(
+      SummaryListRowViewModel(
+        key = "errorDescription.checkYourAnswersLabel",
+        value = valueViewModel,
+        actions = Seq(
+          ActionItemViewModel("site.change", ErrorDescriptionPage(index).changeLink(waypoints, sourcePage).url)
+            .withVisuallyHiddenText(messages("errorDescription.change.hidden"))
+        )
+      )
+    )
   }
 }
