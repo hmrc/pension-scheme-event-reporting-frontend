@@ -26,6 +26,7 @@ import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
 import pages.event1.UnauthPaymentSummaryPage
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -71,8 +72,48 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
         val view = application.injector.instanceOf[UnauthPaymentSummaryView]
 
+        val expectedSeq = Seq(SummaryListRow(
+          key = Key(Text(value = "Joe Bloggs")),
+          value = Value(Text(value = "857.0")),
+          actions = Some(Actions(
+            items = List(
+              ActionItem(
+                href = "/manage-pension-scheme-event-report/new-report/1/event-1-check-your-answers",
+                content = Text(Messages("site.view")),
+                visuallyHiddenText = None,
+                attributes = Map()
+              ),
+              ActionItem(
+                href = "#",
+                content = Text(Messages("site.remove")),
+                visuallyHiddenText = None,
+                attributes = Map()
+              )
+            )
+          ))
+        ),
+          SummaryListRow(
+            key = Key(Text(value = "Company Name")),
+            value = Value(Text(value = "7687.0")),
+            actions = Some(Actions(
+              items = List(
+                ActionItem(
+                  href = "/manage-pension-scheme-event-report/new-report/2/event-1-check-your-answers",
+                  content = Text(Messages("site.view")),
+                  visuallyHiddenText = None,
+                  attributes = Map()
+                ),
+                ActionItem(href = "#", content = Text(Messages("site.remove")),
+                  visuallyHiddenText = None,
+                  attributes = Map()
+                )
+              )
+            ))
+          ))
+
+
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, Nil, BigDecimal(0))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, expectedSeq, BigDecimal(8544.0))(request, messages(application)).toString
       }
     }
 
@@ -90,50 +131,7 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(UnauthPaymentSummaryPage, true).success.value
-        val x = Seq(SummaryListRow(
-          key = Key(Text(value = "Joe Bloggs")),
-          value = Value(Text(value = "857.0")),
-          actions = Some(Actions(
-            items = List(
-              ActionItem(
-                href = "/manage-pension-scheme-event-report/new-report/1/event-1-check-your-answers",
-                content = Text("View"),
-                visuallyHiddenText = None,
-                attributes = Map()
-              ),
-              ActionItem(
-                href = "#",
-                content = Text("Remove"),
-                visuallyHiddenText = None,
-                attributes = Map()
-              )
-            )
-          ))
-        ),
-        SummaryListRow(
-          key = Key(Text(value = "Company Name")),
-          value = Value(Text(value = "7687.0")),
-          actions = Some(Actions(
-            items = List(
-              ActionItem(
-                href = "/manage-pension-scheme-event-report/new-report/2/event-1-check-your-answers",
-                content = Text("View"),
-                visuallyHiddenText = None,
-                attributes = Map()
-              ),
-              ActionItem(href = "#", content = Text("Remove"),
-                visuallyHiddenText = None,
-                attributes = Map()
-              )
-            )
-          ))
-        ))
 
-          /*
-
-   sumVal8544.0
-
-           */
           status (result) mustEqual SEE_OTHER
           redirectLocation (result).value mustEqual UnauthPaymentSummaryPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
       }

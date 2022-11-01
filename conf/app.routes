@@ -26,6 +26,8 @@ GET         /new-report/event-18-confirmation                              contr
 POST        /new-report/event-18-confirmation                              controllers.event18.Event18ConfirmationController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/:index/event-1-check-your-answers                  controllers.CheckYourAnswersController.onPageLoadWithIndex(eventType: EventType = EventType.Event1, index: Index)
+GET         /new-report/event-1-click                                      controllers.CheckYourAnswersController.onClick(eventType: EventType = EventType.Event1)
+GET         /new-report/event-dummy                                        controllers.CheckYourAnswersController.onClick(eventType: EventType = EventType.Event23)
 
 GET         /new-report/event-windup-check-your-answers                    controllers.CheckYourAnswersController.onPageLoad(eventType: EventType = EventType.WindUp)
 GET         /new-report/event-2-check-your-answers                         controllers.CheckYourAnswersController.onPageLoad(eventType: EventType = EventType.Event2)

@@ -69,9 +69,10 @@ object MembersOrEmployersPage extends QuestionPage[Seq[MemberOrEmployerSummary]]
     )
 
   val readsMemberOrEmployer: Reads[MemberOrEmployerSummary] = {
-    (JsPath \ WhoReceivedUnauthPaymentPage.toString).read[String].flatMap{
-      case Member.toString => readsMemberSummary
-      case Employer.toString => readsEmployerSummary
+    (JsPath \ WhoReceivedUnauthPaymentPage.toString).readNullable[String].flatMap{
+      case Some(Member.toString) => readsMemberSummary
+      case Some(Employer.toString) => readsEmployerSummary
+      case None => Reads.pure[MemberOrEmployerSummary](MemberOrEmployerSummary("Not entered", BigDecimal(0.00)))
       case e => fail
     }
   }

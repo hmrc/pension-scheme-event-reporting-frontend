@@ -67,7 +67,7 @@ class UnauthPaymentSummaryController @Inject()(
           actions = Some(Actions(
             items = Seq(
               ActionItem(
-                content = Text(Message("site.check")),
+                content = Text(Message("site.view")),
                 href = controllers.routes.CheckYourAnswersController.onPageLoadWithIndex(Event1, index).url
               ),
               ActionItem(

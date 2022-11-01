@@ -19,6 +19,7 @@ package models
 import data.SampleData
 import data.SampleData.{companyDetails, memberDetails, userAnswersWithOneMemberAndEmployer}
 import models.enumeration.EventType.Event1
+import models.event1.HowAddUnauthPayment.Manual
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.{MemberOrEmployerSummary, PaymentDetails}
 import org.scalatest.freespec.AnyFreeSpec
@@ -26,7 +27,7 @@ import org.scalatest.matchers.must.Matchers
 import pages.common.MembersDetailsPage
 import pages.event1.MembersOrEmployersPage.readsMemberOrEmployerValue
 import pages.event1.employer.CompanyDetailsPage
-import pages.event1.{MembersOrEmployersPage, PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
+import pages.event1.{HowAddUnauthPaymentPage, MembersOrEmployersPage, PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
 import play.api.i18n.Messages
 
 import java.time.LocalDate
@@ -66,6 +67,13 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers {
       userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage)(MembersOrEmployersPage.readsMemberOrEmployer) mustBe
         Seq(MemberOrEmployerSummary(SampleData.memberDetails.fullName, BigDecimal(857.00)),
           MemberOrEmployerSummary("Not entered", BigDecimal(0.00)))
+    }
+    "must return the list of members or employers if only first question answered" in {
+      val userAnswersWithOnlyManualOrUpload: UserAnswers = UserAnswers()
+        .setOrException(HowAddUnauthPaymentPage(0), Manual)
+
+      userAnswersWithOnlyManualOrUpload.getAll(MembersOrEmployersPage)(MembersOrEmployersPage.readsMemberOrEmployer) mustBe
+        Seq(MemberOrEmployerSummary("Not entered", BigDecimal(0.00)))
     }
   }
 

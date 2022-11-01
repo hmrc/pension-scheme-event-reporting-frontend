@@ -17,6 +17,7 @@
 package controllers
 
 import com.google.inject.Inject
+import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.Index
 import models.enumeration.EventType.{Event1, Event18, WindUp}
@@ -32,6 +33,7 @@ import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.address.checkAnswers.ChooseAddressSummary
 import viewmodels.checkAnswers.{Event18ConfirmationSummary, MembersDetailsSummary, SchemeWindUpDateSummary}
@@ -41,14 +43,19 @@ import viewmodels.event1.member.checkAnswers._
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
+import scala.concurrent.{ExecutionContext, Future}
+
+
+
 class CheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
+                                            connector: EventReportingConnector,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: CheckYourAnswersView
-                                          ) extends FrontendBaseController with I18nSupport {
+                                          )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(eventType: EventType): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
@@ -77,11 +84,21 @@ class CheckYourAnswersController @Inject()(
       }
 
       val continueUrl = eventType match {
-        case Event1 => controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(waypoints).url
+        case Event1 => controllers.routes.CheckYourAnswersController.onClick(eventType).url
         case _ => "/manage-pension-scheme-event-report/event-summary"
       }
 
       Ok(view(SummaryListViewModel(rows = rows), continueUrl))
+    }
+
+  def onClick(eventType: EventType): Action[AnyContent] =
+    (identify andThen getData(eventType) andThen requireData).async { implicit request =>
+      val waypoints = EmptyWaypoints
+      connector.compileEvent("123", eventType).map {
+        _ =>
+          Redirect(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(waypoints))
+      }
+
     }
 
 
