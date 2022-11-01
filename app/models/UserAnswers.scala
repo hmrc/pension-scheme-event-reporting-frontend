@@ -17,7 +17,7 @@
 package models
 
 import models.event1.MemberOrEmployerSummary
-import pages.QuestionPage
+import pages.{Page, QuestionPage}
 import pages.event1.MembersOrEmployersPage
 import play.api.libs.json._
 import queries.{Derivable, Gettable, Settable}
@@ -91,7 +91,7 @@ final case class UserAnswers(
     }
   }
 
-  def memberOrEmployerSummaryEvent1:Seq[MemberOrEmployerSummary] = {
-    data.as[Seq[MemberOrEmployerSummary]](MembersOrEmployersPage.readsMemberOrEmployerSummary)
-  }
+  def getAll[A](page: QuestionPage[Seq[A]])(implicit reads: Reads[A]): Seq[A] =
+    data.as[Option[Seq[A]]](page.path.readNullable[Seq[A]]).toSeq.flatten
+
 }

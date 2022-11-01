@@ -22,7 +22,7 @@ import forms.event1.UnauthPaymentSummaryFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
-import pages.event1.UnauthPaymentSummaryPage
+import pages.event1.{MembersOrEmployersPage, UnauthPaymentSummaryPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
@@ -51,7 +51,8 @@ class UnauthPaymentSummaryController @Inject()(
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
-    val mappedMemberOrEmployer = request.userAnswers.memberOrEmployerSummaryEvent1.map { memberOrEmployerSummary =>
+    val mappedMemberOrEmployer = request.userAnswers
+      .getAll(MembersOrEmployersPage)(MembersOrEmployersPage.readsMemberOrEmployer).map { memberOrEmployerSummary =>
 
       val value = ValueViewModel(HtmlFormat.escape(memberOrEmployerSummary.unauthorisedPaymentValue.toString()).toString)
 
@@ -74,7 +75,7 @@ class UnauthPaymentSummaryController @Inject()(
           ))
         )
       }
-    val total = request.userAnswers.memberOrEmployerSummaryEvent1.map(_.unauthorisedPaymentValue).sum
+    val total = BigDecimal(0) // request.userAnswers.memberOrEmployerSummaryEvent1.map(_.unauthorisedPaymentValue).sum
       Ok(view(form, waypoints, mappedMemberOrEmployer, total))
   }
 
@@ -82,7 +83,7 @@ class UnauthPaymentSummaryController @Inject()(
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
-          val total = request.userAnswers.memberOrEmployerSummaryEvent1.map(_.unauthorisedPaymentValue).sum
+          val total = BigDecimal(0) //request.userAnswers.memberOrEmployerSummaryEvent1.map(_.unauthorisedPaymentValue).sum
           BadRequest(view(formWithErrors, waypoints, Nil, total))
         },
         value => {

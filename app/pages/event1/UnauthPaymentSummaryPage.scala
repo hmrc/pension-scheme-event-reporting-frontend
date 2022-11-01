@@ -33,7 +33,7 @@ case object UnauthPaymentSummaryPage extends QuestionPage[Boolean] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(UnauthPaymentSummaryPage) match {
-      case Some(true) => WhoReceivedUnauthPaymentPage(answers.memberOrEmployerSummaryEvent1.count(_ => true))
+      case Some(true) => WhoReceivedUnauthPaymentPage(1)
       case _ => UnauthPaymentAndSanctionChargesPage
     }
   }

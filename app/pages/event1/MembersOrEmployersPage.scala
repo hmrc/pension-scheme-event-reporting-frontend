@@ -37,36 +37,40 @@ case object MembersOrEmployersPage extends QuestionPage[Seq[MemberOrEmployerSumm
 
   private val readsMemberSummary: Reads[MemberOrEmployerSummary] =
     (
-      (JsPath \ "membersDetails" \ "firstName").read[String] and
-      (JsPath \ "membersDetails" \ "lastName").read[String] and
-      (JsPath \ "paymentValueAndDate" \ "paymentValue").read[BigDecimal]
+      (JsPath \ "membersDetails" \ "firstName").readNullable[String] and
+      (JsPath \ "membersDetails" \ "lastName").readNullable[String] and
+      (JsPath \ "paymentValueAndDate" \ "paymentValue").readNullable[BigDecimal]
       ) (
-      (firstName, lastName, paymentValue) => MemberOrEmployerSummary(firstName + " " + lastName, paymentValue, 0)
+      (firstName, lastName, paymentValue) => {
+        val pv =  paymentValue.getOrElse(BigDecimal(0))
+        (firstName, lastName, paymentValue) match {
+          case (Some(fn), Some(ln), _) =>  MemberOrEmployerSummary(fn + " " + ln, pv)
+          case (None, Some(ln), _) =>  MemberOrEmployerSummary(ln, pv)
+          case (Some(fn), None, _) =>  MemberOrEmployerSummary(fn, pv)
+          case (None, None, _) =>  MemberOrEmployerSummary("Unknown", pv)
+        }
+      }
     )
 
   private val readsEmployerSummary: Reads[MemberOrEmployerSummary] =
     (
-      (JsPath \ "event1" \ "companyDetails" \ "companyName").read[String] and
-        (JsPath \ "paymentValueAndDate" \ "paymentValue").read[BigDecimal]
+      (JsPath \ "event1" \ "companyDetails" \ "companyName").readNullable[String] and
+        (JsPath \ "paymentValueAndDate" \ "paymentValue").readNullable[BigDecimal]
       ) (
-      (companyName, paymentValue) => MemberOrEmployerSummary(companyName, paymentValue, 0)
+      (companyName, paymentValue) => {
+        val pv =  paymentValue.getOrElse(BigDecimal(0))
+        (companyName, paymentValue) match {
+          case (Some(cn), _) =>  MemberOrEmployerSummary(cn, pv)
+          case (None, _) =>  MemberOrEmployerSummary("Unknown", pv)
+        }
+      }
     )
 
-  private val readsMemberOrEmployer: Reads[MemberOrEmployerSummary] = {
+  val readsMemberOrEmployer: Reads[MemberOrEmployerSummary] = {
     (JsPath \ WhoReceivedUnauthPaymentPage.toString).read[String].flatMap{
       case Member.toString => readsMemberSummary
       case Employer.toString => readsEmployerSummary
       case e => fail
     }
   }
-
-
-  implicit val readsMemberOrEmployerSummary: Reads[Seq[MemberOrEmployerSummary]] = {
-    path.read[Seq[MemberOrEmployerSummary]](Reads.seq(readsMemberOrEmployer)).map{ xx =>
-      xx.zipWithIndex.map{ case (d, i) =>
-        d copy (index = i)
-      }
-    }
-  }
-
 }
