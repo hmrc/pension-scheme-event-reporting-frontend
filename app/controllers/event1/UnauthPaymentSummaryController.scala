@@ -78,7 +78,10 @@ class UnauthPaymentSummaryController @Inject()(
           ))
         )
       }
-      Ok(view(form, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers)))
+    println("\n\n\n mappedMember" + mappedMemberOrEmployer )
+    println("\n\n\n sumVal" + sumValue(request.userAnswers))
+
+    Ok(view(form, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers)))
   }
 
   private def sumValue(userAnswers: UserAnswers) =  userAnswers.sumAll(MembersOrEmployersPage, readsMemberOrEmployerValue)
