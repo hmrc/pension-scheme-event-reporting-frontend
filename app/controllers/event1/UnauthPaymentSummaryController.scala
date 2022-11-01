@@ -21,6 +21,7 @@ import controllers.actions._
 import forms.event1.UnauthPaymentSummaryFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
+import models.enumeration.EventType.Event1
 import pages.Waypoints
 import pages.event1.MembersOrEmployersPage.readsMemberOrEmployerValue
 import pages.event1.{MembersOrEmployersPage, UnauthPaymentSummaryPage}
@@ -53,7 +54,8 @@ class UnauthPaymentSummaryController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
     val mappedMemberOrEmployer = request.userAnswers
-      .getAll(MembersOrEmployersPage)(MembersOrEmployersPage.readsMemberOrEmployer).map { memberOrEmployerSummary =>
+      .getAll(MembersOrEmployersPage)(MembersOrEmployersPage.readsMemberOrEmployer).zipWithIndex.map {
+      case (memberOrEmployerSummary, index) =>
 
       val value = ValueViewModel(HtmlFormat.escape(memberOrEmployerSummary.unauthorisedPaymentValue.toString()).toString)
 
@@ -66,7 +68,7 @@ class UnauthPaymentSummaryController @Inject()(
             items = Seq(
               ActionItem(
                 content = Text(Message("site.view")),
-                href = "#"
+                href = controllers.routes.CheckYourAnswersController.onPageLoadWithIndex(Event1, index).url
               ),
               ActionItem(
                 content = Text(Message("site.remove")),

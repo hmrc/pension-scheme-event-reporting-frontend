@@ -62,7 +62,7 @@ class CheckYourAnswersController @Inject()(
         case _ => Nil
       }
 
-      Ok(view(SummaryListViewModel(rows = rows)))
+      Ok(view(SummaryListViewModel(rows = rows), "/manage-pension-scheme-event-report/event-summary"))
     }
 
   def onPageLoadWithIndex(eventType: EventType, index: Index): Action[AnyContent] =
@@ -76,7 +76,12 @@ class CheckYourAnswersController @Inject()(
         case _ => Nil
       }
 
-      Ok(view(SummaryListViewModel(rows = rows)))
+      val continueUrl = eventType match {
+        case Event1 => controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(waypoints).url
+        case _ => "/manage-pension-scheme-event-report/event-summary"
+      }
+
+      Ok(view(SummaryListViewModel(rows = rows), continueUrl))
     }
 
 

@@ -20,7 +20,7 @@
     govukButton: GovukButton
 )
 
-@(list: SummaryList)(implicit request: Request[_], messages: Messages)
+@(list: SummaryList, continueUrl: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title"))) {
 
@@ -29,6 +29,6 @@
     @govukSummaryList(list)
 
     @govukButton(
-        ButtonViewModel(messages("site.saveAndContinue")).asLink("/manage-pension-scheme-event-report/event-summary").withAttribute(("id", "submit"))
+        ButtonViewModel(messages("site.saveAndContinue")).asLink(continueUrl).withAttribute(("id", "submit"))
     )
 }
