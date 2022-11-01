@@ -24,7 +24,7 @@ import play.api.libs.json.Reads._
 import play.api.libs.json.{JsPath, Reads}
 import play.api.mvc.Call
 
-case object MembersOrEmployersPage extends QuestionPage[Seq[MemberOrEmployerSummary]] {
+object MembersOrEmployersPage extends QuestionPage[Seq[MemberOrEmployerSummary]] {
   def apply(index: Int): JsPath = path \ index
 
   def path: JsPath = JsPath \ "event1" \ toString
@@ -35,19 +35,22 @@ case object MembersOrEmployersPage extends QuestionPage[Seq[MemberOrEmployerSumm
 
   private def fail[A]: Reads[A] = Reads.failed[A]("Unknown value")
 
+  val readsMemberOrEmployerValue: Reads[BigDecimal] =
+    (JsPath \ "paymentValueAndDate" \ "paymentValue").readNullable[BigDecimal]
+      .map(_.getOrElse(BigDecimal(0)))
+
   private val readsMemberSummary: Reads[MemberOrEmployerSummary] =
     (
       (JsPath \ "membersDetails" \ "firstName").readNullable[String] and
       (JsPath \ "membersDetails" \ "lastName").readNullable[String] and
-      (JsPath \ "paymentValueAndDate" \ "paymentValue").readNullable[BigDecimal]
+        readsMemberOrEmployerValue
       ) (
       (firstName, lastName, paymentValue) => {
-        val pv =  paymentValue.getOrElse(BigDecimal(0))
         (firstName, lastName, paymentValue) match {
-          case (Some(fn), Some(ln), _) =>  MemberOrEmployerSummary(fn + " " + ln, pv)
-          case (None, Some(ln), _) =>  MemberOrEmployerSummary(ln, pv)
-          case (Some(fn), None, _) =>  MemberOrEmployerSummary(fn, pv)
-          case (None, None, _) =>  MemberOrEmployerSummary("Unknown", pv)
+          case (Some(fn), Some(ln), _) =>  MemberOrEmployerSummary(fn + " " + ln, paymentValue)
+          case (None, Some(ln), _) =>  MemberOrEmployerSummary(ln, paymentValue)
+          case (Some(fn), None, _) =>  MemberOrEmployerSummary(fn, paymentValue)
+          case (None, None, _) =>  MemberOrEmployerSummary("Unknown", paymentValue)
         }
       }
     )
@@ -55,13 +58,12 @@ case object MembersOrEmployersPage extends QuestionPage[Seq[MemberOrEmployerSumm
   private val readsEmployerSummary: Reads[MemberOrEmployerSummary] =
     (
       (JsPath \ "event1" \ "companyDetails" \ "companyName").readNullable[String] and
-        (JsPath \ "paymentValueAndDate" \ "paymentValue").readNullable[BigDecimal]
+        readsMemberOrEmployerValue
       ) (
       (companyName, paymentValue) => {
-        val pv =  paymentValue.getOrElse(BigDecimal(0))
         (companyName, paymentValue) match {
-          case (Some(cn), _) =>  MemberOrEmployerSummary(cn, pv)
-          case (None, _) =>  MemberOrEmployerSummary("Unknown", pv)
+          case (Some(cn), _) =>  MemberOrEmployerSummary(cn, paymentValue)
+          case (None, _) =>  MemberOrEmployerSummary("Unknown", paymentValue)
         }
       }
     )

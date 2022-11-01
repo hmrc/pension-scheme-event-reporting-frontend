@@ -24,6 +24,7 @@ import models.event1.{MemberOrEmployerSummary, PaymentDetails}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import pages.common.MembersDetailsPage
+import pages.event1.MembersOrEmployersPage.readsMemberOrEmployerValue
 import pages.event1.employer.CompanyDetailsPage
 import pages.event1.{MembersOrEmployersPage, PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
 
@@ -62,6 +63,27 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers {
       userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage)(MembersOrEmployersPage.readsMemberOrEmployer) mustBe
         Seq(MemberOrEmployerSummary(SampleData.memberDetails.fullName, BigDecimal(857.00)),
           MemberOrEmployerSummary("Unknown", BigDecimal(0.00)))
+    }
+  }
+
+  "countAll" - {
+    "must count correctly when one member and one employer" in {
+      userAnswersWithOneMemberAndEmployer.countAll(MembersOrEmployersPage) mustBe 2
+    }
+
+    "must count correctly when nothing present" in {
+      UserAnswers().countAll(MembersOrEmployersPage) mustBe 0
+    }
+  }
+
+
+  "sumAll" - {
+    "must count correctly when one member and one employer" in {
+      userAnswersWithOneMemberAndEmployer.sumAll(MembersOrEmployersPage, readsMemberOrEmployerValue) mustBe BigDecimal(8544.00)
+    }
+
+    "must count correctly when nothing present" in {
+      UserAnswers().sumAll(MembersOrEmployersPage, readsMemberOrEmployerValue) mustBe 0
     }
   }
 }
