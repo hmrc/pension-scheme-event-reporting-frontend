@@ -17,10 +17,10 @@
 package controllers.event1
 
 import connectors.UserAnswersCacheConnector
-import models.enumeration.EventType
 import controllers.actions._
 import forms.event1.DoYouHoldSignedMandateFormProvider
-import javax.inject.Inject
+import models.Index
+import models.enumeration.EventType
 import pages.Waypoints
 import pages.event1.DoYouHoldSignedMandatePage
 import play.api.i18n.I18nSupport
@@ -28,37 +28,38 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event1.DoYouHoldSignedMandateView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DoYouHoldSignedMandateController @Inject()(
-                                        val controllerComponents: MessagesControllerComponents,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        userAnswersCacheConnector: UserAnswersCacheConnector,
-                                        formProvider: DoYouHoldSignedMandateFormProvider,
-                                        view: DoYouHoldSignedMandateView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  identify: IdentifierAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  userAnswersCacheConnector: UserAnswersCacheConnector,
+                                                  formProvider: DoYouHoldSignedMandateFormProvider,
+                                                  view: DoYouHoldSignedMandateView
+                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
-    val preparedForm = request.userAnswers.get(DoYouHoldSignedMandatePage).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints))
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
+    val preparedForm = request.userAnswers.get(DoYouHoldSignedMandatePage(index)).fold(form)(form.fill)
+    Ok(view(preparedForm, waypoints, index))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
+  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers
-          val updatedAnswers = originalUserAnswers.setOrException(DoYouHoldSignedMandatePage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(DoYouHoldSignedMandatePage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-          Redirect(DoYouHoldSignedMandatePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(DoYouHoldSignedMandatePage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+          }
         }
-      }
-    )
+      )
   }
 }

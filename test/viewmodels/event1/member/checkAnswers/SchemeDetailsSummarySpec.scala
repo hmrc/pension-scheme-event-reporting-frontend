@@ -53,9 +53,9 @@ class SchemeDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValu
 
     "must display correct information for Scheme Name" in {
 
-      val answer = UserAnswers().setOrException(SchemeDetailsPage, schemeDetails)
+      val answer = UserAnswers().setOrException(SchemeDetailsPage(0), schemeDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -63,12 +63,12 @@ class SchemeDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValu
         )
       )
 
-      SchemeDetailsSummary.rowSchemeName(answer, waypoints, sourcePage) mustBe Some(
+      SchemeDetailsSummary.rowSchemeName(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "Scheme name",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", SchemeDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", SchemeDetailsPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
           )
         )
@@ -80,9 +80,9 @@ class SchemeDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValu
 
     "must display correct information for Scheme Reference" in {
 
-      val answer = UserAnswers().setOrException(SchemeDetailsPage, schemeDetails)
+      val answer = UserAnswers().setOrException(SchemeDetailsPage(0), schemeDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -90,12 +90,12 @@ class SchemeDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValu
         )
       )
 
-      SchemeDetailsSummary.rowSchemeReference(answer, waypoints, sourcePage) mustBe Some(
+      SchemeDetailsSummary.rowSchemeReference(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "Reference",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", SchemeDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", SchemeDetailsPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
           )
         )

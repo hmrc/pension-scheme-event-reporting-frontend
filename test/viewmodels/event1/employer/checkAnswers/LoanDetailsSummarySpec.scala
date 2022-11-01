@@ -40,9 +40,9 @@ class LoanDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValues
 
     "must display correct information for loan amount" in {
       val loanAmountValue = "£10.00"
-      val answer = UserAnswers().setOrException(LoanDetailsPage, loanDetails)
+      val answer = UserAnswers().setOrException(LoanDetailsPage(0), loanDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -50,12 +50,12 @@ class LoanDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValues
         )
       )
 
-      LoanDetailsSummary.rowLoanAmount(answer, waypoints, sourcePage) mustBe Some(
+      LoanDetailsSummary.rowLoanAmount(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "loanDetails.CYA.loanAmountLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", LoanDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", LoanDetailsPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("loanDetails.change.hidden"))
           )
         )
@@ -64,9 +64,9 @@ class LoanDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValues
 
     "must display correct information for fund value" in {
       val fundValue = "£20.57"
-      val answer = UserAnswers().setOrException(LoanDetailsPage, loanDetails)
+      val answer = UserAnswers().setOrException(LoanDetailsPage(0), loanDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -74,12 +74,12 @@ class LoanDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValues
         )
       )
 
-      LoanDetailsSummary.rowFundValue(answer, waypoints, sourcePage) mustBe Some(
+      LoanDetailsSummary.rowFundValue(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "loanDetails.CYA.fundValueLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", LoanDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", LoanDetailsPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("loanDetails.change.hidden"))
           )
         )

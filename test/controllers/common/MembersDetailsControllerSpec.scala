@@ -19,9 +19,9 @@ package controllers.common
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.common.MembersDetailsFormProvider
-import models.UserAnswers
 import models.common.MembersDetails
 import models.enumeration.EventType
+import models.{Index, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
@@ -30,6 +30,7 @@ import pages.EmptyWaypoints
 import pages.common.MembersDetailsPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.common.MembersDetailsView
@@ -43,15 +44,18 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val event1 = EventType.Event1
   private val event23 = EventType.Event23
 
+  private def submitUrlEvent1: Call = controllers.common.routes.MembersDetailsController.onSubmitWithIndex(waypoints, event1, 0)
+
+  private def submitUrlEvent23: Call = controllers.common.routes.MembersDetailsController.onSubmit(waypoints, event23)
 
   private val formProvider = new MembersDetailsFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRouteEvent1: String = routes.MembersDetailsController.onPageLoad(waypoints, event1).url
+  private def getRouteEvent1: String = routes.MembersDetailsController.onPageLoadWithIndex(waypoints, event1, Index(0)).url
 
-  private def postRouteEvent1: String = routes.MembersDetailsController.onSubmit(waypoints, event1).url
+  private def postRouteEvent1: String = routes.MembersDetailsController.onSubmitWithIndex(waypoints, event1, Index(0)).url
 
   private def getRouteEvent23: String = routes.MembersDetailsController.onPageLoad(waypoints, event23).url
 
@@ -83,13 +87,13 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
           val view = application.injector.instanceOf[MembersDetailsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, waypoints, event1)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form, waypoints, event1, submitUrlEvent1)(request, messages(application)).toString
         }
       }
 
       "must populate the view correctly on a GET when the question has previously been answered" in {
 
-        val userAnswers = UserAnswers().set(MembersDetailsPage(event1), validValue).success.value
+        val userAnswers = UserAnswers().set(MembersDetailsPage(event1, Some(0)), validValue).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -101,7 +105,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(validValue), waypoints, event1)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form.fill(validValue), waypoints, event1, submitUrlEvent1)(request, messages(application)).toString
         }
       }
 
@@ -118,10 +122,10 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
             FakeRequest(POST, postRouteEvent1).withFormUrlEncodedBody(("firstName", validValue.firstName), ("lastName", validValue.lastName), ("nino", validValue.nino))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(MembersDetailsPage(event1), validValue).success.value
+          val updatedAnswers = emptyUserAnswers.set(MembersDetailsPage(event1, Some(0)), validValue).success.value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual MembersDetailsPage(event1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          redirectLocation(result).value mustEqual MembersDetailsPage(event1, Some(0)).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
           verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
         }
       }
@@ -142,7 +146,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, event1)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, event1, submitUrlEvent1)(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
         }
       }
@@ -161,13 +165,13 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
           val view = application.injector.instanceOf[MembersDetailsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, waypoints, event23)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form, waypoints, event23, submitUrlEvent23)(request, messages(application)).toString
         }
       }
 
       "must populate the view correctly on a GET when the question has previously been answered" in {
 
-        val userAnswers = UserAnswers().set(MembersDetailsPage(event23), validValue).success.value
+        val userAnswers = UserAnswers().set(MembersDetailsPage(event23, None), validValue).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -179,7 +183,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(validValue), waypoints, event23)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form.fill(validValue), waypoints, event23, submitUrlEvent23)(request, messages(application)).toString
         }
       }
 
@@ -196,10 +200,10 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
             FakeRequest(POST, postRouteEvent23).withFormUrlEncodedBody(("firstName", validValue.firstName), ("lastName", validValue.lastName), ("nino", validValue.nino))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(MembersDetailsPage(event23), validValue).success.value
+          val updatedAnswers = emptyUserAnswers.set(MembersDetailsPage(event23, None), validValue).success.value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual MembersDetailsPage(event23).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          redirectLocation(result).value mustEqual MembersDetailsPage(event23, None).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
           verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
         }
       }
@@ -220,7 +224,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, event23)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, event23, submitUrlEvent23)(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
         }
       }

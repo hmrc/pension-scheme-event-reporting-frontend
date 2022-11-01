@@ -24,15 +24,15 @@ import pages.{CheckYourAnswersPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object PaymentValueAndDatePage extends QuestionPage[PaymentDetails] {
+case class PaymentValueAndDatePage(index: Int) extends QuestionPage[PaymentDetails] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
 
   override def toString: String = "paymentValueAndDate"
 
   override def route(waypoints: Waypoints): Call =
-    routes.PaymentValueAndDateController.onPageLoad(waypoints)
+    routes.PaymentValueAndDateController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    CheckYourAnswersPage(EventType.Event1)
+    CheckYourAnswersPage(EventType.Event1, Some(index))
 }

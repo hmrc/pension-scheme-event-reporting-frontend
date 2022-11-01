@@ -16,7 +16,7 @@
 
 package viewmodels.event1.member.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.event1.member.ErrorDescriptionPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -27,10 +27,10 @@ import viewmodels.implicits._
 
 object ErrorDescriptionSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
-    answers.get(ErrorDescriptionPage).map {
+    answers.get(ErrorDescriptionPage(index)).map {
       answer =>
         val value = if (!answer.isBlank) {
           ValueViewModel(HtmlFormat.escape(answer).toString)
@@ -42,7 +42,7 @@ object ErrorDescriptionSummary {
           key = "errorDescription.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", ErrorDescriptionPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", ErrorDescriptionPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("errorDescription.change.hidden"))
           )
         )

@@ -26,11 +26,11 @@
     govukDateInput: GovukDateInput
 )
 
-@(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("paymentValueAndDate.title"))) {
 
-    @formHelper(action = routes.PaymentValueAndDateController.onSubmit(waypoints), 'autoComplete -> "off") {
+    @formHelper(action = routes.PaymentValueAndDateController.onSubmit(waypoints, index), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("paymentDate" -> "paymentDate.day")))

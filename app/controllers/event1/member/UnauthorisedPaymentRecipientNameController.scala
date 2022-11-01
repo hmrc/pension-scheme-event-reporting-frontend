@@ -19,8 +19,8 @@ package controllers.event1.member
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.member.UnauthorisedPaymentRecipientNameFormProvider
-import models.UserAnswers
 import models.enumeration.EventType
+import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.event1.member.UnauthorisedPaymentRecipientNamePage
 import play.api.i18n.I18nSupport
@@ -42,24 +42,24 @@ class UnauthorisedPaymentRecipientNameController @Inject()(val controllerCompone
   private val form = formProvider()
   private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(UnauthorisedPaymentRecipientNamePage)).fold(form) { v => form.fill(Some(v)) }
-    Ok(view(preparedForm, waypoints))
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(_.get(UnauthorisedPaymentRecipientNamePage(index))).fold(form) { v => form.fill(Some(v)) }
+    Ok(view(preparedForm, waypoints, index))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = value match {
-            case Some(v) => originalUserAnswers.setOrException(UnauthorisedPaymentRecipientNamePage, v)
-            case None => originalUserAnswers.removeOrException(UnauthorisedPaymentRecipientNamePage)
+            case Some(v) => originalUserAnswers.setOrException(UnauthorisedPaymentRecipientNamePage(index), v)
+            case None => originalUserAnswers.removeOrException(UnauthorisedPaymentRecipientNamePage(index))
           }
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(UnauthorisedPaymentRecipientNamePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(UnauthorisedPaymentRecipientNamePage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

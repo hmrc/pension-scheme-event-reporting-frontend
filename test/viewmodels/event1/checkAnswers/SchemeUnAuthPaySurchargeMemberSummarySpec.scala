@@ -38,16 +38,16 @@ class SchemeUnAuthPaySurchargeMemberSummarySpec extends AnyFreeSpec with Matcher
 
     "must display correct information for is the scheme paying the unauthorised payment surcharge on behalf of the member (true)" in {
 
-      val answer = UserAnswers().setOrException(SchemeUnAuthPaySurchargeMemberPage, true)
+      val answer = UserAnswers().setOrException(SchemeUnAuthPaySurchargeMemberPage(0), true)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
-      SchemeUnAuthPaySurchargeMemberSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      SchemeUnAuthPaySurchargeMemberSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "schemeUnAuthPaySurchargeMember.checkYourAnswersLabel",
           value = ValueViewModel(booleanCYAVal(true)),
           actions = Seq(
-            ActionItemViewModel("site.change", SchemeUnAuthPaySurchargeMemberPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", SchemeUnAuthPaySurchargeMemberPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("schemeUnAuthPaySurchargeMember.change.hidden"))
           )
         )
@@ -56,16 +56,16 @@ class SchemeUnAuthPaySurchargeMemberSummarySpec extends AnyFreeSpec with Matcher
 
     "must display correct information for is the scheme paying the unauthorised payment surcharge on behalf of the member (false)" in {
 
-      val answer = UserAnswers().setOrException(SchemeUnAuthPaySurchargeMemberPage, false)
+      val answer = UserAnswers().setOrException(SchemeUnAuthPaySurchargeMemberPage(0), false)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
-      SchemeUnAuthPaySurchargeMemberSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      SchemeUnAuthPaySurchargeMemberSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "schemeUnAuthPaySurchargeMember.checkYourAnswersLabel",
           value = ValueViewModel(booleanCYAVal(false)),
           actions = Seq(
-            ActionItemViewModel("site.change", SchemeUnAuthPaySurchargeMemberPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", SchemeUnAuthPaySurchargeMemberPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("schemeUnAuthPaySurchargeMember.change.hidden"))
           )
         )

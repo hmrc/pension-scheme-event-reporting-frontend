@@ -16,8 +16,8 @@
 
 package viewmodels.event1.member.checkAnswers
 
-import models.UserAnswers
 import models.event1.WhoReceivedUnauthPayment.Member
+import models.{Index, UserAnswers}
 import pages.event1.WhoReceivedUnauthPaymentPage
 import pages.event1.member.UnauthorisedPaymentRecipientNamePage
 import pages.{CheckAnswersPage, Waypoints}
@@ -29,10 +29,10 @@ import viewmodels.implicits._
 
 object MemberUnauthorisedPaymentRecipientNameSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
-    answers.get(UnauthorisedPaymentRecipientNamePage).flatMap {
+    answers.get(UnauthorisedPaymentRecipientNamePage(index)).flatMap {
       answer =>
         val value = if (!answer.isBlank) {
           ValueViewModel(HtmlFormat.escape(answer).toString)
@@ -40,14 +40,14 @@ object MemberUnauthorisedPaymentRecipientNameSummary {
           ValueViewModel("")
         }
 
-        answers.get(WhoReceivedUnauthPaymentPage) match {
+        answers.get(WhoReceivedUnauthPaymentPage(index)) match {
           case Some(Member) =>
             Some(
               SummaryListRowViewModel(
                 key = "unauthorisedPaymentRecipientName.member.checkYourAnswersLabel",
                 value = value,
                 actions = Seq(
-                  ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage.changeLink(waypoints, sourcePage).url)
+                  ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage(index).changeLink(waypoints, sourcePage).url)
                     .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.member.change.hidden"))
                 )
               )
@@ -55,5 +55,6 @@ object MemberUnauthorisedPaymentRecipientNameSummary {
           case _ => None
         }
     }
+
   }
 }

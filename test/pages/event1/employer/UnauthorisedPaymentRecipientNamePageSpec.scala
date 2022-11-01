@@ -23,10 +23,10 @@ class UnauthorisedPaymentRecipientNamePageSpec extends PageBehaviours {
 
   "UnauthorisedPaymentRecipientNamePage" - {
 
-    beRetrievable[String](UnauthorisedPaymentRecipientNamePage)
+    beRetrievable[String](UnauthorisedPaymentRecipientNamePage(0))
 
-    beSettable[String](UnauthorisedPaymentRecipientNamePage)
+    beSettable[String](UnauthorisedPaymentRecipientNamePage(0))
 
-    beRemovable[String](UnauthorisedPaymentRecipientNamePage)
+    beRemovable[String](UnauthorisedPaymentRecipientNamePage(0))
   }
 }

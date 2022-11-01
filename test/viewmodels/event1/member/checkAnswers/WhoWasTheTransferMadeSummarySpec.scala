@@ -39,9 +39,9 @@ class WhoWasTheTransferMadeSummarySpec extends AnyFreeSpec with Matchers with Op
 
     "must display correct information for An employer-financed retirement benefit scheme (EFRBS) option" in {
 
-      val answer = UserAnswers().setOrException(WhoWasTheTransferMadePage, WhoWasTheTransferMade.AnEmployerFinanced)
+      val answer = UserAnswers().setOrException(WhoWasTheTransferMadePage(0), WhoWasTheTransferMade.AnEmployerFinanced)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -49,12 +49,12 @@ class WhoWasTheTransferMadeSummarySpec extends AnyFreeSpec with Matchers with Op
         )
       )
 
-      WhoWasTheTransferMadeSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      WhoWasTheTransferMadeSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "whoWasTheTransferMade.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", WhoWasTheTransferMadePage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", WhoWasTheTransferMadePage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("whoWasTheTransferMade.change.hidden"))
           )
         )
@@ -63,9 +63,9 @@ class WhoWasTheTransferMadeSummarySpec extends AnyFreeSpec with Matchers with Op
 
     "must display correct information for A non-recognised pension scheme which is not a qualifying overseas pension scheme option" in {
 
-      val answer = UserAnswers().setOrException(WhoWasTheTransferMadePage, WhoWasTheTransferMade.NonRecognisedScheme)
+      val answer = UserAnswers().setOrException(WhoWasTheTransferMadePage(0), WhoWasTheTransferMade.NonRecognisedScheme)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -73,12 +73,12 @@ class WhoWasTheTransferMadeSummarySpec extends AnyFreeSpec with Matchers with Op
         )
       )
 
-      WhoWasTheTransferMadeSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      WhoWasTheTransferMadeSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "whoWasTheTransferMade.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", WhoWasTheTransferMadePage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", WhoWasTheTransferMadePage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("whoWasTheTransferMade.change.hidden"))
           )
         )
@@ -87,9 +87,9 @@ class WhoWasTheTransferMadeSummarySpec extends AnyFreeSpec with Matchers with Op
 
     "must display correct information for EmployerOther option" in {
 
-      val answer = UserAnswers().setOrException(WhoWasTheTransferMadePage, WhoWasTheTransferMade.Other)
+      val answer = UserAnswers().setOrException(WhoWasTheTransferMadePage(0), WhoWasTheTransferMade.Other)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -97,12 +97,12 @@ class WhoWasTheTransferMadeSummarySpec extends AnyFreeSpec with Matchers with Op
         )
       )
 
-      WhoWasTheTransferMadeSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      WhoWasTheTransferMadeSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "whoWasTheTransferMade.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", WhoWasTheTransferMadePage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", WhoWasTheTransferMadePage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("whoWasTheTransferMade.change.hidden"))
           )
         )

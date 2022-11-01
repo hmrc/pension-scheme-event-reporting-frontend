@@ -21,12 +21,12 @@ import connectors.UserAnswersCacheConnector
 import forms.event1.HowAddUnauthPaymentFormProvider
 import models.UserAnswers
 import models.event1.HowAddUnauthPayment
-import pages.EmptyWaypoints
-import pages.event1.HowAddUnauthPaymentPage
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
+import pages.EmptyWaypoints
+import pages.event1.HowAddUnauthPaymentPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -44,8 +44,9 @@ class HowAddUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfterEach
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.HowAddUnauthPaymentController.onPageLoad(waypoints).url
-  private def postRoute: String = routes.HowAddUnauthPaymentController.onSubmit(waypoints).url
+  private def getRoute: String = routes.HowAddUnauthPaymentController.onPageLoad(waypoints, 0).url
+
+  private def postRoute: String = routes.HowAddUnauthPaymentController.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -70,13 +71,13 @@ class HowAddUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfterEach
         val view = application.injector.instanceOf[HowAddUnauthPaymentView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(HowAddUnauthPaymentPage, HowAddUnauthPayment.values.head).success.value
+      val userAnswers = UserAnswers().set(HowAddUnauthPaymentPage(0), HowAddUnauthPayment.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -88,7 +89,7 @@ class HowAddUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfterEach
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(HowAddUnauthPayment.values.head), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(HowAddUnauthPayment.values.head), waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -105,10 +106,10 @@ class HowAddUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfterEach
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", HowAddUnauthPayment.values.head.toString))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(HowAddUnauthPaymentPage, HowAddUnauthPayment.values.head).success.value
+        val updatedAnswers = emptyUserAnswers.set(HowAddUnauthPaymentPage(0), HowAddUnauthPayment.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual HowAddUnauthPaymentPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual HowAddUnauthPaymentPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -128,7 +129,7 @@ class HowAddUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfterEach
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

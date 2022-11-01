@@ -32,7 +32,7 @@
 
 package viewmodels.event1.employer.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.event1.employer.CompanyDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -43,31 +43,31 @@ import viewmodels.implicits._
 
 object CompanyDetailsSummary {
 
-  def rowCompanyName(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(CompanyDetailsPage).map {
+  def rowCompanyName(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+                    (implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(CompanyDetailsPage(index)).map {
       answer =>
 
         SummaryListRowViewModel(
           key = "companyDetails.CYA.companyName",
           value = ValueViewModel(HtmlFormat.escape(answer.companyName).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", CompanyDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", CompanyDetailsPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("companyDetails.change.hidden"))
           )
         )
     }
 
-  def rowCompanyNumber(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(CompanyDetailsPage).map {
+  def rowCompanyNumber(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+                      (implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(CompanyDetailsPage(index)).map {
       answer =>
 
         SummaryListRowViewModel(
           key = "companyDetails.CYA.companyNumber",
           value = ValueViewModel(HtmlFormat.escape(answer.companyNumber).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", CompanyDetailsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", CompanyDetailsPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("companyDetails.change.hidden"))
           )
         )

@@ -16,9 +16,9 @@
 
 package viewmodels.event1.checkAnswers
 
-import models.UserAnswers
-import pages.{CheckAnswersPage, Waypoints}
+import models.{Index, UserAnswers}
 import pages.event1.HowAddUnauthPaymentPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -26,11 +26,11 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object HowAddUnauthPaymentSummary  {
+object HowAddUnauthPaymentSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(HowAddUnauthPaymentPage).map {
+    answers.get(HowAddUnauthPaymentPage(index)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -40,10 +40,10 @@ object HowAddUnauthPaymentSummary  {
         )
 
         SummaryListRowViewModel(
-          key     = "howAddUnauthPayment.checkYourAnswersLabel",
-          value   = value,
+          key = "howAddUnauthPayment.checkYourAnswersLabel",
+          value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", HowAddUnauthPaymentPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", HowAddUnauthPaymentPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("howAddUnauthPayment.change.hidden"))
           )
         )

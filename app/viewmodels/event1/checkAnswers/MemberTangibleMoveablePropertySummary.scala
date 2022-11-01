@@ -16,7 +16,7 @@
 
 package viewmodels.event1.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.event1.member.MemberTangibleMoveablePropertyPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -27,10 +27,10 @@ import viewmodels.implicits._
 
 object MemberTangibleMoveablePropertySummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
-    answers.get(MemberTangibleMoveablePropertyPage).map {
+    answers.get(MemberTangibleMoveablePropertyPage(index)).map {
       answer =>
         val value = if (!answer.isBlank) {
           ValueViewModel(HtmlFormat.escape(answer).toString)
@@ -42,7 +42,7 @@ object MemberTangibleMoveablePropertySummary {
           key = "memberTangibleMoveableProperty.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", MemberTangibleMoveablePropertyPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", MemberTangibleMoveablePropertyPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("memberTangibleMoveableProperty.change.hidden"))
           )
         )

@@ -30,178 +30,179 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
-  implicit lazy val arbitraryPaymentValueAndDateUserAnswersEntry: Arbitrary[(pages.event1.PaymentValueAndDatePage.type, JsValue)] =
+  implicit lazy val arbitraryPaymentValueAndDateUserAnswersEntry: Arbitrary[(pages.event1.PaymentValueAndDatePage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.event1.PaymentValueAndDatePage.type]
+        page <- arbitrary[pages.event1.PaymentValueAndDatePage]
         value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryLoanDetailsUserAnswersEntry: Arbitrary[(pages.event1.employer.LoanDetailsPage.type, JsValue)] =
+
+  implicit lazy val arbitraryLoanDetailsUserAnswersEntry: Arbitrary[(pages.event1.employer.LoanDetailsPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.event1.employer.LoanDetailsPage.type]
+        page <- arbitrary[pages.event1.employer.LoanDetailsPage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryMemberUnauthorisedPaymentRecipientNameUserAnswersEntry: Arbitrary[(pages.event1.member.UnauthorisedPaymentRecipientNamePage.type, JsValue)] =
+  implicit lazy val arbitraryMemberUnauthorisedPaymentRecipientNameUserAnswersEntry: Arbitrary[(pages.event1.member.UnauthorisedPaymentRecipientNamePage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.event1.member.UnauthorisedPaymentRecipientNamePage.type]
+        page <- arbitrary[pages.event1.member.UnauthorisedPaymentRecipientNamePage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryEmployerPaymentNatureDescriptionUserAnswersEntry: Arbitrary[(EmployerPaymentNatureDescriptionPage.type, JsValue)] =
+  implicit lazy val arbitraryEmployerPaymentNatureDescriptionUserAnswersEntry: Arbitrary[(EmployerPaymentNatureDescriptionPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[EmployerPaymentNatureDescriptionPage.type]
+        page <- arbitrary[EmployerPaymentNatureDescriptionPage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryMemberPaymentNatureDescriptionUserAnswersEntry: Arbitrary[(MemberPaymentNatureDescriptionPage.type, JsValue)] =
+  implicit lazy val arbitraryMemberPaymentNatureDescriptionUserAnswersEntry: Arbitrary[(MemberPaymentNatureDescriptionPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[MemberPaymentNatureDescriptionPage.type]
+        page <- arbitrary[MemberPaymentNatureDescriptionPage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryEmployerTangibleMoveablePropertyUserAnswersEntry: Arbitrary[(EmployerTangibleMoveablePropertyPage.type, JsValue)] =
+  implicit lazy val arbitraryEmployerTangibleMoveablePropertyUserAnswersEntry: Arbitrary[(EmployerTangibleMoveablePropertyPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[EmployerTangibleMoveablePropertyPage.type]
+        page <- arbitrary[EmployerTangibleMoveablePropertyPage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryMemberTangibleMoveablePropertyUserAnswersEntry: Arbitrary[(MemberTangibleMoveablePropertyPage.type, JsValue)] =
+  implicit lazy val arbitraryMemberTangibleMoveablePropertyUserAnswersEntry: Arbitrary[(MemberTangibleMoveablePropertyPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[MemberTangibleMoveablePropertyPage.type]
+        page <- arbitrary[MemberTangibleMoveablePropertyPage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryUnauthorisedPaymentRecipientNameUserAnswersEntry: Arbitrary[(UnauthorisedPaymentRecipientNamePage.type, JsValue)] =
+  implicit lazy val arbitraryUnauthorisedPaymentRecipientNameUserAnswersEntry: Arbitrary[(UnauthorisedPaymentRecipientNamePage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[UnauthorisedPaymentRecipientNamePage.type]
+        page <- arbitrary[UnauthorisedPaymentRecipientNamePage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryReasonForTheOverpaymentOrWriteOffUserAnswersEntry: Arbitrary[(ReasonForTheOverpaymentOrWriteOffPage.type, JsValue)] =
+  implicit lazy val arbitraryReasonForTheOverpaymentOrWriteOffUserAnswersEntry: Arbitrary[(ReasonForTheOverpaymentOrWriteOffPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[ReasonForTheOverpaymentOrWriteOffPage.type]
+        page <- arbitrary[ReasonForTheOverpaymentOrWriteOffPage]
         value <- arbitrary[ReasonForTheOverpaymentOrWriteOff].map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryRefundOfContributionsUserAnswersEntry: Arbitrary[(RefundOfContributionsPage.type, JsValue)] =
+  implicit lazy val arbitraryRefundOfContributionsUserAnswersEntry: Arbitrary[(RefundOfContributionsPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[RefundOfContributionsPage.type]
+        page <- arbitrary[RefundOfContributionsPage]
         value <- arbitrary[RefundOfContributions].map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitrarySchemeDetailsUserAnswersEntry: Arbitrary[(SchemeDetailsPage.type, JsValue)] =
+  implicit lazy val arbitrarySchemeDetailsUserAnswersEntry: Arbitrary[(SchemeDetailsPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.event1.member.SchemeDetailsPage.type]
+        page <- arbitrary[pages.event1.member.SchemeDetailsPage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryWhoWasTheTransferMadeUserAnswersEntry: Arbitrary[(WhoWasTheTransferMadePage.type, JsValue)] =
+  implicit lazy val arbitraryWhoWasTheTransferMadeUserAnswersEntry: Arbitrary[(WhoWasTheTransferMadePage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.event1.member.WhoWasTheTransferMadePage.type]
+        page <- arbitrary[pages.event1.member.WhoWasTheTransferMadePage]
         value <- arbitrary[WhoWasTheTransferMade].map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryErrorDescriptionUserAnswersEntry: Arbitrary[(pages.event1.member.ErrorDescriptionPage.type, JsValue)] =
+  implicit lazy val arbitraryErrorDescriptionUserAnswersEntry: Arbitrary[(pages.event1.member.ErrorDescriptionPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.event1.member.ErrorDescriptionPage.type]
+        page <- arbitrary[pages.event1.member.ErrorDescriptionPage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryBenefitsPaidEarlyUserAnswersEntry: Arbitrary[(BenefitsPaidEarlyPage.type, JsValue)] =
+  implicit lazy val arbitraryBenefitsPaidEarlyUserAnswersEntry: Arbitrary[(BenefitsPaidEarlyPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[BenefitsPaidEarlyPage.type]
+        page <- arbitrary[BenefitsPaidEarlyPage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryEmployerPaymentNatureUserAnswersEntry: Arbitrary[(pages.event1.employer.PaymentNaturePage.type, JsValue)] =
+  implicit lazy val arbitraryEmployerPaymentNatureUserAnswersEntry: Arbitrary[(pages.event1.employer.PaymentNaturePage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.event1.employer.PaymentNaturePage.type]
+        page <- arbitrary[pages.event1.employer.PaymentNaturePage]
         value <- arbitrary[models.event1.employer.PaymentNature].map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryEnterPostcodeUserAnswersEntry: Arbitrary[(pages.address.EnterPostcodePage.type, JsValue)] =
+  implicit lazy val arbitraryEnterPostcodeUserAnswersEntry: Arbitrary[(pages.address.EnterPostcodePage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.address.EnterPostcodePage.type]
+        page <- arbitrary[pages.address.EnterPostcodePage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryCompanyDetailsUserAnswersEntry: Arbitrary[(pages.event1.employer.CompanyDetailsPage.type, JsValue)] =
+  implicit lazy val arbitraryCompanyDetailsUserAnswersEntry: Arbitrary[(pages.event1.employer.CompanyDetailsPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.event1.employer.CompanyDetailsPage.type]
+        page <- arbitrary[pages.event1.employer.CompanyDetailsPage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryBenefitInKindBriefDescriptionUserAnswersEntry: Arbitrary[(BenefitInKindBriefDescriptionPage.type, JsValue)] =
+  implicit lazy val arbitraryBenefitInKindBriefDescriptionUserAnswersEntry: Arbitrary[(BenefitInKindBriefDescriptionPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[BenefitInKindBriefDescriptionPage.type]
+        page <- arbitrary[BenefitInKindBriefDescriptionPage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitrarySchemeUnAuthPaySurchargeMemberUserAnswersEntry: Arbitrary[(pages.event1.SchemeUnAuthPaySurchargeMemberPage.type, JsValue)] =
+  implicit lazy val arbitrarySchemeUnAuthPaySurchargeMemberUserAnswersEntry: Arbitrary[(pages.event1.SchemeUnAuthPaySurchargeMemberPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.event1.SchemeUnAuthPaySurchargeMemberPage.type]
+        page <- arbitrary[pages.event1.SchemeUnAuthPaySurchargeMemberPage]
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryValueOfUnauthorisedPaymentUserAnswersEntry: Arbitrary[(pages.event1.ValueOfUnauthorisedPaymentPage.type, JsValue)] =
+  implicit lazy val arbitraryValueOfUnauthorisedPaymentUserAnswersEntry: Arbitrary[(pages.event1.ValueOfUnauthorisedPaymentPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.event1.ValueOfUnauthorisedPaymentPage.type]
+        page <- arbitrary[pages.event1.ValueOfUnauthorisedPaymentPage]
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryDoYouHoldSignedMandateUserAnswersEntry: Arbitrary[(pages.event1.DoYouHoldSignedMandatePage.type, JsValue)] =
+  implicit lazy val arbitraryDoYouHoldSignedMandateUserAnswersEntry: Arbitrary[(pages.event1.DoYouHoldSignedMandatePage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.event1.DoYouHoldSignedMandatePage.type]
+        page <- arbitrary[pages.event1.DoYouHoldSignedMandatePage]
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryMembersDetailsUserAnswersEntry: Arbitrary[(MembersDetailsPage.type, JsValue)] =
+  implicit lazy val arbitraryMembersDetailsUserAnswersEntry: Arbitrary[(MembersDetailsPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[MembersDetailsPage.type]
+        page <- arbitrary[MembersDetailsPage]
         value <- arbitrary[MembersDetails].map(Json.toJson(_))
       } yield (page, value)
     }
@@ -214,26 +215,26 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryWhoReceivedUnauthPaymentUserAnswersEntry: Arbitrary[(pages.event1.WhoReceivedUnauthPaymentPage.type, JsValue)] =
+  implicit lazy val arbitraryWhoReceivedUnauthPaymentUserAnswersEntry: Arbitrary[(pages.event1.WhoReceivedUnauthPaymentPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.event1.WhoReceivedUnauthPaymentPage.type]
+        page <- arbitrary[pages.event1.WhoReceivedUnauthPaymentPage]
         value <- arbitrary[models.event1.WhoReceivedUnauthPayment].map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryHowAddUnauthPaymentUserAnswersEntry: Arbitrary[(pages.event1.HowAddUnauthPaymentPage.type, JsValue)] =
+  implicit lazy val arbitraryHowAddUnauthPaymentUserAnswersEntry: Arbitrary[(pages.event1.HowAddUnauthPaymentPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.event1.HowAddUnauthPaymentPage.type]
+        page <- arbitrary[pages.event1.HowAddUnauthPaymentPage]
         value <- arbitrary[models.event1.HowAddUnauthPayment].map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryPaymentNatureUserAnswersEntry: Arbitrary[(PaymentNaturePage.type, JsValue)] =
+  implicit lazy val arbitraryPaymentNatureUserAnswersEntry: Arbitrary[(PaymentNaturePage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[PaymentNaturePage.type]
+        page <- arbitrary[PaymentNaturePage]
         value <- arbitrary[models.event1.PaymentNature].map(Json.toJson(_))
       } yield (page, value)
     }

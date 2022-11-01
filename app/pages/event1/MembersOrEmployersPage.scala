@@ -16,16 +16,18 @@
 
 package pages.event1
 
-import pages.behaviours.PageBehaviours
+import pages.{Page, Waypoints}
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class ValueOfUnauthorisedPaymentPageSpec extends PageBehaviours {
+case class MembersOrEmployersPage(index: Int) extends Page {
+  def path: JsPath = JsPath \ "event1" \ MembersOrEmployersPage.toString \ index
 
-  "ValueOfUnauthorisedPaymentPage" - {
-
-    beRetrievable[Boolean](ValueOfUnauthorisedPaymentPage(0))
-
-    beSettable[Boolean](ValueOfUnauthorisedPaymentPage(0))
-
-    beRemovable[Boolean](ValueOfUnauthorisedPaymentPage(0))
-  }
+  override def route(waypoints: Waypoints): Call = controllers.routes.IndexController.onPageLoad
 }
+
+object MembersOrEmployersPage {
+  override def toString: String = "membersOrEmployers"
+}
+
+

@@ -21,22 +21,23 @@ import models.UserAnswers
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.enumeration.EventType.Event1
 import models.event1.employer.CompanyDetails
+import pages.event1.MembersOrEmployersPage
 import pages.{CheckYourAnswersPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object CompanyDetailsPage extends QuestionPage[CompanyDetails] {
+case class CompanyDetailsPage(index: Int) extends QuestionPage[CompanyDetails] {
 
-  override def path: JsPath = JsPath \ "event1" \ toString
+  override def path: JsPath = MembersOrEmployersPage(index).path \ "event1" \ toString
 
   override def toString: String = "companyDetails"
 
   override def route(waypoints: Waypoints): Call =
-    routes.CompanyDetailsController.onPageLoad(waypoints)
+    routes.CompanyDetailsController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    pages.address.EnterPostcodePage(Event1EmployerAddressJourney)
+    pages.address.EnterPostcodePage(Event1EmployerAddressJourney, index)
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
-    CheckYourAnswersPage(Event1)
+    CheckYourAnswersPage(Event1, Some(index))
 }

@@ -40,17 +40,17 @@ class EmployerUnauthorisedPaymentRecipientNameSummarySpec extends AnyFreeSpec wi
 
       val name = "Martin"
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
-      val answer = UserAnswers().setOrException(UnauthorisedPaymentRecipientNamePage, name)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val answer = UserAnswers().setOrException(UnauthorisedPaymentRecipientNamePage(0), name)
 
       answer match {
         case employerJourney if answer.toString.contains("""whoReceivedUnauthPayment":"employer""") =>
-          EmployerUnauthorisedPaymentRecipientNameSummary.row(answer, waypoints, sourcePage) mustBe Some(
+          EmployerUnauthorisedPaymentRecipientNameSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
             SummaryListRowViewModel(
               key = "unauthorisedPaymentRecipientName.employer.checkYourAnswersLabel",
               value = ValueViewModel(HtmlFormat.escape(name).toString),
               actions = Seq(
-                ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage.changeLink(waypoints, sourcePage).url)
+                ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage(0).changeLink(waypoints, sourcePage).url)
                   .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.employer.change.hidden"))
               )
             )

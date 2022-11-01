@@ -19,8 +19,8 @@ package controllers.event1.member
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.member.ReasonForTheOverpaymentOrWriteOffFormProvider
-import models.UserAnswers
 import models.enumeration.EventType
+import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.event1.member.ReasonForTheOverpaymentOrWriteOffPage
 import play.api.i18n.I18nSupport
@@ -42,21 +42,21 @@ class ReasonForTheOverpaymentOrWriteOffController @Inject()(val controllerCompon
   private val form = formProvider()
   private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(ReasonForTheOverpaymentOrWriteOffPage)).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints))
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(_.get(ReasonForTheOverpaymentOrWriteOffPage(index))).fold(form)(form.fill)
+    Ok(view(preparedForm, waypoints, index))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(ReasonForTheOverpaymentOrWriteOffPage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(ReasonForTheOverpaymentOrWriteOffPage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(ReasonForTheOverpaymentOrWriteOffPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(ReasonForTheOverpaymentOrWriteOffPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

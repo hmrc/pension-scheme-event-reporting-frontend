@@ -24,10 +24,10 @@ class BenefitInKindBriefDescriptionPageSpec extends PageBehaviours {
 
   "BenefitInKindBriefDescriptionPage" - {
 
-    beRetrievable[String](BenefitInKindBriefDescriptionPage)
+    beRetrievable[String](BenefitInKindBriefDescriptionPage(0))
 
-    beSettable[String](BenefitInKindBriefDescriptionPage)
+    beSettable[String](BenefitInKindBriefDescriptionPage(0))
 
-    beRemovable[String](BenefitInKindBriefDescriptionPage)
+    beRemovable[String](BenefitInKindBriefDescriptionPage(0))
   }
 }

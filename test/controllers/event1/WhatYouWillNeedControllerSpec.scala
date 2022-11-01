@@ -18,16 +18,15 @@ package controllers.event1
 
 import base.SpecBase
 import models.enumeration.EventType
+import models.enumeration.EventType.Event1
 import pages.EmptyWaypoints
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.event1.WhatYouWillNeedView
 
 class WhatYouWillNeedControllerSpec extends SpecBase {
-
   private val waypoints = EmptyWaypoints
   private val event1 = EventType.Event1
-
   "WhatYouWillNeed Controller" - {
 
     "must return OK and the correct view for a GET" in {
@@ -36,14 +35,14 @@ class WhatYouWillNeedControllerSpec extends SpecBase {
 
       running(application) {
 
-        val request = FakeRequest(GET, routes.WhatYouWillNeedController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.WhatYouWillNeedController.onPageLoad(waypoints, 0).url)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[WhatYouWillNeedView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, event1).url)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(controllers.common.routes.MembersDetailsController.onPageLoadWithIndex(waypoints, Event1, 0).url)(request, messages(application)).toString
       }
     }
   }

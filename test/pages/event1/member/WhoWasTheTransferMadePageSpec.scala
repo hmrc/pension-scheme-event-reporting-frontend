@@ -23,10 +23,10 @@ class WhoWasTheTransferMadeSpec extends PageBehaviours {
 
   "WhoWasTheTransferMadePage" - {
 
-    beRetrievable[WhoWasTheTransferMade](WhoWasTheTransferMadePage)
+    beRetrievable[WhoWasTheTransferMade](WhoWasTheTransferMadePage(0))
 
-    beSettable[WhoWasTheTransferMade](WhoWasTheTransferMadePage)
+    beSettable[WhoWasTheTransferMade](WhoWasTheTransferMadePage(0))
 
-    beRemovable[WhoWasTheTransferMade](WhoWasTheTransferMadePage)
+    beRemovable[WhoWasTheTransferMade](WhoWasTheTransferMadePage(0))
   }
 }

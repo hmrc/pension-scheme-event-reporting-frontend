@@ -24,10 +24,10 @@ class EmployerTangibleMoveablePropertyPageSpec extends PageBehaviours {
 
   "EmployerTangibleMoveablePropertyPage" - {
 
-    beRetrievable[String](EmployerTangibleMoveablePropertyPage)
+    beRetrievable[String](EmployerTangibleMoveablePropertyPage(0))
 
-    beSettable[String](EmployerTangibleMoveablePropertyPage)
+    beSettable[String](EmployerTangibleMoveablePropertyPage(0))
 
-    beRemovable[String](EmployerTangibleMoveablePropertyPage)
+    beRemovable[String](EmployerTangibleMoveablePropertyPage(0))
   }
 }

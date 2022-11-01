@@ -16,6 +16,9 @@
 
 package generators
 
+import models.Index
+import models.enumeration.AddressJourneyType
+import models.enumeration.EventType.Event1
 import org.scalacheck.Arbitrary
 import pages._
 import pages.common.MembersDetailsPage
@@ -26,87 +29,85 @@ import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryPaymentValueAndDatePage: Arbitrary[event1.PaymentValueAndDatePage] =
+    Arbitrary(event1.PaymentValueAndDatePage(Index(0)))
   implicit lazy val arbitraryHowAddDualAllowancePage: Arbitrary[event23.HowAddDualAllowancePage.type] =
     Arbitrary(event23.HowAddDualAllowancePage)
+  implicit lazy val arbitraryLoanDetailsPage: Arbitrary[event1.employer.LoanDetailsPage] =
+    Arbitrary(event1.employer.LoanDetailsPage(Index(0)))
 
-  implicit lazy val arbitraryPaymentValueAndDatePage: Arbitrary[event1.PaymentValueAndDatePage.type] =
-    Arbitrary(event1.PaymentValueAndDatePage)
+  implicit lazy val arbitraryEmployerPaymentNatureDescriptionPage: Arbitrary[EmployerPaymentNatureDescriptionPage] =
+    Arbitrary(employer.EmployerPaymentNatureDescriptionPage(Index(0)))
 
-  implicit lazy val arbitraryLoanDetailsPage: Arbitrary[event1.employer.LoanDetailsPage.type] =
-    Arbitrary(event1.employer.LoanDetailsPage)
+  implicit lazy val arbitraryMemberPaymentNatureDescriptionPage: Arbitrary[MemberPaymentNatureDescriptionPage] =
+    Arbitrary(member.MemberPaymentNatureDescriptionPage(Index(0)))
 
-  implicit lazy val arbitraryEmployerPaymentNatureDescriptionPage: Arbitrary[EmployerPaymentNatureDescriptionPage.type] =
-    Arbitrary(employer.EmployerPaymentNatureDescriptionPage)
+  implicit lazy val arbitraryEmployerTangibleMoveablePropertyPage: Arbitrary[EmployerTangibleMoveablePropertyPage] =
+    Arbitrary(employer.EmployerTangibleMoveablePropertyPage(Index(0)))
 
-  implicit lazy val arbitraryMemberPaymentNatureDescriptionPage: Arbitrary[MemberPaymentNatureDescriptionPage.type] =
-    Arbitrary(member.MemberPaymentNatureDescriptionPage)
+  implicit lazy val arbitraryMemberTangibleMoveablePropertyPage: Arbitrary[MemberTangibleMoveablePropertyPage] =
+    Arbitrary(member.MemberTangibleMoveablePropertyPage(Index(0)))
 
-  implicit lazy val arbitraryEmployerTangibleMoveablePropertyPage: Arbitrary[EmployerTangibleMoveablePropertyPage.type] =
-    Arbitrary(employer.EmployerTangibleMoveablePropertyPage)
+  implicit lazy val arbitraryMemberUnauthorisedPaymentRecipientNamePage: Arbitrary[event1.member.UnauthorisedPaymentRecipientNamePage] =
+    Arbitrary(event1.member.UnauthorisedPaymentRecipientNamePage(Index(0)))
 
-  implicit lazy val arbitraryMemberTangibleMoveablePropertyPage: Arbitrary[MemberTangibleMoveablePropertyPage.type] =
-    Arbitrary(member.MemberTangibleMoveablePropertyPage)
+  implicit lazy val arbitraryUnauthorisedPaymentRecipientNamePage: Arbitrary[UnauthorisedPaymentRecipientNamePage] =
+    Arbitrary(employer.UnauthorisedPaymentRecipientNamePage(Index(0)))
 
-  implicit lazy val arbitraryMemberUnauthorisedPaymentRecipientNamePage: Arbitrary[event1.member.UnauthorisedPaymentRecipientNamePage.type] =
-    Arbitrary(event1.member.UnauthorisedPaymentRecipientNamePage)
+  implicit lazy val arbitraryReasonForTheOverpaymentOrWriteOffPage: Arbitrary[ReasonForTheOverpaymentOrWriteOffPage] =
+    Arbitrary(member.ReasonForTheOverpaymentOrWriteOffPage(Index(0)))
 
-  implicit lazy val arbitraryUnauthorisedPaymentRecipientNamePage: Arbitrary[UnauthorisedPaymentRecipientNamePage.type] =
-    Arbitrary(employer.UnauthorisedPaymentRecipientNamePage)
+  implicit lazy val arbitraryRefundOfContributionsPage: Arbitrary[RefundOfContributionsPage] =
+    Arbitrary(member.RefundOfContributionsPage(Index(0)))
 
-  implicit lazy val arbitraryReasonForTheOverpaymentOrWriteOffPage: Arbitrary[ReasonForTheOverpaymentOrWriteOffPage.type] =
-    Arbitrary(member.ReasonForTheOverpaymentOrWriteOffPage)
+  implicit lazy val arbitrarySchemeDetailsPage: Arbitrary[SchemeDetailsPage] =
+    Arbitrary(event1.member.SchemeDetailsPage(Index(0)))
 
-  implicit lazy val arbitraryRefundOfContributionsPage: Arbitrary[RefundOfContributionsPage.type] =
-    Arbitrary(member.RefundOfContributionsPage)
+  implicit lazy val arbitraryWhoWasTheTransferMadePage: Arbitrary[WhoWasTheTransferMadePage] =
+    Arbitrary(event1.member.WhoWasTheTransferMadePage(Index(0)))
 
-  implicit lazy val arbitrarySchemeDetailsPage: Arbitrary[SchemeDetailsPage.type] =
-    Arbitrary(event1.member.SchemeDetailsPage)
+  implicit lazy val arbitraryErrorDescriptionPage: Arbitrary[event1.member.ErrorDescriptionPage] =
+    Arbitrary(event1.member.ErrorDescriptionPage(Index(0)))
 
-  implicit lazy val arbitraryWhoWasTheTransferMadePage: Arbitrary[WhoWasTheTransferMadePage.type] =
-    Arbitrary(event1.member.WhoWasTheTransferMadePage)
+  implicit lazy val arbitraryBenefitsPaidEarlyPage: Arbitrary[BenefitsPaidEarlyPage] =
+    Arbitrary(member.BenefitsPaidEarlyPage(Index(0)))
 
-  implicit lazy val arbitraryErrorDescriptionPage: Arbitrary[event1.member.ErrorDescriptionPage.type] =
-    Arbitrary(event1.member.ErrorDescriptionPage)
+  implicit lazy val arbitraryEmployerPaymentNaturePage: Arbitrary[event1.employer.PaymentNaturePage] =
+    Arbitrary(event1.employer.PaymentNaturePage(Index(0)))
 
-  implicit lazy val arbitraryBenefitsPaidEarlyPage: Arbitrary[BenefitsPaidEarlyPage.type] =
-    Arbitrary(member.BenefitsPaidEarlyPage)
+  implicit lazy val arbitraryChooseAddressPage: Arbitrary[address.ChooseAddressPage] =
+    Arbitrary(address.ChooseAddressPage(AddressJourneyType.Event1EmployerAddressJourney, (0)))
 
-  implicit lazy val arbitraryEmployerPaymentNaturePage: Arbitrary[event1.employer.PaymentNaturePage.type] =
-    Arbitrary(event1.employer.PaymentNaturePage)
+  implicit lazy val arbitraryEnterPostcodePage: Arbitrary[address.EnterPostcodePage] =
+    Arbitrary(address.EnterPostcodePage(AddressJourneyType.Event1EmployerAddressJourney, Index(0)))
 
-  implicit lazy val arbitraryChooseAddressPage: Arbitrary[address.ChooseAddressPage.type] =
-    Arbitrary(address.ChooseAddressPage)
-
-  implicit lazy val arbitraryEnterPostcodePage: Arbitrary[address.EnterPostcodePage.type] =
-    Arbitrary(address.EnterPostcodePage)
-
-  implicit lazy val arbitraryCompanyDetailsPage: Arbitrary[event1.employer.CompanyDetailsPage.type] =
-    Arbitrary(event1.employer.CompanyDetailsPage)
+  implicit lazy val arbitraryCompanyDetailsPage: Arbitrary[event1.employer.CompanyDetailsPage] =
+    Arbitrary(event1.employer.CompanyDetailsPage(Index(0)))
 
 
-  implicit lazy val arbitraryBenefitInKindBriefDescriptionPage: Arbitrary[BenefitInKindBriefDescriptionPage.type] =
-    Arbitrary(member.BenefitInKindBriefDescriptionPage)
+  implicit lazy val arbitraryBenefitInKindBriefDescriptionPage: Arbitrary[BenefitInKindBriefDescriptionPage] =
+    Arbitrary(member.BenefitInKindBriefDescriptionPage(Index(0)))
 
-  implicit lazy val arbitrarySchemeUnAuthPaySurchargeMemberPage: Arbitrary[event1.SchemeUnAuthPaySurchargeMemberPage.type] =
-    Arbitrary(event1.SchemeUnAuthPaySurchargeMemberPage)
+  implicit lazy val arbitrarySchemeUnAuthPaySurchargeMemberPage: Arbitrary[event1.SchemeUnAuthPaySurchargeMemberPage] =
+    Arbitrary(event1.SchemeUnAuthPaySurchargeMemberPage(Index(0)))
 
-  implicit lazy val arbitraryValueOfUnauthorisedPaymentPage: Arbitrary[event1.ValueOfUnauthorisedPaymentPage.type] =
-    Arbitrary(event1.ValueOfUnauthorisedPaymentPage)
+  implicit lazy val arbitraryValueOfUnauthorisedPaymentPage: Arbitrary[event1.ValueOfUnauthorisedPaymentPage] =
+    Arbitrary(event1.ValueOfUnauthorisedPaymentPage(Index(0)))
 
-  implicit lazy val arbitraryDoYouHoldSignedMandatePage: Arbitrary[event1.DoYouHoldSignedMandatePage.type] =
-    Arbitrary(event1.DoYouHoldSignedMandatePage)
+  implicit lazy val arbitraryDoYouHoldSignedMandatePage: Arbitrary[event1.DoYouHoldSignedMandatePage] =
+    Arbitrary(event1.DoYouHoldSignedMandatePage(Index(0)))
 
-  implicit lazy val arbitraryMembersDetailsPage: Arbitrary[MembersDetailsPage.type] =
-    Arbitrary(MembersDetailsPage)
+  implicit lazy val arbitraryMembersDetailsPage: Arbitrary[MembersDetailsPage] =
+    Arbitrary(MembersDetailsPage(Event1, Some(0)))
 
-  implicit lazy val arbitraryWhoReceivedUnauthPaymentPage: Arbitrary[event1.WhoReceivedUnauthPaymentPage.type] =
-    Arbitrary(event1.WhoReceivedUnauthPaymentPage)
+  implicit lazy val arbitraryWhoReceivedUnauthPaymentPage: Arbitrary[event1.WhoReceivedUnauthPaymentPage] =
+    Arbitrary(event1.WhoReceivedUnauthPaymentPage(Index(0)))
 
-  implicit lazy val arbitraryHowAddUnauthPaymentPage: Arbitrary[event1.HowAddUnauthPaymentPage.type] =
-    Arbitrary(event1.HowAddUnauthPaymentPage)
+  implicit lazy val arbitraryHowAddUnauthPaymentPage: Arbitrary[event1.HowAddUnauthPaymentPage] =
+    Arbitrary(event1.HowAddUnauthPaymentPage(Index(0)))
 
-  implicit lazy val arbitraryPaymentNaturePage: Arbitrary[PaymentNaturePage.type] =
-    Arbitrary(member.PaymentNaturePage)
+  implicit lazy val arbitraryPaymentNaturePage: Arbitrary[PaymentNaturePage] =
+    Arbitrary(member.PaymentNaturePage(Index(0)))
 
   implicit lazy val arbitrarySchemeWindUpDatePage: Arbitrary[SchemeWindUpDatePage.type] =
     Arbitrary(SchemeWindUpDatePage)

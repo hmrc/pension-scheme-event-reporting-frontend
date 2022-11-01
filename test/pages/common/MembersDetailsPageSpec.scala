@@ -25,19 +25,19 @@ class MembersDetailsPageSpec extends PageBehaviours {
   "MembersDetailsPage" - {
 
     "event1" - {
-      beRetrievable[MembersDetails](MembersDetailsPage(Event1))
+      beRetrievable[MembersDetails](MembersDetailsPage(Event1, Some(0)))
 
-      beSettable[MembersDetails](MembersDetailsPage(Event1))
+      beSettable[MembersDetails](MembersDetailsPage(Event1, Some(0)))
 
-      beRemovable[MembersDetails](MembersDetailsPage(Event1))
+      beRemovable[MembersDetails](MembersDetailsPage(Event1, Some(0)))
     }
 
     "event23" - {
-      beRetrievable[MembersDetails](MembersDetailsPage(Event23))
+      beRetrievable[MembersDetails](MembersDetailsPage(Event23, None))
 
-      beSettable[MembersDetails](MembersDetailsPage(Event23))
+      beSettable[MembersDetails](MembersDetailsPage(Event23, None))
 
-      beRemovable[MembersDetails](MembersDetailsPage(Event23))
+      beRemovable[MembersDetails](MembersDetailsPage(Event23, None))
     }
   }
 }

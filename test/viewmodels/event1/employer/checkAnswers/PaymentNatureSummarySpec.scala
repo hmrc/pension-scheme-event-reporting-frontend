@@ -40,9 +40,9 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
 
     "must display correct information for Loans to or in respect of the employer exceeding 50% option" in {
 
-      val answer = UserAnswers().setOrException(PaymentNaturePage, PaymentNature.LoansExceeding50PercentOfFundValue)
+      val answer = UserAnswers().setOrException(PaymentNaturePage(0), PaymentNature.LoansExceeding50PercentOfFundValue)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -50,12 +50,12 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
         )
       )
 
-      PaymentNatureSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "paymentNature.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", PaymentNaturePage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
           )
         )
@@ -64,9 +64,9 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
 
     "must display correct information for Residential property held directly or indirectly by an investment option" in {
 
-      val answer = UserAnswers().setOrException(PaymentNaturePage, PaymentNature.ResidentialProperty)
+      val answer = UserAnswers().setOrException(PaymentNaturePage(0), PaymentNature.ResidentialProperty)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -74,12 +74,12 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
         )
       )
 
-      PaymentNatureSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "paymentNature.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", PaymentNaturePage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
           )
         )
@@ -88,9 +88,9 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
 
     "must display correct information for Tangible moveable property held directly or indirectly option" in {
 
-      val answer = UserAnswers().setOrException(PaymentNaturePage, PaymentNature.TangibleMoveableProperty)
+      val answer = UserAnswers().setOrException(PaymentNaturePage(0), PaymentNature.TangibleMoveableProperty)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -98,12 +98,12 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
         )
       )
 
-      PaymentNatureSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "paymentNature.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", PaymentNaturePage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
           )
         )
@@ -112,9 +112,9 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
 
     "must display correct information for Court order payment/confiscation order option" in {
 
-      val answer = UserAnswers().setOrException(PaymentNaturePage, PaymentNature.CourtOrder)
+      val answer = UserAnswers().setOrException(PaymentNaturePage(0), PaymentNature.CourtOrder)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -122,12 +122,12 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
         )
       )
 
-      PaymentNatureSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "paymentNature.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", PaymentNaturePage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
           )
         )
@@ -136,9 +136,9 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
 
     "must display correct information for EmployerOther option" in {
 
-      val answer = UserAnswers().setOrException(PaymentNaturePage, PaymentNature.EmployerOther)
+      val answer = UserAnswers().setOrException(PaymentNaturePage(0), PaymentNature.EmployerOther)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -146,12 +146,12 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
         )
       )
 
-      PaymentNatureSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "paymentNature.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", PaymentNaturePage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
           )
         )

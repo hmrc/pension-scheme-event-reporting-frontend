@@ -17,6 +17,7 @@
 package pages
 
 import models.Mode
+import models.enumeration.EventType.Event1
 
 case class Waypoint(
                      page: WaypointPage,
@@ -35,10 +36,14 @@ object Waypoint {
   private val fragments: Map[String, Waypoint] =
     Map(
       CheckYourAnswersPage.event18.urlFragment -> CheckYourAnswersPage.event18.waypoint,
-      CheckYourAnswersPage.windUp.urlFragment -> CheckYourAnswersPage.windUp.waypoint,
-      CheckYourAnswersPage.event1.urlFragment -> CheckYourAnswersPage.event1.waypoint
+      CheckYourAnswersPage.windUp.urlFragment -> CheckYourAnswersPage.windUp.waypoint
     )
 
+  /*
+  All CYA page objects which have an index should be added below. Those without an index should be added above.
+   */
   def fromString(s: String): Option[Waypoint] =
     fragments.get(s)
+      .orElse(CheckYourAnswersPage.waypointFromString(Event1, s))
+
 }

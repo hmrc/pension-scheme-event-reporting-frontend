@@ -22,10 +22,10 @@ class SchemeUnAuthPaySurchargeMemberPageSpec extends PageBehaviours {
 
   "SchemeUnAuthPaySurchargeMemberPage" - {
 
-    beRetrievable[Boolean](SchemeUnAuthPaySurchargeMemberPage)
+    beRetrievable[Boolean](SchemeUnAuthPaySurchargeMemberPage(0))
 
-    beSettable[Boolean](SchemeUnAuthPaySurchargeMemberPage)
+    beSettable[Boolean](SchemeUnAuthPaySurchargeMemberPage(0))
 
-    beRemovable[Boolean](SchemeUnAuthPaySurchargeMemberPage)
+    beRemovable[Boolean](SchemeUnAuthPaySurchargeMemberPage(0))
   }
 }

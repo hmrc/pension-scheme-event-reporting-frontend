@@ -40,9 +40,9 @@ class WhoReceivedUnauthPaymentSummarySpec extends AnyFreeSpec with Matchers with
 
     "must display correct information for who received the unauthorised payment (Member)" in {
 
-      val answer = UserAnswers().setOrException(WhoReceivedUnauthPaymentPage, WhoReceivedUnauthPayment.Member)
+      val answer = UserAnswers().setOrException(WhoReceivedUnauthPaymentPage(0), WhoReceivedUnauthPayment.Member)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -50,12 +50,12 @@ class WhoReceivedUnauthPaymentSummarySpec extends AnyFreeSpec with Matchers with
         )
       )
 
-      WhoReceivedUnauthPaymentSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      WhoReceivedUnauthPaymentSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "whoReceivedUnauthPayment.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", WhoReceivedUnauthPaymentPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", WhoReceivedUnauthPaymentPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("whoReceivedUnauthPayment.change.hidden"))
           )
         )
@@ -64,9 +64,9 @@ class WhoReceivedUnauthPaymentSummarySpec extends AnyFreeSpec with Matchers with
 
     "must display correct information for who received the unauthorised payment (Employer)" in {
 
-      val answer = UserAnswers().setOrException(WhoReceivedUnauthPaymentPage, WhoReceivedUnauthPayment.Employer)
+      val answer = UserAnswers().setOrException(WhoReceivedUnauthPaymentPage(0), WhoReceivedUnauthPayment.Employer)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -74,12 +74,12 @@ class WhoReceivedUnauthPaymentSummarySpec extends AnyFreeSpec with Matchers with
         )
       )
 
-      WhoReceivedUnauthPaymentSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      WhoReceivedUnauthPaymentSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "whoReceivedUnauthPayment.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", WhoReceivedUnauthPaymentPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", WhoReceivedUnauthPaymentPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("whoReceivedUnauthPayment.change.hidden"))
           )
         )

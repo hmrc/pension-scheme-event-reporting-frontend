@@ -21,6 +21,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
+import pages.common.MembersDetailsPage
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.eventWindUp.SchemeWindUpDatePage
@@ -29,38 +30,39 @@ import play.api.libs.json.{JsValue, Json}
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
-  val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+  val generators: Seq[Gen[(QuestionPage[_], JsValue)]] = {
     arbitrary[(event23.HowAddDualAllowancePage.type, JsValue)] ::
-      arbitrary[(event1.PaymentValueAndDatePage.type, JsValue)] ::
-      arbitrary[(event1.member.ErrorDescriptionPage.type, JsValue)] ::
-      arbitrary[(BenefitsPaidEarlyPage.type, JsValue)] ::
-      arbitrary[(event1.employer.PaymentNaturePage.type, JsValue)] ::
-      arbitrary[(event1.employer.CompanyDetailsPage.type, JsValue)] ::
-      arbitrary[(event1.member.BenefitInKindBriefDescriptionPage.type, JsValue)] ::
-      arbitrary[(event1.SchemeUnAuthPaySurchargeMemberPage.type, JsValue)] ::
-      arbitrary[(event1.ValueOfUnauthorisedPaymentPage.type, JsValue)] ::
-      arbitrary[(event1.DoYouHoldSignedMandatePage.type, JsValue)] ::
-      arbitrary[(event1.WhoReceivedUnauthPaymentPage.type, JsValue)] ::
-      arbitrary[(event1.HowAddUnauthPaymentPage.type, JsValue)] ::
-      arbitrary[(PaymentNaturePage.type, JsValue)] ::
+      arbitrary[(event1.PaymentValueAndDatePage, JsValue)] ::
+      arbitrary[(event1.member.ErrorDescriptionPage, JsValue)] ::
+      arbitrary[(BenefitsPaidEarlyPage, JsValue)] ::
+      arbitrary[(event1.employer.PaymentNaturePage, JsValue)] ::
+      arbitrary[(event1.employer.CompanyDetailsPage, JsValue)] ::
+      arbitrary[(BenefitInKindBriefDescriptionPage, JsValue)] ::
+      arbitrary[(event1.SchemeUnAuthPaySurchargeMemberPage, JsValue)] ::
+      arbitrary[(event1.ValueOfUnauthorisedPaymentPage, JsValue)] ::
+      arbitrary[(event1.DoYouHoldSignedMandatePage, JsValue)] ::
+      arbitrary[(MembersDetailsPage, JsValue)] ::
+      arbitrary[(event1.HowAddUnauthPaymentPage, JsValue)] ::
+      arbitrary[(PaymentNaturePage, JsValue)] ::
       arbitrary[(SchemeWindUpDatePage.type, JsValue)] ::
       arbitrary[(event18.Event18ConfirmationPage.type, JsValue)] ::
       arbitrary[(EventSummaryPage.type, JsValue)] ::
       arbitrary[(EventSelectionPage.type, JsValue)] ::
-      arbitrary[(event1.member.SchemeDetailsPage.type, JsValue)] ::
-      arbitrary[(event1.member.WhoWasTheTransferMadePage.type, JsValue)] ::
-      arbitrary[(event1.member.UnauthorisedPaymentRecipientNamePage.type, JsValue)] ::
-      arbitrary[(event1.employer.LoanDetailsPage.type, JsValue)] ::
-      arbitrary[(RefundOfContributionsPage.type, JsValue)] ::
-      arbitrary[(event1.member.UnauthorisedPaymentRecipientNamePage.type, JsValue)] ::
-      arbitrary[(RefundOfContributionsPage.type, JsValue)] ::
-      arbitrary[(EmployerPaymentNatureDescriptionPage.type, JsValue)] ::
-      arbitrary[(MemberPaymentNatureDescriptionPage.type, JsValue)] ::
-      arbitrary[(EmployerTangibleMoveablePropertyPage.type, JsValue)] ::
-      arbitrary[(MemberTangibleMoveablePropertyPage.type, JsValue)] ::
-      arbitrary[(ReasonForTheOverpaymentOrWriteOffPage.type, JsValue)] ::
-      arbitrary[(UnauthorisedPaymentRecipientNamePage.type, JsValue)] ::
+      arbitrary[(event1.member.SchemeDetailsPage, JsValue)] ::
+      arbitrary[(event1.member.WhoWasTheTransferMadePage, JsValue)] ::
+      arbitrary[(event1.member.UnauthorisedPaymentRecipientNamePage, JsValue)] ::
+      arbitrary[(event1.employer.LoanDetailsPage, JsValue)] ::
+      arbitrary[(RefundOfContributionsPage, JsValue)] ::
+      arbitrary[(event1.member.UnauthorisedPaymentRecipientNamePage, JsValue)] ::
+      arbitrary[(RefundOfContributionsPage, JsValue)] ::
+      arbitrary[(EmployerPaymentNatureDescriptionPage, JsValue)] ::
+      arbitrary[(MemberPaymentNatureDescriptionPage, JsValue)] ::
+      arbitrary[(EmployerTangibleMoveablePropertyPage, JsValue)] ::
+      arbitrary[(MemberTangibleMoveablePropertyPage, JsValue)] ::
+      arbitrary[(ReasonForTheOverpaymentOrWriteOffPage, JsValue)] ::
+      arbitrary[(UnauthorisedPaymentRecipientNamePage, JsValue)] ::
       Nil
+  }
 
   implicit lazy val arbitraryUserData: Arbitrary[UserAnswers] = {
 

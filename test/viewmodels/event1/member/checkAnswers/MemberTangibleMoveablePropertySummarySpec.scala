@@ -38,16 +38,16 @@ class MemberTangibleMoveablePropertySummarySpec extends AnyFreeSpec with Matcher
 
     "must display correct information for tangible moveable property option (Member)" in {
 
-      val answer = UserAnswers().setOrException(MemberTangibleMoveablePropertyPage, "brief description of the tangible moveable property")
+      val answer = UserAnswers().setOrException(MemberTangibleMoveablePropertyPage(0), "brief description of the tangible moveable property")
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
-      MemberTangibleMoveablePropertySummary.row(answer, waypoints, sourcePage) mustBe Some(
+      MemberTangibleMoveablePropertySummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "memberTangibleMoveableProperty.checkYourAnswersLabel",
           value = ValueViewModel(HtmlFormat.escape("brief description of the tangible moveable property").toString),
           actions = Seq(
-            ActionItemViewModel("site.change", MemberTangibleMoveablePropertyPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", MemberTangibleMoveablePropertyPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("memberTangibleMoveableProperty.change.hidden"))
           )
         )

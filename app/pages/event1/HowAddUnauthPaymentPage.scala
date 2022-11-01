@@ -20,23 +20,23 @@ import controllers.event1.routes
 import models.UserAnswers
 import models.event1.HowAddUnauthPayment
 import models.event1.HowAddUnauthPayment.Manual
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Page, QuestionPage, Waypoints}
 
-case object HowAddUnauthPaymentPage extends QuestionPage[HowAddUnauthPayment] {
+case class HowAddUnauthPaymentPage(index: Int) extends QuestionPage[HowAddUnauthPayment] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
 
   override def toString: String = "howAddUnauthPayment"
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
-      case Some(Manual) => WhoReceivedUnauthPaymentPage
+      case Some(Manual) => WhoReceivedUnauthPaymentPage(index)
       case _ => this
     }
 
   override def route(waypoints: Waypoints): Call = {
-    routes.HowAddUnauthPaymentController.onPageLoad(waypoints)
+    routes.HowAddUnauthPaymentController.onPageLoad(waypoints, index)
   }
 }

@@ -19,14 +19,14 @@ package pages.event1
 import models.event1.WhoReceivedUnauthPayment
 import pages.behaviours.PageBehaviours
 
-class WhoReceivedUnauthPaymentSpec extends PageBehaviours {
+class WhoReceivedUnauthPaymentPageSpec extends PageBehaviours {
 
   "WhoReceivedUnauthPaymentPage" - {
 
-    beRetrievable[WhoReceivedUnauthPayment](WhoReceivedUnauthPaymentPage)
+    beRetrievable[WhoReceivedUnauthPayment](WhoReceivedUnauthPaymentPage(0))
 
-    beSettable[WhoReceivedUnauthPayment](WhoReceivedUnauthPaymentPage)
+    beSettable[WhoReceivedUnauthPayment](WhoReceivedUnauthPaymentPage(0))
 
-    beRemovable[WhoReceivedUnauthPayment](WhoReceivedUnauthPaymentPage)
+    beRemovable[WhoReceivedUnauthPayment](WhoReceivedUnauthPaymentPage(0))
   }
 }

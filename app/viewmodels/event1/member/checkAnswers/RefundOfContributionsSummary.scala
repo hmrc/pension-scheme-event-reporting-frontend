@@ -17,7 +17,7 @@
 package viewmodels.event1.member.checkAnswers
 
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.event1.member.RefundOfContributionsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -27,12 +27,12 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object RefundOfContributionsSummary  {
+object RefundOfContributionsSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
-    answers.get(RefundOfContributionsPage).map {
+    answers.get(RefundOfContributionsPage(index)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -42,10 +42,10 @@ object RefundOfContributionsSummary  {
         )
 
         SummaryListRowViewModel(
-          key     = "refundOfContributions.checkYourAnswersLabel",
-          value   = value,
+          key = "refundOfContributions.checkYourAnswersLabel",
+          value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", RefundOfContributionsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", RefundOfContributionsPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("refundOfContributions.change.hidden"))
           )
         )

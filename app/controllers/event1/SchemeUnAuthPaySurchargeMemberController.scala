@@ -17,10 +17,10 @@
 package controllers.event1
 
 import connectors.UserAnswersCacheConnector
-import models.enumeration.EventType
 import controllers.actions._
 import forms.event1.SchemeUnAuthPaySurchargeMemberFormProvider
-import javax.inject.Inject
+import models.Index
+import models.enumeration.EventType
 import pages.Waypoints
 import pages.event1.SchemeUnAuthPaySurchargeMemberPage
 import play.api.i18n.I18nSupport
@@ -28,37 +28,38 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event1.SchemeUnAuthPaySurchargeMemberView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeUnAuthPaySurchargeMemberController @Inject()(
-                                        val controllerComponents: MessagesControllerComponents,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        userAnswersCacheConnector: UserAnswersCacheConnector,
-                                        formProvider: SchemeUnAuthPaySurchargeMemberFormProvider,
-                                        view: SchemeUnAuthPaySurchargeMemberView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                          val controllerComponents: MessagesControllerComponents,
+                                                          identify: IdentifierAction,
+                                                          getData: DataRetrievalAction,
+                                                          requireData: DataRequiredAction,
+                                                          userAnswersCacheConnector: UserAnswersCacheConnector,
+                                                          formProvider: SchemeUnAuthPaySurchargeMemberFormProvider,
+                                                          view: SchemeUnAuthPaySurchargeMemberView
+                                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
-    val preparedForm = request.userAnswers.get(SchemeUnAuthPaySurchargeMemberPage).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints))
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
+    val preparedForm = request.userAnswers.get(SchemeUnAuthPaySurchargeMemberPage(index)).fold(form)(form.fill)
+    Ok(view(preparedForm, waypoints, index))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
+  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers
-          val updatedAnswers = originalUserAnswers.setOrException(SchemeUnAuthPaySurchargeMemberPage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(SchemeUnAuthPaySurchargeMemberPage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-          Redirect(SchemeUnAuthPaySurchargeMemberPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(SchemeUnAuthPaySurchargeMemberPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+          }
         }
-      }
-    )
+      )
   }
 }

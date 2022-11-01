@@ -40,9 +40,9 @@ class RefundOfContributionsSummarySpec extends AnyFreeSpec with Matchers with Op
 
     "must display correct information for refund of contributions (Widow Or Orphan)" in {
 
-      val answer = UserAnswers().setOrException(RefundOfContributionsPage, RefundOfContributions.WidowOrOrphan)
+      val answer = UserAnswers().setOrException(RefundOfContributionsPage(0), RefundOfContributions.WidowOrOrphan)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -50,12 +50,12 @@ class RefundOfContributionsSummarySpec extends AnyFreeSpec with Matchers with Op
         )
       )
 
-      RefundOfContributionsSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      RefundOfContributionsSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "refundOfContributions.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", RefundOfContributionsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", RefundOfContributionsPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("refundOfContributions.change.hidden"))
           )
         )
@@ -64,9 +64,9 @@ class RefundOfContributionsSummarySpec extends AnyFreeSpec with Matchers with Op
 
     "must display correct information for refund of contributions (EmployerOther)" in {
 
-      val answer = UserAnswers().setOrException(RefundOfContributionsPage, RefundOfContributions.Other)
+      val answer = UserAnswers().setOrException(RefundOfContributionsPage(0), RefundOfContributions.Other)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
       val value = ValueViewModel(
         HtmlContent(
@@ -74,12 +74,12 @@ class RefundOfContributionsSummarySpec extends AnyFreeSpec with Matchers with Op
         )
       )
 
-      RefundOfContributionsSummary.row(answer, waypoints, sourcePage) mustBe Some(
+      RefundOfContributionsSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "refundOfContributions.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", RefundOfContributionsPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", RefundOfContributionsPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("refundOfContributions.change.hidden"))
           )
         )

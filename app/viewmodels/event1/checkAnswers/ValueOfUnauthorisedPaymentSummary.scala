@@ -16,28 +16,28 @@
 
 package viewmodels.event1.checkAnswers
 
-import models.UserAnswers
-import pages.{CheckAnswersPage, Waypoints}
+import models.{Index, UserAnswers}
 import pages.event1.ValueOfUnauthorisedPaymentPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object ValueOfUnauthorisedPaymentSummary  {
+object ValueOfUnauthorisedPaymentSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ValueOfUnauthorisedPaymentPage).map {
+    answers.get(ValueOfUnauthorisedPaymentPage(index)).map {
       answer =>
 
         val value = if (answer) "site.yes" else "site.no"
 
         SummaryListRowViewModel(
-          key     = "valueOfUnauthorisedPayment.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
+          key = "valueOfUnauthorisedPayment.checkYourAnswersLabel",
+          value = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", ValueOfUnauthorisedPaymentPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", ValueOfUnauthorisedPaymentPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("valueOfUnauthorisedPayment.change.hidden"))
           )
         )

@@ -38,16 +38,16 @@ class BenefitsPaidEarlySummarySpec extends AnyFreeSpec with Matchers with Option
 
     "must display correct information for benefits paid early" in {
 
-      val answer = UserAnswers().setOrException(BenefitsPaidEarlyPage, "brief description of why the benefits are being paid early")
+      val answer = UserAnswers().setOrException(BenefitsPaidEarlyPage(0), "brief description of why the benefits are being paid early")
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1)
+      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
 
-      BenefitsPaidEarlySummary.row(answer, waypoints, sourcePage) mustBe Some(
+      BenefitsPaidEarlySummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "benefitsPaidEarly.checkYourAnswersLabel",
           value = ValueViewModel(HtmlFormat.escape("brief description of why the benefits are being paid early").toString),
           actions = Seq(
-            ActionItemViewModel("site.change", BenefitsPaidEarlyPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", BenefitsPaidEarlyPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("benefitsPaidEarly.change.hidden"))
           )
         )

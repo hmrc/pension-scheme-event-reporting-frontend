@@ -16,18 +16,18 @@
 
 package pages.behaviours
 
-import generators.Generators
+import generators.{Generators, UserAnswersGenerator}
 import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalatest.{OptionValues, TryValues}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.{OptionValues, TryValues}
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import play.api.libs.json._
 
-trait PageBehaviours extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with OptionValues with TryValues {
+trait PageBehaviours extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with OptionValues with TryValues with UserAnswersGenerator {
 
   class BeRetrievable[A] {
     def apply[P <: QuestionPage[A]](genP: Gen[P])(implicit ev1: Arbitrary[A], ev2: Format[A]): Unit = {
@@ -39,7 +39,7 @@ trait PageBehaviours extends AnyFreeSpec with Matchers with ScalaCheckPropertyCh
           "must return None" in {
 
             val gen = for {
-              page        <- genP
+              page <- genP
               userAnswers <- arbitrary[UserAnswers]
             } yield (page, userAnswers.remove(page).success.value)
 
@@ -56,8 +56,8 @@ trait PageBehaviours extends AnyFreeSpec with Matchers with ScalaCheckPropertyCh
           "must return the saved value" in {
 
             val gen = for {
-              page        <- genP
-              savedValue  <- arbitrary[A]
+              page <- genP
+              savedValue <- arbitrary[A]
               userAnswers <- arbitrary[UserAnswers]
             } yield (page, savedValue, userAnswers.set(page, savedValue).success.value)
 
@@ -78,8 +78,8 @@ trait PageBehaviours extends AnyFreeSpec with Matchers with ScalaCheckPropertyCh
       "must be able to be set on UserAnswers" in {
 
         val gen = for {
-          page        <- genP
-          newValue    <- arbitrary[A]
+          page <- genP
+          newValue <- arbitrary[A]
           userAnswers <- arbitrary[UserAnswers]
         } yield (page, newValue, userAnswers)
 
@@ -99,8 +99,8 @@ trait PageBehaviours extends AnyFreeSpec with Matchers with ScalaCheckPropertyCh
       "must be able to be removed from UserAnswers" in {
 
         val gen = for {
-          page        <- genP
-          savedValue  <- arbitrary[A]
+          page <- genP
+          savedValue <- arbitrary[A]
           userAnswers <- arbitrary[UserAnswers]
         } yield (page, userAnswers.set(page, savedValue).success.value)
 
