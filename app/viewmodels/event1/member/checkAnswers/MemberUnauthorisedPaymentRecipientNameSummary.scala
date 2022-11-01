@@ -18,6 +18,7 @@ package viewmodels.event1.member.checkAnswers
 
 import models.event1.WhoReceivedUnauthPayment.Member
 import models.{Index, UserAnswers}
+import org.apache.commons.lang3.StringUtils
 import pages.event1.WhoReceivedUnauthPaymentPage
 import pages.event1.member.UnauthorisedPaymentRecipientNamePage
 import pages.{CheckAnswersPage, Waypoints}
@@ -36,7 +37,7 @@ object MemberUnauthorisedPaymentRecipientNameSummary {
       case Some(value) =>
         ValueViewModel(HtmlFormat.escape(value).toString)
       case None =>
-        ValueViewModel("")
+        ValueViewModel(StringUtils.EMPTY)
     }
 
     answers.get(WhoReceivedUnauthPaymentPage(index)) match {

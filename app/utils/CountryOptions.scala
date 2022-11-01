@@ -19,6 +19,7 @@ package utils
 import com.typesafe.config.ConfigException
 import config.FrontendAppConfig
 import models.address.Address
+import org.apache.commons.lang3.StringUtils
 import play.api.Environment
 import play.api.libs.json.Json
 
@@ -35,7 +36,7 @@ class CountryOptions(val options: Seq[InputOption]) {
           val locationJsValue = Json.parse(in)
           Json.fromJson[Seq[Seq[String]]](locationJsValue).asOpt.map {
             _.map { countryList =>
-              InputOption(countryList(1).replaceAll("country:", ""), countryList.head)
+              InputOption(countryList(1).replaceAll("country:", StringUtils.EMPTY), countryList.head)
             }
           }
       }.getOrElse {

@@ -20,6 +20,7 @@ import models.address.Address
 import models.enumeration.AddressJourneyType
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.{Index, UserAnswers}
+import org.apache.commons.lang3.StringUtils
 import pages.address.{EnterPostcodePage, ManualAddressPage}
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -36,7 +37,7 @@ object ChooseAddressSummary {
 
     def optionalAddrLineToHtml(optionalAddrLine: Option[String]): String = optionalAddrLine match {
       case Some(l) => addrLineToHtml(l)
-      case None => ""
+      case None => StringUtils.EMPTY
     }
 
     Html(

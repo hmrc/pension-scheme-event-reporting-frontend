@@ -16,6 +16,7 @@
 
 package forms.mappings
 
+import org.apache.commons.lang3.StringUtils
 import play.api.data.{FormError, Mapping}
 import utils.CountryOptions
 
@@ -86,7 +87,7 @@ trait AddressMapping extends Mappings with Transforms {
     }
 
     def unbind(value: Option[String]): Map[String, String] = {
-      Map(fieldName -> value.getOrElse(""))
+      Map(fieldName -> value.getOrElse(StringUtils.EMPTY))
     }
 
     new CustomBindMapping(fieldName, bind, unbind)
