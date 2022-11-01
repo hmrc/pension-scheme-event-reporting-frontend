@@ -129,7 +129,7 @@ class CheckYourAnswersController @Inject()(
       PaymentNatureSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
 
   private def event1BasicEmployerDetailsRows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
-                                          (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
+                                            (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
     CompanyDetailsSummary.rowCompanyName(request.userAnswers, waypoints, index, sourcePage).toSeq ++
       CompanyDetailsSummary.rowCompanyNumber(request.userAnswers, waypoints, index, sourcePage).toSeq ++
       ChooseAddressSummary.row(request.userAnswers, waypoints, index, sourcePage, AddressJourneyType.Event1EmployerAddressJourney).toSeq ++
@@ -166,7 +166,7 @@ class CheckYourAnswersController @Inject()(
     }
 
   private def event1EmployerPaymentNatureRows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)
-                                           (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
+                                             (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
     request.userAnswers.get(EmployerPaymentNaturePage(index)) match {
       case Some(LoansExceeding50PercentOfFundValue) =>
         LoanDetailsSummary.rowLoanAmount(request.userAnswers, waypoints, index, sourcePage).toSeq ++

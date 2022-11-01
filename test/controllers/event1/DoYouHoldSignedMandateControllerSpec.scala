@@ -17,12 +17,12 @@
 package controllers.event1
 
 import base.SpecBase
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
 import connectors.UserAnswersCacheConnector
 import forms.event1.DoYouHoldSignedMandateFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{never, times, verify, when}
+import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
 import pages.event1.DoYouHoldSignedMandatePage
@@ -34,7 +34,7 @@ import views.html.event1.DoYouHoldSignedMandateView
 
 import scala.concurrent.Future
 
-class DoYouHoldSignedMandateControllerSpec extends SpecBase with BeforeAndAfterEach  {
+class DoYouHoldSignedMandateControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
@@ -44,6 +44,7 @@ class DoYouHoldSignedMandateControllerSpec extends SpecBase with BeforeAndAfterE
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.DoYouHoldSignedMandateController.onPageLoad(waypoints, 0).url
+
   private def postRoute: String = routes.DoYouHoldSignedMandateController.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](

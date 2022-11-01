@@ -19,8 +19,8 @@ package controllers.event1.employer
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.employer.UnauthorisedPaymentRecipientNameFormProvider
-import models.{Index, UserAnswers}
 import models.enumeration.EventType
+import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.event1.employer.UnauthorisedPaymentRecipientNamePage
 import play.api.i18n.I18nSupport
@@ -32,18 +32,18 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UnauthorisedPaymentRecipientNameController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         userAnswersCacheConnector: UserAnswersCacheConnector,
-                                         formProvider: UnauthorisedPaymentRecipientNameFormProvider,
-                                         view: UnauthorisedPaymentRecipientNameView
-                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                           identify: IdentifierAction,
+                                                           getData: DataRetrievalAction,
+                                                           userAnswersCacheConnector: UserAnswersCacheConnector,
+                                                           formProvider: UnauthorisedPaymentRecipientNameFormProvider,
+                                                           view: UnauthorisedPaymentRecipientNameView
+                                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(UnauthorisedPaymentRecipientNamePage(index))).fold(form){v => form.fill(Some(v))}
+    val preparedForm = request.userAnswers.flatMap(_.get(UnauthorisedPaymentRecipientNamePage(index))).fold(form) { v => form.fill(Some(v)) }
     Ok(view(preparedForm, waypoints, index))
   }
 

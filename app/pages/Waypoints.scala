@@ -24,7 +24,9 @@ import play.api.mvc.QueryStringBindable
 sealed trait Waypoints {
 
   val currentMode: Mode
+
   def setNextWaypoint(waypoint: Waypoint): Waypoints
+
   def recalibrate(currentPage: Page, targetPage: Page): Waypoints
 }
 

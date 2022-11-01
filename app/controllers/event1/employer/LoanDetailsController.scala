@@ -19,9 +19,9 @@ package controllers.event1.employer
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.employer.LoanDetailsFormProvider
-import models.{Index, UserAnswers}
 import models.enumeration.EventType
 import models.event1.employer.LoanDetails
+import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.event1.employer.LoanDetailsPage
 import play.api.data.Form

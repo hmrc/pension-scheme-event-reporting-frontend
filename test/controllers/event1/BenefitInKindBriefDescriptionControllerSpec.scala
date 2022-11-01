@@ -44,6 +44,7 @@ class BenefitInKindBriefDescriptionControllerSpec extends SpecBase with BeforeAn
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.BenefitInKindBriefDescriptionController.onPageLoad(waypoints, 0).url
+
   private def postRoute: String = routes.BenefitInKindBriefDescriptionController.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -119,7 +120,7 @@ class BenefitInKindBriefDescriptionControllerSpec extends SpecBase with BeforeAn
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
           .build()
 
-      val invalidValue ="*" * 151
+      val invalidValue = "*" * 151
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", invalidValue))

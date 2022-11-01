@@ -47,7 +47,7 @@ class MemberPaymentNatureDescriptionSummarySpec extends AnyFreeSpec with Matcher
           key = "memberPaymentNatureDescription.checkYourAnswersLabel",
           value = ValueViewModel(HtmlFormat.escape("brief description of the nature of the payment").toString),
           actions = Seq(
-            ActionItemViewModel("site.change", MemberPaymentNatureDescriptionPage(0).changeLink(waypoints,  sourcePage).url)
+            ActionItemViewModel("site.change", MemberPaymentNatureDescriptionPage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("memberPaymentNatureDescription.change.hidden"))
           )
         )

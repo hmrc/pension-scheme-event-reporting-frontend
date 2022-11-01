@@ -27,7 +27,7 @@ class PaymentValueAndDatePageSpec extends PageBehaviours {
   "PaymentValueAndDatePage" - {
 
     implicit lazy val arbitraryPaymentValueAndDate: Arbitrary[PaymentDetails] = Arbitrary {
-        PaymentDetails(1000.00, LocalDate.now())
+      PaymentDetails(1000.00, LocalDate.now())
     }
 
     beRetrievable[PaymentDetails](PaymentValueAndDatePage(0))

@@ -19,8 +19,8 @@ package controllers.event1
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.BenefitInKindBriefDescriptionFormProvider
-import models.{Index, UserAnswers}
 import models.enumeration.EventType
+import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.event1.member.BenefitInKindBriefDescriptionPage
 import play.api.i18n.I18nSupport
@@ -33,12 +33,12 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class BenefitInKindBriefDescriptionController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         userAnswersCacheConnector: UserAnswersCacheConnector,
-                                         formProvider: BenefitInKindBriefDescriptionFormProvider,
-                                         view: BenefitInKindBriefDescriptionView
-                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                        identify: IdentifierAction,
+                                                        getData: DataRetrievalAction,
+                                                        userAnswersCacheConnector: UserAnswersCacheConnector,
+                                                        formProvider: BenefitInKindBriefDescriptionFormProvider,
+                                                        view: BenefitInKindBriefDescriptionView
+                                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event1

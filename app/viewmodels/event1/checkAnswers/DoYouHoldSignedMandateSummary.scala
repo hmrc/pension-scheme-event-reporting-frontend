@@ -17,14 +17,14 @@
 package viewmodels.event1.checkAnswers
 
 import models.{Index, UserAnswers}
-import pages.{CheckAnswersPage, Waypoints}
 import pages.event1.DoYouHoldSignedMandatePage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object DoYouHoldSignedMandateSummary  {
+object DoYouHoldSignedMandateSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
@@ -34,8 +34,8 @@ object DoYouHoldSignedMandateSummary  {
         val value = if (answer) "site.yes" else "site.no"
 
         SummaryListRowViewModel(
-          key     = "doYouHoldSignedMandate.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
+          key = "doYouHoldSignedMandate.checkYourAnswersLabel",
+          value = ValueViewModel(value),
           actions = Seq(
             ActionItemViewModel("site.change", DoYouHoldSignedMandatePage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("doYouHoldSignedMandate.change.hidden"))

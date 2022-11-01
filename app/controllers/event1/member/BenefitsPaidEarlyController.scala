@@ -19,8 +19,8 @@ package controllers.event1.member
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.member.BenefitsPaidEarlyFormProvider
-import models.{Index, UserAnswers}
 import models.enumeration.EventType
+import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.event1.member.BenefitsPaidEarlyPage
 import play.api.i18n.I18nSupport
@@ -32,12 +32,12 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class BenefitsPaidEarlyController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         userAnswersCacheConnector: UserAnswersCacheConnector,
-                                         formProvider: BenefitsPaidEarlyFormProvider,
-                                         view: BenefitsPaidEarlyView
-                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                            identify: IdentifierAction,
+                                            getData: DataRetrievalAction,
+                                            userAnswersCacheConnector: UserAnswersCacheConnector,
+                                            formProvider: BenefitsPaidEarlyFormProvider,
+                                            view: BenefitsPaidEarlyView
+                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event1

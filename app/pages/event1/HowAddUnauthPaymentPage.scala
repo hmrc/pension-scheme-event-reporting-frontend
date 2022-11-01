@@ -20,9 +20,9 @@ import controllers.event1.routes
 import models.UserAnswers
 import models.event1.HowAddUnauthPayment
 import models.event1.HowAddUnauthPayment.Manual
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Page, QuestionPage, Waypoints}
 
 case class HowAddUnauthPaymentPage(index: Int) extends QuestionPage[HowAddUnauthPayment] {
 

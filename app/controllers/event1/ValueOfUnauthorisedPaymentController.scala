@@ -17,12 +17,10 @@
 package controllers.event1
 
 import connectors.UserAnswersCacheConnector
-import models.enumeration.EventType
 import controllers.actions._
 import forms.event1.ValueOfUnauthorisedPaymentFormProvider
 import models.Index
-
-import javax.inject.Inject
+import models.enumeration.EventType
 import pages.Waypoints
 import pages.event1.ValueOfUnauthorisedPaymentPage
 import play.api.i18n.I18nSupport
@@ -30,17 +28,18 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event1.ValueOfUnauthorisedPaymentView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ValueOfUnauthorisedPaymentController @Inject()(
-                                        val controllerComponents: MessagesControllerComponents,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        userAnswersCacheConnector: UserAnswersCacheConnector,
-                                        formProvider: ValueOfUnauthorisedPaymentFormProvider,
-                                        view: ValueOfUnauthorisedPaymentView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                      val controllerComponents: MessagesControllerComponents,
+                                                      identify: IdentifierAction,
+                                                      getData: DataRetrievalAction,
+                                                      requireData: DataRequiredAction,
+                                                      userAnswersCacheConnector: UserAnswersCacheConnector,
+                                                      formProvider: ValueOfUnauthorisedPaymentFormProvider,
+                                                      view: ValueOfUnauthorisedPaymentView
+                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event1
@@ -58,9 +57,9 @@ class ValueOfUnauthorisedPaymentController @Inject()(
           val originalUserAnswers = request.userAnswers
           val updatedAnswers = originalUserAnswers.setOrException(ValueOfUnauthorisedPaymentPage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-          Redirect(ValueOfUnauthorisedPaymentPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(ValueOfUnauthorisedPaymentPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+          }
         }
-      }
-    )
+      )
   }
 }

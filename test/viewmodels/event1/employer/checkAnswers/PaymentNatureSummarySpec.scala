@@ -79,7 +79,7 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
           key = "paymentNature.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints,  sourcePage).url)
+            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
           )
         )
@@ -103,7 +103,7 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
           key = "paymentNature.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints,  sourcePage).url)
+            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
           )
         )

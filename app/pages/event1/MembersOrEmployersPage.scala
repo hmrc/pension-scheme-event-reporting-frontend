@@ -20,7 +20,7 @@ import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class MembersOrEmployersPage(index: Int) extends Page  {
+case class MembersOrEmployersPage(index: Int) extends Page {
   def path: JsPath = JsPath \ "event1" \ MembersOrEmployersPage.toString \ index
 
   override def route(waypoints: Waypoints): Call = controllers.routes.IndexController.onPageLoad

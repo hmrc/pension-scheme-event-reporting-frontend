@@ -22,7 +22,6 @@ import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.enumeration.EventType.Event1
 import models.event1.employer.CompanyDetails
 import pages.event1.MembersOrEmployersPage
-import pages.{Page, QuestionPage, Waypoints}
 import pages.{CheckYourAnswersPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

@@ -17,7 +17,6 @@
 package controllers.event1
 
 import base.SpecBase
-import pages.EmptyWaypoints
 import models.enumeration.EventType
 import models.enumeration.EventType.Event1
 import pages.EmptyWaypoints

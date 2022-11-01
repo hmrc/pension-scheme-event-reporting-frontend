@@ -31,7 +31,7 @@ object EmployerPaymentNatureDescriptionSummary {
          (implicit messages: Messages): Option[SummaryListRow] = {
 
     answers.get(EmployerPaymentNatureDescriptionPage(index)) map { answer =>
-      val value =  if (!answer.isBlank) {
+      val value = if (!answer.isBlank) {
         ValueViewModel(HtmlFormat.escape(answer).toString)
       } else {
         ValueViewModel("")

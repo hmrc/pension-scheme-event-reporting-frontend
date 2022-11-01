@@ -26,7 +26,7 @@ import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.common.MembersDetailsPage
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.common.MembersDetailsView
 
@@ -74,10 +74,10 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
   }
 
   private def doOnSubmit(waypoints: Waypoints,
-                          eventType: EventType,
-                          page: MembersDetailsPage,
-                          postCall: => Call
-                         )(implicit request: OptionalDataRequest[_]): Future[Result] =
+                         eventType: EventType,
+                         page: MembersDetailsPage,
+                         postCall: => Call
+                        )(implicit request: OptionalDataRequest[_]): Future[Result] =
     form.bindFromRequest().fold(
       formWithErrors =>
         Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, postCall))),

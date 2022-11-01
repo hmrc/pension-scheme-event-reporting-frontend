@@ -19,8 +19,8 @@ package controllers.event1.member
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.member.RefundOfContributionsFormProvider
-import models.{Index, UserAnswers}
 import models.enumeration.EventType
+import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.event1.member.RefundOfContributionsPage
 import play.api.i18n.I18nSupport
@@ -37,7 +37,7 @@ class RefundOfContributionsController @Inject()(val controllerComponents: Messag
                                                 userAnswersCacheConnector: UserAnswersCacheConnector,
                                                 formProvider: RefundOfContributionsFormProvider,
                                                 view: RefundOfContributionsView
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event1
