@@ -38,7 +38,7 @@ import views.html.event1.UnauthPaymentSummaryView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
-// TODO bring in correct information for table no tests have been added yet
+
 class UnauthPaymentSummaryController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         identify: IdentifierAction,
