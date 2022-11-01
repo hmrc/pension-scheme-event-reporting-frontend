@@ -17,7 +17,8 @@
 package controllers
 
 import base.SpecBase
-import models.enumeration.EventType.Event18
+import models.enumeration.EventType.{Event1, Event18}
+import pages.EmptyWaypoints
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.govuk.SummaryListFluency
@@ -41,6 +42,23 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(list,"/manage-pension-scheme-event-report/event-summary")(request, messages(application)).toString
+      }
+    }
+    "must return OK and the correct view for a GET whilst in Event 1" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val waypoints = EmptyWaypoints
+      def continueUrl = controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(waypoints).url
+      running(application) {
+        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoadWithIndex(Event1, 0).url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[CheckYourAnswersView]
+        val list = SummaryListViewModel(Seq.empty)
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(list,continueUrl)(request, messages(application)).toString
       }
     }
 
