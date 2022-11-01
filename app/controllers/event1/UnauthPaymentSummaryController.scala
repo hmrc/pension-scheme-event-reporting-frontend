@@ -88,7 +88,7 @@ class UnauthPaymentSummaryController @Inject()(
           BadRequest(view(formWithErrors, waypoints, Nil, sumValue(request.userAnswers)))
         },
         value => {
-          val userAnswerUpdated = UserAnswers().setOrException(UnauthPaymentSummaryPage, value)
+          val userAnswerUpdated = request.userAnswers.setOrException(UnauthPaymentSummaryPage, value)
           Redirect(UnauthPaymentSummaryPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)}
     )
   }
