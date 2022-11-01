@@ -67,7 +67,7 @@ class UnauthPaymentSummaryController @Inject()(
           actions = Some(Actions(
             items = Seq(
               ActionItem(
-                content = Text(Message("site.view")),
+                content = Text(Message("site.check")),
                 href = controllers.routes.CheckYourAnswersController.onPageLoadWithIndex(Event1, index).url
               ),
               ActionItem(
@@ -78,9 +78,6 @@ class UnauthPaymentSummaryController @Inject()(
           ))
         )
       }
-    println("\n\n\n mappedMember" + mappedMemberOrEmployer )
-    println("\n\n\n sumVal" + sumValue(request.userAnswers))
-
     Ok(view(form, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers)))
   }
 

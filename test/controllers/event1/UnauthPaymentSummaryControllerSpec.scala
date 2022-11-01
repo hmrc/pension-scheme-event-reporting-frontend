@@ -90,31 +90,50 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(UnauthPaymentSummaryPage, true).success.value
-        Seq(SummaryListRow(
+        val x = Seq(SummaryListRow(
           key = Key(Text(value = "Joe Bloggs")),
           value = Value(Text(value = "857.0")),
           actions = Some(Actions(
             items = List(
-              ActionItem(href = "/manage-pension-scheme-event-report/new-report/1/event-1-check-your-answers", content = Text("View"), visuallyHiddenText = None, attributes = Map()),
-              ActionItem(href = "#", content = Text("Remove"),
+              ActionItem(
+                href = "/manage-pension-scheme-event-report/new-report/1/event-1-check-your-answers",
+                content = Text("View"),
                 visuallyHiddenText = None,
-                attributes = Map()))))),
+                attributes = Map()
+              ),
+              ActionItem(
+                href = "#",
+                content = Text("Remove"),
+                visuallyHiddenText = None,
+                attributes = Map()
+              )
+            )
+          ))
+        ),
         SummaryListRow(
           key = Key(Text(value = "Company Name")),
           value = Value(Text(value = "7687.0")),
           actions = Some(Actions(
             items = List(
-              ActionItem(href = "/manage-pension-scheme-event-report/new-report/2/event-1-check-your-answers", content = Text("View"), visuallyHiddenText = None, attributes = Map()),
+              ActionItem(
+                href = "/manage-pension-scheme-event-report/new-report/2/event-1-check-your-answers",
+                content = Text("View"),
+                visuallyHiddenText = None,
+                attributes = Map()
+              ),
               ActionItem(href = "#", content = Text("Remove"),
                 visuallyHiddenText = None,
-                attributes = Map())))))
+                attributes = Map()
+              )
+            )
+          ))
+        ))
 
           /*
 
    sumVal8544.0
 
            */
-
           status (result) mustEqual SEE_OTHER
           redirectLocation (result).value mustEqual UnauthPaymentSummaryPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
       }

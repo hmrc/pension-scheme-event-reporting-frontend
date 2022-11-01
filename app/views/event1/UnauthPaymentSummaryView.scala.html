@@ -34,7 +34,8 @@
 
         <h1 class="govuk-heading-l">@messages("unauthPaymentSummary.heading", "2022")</h1>
 
-        @components.entity_table_list(memberOrEmployerSeq,
+        @components.entity_table_list(
+            memberOrEmployerSeq,
             colOne = "unauthPaymentSummary.table.header1",
             colTwo = "unauthPaymentSummary.table.header2",
             total

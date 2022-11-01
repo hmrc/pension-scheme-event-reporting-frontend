@@ -50,7 +50,7 @@ object MembersOrEmployersPage extends QuestionPage[Seq[MemberOrEmployerSummary]]
           case (Some(fn), Some(ln), _) =>  MemberOrEmployerSummary(fn + " " + ln, paymentValue)
           case (None, Some(ln), _) =>  MemberOrEmployerSummary(ln, paymentValue)
           case (Some(fn), None, _) =>  MemberOrEmployerSummary(fn, paymentValue)
-          case (None, None, _) =>  MemberOrEmployerSummary("Unknown", paymentValue)
+          case (None, None, _) =>  MemberOrEmployerSummary("Not entered", paymentValue)
         }
       }
     )
@@ -63,7 +63,7 @@ object MembersOrEmployersPage extends QuestionPage[Seq[MemberOrEmployerSummary]]
       (companyName, paymentValue) => {
         (companyName, paymentValue) match {
           case (Some(cn), _) =>  MemberOrEmployerSummary(cn, paymentValue)
-          case (None, _) =>  MemberOrEmployerSummary("Unknown", paymentValue)
+          case (None, _) =>  MemberOrEmployerSummary("Not entered", paymentValue)
         }
       }
     )

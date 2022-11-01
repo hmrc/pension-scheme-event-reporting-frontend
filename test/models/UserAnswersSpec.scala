@@ -27,10 +27,13 @@ import pages.common.MembersDetailsPage
 import pages.event1.MembersOrEmployersPage.readsMemberOrEmployerValue
 import pages.event1.employer.CompanyDetailsPage
 import pages.event1.{MembersOrEmployersPage, PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
+import play.api.i18n.Messages
 
 import java.time.LocalDate
 
 class UserAnswersSpec extends AnyFreeSpec with Matchers {
+
+
 
   "getAll" - {
     "must return the list of members or employers" in {
@@ -50,7 +53,7 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers {
         .setOrException(PaymentValueAndDatePage(1), PaymentDetails(BigDecimal(7687.00), LocalDate.of(2022, 11, 9)))
         .setOrException(CompanyDetailsPage(1), companyDetails)
       userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage)(MembersOrEmployersPage.readsMemberOrEmployer) mustBe
-        Seq(MemberOrEmployerSummary("Unknown", BigDecimal(0.00)),
+        Seq(MemberOrEmployerSummary("Not entered", BigDecimal(0.00)),
           MemberOrEmployerSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00)))
     }
 
@@ -62,7 +65,7 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers {
         .setOrException(WhoReceivedUnauthPaymentPage(1), Employer)
       userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage)(MembersOrEmployersPage.readsMemberOrEmployer) mustBe
         Seq(MemberOrEmployerSummary(SampleData.memberDetails.fullName, BigDecimal(857.00)),
-          MemberOrEmployerSummary("Unknown", BigDecimal(0.00)))
+          MemberOrEmployerSummary("Not entered", BigDecimal(0.00)))
     }
   }
 
