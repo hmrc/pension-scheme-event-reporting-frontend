@@ -25,7 +25,7 @@ import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.event1.employer.LoanDetailsPage
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event1.employer.LoanDetailsView
@@ -42,12 +42,12 @@ class LoanDetailsController @Inject()(val controllerComponents: MessagesControll
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
-  private def form(implicit messages: Messages): Form[LoanDetails] = formProvider()
+  private def form: Form[LoanDetails] = formProvider()
 
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(LoanDetailsPage(index))).fold(form(implicitly))(form(implicitly).fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(LoanDetailsPage(index))).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, index))
   }
 

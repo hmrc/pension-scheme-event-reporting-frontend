@@ -17,22 +17,15 @@
 package forms.event1
 
 import forms.mappings.Mappings
-import play.api.data.Forms.single
-import play.api.data.{Form, Forms}
+import play.api.data.Form
 
 import javax.inject.Inject
 
 class BenefitInKindBriefDescriptionFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(): Form[Option[String]] =
     Form(
-      single(
-        "value" -> Forms.text.verifying(
-          maxLength(
-            maximum = 150,
-            errorKey = "benefitInKindBriefDescription.error.length"
-          )
-        )
-      )
+      "value" -> optionalText()
+        .verifying(maxLength(150, "benefitInKindBriefDescription.error.length"))
     )
 }

@@ -17,7 +17,6 @@
 package controllers.event1
 
 import base.SpecBase
-import models.enumeration.EventType
 import models.enumeration.EventType.Event1
 import pages.EmptyWaypoints
 import play.api.test.FakeRequest
@@ -25,8 +24,9 @@ import play.api.test.Helpers._
 import views.html.event1.WhatYouWillNeedView
 
 class WhatYouWillNeedControllerSpec extends SpecBase {
+
   private val waypoints = EmptyWaypoints
-  private val event1 = EventType.Event1
+
   "WhatYouWillNeed Controller" - {
 
     "must return OK and the correct view for a GET" in {

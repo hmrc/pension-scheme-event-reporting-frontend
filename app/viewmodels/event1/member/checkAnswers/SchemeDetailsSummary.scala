@@ -28,16 +28,9 @@ import viewmodels.implicits._
 
 object SchemeDetailsSummary {
 
-  private def schemeDetailsAnswer(detail: Option[String])(implicit messages: Messages): Html = {
-    def schemeDetailsToHtml(value: String): String = s"$value"
-
-    def optionalDetailToHtml(optionalSchemeDetail: Option[String]): String = optionalSchemeDetail match {
-      case Some(schemeDet) => schemeDetailsToHtml(schemeDet)
-      case None => ""
-    }
-
+  private def schemeDetailsAnswer(detail: Option[String]): Html = {
     Html(
-      optionalDetailToHtml(detail)
+      detail.getOrElse("")
     )
   }
 
@@ -46,7 +39,6 @@ object SchemeDetailsSummary {
 
 
     val value = answers.get(SchemeDetailsPage(index)).map {
-
       answer =>
         ValueViewModel(
           HtmlContent(
@@ -54,6 +46,7 @@ object SchemeDetailsSummary {
           )
         )
     }
+
     Some(
       SummaryListRowViewModel(
         key = "Scheme name",
@@ -70,7 +63,6 @@ object SchemeDetailsSummary {
                         (implicit messages: Messages): Option[SummaryListRow] = {
 
     val value = answers.get(SchemeDetailsPage(index)).map {
-
       answer =>
         ValueViewModel(
           HtmlContent(
@@ -78,6 +70,7 @@ object SchemeDetailsSummary {
           )
         )
     }
+
     Some(
       SummaryListRowViewModel(
         key = "Reference",

@@ -90,7 +90,7 @@ class BenefitInKindBriefDescriptionControllerSpec extends SpecBase with BeforeAn
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(Some(validValue)), waypoints, 0)(request, messages(application)).toString
       }
     }
 
