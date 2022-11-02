@@ -48,7 +48,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       val waypoints = EmptyWaypoints
-      def continueUrl = controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(waypoints).url
+      def continueUrl = controllers.routes.CheckYourAnswersController.onClick(Event1).url
       running(application) {
         val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoadWithIndex(Event1, 0).url)
 
