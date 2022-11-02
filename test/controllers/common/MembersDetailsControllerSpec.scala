@@ -19,9 +19,9 @@ package controllers.common
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.common.MembersDetailsFormProvider
-import models.{Index, UserAnswers}
 import models.common.MembersDetails
 import models.enumeration.EventType
+import models.{Index, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
@@ -45,6 +45,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val event23 = EventType.Event23
 
   private def submitUrlEvent1: Call = controllers.common.routes.MembersDetailsController.onSubmitWithIndex(waypoints, event1, 0)
+
   private def submitUrlEvent23: Call = controllers.common.routes.MembersDetailsController.onSubmit(waypoints, event23)
 
   private val formProvider = new MembersDetailsFormProvider()

@@ -44,7 +44,7 @@ import viewmodels.implicits._
 object CompanyDetailsSummary {
 
   def rowCompanyName(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
+                    (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(CompanyDetailsPage(index)).map {
       answer =>
 
@@ -59,7 +59,7 @@ object CompanyDetailsSummary {
     }
 
   def rowCompanyNumber(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
+                      (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(CompanyDetailsPage(index)).map {
       answer =>
 

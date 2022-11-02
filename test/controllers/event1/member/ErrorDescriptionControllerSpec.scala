@@ -44,6 +44,7 @@ class ErrorDescriptionControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.ErrorDescriptionController.onPageLoad(waypoints, 0).url
+
   private def postRoute: String = routes.ErrorDescriptionController.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](

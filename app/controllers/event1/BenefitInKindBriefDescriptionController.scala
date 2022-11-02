@@ -19,8 +19,8 @@ package controllers.event1
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.BenefitInKindBriefDescriptionFormProvider
-import models.{Index, UserAnswers}
 import models.enumeration.EventType
+import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.event1.member.BenefitInKindBriefDescriptionPage
 import play.api.i18n.I18nSupport
@@ -33,18 +33,18 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class BenefitInKindBriefDescriptionController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         userAnswersCacheConnector: UserAnswersCacheConnector,
-                                         formProvider: BenefitInKindBriefDescriptionFormProvider,
-                                         view: BenefitInKindBriefDescriptionView
-                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                        identify: IdentifierAction,
+                                                        getData: DataRetrievalAction,
+                                                        userAnswersCacheConnector: UserAnswersCacheConnector,
+                                                        formProvider: BenefitInKindBriefDescriptionFormProvider,
+                                                        view: BenefitInKindBriefDescriptionView
+                                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(BenefitInKindBriefDescriptionPage(index))).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(BenefitInKindBriefDescriptionPage(index))).fold(form)(v => form.fill(Some(v)))
     Ok(view(preparedForm, waypoints, index))
   }
 
@@ -55,7 +55,10 @@ class BenefitInKindBriefDescriptionController @Inject()(val controllerComponents
           Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(BenefitInKindBriefDescriptionPage(index), value)
+          val updatedAnswers = value match {
+            case Some(v) => originalUserAnswers.setOrException(BenefitInKindBriefDescriptionPage(index), v)
+            case None => originalUserAnswers.removeOrException(BenefitInKindBriefDescriptionPage(index))
+          }
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(BenefitInKindBriefDescriptionPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }

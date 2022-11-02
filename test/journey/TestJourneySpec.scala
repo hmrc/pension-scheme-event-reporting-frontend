@@ -316,4 +316,12 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         comparePageMustBeAsString(CheckYourAnswersPage(EventType.Event1, Some(0)))
       )
   }
+  "testing nav from summary page to sanctions page in event 1" in {
+    startingFrom(UnauthPaymentSummaryPage)
+      .run(
+        submitAnswer(UnauthPaymentSummaryPage, false),
+        pageMustBe(UnauthPaymentAndSanctionChargesPage)
+      )
+  }
+
 }

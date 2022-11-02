@@ -14,26 +14,31 @@
  * limitations under the License.
  */
 
-package pages.event1
+package forms.event1
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-import models.event1.PaymentDetails
-import org.scalacheck.Arbitrary
-import pages.behaviours.PageBehaviours
+class UnauthPaymentSummaryFormProviderSpec extends BooleanFieldBehaviours {
 
-import java.time.LocalDate
+  val requiredKey = "unauthPaymentSummary.error.required"
+  val invalidKey = "error.boolean"
 
-class PaymentValueAndDatePageSpec extends PageBehaviours {
+  val form = new UnauthPaymentSummaryFormProvider()()
 
-  "PaymentValueAndDatePage" - {
+  ".value" - {
 
-    implicit lazy val arbitraryPaymentValueAndDate: Arbitrary[PaymentDetails] = Arbitrary {
-      PaymentDetails(1000.00, LocalDate.now())
-    }
+    val fieldName = "value"
 
-    beRetrievable[PaymentDetails](PaymentValueAndDatePage(0))
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
 
-    beSettable[PaymentDetails](PaymentValueAndDatePage(0))
-
-    beRemovable[PaymentDetails](PaymentValueAndDatePage(0))
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }

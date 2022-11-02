@@ -19,8 +19,8 @@ package controllers.event1.member
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.member.SchemeDetailsFormProvider
-import models.{Index, UserAnswers}
 import models.enumeration.EventType
+import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.event1.member.SchemeDetailsPage
 import play.api.i18n.I18nSupport

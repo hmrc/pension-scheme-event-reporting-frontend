@@ -22,23 +22,23 @@ import models.enumeration.EventType
 import models.enumeration.EventType.{Event18, WindUp}
 import play.api.mvc.Call
 
-case class  CheckYourAnswersPage(eventType: EventType, index: Option[Index]) extends CheckAnswersPage  {
-    override val urlFragment: String =
-      index match {
-        case Some(i) => s"event-${eventType.toString}-check-answers-${i.display}"
-        case _ => s"event-${eventType.toString}-check-answers"
-      }
-
-
-    override def route(waypoints: Waypoints): Call = {
-      index match {
-        case Some(i) => routes.CheckYourAnswersController.onPageLoadWithIndex(eventType, i)
-        case _ => routes.CheckYourAnswersController.onPageLoad(eventType)
-      }
-
+case class CheckYourAnswersPage(eventType: EventType, index: Option[Index]) extends CheckAnswersPage {
+  override val urlFragment: String =
+    index match {
+      case Some(i) => s"event-${eventType.toString}-check-answers-${i.display}"
+      case _ => s"event-${eventType.toString}-check-answers"
     }
 
-    override def toString: String = "CheckYourAnswersPage"
+
+  override def route(waypoints: Waypoints): Call = {
+    index match {
+      case Some(i) => routes.CheckYourAnswersController.onPageLoadWithIndex(eventType, i)
+      case _ => routes.CheckYourAnswersController.onPageLoad(eventType)
+    }
+
+  }
+
+  override def toString: String = "CheckYourAnswersPage"
 
 }
 

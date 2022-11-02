@@ -25,7 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object BenefitsPaidEarlySummary  {
+object BenefitsPaidEarlySummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
@@ -33,8 +33,8 @@ object BenefitsPaidEarlySummary  {
       answer =>
 
         SummaryListRowViewModel(
-          key     = "benefitsPaidEarly.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key = "benefitsPaidEarly.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", BenefitsPaidEarlyPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("benefitsPaidEarly.change.hidden"))

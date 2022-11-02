@@ -45,6 +45,7 @@ class RefundOfContributionsControllerSpec extends SpecBase with BeforeAndAfterEa
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.RefundOfContributionsController.onPageLoad(waypoints, 0).url
+
   private def postRoute: String = routes.RefundOfContributionsController.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](

@@ -21,12 +21,12 @@ import connectors.UserAnswersCacheConnector
 import forms.event1.HowAddUnauthPaymentFormProvider
 import models.UserAnswers
 import models.event1.HowAddUnauthPayment
-import pages.EmptyWaypoints
-import pages.event1.HowAddUnauthPaymentPage
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, times, verify, when}
 import org.mockito.MockitoSugar.{mock, reset}
 import org.scalatest.BeforeAndAfterEach
+import pages.EmptyWaypoints
+import pages.event1.HowAddUnauthPaymentPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -45,6 +45,7 @@ class HowAddUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfterEach
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.HowAddUnauthPaymentController.onPageLoad(waypoints, 0).url
+
   private def postRoute: String = routes.HowAddUnauthPaymentController.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](

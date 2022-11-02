@@ -24,7 +24,7 @@ import pages.{CheckYourAnswersPage, NonEmptyWaypoints, Page, QuestionPage, Waypo
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ValueOfUnauthorisedPaymentPage(index: Int)  extends QuestionPage[Boolean] {
+case class ValueOfUnauthorisedPaymentPage(index: Int) extends QuestionPage[Boolean] {
 
   override def path: JsPath = MembersOrEmployersPage(index) \ toString
 
@@ -42,7 +42,7 @@ case class ValueOfUnauthorisedPaymentPage(index: Int)  extends QuestionPage[Bool
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
     updatedAnswers.get(this).map {
-      case true  => SchemeUnAuthPaySurchargeMemberPage(index)
+      case true => SchemeUnAuthPaySurchargeMemberPage(index)
       case false => CheckYourAnswersPage(Event1, Some(index))
     }.orRecover
   }

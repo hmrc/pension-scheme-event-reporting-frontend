@@ -44,6 +44,7 @@ class BenefitsPaidEarlyControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.BenefitsPaidEarlyController.onPageLoad(waypoints, 0).url
+
   private def postRoute: String = routes.BenefitsPaidEarlyController.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](

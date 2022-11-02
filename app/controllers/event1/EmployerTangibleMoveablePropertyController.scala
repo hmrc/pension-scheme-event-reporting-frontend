@@ -19,8 +19,8 @@ package controllers.event1
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.EmployerTangibleMoveablePropertyFormProvider
-import models.{Index, UserAnswers}
 import models.enumeration.EventType
+import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.event1.employer.EmployerTangibleMoveablePropertyPage
 import play.api.i18n.I18nSupport

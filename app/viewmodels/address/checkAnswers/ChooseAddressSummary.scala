@@ -16,10 +16,10 @@
 
 package viewmodels.address.checkAnswers
 
-import models.{Index, UserAnswers}
 import models.address.Address
 import models.enumeration.AddressJourneyType
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
+import models.{Index, UserAnswers}
 import pages.address.{EnterPostcodePage, ManualAddressPage}
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -52,7 +52,7 @@ object ChooseAddressSummary {
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, addressJourneyType: AddressJourneyType)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
-    val rowKey = if(addressJourneyType != Event1EmployerAddressJourney){
+    val rowKey = if (addressJourneyType != Event1EmployerAddressJourney) {
       "residentialAddress.address.title"
     } else {
       "companyDetails.CYA.companyAddress"

@@ -27,7 +27,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object RefundOfContributionsSummary  {
+object RefundOfContributionsSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] = {
@@ -42,8 +42,8 @@ object RefundOfContributionsSummary  {
         )
 
         SummaryListRowViewModel(
-          key     = "refundOfContributions.checkYourAnswersLabel",
-          value   = value,
+          key = "refundOfContributions.checkYourAnswersLabel",
+          value = value,
           actions = Seq(
             ActionItemViewModel("site.change", RefundOfContributionsPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("refundOfContributions.change.hidden"))

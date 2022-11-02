@@ -28,7 +28,8 @@ import viewmodels.Message.Literal
 sealed trait AddressJourneyType {
   val eventType: EventType
   val nodeName: String
-  def entityName(ua:UserAnswers, index: Int):Message
+
+  def entityName(ua: UserAnswers, index: Int): Message
 
   def heading(whichPage: Page, index: Int)(implicit request: DataRequest[AnyContent]): Message
 
@@ -39,7 +40,7 @@ abstract class WithJourneyTypeDetail(val eventType: EventType, val nodeName: Str
   override def toString: String = s"event${this.eventType.toString}.$nodeName"
 
   override def heading(whichPage: Page, index: Int)(implicit
-                                          request: DataRequest[AnyContent]): Message =
+                                                    request: DataRequest[AnyContent]): Message =
     Message(s"${whichPage.toString}.heading", this.entityName(request.userAnswers, index))
 
   override def title(whichPage: Page): Message = Message(s"${whichPage.toString}.title",
@@ -65,8 +66,9 @@ object AddressJourneyType extends Enumerable.Implicits {
     nodeName = "memberResidentialAddress",
     entityTypeMessageKey = entityTypeMessageKeyResidentialProperty) {
     override def entityName(ua: UserAnswers, index: Int): Message = Message(entityTypeMessageKeyResidentialProperty)
+
     override def heading(whichPage: Page, index: Int)(implicit
-                                          request: DataRequest[AnyContent]): Message =
+                                                      request: DataRequest[AnyContent]): Message =
       whichPage match {
         case EnterPostcodePage(_, _) => Message("residentialAddress.enterPostcode.h1")
         case ChooseAddressPage(_, _) => Message("residentialAddress.chooseAddress.h1")
@@ -88,7 +90,7 @@ object AddressJourneyType extends Enumerable.Implicits {
     override def entityName(ua: UserAnswers, index: Int): Message = Message(entityTypeMessageKeyResidentialProperty)
 
     override def heading(whichPage: Page, index: Int)(implicit
-                                          request: DataRequest[AnyContent]): Message =
+                                                      request: DataRequest[AnyContent]): Message =
       whichPage match {
         case EnterPostcodePage(_, _) => Message("residentialAddress.enterPostcode.h1")
         case ChooseAddressPage(_, _) => Message("residentialAddress.chooseAddress.h1")
