@@ -39,6 +39,7 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
     answers.get(this) match {
       case Some(Event1) => HowAddUnauthPaymentPage(0) // TODO: PODS-7616 Index needs to be calculated. For now hard code as zero.
       case Some(Event18) => Event18ConfirmationPage
+//      case Some(Event22) =>
       case Some(Event23) => HowAddDualAllowancePage
       case Some(EventWoundUp) => SchemeWindUpDatePage
       case _ => EventSelectionPage

@@ -39,6 +39,7 @@ import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, LoanDetailsPage}
 import pages.event1.member._
 import pages.event18.Event18ConfirmationPage
+import pages.event22.HowAddAnnualAllowancePage
 import pages.event23.HowAddDualAllowancePage
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckYourAnswersPage, EventSelectionPage}
@@ -276,6 +277,16 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(PaymentNaturePage(0), TransferToNonRegPensionScheme),
         submitAnswer(WhoWasTheTransferMadePage(0), AnEmployerFinanced),
         pageMustBe(pages.event1.member.SchemeDetailsPage(0))
+      )
+  }
+
+  "test navigation to event22 from event selection page to membersDetails" in {
+    startingFrom(EventSelectionPage)
+      .run(
+        submitAnswer(EventSelectionPage, Event23),
+        submitAnswer(HowAddAnnualAllowancePage, models.event22.HowAddAnnualAllowance.Manual),
+        next,
+        pageMustBe(pages.common.MembersDetailsPage(EventType.Event22, None))
       )
   }
 
