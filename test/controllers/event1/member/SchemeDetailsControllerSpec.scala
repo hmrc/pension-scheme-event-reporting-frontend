@@ -22,9 +22,9 @@ import forms.event1.member.SchemeDetailsFormProvider
 import models.UserAnswers
 import models.event1.member.SchemeDetails
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.event1.member.SchemeDetailsPage
 import play.api.inject.bind
@@ -35,7 +35,7 @@ import views.html.event1.member.SchemeDetailsView
 
 import scala.concurrent.Future
 
-class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
+class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
@@ -55,8 +55,8 @@ class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val validValue = SchemeDetails(Some("abc"), Some(""))
   private val emptyValue = SchemeDetails(Some(""), Some(""))
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

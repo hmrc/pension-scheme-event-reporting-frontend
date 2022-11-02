@@ -22,9 +22,9 @@ import forms.event1.WhoReceivedUnauthPaymentFormProvider
 import models.UserAnswers
 import models.event1.WhoReceivedUnauthPayment
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.event1.WhoReceivedUnauthPaymentPage
 import play.api.inject.bind
@@ -35,7 +35,7 @@ import views.html.event1.WhoReceivedUnauthPaymentView
 
 import scala.concurrent.Future
 
-class WhoReceivedUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfterEach {
+class WhoReceivedUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
@@ -52,8 +52,8 @@ class WhoReceivedUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfte
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

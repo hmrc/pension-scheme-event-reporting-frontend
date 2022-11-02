@@ -33,8 +33,8 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
   import forms.event1.PaymentValueAndDateFormProvider._
 
   // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now.
-  private val stubMin: LocalDate = LocalDate of(LocalDate.now().getYear, 4, 6)
-  private val stubMax: LocalDate = LocalDate of(LocalDate.now().getYear + 1, 4, 5)
+  private val stubMin: LocalDate = LocalDate.of(LocalDate.now().getYear, 4, 6)
+  private val stubMax: LocalDate = LocalDate.of(LocalDate.now().getYear + 1, 4, 5)
 
   def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[PaymentDetails] =
     Form(

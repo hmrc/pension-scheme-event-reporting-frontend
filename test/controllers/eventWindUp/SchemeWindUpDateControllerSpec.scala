@@ -23,9 +23,9 @@ import helpers.DateHelper
 import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.inject.bind
@@ -37,7 +37,7 @@ import views.html.eventWindUp.SchemeWindUpDateView
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach {
+class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
@@ -58,8 +58,8 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val validAnswer = LocalDate.of(2022, 5, 12)
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
     when(mockTaxYear.now).thenReturn(validAnswer)
   }
@@ -99,7 +99,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
-      val uaCaptor:ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any()))
         .thenReturn(Future.successful(()))
 

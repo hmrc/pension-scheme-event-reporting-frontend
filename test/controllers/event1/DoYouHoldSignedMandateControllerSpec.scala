@@ -21,9 +21,9 @@ import connectors.UserAnswersCacheConnector
 import forms.event1.DoYouHoldSignedMandateFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.event1.DoYouHoldSignedMandatePage
 import play.api.inject.bind
@@ -34,7 +34,7 @@ import views.html.event1.DoYouHoldSignedMandateView
 
 import scala.concurrent.Future
 
-class DoYouHoldSignedMandateControllerSpec extends SpecBase with BeforeAndAfterEach {
+class DoYouHoldSignedMandateControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
@@ -51,8 +51,8 @@ class DoYouHoldSignedMandateControllerSpec extends SpecBase with BeforeAndAfterE
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

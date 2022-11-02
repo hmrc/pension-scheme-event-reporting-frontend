@@ -22,9 +22,9 @@ import forms.event1.PaymentValueAndDateFormProvider
 import models.UserAnswers
 import models.event1.PaymentDetails
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.event1.PaymentValueAndDatePage
 import play.api.inject.bind
@@ -36,13 +36,13 @@ import views.html.event1.PaymentValueAndDateView
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach {
+class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
   // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now.
-  private val stubMin: LocalDate = LocalDate of(LocalDate.now().getYear, 4, 6)
-  private val stubMax: LocalDate = LocalDate of(LocalDate.now().getYear + 1, 4, 5)
+  private val stubMin: LocalDate = LocalDate.of(LocalDate.now().getYear, 4, 6)
+  private val stubMax: LocalDate = LocalDate.of(LocalDate.now().getYear + 1, 4, 5)
 
   private val formProvider = new PaymentValueAndDateFormProvider()
   private val form = formProvider(stubMin, stubMax)
@@ -61,8 +61,8 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
 
   import PaymentValueAndDateControllerSpec._
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 
