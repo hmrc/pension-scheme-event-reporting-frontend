@@ -16,6 +16,7 @@
 
 package models
 
+import base.SpecBase
 import data.SampleData
 import data.SampleData.{companyDetails, memberDetails, userAnswersWithOneMemberAndEmployer}
 import models.enumeration.EventType.Event1
@@ -32,7 +33,7 @@ import play.api.i18n.Messages
 
 import java.time.LocalDate
 
-class UserAnswersSpec extends AnyFreeSpec with Matchers {
+class UserAnswersSpec extends SpecBase with Matchers {
 
 
 
