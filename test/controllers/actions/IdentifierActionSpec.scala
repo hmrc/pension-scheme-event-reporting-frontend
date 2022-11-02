@@ -24,10 +24,10 @@ import models.LoggedInUser
 import models.enumeration.AdministratorOrPractitioner
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.mockito.MockitoSugar.mock
+import org.mockito.Mockito._
 import org.mockito.{ArgumentMatchers, Mockito}
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
 import play.api.mvc.Results._
@@ -42,7 +42,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class IdentifierActionSpec
-  extends SpecBase with BeforeAndAfterEach with GuiceOneAppPerSuite {
+  extends SpecBase with BeforeAndAfterEach with GuiceOneAppPerSuite with MockitoSugar {
 
   private class FakeFailingAuthConnector @Inject()(exceptionToReturn: Throwable) extends AuthConnector {
     val serviceUrl: String = ""
@@ -84,9 +84,12 @@ class IdentifierActionSpec
   private def jsonAOP(aop: AdministratorOrPractitioner) =
     Json.obj("administratorOrPractitioner" -> aop.toString)
 
-  override def beforeEach: Unit = {
-    Mockito.reset(authConnector, mockSessionDataCacheConnector, mockFrontendAppConfig)
+  override def beforeEach(): Unit = {
+    Mockito.reset(authConnector)
+    Mockito.reset(mockSessionDataCacheConnector)
+    Mockito.reset(mockFrontendAppConfig)
     when(mockFrontendAppConfig.loginUrl).thenReturn(dummyCall.url)
+    when(mockFrontendAppConfig.loginContinueUrl).thenReturn(dummyCall.url)
     when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
       .thenReturn(Future.successful(None))
     when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))

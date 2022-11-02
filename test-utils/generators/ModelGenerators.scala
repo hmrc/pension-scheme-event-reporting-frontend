@@ -54,7 +54,7 @@ trait ModelGenerators {
       secondChar <- Gen.oneOf('A', 'B', 'C', 'E', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S', 'T', 'W', 'X', 'Y', 'Z').map(_.toString)
       digits <- Gen.listOfN(6, Gen.numChar)
       lastChar <- Gen.oneOf('A', 'B', 'C', 'D')
-    } yield Nino(firstChar ++ secondChar ++ digits :+ lastChar)
+    } yield Nino(firstChar ++ secondChar ++ digits.mkString :+ lastChar)
   }
 
   implicit lazy val arbitraryWhoReceivedUnauthPayment: Arbitrary[event1.WhoReceivedUnauthPayment] =

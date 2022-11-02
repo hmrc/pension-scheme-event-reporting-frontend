@@ -22,9 +22,9 @@ import forms.EventSummaryFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import pages.{EmptyWaypoints, EventSummaryPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -37,7 +37,7 @@ import views.html.EventSummaryView
 
 import scala.concurrent.Future
 
-class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach {
+class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach with MockitoSugar {
   private val mockEventReportSummaryConnector = mock[EventReportingConnector]
   private val waypoints = EmptyWaypoints
 

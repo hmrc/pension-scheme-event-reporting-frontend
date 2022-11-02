@@ -19,8 +19,8 @@ package controllers
 import base.SpecBase
 import connectors.SessionDataCacheConnector
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.mockito.MockitoSugar.mock
+import org.mockito.Mockito._
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -29,7 +29,7 @@ import views.html.IndexView
 
 import scala.concurrent.Future
 
-class IndexControllerSpec extends SpecBase {
+class IndexControllerSpec extends SpecBase with MockitoSugar {
 
   private val mockSessionDataCacheConnector = mock[SessionDataCacheConnector]
 
@@ -45,7 +45,7 @@ class IndexControllerSpec extends SpecBase {
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
           .build()
 
-      when(mockSessionDataCacheConnector.upsertTestPstr(any(), any())(any(), any())).thenReturn(Future.successful( () ))
+      when(mockSessionDataCacheConnector.upsertTestPstr(any(), any())(any(), any())).thenReturn(Future.successful(()))
 
       running(application) {
         val request = FakeRequest(GET, routes.IndexController.onPageLoad.url)
