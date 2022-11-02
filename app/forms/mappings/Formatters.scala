@@ -17,6 +17,7 @@
 package forms.mappings
 
 import models.Enumerable
+import org.apache.commons.lang3.StringUtils
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -48,7 +49,7 @@ trait Formatters {
       )
 
     override def unbind(key: String, value: Option[String]): Map[String, String] =
-      Map(key -> value.getOrElse(""))
+      Map(key -> value.getOrElse(StringUtils.EMPTY))
   }
 
   private def standardiseText(s: String): String = {
@@ -95,7 +96,7 @@ trait Formatters {
       override def bind(key: String, data: Map[String, String]) =
         baseFormatter
           .bind(key, data)
-          .right.map(_.replace(",", ""))
+          .right.map(_.replace(",", StringUtils.EMPTY))
           .right.flatMap {
           case s if s.matches(decimalRegexp) =>
             Left(Seq(FormError(key, wholeNumberKey, args)))
@@ -120,7 +121,7 @@ trait Formatters {
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BigDecimal] =
         baseFormatter
           .bind(key, data)
-          .right.map(_.replace(",", "").replace(" ", ""))
+          .right.map(_.replace(",", StringUtils.EMPTY).replace(" ", StringUtils.EMPTY))
           .right.flatMap {
           case s if !s.matches(numericRegexp) =>
             Left(Seq(FormError(key, notANumberKey, args)))
@@ -147,7 +148,7 @@ trait Formatters {
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[BigDecimal]] =
         baseFormatter
           .bind(key, data)
-          .right.map(_.map(_.replace(",", "").replace(" ", "")))
+          .right.map(_.map(_.replace(",", StringUtils.EMPTY).replace(" ", StringUtils.EMPTY)))
           .right.flatMap {
           case s if s.isEmpty =>
             Right(None)

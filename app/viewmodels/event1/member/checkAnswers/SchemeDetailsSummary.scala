@@ -17,6 +17,7 @@
 package viewmodels.event1.member.checkAnswers
 
 import models.{Index, UserAnswers}
+import org.apache.commons.lang3.StringUtils
 import pages.event1.member.SchemeDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -30,7 +31,7 @@ object SchemeDetailsSummary {
 
   private def schemeDetailsAnswer(detail: Option[String]): Html = {
     Html(
-      detail.getOrElse("")
+      detail.getOrElse(StringUtils.EMPTY)
     )
   }
 
@@ -50,7 +51,7 @@ object SchemeDetailsSummary {
     Some(
       SummaryListRowViewModel(
         key = "Scheme name",
-        value = value.getOrElse(ValueViewModel("")),
+        value = value.getOrElse(ValueViewModel(StringUtils.EMPTY)),
         actions = Seq(
           ActionItemViewModel("site.change", SchemeDetailsPage(index).changeLink(waypoints, sourcePage).url)
             .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
@@ -74,7 +75,7 @@ object SchemeDetailsSummary {
     Some(
       SummaryListRowViewModel(
         key = "Reference",
-        value = value.getOrElse(ValueViewModel("")),
+        value = value.getOrElse(ValueViewModel(StringUtils.EMPTY)),
         actions = Seq(
           ActionItemViewModel("site.change", SchemeDetailsPage(index).changeLink(waypoints, sourcePage).url)
             .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
