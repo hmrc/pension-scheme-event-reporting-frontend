@@ -23,13 +23,11 @@ import models.enumeration.EventType.Event1
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.{MemberOrEmployerSummary, PaymentDetails}
-import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import pages.common.MembersDetailsPage
 import pages.event1.MembersOrEmployersPage.readsMemberOrEmployerValue
 import pages.event1.employer.CompanyDetailsPage
 import pages.event1.{HowAddUnauthPaymentPage, MembersOrEmployersPage, PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
-import play.api.i18n.Messages
 
 import java.time.LocalDate
 
