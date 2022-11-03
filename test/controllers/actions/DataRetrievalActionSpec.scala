@@ -23,8 +23,9 @@ import models.enumeration.EventType
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import models.{LoggedInUser, UserAnswers}
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
-import org.mockito.MockitoSugar
+import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 

@@ -27,8 +27,8 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
   with BigDecimalFieldBehaviours with DateBehavioursTrait {
 
   // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now.
-  private val stubMin: LocalDate = LocalDate of(2022, 4, 6)
-  private val stubMax: LocalDate = LocalDate of(2023, 4, 5)
+  private val stubMin: LocalDate = LocalDate.of(2022, 4, 6)
+  private val stubMax: LocalDate = LocalDate.of(2023, 4, 5)
 
   private val form = new PaymentValueAndDateFormProvider().apply(min = stubMin, max = stubMax)
 

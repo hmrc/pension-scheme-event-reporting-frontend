@@ -22,9 +22,9 @@ import forms.event1.employer.LoanDetailsFormProvider
 import models.UserAnswers
 import models.event1.employer.LoanDetails
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.event1.employer.LoanDetailsPage
 import play.api.inject.bind
@@ -35,7 +35,7 @@ import views.html.event1.employer.LoanDetailsView
 
 import scala.concurrent.Future
 
-class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
+class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
@@ -54,8 +54,8 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val validValue = LoanDetails(Some(BigDecimal(12.12)), Some(BigDecimal(13.13)))
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

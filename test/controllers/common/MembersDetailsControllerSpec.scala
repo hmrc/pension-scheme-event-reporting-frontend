@@ -23,9 +23,9 @@ import models.common.MembersDetails
 import models.enumeration.EventType
 import models.{Index, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.common.MembersDetailsPage
 import play.api.inject.bind
@@ -38,7 +38,7 @@ import views.html.common.MembersDetailsView
 import scala.concurrent.Future
 
 
-class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
+class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
   private val event1 = EventType.Event1
@@ -67,8 +67,8 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val validValue = MembersDetails("Joe", "Blogs", "AA123456D")
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

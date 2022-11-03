@@ -20,8 +20,7 @@ import base.SpecBase
 import config.FrontendAppConfig
 import connectors.SessionDataCacheConnector
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.mockito.MockitoSugar.{reset, times, verify}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.SEE_OTHER
@@ -44,7 +43,7 @@ class AuthControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterE
     inject.bind[SessionDataCacheConnector].toInstance(mockSessionDataCacheConnector)
   )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(mockSessionDataCacheConnector)
     when(mockSessionDataCacheConnector.removeAll(any())(any(), any()))
       .thenReturn(Future.successful(Ok("")))
@@ -59,7 +58,7 @@ class AuthControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterE
 
       running(application) {
         val appConfig = application.injector.instanceOf[FrontendAppConfig]
-        val request   = FakeRequest(GET, routes.AuthController.signOut.url)
+        val request = FakeRequest(GET, routes.AuthController.signOut.url)
 
         val result = route(application, request).value
 
@@ -81,11 +80,11 @@ class AuthControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterE
       running(application) {
 
         val appConfig = application.injector.instanceOf[FrontendAppConfig]
-        val request   = FakeRequest(GET, routes.AuthController.signOutNoSurvey.url)
+        val request = FakeRequest(GET, routes.AuthController.signOutNoSurvey.url)
 
         val result = route(application, request).value
 
-        val encodedContinueUrl  = URLEncoder.encode(appConfig.loginContinueUrl, "UTF-8")
+        val encodedContinueUrl = URLEncoder.encode(appConfig.loginContinueUrl, "UTF-8")
         val expectedRedirectUrl = s"${appConfig.loginUrl}?continue=$encodedContinueUrl"
 
         status(result) mustEqual SEE_OTHER

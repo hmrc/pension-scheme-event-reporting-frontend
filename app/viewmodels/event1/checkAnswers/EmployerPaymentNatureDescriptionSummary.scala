@@ -17,6 +17,7 @@
 package viewmodels.event1.checkAnswers
 
 import models.{Index, UserAnswers}
+import org.apache.commons.lang3.StringUtils
 import pages.event1.employer.EmployerPaymentNatureDescriptionPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -34,7 +35,7 @@ object EmployerPaymentNatureDescriptionSummary {
       case Some(value) =>
         ValueViewModel(HtmlFormat.escape(value).toString)
       case None =>
-        ValueViewModel("")
+        ValueViewModel(StringUtils.EMPTY)
     }
 
     Some(
