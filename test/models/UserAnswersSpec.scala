@@ -22,10 +22,10 @@ import data.SampleData.{companyDetails, memberDetails, userAnswersWithOneMemberA
 import models.enumeration.EventType.Event1
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
-import models.event1.{MemberOrEmployerSummary, PaymentDetails}
+import models.event1.{MembersOrEmployersSummary, PaymentDetails}
 import org.scalatest.matchers.must.Matchers
 import pages.common.MembersDetailsPage
-import pages.event1.MembersOrEmployersPage.readsMemberOrEmployerValue
+import models.event1.MembersOrEmployersSummary.readsMemberOrEmployerValue
 import pages.event1.employer.CompanyDetailsPage
 import pages.event1.{HowAddUnauthPaymentPage, MembersOrEmployersPage, PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
 
@@ -37,13 +37,13 @@ class UserAnswersSpec extends SpecBase with Matchers {
 
   "getAll" - {
     "must return the list of members or employers" in {
-      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage)(MembersOrEmployersPage.readsMemberOrEmployer) mustBe
-        Seq(MemberOrEmployerSummary(SampleData.memberDetails.fullName, BigDecimal(857.00)),
-          MemberOrEmployerSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00)))
+      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage)(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
+        Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00)),
+          MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00)))
     }
 
     "must return empty list if nothing present" in {
-      UserAnswers().getAll(MembersOrEmployersPage)(MembersOrEmployersPage.readsMemberOrEmployer) mustBe Nil
+      UserAnswers().getAll(MembersOrEmployersPage)(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe Nil
     }
 
     "must return the list of members or employers where member value and member details missing" in {
@@ -52,9 +52,9 @@ class UserAnswersSpec extends SpecBase with Matchers {
         .setOrException(WhoReceivedUnauthPaymentPage(1), Employer)
         .setOrException(PaymentValueAndDatePage(1), PaymentDetails(BigDecimal(7687.00), LocalDate.of(2022, 11, 9)))
         .setOrException(CompanyDetailsPage(1), companyDetails)
-      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage)(MembersOrEmployersPage.readsMemberOrEmployer) mustBe
-        Seq(MemberOrEmployerSummary("Not entered", BigDecimal(0.00)),
-          MemberOrEmployerSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00)))
+      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage)(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
+        Seq(MembersOrEmployersSummary("Not entered", BigDecimal(0.00)),
+          MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00)))
     }
 
     "must return the list of members or employers where employer value and employer details missing" in {
@@ -63,16 +63,16 @@ class UserAnswersSpec extends SpecBase with Matchers {
         .setOrException(PaymentValueAndDatePage(0), PaymentDetails(BigDecimal(857.00), LocalDate.of(2022, 11, 9)))
         .setOrException(MembersDetailsPage(Event1, Some(0)), memberDetails)
         .setOrException(WhoReceivedUnauthPaymentPage(1), Employer)
-      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage)(MembersOrEmployersPage.readsMemberOrEmployer) mustBe
-        Seq(MemberOrEmployerSummary(SampleData.memberDetails.fullName, BigDecimal(857.00)),
-          MemberOrEmployerSummary("Not entered", BigDecimal(0.00)))
+      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage)(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
+        Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00)),
+          MembersOrEmployersSummary("Not entered", BigDecimal(0.00)))
     }
     "must return the list of members or employers if only first question answered" in {
       val userAnswersWithOnlyManualOrUpload: UserAnswers = UserAnswers()
         .setOrException(HowAddUnauthPaymentPage(0), Manual)
 
-      userAnswersWithOnlyManualOrUpload.getAll(MembersOrEmployersPage)(MembersOrEmployersPage.readsMemberOrEmployer) mustBe
-        Seq(MemberOrEmployerSummary("Not entered", BigDecimal(0.00)))
+      userAnswersWithOnlyManualOrUpload.getAll(MembersOrEmployersPage)(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
+        Seq(MembersOrEmployersSummary("Not entered", BigDecimal(0.00)))
     }
   }
 

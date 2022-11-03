@@ -16,7 +16,7 @@
 
 package pages.event1
 
-import models.event1.MemberOrEmployerSummary
+import models.event1.MembersOrEmployersSummary
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import pages.{QuestionPage, Waypoints}
 import play.api.i18n.Messages
@@ -25,7 +25,7 @@ import play.api.libs.json.Reads._
 import play.api.libs.json.{JsPath, Reads}
 import play.api.mvc.Call
 
-object MembersOrEmployersPage extends QuestionPage[Seq[MemberOrEmployerSummary]] {
+object MembersOrEmployersPage extends QuestionPage[Seq[MembersOrEmployersSummary]] {
   def apply(index: Int): JsPath = path \ index
 
   def path: JsPath = JsPath \ "event1" \ toString
@@ -34,47 +34,5 @@ object MembersOrEmployersPage extends QuestionPage[Seq[MemberOrEmployerSummary]]
 
   override def route(waypoints: Waypoints): Call = controllers.routes.IndexController.onPageLoad
 
-  private def fail[A]: Reads[A] = Reads.failed[A]("Unknown value")
 
-  val readsMemberOrEmployerValue: Reads[BigDecimal] =
-    (JsPath \ "paymentValueAndDate" \ "paymentValue").readNullable[BigDecimal]
-      .map(_.getOrElse(BigDecimal(0)))
-
-  private def readsMemberSummary(implicit messages: Messages): Reads[MemberOrEmployerSummary] =
-    (
-      (JsPath \ "membersDetails" \ "firstName").readNullable[String] and
-      (JsPath \ "membersDetails" \ "lastName").readNullable[String] and
-        readsMemberOrEmployerValue
-      ) (
-      (firstName, lastName, paymentValue) => {
-        (firstName, lastName, paymentValue) match {
-          case (Some(fn), Some(ln), _) =>  MemberOrEmployerSummary(fn + " " + ln, paymentValue)
-          case (None, Some(ln), _) =>  MemberOrEmployerSummary(ln, paymentValue)
-          case (Some(fn), None, _) =>  MemberOrEmployerSummary(fn, paymentValue)
-          case (None, None, _) =>  MemberOrEmployerSummary(messages("site.notEntered"), paymentValue)
-        }
-      }
-    )
-
-  private def readsEmployerSummary(implicit messages: Messages): Reads[MemberOrEmployerSummary] =
-    (
-      (JsPath \ "event1" \ "companyDetails" \ "companyName").readNullable[String] and
-        readsMemberOrEmployerValue
-      ) (
-      (companyName, paymentValue) => {
-        (companyName, paymentValue) match {
-          case (Some(cn), _) =>  MemberOrEmployerSummary(cn, paymentValue)
-          case (None, _) =>  MemberOrEmployerSummary(messages("site.notEntered"), paymentValue)
-        }
-      }
-    )
-
-  def readsMemberOrEmployer(implicit messages: Messages): Reads[MemberOrEmployerSummary] = {
-    (JsPath \ WhoReceivedUnauthPaymentPage.toString).readNullable[String].flatMap{
-      case Some(Member.toString) => readsMemberSummary
-      case Some(Employer.toString) => readsEmployerSummary
-      case None => Reads.pure[MemberOrEmployerSummary](MemberOrEmployerSummary(messages("site.notEntered"), BigDecimal(0.00)))
-      case e => fail
-    }
-  }
 }

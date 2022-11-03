@@ -22,8 +22,8 @@ import forms.event1.UnauthPaymentSummaryFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import models.enumeration.EventType.Event1
+import models.event1.MembersOrEmployersSummary
 import pages.Waypoints
-import pages.event1.MembersOrEmployersPage.readsMemberOrEmployerValue
 import pages.event1.{MembersOrEmployersPage, UnauthPaymentSummaryPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -54,7 +54,7 @@ class UnauthPaymentSummaryController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
     val mappedMemberOrEmployer = request.userAnswers
-      .getAll(MembersOrEmployersPage)(MembersOrEmployersPage.readsMemberOrEmployer).zipWithIndex.map {
+      .getAll(MembersOrEmployersPage)(MembersOrEmployersSummary.readsMemberOrEmployer).zipWithIndex.map {
       case (memberOrEmployerSummary, index) =>
 
       val value = ValueViewModel(HtmlFormat.escape(memberOrEmployerSummary.unauthorisedPaymentValue.toString()).toString)
@@ -81,7 +81,7 @@ class UnauthPaymentSummaryController @Inject()(
     Ok(view(form, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers)))
   }
 
-  private def sumValue(userAnswers: UserAnswers) =  userAnswers.sumAll(MembersOrEmployersPage, readsMemberOrEmployerValue)
+  private def sumValue(userAnswers: UserAnswers) =  userAnswers.sumAll(MembersOrEmployersPage, MembersOrEmployersSummary.readsMemberOrEmployerValue)
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
     implicit request =>

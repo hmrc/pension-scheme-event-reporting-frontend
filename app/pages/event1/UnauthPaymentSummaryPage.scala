@@ -18,7 +18,6 @@ package pages.event1
 
 import controllers.event1.routes
 import models.UserAnswers
-import pages.event1.MembersOrEmployersPage.readsMemberOrEmployerValue
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
