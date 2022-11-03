@@ -29,6 +29,9 @@ import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryChooseTaxYearPage: Arbitrary[event23.ChooseTaxYearPage.type] =
+    Arbitrary(event23.ChooseTaxYearPage)
+
   implicit lazy val arbitraryPaymentValueAndDatePage: Arbitrary[event1.PaymentValueAndDatePage] =
     Arbitrary(event1.PaymentValueAndDatePage(Index(0)))
   implicit lazy val arbitraryHowAddDualAllowancePage: Arbitrary[event23.HowAddDualAllowancePage.type] =

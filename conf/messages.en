@@ -760,3 +760,9 @@ testDate.error.noDayMonthOrYear = The date must include a day, month and year
 testDate.error.nothingEntered = Enter the mock date
 testDate.error.outsideDateRanges = Enter a real date
 
+chooseTaxYear.yearRangeRadio = {0} to {1}
+chooseTaxYear.title = In which tax year was the money purchase pension savings statement issued?
+chooseTaxYear.heading = In which tax year was the money purchase pension savings statement issued?
+chooseTaxYear.checkYourAnswersLabel = Select the tax year the money purchase pension savings statement was issued
+chooseTaxYear.error.required = Select the tax year the money purchase pension savings statement was issued
+chooseTaxYear.change.hidden = Select the tax year the money purchase pension savings statement was issued
