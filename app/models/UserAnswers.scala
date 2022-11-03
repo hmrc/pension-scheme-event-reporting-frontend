@@ -89,7 +89,7 @@ final case class UserAnswers(
     }
   }
 
-  def getAll[A](page: QuestionPage[Seq[A]])(implicit reads: Reads[A]): Seq[A] =
+  def getAll[A](page: Gettable[Seq[A]])(implicit reads: Reads[A]): Seq[A] =
     data.as[Option[Seq[A]]](page.path.readNullable[Seq[A]]).toSeq.flatten
 
   def countAll(page: Query): Int =

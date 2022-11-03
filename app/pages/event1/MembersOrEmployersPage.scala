@@ -17,22 +17,16 @@
 package pages.event1
 
 import models.event1.MembersOrEmployersSummary
-import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import pages.{QuestionPage, Waypoints}
-import play.api.i18n.Messages
-import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
-import play.api.libs.json.{JsPath, Reads}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.Gettable
 
-object MembersOrEmployersPage extends QuestionPage[Seq[MembersOrEmployersSummary]] {
+object MembersOrEmployersPage extends Gettable[Seq[MembersOrEmployersSummary]] {
   def apply(index: Int): JsPath = path \ index
 
   def path: JsPath = JsPath \ "event1" \ toString
 
   override def toString: String = "membersOrEmployers"
-
-  override def route(waypoints: Waypoints): Call = controllers.routes.IndexController.onPageLoad
-
 
 }
