@@ -21,9 +21,9 @@ import connectors.UserAnswersCacheConnector
 import data.SampleData.userAnswersWithOneMemberAndEmployer
 import forms.event1.UnauthPaymentSummaryFormProvider
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.event1.UnauthPaymentSummaryPage
 import play.api.i18n.Messages
@@ -36,7 +36,7 @@ import views.html.event1.UnauthPaymentSummaryView
 
 import scala.concurrent.Future
 
-class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEach {
+class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
