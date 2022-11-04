@@ -22,8 +22,8 @@ import models.address.Address
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.enumeration.{AddressJourneyType, EventType}
 import pages.event1.employer.PaymentNaturePage
-import pages.event1.{MembersOrEmployersPage, PaymentValueAndDatePage}
-import pages.{CheckYourAnswersPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.event1.{Event1CheckYourAnswersPage, MembersOrEmployersPage, PaymentValueAndDatePage}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -46,7 +46,7 @@ case class ManualAddressPage(addressJourneyType: AddressJourneyType, index: Int)
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
     addressJourneyType match {
-      case Event1EmployerAddressJourney => CheckYourAnswersPage(EventType.Event1, Some(index))
+      case Event1EmployerAddressJourney => Event1CheckYourAnswersPage(index)
       case Event1MemberPropertyAddressJourney | Event1EmployerPropertyAddressJourney => PaymentValueAndDatePage(index)
       case _ => super.nextPageNormalMode(waypoints, updatedAnswers)
     }
