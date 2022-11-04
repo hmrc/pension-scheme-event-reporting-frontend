@@ -18,16 +18,15 @@ package controllers.eventWindUp
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.enumeration.EventType.{Event18, WindUp}
+import models.enumeration.EventType.WindUp
 import models.requests.DataRequest
-import pages.event18.Event18CheckYourAnswersPage
 import pages.eventWindUp.EventWindUpCheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.{Event18ConfirmationSummary, SchemeWindUpDateSummary}
+import viewmodels.checkAnswers.SchemeWindUpDateSummary
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 

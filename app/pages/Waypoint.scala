@@ -17,7 +17,6 @@
 package pages
 
 import models.Mode
-import models.enumeration.EventType.Event1
 import pages.event1.Event1CheckYourAnswersPage
 import pages.event18.Event18CheckYourAnswersPage
 import pages.eventWindUp.EventWindUpCheckYourAnswersPage

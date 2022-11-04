@@ -17,7 +17,6 @@
 package pages.event1
 
 import models.Index
-import models.enumeration.EventType
 import models.enumeration.EventType.Event1
 import pages.{CheckAnswersPage, Waypoint, Waypoints}
 import play.api.mvc.Call

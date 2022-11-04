@@ -19,8 +19,8 @@ package pages.address
 import controllers.address.routes
 import models.UserAnswers
 import models.address.Address
+import models.enumeration.AddressJourneyType
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
-import models.enumeration.{AddressJourneyType, EventType}
 import pages.event1.{Event1CheckYourAnswersPage, MembersOrEmployersPage, PaymentValueAndDatePage}
 import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath

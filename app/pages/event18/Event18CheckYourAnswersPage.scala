@@ -32,9 +32,8 @@ package pages.event18
  * limitations under the License.
  */
 
-import controllers.routes
-import play.api.mvc.Call
 import pages.{CheckAnswersPage, Waypoints}
+import play.api.mvc.Call
 
 case object Event18CheckYourAnswersPage extends CheckAnswersPage {
   override val urlFragment: String =

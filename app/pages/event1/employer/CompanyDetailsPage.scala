@@ -19,7 +19,6 @@ package pages.event1.employer
 import controllers.event1.employer.routes
 import models.UserAnswers
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
-import models.enumeration.EventType.Event1
 import models.event1.employer.CompanyDetails
 import pages.event1.{Event1CheckYourAnswersPage, MembersOrEmployersPage}
 import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}

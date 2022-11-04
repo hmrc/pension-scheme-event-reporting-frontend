@@ -18,12 +18,11 @@ package viewmodels.event1.checkAnswers
 
 import data.SampleData.booleanCYAVal
 import models.UserAnswers
-import models.enumeration.EventType.Event1
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
-import pages.event1.DoYouHoldSignedMandatePage
-import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import pages.event1.{DoYouHoldSignedMandatePage, Event1CheckYourAnswersPage}
+import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import viewmodels.govuk.SummaryListFluency
@@ -40,7 +39,7 @@ class DoYouHoldSignedMandateSummarySpec extends AnyFreeSpec with Matchers with O
 
       val answer = UserAnswers().setOrException(DoYouHoldSignedMandatePage(0), true)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       DoYouHoldSignedMandateSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
@@ -58,7 +57,7 @@ class DoYouHoldSignedMandateSummarySpec extends AnyFreeSpec with Matchers with O
 
       val answer = UserAnswers().setOrException(DoYouHoldSignedMandatePage(0), false)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       DoYouHoldSignedMandateSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(

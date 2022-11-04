@@ -18,7 +18,6 @@ package pages.event1
 
 import controllers.event1.routes
 import models.UserAnswers
-import models.enumeration.EventType.Event1
 import pages.event1.member.PaymentNaturePage
 import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath

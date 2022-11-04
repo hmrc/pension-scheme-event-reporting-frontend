@@ -17,13 +17,13 @@
 package viewmodels.event1.checkAnswers
 
 import models.UserAnswers
-import models.enumeration.EventType.Event1
 import models.event1.member.ReasonForTheOverpaymentOrWriteOff
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
+import pages.event1.Event1CheckYourAnswersPage
 import pages.event1.member.ReasonForTheOverpaymentOrWriteOffPage
-import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
@@ -42,7 +42,7 @@ class ReasonForTheOverpaymentOrWriteOffSummarySpec extends AnyFreeSpec with Matc
 
       val answer = UserAnswers().setOrException(ReasonForTheOverpaymentOrWriteOffPage(0), ReasonForTheOverpaymentOrWriteOff.DeathOfMember)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       val value = ValueViewModel(
         HtmlContent(
@@ -66,7 +66,7 @@ class ReasonForTheOverpaymentOrWriteOffSummarySpec extends AnyFreeSpec with Matc
 
       val answer = UserAnswers().setOrException(ReasonForTheOverpaymentOrWriteOffPage(0), ReasonForTheOverpaymentOrWriteOff.DeathOfDependent)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       val value = ValueViewModel(
         HtmlContent(
@@ -90,7 +90,7 @@ class ReasonForTheOverpaymentOrWriteOffSummarySpec extends AnyFreeSpec with Matc
 
       val answer = UserAnswers().setOrException(ReasonForTheOverpaymentOrWriteOffPage(0), ReasonForTheOverpaymentOrWriteOff.DependentNoLongerQualifiedForPension)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       val value = ValueViewModel(
         HtmlContent(
@@ -114,7 +114,7 @@ class ReasonForTheOverpaymentOrWriteOffSummarySpec extends AnyFreeSpec with Matc
 
       val answer = UserAnswers().setOrException(ReasonForTheOverpaymentOrWriteOffPage(0), ReasonForTheOverpaymentOrWriteOff.Other)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       val value = ValueViewModel(
         HtmlContent(

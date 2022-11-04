@@ -17,12 +17,12 @@
 package viewmodels.event1.employer.checkAnswers
 
 import models.UserAnswers
-import models.enumeration.EventType.Event1
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
+import pages.event1.Event1CheckYourAnswersPage
 import pages.event1.employer.EmployerPaymentNatureDescriptionPage
-import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
@@ -40,7 +40,7 @@ class EmployerPaymentNatureDescriptionSummarySpec extends AnyFreeSpec with Match
 
       val answer = UserAnswers().setOrException(EmployerPaymentNatureDescriptionPage(0), "brief description of the nature of the payment")
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       EmployerPaymentNatureDescriptionSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(

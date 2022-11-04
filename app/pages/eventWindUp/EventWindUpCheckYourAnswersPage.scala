@@ -32,7 +32,6 @@
 
 package pages.eventWindUp
 
-import controllers.routes
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.mvc.Call
 

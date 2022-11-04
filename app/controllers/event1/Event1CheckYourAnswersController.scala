@@ -19,8 +19,8 @@ package controllers.event1
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.Index
-import models.enumeration.EventType.{Event1, Event18, WindUp}
-import models.enumeration.{AddressJourneyType, EventType}
+import models.enumeration.AddressJourneyType
+import models.enumeration.EventType.Event1
 import models.event1.PaymentNature._
 import models.event1.WhoReceivedUnauthPayment.Member
 import models.event1.employer.PaymentNature._
@@ -34,10 +34,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.address.checkAnswers.ChooseAddressSummary
-import viewmodels.checkAnswers.{Event18ConfirmationSummary, MembersDetailsSummary, SchemeWindUpDateSummary}
+import viewmodels.checkAnswers.MembersDetailsSummary
 import viewmodels.event1.checkAnswers._
-import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, EmployerUnauthorisedPaymentRecipientNameSummary,
-  LoanDetailsSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
+import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, EmployerUnauthorisedPaymentRecipientNameSummary, LoanDetailsSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
 import viewmodels.event1.member.checkAnswers._
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
