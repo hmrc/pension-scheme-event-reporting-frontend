@@ -32,6 +32,7 @@ object ChooseTaxYear extends Enumerable.Implicits {
 
   private val startDayOfNewTaxYear: Int = 6
   private val minYear: Int = 2015
+  def currentYear = new ChooseTaxYear(DateHelper.today.getYear.toString)
 
   def values: Seq[ChooseTaxYear] = {
     val currentYear = DateHelper.today.getYear
@@ -44,7 +45,7 @@ object ChooseTaxYear extends Enumerable.Implicits {
         currentYear - 1
       }
 
-    (minYear to maxYear).reverseMap(year => ChooseTaxYear(year.toString))
+    (minYear to maxYear).reverseIterator.map(year => ChooseTaxYear(year.toString)).toSeq
   }
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
@@ -52,7 +53,7 @@ object ChooseTaxYear extends Enumerable.Implicits {
       val yearRangeOption = messages("chooseTaxYear.yearRangeRadio", value, (value.toString.toInt + 1).toString)
       RadioItem(
         content = Text(yearRangeOption),
-        value = Some(yearRangeOption),
+        value = Some(value.toString),
         id = Some(s"value_$index")
       )
   }
