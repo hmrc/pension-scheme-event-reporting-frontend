@@ -36,7 +36,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.address.checkAnswers.ChooseAddressSummary
 import viewmodels.checkAnswers.{Event18ConfirmationSummary, MembersDetailsSummary, SchemeWindUpDateSummary}
 import viewmodels.event1.checkAnswers._
-import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, EmployerUnauthorisedPaymentRecipientNameSummary, LoanDetailsSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
+import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, EmployerUnauthorisedPaymentRecipientNameSummary,
+  LoanDetailsSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
 import viewmodels.event1.member.checkAnswers._
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
@@ -78,7 +79,8 @@ class Event1CheckYourAnswersController @Inject()(
     }
   }
 
-  private def buildEvent1CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+  private def buildEvent1CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)
+                                (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
 
     val basicMemberOrEmployerRows = if (event1MemberJourney(index)) {
       event1BasicMemberDetailsRows(waypoints, sourcePage, index)
@@ -166,11 +168,4 @@ class Event1CheckYourAnswersController @Inject()(
                                            (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
     PaymentValueAndDateSummary.rowPaymentValue(request.userAnswers, waypoints, index, sourcePage).toSeq ++
       PaymentValueAndDateSummary.rowPaymentDate(request.userAnswers, waypoints, index, sourcePage).toSeq
-
-
-  private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
-    SchemeWindUpDateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
-
-  private def buildEvent18CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
-    Event18ConfirmationSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
 }
