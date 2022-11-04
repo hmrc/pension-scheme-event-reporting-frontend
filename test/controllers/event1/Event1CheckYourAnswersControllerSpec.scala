@@ -34,13 +34,16 @@ package controllers.event1
 
 import base.SpecBase
 import data.SampleData.sampleMemberJourneyData
+import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.govukfrontend.views.Aliases._
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Text, _}
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
 class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
+
+  import Event1CheckYourAnswersControllerSpec._
 
   "Check Your Answers Controller" - {
 
@@ -70,36 +73,8 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         val result = route(application, request).value
 
-        val expected =
-          List(
-            SummaryListRow(
-              Key(Text("Member’s details"), ""), Value(HtmlContent("Joe Bloggs"), ""), "", Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/1/event-1-member-details?waypoints=event-1-check-answers-1", Text("Change"), Some("Member’s details"), "", Map()))))
-            ),
-            SummaryListRow(
-              Key(Text("Member’s National Insurance number"), ""), Value(HtmlContent("AA234567V"), ""), "", Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/1/event-1-member-details?waypoints=event-1-check-answers-1", Text("Change"), Some("Member’s details"), "", Map()))))
-            ),
-            SummaryListRow(
-              Key(Text("Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?"), ""), Value(Text("No"), ""), "", Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/1/event-1-mandate?waypoints=event-1-check-answers-1", Text("Change"), Some("Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?"), "", Map()))))
-            ),
-            SummaryListRow(
-              Key(Text("Is the value of the unauthorised payment more than 25% of the pension fund for the individual?"), ""), Value(Text("No"), ""), "", Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/1/event-1-payment-value?waypoints=event-1-check-answers-1", Text("Change"), Some("Is the value of the unauthorised payment more than 25% of the pension fund for the individual?"), "", Map()))))
-            ),
-            SummaryListRow(
-              Key(Text("Nature of the payment or deemed payment"), ""), Value(HtmlContent("Benefit in kind"), ""), "", Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/1/event-1-member-payment-nature?waypoints=event-1-check-answers-1", Text("Change"), Some("Nature of the payment or deemed payment"), "", Map()))))
-            ),
-            SummaryListRow(
-              Key(Text("Give a brief description of the benefit in kind"), ""), Value(Text("Test description"), ""), "", Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/1/event-1-benefit-in-kind?waypoints=event-1-check-answers-1", Text("Change"), Some("Give a brief description of the benefit in kind"), "", Map()))))
-            ),
-            SummaryListRow(
-              Key(Text("Payment value"), ""), Value(HtmlContent("£1,000.00"), ""), "", Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/1/event-1-payment-details?waypoints=event-1-check-answers-1", Text("Change"), Some("Enter the payment value"), "", Map()))))
-            ),
-            SummaryListRow(
-              Key(Text("Payment date"), ""), Value(Text("04/11/2022"), ""), "", Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/1/event-1-payment-details?waypoints=event-1-check-answers-1", Text("Change"), Some("Enter the date of payment or when benefit made available"), "", Map()))))
-            )
-          )
-
         val view = application.injector.instanceOf[CheckYourAnswersView]
-        val list = SummaryListViewModel(expected)
+        val list = SummaryListViewModel(expectedSummaryListRows)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(list)(request, messages(application)).toString
@@ -120,4 +95,34 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       }
     }
   }
+}
+
+object Event1CheckYourAnswersControllerSpec {
+  private val xx =  "/manage-pension-scheme-event-report/new-report/1/event-1-member-details?waypoints=event-1-check-answers-1"
+  def expectedSummaryListRows(implicit messages: Messages): Seq[SummaryListRow] = List(
+    SummaryListRow(
+      Key(Text(messages("membersDetails.title")), ""), Value(HtmlContent("Joe Bloggs"), ""), "", Some(Actions("", List(ActionItem(xx, Text("Change"), Some("Member’s details"), "", Map()))))
+    ),
+    SummaryListRow(
+      Key(Text("Member’s National Insurance number"), ""), Value(HtmlContent("AA234567V"), ""), "", Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/1/event-1-member-details?waypoints=event-1-check-answers-1", Text("Change"), Some("Member’s details"), "", Map()))))
+    ),
+    SummaryListRow(
+      Key(Text(messages("doYouHoldSignedMandate.checkYourAnswersLabel")), ""), Value(Text("No"), ""), "", Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/1/event-1-mandate?waypoints=event-1-check-answers-1", Text("Change"), Some("Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?"), "", Map()))))
+    ),
+    SummaryListRow(
+      Key(Text("Is the value of the unauthorised payment more than 25% of the pension fund for the individual?"), ""), Value(Text("No"), ""), "", Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/1/event-1-payment-value?waypoints=event-1-check-answers-1", Text("Change"), Some("Is the value of the unauthorised payment more than 25% of the pension fund for the individual?"), "", Map()))))
+    ),
+    SummaryListRow(
+      Key(Text("Nature of the payment or deemed payment"), ""), Value(HtmlContent("Benefit in kind"), ""), "", Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/1/event-1-member-payment-nature?waypoints=event-1-check-answers-1", Text("Change"), Some("Nature of the payment or deemed payment"), "", Map()))))
+    ),
+    SummaryListRow(
+      Key(Text("Give a brief description of the benefit in kind"), ""), Value(Text("Test description"), ""), "", Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/1/event-1-benefit-in-kind?waypoints=event-1-check-answers-1", Text("Change"), Some("Give a brief description of the benefit in kind"), "", Map()))))
+    ),
+    SummaryListRow(
+      Key(Text("Payment value"), ""), Value(HtmlContent("£1,000.00"), ""), "", Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/1/event-1-payment-details?waypoints=event-1-check-answers-1", Text("Change"), Some("Enter the payment value"), "", Map()))))
+    ),
+    SummaryListRow(
+      Key(Text("Payment date"), ""), Value(Text("04/11/2022"), ""), "", Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/1/event-1-payment-details?waypoints=event-1-check-answers-1", Text("Change"), Some("Enter the date of payment or when benefit made available"), "", Map()))))
+    )
+  )
 }
