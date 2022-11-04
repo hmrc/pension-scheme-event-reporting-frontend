@@ -21,7 +21,6 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utils.DateHelper
-
 import java.time.{LocalDate, Month}
 
 case class ChooseTaxYear(startYear: String) {
