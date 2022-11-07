@@ -766,3 +766,12 @@ chooseTaxYear.heading = In which tax year was the money purchase pension savings
 chooseTaxYear.checkYourAnswersLabel = Select the tax year the money purchase pension savings statement was issued
 chooseTaxYear.error.required = Select the tax year the money purchase pension savings statement was issued
 chooseTaxYear.change.hidden = Select the tax year the money purchase pension savings statement was issued
+
+membersTotalPensionAmounts.title = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year {0}?
+membersTotalPensionAmounts.heading = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year {0}?
+membersTotalPensionAmounts.checkYourAnswersLabel = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year {0}?
+membersTotalPensionAmounts.error.nonNumeric = Enter your membersTotalPensionAmounts using numbers
+membersTotalPensionAmounts.error.required = Enter your membersTotalPensionAmounts
+membersTotalPensionAmounts.error.wholeNumber = Enter your membersTotalPensionAmounts using whole numbers
+membersTotalPensionAmounts.error.outOfRange = MembersTotalPensionAmounts must be between {0} and {1}
+membersTotalPensionAmounts.change.hidden = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year {0}?
