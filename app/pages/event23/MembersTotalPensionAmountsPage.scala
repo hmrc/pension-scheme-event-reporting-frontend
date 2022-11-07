@@ -17,21 +17,16 @@
 package pages.event23
 
 import controllers.event23.routes
-import models.UserAnswers
-import models.event23.ChooseTaxYear
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{Waypoints, QuestionPage}
 
-case object ChooseTaxYearPage extends QuestionPage[ChooseTaxYear] {
+case object MembersTotalPensionAmountsPage extends QuestionPage[Int] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "chooseTaxYear"
+  override def toString: String = "membersTotalPensionAmounts"
 
   override def route(waypoints: Waypoints): Call =
-    routes.ChooseTaxYearController.onPageLoad(waypoints)
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    MembersTotalPensionAmountsPage
+    routes.MembersTotalPensionAmountsController.onPageLoad(waypoints)
 }

@@ -16,22 +16,16 @@
 
 package pages.event23
 
-import controllers.event23.routes
-import models.UserAnswers
-import models.event23.ChooseTaxYear
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
-import pages.{Page, QuestionPage, Waypoints}
+import pages.behaviours.PageBehaviours
 
-case object ChooseTaxYearPage extends QuestionPage[ChooseTaxYear] {
+class MembersTotalPensionAmountsPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "MembersTotalPensionAmountsPage" - {
 
-  override def toString: String = "chooseTaxYear"
+    beRetrievable[Int](MembersTotalPensionAmountsPage)
 
-  override def route(waypoints: Waypoints): Call =
-    routes.ChooseTaxYearController.onPageLoad(waypoints)
+    beSettable[Int](MembersTotalPensionAmountsPage)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    MembersTotalPensionAmountsPage
+    beRemovable[Int](MembersTotalPensionAmountsPage)
+  }
 }

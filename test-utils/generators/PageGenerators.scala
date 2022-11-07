@@ -35,6 +35,9 @@ trait PageGenerators {
   implicit lazy val arbitraryUnauthPaymentAndSanctionChargesPage: Arbitrary[event1.UnauthPaymentAndSanctionChargesPage.type] =
     Arbitrary(event1.UnauthPaymentAndSanctionChargesPage)
 
+  implicit lazy val arbitraryMembersTotalPensionAmountsPage: Arbitrary[event23.MembersTotalPensionAmountsPage.type] =
+    Arbitrary(event23.MembersTotalPensionAmountsPage)
+
   implicit lazy val arbitraryChooseTaxYearPage: Arbitrary[event23.ChooseTaxYearPage.type] =
     Arbitrary(event23.ChooseTaxYearPage)
 
