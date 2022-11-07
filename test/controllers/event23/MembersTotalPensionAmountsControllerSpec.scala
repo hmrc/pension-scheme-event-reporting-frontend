@@ -20,6 +20,7 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event23.MembersTotalPensionAmountsFormProvider
 import models.UserAnswers
+import org.apache.commons.lang3.StringUtils
 import pages.EmptyWaypoints
 import pages.event23.MembersTotalPensionAmountsPage
 import org.mockito.ArgumentMatchers.any
@@ -71,7 +72,7 @@ class MembersTotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAf
         val view = application.injector.instanceOf[MembersTotalPensionAmountsView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, StringUtils.EMPTY)(request, messages(application)).toString
       }
     }
 
@@ -89,7 +90,7 @@ class MembersTotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAf
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, StringUtils.EMPTY)(request, messages(application)).toString
       }
     }
 
@@ -129,7 +130,7 @@ class MembersTotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAf
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, StringUtils.EMPTY)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
