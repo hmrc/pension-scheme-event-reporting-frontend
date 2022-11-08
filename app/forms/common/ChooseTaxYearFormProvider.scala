@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package forms.event23
-
-import javax.inject.Inject
+package forms.common
 
 import forms.mappings.Mappings
+import models.common.ChooseTaxYear
 import play.api.data.Form
-import models.event23.ChooseTaxYear
+
+import javax.inject.Inject
 
 class ChooseTaxYearFormProvider @Inject() extends Mappings {
 
   def apply(): Form[ChooseTaxYear] =
     Form(
-      "value" -> enumerable[ChooseTaxYear]("chooseTaxYear.error.required")
+      "value" -> enumerable[ChooseTaxYear]("chooseTaxYear.event23.error.required")
     )
 }

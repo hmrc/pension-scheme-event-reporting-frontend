@@ -17,7 +17,7 @@
 package generators
 
 import models._
-import models.common.MembersDetails
+import models.common.{ChooseTaxYear, MembersDetails}
 import models.event1.employer.{CompanyDetails, LoanDetails}
 import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, SchemeDetails, WhoWasTheTransferMade}
 import org.scalacheck.Arbitrary.arbitrary
@@ -28,9 +28,9 @@ import scala.math.BigDecimal.RoundingMode
 
 trait ModelGenerators {
 
-  implicit lazy val arbitraryChooseTaxYear: Arbitrary[event23.ChooseTaxYear] =
+  implicit lazy val arbitraryChooseTaxYear: Arbitrary[ChooseTaxYear] =
     Arbitrary {
-      Gen.oneOf(event23.ChooseTaxYear.values)
+      Gen.oneOf(common.ChooseTaxYear.values)
     }
 
   implicit lazy val arbitraryReasonForTheOverpaymentOrWriteOff: Arbitrary[ReasonForTheOverpaymentOrWriteOff] =

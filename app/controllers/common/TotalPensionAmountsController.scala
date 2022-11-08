@@ -22,9 +22,8 @@ import forms.common.TotalPensionAmountsFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import org.apache.commons.lang3.StringUtils
-import pages.Waypoints
+import pages.{Waypoints, common}
 import pages.common.TotalPensionAmountsPage
-import pages.event23.ChooseTaxYearPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -46,7 +45,7 @@ class TotalPensionAmountsController @Inject()(val controllerComponents: Messages
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(TotalPensionAmountsPage(eventType))).fold(form)(form.fill)
-    val selectedTaxYear = request.userAnswers.flatMap(_.get(ChooseTaxYearPage(eventType))) match {
+    val selectedTaxYear = request.userAnswers.flatMap(_.get(common.ChooseTaxYearPage(eventType))) match {
       case Some(taxYear) => (taxYear.toString + " to " + (taxYear.toString.toInt + 1).toString)
       case _ => StringUtils.EMPTY
     }

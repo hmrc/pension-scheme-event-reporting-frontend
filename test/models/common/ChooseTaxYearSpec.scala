@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.event23
+package models.common
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen

@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package viewmodels.event23.checkAnswers
+package viewmodels.checkAnswers
 
 import models.UserAnswers
 import models.enumeration.EventType
-import pages.{CheckAnswersPage, Waypoints}
-import pages.event23.ChooseTaxYearPage
+import pages.{CheckAnswersPage, Waypoints, common}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -27,11 +26,11 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object ChooseTaxYearSummary  {
+object ChooseTaxYearSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, eventType : EventType, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, eventType: EventType, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ChooseTaxYearPage(eventType)).map {
+    answers.get(common.ChooseTaxYearPage(eventType)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -41,10 +40,10 @@ object ChooseTaxYearSummary  {
         )
 
         SummaryListRowViewModel(
-          key     = "chooseTaxYear.checkYourAnswersLabel",
-          value   = value,
+          key = "chooseTaxYear.checkYourAnswersLabel",
+          value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", ChooseTaxYearPage(eventType).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", common.ChooseTaxYearPage(eventType).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("chooseTaxYear.change.hidden"))
           )
         )

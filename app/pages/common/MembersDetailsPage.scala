@@ -21,7 +21,6 @@ import models.common.MembersDetails
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event23}
 import pages.event1.{DoYouHoldSignedMandatePage, MembersOrEmployersPage}
-import pages.event23.ChooseTaxYearPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

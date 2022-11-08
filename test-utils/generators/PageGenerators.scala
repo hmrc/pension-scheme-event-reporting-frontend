@@ -21,7 +21,7 @@ import models.enumeration.AddressJourneyType
 import models.enumeration.EventType.{Event1, Event23}
 import org.scalacheck.Arbitrary
 import pages.{common, _}
-import pages.common.{MembersDetailsPage, TotalPensionAmountsPage}
+import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.event1.{employer, member}
@@ -38,8 +38,8 @@ trait PageGenerators {
   implicit lazy val arbitraryUnauthPaymentAndSanctionChargesPage: Arbitrary[event1.UnauthPaymentAndSanctionChargesPage.type] =
     Arbitrary(event1.UnauthPaymentAndSanctionChargesPage)
 
-  implicit lazy val arbitraryChooseTaxYearPage: Arbitrary[event23.ChooseTaxYearPage] =
-    Arbitrary(event23.ChooseTaxYearPage(Event23))
+  implicit lazy val arbitraryChooseTaxYearPage: Arbitrary[ChooseTaxYearPage] =
+    Arbitrary(common.ChooseTaxYearPage(Event23))
 
   implicit lazy val arbitraryPaymentValueAndDatePage: Arbitrary[event1.PaymentValueAndDatePage] =
     Arbitrary(event1.PaymentValueAndDatePage(Index(0)))
