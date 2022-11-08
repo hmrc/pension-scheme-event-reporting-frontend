@@ -52,7 +52,7 @@ class PaymentValueAndDateSummarySpec extends AnyFreeSpec with Matchers with Opti
 
       PaymentValueAndDateSummary.rowPaymentValue(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
-          key = "Payment value",
+          key = messages("paymentValueAndDate.value.checkYourAnswersLabel"),
           value = ValueViewModel(HtmlContent(Html(paymentDetailsValue))),
           actions = Seq(
             ActionItemViewModel("site.change", PaymentValueAndDatePage(0).changeLink(waypoints, sourcePage).url)
@@ -78,7 +78,7 @@ class PaymentValueAndDateSummarySpec extends AnyFreeSpec with Matchers with Opti
 
       PaymentValueAndDateSummary.rowPaymentDate(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
-          key = "Payment date",
+          key = messages("paymentValueAndDate.date.checkYourAnswersLabel"),
           value = ValueViewModel(format.format(date)),
           actions = Seq(
             ActionItemViewModel("site.change", PaymentValueAndDatePage(0).changeLink(waypoints, sourcePage).url)
