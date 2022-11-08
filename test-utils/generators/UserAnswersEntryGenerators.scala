@@ -18,6 +18,7 @@ package generators
 
 import models._
 import models.common.MembersDetails
+import models.enumeration.EventType.Event23
 import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, WhoWasTheTransferMade}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
@@ -30,18 +31,18 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
-  implicit lazy val arbitraryMembersTotalPensionAmountsUserAnswersEntry: Arbitrary[(TotalPensionAmountsPage.type, JsValue)] =
+  implicit lazy val arbitraryMembersTotalPensionAmountsUserAnswersEntry: Arbitrary[(TotalPensionAmountsPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[TotalPensionAmountsPage.type]
+        page  <- arbitrary[TotalPensionAmountsPage]
         value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryChooseTaxYearUserAnswersEntry: Arbitrary[(pages.event23.ChooseTaxYearPage.type, JsValue)] =
+  implicit lazy val arbitraryChooseTaxYearUserAnswersEntry: Arbitrary[(pages.event23.ChooseTaxYearPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event23.ChooseTaxYearPage.type]
+        page  <- arbitrary[pages.event23.ChooseTaxYearPage]
         value <- arbitrary[models.event23.ChooseTaxYear].map(Json.toJson(_))
       } yield (page, value)
     }

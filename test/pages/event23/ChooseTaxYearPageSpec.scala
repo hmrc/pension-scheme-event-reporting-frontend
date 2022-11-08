@@ -16,6 +16,7 @@
 
 package pages.event23
 
+import models.enumeration.EventType.Event23
 import models.event23.ChooseTaxYear
 import pages.behaviours.PageBehaviours
 
@@ -23,10 +24,10 @@ class ChooseTaxYearSpec extends PageBehaviours {
 
   "ChooseTaxYearPage" - {
 
-    beRetrievable[ChooseTaxYear](ChooseTaxYearPage)
+    beRetrievable[ChooseTaxYear](ChooseTaxYearPage(Event23))
 
-    beSettable[ChooseTaxYear](ChooseTaxYearPage)
+    beSettable[ChooseTaxYear](ChooseTaxYearPage(Event23))
 
-    beRemovable[ChooseTaxYear](ChooseTaxYearPage)
+    beRemovable[ChooseTaxYear](ChooseTaxYearPage(Event23))
   }
 }
