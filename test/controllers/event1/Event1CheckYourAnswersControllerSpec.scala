@@ -33,7 +33,7 @@
 package controllers.event1
 
 import base.SpecBase
-import data.SampleData.{companyDetails, sampleEmployerJourneyData, sampleMemberJourneyData}
+import data.SampleData.{sampleEmployerJourneyData, sampleMemberJourneyData}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -126,7 +126,7 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         val actual: Seq[SummaryListRow] = captor.getValue.rows
         val expected: Seq[Aliases.SummaryListRow] = expectedEmployerSummaryListRows
 
-        // actual.size mustBe expected.size
+        actual.size mustBe expected.size
 
         actual.zipWithIndex.map{ case (a, i) =>
           a mustBe expected(i)
