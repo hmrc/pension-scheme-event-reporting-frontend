@@ -44,7 +44,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.Aliases
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Text, _}
+import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
@@ -54,23 +54,23 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
   "Check Your Answers Controller" - {
 
-    //    "must return OK and the correct view for a GET" in {
-    //
-    //      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-    //
-    //      running(application) {
-    //        val request = FakeRequest(GET, controllers.event1.routes.Event1CheckYourAnswersController.onPageLoad(0).url)
-    //
-    //        val result = route(application, request).value
-    //
-    //        val view = application.injector.instanceOf[CheckYourAnswersView]
-    //        val list = SummaryListViewModel(Seq.empty)
-    //
-    //        status(result) mustEqual OK
-    //
-    //        contentAsString(result) mustEqual view(list)(request, messages(application)).toString
-    //      }
-    //    }
+    "must return OK and the correct view for a GET" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event1.routes.Event1CheckYourAnswersController.onPageLoad(0).url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[CheckYourAnswersView]
+        val list = SummaryListViewModel(Seq.empty)
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual view(list)(request, messages(application)).toString
+      }
+    }
 
     "must return OK and the correct view for a GET with appropriate CYA rows" in {
       val mockView = mock[CheckYourAnswersView]
@@ -94,27 +94,30 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         val actual: Seq[SummaryListRow] = captor.getValue.rows
         val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRows.toSeq
-        println("\nACT=" + actual)
-        println("\nEXP=" + expectedMemberSummaryListRows)
-
         actual.head mustBe expected.head
         actual(1) mustBe expected(1)
+        actual(2) mustBe expected(2)
+        actual(3) mustBe expected(3)
+        actual(4) mustBe expected(4)
+        actual(5) mustBe expected(5)
+        actual(6) mustBe expected(6)
+        actual(7) mustBe expected(7)
       }
     }
-    //
-    //    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-    //
-    //      val application = applicationBuilder(userAnswers = None).build()
-    //
-    //      running(application) {
-    //        val request = FakeRequest(GET, controllers.event1.routes.Event1CheckYourAnswersController.onPageLoad(0).url)
-    //
-    //        val result = route(application, request).value
-    //
-    //        status(result) mustEqual SEE_OTHER
-    //        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-    //      }
-    //    }
+
+    "must redirect to Journey Recovery for a GET if no existing data is found" in {
+
+      val application = applicationBuilder(userAnswers = None).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event1.routes.Event1CheckYourAnswersController.onPageLoad(0).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
   }
 }
 
@@ -140,6 +143,28 @@ object Event1CheckYourAnswersControllerSpec {
         ), ""),
       Value(HtmlContent(htmlContent), ""), "",
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(messageKey)), "", Map()))))
+    )
+
+  private def fakeSummaryListRowWithHtmlContentWithHiddenContent(messageKey: String, htmlContent: String, changeLink: String, hiddenContentChangeLink: String)
+                                                                (implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      Key(
+        Text(
+          messages(messageKey)
+        ), ""),
+      Value(HtmlContent(htmlContent), ""), "",
+      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
+    )
+
+  private def fakeSummaryListRowWithTextWithHiddenContent(messageKey: String, text: String, changeLink: String, hiddenContentChangeLink: String)
+                                                         (implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      Key(
+        Text(
+          messages(messageKey)
+        ), ""),
+      Value(Text(text), ""), "",
+      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
 
   private def expectedMemberSummaryListRows(implicit messages: Messages): Seq[SummaryListRow] = Seq(
@@ -173,15 +198,19 @@ object Event1CheckYourAnswersControllerSpec {
       "Test description",
       "/manage-pension-scheme-event-report/new-report/1/event-1-benefit-in-kind?waypoints=event-1-check-answers-1"
     ),
-    fakeSummaryListRowWithHtmlContent(
+    fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "paymentValueAndDate.value.checkYourAnswersLabel",
       "£1,000.00",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-payment-details?waypoints=event-1-check-answers-1"
+      "/manage-pension-scheme-event-report/new-report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
+      "paymentValueAndDate.value.change.hidden"
     ),
-    fakeSummaryListRowWithText(
+    fakeSummaryListRowWithTextWithHiddenContent(
       "paymentValueAndDate.date.checkYourAnswersLabel",
-      "04/11/2022",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-payment-details?waypoints=event-1-check-answers-1"
+      "08/11/2022",
+      "/manage-pension-scheme-event-report/new-report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
+      "paymentValueAndDate.date.change.hidden"
     )
   )
+
+
 }
