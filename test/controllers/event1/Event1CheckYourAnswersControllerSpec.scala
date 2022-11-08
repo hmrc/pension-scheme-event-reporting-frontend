@@ -33,7 +33,7 @@
 package controllers.event1
 
 import base.SpecBase
-import data.SampleData.sampleMemberJourneyData
+import data.SampleData.{companyDetails, sampleEmployerJourneyData, sampleMemberJourneyData}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -72,7 +72,7 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       }
     }
 
-    "must return OK and the correct summary list row items for a GET" in {
+    "must return OK and the correct summary list row items for a GET (member)" in {
       val mockView = mock[CheckYourAnswersView]
       val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
         inject.bind[CheckYourAnswersView].toInstance(mockView)
@@ -93,9 +93,40 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         status(result) mustEqual OK
 
         val actual: Seq[SummaryListRow] = captor.getValue.rows
-        val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRows.toSeq
+        val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRows
 
         actual.size mustBe expected.size
+
+        actual.zipWithIndex.map{ case (a, i) =>
+          a mustBe expected(i)
+        }
+      }
+    }
+
+    "must return OK and the correct summary list row items for a GET (employer)" in {
+      val mockView = mock[CheckYourAnswersView]
+      val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+        inject.bind[CheckYourAnswersView].toInstance(mockView)
+      )
+
+      val application = applicationBuilder(
+        userAnswers = Some(sampleEmployerJourneyData),
+        extraModules = extraModules
+      ).build()
+
+      val captor: ArgumentCaptor[SummaryList] =
+        ArgumentCaptor.forClass(classOf[SummaryList])
+
+      running(application) {
+        when(mockView.apply(captor.capture())(any(), any())).thenReturn(play.twirl.api.Html(""))
+        val request = FakeRequest(GET, controllers.event1.routes.Event1CheckYourAnswersController.onPageLoad(0).url)
+        val result = route(application, request).value
+        status(result) mustEqual OK
+
+        val actual: Seq[SummaryListRow] = captor.getValue.rows
+        val expected: Seq[Aliases.SummaryListRow] = expectedEmployerSummaryListRows
+
+        // actual.size mustBe expected.size
 
         actual.zipWithIndex.map{ case (a, i) =>
           a mustBe expected(i)
@@ -210,5 +241,43 @@ object Event1CheckYourAnswersControllerSpec {
     )
   )
 
-
+  private def expectedEmployerSummaryListRows(implicit messages: Messages): Seq[SummaryListRow] = Seq(
+    fakeSummaryListRowWithText(
+      "companyDetails.CYA.companyName",
+      "Company Name",
+      "/manage-pension-scheme-event-report/new-report/1/event-1-company-details?waypoints=event-1-check-answers-1"
+    ),
+    fakeSummaryListRowWithText(
+      "companyDetails.CYA.companyNumber",
+      "12345678",
+      "/manage-pension-scheme-event-report/new-report/1/event-1-company-details?waypoints=event-1-check-answers-1"
+    ),
+    fakeSummaryListRowWithHtmlContent(
+      "companyDetails.CYA.companyAddress",
+      """<span class="govuk-!-display-block">addr11</span><span class="govuk-!-display-block">addr12</span><span class="govuk-!-display-block">addr13</span><span class="govuk-!-display-block">addr14</span><span class="govuk-!-display-block">zz11zz</span><span class="govuk-!-display-block">United Kingdom</span>""",
+      "/manage-pension-scheme-event-report/new-report/1/event-1-company-postcode?waypoints=event-1-check-answers-1"
+    ),
+    fakeSummaryListRowWithHtmlContent(
+      "paymentNature.checkYourAnswersLabel",
+      "Tangible moveable property held directly or indirectly by an investment-regulated pension scheme",
+      "/manage-pension-scheme-event-report/new-report/1/event-1-employer-payment-nature?waypoints=event-1-check-answers-1"
+    ),
+    fakeSummaryListRowWithText(
+      "employerTangibleMoveableProperty.checkYourAnswersLabel",
+      "Another test description",
+      "/manage-pension-scheme-event-report/new-report/1/event-1-employer-tangible-moveable-property?waypoints=event-1-check-answers-1"
+    ),
+    fakeSummaryListRowWithHtmlContentWithHiddenContent(
+      "paymentValueAndDate.value.checkYourAnswersLabel",
+      "£1,000.00",
+      "/manage-pension-scheme-event-report/new-report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
+      "paymentValueAndDate.value.change.hidden"
+    ),
+    fakeSummaryListRowWithTextWithHiddenContent(
+      "paymentValueAndDate.date.checkYourAnswersLabel",
+      "08/11/2022",
+      "/manage-pension-scheme-event-report/new-report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
+      "paymentValueAndDate.date.change.hidden"
+    )
+  )
 }

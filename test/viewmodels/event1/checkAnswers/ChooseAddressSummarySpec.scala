@@ -74,6 +74,12 @@ class ChooseAddressSummarySpec extends AnyFreeSpec with Matchers with OptionValu
         "companyDetails.CYA.companyAddress"
       }
 
+      val visuallyHiddenTextKey = if (addressJourneyType != Event1EmployerAddressJourney) {
+        "enterPostcode.change.hidden"
+      } else {
+        "companyDetails.companyAddress.change.hidden"
+      }
+
       val value = ValueViewModel(
         HtmlContent(
           addressAnswer(employerAddress)
@@ -86,7 +92,7 @@ class ChooseAddressSummarySpec extends AnyFreeSpec with Matchers with OptionValu
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType, 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("enterPostcode.change.hidden"))
+              .withVisuallyHiddenText(messages(visuallyHiddenTextKey))
           )
         )
       )

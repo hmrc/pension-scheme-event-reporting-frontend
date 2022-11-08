@@ -49,7 +49,7 @@ class CompanyDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
           value = ValueViewModel(HtmlFormat.escape(companyDetails.companyName).toString),
           actions = Seq(
             ActionItemViewModel("site.change", CompanyDetailsPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("companyDetails.change.hidden"))
+              .withVisuallyHiddenText(messages("companyDetails.companyName.change.hidden"))
           )
         )
       )

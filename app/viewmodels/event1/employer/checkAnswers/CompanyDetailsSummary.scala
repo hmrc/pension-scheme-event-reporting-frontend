@@ -53,7 +53,7 @@ object CompanyDetailsSummary {
           value = ValueViewModel(HtmlFormat.escape(answer.companyName).toString),
           actions = Seq(
             ActionItemViewModel("site.change", CompanyDetailsPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("companyDetails.change.hidden"))
+              .withVisuallyHiddenText(messages("companyDetails.companyName.change.hidden"))
           )
         )
     }
@@ -68,7 +68,7 @@ object CompanyDetailsSummary {
           value = ValueViewModel(HtmlFormat.escape(answer.companyNumber).toString),
           actions = Seq(
             ActionItemViewModel("site.change", CompanyDetailsPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("companyDetails.change.hidden"))
+              .withVisuallyHiddenText(messages("companyDetails.companyNumber.change.hidden"))
           )
         )
     }

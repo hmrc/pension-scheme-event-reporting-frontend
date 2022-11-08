@@ -56,7 +56,7 @@ object MembersDetailsSummary {
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", MembersDetailsPage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("membersDetails.checkYourAnswersLabel.nino"))
+              .withVisuallyHiddenText(messages("membersDetails.change.nino.hidden"))
           )
         )
     }

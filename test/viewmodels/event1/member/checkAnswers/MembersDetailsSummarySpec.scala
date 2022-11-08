@@ -76,7 +76,7 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", MembersDetailsPage(Event1, Some(0)).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("membersDetails.change.hidden"))
+              .withVisuallyHiddenText(messages("membersDetails.change.nino.hidden"))
           )
         )
       )
