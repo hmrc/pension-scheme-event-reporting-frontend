@@ -172,6 +172,6 @@ POST        /new-report/:index/dummy-member-details                             
 GET         /new-report/:index/dummy-check-your-answers                           controllers.CheckYourAnswersController.onPageLoadWithIndex(eventType: EventType = EventType.Event2, index: Index)
 GET         /new-report/event-23-tax-year                                         controllers.event23.ChooseTaxYearController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-23-tax-year                                         controllers.event23.ChooseTaxYearController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
-GET         /new-report/event-23-total-input-amount                               controllers.event23.MembersTotalPensionAmountsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /new-report/event-23-total-input-amount                               controllers.event23.MembersTotalPensionAmountsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-23-total-input-amount                               controllers.common.TotalPensionAmountsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
+POST        /new-report/event-23-total-input-amount                               controllers.common.TotalPensionAmountsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 

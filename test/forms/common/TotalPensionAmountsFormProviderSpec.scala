@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package forms.event23
+package forms.common
 
 import forms.behaviours.IntFieldBehaviours
 import play.api.data.FormError
 
-class MembersTotalPensionAmountsFormProviderSpec extends IntFieldBehaviours {
+class TotalPensionAmountsFormProviderSpec extends IntFieldBehaviours {
 
-  private val form = new MembersTotalPensionAmountsFormProvider()()
+  private val form = new TotalPensionAmountsFormProvider()()
 
   ".value" - {
 
@@ -41,8 +41,8 @@ class MembersTotalPensionAmountsFormProviderSpec extends IntFieldBehaviours {
     behave like intField(
       form,
       fieldName,
-      nonNumericError  = FormError(fieldName, "membersTotalPensionAmounts.error.nonNumeric"),
-      wholeNumberError = FormError(fieldName, "membersTotalPensionAmounts.error.wholeNumber")
+      nonNumericError  = FormError(fieldName, "totalPensionAmounts.error.nonNumeric"),
+      wholeNumberError = FormError(fieldName, "totalPensionAmounts.error.wholeNumber")
     )
 
     behave like intFieldWithRange(
@@ -50,13 +50,13 @@ class MembersTotalPensionAmountsFormProviderSpec extends IntFieldBehaviours {
       fieldName,
       minimum       = minimum,
       maximum       = maximum,
-      expectedError = FormError(fieldName, "membersTotalPensionAmounts.error.outOfRange", Seq(minimum, maximum))
+      expectedError = FormError(fieldName, "totalPensionAmounts.error.outOfRange", Seq(minimum, maximum))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, "membersTotalPensionAmounts.error.required")
+      requiredError = FormError(fieldName, "totalPensionAmounts.error.required")
     )
   }
 }

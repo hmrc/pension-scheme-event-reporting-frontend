@@ -22,7 +22,7 @@ import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContribu
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
-import pages.common.MembersDetailsPage
+import pages.common.{MembersDetailsPage, TotalPensionAmountsPage}
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.eventWindUp.SchemeWindUpDatePage
@@ -30,10 +30,10 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
-  implicit lazy val arbitraryMembersTotalPensionAmountsUserAnswersEntry: Arbitrary[(pages.event23.MembersTotalPensionAmountsPage.type, JsValue)] =
+  implicit lazy val arbitraryMembersTotalPensionAmountsUserAnswersEntry: Arbitrary[(TotalPensionAmountsPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event23.MembersTotalPensionAmountsPage.type]
+        page  <- arbitrary[TotalPensionAmountsPage.type]
         value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }
