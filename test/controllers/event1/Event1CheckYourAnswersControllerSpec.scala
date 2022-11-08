@@ -95,6 +95,8 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         val actual: Seq[SummaryListRow] = captor.getValue.rows
         val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRows.toSeq
 
+        actual.size mustBe expected.size
+
         actual.zipWithIndex.map{ case (a, i) =>
           a mustBe expected(i)
         }
