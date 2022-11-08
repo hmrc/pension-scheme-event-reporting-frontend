@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package pages.event23
+package pages.common
 
+import models.enumeration.EventType.Event23
 import pages.behaviours.PageBehaviours
 
-class MembersTotalPensionAmountsPageSpec extends PageBehaviours {
+class TotalPensionAmountsPageSpec extends PageBehaviours {
 
-  "MembersTotalPensionAmountsPage" - {
+  "TotalPensionAmountsPage" - {
 
-    beRetrievable[Int](MembersTotalPensionAmountsPage)
+    beRetrievable[Int](TotalPensionAmountsPage(Event23))
 
-    beSettable[Int](MembersTotalPensionAmountsPage)
+    beSettable[Int](TotalPensionAmountsPage(Event23))
 
-    beRemovable[Int](MembersTotalPensionAmountsPage)
+    beRemovable[Int](TotalPensionAmountsPage(Event23))
   }
 }

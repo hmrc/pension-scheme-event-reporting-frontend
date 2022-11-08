@@ -14,8 +14,8 @@
  * limitations under the License.
  *@
 
-@import controllers.event23.routes
-
+@import controllers.common.routes
+@import models.enumeration.EventType
 @import viewmodels.InputWidth._
 
 @this(
@@ -26,11 +26,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, selectTaxYear: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, selectTaxYear: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("membersTotalPensionAmounts.title", selectTaxYear))) {
+@layout(pageTitle = title(form, messages("totalPensionAmounts.title", selectTaxYear))) {
 
-    @formHelper(action = routes.MembersTotalPensionAmountsController.onSubmit(waypoints), 'autoComplete -> "off") {
+    @formHelper(action = routes.TotalPensionAmountsController.onSubmit(waypoints), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -39,7 +39,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("membersTotalPensionAmounts.heading", selectTaxYear)).asPageHeading()
+                label = LabelViewModel(messages("totalPensionAmounts.heading", selectTaxYear)).asPageHeading()
             )
             .withWidth(OneQuarter)
             .withPrefix(PrefixOrSuffix(content = Text("£")))

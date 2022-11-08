@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package pages.event23
+package pages.common
 
-import controllers.event23.routes
+import models.enumeration.EventType
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Waypoints, QuestionPage}
 
-case object MembersTotalPensionAmountsPage extends QuestionPage[Int] {
+case class TotalPensionAmountsPage(eventType: EventType) extends QuestionPage[Int] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "membersTotalPensionAmounts"
+  override def toString: String = "totalPensionAmounts"
 
   override def route(waypoints: Waypoints): Call =
-    routes.MembersTotalPensionAmountsController.onPageLoad(waypoints)
+    controllers.common.routes.TotalPensionAmountsController.onPageLoad(waypoints)
+
 }

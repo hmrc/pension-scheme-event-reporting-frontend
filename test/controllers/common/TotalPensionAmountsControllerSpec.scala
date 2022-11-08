@@ -14,38 +14,40 @@
  * limitations under the License.
  */
 
-package controllers.event23
+package controllers.common
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event23.MembersTotalPensionAmountsFormProvider
+import controllers.common.routes
+import forms.common.TotalPensionAmountsFormProvider
 import models.UserAnswers
+import models.enumeration.EventType
 import org.apache.commons.lang3.StringUtils
-import pages.EmptyWaypoints
-import pages.event23.MembersTotalPensionAmountsPage
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
+import pages.common.TotalPensionAmountsPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event23.MembersTotalPensionAmountsView
+import views.html.common.TotalPensionAmountsView
 
 import scala.concurrent.Future
 
-class MembersTotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
+class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
-
-  private val formProvider = new MembersTotalPensionAmountsFormProvider()
+  private val event23 = EventType.Event23
+  private val formProvider = new TotalPensionAmountsFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.MembersTotalPensionAmountsController.onPageLoad(waypoints).url
-  private def postRoute: String = routes.MembersTotalPensionAmountsController.onSubmit(waypoints).url
+  private def getRoute: String = routes.TotalPensionAmountsController.onPageLoad(waypoints).url
+  private def postRoute: String = routes.TotalPensionAmountsController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -69,28 +71,28 @@ class MembersTotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAf
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[MembersTotalPensionAmountsView]
+        val view = application.injector.instanceOf[TotalPensionAmountsView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, StringUtils.EMPTY)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, event23, StringUtils.EMPTY)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(MembersTotalPensionAmountsPage, validValue).success.value
+      val userAnswers = UserAnswers().set(TotalPensionAmountsPage(event23), validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[MembersTotalPensionAmountsView]
+        val view = application.injector.instanceOf[TotalPensionAmountsView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, StringUtils.EMPTY)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, event23, StringUtils.EMPTY)(request, messages(application)).toString
       }
     }
 
@@ -107,10 +109,10 @@ class MembersTotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAf
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "33"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(MembersTotalPensionAmountsPage, validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(TotalPensionAmountsPage(event23), validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MembersTotalPensionAmountsPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual TotalPensionAmountsPage(event23).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -124,13 +126,13 @@ class MembersTotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAf
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
 
-        val view = application.injector.instanceOf[MembersTotalPensionAmountsView]
+        val view = application.injector.instanceOf[TotalPensionAmountsView]
         val boundForm = form.bind(Map("value" -> ""))
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, StringUtils.EMPTY)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, event23, StringUtils.EMPTY)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

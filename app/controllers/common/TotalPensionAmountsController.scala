@@ -14,54 +14,55 @@
  * limitations under the License.
  */
 
-package controllers.event23
+package controllers.common
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.event23.MembersTotalPensionAmountsFormProvider
+import forms.common.TotalPensionAmountsFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import org.apache.commons.lang3.StringUtils
 import pages.Waypoints
-import pages.event23.{ChooseTaxYearPage, MembersTotalPensionAmountsPage}
+import pages.common.TotalPensionAmountsPage
+import pages.event23.ChooseTaxYearPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event23.MembersTotalPensionAmountsView
+import views.html.common.TotalPensionAmountsView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class MembersTotalPensionAmountsController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                      identify: IdentifierAction,
-                                      getData: DataRetrievalAction,
-                                      userAnswersCacheConnector: UserAnswersCacheConnector,
-                                      formProvider: MembersTotalPensionAmountsFormProvider,
-                                      view: MembersTotalPensionAmountsView
+class TotalPensionAmountsController @Inject()(val controllerComponents: MessagesControllerComponents,
+                                              identify: IdentifierAction,
+                                              getData: DataRetrievalAction,
+                                              userAnswersCacheConnector: UserAnswersCacheConnector,
+                                              formProvider: TotalPensionAmountsFormProvider,
+                                              view: TotalPensionAmountsView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event23
+//  private val eventType = EventType.Event23
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(MembersTotalPensionAmountsPage)).fold(form)(form.fill)
+  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(_.get(TotalPensionAmountsPage(eventType))).fold(form)(form.fill)
     val selectedTaxYear = request.userAnswers.flatMap(_.get(ChooseTaxYearPage)) match {
       case Some(taxYear) => (taxYear.toString + " to " + (taxYear.toString.toInt + 1).toString)
       case _ => StringUtils.EMPTY
     }
-    Ok(view(preparedForm, waypoints, selectedTaxYear))
+    Ok(view(preparedForm, waypoints, eventType, selectedTaxYear))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, StringUtils.EMPTY))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, StringUtils.EMPTY))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(MembersTotalPensionAmountsPage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(TotalPensionAmountsPage(eventType), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(MembersTotalPensionAmountsPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(TotalPensionAmountsPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

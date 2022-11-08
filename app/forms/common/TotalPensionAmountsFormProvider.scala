@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package forms.event23
+package forms.common
 
 import forms.mappings.Mappings
-import javax.inject.Inject
 import play.api.data.Form
 
-class MembersTotalPensionAmountsFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
+
+class TotalPensionAmountsFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Int] =
     Form(
       "value" -> int(
-        "membersTotalPensionAmounts.error.required",
-        "membersTotalPensionAmounts.error.wholeNumber",
-        "membersTotalPensionAmounts.error.nonNumeric")
-          .verifying(inRange(0, Int.MaxValue, "membersTotalPensionAmounts.error.outOfRange"))
+        "totalPensionAmounts.error.required",
+        "totalPensionAmounts.error.wholeNumber",
+        "totalPensionAmounts.error.nonNumeric")
+          .verifying(inRange(0, Int.MaxValue, "totalPensionAmounts.error.outOfRange"))
     )
 }

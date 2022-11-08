@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package viewmodels.event23.checkAnswers
+package viewmodels.checkAnswers
 
 import models.UserAnswers
+import pages.common.TotalPensionAmountsPage
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event23.MembersTotalPensionAmountsPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import models.enumeration.EventType
 
-object MembersTotalPensionAmountsSummary  {
+object TotalPensionAmountsSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType : EventType)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MembersTotalPensionAmountsPage).map {
+    answers.get(TotalPensionAmountsPage(eventType)).map {
       answer =>
 
         SummaryListRowViewModel(
-          key     = "membersTotalPensionAmounts.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.toString),
+          key = "totalPensionAmounts.checkYourAnswersLabel",
+          value = ValueViewModel(answer.toString),
           actions = Seq(
-            ActionItemViewModel("site.change", MembersTotalPensionAmountsPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("membersTotalPensionAmounts.change.hidden"))
+            ActionItemViewModel("site.change", TotalPensionAmountsPage(eventType).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("totalPensionAmounts.change.hidden"))
           )
         )
     }
