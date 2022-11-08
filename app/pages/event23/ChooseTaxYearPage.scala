@@ -18,21 +18,22 @@ package pages.event23
 
 import controllers.event23.routes
 import models.UserAnswers
-import models.enumeration.EventType.{Event23}
+import models.enumeration.EventType
+import models.enumeration.EventType.Event23
 import models.event23.ChooseTaxYear
 import pages.common.TotalPensionAmountsPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import pages.{Page, QuestionPage, Waypoints}
 
-case object ChooseTaxYearPage extends QuestionPage[ChooseTaxYear] {
+case class ChooseTaxYearPage(eventType: EventType) extends QuestionPage[ChooseTaxYear] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "chooseTaxYear"
 
   override def route(waypoints: Waypoints): Call =
-    routes.ChooseTaxYearController.onPageLoad(waypoints)
+    routes.ChooseTaxYearController.onPageLoad(waypoints, eventType)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     TotalPensionAmountsPage(Event23)

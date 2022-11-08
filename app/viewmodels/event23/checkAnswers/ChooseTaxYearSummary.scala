@@ -17,6 +17,7 @@
 package viewmodels.event23.checkAnswers
 
 import models.UserAnswers
+import models.enumeration.EventType
 import pages.{CheckAnswersPage, Waypoints}
 import pages.event23.ChooseTaxYearPage
 import play.api.i18n.Messages
@@ -28,9 +29,9 @@ import viewmodels.implicits._
 
 object ChooseTaxYearSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, eventType : EventType, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ChooseTaxYearPage).map {
+    answers.get(ChooseTaxYearPage(eventType)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -43,7 +44,7 @@ object ChooseTaxYearSummary  {
           key     = "chooseTaxYear.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", ChooseTaxYearPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", ChooseTaxYearPage(eventType).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("chooseTaxYear.change.hidden"))
           )
         )

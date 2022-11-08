@@ -17,10 +17,13 @@
 package models.event23
 
 import models.Enumerable
+import models.enumeration.EventType
+import models.enumeration.EventType.Event23
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utils.DateHelper
+
 import java.time.{LocalDate, Month}
 
 case class ChooseTaxYear(startYear: String) {
@@ -29,13 +32,24 @@ case class ChooseTaxYear(startYear: String) {
 
 object ChooseTaxYear extends Enumerable.Implicits {
 
-  private val startDayOfNewTaxYear: Int = 6
-  private val minYear: Int = 2015
-  def currentYear = new ChooseTaxYear(DateHelper.today.getYear.toString)
+  private final val StartDayOfNewTaxYear: Int = 6
+  private final val MinYearDefault: Int = 2013
+  private final val MinYearEvent23: Int = 2015
+  def currentYear: ChooseTaxYear = ChooseTaxYear(DateHelper.today.getYear.toString)
 
-  def values: Seq[ChooseTaxYear] = {
+  def values: Seq[ChooseTaxYear] = valueMinYear(MinYearDefault)
+
+  def valuesForEventType(eventType: EventType): Seq[ChooseTaxYear] = {
+    val tempMinYear = eventType match {
+      case Event23 => MinYearEvent23
+      case _ => MinYearDefault
+    }
+    valueMinYear(tempMinYear)
+  }
+
+  private def valueMinYear(minYear: Int): Seq[ChooseTaxYear] = {
     val currentYear = DateHelper.today.getYear
-    val newTaxYearStart = LocalDate.of(currentYear, Month.APRIL.getValue, startDayOfNewTaxYear)
+    val newTaxYearStart = LocalDate.of(currentYear, Month.APRIL.getValue, StartDayOfNewTaxYear)
 
     val maxYear =
       if (DateHelper.today.isAfter(newTaxYearStart) || DateHelper.today.isEqual(newTaxYearStart)) {
@@ -43,11 +57,9 @@ object ChooseTaxYear extends Enumerable.Implicits {
       } else {
         currentYear - 1
       }
-
     (minYear to maxYear).reverseIterator.map(year => ChooseTaxYear(year.toString)).toSeq
   }
-
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
+  def options(eventType: EventType)(implicit messages: Messages): Seq[RadioItem] = valuesForEventType(eventType).zipWithIndex.map {
     case (value, index) =>
       val yearRangeOption = messages("chooseTaxYear.yearRangeRadio", value, (value.toString.toInt + 1).toString)
       RadioItem(
