@@ -16,6 +16,7 @@
 
 package viewmodels.govuk
 
+import org.apache.commons.lang3.StringUtils
 import play.api.data.Field
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.dateinput.{DateInput, InputItem}
@@ -43,7 +44,7 @@ trait DateFluency {
                fieldset: Fieldset
              )(implicit messages: Messages): DateInput = {
 
-      val errorClass = if (errorMessage(field).isDefined) "govuk-input--error" else ""
+      val errorClass = if (errorMessage(field).isDefined) "govuk-input--error" else StringUtils.EMPTY
 
       val items = Seq(
         InputItem(

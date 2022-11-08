@@ -16,6 +16,7 @@
 
 package models.address
 
+import org.apache.commons.lang3.StringUtils
 import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -61,11 +62,11 @@ case class TolerantAddress(addressLine1: Option[String],
 
 
   def equalsAddress(address: Address): Boolean =
-    address.addressLine1 == addressLine1.getOrElse("") &&
-      address.addressLine2 == addressLine2.getOrElse("") &&
+    address.addressLine1 == addressLine1.getOrElse(StringUtils.EMPTY) &&
+      address.addressLine2 == addressLine2.getOrElse(StringUtils.EMPTY) &&
       address.addressLine3 == addressLine3 &&
       address.addressLine4 == addressLine4 &&
-      address.country == countryOpt.getOrElse("") &&
+      address.country == countryOpt.getOrElse(StringUtils.EMPTY) &&
       address.postcode == postcode
 }
 
@@ -150,7 +151,7 @@ object TolerantAddress {
                                                   addressLines: List[String],
                                                   elementToCheck: String
                                                 ): Boolean =
-    addressLines.mkString("").toLowerCase().contains(elementToCheck.trim().toLowerCase())
+    addressLines.mkString(StringUtils.EMPTY).toLowerCase().contains(elementToCheck.trim().toLowerCase())
 
   implicit lazy val formatsTolerantAddress: Format[TolerantAddress] = (
     (JsPath \ "addressLine1").formatNullable[String] and

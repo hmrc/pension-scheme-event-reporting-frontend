@@ -16,6 +16,8 @@
 
 package forms.mappings
 
+import org.apache.commons.lang3.StringUtils
+
 trait Transforms {
 
   protected def noSpaceWithUpperCaseTransform(value: String): String =
@@ -28,7 +30,7 @@ trait Transforms {
     }
 
   protected def strip(value: String): String = {
-    value.replaceAll(" ", "")
+    value.replaceAll(" ", StringUtils.EMPTY)
   }
 
   protected def noTransform(value: String): String = {

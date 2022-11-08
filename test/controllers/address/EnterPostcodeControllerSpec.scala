@@ -22,9 +22,9 @@ import data.SampleData._
 import forms.address.EnterPostcodeFormProvider
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.address.EnterPostcodePage
 import pages.event1.employer.CompanyDetailsPage
@@ -36,7 +36,7 @@ import views.html.address.EnterPostcodeView
 
 import scala.concurrent.Future
 
-class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach {
+class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
@@ -55,9 +55,10 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach {
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
-    reset(mockUserAnswersCacheConnector, mockAddressLookupConnector)
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockUserAnswersCacheConnector)
+    reset(mockAddressLookupConnector)
     when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any())).thenReturn(Future.successful(seqTolerantAddresses))
   }
 

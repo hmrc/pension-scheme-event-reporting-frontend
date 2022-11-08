@@ -17,6 +17,7 @@
 package viewmodels.event1.member.checkAnswers
 
 import models.{Index, UserAnswers}
+import org.apache.commons.lang3.StringUtils
 import pages.event1.member.ErrorDescriptionPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -34,7 +35,7 @@ object ErrorDescriptionSummary {
       case Some(value) =>
         ValueViewModel(HtmlFormat.escape(value).toString)
       case None =>
-        ValueViewModel("")
+        ValueViewModel(StringUtils.EMPTY)
     }
 
     Some(
