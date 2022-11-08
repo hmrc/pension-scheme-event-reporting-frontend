@@ -72,7 +72,7 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       }
     }
 
-    "must return OK and the correct view for a GET with appropriate CYA rows" in {
+    "must return OK and the correct summary list row items for a GET" in {
       val mockView = mock[CheckYourAnswersView]
       val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
         inject.bind[CheckYourAnswersView].toInstance(mockView)
@@ -94,14 +94,10 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         val actual: Seq[SummaryListRow] = captor.getValue.rows
         val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRows.toSeq
-        actual.head mustBe expected.head
-        actual(1) mustBe expected(1)
-        actual(2) mustBe expected(2)
-        actual(3) mustBe expected(3)
-        actual(4) mustBe expected(4)
-        actual(5) mustBe expected(5)
-        actual(6) mustBe expected(6)
-        actual(7) mustBe expected(7)
+
+        actual.zipWithIndex.map{ case (a, i) =>
+          a mustBe expected(i)
+        }
       }
     }
 
