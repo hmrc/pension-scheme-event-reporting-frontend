@@ -2,7 +2,6 @@ import play.sbt.routes.RoutesKeys
 import sbt.Def
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
-
 import scala.sys.process._
 
 lazy val appName: String = "pension-scheme-event-reporting-frontend"

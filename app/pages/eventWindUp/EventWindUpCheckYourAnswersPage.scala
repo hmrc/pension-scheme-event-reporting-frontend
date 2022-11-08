@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2022 HM Revenue & Customs
  *
@@ -22,11 +21,11 @@ import play.api.mvc.Call
 
 case object EventWindUpCheckYourAnswersPage extends CheckAnswersPage {
   override val urlFragment: String =
-      "event-windup-check-answers"
+    "event-windup-check-answers"
 
   override def route(waypoints: Waypoints): Call = {
     controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onPageLoad()
-    }
+  }
 
-  override def toString: String = "CheckYourAnswersPage"
+  override def toString: String = "EventWindUpCheckYourAnswersPage"
 }

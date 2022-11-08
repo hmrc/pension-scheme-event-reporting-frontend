@@ -81,7 +81,7 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         actual.size mustBe expected.size
 
-        actual.zipWithIndex.map{ case (a, i) =>
+        actual.zipWithIndex.map { case (a, i) =>
           a mustBe expected(i)
         }
       }
@@ -112,7 +112,7 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         actual.size mustBe expected.size
 
-        actual.zipWithIndex.map{ case (a, i) =>
+        actual.zipWithIndex.map { case (a, i) =>
           a mustBe expected(i)
         }
       }

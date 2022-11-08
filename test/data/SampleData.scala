@@ -22,17 +22,17 @@ import models.common.MembersDetails
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.enumeration.EventType.Event1
 import models.event1.HowAddUnauthPayment.Manual
+import models.event1.PaymentDetails
 import models.event1.PaymentNature.BenefitInKind
-import models.event1.{PaymentDetails, WhoReceivedUnauthPayment}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.employer.PaymentNature.TangibleMoveableProperty
 import models.event1.employer.{CompanyDetails, LoanDetails}
 import models.event1.member.SchemeDetails
 import pages.address.ManualAddressPage
 import pages.common.MembersDetailsPage
+import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
-import pages.event1.{DoYouHoldSignedMandatePage, HowAddUnauthPaymentPage, PaymentValueAndDatePage, ValueOfUnauthorisedPaymentPage, WhoReceivedUnauthPaymentPage}
 import utils.{CountryOptions, InputOption}
 
 import java.time.LocalDate
@@ -95,7 +95,7 @@ object SampleData {
 
   val memberDetails: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567V")
 
-  val paymentDetails: PaymentDetails = PaymentDetails(1000.00, LocalDate.of(2022,11,8))
+  val paymentDetails: PaymentDetails = PaymentDetails(1000.00, LocalDate.of(2022, 11, 8))
 
   def booleanCYAVal(value: Boolean) = if (value) "site.yes" else "site.no"
 

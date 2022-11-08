@@ -1,6 +1,3 @@
-
-package pages.event18
-
 /*
  * Copyright 2022 HM Revenue & Customs
  *
@@ -17,16 +14,18 @@ package pages.event18
  * limitations under the License.
  */
 
+package pages.event18
+
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.mvc.Call
 
 case object Event18CheckYourAnswersPage extends CheckAnswersPage {
   override val urlFragment: String =
-      "event-18-check-answers"
+    "event-18-check-answers"
 
   override def route(waypoints: Waypoints): Call = {
     controllers.event18.routes.Event18CheckYourAnswersController.onPageLoad()
-    }
+  }
 
   override def toString: String = "CheckYourAnswersPage"
 }

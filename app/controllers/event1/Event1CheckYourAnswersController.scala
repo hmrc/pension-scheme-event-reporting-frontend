@@ -36,20 +36,19 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.address.checkAnswers.ChooseAddressSummary
 import viewmodels.checkAnswers.MembersDetailsSummary
 import viewmodels.event1.checkAnswers._
-import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, EmployerUnauthorisedPaymentRecipientNameSummary,
-  LoanDetailsSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
+import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, EmployerUnauthorisedPaymentRecipientNameSummary, LoanDetailsSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
 import viewmodels.event1.member.checkAnswers._
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
 class Event1CheckYourAnswersController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            identify: IdentifierAction,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: CheckYourAnswersView
-                                          ) extends FrontendBaseController with I18nSupport {
+                                                  override val messagesApi: MessagesApi,
+                                                  identify: IdentifierAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: CheckYourAnswersView
+                                                ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (identify andThen getData(Event1) andThen requireData) { implicit request =>
@@ -97,7 +96,7 @@ class Event1CheckYourAnswersController @Inject()(
     }
 
     val paymentValueAndDateRows = event1PaymentValueAndDateRows(waypoints, sourcePage, index)
-    
+
     basicMemberOrEmployerRows ++ memberOrEmployerPaymentNatureRows ++ paymentValueAndDateRows
   }
 
