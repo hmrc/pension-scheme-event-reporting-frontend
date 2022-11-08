@@ -17,9 +17,7 @@
 package pages.event1
 
 import models.event1.MembersOrEmployersSummary
-import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 import queries.Gettable
 
 object MembersOrEmployersPage extends Gettable[Seq[MembersOrEmployersSummary]] {
