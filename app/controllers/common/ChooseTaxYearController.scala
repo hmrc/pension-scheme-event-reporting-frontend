@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package controllers.event23
+package controllers.common
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.event23.ChooseTaxYearFormProvider
+import forms.common.ChooseTaxYearFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
-import pages.Waypoints
-import pages.event23.ChooseTaxYearPage
+import pages.{Waypoints, common}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event23.ChooseTaxYearView
+import views.html.common.ChooseTaxYearView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,7 +41,7 @@ class ChooseTaxYearController @Inject()(val controllerComponents: MessagesContro
   private val form = formProvider()
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(ChooseTaxYearPage(eventType))).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(common.ChooseTaxYearPage(eventType))).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, eventType))
   }
 
@@ -53,9 +52,9 @@ class ChooseTaxYearController @Inject()(val controllerComponents: MessagesContro
           Future.successful(BadRequest(view(formWithErrors, waypoints, eventType))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(ChooseTaxYearPage(eventType), value)
+          val updatedAnswers = originalUserAnswers.setOrException(common.ChooseTaxYearPage(eventType), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(ChooseTaxYearPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(common.ChooseTaxYearPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

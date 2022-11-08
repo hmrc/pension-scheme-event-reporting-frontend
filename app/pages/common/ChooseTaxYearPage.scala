@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package pages.event23
+package pages.common
 
-import controllers.event23.routes
+import controllers.common.routes
 import models.UserAnswers
+import models.common.ChooseTaxYear
 import models.enumeration.EventType
 import models.enumeration.EventType.Event23
-import models.event23.ChooseTaxYear
-import pages.common.TotalPensionAmountsPage
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Page, QuestionPage, Waypoints}
 
 case class ChooseTaxYearPage(eventType: EventType) extends QuestionPage[ChooseTaxYear] {
 

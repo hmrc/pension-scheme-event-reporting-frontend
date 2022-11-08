@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package forms.event23
+package forms.common
 
 import forms.behaviours.OptionFieldBehaviours
-import models.event23.ChooseTaxYear
+import models.common.ChooseTaxYear
 import play.api.data.FormError
 
 class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours {
@@ -27,7 +27,7 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours {
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "chooseTaxYear.error.required"
+    val requiredKey = "chooseTaxYear.event23.error.required"
 
     behave like optionsField[ChooseTaxYear](
       form,

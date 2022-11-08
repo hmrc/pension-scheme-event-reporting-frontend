@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package controllers.event23
+package controllers.common
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event23.ChooseTaxYearFormProvider
+import controllers.common.routes
+import forms.common.ChooseTaxYearFormProvider
 import models.UserAnswers
+import models.common.ChooseTaxYear
 import models.enumeration.EventType.Event23
-import models.event23.ChooseTaxYear
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.EmptyWaypoints
-import pages.event23.ChooseTaxYearPage
+import pages.{EmptyWaypoints, common}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event23.ChooseTaxYearView
+import views.html.common.ChooseTaxYearView
 
 import scala.concurrent.Future
 
@@ -78,7 +78,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(ChooseTaxYearPage(Event23), ChooseTaxYear.values.head).success.value
+      val userAnswers = UserAnswers().set(common.ChooseTaxYearPage(Event23), ChooseTaxYear.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -107,10 +107,10 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ChooseTaxYear.values.head.toString))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(ChooseTaxYearPage(Event23), ChooseTaxYear.values.head).success.value
+        val updatedAnswers = emptyUserAnswers.set(common.ChooseTaxYearPage(Event23), ChooseTaxYear.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ChooseTaxYearPage(Event23).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual common.ChooseTaxYearPage(Event23).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }

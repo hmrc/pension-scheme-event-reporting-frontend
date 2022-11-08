@@ -17,13 +17,12 @@
 package generators
 
 import models._
-import models.common.MembersDetails
-import models.enumeration.EventType.Event23
+import models.common.{ChooseTaxYear, MembersDetails}
 import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, WhoWasTheTransferMade}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
-import pages.common.{MembersDetailsPage, TotalPensionAmountsPage}
+import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.eventWindUp.SchemeWindUpDatePage
@@ -39,11 +38,11 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryChooseTaxYearUserAnswersEntry: Arbitrary[(pages.event23.ChooseTaxYearPage, JsValue)] =
+  implicit lazy val arbitraryChooseTaxYearUserAnswersEntry: Arbitrary[(ChooseTaxYearPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event23.ChooseTaxYearPage]
-        value <- arbitrary[models.event23.ChooseTaxYear].map(Json.toJson(_))
+        page  <- arbitrary[ChooseTaxYearPage]
+        value <- arbitrary[ChooseTaxYear].map(Json.toJson(_))
       } yield (page, value)
     }
 

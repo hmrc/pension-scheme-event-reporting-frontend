@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package pages.event23
+package pages.common
 
+import models.common.ChooseTaxYear
 import models.enumeration.EventType.Event23
-import models.event23.ChooseTaxYear
 import pages.behaviours.PageBehaviours
+import pages.common
 
 class ChooseTaxYearSpec extends PageBehaviours {
 
@@ -26,8 +27,8 @@ class ChooseTaxYearSpec extends PageBehaviours {
 
     beRetrievable[ChooseTaxYear](ChooseTaxYearPage(Event23))
 
-    beSettable[ChooseTaxYear](ChooseTaxYearPage(Event23))
+    beSettable[ChooseTaxYear](common.ChooseTaxYearPage(Event23))
 
-    beRemovable[ChooseTaxYear](ChooseTaxYearPage(Event23))
+    beRemovable[ChooseTaxYear](common.ChooseTaxYearPage(Event23))
   }
 }
