@@ -30,7 +30,7 @@ import java.time.LocalDate
 class ChooseTaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
   private def genYear: Gen[Int] =
-    Gen.oneOf(Seq(2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028))
+    Gen.oneOf(Seq(2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028))
 
   "ChooseTaxYear" - {
 
@@ -74,7 +74,7 @@ class ChooseTaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
       forAll(genYear -> "valid years") { year =>
         DateHelper.setDate(Some(LocalDate.of(year, 4, 5)))
         val expectedResult =
-          (2015 until year).reverse.map(yr => ChooseTaxYear(yr.toString))
+          (2013 until year).reverse.map(yr => ChooseTaxYear(yr.toString))
         ChooseTaxYear.values mustBe expectedResult
       }
     }
@@ -84,7 +84,7 @@ class ChooseTaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
       forAll(genYear -> "valid years") { year =>
         DateHelper.setDate(Some(LocalDate.of(year, 4, 6)))
         val expectedResult =
-          (2015 to year).reverse.map(yr => ChooseTaxYear(yr.toString))
+          (2013 to year).reverse.map(yr => ChooseTaxYear(yr.toString))
         ChooseTaxYear.values mustBe expectedResult
       }
     }

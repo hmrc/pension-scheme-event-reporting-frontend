@@ -20,6 +20,7 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event23.ChooseTaxYearFormProvider
 import models.UserAnswers
+import models.enumeration.EventType.Event23
 import models.event23.ChooseTaxYear
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -44,9 +45,9 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.ChooseTaxYearController.onPageLoad(waypoints).url
+  private def getRoute: String = routes.ChooseTaxYearController.onPageLoad(waypoints, Event23).url
 
-  private def postRoute: String = routes.ChooseTaxYearController.onSubmit(waypoints).url
+  private def postRoute: String = routes.ChooseTaxYearController.onSubmit(waypoints, Event23).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -71,13 +72,13 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val view = application.injector.instanceOf[ChooseTaxYearView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, Event23)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(ChooseTaxYearPage, ChooseTaxYear.values.head).success.value
+      val userAnswers = UserAnswers().set(ChooseTaxYearPage(Event23), ChooseTaxYear.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -89,7 +90,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(ChooseTaxYear.values.head), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(ChooseTaxYear.values.head), waypoints, Event23)(request, messages(application)).toString
       }
     }
 
@@ -106,10 +107,10 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ChooseTaxYear.values.head.toString))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(ChooseTaxYearPage, ChooseTaxYear.values.head).success.value
+        val updatedAnswers = emptyUserAnswers.set(ChooseTaxYearPage(Event23), ChooseTaxYear.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ChooseTaxYearPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual ChooseTaxYearPage(Event23).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -129,7 +130,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, Event23)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
