@@ -22,7 +22,7 @@ import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event23}
 import pages.event1.{DoYouHoldSignedMandatePage, MembersOrEmployersPage}
 import pages.event23.ChooseTaxYearPage
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -43,7 +43,7 @@ case class MembersDetailsPage(eventType: EventType, index: Option[Int]) extends 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     (eventType, index) match {
       case (Event1, Some(index)) => DoYouHoldSignedMandatePage(index)
-      case (Event23, None) => ChooseTaxYearPage
+      case (Event23, None) => ChooseTaxYearPage(eventType)
       case _ => super.nextPageNormalMode(waypoints, answers)
     }
   }
