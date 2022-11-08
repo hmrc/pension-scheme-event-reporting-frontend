@@ -92,7 +92,7 @@ object SampleData {
 
   val memberDetails: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567V")
 
-  val paymentDetails: PaymentDetails = PaymentDetails(1000.00, LocalDate.now())
+  val paymentDetails: PaymentDetails = PaymentDetails(1000.00, LocalDate.of(2022,11,8))
 
   def booleanCYAVal(value: Boolean) = if (value) "site.yes" else "site.no"
 

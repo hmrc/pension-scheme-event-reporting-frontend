@@ -98,7 +98,9 @@ class Event1CheckYourAnswersController @Inject()(
 
     val paymentValueAndDateRows = event1PaymentValueAndDateRows(waypoints, sourcePage, index)
     
-    basicMemberOrEmployerRows ++ memberOrEmployerPaymentNatureRows ++ paymentValueAndDateRows
+    val xxx = basicMemberOrEmployerRows ++ memberOrEmployerPaymentNatureRows ++ paymentValueAndDateRows
+    println( "\nACT= " + xxx)
+    xxx
   }
 
   private def event1BasicMemberDetailsRows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)

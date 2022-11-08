@@ -448,7 +448,7 @@ paymentValueAndDate.date.error.noDayMonthOrYear = The date must include a day, m
 paymentValueAndDate.date.error.outsideDateRanges = Enter a real date
 paymentValueAndDate.date.error.outsideRelevantTaxYear = Date must be between 6 April [year] and 5 April [year]
 paymentValueAndDate.date.change.hidden = Enter the date of payment or when benefit made available
-paymentValueAndDate.date.checkYourAnswersLabel = Payment value
+paymentValueAndDate.date.checkYourAnswersLabel = Payment date
 
 unauthorisedPaymentRecipientName.member.title = What is the name of the person or organisation that received the unauthorised payment?
 unauthorisedPaymentRecipientName.member.heading = What is the name of the person or organisation that received the unauthorised payment?
