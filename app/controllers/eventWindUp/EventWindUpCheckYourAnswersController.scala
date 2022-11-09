@@ -57,7 +57,7 @@ class EventWindUpCheckYourAnswersController @Inject()(
       val waypoints = EmptyWaypoints
       connector.compileEvent("123", WindUp).map {
         _ =>
-          Redirect(controllers.routes.IndexController.onPageLoad.url)
+          Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
       }
     }
 
