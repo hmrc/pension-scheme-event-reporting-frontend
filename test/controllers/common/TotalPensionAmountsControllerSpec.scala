@@ -53,7 +53,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validValue = 33
+  private val validValue = BigDecimal(1000.00)
 
   override def beforeEach: Unit = {
     super.beforeEach
@@ -106,7 +106,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "33"))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "33.00"))
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(TotalPensionAmountsPage(event23), validValue).success.value

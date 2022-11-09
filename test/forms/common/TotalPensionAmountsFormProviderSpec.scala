@@ -16,47 +16,61 @@
 
 package forms.common
 
-import forms.behaviours.IntFieldBehaviours
+import base.SpecBase
+import forms.behaviours.BigDecimalFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
-class TotalPensionAmountsFormProviderSpec extends IntFieldBehaviours {
+class TotalPensionAmountsFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours{
 
   private val form = new TotalPensionAmountsFormProvider()()
+  private val valueKey = "value"
+  private val messageKeyValueKey = "totalPensionAmounts.value"
+
+  // scalastyle:off magic.number
+  val invalidDataGenerator: Gen[String] = intsInRangeWithCommas(0, 999999999)
+  val negativeValueDataGenerator: Gen[String] = decimalsBelowValue(0)
+
+  private def valueDetails(value: String): Map[String, String] = Map(valueKey -> value)
 
   ".value" - {
 
-    val fieldName = "value"
+    "not bind no input" in {
+      val result = form.bind(valueDetails(""))
+      result.errors mustEqual Seq(FormError(valueKey, s"$messageKeyValueKey.error.nothingEntered"))
+    }
 
-    val minimum = 0
-    val maximum = Int.MaxValue
+    "not bind non-numeric numbers" in {
+      val result = form.bind(valueDetails("one,two.three"))
+      result.errors mustEqual Seq(FormError(valueKey, s"$messageKeyValueKey.error.notANumber"))
+    }
 
-    val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
+    "not bind integers" in {
+      forAll(invalidDataGenerator -> "noDecimals") {
+        int: String =>
+          val result = form.bind(valueDetails(int))
+          result.errors mustEqual Seq(FormError(valueKey, s"$messageKeyValueKey.error.noDecimals"))
+      }
+    }
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      validDataGenerator
-    )
+    "bind within the range 0 to 999999999.99" in {
+      val number = "999999999.99"
+      val result = form.bind(valueDetails(number))
+      result.errors mustEqual Nil
+    }
 
-    behave like intField(
-      form,
-      fieldName,
-      nonNumericError  = FormError(fieldName, "totalPensionAmounts.error.nonNumeric"),
-      wholeNumberError = FormError(fieldName, "totalPensionAmounts.error.wholeNumber")
-    )
+    "not bind outside the range 0 to 999999999.99" in {
+      val number = "1000000000.00"
+      val result = form.bind(valueDetails(number))
+      result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyValueKey.error.amountTooHigh")
+    }
 
-    behave like intFieldWithRange(
-      form,
-      fieldName,
-      minimum       = minimum,
-      maximum       = maximum,
-      expectedError = FormError(fieldName, "totalPensionAmounts.error.outOfRange", Seq(minimum, maximum))
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, "totalPensionAmounts.error.required")
-    )
+    "not bind numbers below 0" in {
+      forAll(negativeValueDataGenerator -> "negative") {
+        number: String =>
+          val result = form.bind(valueDetails(number))
+          result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyValueKey.error.negative")
+      }
+    }
   }
 }
