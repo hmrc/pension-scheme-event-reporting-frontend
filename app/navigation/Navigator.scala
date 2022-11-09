@@ -31,7 +31,7 @@ class Navigator @Inject()() {
   }
 
   private val checkRouteMap: Page => UserAnswers => Call = {
-    case _ => _ => controllers.event18.routes.Event18CheckYourAnswersController.onPageLoad()
+    case _ => _ => routes.IndexController.onPageLoad
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
