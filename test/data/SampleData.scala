@@ -26,19 +26,13 @@ import models.event1.PaymentDetails
 import models.event1.PaymentNature.BenefitInKind
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.employer.PaymentNature.TangibleMoveableProperty
-import models.enumeration.EventType.Event1
-import models.event1.PaymentDetails
-import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.employer.{CompanyDetails, LoanDetails}
 import models.event1.member.SchemeDetails
 import pages.address.ManualAddressPage
 import pages.common.MembersDetailsPage
-import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
-import pages.common.MembersDetailsPage
-import pages.event1.{PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
-import pages.event1.employer.CompanyDetailsPage
+import pages.event1._
 import utils.{CountryOptions, InputOption}
 
 import java.time.LocalDate

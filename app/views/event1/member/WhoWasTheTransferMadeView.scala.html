@@ -29,7 +29,7 @@
 
 @layout(pageTitle = title(form, messages("whoWasTheTransferMade.title"))) {
 
-    @formHelper(action = routes.WhoWasTheTransferMadeController.onSubmit(waypoints, index), 'autoComplete -> "off") {
+    @formHelper(action = routes.WhoWasTheTransferMadeController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))

@@ -36,7 +36,6 @@ import viewmodels.implicits._
 import views.html.event1.UnauthPaymentSummaryView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class UnauthPaymentSummaryController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
@@ -46,7 +45,7 @@ class UnauthPaymentSummaryController @Inject()(
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                         formProvider: UnauthPaymentSummaryFormProvider,
                                         view: UnauthPaymentSummaryView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                 ) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event1

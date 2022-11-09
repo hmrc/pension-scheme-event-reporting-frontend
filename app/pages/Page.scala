@@ -72,6 +72,7 @@ trait Page {
         PageAndWaypoints(this, waypoints.setNextWaypoint(p.waypoint))
       case p: AddItemPage =>
         PageAndWaypoints(this, waypoints.setNextWaypoint(p.waypoint(CheckMode)))
+      case _ => throw new RuntimeException(s"Illegal source page for change link: $sourcePage")
     }
   }
 }

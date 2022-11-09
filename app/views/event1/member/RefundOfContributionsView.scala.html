@@ -29,7 +29,7 @@
 
 @layout(pageTitle = title(form, messages("refundOfContributions.title"))) {
 
-    @formHelper(action = routes.RefundOfContributionsController.onSubmit(waypoints, index), 'autoComplete -> "off") {
+    @formHelper(action = routes.RefundOfContributionsController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))

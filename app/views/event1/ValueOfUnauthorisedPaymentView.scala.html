@@ -28,7 +28,7 @@
 
 @layout(pageTitle = title(form, messages("valueOfUnauthorisedPayment.title"))) {
 
-    @formHelper(action = routes.ValueOfUnauthorisedPaymentController.onSubmit(waypoints, index), 'autoComplete -> "off") {
+    @formHelper(action = routes.ValueOfUnauthorisedPaymentController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
