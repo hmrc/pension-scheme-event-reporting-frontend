@@ -153,4 +153,3 @@ GET         /new-report/dummy-member-details                                    
 POST        /new-report/dummy-member-details                                      controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2)
 GET         /new-report/:index/dummy-member-details                               controllers.common.MembersDetailsController.onPageLoadWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index)
 POST        /new-report/:index/dummy-member-details                               controllers.common.MembersDetailsController.onSubmitWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index)
-# GET         /new-report/:index/dummy-check-your-answers                           controllers.CheckYourAnswersController.onPageLoadWithIndex(eventType: EventType = EventType.Event2, index: Index)
