@@ -23,10 +23,10 @@ class TotalPensionAmountsPageSpec extends PageBehaviours {
 
   "TotalPensionAmountsPage" - {
 
-    beRetrievable[Int](TotalPensionAmountsPage(Event23))
+    beRetrievable[BigDecimal](TotalPensionAmountsPage(Event23))
 
-    beSettable[Int](TotalPensionAmountsPage(Event23))
+    beSettable[BigDecimal](TotalPensionAmountsPage(Event23))
 
-    beRemovable[Int](TotalPensionAmountsPage(Event23))
+    beRemovable[BigDecimal](TotalPensionAmountsPage(Event23))
   }
 }

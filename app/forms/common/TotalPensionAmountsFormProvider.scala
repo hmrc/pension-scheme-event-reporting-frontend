@@ -22,13 +22,20 @@ import play.api.data.Form
 import javax.inject.Inject
 
 class TotalPensionAmountsFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[Int] =
+  import forms.common.TotalPensionAmountsFormProvider._
+  def apply(): Form[BigDecimal] =
     Form(
-      "value" -> int(
-        "totalPensionAmounts.error.required",
-        "totalPensionAmounts.error.wholeNumber",
-        "totalPensionAmounts.error.nonNumeric")
-          .verifying(inRange(0, Int.MaxValue, "totalPensionAmounts.error.outOfRange"))
+      "value" -> bigDecimal2DP(
+        "totalPensionAmounts.value.error.nothingEntered",
+        "totalPensionAmounts.value.error.notANumber",
+        "totalPensionAmounts.value.error.noDecimals")
+        .verifying(
+          maximumValue[BigDecimal](maxPensionAmtValue, "totalPensionAmounts.value.error.amountTooHigh"),
+          minimumValue[BigDecimal](0, "totalPensionAmounts.value.error.negative")
+        )
     )
+}
+
+object TotalPensionAmountsFormProvider {
+  val maxPensionAmtValue: BigDecimal = 999999999.99
 }

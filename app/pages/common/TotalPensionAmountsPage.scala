@@ -21,7 +21,7 @@ import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class TotalPensionAmountsPage(eventType: EventType) extends QuestionPage[Int] {
+case class TotalPensionAmountsPage(eventType: EventType) extends QuestionPage[BigDecimal] {
 
   override def path: JsPath = JsPath \ toString
 
