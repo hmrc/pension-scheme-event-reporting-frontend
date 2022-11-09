@@ -16,7 +16,6 @@
 
 package forms.mappings
 
-import java.time.LocalDate
 import generators.Generators
 import models.TaxYearValidationDetail
 import org.scalacheck.Gen
@@ -25,6 +24,8 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.{Form, FormError}
+
+import java.time.LocalDate
 
 class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with OptionValues
   with Mappings {

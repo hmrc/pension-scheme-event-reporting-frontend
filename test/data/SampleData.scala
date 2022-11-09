@@ -16,11 +16,26 @@
 
 package data
 
+import models.UserAnswers
 import models.address.{Address, TolerantAddress}
 import models.common.MembersDetails
+import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
+import models.enumeration.EventType.Event1
+import models.event1.HowAddUnauthPayment.Manual
+import models.event1.PaymentDetails
+import models.event1.PaymentNature.BenefitInKind
+import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
+import models.event1.employer.PaymentNature.TangibleMoveableProperty
 import models.event1.employer.{CompanyDetails, LoanDetails}
 import models.event1.member.SchemeDetails
+import pages.address.ManualAddressPage
+import pages.common.MembersDetailsPage
+import pages.event1._
+import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, PaymentNaturePage => EmployerPaymentNaturePage}
+import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
 import utils.{CountryOptions, InputOption}
+
+import java.time.LocalDate
 
 object SampleData {
   private val options: Seq[InputOption] = Seq(
@@ -80,9 +95,30 @@ object SampleData {
 
   val memberDetails: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567V")
 
+  val paymentDetails: PaymentDetails = PaymentDetails(1000.00, LocalDate.of(2022, 11, 8))
+
   def booleanCYAVal(value: Boolean) = if (value) "site.yes" else "site.no"
 
   val loanDetails: LoanDetails = LoanDetails(Some(BigDecimal(10.00)), Some(BigDecimal(20.57)))
 
   val schemeDetails: SchemeDetails = SchemeDetails(Some("SchemeName"), Some("SchemeReference"))
+
+  val sampleMemberJourneyData: UserAnswers = UserAnswers()
+    .setOrException(HowAddUnauthPaymentPage(0), Manual)
+    .setOrException(WhoReceivedUnauthPaymentPage(0), Member)
+    .setOrException(MembersDetailsPage(Event1, Some(0)), memberDetails)
+    .setOrException(DoYouHoldSignedMandatePage(0), false)
+    .setOrException(ValueOfUnauthorisedPaymentPage(0), false)
+    .setOrException(MemberPaymentNaturePage(0), BenefitInKind)
+    .setOrException(BenefitInKindBriefDescriptionPage(0), "Test description")
+    .setOrException(PaymentValueAndDatePage(0), paymentDetails)
+
+  val sampleEmployerJourneyData: UserAnswers = UserAnswers()
+    .setOrException(HowAddUnauthPaymentPage(0), Manual)
+    .setOrException(WhoReceivedUnauthPaymentPage(0), Employer)
+    .setOrException(CompanyDetailsPage(0), companyDetails)
+    .setOrException(ManualAddressPage(Event1EmployerAddressJourney, 0), employerAddress)
+    .setOrException(EmployerPaymentNaturePage(0), TangibleMoveableProperty)
+    .setOrException(EmployerTangibleMoveablePropertyPage(0), "Another test description")
+    .setOrException(PaymentValueAndDatePage(0), paymentDetails)
 }

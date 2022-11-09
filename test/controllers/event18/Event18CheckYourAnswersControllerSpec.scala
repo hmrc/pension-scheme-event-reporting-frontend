@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.event18
 
 import base.SpecBase
-import models.enumeration.EventType.Event18
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
-class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
+class Event18CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
   "Check Your Answers Controller" - {
 
@@ -32,7 +31,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(Event18).url)
+        val request = FakeRequest(GET, controllers.event18.routes.Event18CheckYourAnswersController.onPageLoad().url)
 
         val result = route(application, request).value
 
@@ -49,12 +48,12 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(Event18).url)
+        val request = FakeRequest(GET, controllers.event18.routes.Event18CheckYourAnswersController.onPageLoad().url)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

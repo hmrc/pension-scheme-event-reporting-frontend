@@ -18,12 +18,11 @@ package viewmodels.event1.checkAnswers
 
 import data.SampleData.booleanCYAVal
 import models.UserAnswers
-import models.enumeration.EventType.Event1
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
-import pages.event1.SchemeUnAuthPaySurchargeMemberPage
-import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import pages.event1.{Event1CheckYourAnswersPage, SchemeUnAuthPaySurchargeMemberPage}
+import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import viewmodels.govuk.SummaryListFluency
@@ -40,7 +39,7 @@ class SchemeUnAuthPaySurchargeMemberSummarySpec extends AnyFreeSpec with Matcher
 
       val answer = UserAnswers().setOrException(SchemeUnAuthPaySurchargeMemberPage(0), true)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       SchemeUnAuthPaySurchargeMemberSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
@@ -58,7 +57,7 @@ class SchemeUnAuthPaySurchargeMemberSummarySpec extends AnyFreeSpec with Matcher
 
       val answer = UserAnswers().setOrException(SchemeUnAuthPaySurchargeMemberPage(0), false)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       SchemeUnAuthPaySurchargeMemberSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(

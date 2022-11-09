@@ -18,9 +18,8 @@ package pages.event1
 
 import controllers.event1.routes
 import models.UserAnswers
-import models.enumeration.EventType.Event1
 import pages.event1.member.PaymentNaturePage
-import pages.{CheckYourAnswersPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -38,6 +37,6 @@ case class SchemeUnAuthPaySurchargeMemberPage(index: Int) extends QuestionPage[B
     PaymentNaturePage(index)
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
-    CheckYourAnswersPage(Event1, Some(index))
+    Event1CheckYourAnswersPage(index)
   }
 }

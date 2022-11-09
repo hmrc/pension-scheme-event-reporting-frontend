@@ -16,11 +16,11 @@
 
 package forms.event1
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
-import play.api.data.Form
 import models.event1.HowAddUnauthPayment
+import play.api.data.Form
+
+import javax.inject.Inject
 
 class HowAddUnauthPaymentFormProvider @Inject() extends Mappings {
 

@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package forms.event1
+package pages.event18
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import pages.{CheckAnswersPage, Waypoints}
+import play.api.mvc.Call
 
-import javax.inject.Inject
+case object Event18CheckYourAnswersPage extends CheckAnswersPage {
+  override val urlFragment: String =
+    "event-18-check-answers"
 
-class DoYouHoldSignedMandateFormProvider @Inject() extends Mappings {
+  override def route(waypoints: Waypoints): Call = {
+    controllers.event18.routes.Event18CheckYourAnswersController.onPageLoad()
+  }
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("doYouHoldSignedMandate.error.required")
-    )
+  override def toString: String = "CheckYourAnswersPage"
 }

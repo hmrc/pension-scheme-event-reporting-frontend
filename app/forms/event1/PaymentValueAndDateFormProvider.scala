@@ -19,14 +19,13 @@ package forms.event1
 
 import forms.mappings.{Mappings, Transforms}
 import models.event1.PaymentDetails
-
-import javax.inject.Inject
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import utils.DateHelper.formatDateDMY
 import play.api.i18n.Messages
+import utils.DateHelper.formatDateDMY
 
 import java.time.LocalDate
+import javax.inject.Inject
 
 class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms {
 

@@ -16,11 +16,11 @@
 
 package models.event1
 
+import models.{Enumerable, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import models.{Enumerable, WithName}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 sealed trait WhoReceivedUnauthPayment
 

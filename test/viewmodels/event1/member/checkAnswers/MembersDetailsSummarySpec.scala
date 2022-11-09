@@ -23,7 +23,8 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import pages.common.MembersDetailsPage
-import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import pages.event1.Event1CheckYourAnswersPage
+import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
@@ -44,7 +45,7 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
 
       val answers = UserAnswers().setOrException(MembersDetailsPage(Event1, Some(0)), memberDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
       val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(memberDetails.fullName)).toString))
 
       MembersDetailsSummary.rowFullName(answers, waypoints, Some(0), sourcePage, Event1) mustBe Some(
@@ -66,7 +67,7 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
 
       val answers = UserAnswers().setOrException(MembersDetailsPage(Event1, Some(0)), memberDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
       val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(memberDetails.nino)).toString))
 
       MembersDetailsSummary.rowNino(answers, waypoints, Some(0), sourcePage, Event1) mustBe Some(
@@ -75,7 +76,7 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", MembersDetailsPage(Event1, Some(0)).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("membersDetails.change.hidden"))
+              .withVisuallyHiddenText(messages("membersDetails.change.nino.hidden"))
           )
         )
       )
