@@ -21,7 +21,6 @@ import controllers.actions._
 import forms.event1.UnauthPaymentSummaryFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
-import models.enumeration.EventType.Event1
 import models.event1.MembersOrEmployersSummary
 import pages.Waypoints
 import pages.event1.{MembersOrEmployersPage, UnauthPaymentSummaryPage}
@@ -68,7 +67,7 @@ class UnauthPaymentSummaryController @Inject()(
             items = Seq(
               ActionItem(
                 content = Text(Message("site.view")),
-                href = controllers.routes.CheckYourAnswersController.onPageLoadWithIndex(Event1, index).url
+                href = controllers.event1.routes.Event1CheckYourAnswersController.onPageLoad(index).url
               ),
               ActionItem(
                 content = Text(Message("site.remove")),

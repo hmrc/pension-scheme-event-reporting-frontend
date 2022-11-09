@@ -234,6 +234,7 @@ membersDetails.error.firstName.invalid = The member’s first name must only inc
 membersDetails.error.lastName.invalid = The member’s last name must only include letters, spaces, ampersands, grave accents, apostrophes, hyphens, full stops and carets
 membersDetails.error.nino.invalid = Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ123456C
 membersDetails.change.hidden = Member’s details
+membersDetails.change.nino.hidden = Member’s National Insurance number
 
 doYouHoldSignedMandate.title = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.heading = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
@@ -262,14 +263,16 @@ companyDetails.title = Company details
 companyDetails.heading = Company details
 companyDetails.companyName.title = Company or organisation name
 companyDetails.companyNumber.title = Company number
-companyDetails.checkYourAnswersLabel = Company details
+companyDetails.checkYourAnswersLabel = Company or organisation name
 companyDetails.companyName.error.required = Enter the company or organisation’s name
 companyDetails.companyName.error.length = The company or organisation’s name must be 160 characters or fewer
 companyDetails.companyName.error.invalidCharacters = The company name contains invalid characters
 companyDetails.companyNumber.error.required = Enter the company or organisation’s company number
 companyDetails.companyNumber.error.length = The company or organisation’s company number must be 7 or 8 characters, like 0123456 or AB123456
 companyDetails.companyNumber.error.invalidCharacters = The company or organisation’s company number must only include letters and numbers, like 01234567 or AB123456
-companyDetails.change.hidden = CompanyDetails
+companyDetails.companyName.change.hidden = Company or organisation name
+companyDetails.companyNumber.change.hidden = Company number
+companyDetails.companyAddress.change.hidden = Company address
 
 companyDetails.CYA.companyName = Company or organisation name
 companyDetails.CYA.companyNumber = Company number
@@ -433,7 +436,6 @@ unauthorisedPaymentRecipientName.employer.hint = Recipient name (optional)
 
 paymentValueAndDate.title = Payment value and date
 paymentValueAndDate.heading = Payment value and date
-paymentValueAndDate.checkYourAnswersLabel = Payment value and date
 
 paymentValueAndDate.value.heading = Total value or amount of the unauthorised payment
 paymentValueAndDate.value.error.nothingEntered = Enter the payment value
@@ -442,6 +444,7 @@ paymentValueAndDate.value.error.noDecimals = The payment value must include penc
 paymentValueAndDate.value.error.amountTooHigh = The payment value must be £999999999.99 or less
 paymentValueAndDate.value.error.negative = The payment value must not be a negative amount of money, like -123.45 or -156.00
 paymentValueAndDate.value.change.hidden = Enter the payment value
+paymentValueAndDate.value.checkYourAnswersLabel = Payment value
 
 paymentValueAndDate.date.heading = Date of payment or when benefit made available
 paymentValueAndDate.date.hint = For example, 22 09 2022
@@ -450,6 +453,7 @@ paymentValueAndDate.date.error.noDayMonthOrYear = The date must include a day, m
 paymentValueAndDate.date.error.outsideDateRanges = Enter a real date
 paymentValueAndDate.date.error.outsideRelevantTaxYear = Date must be between 6 April [year] and 5 April [year]
 paymentValueAndDate.date.change.hidden = Enter the date of payment or when benefit made available
+paymentValueAndDate.date.checkYourAnswersLabel = Payment date
 
 unauthorisedPaymentRecipientName.member.title = What is the name of the person or organisation that received the unauthorised payment?
 unauthorisedPaymentRecipientName.member.heading = What is the name of the person or organisation that received the unauthorised payment?

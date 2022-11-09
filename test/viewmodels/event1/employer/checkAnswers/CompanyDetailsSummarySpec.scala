@@ -18,12 +18,12 @@ package viewmodels.event1.employer.checkAnswers
 
 import data.SampleData.companyDetails
 import models.UserAnswers
-import models.enumeration.EventType.Event1
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
+import pages.event1.Event1CheckYourAnswersPage
 import pages.event1.employer.CompanyDetailsPage
-import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
@@ -41,7 +41,7 @@ class CompanyDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
 
       val answer = UserAnswers().setOrException(CompanyDetailsPage(0), companyDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       CompanyDetailsSummary.rowCompanyName(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
@@ -49,7 +49,7 @@ class CompanyDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
           value = ValueViewModel(HtmlFormat.escape(companyDetails.companyName).toString),
           actions = Seq(
             ActionItemViewModel("site.change", CompanyDetailsPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("companyDetails.change.hidden"))
+              .withVisuallyHiddenText(messages("companyDetails.companyName.change.hidden"))
           )
         )
       )
@@ -63,7 +63,7 @@ class CompanyDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
 
       val answer = UserAnswers().setOrException(CompanyDetailsPage(0), companyDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       CompanyDetailsSummary.rowCompanyNumber(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
@@ -71,7 +71,7 @@ class CompanyDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
           value = ValueViewModel(HtmlFormat.escape(companyDetails.companyNumber).toString),
           actions = Seq(
             ActionItemViewModel("site.change", CompanyDetailsPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("companyDetails.change.hidden"))
+              .withVisuallyHiddenText(messages("companyDetails.companyNumber.change.hidden"))
           )
         )
       )

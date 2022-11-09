@@ -59,6 +59,12 @@ object ChooseAddressSummary {
       "companyDetails.CYA.companyAddress"
     }
 
+    val visuallyHiddenTextKey = if (addressJourneyType != Event1EmployerAddressJourney) {
+      "enterPostcode.change.hidden"
+    } else {
+      "companyDetails.companyAddress.change.hidden"
+    }
+
     answers.get(ManualAddressPage(addressJourneyType, index)).map {
       answer =>
 
@@ -73,7 +79,7 @@ object ChooseAddressSummary {
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("enterPostcode.change.hidden"))
+              .withVisuallyHiddenText(messages(visuallyHiddenTextKey))
           )
         )
     }

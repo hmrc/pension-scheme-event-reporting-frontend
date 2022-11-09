@@ -14,93 +14,65 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.event1
 
 import com.google.inject.Inject
 import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.Index
-import models.enumeration.EventType.{Event1, Event18, WindUp}
-import models.enumeration.{AddressJourneyType, EventType}
+import models.enumeration.AddressJourneyType
+import models.enumeration.EventType.Event1
 import models.event1.PaymentNature._
 import models.event1.WhoReceivedUnauthPayment.Member
 import models.event1.employer.PaymentNature._
 import models.requests.DataRequest
 import pages.event1.employer.{PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member.{PaymentNaturePage => MemberPaymentNaturePage}
-import pages.event1.{ValueOfUnauthorisedPaymentPage, WhoReceivedUnauthPaymentPage}
-import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import pages.event1.{Event1CheckYourAnswersPage, ValueOfUnauthorisedPaymentPage, WhoReceivedUnauthPaymentPage}
+import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.address.checkAnswers.ChooseAddressSummary
-import viewmodels.checkAnswers.{Event18ConfirmationSummary, MembersDetailsSummary, SchemeWindUpDateSummary}
+import viewmodels.checkAnswers.MembersDetailsSummary
 import viewmodels.event1.checkAnswers._
 import viewmodels.event1.employer.checkAnswers.{CompanyDetailsSummary, EmployerUnauthorisedPaymentRecipientNameSummary, LoanDetailsSummary, PaymentNatureSummary => EmployerPaymentNatureSummary}
 import viewmodels.event1.member.checkAnswers._
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
+class Event1CheckYourAnswersController @Inject()(
+                                                  override val messagesApi: MessagesApi,
+                                                  identify: IdentifierAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  connector: EventReportingConnector,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: CheckYourAnswersView
+                                                )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
+  def onPageLoad(index: Index): Action[AnyContent] =
+    (identify andThen getData(Event1) andThen requireData) { implicit request =>
 
-class CheckYourAnswersController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            identify: IdentifierAction,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            connector: EventReportingConnector,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: CheckYourAnswersView
-                                          )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-
-  def onPageLoad(eventType: EventType): Action[AnyContent] =
-    (identify andThen getData(eventType) andThen requireData) { implicit request =>
-
-      val thisPage = CheckYourAnswersPage(eventType, None)
+      val thisPage = Event1CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
 
-      val rows = eventType match {
-        case WindUp => buildEventWindUpCYARows(waypoints, thisPage)
-        case Event18 => buildEvent18CYARows(waypoints, thisPage)
-        case _ => Nil
-      }
+      val continueUrl = controllers.event1.routes.Event1CheckYourAnswersController.onClick.url
 
-      Ok(view(SummaryListViewModel(rows = rows), "/manage-pension-scheme-event-report/event-summary"))
+      Ok(view(SummaryListViewModel(rows = buildEvent1CYARows(waypoints, thisPage, index)), continueUrl))
     }
 
-  def onPageLoadWithIndex(eventType: EventType, index: Index): Action[AnyContent] =
-    (identify andThen getData(eventType) andThen requireData) { implicit request =>
-
-      val thisPage = CheckYourAnswersPage(eventType, Some(index))
+  def onClick: Action[AnyContent] =
+    (identify andThen getData(Event1) andThen requireData).async { implicit request =>
       val waypoints = EmptyWaypoints
-
-      val rows = eventType match {
-        case Event1 => buildEvent1CYARows(waypoints, thisPage, index)
-        case _ => Nil
-      }
-
-      val continueUrl = eventType match {
-        case Event1 => controllers.routes.CheckYourAnswersController.onClick(eventType).url
-        case _ => "/manage-pension-scheme-event-report/event-summary"
-      }
-
-      Ok(view(SummaryListViewModel(rows = rows), continueUrl))
-    }
-
-  def onClick(eventType: EventType): Action[AnyContent] =
-    (identify andThen getData(eventType) andThen requireData).async { implicit request =>
-      val waypoints = EmptyWaypoints
-      connector.compileEvent("123", eventType).map {
+      connector.compileEvent("123", Event1).map {
         _ =>
           Redirect(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(waypoints))
       }
-
     }
-
 
   private def event1MemberJourney(index: Int)(implicit request: DataRequest[AnyContent]): Boolean = {
     request.userAnswers.get(WhoReceivedUnauthPaymentPage(index)) match {
@@ -120,7 +92,8 @@ class CheckYourAnswersController @Inject()(
     }
   }
 
-  private def buildEvent1CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+  private def buildEvent1CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)
+                                (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
 
     val basicMemberOrEmployerRows = if (event1MemberJourney(index)) {
       event1BasicMemberDetailsRows(waypoints, sourcePage, index)
@@ -208,11 +181,4 @@ class CheckYourAnswersController @Inject()(
                                            (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
     PaymentValueAndDateSummary.rowPaymentValue(request.userAnswers, waypoints, index, sourcePage).toSeq ++
       PaymentValueAndDateSummary.rowPaymentDate(request.userAnswers, waypoints, index, sourcePage).toSeq
-
-
-  private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
-    SchemeWindUpDateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
-
-  private def buildEvent18CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
-    Event18ConfirmationSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
 }

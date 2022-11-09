@@ -21,12 +21,12 @@ import models.UserAnswers
 import models.address.Address
 import models.enumeration.AddressJourneyType
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
-import models.enumeration.EventType.Event1
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import pages.address.{EnterPostcodePage, ManualAddressPage}
-import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import pages.event1.Event1CheckYourAnswersPage
+import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
@@ -66,12 +66,18 @@ class ChooseAddressSummarySpec extends AnyFreeSpec with Matchers with OptionValu
       val addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney
       val answer = UserAnswers().setOrException(ManualAddressPage(addressJourneyType, 0), employerAddress)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       val rowKey = if (addressJourneyType != Event1EmployerAddressJourney) {
         "residentialAddress.address.title"
       } else {
         "companyDetails.CYA.companyAddress"
+      }
+
+      val visuallyHiddenTextKey = if (addressJourneyType != Event1EmployerAddressJourney) {
+        "enterPostcode.change.hidden"
+      } else {
+        "companyDetails.companyAddress.change.hidden"
       }
 
       val value = ValueViewModel(
@@ -86,7 +92,7 @@ class ChooseAddressSummarySpec extends AnyFreeSpec with Matchers with OptionValu
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType, 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("enterPostcode.change.hidden"))
+              .withVisuallyHiddenText(messages(visuallyHiddenTextKey))
           )
         )
       )

@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.event18
 
 import base.SpecBase
-import models.enumeration.EventType.{Event1, Event18}
 import pages.EmptyWaypoints
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
-class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
+class Event18CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
   "Check Your Answers Controller" - {
 
@@ -33,7 +32,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(Event18).url)
+        val request = FakeRequest(GET, controllers.event18.routes.Event18CheckYourAnswersController.onPageLoad().url)
 
         val result = route(application, request).value
 
@@ -41,16 +40,16 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list,"/manage-pension-scheme-event-report/event-summary")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list,"/manage-pension-scheme-event-report/new-report/event-18-click")(request, messages(application)).toString
       }
     }
     "must return OK and the correct view for a GET whilst in Event 1" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
       val waypoints = EmptyWaypoints
-      def continueUrl = controllers.routes.CheckYourAnswersController.onClick(Event1).url
+      def continueUrl = controllers.event18.routes.Event18CheckYourAnswersController.onClick.url
       running(application) {
-        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoadWithIndex(Event1, 0).url)
+        val request = FakeRequest(GET, routes.Event18CheckYourAnswersController.onPageLoad.url)
 
         val result = route(application, request).value
 
@@ -67,12 +66,12 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(Event18).url)
+        val request = FakeRequest(GET, controllers.event18.routes.Event18CheckYourAnswersController.onPageLoad().url)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

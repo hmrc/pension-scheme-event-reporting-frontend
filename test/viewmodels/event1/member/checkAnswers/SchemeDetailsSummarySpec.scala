@@ -18,12 +18,12 @@ package viewmodels.event1.member.checkAnswers
 
 import data.SampleData.schemeDetails
 import models.UserAnswers
-import models.enumeration.EventType.Event1
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
+import pages.event1.Event1CheckYourAnswersPage
 import pages.event1.member.SchemeDetailsPage
-import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
@@ -55,7 +55,7 @@ class SchemeDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValu
 
       val answer = UserAnswers().setOrException(SchemeDetailsPage(0), schemeDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       val value = ValueViewModel(
         HtmlContent(
@@ -82,7 +82,7 @@ class SchemeDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValu
 
       val answer = UserAnswers().setOrException(SchemeDetailsPage(0), schemeDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       val value = ValueViewModel(
         HtmlContent(

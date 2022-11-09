@@ -17,13 +17,12 @@
 package viewmodels.event1.checkAnswers
 
 import models.UserAnswers
-import models.enumeration.EventType.Event1
 import models.event1.PaymentDetails
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
-import pages.event1.PaymentValueAndDatePage
-import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import pages.event1.{Event1CheckYourAnswersPage, PaymentValueAndDatePage}
+import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
@@ -49,11 +48,11 @@ class PaymentValueAndDateSummarySpec extends AnyFreeSpec with Matchers with Opti
 
       val answer = UserAnswers().setOrException(PaymentValueAndDatePage(0), paymentDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       PaymentValueAndDateSummary.rowPaymentValue(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
-          key = "Payment value",
+          key = messages("paymentValueAndDate.value.checkYourAnswersLabel"),
           value = ValueViewModel(HtmlContent(Html(paymentDetailsValue))),
           actions = Seq(
             ActionItemViewModel("site.change", PaymentValueAndDatePage(0).changeLink(waypoints, sourcePage).url)
@@ -72,14 +71,14 @@ class PaymentValueAndDateSummarySpec extends AnyFreeSpec with Matchers with Opti
 
       val answer = UserAnswers().setOrException(PaymentValueAndDatePage(0), paymentDetails)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       val date = paymentDetails.paymentDate
       val format = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
       PaymentValueAndDateSummary.rowPaymentDate(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
-          key = "Payment date",
+          key = messages("paymentValueAndDate.date.checkYourAnswersLabel"),
           value = ValueViewModel(format.format(date)),
           actions = Seq(
             ActionItemViewModel("site.change", PaymentValueAndDatePage(0).changeLink(waypoints, sourcePage).url)

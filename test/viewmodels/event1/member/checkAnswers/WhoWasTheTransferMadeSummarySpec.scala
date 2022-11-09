@@ -17,13 +17,13 @@
 package viewmodels.event1.member.checkAnswers
 
 import models.UserAnswers
-import models.enumeration.EventType.Event1
 import models.event1.member.WhoWasTheTransferMade
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
+import pages.event1.Event1CheckYourAnswersPage
 import pages.event1.member.WhoWasTheTransferMadePage
-import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
@@ -41,7 +41,7 @@ class WhoWasTheTransferMadeSummarySpec extends AnyFreeSpec with Matchers with Op
 
       val answer = UserAnswers().setOrException(WhoWasTheTransferMadePage(0), WhoWasTheTransferMade.AnEmployerFinanced)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       val value = ValueViewModel(
         HtmlContent(
@@ -65,7 +65,7 @@ class WhoWasTheTransferMadeSummarySpec extends AnyFreeSpec with Matchers with Op
 
       val answer = UserAnswers().setOrException(WhoWasTheTransferMadePage(0), WhoWasTheTransferMade.NonRecognisedScheme)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       val value = ValueViewModel(
         HtmlContent(
@@ -89,7 +89,7 @@ class WhoWasTheTransferMadeSummarySpec extends AnyFreeSpec with Matchers with Op
 
       val answer = UserAnswers().setOrException(WhoWasTheTransferMadePage(0), WhoWasTheTransferMade.Other)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       val value = ValueViewModel(
         HtmlContent(

@@ -18,7 +18,7 @@ package pages.event18
 
 import controllers.event18.routes
 import models.UserAnswers
-import pages.{CheckYourAnswersPage, Page, QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -30,7 +30,7 @@ case object Event18ConfirmationPage extends QuestionPage[Boolean] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
-      case Some(true) => CheckYourAnswersPage.event18
+      case Some(true) => Event18CheckYourAnswersPage
       case _ => this
     }
 
