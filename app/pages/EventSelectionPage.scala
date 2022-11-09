@@ -21,6 +21,7 @@ import models.EventSelection.{EventWoundUp, _}
 import models.{EventSelection, UserAnswers}
 import pages.event1.HowAddUnauthPaymentPage
 import pages.event18.Event18ConfirmationPage
+import pages.event22.HowAddAnnualAllowancePage
 import pages.event23.HowAddDualAllowancePage
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.JsPath
@@ -39,7 +40,7 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
     answers.get(this) match {
       case Some(Event1) => HowAddUnauthPaymentPage(0) // TODO: PODS-7616 Index needs to be calculated. For now hard code as zero.
       case Some(Event18) => Event18ConfirmationPage
-//      case Some(Event22) =>
+      case Some(Event22) => HowAddAnnualAllowancePage
       case Some(Event23) => HowAddDualAllowancePage
       case Some(EventWoundUp) => SchemeWindUpDatePage
       case _ => EventSelectionPage

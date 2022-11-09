@@ -22,9 +22,9 @@ import forms.event22.HowAddAnnualAllowanceFormProvider
 import models.UserAnswers
 import models.event22.HowAddAnnualAllowance
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.event22.HowAddAnnualAllowancePage
 import play.api.inject.bind
