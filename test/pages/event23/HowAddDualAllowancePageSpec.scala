@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package pages.event22
+package pages.event23
 
-import models.event22.HowAddAnnualAllowance
+import models.event23.HowAddDualAllowance
 import pages.behaviours.PageBehaviours
 
-class HowAddAnnualAllowanceSpec extends PageBehaviours {
+class HowAddDualAllowancePageSpec extends PageBehaviours {
 
-  "HowAddAnnualAllowancePage" - {
+  "HowAddDualAllowancePage" - {
 
-    beRetrievable[HowAddAnnualAllowance](HowAddAnnualAllowancePage)
+    beRetrievable[HowAddDualAllowance](HowAddDualAllowancePage)
 
-    beSettable[HowAddAnnualAllowance](HowAddAnnualAllowancePage)
+    beSettable[HowAddDualAllowance](HowAddDualAllowancePage)
 
-    beRemovable[HowAddAnnualAllowance](HowAddAnnualAllowancePage)
+    beRemovable[HowAddDualAllowance](HowAddDualAllowancePage)
   }
 }
