@@ -283,7 +283,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
   "test navigation to event22 from event selection page to membersDetails" in {
     startingFrom(EventSelectionPage)
       .run(
-        submitAnswer(EventSelectionPage, Event23),
+        submitAnswer(EventSelectionPage, Event22),
         submitAnswer(HowAddAnnualAllowancePage, models.event22.HowAddAnnualAllowance.Manual),
         next,
         pageMustBe(pages.common.MembersDetailsPage(EventType.Event22, None))
