@@ -18,7 +18,7 @@ package pages.eventWindUp
 
 import controllers.eventWindUp.routes
 import models.UserAnswers
-import pages.{CheckYourAnswersPage, Page, QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -32,7 +32,7 @@ case object SchemeWindUpDatePage extends QuestionPage[LocalDate] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
-      case Some(_) => CheckYourAnswersPage.windUp
+      case Some(_) => EventWindUpCheckYourAnswersPage
       case _ => this
     }
 

@@ -34,7 +34,7 @@ object PaymentValueAndDateSummary extends Formatters {
       answer =>
 
         SummaryListRowViewModel(
-          key = "Payment value",
+          key = messages("paymentValueAndDate.value.checkYourAnswersLabel"),
           value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer.paymentValue)}")),
           actions = Seq(
             ActionItemViewModel("site.change", PaymentValueAndDatePage(index).changeLink(waypoints, sourcePage).url)
@@ -49,7 +49,7 @@ object PaymentValueAndDateSummary extends Formatters {
       answer =>
 
         SummaryListRowViewModel(
-          key = "Payment date",
+          key = messages("paymentValueAndDate.date.checkYourAnswersLabel"),
           value = ValueViewModel(dateFormatter.format(answer.paymentDate)),
           actions = Seq(
             ActionItemViewModel("site.change", PaymentValueAndDatePage(index).changeLink(waypoints, sourcePage).url)

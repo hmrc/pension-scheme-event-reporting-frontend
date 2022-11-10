@@ -21,6 +21,7 @@ import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{EitherValues, OptionValues}
+import pages.event18.Event18CheckYourAnswersPage
 import play.api.libs.json.JsPath
 import play.api.mvc.{Call, QueryStringBindable}
 
@@ -173,7 +174,7 @@ class WaypointsSpec extends AnyFreeSpec with Matchers with OptionValues with Eit
 
       "must read from a real waypoint" in new Fixture {
 
-        val waypoint: Waypoint = CheckYourAnswersPage.event18.waypoint
+        val waypoint: Waypoint = Event18CheckYourAnswersPage.waypoint
 
         Waypoints.fromString(waypoint.urlFragment).value mustEqual NonEmptyWaypoints(NonEmptyList.of(waypoint))
       }
@@ -188,7 +189,7 @@ class WaypointsSpec extends AnyFreeSpec with Matchers with OptionValues with Eit
 
       val bindable = implicitly[QueryStringBindable[Waypoints]]
 
-      val waypoint = CheckYourAnswersPage.event18.waypoint
+      val waypoint = Event18CheckYourAnswersPage.waypoint
 
       val data = Map("key" -> List(s"${waypoint.urlFragment}"))
       val expectedResult = Waypoints(List(waypoint))

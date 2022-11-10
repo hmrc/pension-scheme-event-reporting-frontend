@@ -17,13 +17,12 @@
 package viewmodels.event1.checkAnswers
 
 import models.UserAnswers
-import models.enumeration.EventType.Event1
 import models.event1.WhoReceivedUnauthPayment
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
-import pages.event1.WhoReceivedUnauthPaymentPage
-import pages.{CheckAnswersPage, CheckYourAnswersPage, EmptyWaypoints, Waypoints}
+import pages.event1.{Event1CheckYourAnswersPage, WhoReceivedUnauthPaymentPage}
+import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
@@ -42,7 +41,7 @@ class WhoReceivedUnauthPaymentSummarySpec extends AnyFreeSpec with Matchers with
 
       val answer = UserAnswers().setOrException(WhoReceivedUnauthPaymentPage(0), WhoReceivedUnauthPayment.Member)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       val value = ValueViewModel(
         HtmlContent(
@@ -66,7 +65,7 @@ class WhoReceivedUnauthPaymentSummarySpec extends AnyFreeSpec with Matchers with
 
       val answer = UserAnswers().setOrException(WhoReceivedUnauthPaymentPage(0), WhoReceivedUnauthPayment.Employer)
       val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = CheckYourAnswersPage(Event1, Some(0))
+      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       val value = ValueViewModel(
         HtmlContent(

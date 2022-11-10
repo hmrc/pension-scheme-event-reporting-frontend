@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package forms.event1
+package pages.eventWindUp
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import pages.{CheckAnswersPage, Waypoints}
+import play.api.mvc.Call
 
-import javax.inject.Inject
+case object EventWindUpCheckYourAnswersPage extends CheckAnswersPage {
+  override val urlFragment: String =
+    "event-windup-check-answers"
 
-class DoYouHoldSignedMandateFormProvider @Inject() extends Mappings {
+  override def route(waypoints: Waypoints): Call = {
+    controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onPageLoad()
+  }
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("doYouHoldSignedMandate.error.required")
-    )
+  override def toString: String = "EventWindUpCheckYourAnswersPage"
 }

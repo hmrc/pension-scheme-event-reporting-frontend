@@ -19,10 +19,9 @@ package pages.event1.employer
 import controllers.event1.employer.routes
 import models.UserAnswers
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
-import models.enumeration.EventType.Event1
 import models.event1.employer.CompanyDetails
-import pages.event1.MembersOrEmployersPage
-import pages.{CheckYourAnswersPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.event1.{Event1CheckYourAnswersPage, MembersOrEmployersPage}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -39,5 +38,5 @@ case class CompanyDetailsPage(index: Int) extends QuestionPage[CompanyDetails] {
     pages.address.EnterPostcodePage(Event1EmployerAddressJourney, index)
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
-    CheckYourAnswersPage(Event1, Some(index))
+    Event1CheckYourAnswersPage(index)
 }

@@ -16,7 +16,7 @@
 
 package models.event1
 
-import play.api.libs.json.{Json, Format}
+import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDate
 
