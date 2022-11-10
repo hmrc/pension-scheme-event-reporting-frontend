@@ -41,7 +41,6 @@ class TotalPensionAmountsController @Inject()(val controllerComponents: Messages
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-//  private val eventType = EventType.Event23
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(TotalPensionAmountsPage(eventType))).fold(form)(form.fill)
