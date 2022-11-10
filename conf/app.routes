@@ -159,6 +159,8 @@ POST        /new-report/event-23-tax-year                                       
 GET         /new-report/event-23-total-input-amount                               controllers.common.TotalPensionAmountsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 POST        /new-report/event-23-total-input-amount                               controllers.common.TotalPensionAmountsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 
+GET         /new-report/event-22-total-input-amount                               controllers.common.TotalPensionAmountsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+POST        /new-report/event-22-total-input-amount                               controllers.common.TotalPensionAmountsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 GET         /new-report/event-22-tax-year                                         controllers.common.ChooseTaxYearController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 POST        /new-report/event-22-tax-year                                         controllers.common.ChooseTaxYearController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 

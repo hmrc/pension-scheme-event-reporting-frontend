@@ -1,6 +1,6 @@
 /*
  * Copyright 2022 HM Revenue & Customs
- *
+  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,18 +17,27 @@
 package pages.common
 
 import models.common.ChooseTaxYear
-import models.enumeration.EventType.Event23
+import models.enumeration.EventType.{Event22, Event23}
 import pages.behaviours.PageBehaviours
 import pages.common
 
 class ChooseTaxYearSpec extends PageBehaviours {
 
   "ChooseTaxYearPage" - {
+    "event23" in {
+      beRetrievable[ChooseTaxYear](ChooseTaxYearPage(Event23))
 
-    beRetrievable[ChooseTaxYear](ChooseTaxYearPage(Event23))
+      beSettable[ChooseTaxYear](common.ChooseTaxYearPage(Event23))
 
-    beSettable[ChooseTaxYear](common.ChooseTaxYearPage(Event23))
+      beRemovable[ChooseTaxYear](common.ChooseTaxYearPage(Event23))
+    }
+    "event22" in {
+      beRetrievable[ChooseTaxYear](ChooseTaxYearPage(Event22))
 
-    beRemovable[ChooseTaxYear](common.ChooseTaxYearPage(Event23))
+      beSettable[ChooseTaxYear](common.ChooseTaxYearPage(Event22))
+
+      beRemovable[ChooseTaxYear](common.ChooseTaxYearPage(Event22))
+    }
+
   }
 }

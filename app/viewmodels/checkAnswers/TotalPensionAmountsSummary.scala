@@ -33,11 +33,11 @@ object TotalPensionAmountsSummary {
       answer =>
 
         SummaryListRowViewModel(
-          key = "totalPensionAmounts.checkYourAnswersLabel",
+          key = s"totalPensionAmounts.event${eventType.toString}.checkYourAnswersLabel",
           value = ValueViewModel(answer.toString),
           actions = Seq(
             ActionItemViewModel("site.change", TotalPensionAmountsPage(eventType).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("totalPensionAmounts.change.hidden"))
+              .withVisuallyHiddenText(messages(s"totalPensionAmounts.event${eventType.toString}.change.hidden"))
           )
         )
     }

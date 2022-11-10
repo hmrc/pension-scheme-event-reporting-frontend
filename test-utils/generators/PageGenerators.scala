@@ -17,15 +17,15 @@
 package generators
 
 import models.Index
-import models.enumeration.AddressJourneyType
+import models.enumeration.{AddressJourneyType, EventType}
 import models.enumeration.EventType.{Event1, Event23}
 import org.scalacheck.Arbitrary
-import pages.{common, _}
 import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.event1.{employer, member}
 import pages.eventWindUp.SchemeWindUpDatePage
+import pages.{common, _}
 
 trait PageGenerators {
 
@@ -37,8 +37,10 @@ trait PageGenerators {
 
   implicit lazy val arbitraryPaymentValueAndDatePage: Arbitrary[event1.PaymentValueAndDatePage] =
     Arbitrary(event1.PaymentValueAndDatePage(Index(0)))
+
   implicit lazy val arbitraryHowAddDualAllowancePage: Arbitrary[event23.HowAddDualAllowancePage.type] =
     Arbitrary(event23.HowAddDualAllowancePage)
+
   implicit lazy val arbitraryLoanDetailsPage: Arbitrary[event1.employer.LoanDetailsPage] =
     Arbitrary(event1.employer.LoanDetailsPage(Index(0)))
 

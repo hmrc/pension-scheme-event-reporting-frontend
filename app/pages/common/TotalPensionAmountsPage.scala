@@ -28,6 +28,6 @@ case class TotalPensionAmountsPage(eventType: EventType) extends QuestionPage[Bi
   override def toString: String = "totalPensionAmounts"
 
   override def route(waypoints: Waypoints): Call =
-    controllers.common.routes.TotalPensionAmountsController.onPageLoad(waypoints)
+    controllers.common.routes.TotalPensionAmountsController.onPageLoad(waypoints, eventType)
 
 }

@@ -18,28 +18,47 @@ package forms.common
 
 import forms.behaviours.OptionFieldBehaviours
 import models.common.ChooseTaxYear
+import models.enumeration.EventType.{Event22, Event23}
 import play.api.data.FormError
 
 class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours {
 
-  private val form = new ChooseTaxYearFormProvider()()
-
   ".value" - {
+    "event23" - {
+      val form = new ChooseTaxYearFormProvider()(Event23)
+      val fieldName = "value"
+      val requiredKeyEvent23 = "chooseTaxYear.event23.error.required"
 
-    val fieldName = "value"
-    val requiredKey = "chooseTaxYear.event23.error.required"
+      behave like optionsField[ChooseTaxYear](
+        form,
+        fieldName,
+        validValues = ChooseTaxYear.values,
+        invalidError = FormError(fieldName, "event23.error.invalid")
+      )
 
-    behave like optionsField[ChooseTaxYear](
-      form,
-      fieldName,
-      validValues  = ChooseTaxYear.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+      behave like mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, requiredKeyEvent23)
+      )
+    }
+    "event22" - {
+      val form = new ChooseTaxYearFormProvider()(Event22)
+      val fieldName = "value"
+      val requiredKeyEvent22 = "chooseTaxYear.event22.error.required"
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+      behave like optionsField[ChooseTaxYear](
+        form,
+        fieldName,
+        validValues = ChooseTaxYear.values,
+        invalidError = FormError(fieldName, "event22.error.invalid")
+      )
+
+      behave like mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, requiredKeyEvent22)
+      )
+    }
   }
 }
