@@ -32,8 +32,8 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours {
       behave like optionsField[ChooseTaxYear](
         form,
         fieldName,
-        validValues = ChooseTaxYear.values,
-        invalidError = FormError(fieldName, "event23.error.invalid")
+        validValues = ChooseTaxYear.valuesForEventType(Event23),
+        invalidError = FormError(fieldName, "error.invalid")
       )
 
       behave like mandatoryField(
@@ -50,8 +50,8 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours {
       behave like optionsField[ChooseTaxYear](
         form,
         fieldName,
-        validValues = ChooseTaxYear.values,
-        invalidError = FormError(fieldName, "event22.error.invalid")
+        validValues = ChooseTaxYear.valuesForEventType(Event22),
+        invalidError = FormError(fieldName, "error.invalid")
       )
 
       behave like mandatoryField(

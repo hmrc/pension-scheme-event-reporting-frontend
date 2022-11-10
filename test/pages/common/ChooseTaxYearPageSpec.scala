@@ -1,6 +1,6 @@
 /*
  * Copyright 2022 HM Revenue & Customs
-  *
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,14 +24,14 @@ import pages.common
 class ChooseTaxYearSpec extends PageBehaviours {
 
   "ChooseTaxYearPage" - {
-    "event23" in {
+    "event23" - {
       beRetrievable[ChooseTaxYear](ChooseTaxYearPage(Event23))
 
       beSettable[ChooseTaxYear](common.ChooseTaxYearPage(Event23))
 
       beRemovable[ChooseTaxYear](common.ChooseTaxYearPage(Event23))
     }
-    "event22" in {
+    "event22" - {
       beRetrievable[ChooseTaxYear](ChooseTaxYearPage(Event22))
 
       beSettable[ChooseTaxYear](common.ChooseTaxYearPage(Event22))

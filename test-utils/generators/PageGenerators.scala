@@ -18,7 +18,7 @@ package generators
 
 import models.Index
 import models.enumeration.{AddressJourneyType, EventType}
-import models.enumeration.EventType.{Event1, Event23}
+import models.enumeration.EventType.{Event1, Event22, Event23}
 import org.scalacheck.Arbitrary
 import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}

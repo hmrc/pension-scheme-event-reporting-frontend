@@ -773,15 +773,15 @@ chooseTaxYear.event22.checkYourAnswersLabel = In which tax year was the annual a
 chooseTaxYear.event22.error.required = Select the tax year in which the annual allowance was exceeded
 chooseTaxYear.event22.change.hidden = Select the tax year in which the annual allowance was exceeded
 
-totalPensionAmounts.event22.title = What is the total of the member's pension input amounts for all arrangements under the scheme for the tax year {0}?
-totalPensionAmounts.event22.heading = What is the total of the member's pension input amounts for all arrangements under the scheme for the tax year {0}?
-totalPensionAmounts.event22.checkYourAnswersLabel = What is the total of the member's pension input amounts for all arrangements under the scheme for the tax year {0}?
-totalPensionAmounts.event22.change.hidden = What is the total of the member's pension input amounts for all arrangements under the scheme for the tax year {0}?
+totalPensionAmounts.event22.title = What is the total of the member's pension input amounts for all arrangements under the scheme for the tax year
+totalPensionAmounts.event22.heading = What is the total of the member's pension input amounts for all arrangements under the scheme for the tax year
+totalPensionAmounts.event22.checkYourAnswersLabel = What is the total of the member's pension input amounts for all arrangements under the scheme for the tax year
+totalPensionAmounts.event22.change.hidden = What is the total of the member's pension input amounts for all arrangements under the scheme for the tax year
 
-totalPensionAmounts.event23.title = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year {0}?
-totalPensionAmounts.event23.heading = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year {0}?
-totalPensionAmounts.event23.checkYourAnswersLabel = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year {0}?
-totalPensionAmounts.event23.change.hidden = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year {0}?
+totalPensionAmounts.event23.title = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year
+totalPensionAmounts.event23.heading = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year
+totalPensionAmounts.event23.checkYourAnswersLabel = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year
+totalPensionAmounts.event23.change.hidden = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year
 totalPensionAmounts.value.error.nothingEntered = Enter the total pension input amounts
 totalPensionAmounts.value.error.notANumber = The total pension input amounts must be an amount of money, like 123.45 or 156.00
 totalPensionAmounts.value.error.noDecimals = The total pension input amounts must include pence, like 123.45 or 156.00
