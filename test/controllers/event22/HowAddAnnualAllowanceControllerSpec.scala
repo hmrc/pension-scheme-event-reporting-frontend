@@ -24,7 +24,6 @@ import models.event22.HowAddAnnualAllowance
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.event22.HowAddAnnualAllowancePage
 import play.api.inject.bind
@@ -32,8 +31,6 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.event22.HowAddAnnualAllowanceView
-
-import scala.concurrent.Future
 
 class HowAddAnnualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach {
 
