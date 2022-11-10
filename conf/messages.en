@@ -762,10 +762,18 @@ testDate.error.outsideDateRanges = Enter a real date
 
 chooseTaxYear.yearRangeRadio = {0} to {1}
 chooseTaxYear.event23.title = In which tax year was the money purchase pension savings statement issued?
-chooseTaxYear.event23.heading = In which tax year was the money purchase pension savings statement issued
-chooseTaxYear.event23.checkYourAnswersLabel = Select the tax year the money purchase pension savings statement was issued
+chooseTaxYear.event23.heading = In which tax year was the money purchase pension savings statement issued?
+chooseTaxYear.event23.checkYourAnswersLabel = In which tax year was the money purchase pension savings statement issued?
 chooseTaxYear.event23.error.required = Select the tax year the money purchase pension savings statement was issued
 chooseTaxYear.event23.change.hidden = Select the tax year the money purchase pension savings statement was issued
+
+chooseTaxYear.event22.title = In which tax year was the annual allowance exceeded?
+chooseTaxYear.event22.heading = In which tax year was the annual allowance exceeded?
+chooseTaxYear.event22.checkYourAnswersLabel = In which tax year was the annual allowance exceeded?
+chooseTaxYear.event22.error.required = Select the tax year in which the annual allowance was exceeded
+chooseTaxYear.event22.change.hidden = Select the tax year in which the annual allowance was exceeded
+
+
 
 totalPensionAmounts.title = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year {0}?
 totalPensionAmounts.heading = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year {0}?

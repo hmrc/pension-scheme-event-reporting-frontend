@@ -20,8 +20,8 @@ import controllers.common.routes
 import models.UserAnswers
 import models.common.ChooseTaxYear
 import models.enumeration.EventType
-import models.enumeration.EventType.Event23
-import pages.{Page, QuestionPage, Waypoints}
+import models.enumeration.EventType.{Event22, Event23}
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -34,6 +34,12 @@ case class ChooseTaxYearPage(eventType: EventType) extends QuestionPage[ChooseTa
   override def route(waypoints: Waypoints): Call =
     routes.ChooseTaxYearController.onPageLoad(waypoints, eventType)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    TotalPensionAmountsPage(Event23)
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    eventType  match {
+      case Event22 => TotalPensionAmountsPage(Event22)
+      case Event23 => TotalPensionAmountsPage(Event23)
+      case _ => IndexPage
+    }
+
+  }
 }
