@@ -35,10 +35,10 @@ class WhatYouWillNeedController @Inject()(
                                            view: WhatYouWillNeedView
                                          ) extends FrontendBaseController with I18nSupport {
 
-  private val eventType = EventType.Event22
+  private val eventType22 = EventType.Event22
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) {
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType22)) {
     implicit request =>
-      Ok(view(controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, eventType).url))
+      Ok(view(controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, eventType22).url))
   }
 }
