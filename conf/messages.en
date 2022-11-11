@@ -155,6 +155,15 @@ event18Confirmation.error.required = You must tick the box to continue
 event18Confirmation.change.hidden = Event18Confirmation
 event18Confirmation.summary.title = Event 18: Scheme chargeable payment
 
+howAddAnnualAllowance.title = How do you want to add the annual allowance details?
+howAddAnnualAllowance.heading = How do you want to add the annual allowance details?
+howAddAnnualAllowance.manual = Manually enter the details
+howAddAnnualAllowance.fileUpload = Upload a file
+howAddAnnualAllowance.checkYourAnswersLabel = How do you want to add the annual allowances details?
+howAddAnnualAllowance.error.required = Select how you want to add the annual allowances details
+howAddAnnualAllowance.change.hidden = How do you want to add the annual allowances details?
+howAddAnnualAllowance.fileUpload.hint = Uploading a file will overwrite any data you have previously added for this event
+
 howAddDualAllowance.title = How do you want to add the dual annual allowances details?
 howAddDualAllowance.heading = How do you want to add the dual annual allowances details?
 howAddDualAllowance.manual = Manually enter the details
@@ -208,6 +217,14 @@ whatYouWillNeed.item4 = if the scheme is paying the unauthorised payment surchar
 whatYouWillNeed.item5 = the nature of the payment
 whatYouWillNeed.item6 = the payment value and date
 
+whatYouWillNeed.event22.title = What you will need
+whatYouWillNeed.event22.heading = What you will need
+whatYouWillNeed.event22.p = To report an annual allowance event you will need the following for each member:
+whatYouWillNeed.event22.item1 = their name
+whatYouWillNeed.event22.item2 = their National Insurance number
+whatYouWillNeed.event22.item3 = the tax year in which the annual allowance was exceeded
+whatYouWillNeed.event22.item4 = the total of the member’s pension input amounts for all arrangements under the scheme for the relevant tax year
+
 whatYouWillNeed.event23.title = What you will need
 whatYouWillNeed.event23.heading = What you will need
 whatYouWillNeed.event23.p = To report a dual annual allowances event you will need the following for each member:
@@ -215,7 +232,6 @@ whatYouWillNeed.event23.item1 = their name
 whatYouWillNeed.event23.item2 = their National Insurance number
 whatYouWillNeed.event23.item3 = the tax year in which the money purchase pension savings statement was issued
 whatYouWillNeed.event23.item4 = the total of the member's pension input amounts for money purchase arrangements under the scheme in the relevant tax year
-
 
 membersDetails.title = Member’s details
 membersDetails.heading = Member’s details
