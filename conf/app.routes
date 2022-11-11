@@ -143,6 +143,17 @@ GET         /new-report/event-23-what-need                                      
 GET         /new-report/event-23-member-details                                   controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 POST        /new-report/event-23-member-details                                   controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 
+GET         /new-report/event-1-member-details                             controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1)
+POST        /new-report/event-1-member-details                             controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1)
+
+GET         /new-report/event-22-entry-type                                controllers.event22.HowAddAnnualAllowanceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-22-entry-type                                controllers.event22.HowAddAnnualAllowanceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-22-what-need                                 controllers.event22.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-22-member-details                            controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+POST        /new-report/event-22-member-details                            controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+
 GET         /new-report/:index/event-1-member-details                             controllers.common.MembersDetailsController.onPageLoadWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1, index: Index)
 POST        /new-report/:index/event-1-member-details                             controllers.common.MembersDetailsController.onSubmitWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1, index: Index)
 

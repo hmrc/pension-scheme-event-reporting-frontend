@@ -39,7 +39,9 @@ import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsP
 import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, LoanDetailsPage}
 import pages.event1.member._
-import pages.event18.{Event18CheckYourAnswersPage, Event18ConfirmationPage}
+import pages.event18.Event18ConfirmationPage
+import pages.event22.HowAddAnnualAllowancePage
+import pages.event18.Event18CheckYourAnswersPage
 import pages.event23.HowAddDualAllowancePage
 import pages.eventWindUp.{EventWindUpCheckYourAnswersPage, SchemeWindUpDatePage}
 
@@ -279,6 +281,20 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       )
   }
 
+  "test navigation to event22 from event selection page to totalAmounts page" in {
+    val membersDetails = arbitrary[MembersDetails].sample
+    val taxYear = arbitrary[ChooseTaxYear].sample
+    startingFrom(EventSelectionPage)
+      .run(
+        submitAnswer(EventSelectionPage, Event22),
+        submitAnswer(HowAddAnnualAllowancePage, models.event22.HowAddAnnualAllowance.Manual),
+        next,
+        submitAnswer(pages.common.MembersDetailsPage(EventType.Event22, None), membersDetails.get),
+        submitAnswer(ChooseTaxYearPage(EventType.Event22), taxYear.get),
+        pageMustBe(TotalPensionAmountsPage(EventType.Event22))
+      )
+  }
+
   "test navigation to event23 from event selection page to totalAmounts page" in {
     val membersDetails = arbitrary[MembersDetails].sample
     val taxYear = arbitrary[ChooseTaxYear].sample
@@ -292,20 +308,6 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         pageMustBe(TotalPensionAmountsPage(EventType.Event23))
       )
   }
-
-//  "test navigation to event22 from event selection page to totalAmounts page" in {
-//    val membersDetails = arbitrary[MembersDetails].sample
-//    val taxYear = arbitrary[ChooseTaxYear].sample
-//    startingFrom(EventSelectionPage)
-//      .run(
-//        submitAnswer(EventSelectionPage, Event22),
-//        submitAnswer(HowAddDualAllowancePage, models.event22.HowAddDualAllowance.Manual),
-//        next,
-//        submitAnswer(pages.common.MembersDetailsPage(EventType.Event22, None), membersDetails.get),
-//        submitAnswer(ChooseTaxYearPage(EventType.Event22), taxYear.get),
-//        pageMustBe(TotalPensionAmountsPage(EventType.Event22))
-//      )
-//  }
 
   "testing nav to CYA page after changing payment nature from Benefit in kind to refund of contributions option" in {
     startingFrom(PaymentNaturePage(0))
