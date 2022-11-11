@@ -44,7 +44,7 @@ object ChooseTaxYearSummary {
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", common.ChooseTaxYearPage(eventType).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("chooseTaxYear.change.hidden"))
+              .withVisuallyHiddenText(messages(s"chooseTaxYear.event${eventType}.change.hidden"))
           )
         )
     }

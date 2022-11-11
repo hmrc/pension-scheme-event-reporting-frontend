@@ -808,12 +808,12 @@ chooseTaxYear.event23.title = In which tax year was the money purchase pension s
 chooseTaxYear.event23.heading = In which tax year was the money purchase pension savings statement issued?
 chooseTaxYear.event23.checkYourAnswersLabel = Tax year the money purchase pension savings statement was issued
 chooseTaxYear.event23.error.required = Select the tax year the money purchase pension savings statement was issued
-chooseTaxYear.event23.change.hidden = Select the tax year the money purchase pension savings statement was issued
+chooseTaxYear.event23.change.hidden = Tax year the money purchase pension savings statement was issued
 
 totalPensionAmounts.title = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year {0}?
 totalPensionAmounts.heading = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year {0}?
 totalPensionAmounts.checkYourAnswersLabel = Total pension input amounts
-totalPensionAmounts.change.hidden = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year {0}?
+totalPensionAmounts.change.hidden = Total pension input amounts
 totalPensionAmounts.value.error.nothingEntered = Enter the total pension input amounts
 totalPensionAmounts.value.error.notANumber = The total pension input amounts must be an amount of money, like 123.45 or 156.00
 totalPensionAmounts.value.error.noDecimals = The total pension input amounts must include pence, like 123.45 or 156.00
