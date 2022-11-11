@@ -35,12 +35,12 @@ object ChooseTaxYearSummary {
 
         val value = ValueViewModel(
           HtmlContent(
-            HtmlFormat.escape(messages(s"chooseTaxYear.$answer"))
+            HtmlFormat.escape(answer.toString + " to " + (answer.toString.toInt + 1).toString)
           )
         )
 
         SummaryListRowViewModel(
-          key = "chooseTaxYear.checkYourAnswersLabel",
+          key = s"chooseTaxYear.event${eventType}.checkYourAnswersLabel",
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", common.ChooseTaxYearPage(eventType).changeLink(waypoints, sourcePage).url)

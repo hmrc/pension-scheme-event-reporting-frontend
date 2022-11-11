@@ -24,6 +24,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 import models.enumeration.EventType
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import viewmodels.event1.checkAnswers.PaymentValueAndDateSummary.currencyFormatter
 
 object TotalPensionAmountsSummary {
 
@@ -34,7 +36,7 @@ object TotalPensionAmountsSummary {
 
         SummaryListRowViewModel(
           key = "totalPensionAmounts.checkYourAnswersLabel",
-          value = ValueViewModel(answer.toString),
+          value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer)}")),
           actions = Seq(
             ActionItemViewModel("site.change", TotalPensionAmountsPage(eventType).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("totalPensionAmounts.change.hidden"))
