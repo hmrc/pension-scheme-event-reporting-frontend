@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package pages.event23
+package forms.event22
 
+import forms.mappings.Mappings
+import models.event22.HowAddAnnualAllowance
 import models.event23.HowAddDualAllowance
-import pages.behaviours.PageBehaviours
+import play.api.data.Form
 
-class HowAddDualAllowanceSpec extends PageBehaviours {
+import javax.inject.Inject
 
-  "HowAddDualAllowancePage" - {
+class HowAddAnnualAllowanceFormProvider @Inject() extends Mappings {
 
-    beRetrievable[HowAddDualAllowance](HowAddDualAllowancePage)
-
-    beSettable[HowAddDualAllowance](HowAddDualAllowancePage)
-
-    beRemovable[HowAddDualAllowance](HowAddDualAllowancePage)
-  }
+  def apply(): Form[HowAddAnnualAllowance] =
+    Form(
+      "value" -> enumerable[HowAddAnnualAllowance]("howAddAnnualAllowance.error.required")
+    )
 }
