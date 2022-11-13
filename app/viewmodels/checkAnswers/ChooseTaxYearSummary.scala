@@ -28,7 +28,7 @@ import viewmodels.implicits._
 
 object ChooseTaxYearSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, eventType: EventType, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(common.ChooseTaxYearPage(eventType)).map {
       answer =>

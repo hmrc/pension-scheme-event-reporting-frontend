@@ -17,7 +17,6 @@
 package controllers.event23
 
 import base.SpecBase
-import controllers.event23.Event23CheckYourAnswersControllerSpec.expectedMemberSummaryListRowsEvent23
 import data.SampleData.sampleMemberJourneyDataEvent23
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -34,6 +33,8 @@ import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
 class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
+
+  import Event23CheckYourAnswersControllerSpec._
 
   "Check Your Answers Controller" - {
 

@@ -41,25 +41,16 @@ class Event23CheckYourAnswersController @Inject()(
 
   def onPageLoad(): Action[AnyContent] =
     (identify andThen getData(Event23) andThen requireData) { implicit request =>
-
       val thisPage = Event23CheckYourAnswersPage
       val waypoints = EmptyWaypoints
-
       Ok(view(SummaryListViewModel(rows = buildEvent23CYARows(waypoints, thisPage))))
     }
 
-
   private def buildEvent23CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
-                                (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    val basicMemberOrEmployerRows = event23BasicMemberDetailsRows(waypoints, sourcePage)
-    basicMemberOrEmployerRows
-  }
-
-  private def event23BasicMemberDetailsRows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
                                           (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, None, sourcePage, Event23).toSeq ++
       MembersDetailsSummary.rowNino(request.userAnswers, waypoints, None, sourcePage, Event23).toSeq ++
-      ChooseTaxYearSummary.row(request.userAnswers, waypoints, Event23, sourcePage).toSeq ++
+      ChooseTaxYearSummary.row(request.userAnswers, waypoints, sourcePage, Event23).toSeq ++
       TotalPensionAmountsSummary.row(request.userAnswers, waypoints, sourcePage, Event23).toSeq
   }
 }
