@@ -52,8 +52,8 @@ class HowAddAnnualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEa
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

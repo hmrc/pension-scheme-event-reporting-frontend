@@ -37,13 +37,13 @@ class HowAddAnnualAllowanceController @Inject()(val controllerComponents: Messag
                                                 userAnswersCacheConnector: UserAnswersCacheConnector,
                                                 formProvider: HowAddAnnualAllowanceFormProvider,
                                                 view: HowAddAnnualAllowanceView
-                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType22 = EventType.Event22
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType22)) { implicit request =>
-   val preparedForm = request.userAnswers.flatMap(_.get(HowAddAnnualAllowancePage)).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(HowAddAnnualAllowancePage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
