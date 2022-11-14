@@ -17,6 +17,7 @@
 package controllers.event23
 
 import com.google.inject.Inject
+import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.enumeration.EventType.Event23
 import models.requests.DataRequest
@@ -30,24 +31,40 @@ import viewmodels.checkAnswers.{ChooseTaxYearSummary, MembersDetailsSummary, Tot
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
+import scala.concurrent.ExecutionContext
+
 class Event23CheckYourAnswersController @Inject()(
-                                                  override val messagesApi: MessagesApi,
-                                                  identify: IdentifierAction,
-                                                  getData: DataRetrievalAction,
-                                                  requireData: DataRequiredAction,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  view: CheckYourAnswersView
-                                                ) extends FrontendBaseController with I18nSupport {
+                                                   override val messagesApi: MessagesApi,
+                                                   identify: IdentifierAction,
+                                                   getData: DataRetrievalAction,
+                                                   requireData: DataRequiredAction,
+                                                   connector: EventReportingConnector,
+                                                   val controllerComponents: MessagesControllerComponents,
+                                                   view: CheckYourAnswersView
+                                                 ) (implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] =
     (identify andThen getData(Event23) andThen requireData) { implicit request =>
       val thisPage = Event23CheckYourAnswersPage
       val waypoints = EmptyWaypoints
-      Ok(view(SummaryListViewModel(rows = buildEvent23CYARows(waypoints, thisPage))))
+      val continueUrl = controllers.event23.routes.Event23CheckYourAnswersController.onClick.url
+      Ok(view(SummaryListViewModel(rows = buildEvent23CYARows(waypoints, thisPage)), continueUrl))
+    }
+
+  /**
+   *TODO: replace controllers.event23.routes.Event23CheckYourAnswersController with actual event23.SummaryPageController
+   */
+  def onClick: Action[AnyContent] =
+    (identify andThen getData(Event23) andThen requireData).async { implicit request =>
+      val waypoints = EmptyWaypoints
+      connector.compileEvent("123", Event23).map {
+        _ =>
+          Redirect(controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad().url)
+      }
     }
 
   private def buildEvent23CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
-                                          (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+                                 (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, None, sourcePage, Event23).toSeq ++
       MembersDetailsSummary.rowNino(request.userAnswers, waypoints, None, sourcePage, Event23).toSeq ++
       ChooseTaxYearSummary.row(request.userAnswers, waypoints, sourcePage, Event23).toSeq ++

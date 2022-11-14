@@ -29,17 +29,11 @@ import models.event1.employer.PaymentNature.TangibleMoveableProperty
 import models.event1.employer.{CompanyDetails, LoanDetails}
 import models.event1.member.SchemeDetails
 import pages.address.ManualAddressPage
-<<<<<<< HEAD
-import pages.common.MembersDetailsPage
-=======
 import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.event1._
->>>>>>> 4310215 ([PODS-7670 CYA controller test spec])
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
-import pages.event1._
 import utils.{CountryOptions, InputOption}
-
 import java.time.LocalDate
 
 object SampleData {
@@ -135,11 +129,8 @@ object SampleData {
     .setOrException(EmployerTangibleMoveablePropertyPage(0), "Another test description")
     .setOrException(PaymentValueAndDatePage(0), paymentDetails)
 
-<<<<<<< HEAD
-=======
   val sampleMemberJourneyDataEvent23: UserAnswers = UserAnswers()
     .setOrException(MembersDetailsPage(Event23, None), memberDetails)
     .setOrException(ChooseTaxYearPage(Event23), ChooseTaxYear("2015"))
     .setOrException(TotalPensionAmountsPage(Event23), BigDecimal(1234.56))
->>>>>>> 4310215 ([PODS-7670 CYA controller test spec])
 }

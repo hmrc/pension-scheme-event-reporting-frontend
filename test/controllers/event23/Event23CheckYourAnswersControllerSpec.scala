@@ -51,8 +51,7 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-
-        contentAsString(result) mustEqual view(list)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-23-click")(request, messages(application)).toString
       }
     }
 
@@ -71,7 +70,7 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         ArgumentCaptor.forClass(classOf[SummaryList])
 
       running(application) {
-        when(mockView.apply(captor.capture())(any(), any())).thenReturn(play.twirl.api.Html(""))
+        when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
         val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad().url)
         val result = route(application, request).value
         status(result) mustEqual OK
