@@ -53,8 +53,8 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

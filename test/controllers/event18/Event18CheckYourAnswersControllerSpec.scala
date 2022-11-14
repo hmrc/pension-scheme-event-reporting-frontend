@@ -17,7 +17,6 @@
 package controllers.event18
 
 import base.SpecBase
-import pages.EmptyWaypoints
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.govuk.SummaryListFluency
@@ -46,7 +45,6 @@ class Event18CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
     "must return OK and the correct view for a GET whilst in Event 1" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      val waypoints = EmptyWaypoints
       def continueUrl = controllers.event18.routes.Event18CheckYourAnswersController.onClick.url
       running(application) {
         val request = FakeRequest(GET, routes.Event18CheckYourAnswersController.onPageLoad.url)
