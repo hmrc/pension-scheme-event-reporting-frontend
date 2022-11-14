@@ -16,18 +16,15 @@
 
 package pages.event1
 
-import pages.{Page, Waypoints}
+import models.event1.MembersOrEmployersSummary
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import queries.Gettable
 
-case class MembersOrEmployersPage(index: Int) extends Page {
-  def path: JsPath = JsPath \ "event1" \ MembersOrEmployersPage.toString \ index
+object MembersOrEmployersPage extends Gettable[Seq[MembersOrEmployersSummary]] {
+  def apply(index: Int): JsPath = path \ index
 
-  override def route(waypoints: Waypoints): Call = controllers.routes.IndexController.onPageLoad
-}
+  def path: JsPath = JsPath \ "event1" \ toString
 
-object MembersOrEmployersPage {
   override def toString: String = "membersOrEmployers"
+
 }
-
-

@@ -26,9 +26,7 @@ import play.api.mvc.Call
 
 case class WhoReceivedUnauthPaymentPage(index: Int) extends QuestionPage[WhoReceivedUnauthPayment] {
 
-  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
-
-  override def toString: String = "whoReceivedUnauthPayment"
+  override def path: JsPath = MembersOrEmployersPage(index) \ WhoReceivedUnauthPaymentPage.toString
 
   override def route(waypoints: Waypoints): Call =
     routes.WhoReceivedUnauthPaymentController.onPageLoad(waypoints, index)
@@ -39,4 +37,8 @@ case class WhoReceivedUnauthPaymentPage(index: Int) extends QuestionPage[WhoRece
       case Some(Employer) => pages.event1.employer.WhatYouWillNeedPage(index)
       case _ => this
     }
+}
+
+object WhoReceivedUnauthPaymentPage {
+  override def toString: String = "whoReceivedUnauthPayment"
 }

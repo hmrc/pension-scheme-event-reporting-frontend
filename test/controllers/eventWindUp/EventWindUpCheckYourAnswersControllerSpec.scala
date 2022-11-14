@@ -39,7 +39,8 @@ class EventWindUpCheckYourAnswersControllerSpec extends SpecBase with SummaryLis
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list,
+          "/manage-pension-scheme-event-report/new-report/event-windup-click")(request, messages(application)).toString
       }
     }
 

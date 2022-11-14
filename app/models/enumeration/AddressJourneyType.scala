@@ -73,6 +73,7 @@ object AddressJourneyType extends Enumerable.Implicits {
         case EnterPostcodePage(_, _) => Message("residentialAddress.enterPostcode.h1")
         case ChooseAddressPage(_, _) => Message("residentialAddress.chooseAddress.h1")
         case ManualAddressPage(_, _) => Message("residentialAddress.address.h1")
+        case _ => throw new RuntimeException(s"Unknown page for address journey: $whichPage")
       }
 
     override def title(whichPage: Page): Message =
@@ -80,6 +81,7 @@ object AddressJourneyType extends Enumerable.Implicits {
         case EnterPostcodePage(_, _) => Message("residentialAddress.enterPostcode.title")
         case ChooseAddressPage(_, _) => Message("residentialAddress.chooseAddress.title")
         case ManualAddressPage(_, _) => Message("residentialAddress.address.title")
+        case _ => throw new RuntimeException(s"Unknown page for address journey: $whichPage")
       }
   }
 
@@ -95,6 +97,7 @@ object AddressJourneyType extends Enumerable.Implicits {
         case EnterPostcodePage(_, _) => Message("residentialAddress.enterPostcode.h1")
         case ChooseAddressPage(_, _) => Message("residentialAddress.chooseAddress.h1")
         case ManualAddressPage(_, _) => Message("residentialAddress.address.h1")
+        case _ => throw new RuntimeException(s"Unknown page for address journey: $whichPage")
       }
 
     override def title(whichPage: Page): Message =
@@ -102,6 +105,7 @@ object AddressJourneyType extends Enumerable.Implicits {
         case EnterPostcodePage(_, _) => Message("residentialAddress.enterPostcode.title")
         case ChooseAddressPage(_, _) => Message("residentialAddress.chooseAddress.title")
         case ManualAddressPage(_, _) => Message("residentialAddress.address.title")
+        case _ => throw new RuntimeException(s"Unknown page for address journey: $whichPage")
       }
   }
 

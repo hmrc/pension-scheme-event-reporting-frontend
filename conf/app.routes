@@ -26,8 +26,13 @@ GET         /new-report/event-18-confirmation                                   
 POST        /new-report/event-18-confirmation                                     controllers.event18.Event18ConfirmationController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-windup-check-your-answers                           controllers.eventWindUp.EventWindUpCheckYourAnswersController.onPageLoad()
+GET         /new-report/event-windup-click                                        controllers.eventWindUp.EventWindUpCheckYourAnswersController.onClick
+
 GET         /new-report/:index/event-1-check-your-answers                         controllers.event1.Event1CheckYourAnswersController.onPageLoad(index: Index)
+GET         /new-report/event-1-click                                             controllers.event1.Event1CheckYourAnswersController.onClick
+
 GET         /new-report/event-18-check-your-answers                               controllers.event18.Event18CheckYourAnswersController.onPageLoad()
+GET         /new-report/event-18-click                                            controllers.event18.Event18CheckYourAnswersController.onClick
 
 GET         /new-report/:index/event-1-entry-type                                 controllers.event1.HowAddUnauthPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /new-report/:index/event-1-entry-type                                 controllers.event1.HowAddUnauthPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
@@ -156,6 +161,11 @@ POST        /new-report/event-22-member-details                            contr
 
 GET         /new-report/:index/event-1-member-details                             controllers.common.MembersDetailsController.onPageLoadWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1, index: Index)
 POST        /new-report/:index/event-1-member-details                             controllers.common.MembersDetailsController.onSubmitWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1, index: Index)
+
+GET         /new-report/event-1-paying-charges                                    controllers.event1.UnauthPaymentAndSanctionChargesController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-1-summary                                           controllers.event1.UnauthPaymentSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-1-summary                                           controllers.event1.UnauthPaymentSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.

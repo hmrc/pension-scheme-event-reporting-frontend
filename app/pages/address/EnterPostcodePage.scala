@@ -27,7 +27,7 @@ import play.api.mvc.Call
 
 case class EnterPostcodePage(addressJourneyType: AddressJourneyType, index: Int) extends QuestionPage[Seq[TolerantAddress]] {
 
-  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
+  override def path: JsPath = MembersOrEmployersPage(index) \ toString
 
   override def toString: String = "enterPostcode"
 

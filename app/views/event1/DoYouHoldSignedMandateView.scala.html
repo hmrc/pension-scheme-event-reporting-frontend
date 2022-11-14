@@ -28,7 +28,7 @@
 
 @layout(pageTitle = title(form, messages("doYouHoldSignedMandate.title"))) {
 
-    @formHelper(action = routes.DoYouHoldSignedMandateController.onSubmit(waypoints, index), 'autoComplete -> "off") {
+    @formHelper(action = routes.DoYouHoldSignedMandateController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

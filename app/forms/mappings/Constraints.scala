@@ -21,6 +21,7 @@ import uk.gov.hmrc.domain.Nino
 import utils.CountryOptions
 
 import java.time.LocalDate
+import scala.language.implicitConversions
 
 trait Constraints {
 

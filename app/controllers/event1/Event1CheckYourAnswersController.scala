@@ -17,6 +17,7 @@
 package controllers.event1
 
 import com.google.inject.Inject
+import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.Index
 import models.enumeration.AddressJourneyType
@@ -41,14 +42,17 @@ import viewmodels.event1.member.checkAnswers._
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
+import scala.concurrent.ExecutionContext
+
 class Event1CheckYourAnswersController @Inject()(
                                                   override val messagesApi: MessagesApi,
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
+                                                  connector: EventReportingConnector,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: CheckYourAnswersView
-                                                ) extends FrontendBaseController with I18nSupport {
+                                                )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (identify andThen getData(Event1) andThen requireData) { implicit request =>
@@ -56,9 +60,19 @@ class Event1CheckYourAnswersController @Inject()(
       val thisPage = Event1CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
 
-      Ok(view(SummaryListViewModel(rows = buildEvent1CYARows(waypoints, thisPage, index))))
+      val continueUrl = controllers.event1.routes.Event1CheckYourAnswersController.onClick.url
+
+      Ok(view(SummaryListViewModel(rows = buildEvent1CYARows(waypoints, thisPage, index)), continueUrl))
     }
 
+  def onClick: Action[AnyContent] =
+    (identify andThen getData(Event1) andThen requireData).async { implicit request =>
+      val waypoints = EmptyWaypoints
+      connector.compileEvent("123", Event1).map {
+        _ =>
+          Redirect(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(waypoints))
+      }
+    }
 
   private def event1MemberJourney(index: Int)(implicit request: DataRequest[AnyContent]): Boolean = {
     request.userAnswers.get(WhoReceivedUnauthPaymentPage(index)) match {

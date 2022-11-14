@@ -18,7 +18,7 @@ package models
 
 import pages.QuestionPage
 import play.api.libs.json._
-import queries.{Derivable, Gettable, Settable}
+import queries.{Derivable, Gettable, Query, Settable}
 
 import scala.util.{Failure, Success, Try}
 
@@ -28,6 +28,9 @@ final case class UserAnswers(
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
+
+  def get(path: JsPath)(implicit rds: Reads[JsValue]): Option[JsValue] =
+    Reads.optionNoError(Reads.at(path)).reads(data).getOrElse(None)
 
   def get[A, B](derivable: Derivable[A, B])(implicit rds: Reads[A]): Option[B] =
     Reads.optionNoError(Reads.at(derivable.path))
@@ -86,4 +89,16 @@ final case class UserAnswers(
     }
   }
 
+  def getAll[A](page: Gettable[Seq[A]])(implicit reads: Reads[A]): Seq[A] =
+    data.as[Option[Seq[A]]](page.path.readNullable[Seq[A]]).toSeq.flatten
+
+  def countAll(page: Query): Int =
+    page.path.readNullable[JsArray].reads(data).asOpt.flatten.map(_.value.size).getOrElse(0)
+
+  def sumAll(page: Query, readsBigDecimal: Reads[BigDecimal]): BigDecimal = {
+    def zeroValue = BigDecimal(0)
+    page.path.readNullable[JsArray].reads(data).asOpt.flatten
+      .map(_.value.map(jsValue => readsBigDecimal.reads(jsValue).asOpt.getOrElse(zeroValue)).sum)
+      .getOrElse(zeroValue)
+  }
 }

@@ -17,6 +17,7 @@
 package controllers.eventWindUp
 
 import com.google.inject.Inject
+import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.enumeration.EventType.WindUp
 import models.requests.DataRequest
@@ -30,22 +31,34 @@ import viewmodels.checkAnswers.SchemeWindUpDateSummary
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
+import scala.concurrent.ExecutionContext
+
 class EventWindUpCheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
+                                            connector: EventReportingConnector,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: CheckYourAnswersView
-                                          ) extends FrontendBaseController with I18nSupport {
+                                          ) (implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
     (identify andThen getData(WindUp) andThen requireData) { implicit request =>
 
       val thisPage = EventWindUpCheckYourAnswersPage
       val waypoints = EmptyWaypoints
+      val continueUrl = controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onClick.url
+      Ok(view(SummaryListViewModel(rows = buildEventWindUpCYARows(waypoints, thisPage)), continueUrl))
+    }
 
-      Ok(view(SummaryListViewModel(rows = buildEventWindUpCYARows(waypoints, thisPage))))
+  def onClick: Action[AnyContent] =
+    (identify andThen getData(WindUp) andThen requireData).async { implicit request =>
+      val waypoints = EmptyWaypoints
+      connector.compileEvent("123", WindUp).map {
+        _ =>
+          Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
+      }
     }
 
     private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =

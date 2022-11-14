@@ -29,7 +29,7 @@
     showBackLink = false
 ) {
 
-    @formHelper(action = routes.EventSelectionController.onSubmit(waypoints), 'autoComplete -> "off") {
+    @formHelper(action = routes.EventSelectionController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))

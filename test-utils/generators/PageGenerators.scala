@@ -29,8 +29,15 @@ import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
 
+  implicit lazy val UnauthPaymentSummaryPage: Arbitrary[event1.UnauthPaymentSummaryPage.type] =
+    Arbitrary(event1.UnauthPaymentSummaryPage)
+
+  implicit lazy val arbitraryUnauthPaymentAndSanctionChargesPage: Arbitrary[event1.UnauthPaymentAndSanctionChargesPage.type] =
+    Arbitrary(event1.UnauthPaymentAndSanctionChargesPage)
+
   implicit lazy val arbitraryPaymentValueAndDatePage: Arbitrary[event1.PaymentValueAndDatePage] =
     Arbitrary(event1.PaymentValueAndDatePage(Index(0)))
+
   implicit lazy val arbitraryHowAddDualAllowancePage: Arbitrary[event23.HowAddDualAllowancePage.type] =
     Arbitrary(event23.HowAddDualAllowancePage)
   implicit lazy val arbitraryLoanDetailsPage: Arbitrary[event1.employer.LoanDetailsPage] =

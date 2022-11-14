@@ -26,7 +26,7 @@ import play.api.mvc.Call
 
 case class SchemeDetailsPage(index: Int) extends QuestionPage[SchemeDetails] {
 
-  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
+  override def path: JsPath = MembersOrEmployersPage(index) \ toString
 
   override def toString: String = "schemeDetails"
 

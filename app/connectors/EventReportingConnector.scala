@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.enumeration.EventType
 import play.api.http.Status._
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
 
@@ -31,6 +32,7 @@ class EventReportingConnector @Inject()(
                                        ) {
 
   private def eventRepSummaryUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/event-summary"
+  private def eventCompileUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/compile"
 
   def getEventReportSummary(pstr: String)
                            (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventType]] = {
@@ -59,6 +61,25 @@ class EventReportingConnector @Inject()(
   private def mapExceptionsToStatus: PartialFunction[Throwable, Future[HttpResponse]] = {
     case _: NotFoundException =>
       Future.successful(HttpResponse(NOT_FOUND, "Not found"))
+  }
+
+  def compileEvent(pstr: String, eventType: EventType)
+                  (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+    val headers: Seq[(String, String)] = Seq(
+      "Content-Type" -> "application/json",
+      "pstr" -> pstr,
+      "eventType" -> eventType.toString
+    )
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.POST[JsValue, HttpResponse](eventCompileUrl, Json.obj())(implicitly, implicitly, hc, implicitly)
+      .map { response =>
+        response.status match {
+          case NO_CONTENT => ()
+          case _ =>
+            throw new HttpException(response.body, response.status)
+        }
+      }
   }
 }
 
