@@ -29,13 +29,13 @@ import pages.{common, _}
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryMembersTotalPensionAmountsPage: Arbitrary[TotalPensionAmountsPage] =
-    Arbitrary(common.TotalPensionAmountsPage(Event23))
+//  implicit lazy val arbitraryMembersTotalPensionAmountsPageEvent23: Arbitrary[TotalPensionAmountsPage] =
+//    Arbitrary(common.TotalPensionAmountsPage(Event23))
+//
+//  implicit lazy val arbitraryChooseTaxYearPageEvent23: Arbitrary[ChooseTaxYearPage] =
+//    Arbitrary(common.ChooseTaxYearPage(Event23))
 
-  implicit lazy val arbitraryChooseTaxYearPage: Arbitrary[ChooseTaxYearPage] =
-    Arbitrary(common.ChooseTaxYearPage(Event23))
-
-  implicit lazy val UnauthPaymentSummaryPage: Arbitrary[event1.UnauthPaymentSummaryPage.type] =
+  implicit lazy val arbitraryUnauthPaymentSummaryPage: Arbitrary[event1.UnauthPaymentSummaryPage.type] =
     Arbitrary(event1.UnauthPaymentSummaryPage)
 
   implicit lazy val arbitraryUnauthPaymentAndSanctionChargesPage: Arbitrary[event1.UnauthPaymentAndSanctionChargesPage.type] =
