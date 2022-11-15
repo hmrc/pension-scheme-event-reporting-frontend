@@ -45,16 +45,16 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
   private val event22 = EventType.Event22
   private val event23 = EventType.Event23
 
+  private val formProvider = new MembersDetailsFormProvider()
+  private val form = formProvider()
+
+  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+
   private def submitUrlEvent1: Call = controllers.common.routes.MembersDetailsController.onSubmitWithIndex(waypoints, event1, 0)
 
   private def submitUrlEvent22: Call = controllers.common.routes.MembersDetailsController.onSubmit(waypoints, event22)
 
   private def submitUrlEvent23: Call = controllers.common.routes.MembersDetailsController.onSubmit(waypoints, event23)
-
-  private val formProvider = new MembersDetailsFormProvider()
-  private val form = formProvider()
-
-  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRouteEvent1: String = routes.MembersDetailsController.onPageLoadWithIndex(waypoints, event1, Index(0)).url
 

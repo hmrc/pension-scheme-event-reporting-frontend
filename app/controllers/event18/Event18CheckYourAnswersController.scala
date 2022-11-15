@@ -33,7 +33,9 @@
 package controllers.event18
 
 import com.google.inject.Inject
+import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.routes
 import models.enumeration.EventType.Event18
 import models.requests.DataRequest
 import pages.event18.Event18CheckYourAnswersPage
@@ -46,22 +48,34 @@ import viewmodels.checkAnswers.Event18ConfirmationSummary
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
+import scala.concurrent.ExecutionContext
+
 class Event18CheckYourAnswersController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            identify: IdentifierAction,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: CheckYourAnswersView
-                                          ) extends FrontendBaseController with I18nSupport {
+                                                   override val messagesApi: MessagesApi,
+                                                   identify: IdentifierAction,
+                                                   getData: DataRetrievalAction,
+                                                   requireData: DataRequiredAction,
+                                                   connector: EventReportingConnector,
+                                                   val controllerComponents: MessagesControllerComponents,
+                                                   view: CheckYourAnswersView
+                                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
     (identify andThen getData(Event18) andThen requireData) { implicit request =>
 
       val thisPage = Event18CheckYourAnswersPage
       val waypoints = EmptyWaypoints
+      val continueUrl = controllers.event18.routes.Event18CheckYourAnswersController.onClick.url
+      Ok(view(SummaryListViewModel(rows = buildEvent18CYARows(waypoints, thisPage)), continueUrl))
+    }
 
-      Ok(view(SummaryListViewModel(rows = buildEvent18CYARows(waypoints, thisPage))))
+  def onClick: Action[AnyContent] =
+    (identify andThen getData(Event18) andThen requireData).async { implicit request =>
+      val waypoints = EmptyWaypoints
+      connector.compileEvent("123", Event18).map {
+        _ =>
+          Redirect(routes.EventSummaryController.onPageLoad(waypoints).url)
+      }
     }
 
   private def buildEvent18CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =

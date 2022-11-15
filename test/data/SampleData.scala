@@ -30,9 +30,9 @@ import models.event1.employer.{CompanyDetails, LoanDetails}
 import models.event1.member.SchemeDetails
 import pages.address.ManualAddressPage
 import pages.common.MembersDetailsPage
-import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
+import pages.event1._
 import utils.{CountryOptions, InputOption}
 
 import java.time.LocalDate
@@ -103,6 +103,14 @@ object SampleData {
 
   val schemeDetails: SchemeDetails = SchemeDetails(Some("SchemeName"), Some("SchemeReference"))
 
+  val userAnswersWithOneMemberAndEmployer: UserAnswers = UserAnswers()
+    .setOrException(WhoReceivedUnauthPaymentPage(0), Member)
+    .setOrException(PaymentValueAndDatePage(0), PaymentDetails(BigDecimal(857.00), LocalDate.of(2022, 11, 9)))
+    .setOrException(MembersDetailsPage(Event1, Some(0)), memberDetails)
+    .setOrException(WhoReceivedUnauthPaymentPage(1), Employer)
+    .setOrException(PaymentValueAndDatePage(1), PaymentDetails(BigDecimal(7687.00), LocalDate.of(2022, 11, 9)))
+    .setOrException(CompanyDetailsPage(1), companyDetails)
+
   val sampleMemberJourneyData: UserAnswers = UserAnswers()
     .setOrException(HowAddUnauthPaymentPage(0), Manual)
     .setOrException(WhoReceivedUnauthPaymentPage(0), Member)
@@ -121,4 +129,5 @@ object SampleData {
     .setOrException(EmployerPaymentNaturePage(0), TangibleMoveableProperty)
     .setOrException(EmployerTangibleMoveablePropertyPage(0), "Another test description")
     .setOrException(PaymentValueAndDatePage(0), paymentDetails)
+
 }

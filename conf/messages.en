@@ -1,8 +1,10 @@
 service.name = Managing pension schemes
 
 site.back = Back
+site.notEntered = Not entered
 site.remove = Remove
 site.change = Change
+site.view = View
 site.no = No
 site.yes = Yes
 site.continue = Continue
@@ -229,7 +231,7 @@ whatYouWillNeed.event23.p = To report a dual annual allowances event you will ne
 whatYouWillNeed.event23.item1 = their name
 whatYouWillNeed.event23.item2 = their National Insurance number
 whatYouWillNeed.event23.item3 = the tax year in which the money purchase pension savings statement was issued
-whatYouWillNeed.event23.item4 = the total of the member’s pension input amounts for money purchase arrangements under the scheme in the relevant tax year
+whatYouWillNeed.event23.item4 = the total of the member's pension input amounts for money purchase arrangements under the scheme in the relevant tax year
 
 membersDetails.title = Member’s details
 membersDetails.heading = Member’s details
@@ -775,6 +777,31 @@ testDate.hint = For example, 22 09 2022
 testDate.error.noDayMonthOrYear = The date must include a day, month and year
 testDate.error.nothingEntered = Enter the mock date
 testDate.error.outsideDateRanges = Enter a real date
+unauthPaymentAndSanctionCharges.title = Paying unauthorised payment and scheme sanction charges
+unauthPaymentAndSanctionCharges.heading = Paying unauthorised payment and scheme sanction charges
+unauthPaymentAndSanctionCharges.p1 = The unauthorised payments you report may be subject to charges.
+unauthPaymentAndSanctionCharges.p2 = When you submit the event report, HMRC will review the details and raise any applicable charges. This usually happens within X weeks/days of submission but might take longer than that.
+unauthPaymentAndSanctionCharges.p3 = Once any applicable charges have been raised, they will be available to view in the scheme’s financial overview on the Managing Pension Schemes service. This will include:
+unauthPaymentAndSanctionCharges.bullet1 = the total scheme sanction charge for the unauthorised payments
+unauthPaymentAndSanctionCharges.bullet2 = a charge reference for the total scheme sanction charge
+unauthPaymentAndSanctionCharges.bullet3 = if applicable, the total member unauthorised payment charge (including any surcharge) for all unauthorised payments
+unauthPaymentAndSanctionCharges.bullet4 = if applicable, a charge reference for the total member unauthorised payment charge
+unauthPaymentAndSanctionCharges.h2 = How to pay
+unauthPaymentAndSanctionCharges.p4 = Check your scheme’s financial overview regularly following submission to see if it has been updated with any applicable charges. Then use the appropriate charge reference(s) when paying any member unauthorised payment or scheme sanction charge.
+unauthPaymentAndSanctionCharges.p5 = You will also receive paper notice(s) for any charges raised.
+
+unauthPaymentSummary.title = Unauthorised payments for tax year ending 5 April {0}
+unauthPaymentSummary.heading = Unauthorised payments for tax year ending 5 April {0}
+unauthPaymentSummary.yesno.legend = Do you want to add another unauthorised payment?
+unauthPaymentSummary.checkYourAnswersLabel = Check your answers
+unauthPaymentSummary.error.required = Select yes if you want to add another unauthorised payment
+unauthPaymentSummary.change.hidden = Unauthorised payment summary
+unauthPaymentSummary.table.header1 = Member or company name
+unauthPaymentSummary.table.header2 = Unauthorised payment value
+
+entity_list_table.total = Total
+
+
 
 chooseTaxYear.yearRangeRadio = {0} to {1}
 chooseTaxYear.event23.title = In which tax year was the money purchase pension savings statement issued?

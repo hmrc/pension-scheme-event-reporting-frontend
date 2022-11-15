@@ -26,7 +26,7 @@ import play.api.mvc.Call
 
 case class ReasonForTheOverpaymentOrWriteOffPage(index: Int) extends QuestionPage[ReasonForTheOverpaymentOrWriteOff] {
 
-  override def path: JsPath = MembersOrEmployersPage(index).path \ toString
+  override def path: JsPath = MembersOrEmployersPage(index) \ toString
 
   override def toString: String = "reasonForTheOverpaymentOrWriteOff"
 

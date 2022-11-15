@@ -30,7 +30,7 @@
 
 @layout(pageTitle = title(form, messages("paymentValueAndDate.title"))) {
 
-    @formHelper(action = routes.PaymentValueAndDateController.onSubmit(waypoints, index), 'autoComplete -> "off") {
+    @formHelper(action = routes.PaymentValueAndDateController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("paymentDate" -> "paymentDate.day")))

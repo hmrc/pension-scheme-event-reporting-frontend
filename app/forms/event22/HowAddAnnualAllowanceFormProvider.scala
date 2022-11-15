@@ -18,7 +18,6 @@ package forms.event22
 
 import forms.mappings.Mappings
 import models.event22.HowAddAnnualAllowance
-import models.event23.HowAddDualAllowance
 import play.api.data.Form
 
 import javax.inject.Inject

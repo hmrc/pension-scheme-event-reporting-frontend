@@ -50,6 +50,7 @@ class EventReportingConnectorSpec
 
   private lazy val connector: EventReportingConnector = injector.instanceOf[EventReportingConnector]
   private val eventReportSummaryCacheUrl = s"/pension-scheme-event-reporting/event-summary"
+  private val eventReportCompileUrl = s"/pension-scheme-event-reporting/compile"
 
   "getEventReportSummary" must {
     "return successfully when the backend has returned OK and a correct response" in {
@@ -92,6 +93,32 @@ class EventReportingConnectorSpec
 
       recoverToSucceededIf[HttpException] {
         connector.getEventReportSummary(pstr)
+      }
+    }
+  }
+
+  "compileEvent" must {
+    "return unit for successful post" in {
+      server.stubFor(
+        post(urlEqualTo(eventReportCompileUrl))
+          .willReturn(
+            noContent
+          )
+      )
+      connector.compileEvent(pstr, eventType).map{ _ mustBe ()}
+    }
+
+    "return BadRequestException when the backend has returned bad request response" in {
+      server.stubFor(
+        post(urlEqualTo(eventReportCompileUrl))
+          .willReturn(
+            badRequest
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      recoverToSucceededIf[HttpException] {
+        connector.compileEvent(pstr, eventType)
       }
     }
   }

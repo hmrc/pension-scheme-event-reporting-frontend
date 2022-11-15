@@ -30,7 +30,7 @@
 
 @layout(pageTitle = title(form, pageTitle)) {
 
-    @formHelper(action = routes.ChooseAddressController.onSubmit(waypoints, addressJourneyType, index), 'autoComplete -> "off") {
+    @formHelper(action = routes.ChooseAddressController.onSubmit(waypoints, addressJourneyType, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value-0")))

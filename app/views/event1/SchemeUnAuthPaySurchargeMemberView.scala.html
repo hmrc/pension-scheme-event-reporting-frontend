@@ -28,7 +28,7 @@
 
 @layout(pageTitle = title(form, messages("schemeUnAuthPaySurchargeMember.title"))) {
 
-    @formHelper(action = routes.SchemeUnAuthPaySurchargeMemberController.onSubmit(waypoints, index), 'autoComplete -> "off") {
+    @formHelper(action = routes.SchemeUnAuthPaySurchargeMemberController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
