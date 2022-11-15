@@ -41,8 +41,8 @@ index.title = Event Reporting
 index.heading = Event Reporting
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
-checkYourAnswers.title = Check Your Answers
-checkYourAnswers.heading = Check Your Answers
+checkYourAnswers.title = Check your answers
+checkYourAnswers.heading = Check your answers
 
 journeyRecovery.continue.title = Sorry, there is a problem with the service
 journeyRecovery.continue.heading = Sorry, there is a problem with the service
@@ -61,7 +61,7 @@ unauthorised.heading = You can’t access this service with this account
 eventSummary.title = Event report for tax year ending 5 April {0}
 eventSummary.heading = Event report for tax year ending 5 April {0}
 eventSummary.yesno.legend = Do you want to add another event?
-eventSummary.checkYourAnswersLabel = Check Your Answers
+eventSummary.checkYourAnswersLabel = Check your answers
 eventSummary.error.required = Select yes if you want to add another event
 eventSummary.change.hidden = EventSummary
 
@@ -239,7 +239,7 @@ membersDetails.firstName.heading = First name
 membersDetails.lastName.heading = Last name
 membersDetails.nino.heading = National Insurance number
 membersDetails.nino.hint = For example, QQ 12 34 56 C
-membersDetails.checkYourAnswersLabel = Member’s details
+membersDetails.checkYourAnswersLabel = Member’s name
 membersDetails.checkYourAnswersLabel.nino = Member’s National Insurance number
 membersDetails.error.firstName.required = Enter the member’s first name
 membersDetails.error.lastName.required = Enter the member’s last name
@@ -249,7 +249,7 @@ membersDetails.error.lastName.length = The member’s last name must be 35 chara
 membersDetails.error.firstName.invalid = The member’s first name must only include letters, spaces, ampersands, grave accents, apostrophes, hyphens, full stops and carets
 membersDetails.error.lastName.invalid = The member’s last name must only include letters, spaces, ampersands, grave accents, apostrophes, hyphens, full stops and carets
 membersDetails.error.nino.invalid = Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ123456C
-membersDetails.change.hidden = Member’s details
+membersDetails.change.hidden = Member’s name
 membersDetails.change.nino.hidden = Member’s National Insurance number
 
 doYouHoldSignedMandate.title = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
@@ -803,3 +803,19 @@ entity_list_table.total = Total
 
 
 
+chooseTaxYear.yearRangeRadio = {0} to {1}
+chooseTaxYear.event23.title = In which tax year was the money purchase pension savings statement issued?
+chooseTaxYear.event23.heading = In which tax year was the money purchase pension savings statement issued?
+chooseTaxYear.event23.checkYourAnswersLabel = Tax year the money purchase pension savings statement was issued
+chooseTaxYear.event23.error.required = Select the tax year the money purchase pension savings statement was issued
+chooseTaxYear.event23.change.hidden = Tax year the money purchase pension savings statement was issued
+
+totalPensionAmounts.title = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year {0}?
+totalPensionAmounts.heading = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year {0}?
+totalPensionAmounts.checkYourAnswersLabel = Total pension input amounts
+totalPensionAmounts.change.hidden = Total pension input amounts
+totalPensionAmounts.value.error.nothingEntered = Enter the total pension input amounts
+totalPensionAmounts.value.error.notANumber = The total pension input amounts must be an amount of money, like 123.45 or 156.00
+totalPensionAmounts.value.error.noDecimals = The total pension input amounts must include pence, like 123.45 or 156.00
+totalPensionAmounts.value.error.amountTooHigh = The total pension input amounts must be £999999999.99 or less
+totalPensionAmounts.value.error.negative = The total pension input amounts must not be a negative amount of money, like -123.45 or -156.00

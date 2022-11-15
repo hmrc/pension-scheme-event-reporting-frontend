@@ -33,6 +33,8 @@ GET         /new-report/event-1-click                                           
 
 GET         /new-report/event-18-check-your-answers                               controllers.event18.Event18CheckYourAnswersController.onPageLoad()
 GET         /new-report/event-18-click                                            controllers.event18.Event18CheckYourAnswersController.onClick
+GET         /new-report/event-23-check-your-answers                               controllers.event23.Event23CheckYourAnswersController.onPageLoad()
+GET         /new-report/event-23-click                                            controllers.event23.Event23CheckYourAnswersController.onClick
 
 GET         /new-report/:index/event-1-entry-type                                 controllers.event1.HowAddUnauthPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /new-report/:index/event-1-entry-type                                 controllers.event1.HowAddUnauthPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
@@ -169,3 +171,10 @@ POST        /new-report/event-1-summary                                         
 #
 GET         /new-report/:index/dummy-member-details                               controllers.common.MembersDetailsController.onPageLoadWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index)
 POST        /new-report/:index/dummy-member-details                               controllers.common.MembersDetailsController.onSubmitWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index)
+
+GET         /new-report/event-23-tax-year                                         controllers.common.ChooseTaxYearController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
+POST        /new-report/event-23-tax-year                                         controllers.common.ChooseTaxYearController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
+GET         /new-report/event-22-tax-year                                         controllers.common.ChooseTaxYearController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+POST        /new-report/event-22-tax-year                                         controllers.common.ChooseTaxYearController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+GET         /new-report/event-23-total-input-amount                               controllers.common.TotalPensionAmountsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
+POST        /new-report/event-23-total-input-amount                               controllers.common.TotalPensionAmountsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)

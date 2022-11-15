@@ -21,7 +21,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
-import pages.common.MembersDetailsPage
+import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.eventWindUp.SchemeWindUpDatePage
@@ -31,7 +31,9 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] = {
-    arbitrary[(event23.HowAddDualAllowancePage.type, JsValue)] ::
+    arbitrary[(TotalPensionAmountsPage, JsValue)] ::
+      arbitrary[(ChooseTaxYearPage, JsValue)] ::
+      arbitrary[(event23.HowAddDualAllowancePage.type, JsValue)] ::
       arbitrary[(event1.PaymentValueAndDatePage, JsValue)] ::
       arbitrary[(event1.member.ErrorDescriptionPage, JsValue)] ::
       arbitrary[(BenefitsPaidEarlyPage, JsValue)] ::
