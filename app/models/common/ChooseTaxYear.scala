@@ -56,7 +56,7 @@ object ChooseTaxYear extends Enumerable.Implicits {
       } else {
         currentYear
       }
-    (minYear to maxYear).reverseIterator.map(year => ChooseTaxYear(year.toString)).toSeq
+    (minYear to maxYear).reverse.map(year => ChooseTaxYear(year.toString))
   }
 
   def options(eventType: EventType)(implicit messages: Messages): Seq[RadioItem] = valuesForEventType(eventType).zipWithIndex.map {
