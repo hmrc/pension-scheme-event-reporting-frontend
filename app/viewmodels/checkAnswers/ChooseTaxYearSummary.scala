@@ -35,7 +35,7 @@ object ChooseTaxYearSummary {
 
         val value = ValueViewModel(
           HtmlContent(
-            HtmlFormat.escape(answer.toString + " to " + (answer.toString.toInt + 1).toString)
+            HtmlFormat.escape(messages("chooseTaxYear.yearRangeRadio", answer, (answer.toString.toInt + 1).toString))
           )
         )
 
