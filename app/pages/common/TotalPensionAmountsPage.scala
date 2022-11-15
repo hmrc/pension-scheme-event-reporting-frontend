@@ -23,7 +23,7 @@ import play.api.mvc.Call
 
 case class TotalPensionAmountsPage(eventType: EventType) extends QuestionPage[BigDecimal] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ s"event${eventType.toString}" \ toString
 
   override def toString: String = "totalPensionAmounts"
 
