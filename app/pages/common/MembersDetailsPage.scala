@@ -23,14 +23,13 @@ import models.enumeration.EventType.{Event1, Event22, Event23}
 import pages.event1.{DoYouHoldSignedMandatePage, MembersOrEmployersPage}
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
-import play.api.libs.json.JsPath.{\, _}
 import play.api.mvc.Call
 
 case class MembersDetailsPage(eventType: EventType, index: Option[Int]) extends QuestionPage[MembersDetails] {
 
   override def path: JsPath =
     index match {
-      case Some(i) => MembersOrEmployersPage(i).path \ s"event${eventType.toString}" \ MembersDetailsPage.toString
+      case Some(i) => MembersOrEmployersPage(i) \ s"event${eventType.toString}" \ MembersDetailsPage.toString
       case _ => JsPath \ s"event${eventType.toString}" \ toString
     }
 
