@@ -17,19 +17,19 @@
 package viewmodels.checkAnswers
 
 import models.UserAnswers
+import models.enumeration.EventType
 import pages.common.TotalPensionAmountsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.event1.checkAnswers.PaymentValueAndDateSummary.currencyFormatter
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
-import models.enumeration.EventType
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import viewmodels.event1.checkAnswers.PaymentValueAndDateSummary.currencyFormatter
 
 object TotalPensionAmountsSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType : EventType)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TotalPensionAmountsPage(eventType)).map {
       answer =>

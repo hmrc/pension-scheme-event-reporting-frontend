@@ -41,7 +41,7 @@ class Event23CheckYourAnswersController @Inject()(
                                                    connector: EventReportingConnector,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: CheckYourAnswersView
-                                                 ) (implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] =
     (identify andThen getData(Event23) andThen requireData) { implicit request =>
@@ -52,11 +52,10 @@ class Event23CheckYourAnswersController @Inject()(
     }
 
   /**
-   *TODO: replace controllers.event23.routes.Event23CheckYourAnswersController with actual event23.SummaryPageController
+   * TODO: replace controllers.event23.routes.Event23CheckYourAnswersController with actual event23.SummaryPageController
    */
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event23) andThen requireData).async { implicit request =>
-      val waypoints = EmptyWaypoints
       connector.compileEvent("123", Event23).map {
         _ =>
           Redirect(controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad().url)

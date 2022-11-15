@@ -150,5 +150,3 @@ object Event23CheckYourAnswersControllerSpec {
     )
   )
 }
-
-

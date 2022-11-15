@@ -19,18 +19,18 @@
 @import viewmodels.InputWidth._
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukButton: GovukButton
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukInput: GovukInput,
+        govukButton: GovukButton
 )
 
 @(form: Form[_], waypoints: Waypoints, eventType: EventType, selectTaxYear: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("totalPensionAmounts.title", selectTaxYear))) {
 
-    @formHelper(action = routes.TotalPensionAmountsController.onSubmit(waypoints), 'autoComplete -> "off") {
+    @formHelper(action = routes.TotalPensionAmountsController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -41,9 +41,9 @@
                 field = form("value"),
                 label = LabelViewModel(messages("totalPensionAmounts.heading", selectTaxYear)).asPageHeading()
             )
-            .withWidth(OneQuarter)
-            .withPrefix(PrefixOrSuffix(content = Text("£")))
-            .asNumeric()
+                    .withWidth(OneQuarter)
+                    .withPrefix(PrefixOrSuffix(content = Text("£")))
+                    .asNumeric()
         )
 
         @govukButton(

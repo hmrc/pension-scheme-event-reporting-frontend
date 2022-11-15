@@ -33,7 +33,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryMembersTotalPensionAmountsUserAnswersEntry: Arbitrary[(TotalPensionAmountsPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[TotalPensionAmountsPage]
+        page <- arbitrary[TotalPensionAmountsPage]
         value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }
@@ -41,7 +41,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryChooseTaxYearUserAnswersEntry: Arbitrary[(ChooseTaxYearPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[ChooseTaxYearPage]
+        page <- arbitrary[ChooseTaxYearPage]
         value <- arbitrary[ChooseTaxYear].map(Json.toJson(_))
       } yield (page, value)
     }

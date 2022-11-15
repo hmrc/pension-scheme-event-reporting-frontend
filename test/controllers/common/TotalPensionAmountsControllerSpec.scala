@@ -18,7 +18,6 @@ package controllers.common
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import controllers.common.routes
 import forms.common.TotalPensionAmountsFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
@@ -47,6 +46,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.TotalPensionAmountsController.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.TotalPensionAmountsController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -55,8 +55,8 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
 
   private val validValue = BigDecimal(1000.00)
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

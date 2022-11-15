@@ -21,7 +21,7 @@ import forms.behaviours.BigDecimalFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class TotalPensionAmountsFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours{
+class TotalPensionAmountsFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours {
 
   private val form = new TotalPensionAmountsFormProvider()()
   private val valueKey = "value"

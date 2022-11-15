@@ -14,32 +14,32 @@
  * limitations under the License.
  *@
 
-@import models.common.ChooseTaxYear
 @import controllers.common.routes
+@import models.common.ChooseTaxYear
 @import models.enumeration.EventType
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton
 )
 
 @(form: Form[_], waypoints: Waypoints, eventType: EventType)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"chooseTaxYear.event${eventType.toString}.title"))) {
 
-    @formHelper(action = routes.ChooseTaxYearController.onSubmit(waypoints, eventType), 'autoComplete -> "off") {
+    @formHelper(action = routes.ChooseTaxYearController.onSubmit(waypoints, eventType), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
         }
 
         @govukRadios(
             RadiosViewModel(
-                field  = form("value"),
+                field = form("value"),
                 legend = LegendViewModel(messages(s"chooseTaxYear.event${eventType.toString}.heading")).asPageHeading(),
-                items  = ChooseTaxYear.options(eventType)
+                items = ChooseTaxYear.options(eventType)
             )
         )
 

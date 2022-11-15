@@ -32,7 +32,7 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours {
     behave like optionsField[ChooseTaxYear](
       form,
       fieldName,
-      validValues  = ChooseTaxYear.values,
+      validValues = ChooseTaxYear.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

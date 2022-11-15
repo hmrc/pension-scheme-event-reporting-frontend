@@ -22,8 +22,8 @@ import forms.common.TotalPensionAmountsFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import org.apache.commons.lang3.StringUtils
-import pages.{Waypoints, common}
 import pages.common.TotalPensionAmountsPage
+import pages.{Waypoints, common}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -38,7 +38,7 @@ class TotalPensionAmountsController @Inject()(val controllerComponents: Messages
                                               userAnswersCacheConnector: UserAnswersCacheConnector,
                                               formProvider: TotalPensionAmountsFormProvider,
                                               view: TotalPensionAmountsView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 

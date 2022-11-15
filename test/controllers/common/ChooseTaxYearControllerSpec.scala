@@ -18,7 +18,6 @@ package controllers.common
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import controllers.common.routes
 import forms.common.ChooseTaxYearFormProvider
 import models.UserAnswers
 import models.common.ChooseTaxYear
@@ -53,8 +52,8 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

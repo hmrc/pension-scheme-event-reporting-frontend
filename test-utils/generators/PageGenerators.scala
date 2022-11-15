@@ -20,12 +20,12 @@ import models.Index
 import models.enumeration.AddressJourneyType
 import models.enumeration.EventType.{Event1, Event23}
 import org.scalacheck.Arbitrary
-import pages.{common, _}
 import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.event1.{employer, member}
 import pages.eventWindUp.SchemeWindUpDatePage
+import pages.{common, _}
 
 trait PageGenerators {
 

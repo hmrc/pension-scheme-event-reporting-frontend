@@ -22,7 +22,9 @@ import play.api.data.Form
 import javax.inject.Inject
 
 class TotalPensionAmountsFormProvider @Inject() extends Mappings {
+
   import forms.common.TotalPensionAmountsFormProvider._
+
   def apply(): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal2DP(
