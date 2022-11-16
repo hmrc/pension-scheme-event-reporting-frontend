@@ -30,22 +30,6 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
-  implicit lazy val arbitraryMembersTotalPensionAmountsUserAnswersEntry: Arbitrary[(TotalPensionAmountsPage, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[TotalPensionAmountsPage]
-        value <- arbitrary[Int].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryChooseTaxYearUserAnswersEntry: Arbitrary[(ChooseTaxYearPage, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[ChooseTaxYearPage]
-        value <- arbitrary[ChooseTaxYear].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
   implicit lazy val arbitraryPaymentValueAndDateUserAnswersEntry: Arbitrary[(pages.event1.PaymentValueAndDatePage, JsValue)] =
     Arbitrary {
       for {
