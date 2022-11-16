@@ -18,7 +18,7 @@ package pages
 
 import controllers.routes
 import models.EventSelection.{EventWoundUp, _}
-import models.{EventSelection, UserAnswers}
+import models.{EventSelection, Index, UserAnswers}
 import pages.event1.{HowAddUnauthPaymentPage, MembersOrEmployersPage}
 import pages.event18.Event18ConfirmationPage
 import pages.event22.HowAddAnnualAllowancePage
@@ -40,9 +40,14 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
     answers.get(this) match {
       case Some(Event1) => HowAddUnauthPaymentPage(answers.countAll(MembersOrEmployersPage))
       case Some(Event18) => Event18ConfirmationPage
-      case Some(Event22) => HowAddAnnualAllowancePage
-      case Some(Event23) => HowAddDualAllowancePage
       case Some(EventWoundUp) => SchemeWindUpDatePage
+      case _ => EventSelectionPage
+    }
+
+  protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers, index: Index): Page =
+    answers.get(this) match {
+      case Some(Event22) => HowAddAnnualAllowancePage(index)
+      case Some(Event23) => HowAddDualAllowancePage(index)
       case _ => EventSelectionPage
     }
 }

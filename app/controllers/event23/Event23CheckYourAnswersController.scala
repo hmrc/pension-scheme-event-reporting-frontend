@@ -19,6 +19,7 @@ package controllers.event23
 import com.google.inject.Inject
 import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import models.Index
 import models.enumeration.EventType.Event23
 import models.requests.DataRequest
 import pages.event23.Event23CheckYourAnswersPage
@@ -43,9 +44,9 @@ class Event23CheckYourAnswersController @Inject()(
                                                    view: CheckYourAnswersView
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] =
+  def onPageLoad(index: Index): Action[AnyContent] =
     (identify andThen getData(Event23) andThen requireData) { implicit request =>
-      val thisPage = Event23CheckYourAnswersPage
+      val thisPage = Event23CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event23.routes.Event23CheckYourAnswersController.onClick.url
       Ok(view(SummaryListViewModel(rows = buildEvent23CYARows(waypoints, thisPage)), continueUrl))
@@ -56,9 +57,10 @@ class Event23CheckYourAnswersController @Inject()(
    */
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event23) andThen requireData).async { implicit request =>
+      val index = Index(0) // TODO: Not sure if right implementation.
       connector.compileEvent("123", Event23).map {
         _ =>
-          Redirect(controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad().url)
+          Redirect(controllers.event23.routes.Event23CheckYourAnswersController.onPageLoadWithIndex(index).url) // TODO: Not sure if right implementation.
       }
     }
 

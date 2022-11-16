@@ -16,20 +16,34 @@
 
 package pages.event23
 
-import pages.{CheckAnswersPage, Waypoints}
+import models.Index
+import models.enumeration.EventType.Event23
+import pages.{CheckAnswersPage, Waypoint, Waypoints}
 import play.api.mvc.Call
 
-case object Event23CheckYourAnswersPage extends CheckAnswersPage {
+case class Event23CheckYourAnswersPage(index: Index) extends CheckAnswersPage {
+
   override val urlFragment: String =
-    "event-23-check-your-answers"
+    s"event-${Event23.toString}-check-answers-${index.display}"
 
   override def route(waypoints: Waypoints): Call = {
-    controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad()
+    controllers.event23.routes.Event23CheckYourAnswersController.onPageLoadWithIndex(index)
   }
 
   override def toString: String = "CheckYourAnswersPage"
 }
 
+object Event23CheckYourAnswersPage {
 
+  def waypointFromString(s: String): Option[Waypoint] = {
+    val pattern = """event-23-check-answers-(\d{1,6})""".r.anchored
 
+    s match {
+      case pattern(indexDisplay) =>
+        Some(Event23CheckYourAnswersPage(Index(indexDisplay.toInt - 1)).waypoint)
+      case _ =>
+        None
+    }
+  }
+}
 

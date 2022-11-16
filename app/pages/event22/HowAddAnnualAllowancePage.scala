@@ -17,14 +17,14 @@
 package pages.event22
 
 import controllers.event22.routes
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import models.event22.HowAddAnnualAllowance
 import models.event22.HowAddAnnualAllowance.Manual
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object HowAddAnnualAllowancePage extends QuestionPage[HowAddAnnualAllowance] {
+case class HowAddAnnualAllowancePage(index: Index) extends QuestionPage[HowAddAnnualAllowance] {
 
   override def path: JsPath = JsPath \ toString
 
@@ -32,7 +32,7 @@ case object HowAddAnnualAllowancePage extends QuestionPage[HowAddAnnualAllowance
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
-      case Some(Manual) => WhatYouWillNeedPage
+      case Some(Manual) => WhatYouWillNeedPage(index)
       case _ => this
     }
 

@@ -16,7 +16,7 @@
 
 package pages
 
-import models.Mode
+import models.{Index, Mode}
 import pages.event1.Event1CheckYourAnswersPage
 import pages.event18.Event18CheckYourAnswersPage
 import pages.event23.Event23CheckYourAnswersPage
@@ -36,18 +36,18 @@ object Waypoint {
   See claim-child-benefit-frontend project for examples of how this is used.
    */
 
-  private val fragments: Map[String, Waypoint] =
+  private def fragments(index: Index = 0): Map[String, Waypoint] =
     Map(
       Event18CheckYourAnswersPage.urlFragment -> Event18CheckYourAnswersPage.waypoint,
-      Event23CheckYourAnswersPage.urlFragment -> Event23CheckYourAnswersPage.waypoint,
+      Event23CheckYourAnswersPage(index).urlFragment -> Event23CheckYourAnswersPage(index).waypoint,
       EventWindUpCheckYourAnswersPage.urlFragment -> EventWindUpCheckYourAnswersPage.waypoint
     )
 
   /*
   All CYA page objects which have an index should be added below. Those without an index should be added above.
    */
-  def fromString(s: String): Option[Waypoint] =
-    fragments.get(s)
+  def fromString(s: String, i: Index): Option[Waypoint] =
+    fragments(i).get(s)
       .orElse(Event1CheckYourAnswersPage.waypointFromString(s))
 
 }

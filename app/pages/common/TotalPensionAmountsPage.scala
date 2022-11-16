@@ -16,14 +16,14 @@
 
 package pages.common
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import models.enumeration.EventType
 import pages.event23.Event23CheckYourAnswersPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class TotalPensionAmountsPage(eventType: EventType) extends QuestionPage[BigDecimal] {
+case class TotalPensionAmountsPage(eventType: EventType, index: Index) extends QuestionPage[BigDecimal] {
 
   override def path: JsPath = JsPath \ toString
 
@@ -33,5 +33,5 @@ case class TotalPensionAmountsPage(eventType: EventType) extends QuestionPage[Bi
     controllers.common.routes.TotalPensionAmountsController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    Event23CheckYourAnswersPage
+    Event23CheckYourAnswersPage(index)
 }
