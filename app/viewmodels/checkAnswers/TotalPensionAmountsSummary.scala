@@ -17,13 +17,15 @@
 package viewmodels.checkAnswers
 
 import models.UserAnswers
+import models.enumeration.EventType
 import pages.common.TotalPensionAmountsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.event1.checkAnswers.PaymentValueAndDateSummary.currencyFormatter
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
-import models.enumeration.EventType
 
 object TotalPensionAmountsSummary {
 
@@ -34,7 +36,7 @@ object TotalPensionAmountsSummary {
 
         SummaryListRowViewModel(
           key = s"totalPensionAmounts.event${eventType.toString}.checkYourAnswersLabel",
-          value = ValueViewModel(answer.toString),
+          value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer)}")),
           actions = Seq(
             ActionItemViewModel("site.change", TotalPensionAmountsPage(eventType).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages(s"totalPensionAmounts.event${eventType.toString}.change.hidden"))

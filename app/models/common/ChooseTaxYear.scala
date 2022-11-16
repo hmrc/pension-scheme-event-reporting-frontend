@@ -32,35 +32,35 @@ case class ChooseTaxYear(startYear: String) {
 
 object ChooseTaxYear extends Enumerable.Implicits {
 
-  private final val StartDayOfNewTaxYear: Int = 6
-  private final val MinYearDefault: Int = 2013
-  private final val MinYearEvent22: Int = 2013
-  private final val MinYearEvent23: Int = 2015
-  def currentYear: ChooseTaxYear = ChooseTaxYear(DateHelper.today.getYear.toString)
+  private final val startDayOfNewTaxYear: Int = 6
+  private final val minYearDefault: Int = 2013
+  private final val minYearEvent22: Int = 2013
+  private final val minYearEvent23: Int = 2015
 
-  def values: Seq[ChooseTaxYear] = valueMinYear(MinYearDefault)
+  def values: Seq[ChooseTaxYear] = valueMinYear(minYearDefault)
 
   def valuesForEventType(eventType: EventType): Seq[ChooseTaxYear] = {
     val tempMinYear = eventType match {
-      case Event23 => MinYearEvent23
-      case Event22 => MinYearEvent22
-      case _ => MinYearDefault
+      case Event23 => minYearEvent23
+      case Event22 => minYearEvent22
+      case _ => minYearDefault
     }
     valueMinYear(tempMinYear)
   }
 
   private def valueMinYear(minYear: Int): Seq[ChooseTaxYear] = {
     val currentYear = DateHelper.today.getYear
-    val newTaxYearStart = LocalDate.of(currentYear, Month.APRIL.getValue, StartDayOfNewTaxYear)
+    val newTaxYearStart = LocalDate.of(currentYear, Month.APRIL.getValue, startDayOfNewTaxYear)
 
     val maxYear =
-      if (DateHelper.today.isAfter(newTaxYearStart) || DateHelper.today.isEqual(newTaxYearStart)) {
-        currentYear
-      } else {
+      if (DateHelper.today.isBefore(newTaxYearStart)) {
         currentYear - 1
+      } else {
+        currentYear
       }
-    (minYear to maxYear).reverseIterator.map(year => ChooseTaxYear(year.toString)).toSeq
+    (minYear to maxYear).reverse.map(year => ChooseTaxYear(year.toString))
   }
+
   def options(eventType: EventType)(implicit messages: Messages): Seq[RadioItem] = valuesForEventType(eventType).zipWithIndex.map {
     case (value, index) =>
       val yearRangeOption = messages("chooseTaxYear.yearRangeRadio", value, (value.toString.toInt + 1).toString)

@@ -28,14 +28,14 @@ import viewmodels.implicits._
 
 object ChooseTaxYearSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, eventType: EventType, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(common.ChooseTaxYearPage(eventType)).map {
       answer =>
 
         val value = ValueViewModel(
           HtmlContent(
-            HtmlFormat.escape(messages(s"chooseTaxYear.$answer"))
+            HtmlFormat.escape(messages("chooseTaxYear.yearRangeRadio", answer, (answer.toString.toInt + 1).toString))
           )
         )
 
