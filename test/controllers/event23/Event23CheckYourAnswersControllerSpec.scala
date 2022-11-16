@@ -137,16 +137,17 @@ object Event23CheckYourAnswersControllerSpec {
       "AA234567V",
       "/manage-pension-scheme-event-report/new-report/event-23-member-details?waypoints=event-23-check-your-answers"
     ),
-    fakeSummaryListRowWithHtmlContent(
+    fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "chooseTaxYear.event23.checkYourAnswersLabel",
       "2015 to 2016",
-      "/manage-pension-scheme-event-report/new-report/event-23-tax-year?waypoints=event-23-check-your-answers"
+      "/manage-pension-scheme-event-report/new-report/event-23-tax-year?waypoints=event-23-check-your-answers",
+      "chooseTaxYear.event23.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
-      "totalPensionAmounts.checkYourAnswersLabel",
+      "totalPensionAmounts.event23.checkYourAnswersLabel",
       "£1,234.56",
       "/manage-pension-scheme-event-report/new-report/event-23-total-input-amount?waypoints=event-23-check-your-answers",
-      "totalPensionAmounts.change.hidden"
+      "totalPensionAmounts.event23.change.hidden"
     )
   )
 }
