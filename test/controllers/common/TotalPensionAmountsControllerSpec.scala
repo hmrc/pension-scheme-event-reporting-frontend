@@ -18,7 +18,6 @@ package controllers.common
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import controllers.common.routes
 import forms.common.TotalPensionAmountsFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
@@ -48,9 +47,11 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRouteEvent23: String = routes.TotalPensionAmountsController.onPageLoad(waypoints, event23).url
+
   private def postRouteEvent23: String = routes.TotalPensionAmountsController.onSubmit(waypoints, event23).url
 
   private def getRouteEvent22: String = routes.TotalPensionAmountsController.onPageLoad(waypoints, event22).url
+
   private def postRouteEvent22: String = routes.TotalPensionAmountsController.onSubmit(waypoints, event22).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](

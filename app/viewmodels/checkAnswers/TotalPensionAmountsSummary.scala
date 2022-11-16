@@ -29,8 +29,7 @@ import viewmodels.implicits._
 
 object TotalPensionAmountsSummary {
 
-
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType : EventType)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TotalPensionAmountsPage(eventType)).map {
       answer =>

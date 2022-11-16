@@ -46,9 +46,11 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRouteEvent23: String = routes.ChooseTaxYearController.onPageLoad(waypoints, Event23).url
+
   private def postRouteEvent23: String = routes.ChooseTaxYearController.onSubmit(waypoints, Event23).url
 
   private def getRouteEvent22: String = routes.ChooseTaxYearController.onPageLoad(waypoints, Event22).url
+
   private def postRouteEvent22: String = routes.ChooseTaxYearController.onSubmit(waypoints, Event22).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -143,14 +145,14 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
         running(application) {
-          val request = FakeRequest(GET, getRouteEvent23)
+          val request = FakeRequest(GET, getRouteEvent22)
 
           val result = route(application, request).value
 
           val view = application.injector.instanceOf[ChooseTaxYearView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent23, waypoints, Event23)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent22, waypoints, Event22)(request, messages(application)).toString
         }
       }
 

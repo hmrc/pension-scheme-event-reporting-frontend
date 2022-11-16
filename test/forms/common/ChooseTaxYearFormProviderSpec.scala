@@ -24,6 +24,7 @@ import play.api.data.FormError
 class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours {
 
   ".value" - {
+
     "event23" - {
       val form = new ChooseTaxYearFormProvider()(Event23)
       val fieldName = "value"
@@ -42,6 +43,7 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours {
         requiredError = FormError(fieldName, requiredKeyEvent23)
       )
     }
+
     "event22" - {
       val form = new ChooseTaxYearFormProvider()(Event22)
       val fieldName = "value"

@@ -35,16 +35,16 @@
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
         }
 
-                @govukRadios(
-                    RadiosViewModel(
-                        field = form("value"),
-                        legend = LegendViewModel(messages(s"chooseTaxYear.event${eventType.toString}.heading")).asPageHeading(),
-                        items = ChooseTaxYear.options(eventType)
-                    )
-                )
+        @govukRadios(
+            RadiosViewModel(
+                field = form("value"),
+                legend = LegendViewModel(messages(s"chooseTaxYear.event${eventType.toString}.heading")).asPageHeading(),
+                items = ChooseTaxYear.options(eventType)
+            )
+        )
 
-                @govukButton(
-                    ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))
-                )
-            }
-        }
+        @govukButton(
+            ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))
+        )
+    }
+}

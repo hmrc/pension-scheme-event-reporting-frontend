@@ -38,8 +38,7 @@ class TotalPensionAmountsController @Inject()(val controllerComponents: Messages
                                               userAnswersCacheConnector: UserAnswersCacheConnector,
                                               formProvider: TotalPensionAmountsFormProvider,
                                               view: TotalPensionAmountsView
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-
+                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 

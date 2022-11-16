@@ -17,12 +17,12 @@
 package generators
 
 import models._
-import models.common.{ChooseTaxYear, MembersDetails}
+import models.common.MembersDetails
 import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, WhoWasTheTransferMade}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
-import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
+import pages.common.MembersDetailsPage
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.eventWindUp.SchemeWindUpDatePage

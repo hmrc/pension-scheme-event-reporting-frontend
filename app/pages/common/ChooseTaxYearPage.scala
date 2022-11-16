@@ -27,7 +27,6 @@ import play.api.mvc.Call
 
 case class ChooseTaxYearPage(eventType: EventType) extends QuestionPage[ChooseTaxYear] {
 
-
   override def path: JsPath = JsPath \ s"event${eventType.toString}" \ toString
 
   override def toString: String = "chooseTaxYear"
@@ -36,7 +35,7 @@ case class ChooseTaxYearPage(eventType: EventType) extends QuestionPage[ChooseTa
     routes.ChooseTaxYearController.onPageLoad(waypoints, eventType)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    eventType  match {
+    eventType match {
       case Event22 => TotalPensionAmountsPage(Event22)
       case Event23 => TotalPensionAmountsPage(Event23)
       case _ => IndexPage
