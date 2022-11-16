@@ -39,5 +39,4 @@ case class TotalPensionAmountsPage(eventType: EventType) extends QuestionPage[Bi
       case Event23 => Event23CheckYourAnswersPage
       case _ => IndexPage
     }
-
 }

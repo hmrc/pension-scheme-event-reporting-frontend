@@ -32,6 +32,7 @@
 
     @formHelper(action = routes.TotalPensionAmountsController.onSubmit(waypoints, eventType), 'autoComplete -> "off") {
 
+
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
@@ -44,6 +45,7 @@
             .withWidth(OneQuarter)
             .withPrefix(PrefixOrSuffix(content = Text("£")))
             .asNumeric()
+
         )
 
         @govukButton(

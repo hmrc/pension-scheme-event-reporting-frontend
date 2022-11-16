@@ -35,6 +35,7 @@ object ChooseTaxYear extends Enumerable.Implicits {
   private final val startDayOfNewTaxYear: Int = 6
   private final val minYearDefault: Int = 2013
   private final val minYearEvent22: Int = 2013
+
   private final val minYearEvent23: Int = 2015
 
   def values: Seq[ChooseTaxYear] = valueMinYear(minYearDefault)

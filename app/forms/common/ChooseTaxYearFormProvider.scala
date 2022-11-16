@@ -20,7 +20,6 @@ import forms.mappings.Mappings
 import models.common.ChooseTaxYear
 import models.enumeration.EventType
 import play.api.data.Form
-
 import javax.inject.Inject
 
 class ChooseTaxYearFormProvider @Inject() extends Mappings {

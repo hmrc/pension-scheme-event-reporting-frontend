@@ -24,6 +24,7 @@ import pages.common
 class ChooseTaxYearSpec extends PageBehaviours {
 
   "ChooseTaxYearPage" - {
+
     "event23" - {
       beRetrievable[ChooseTaxYear](ChooseTaxYearPage(Event23))
 
@@ -38,6 +39,5 @@ class ChooseTaxYearSpec extends PageBehaviours {
 
       beRemovable[ChooseTaxYear](common.ChooseTaxYearPage(Event22))
     }
-
   }
 }

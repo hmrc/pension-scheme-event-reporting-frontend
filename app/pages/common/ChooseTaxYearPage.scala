@@ -27,6 +27,7 @@ import play.api.mvc.Call
 
 case class ChooseTaxYearPage(eventType: EventType) extends QuestionPage[ChooseTaxYear] {
 
+
   override def path: JsPath = JsPath \ s"event${eventType.toString}" \ toString
 
   override def toString: String = "chooseTaxYear"
