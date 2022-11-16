@@ -26,9 +26,7 @@ import play.api.mvc.Call
 
 case class TotalPensionAmountsPage(eventType: EventType) extends QuestionPage[BigDecimal] {
 
-  override def path: JsPath = JsPath \ s"event${eventType.toString}" \ toString
-
-  override def toString: String = "totalPensionAmounts"
+  override def path: JsPath = JsPath \ s"event${eventType.toString}" \ TotalPensionAmountsPage.toString
 
   override def route(waypoints: Waypoints): Call =
     controllers.common.routes.TotalPensionAmountsController.onPageLoad(waypoints, eventType)
@@ -39,4 +37,8 @@ case class TotalPensionAmountsPage(eventType: EventType) extends QuestionPage[Bi
       case Event23 => Event23CheckYourAnswersPage
       case _ => IndexPage
     }
+}
+
+object TotalPensionAmountsPage {
+  override def toString: String = "totalPensionAmounts"
 }
