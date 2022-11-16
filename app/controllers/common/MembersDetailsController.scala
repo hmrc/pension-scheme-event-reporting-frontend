@@ -84,7 +84,6 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
       value => {
         val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
         val updatedAnswers = originalUserAnswers.setOrException(page, value)
-        println("\n\n Page :" + page)
         userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
           Redirect(page.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
         }
