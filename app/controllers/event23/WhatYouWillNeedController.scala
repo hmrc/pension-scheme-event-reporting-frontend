@@ -38,7 +38,7 @@ class WhatYouWillNeedController @Inject()(
 
   private val eventType = EventType.Event23
 
-  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) {
+  def onPageLoadWithIndex(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) {
     implicit request =>
       Ok(view(controllers.common.routes.MembersDetailsController.onPageLoadWithIndex(waypoints, eventType, index).url))
   }

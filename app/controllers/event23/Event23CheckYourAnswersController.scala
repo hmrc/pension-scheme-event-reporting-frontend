@@ -44,12 +44,12 @@ class Event23CheckYourAnswersController @Inject()(
                                                    view: CheckYourAnswersView
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(index: Index): Action[AnyContent] =
+  def onPageLoadWithIndex(index: Index): Action[AnyContent] =
     (identify andThen getData(Event23) andThen requireData) { implicit request =>
       val thisPage = Event23CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event23.routes.Event23CheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent23CYARows(waypoints, thisPage)), continueUrl))
+      Ok(view(SummaryListViewModel(rows = buildEvent23CYARows(waypoints, thisPage, index)), continueUrl))
     }
 
   /**
@@ -64,10 +64,10 @@ class Event23CheckYourAnswersController @Inject()(
       }
     }
 
-  private def buildEvent23CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  private def buildEvent23CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, None, sourcePage, Event23).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, None, sourcePage, Event23).toSeq ++
+    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event23).toSeq ++
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event23).toSeq ++
       ChooseTaxYearSummary.row(request.userAnswers, waypoints, sourcePage, Event23).toSeq ++
       TotalPensionAmountsSummary.row(request.userAnswers, waypoints, sourcePage, Event23).toSeq
   }

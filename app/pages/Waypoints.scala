@@ -18,7 +18,7 @@ package pages
 
 import cats.data.NonEmptyList
 import cats.implicits.toTraverseOps
-import models.{Mode, NormalMode}
+import models.{Index, Mode, NormalMode}
 import play.api.mvc.QueryStringBindable
 
 sealed trait Waypoints {
@@ -79,9 +79,9 @@ object Waypoints {
       case h :: t => NonEmptyWaypoints(NonEmptyList(h, t))
     }
 
-  def fromString(s: String): Option[Waypoints] =
+  def fromString(s: String, i: Index): Option[Waypoints] =
     s.split(',').toList
-      .map(Waypoint.fromString)
+      .map(Waypoint.fromString(s, i))
       .sequence
       .map(apply)
 
@@ -89,10 +89,10 @@ object Waypoints {
   implicit def queryStringBindable(implicit stringBinder: QueryStringBindable[String]): QueryStringBindable[Waypoints] =
     new QueryStringBindable[Waypoints] {
 
-      override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Waypoints]] = {
+      override def bind(key: String, params: Map[String, Seq[String]], index: Index): Option[Either[String, Waypoints]] = {
         params.get(key).map {
           data =>
-            Waypoints.fromString(data.head)
+            Waypoints.fromString(data.head, index)
               .map(Right(_))
               .getOrElse(Left(s"Unable to bind parameter ${data.head} as waypoints"))
         }
