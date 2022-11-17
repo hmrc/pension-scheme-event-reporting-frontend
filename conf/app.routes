@@ -163,6 +163,9 @@ GET         /new-report/event-1-paying-charges                                  
 GET         /new-report/event-1-summary                                           controllers.event1.UnauthPaymentSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-summary                                           controllers.event1.UnauthPaymentSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
+GET         /new-report/event-22-summary                                          controllers.event22.AnnualAllowanceSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-22-summary                                          controllers.event22.AnnualAllowanceSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.
 #
