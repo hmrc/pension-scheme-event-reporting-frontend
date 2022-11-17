@@ -40,14 +40,9 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
     answers.get(this) match {
       case Some(Event1) => HowAddUnauthPaymentPage(answers.countAll(MembersOrEmployersPage))
       case Some(Event18) => Event18ConfirmationPage
+      case Some(Event22) => HowAddAnnualAllowancePage(0) // TODO: Fix to similar implementation as above.
+      case Some(Event23) => HowAddDualAllowancePage(0) // TODO: Fix to similar implementation as above.
       case Some(EventWoundUp) => SchemeWindUpDatePage
-      case _ => EventSelectionPage
-    }
-
-  protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers, index: Index): Page =
-    answers.get(this) match {
-      case Some(Event22) => HowAddAnnualAllowancePage(index)
-      case Some(Event23) => HowAddDualAllowancePage(index)
       case _ => EventSelectionPage
     }
 }

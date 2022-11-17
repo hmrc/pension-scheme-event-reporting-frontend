@@ -49,7 +49,7 @@ class TotalPensionAmountsController @Inject()(val controllerComponents: Messages
       case Some(taxYear) => (taxYear.toString + " to " + (taxYear.toString.toInt + 1).toString)
       case _ => StringUtils.EMPTY
     }
-    Ok(view(preparedForm, waypoints, eventType, selectedTaxYear))
+    Ok(view(preparedForm, waypoints, eventType, selectedTaxYear, index))
   }
 
   def onSubmitWithIndex(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
@@ -57,7 +57,7 @@ class TotalPensionAmountsController @Inject()(val controllerComponents: Messages
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, StringUtils.EMPTY))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, StringUtils.EMPTY, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(TotalPensionAmountsPage(eventType, index), value)
@@ -67,5 +67,4 @@ class TotalPensionAmountsController @Inject()(val controllerComponents: Messages
         }
       )
   }
-
 }
