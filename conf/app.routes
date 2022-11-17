@@ -115,9 +115,6 @@ POST        /new-report/:index/event-1-refund-details                           
 GET         /new-report/:index/event-1-member-recipient-name                      controllers.event1.member.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /new-report/:index/event-1-member-recipient-name                      controllers.event1.member.UnauthorisedPaymentRecipientNameController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
-GET         /new-report/:index/event-1-member-property-manual-address             controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney, index: Index)
-POST        /new-report/:index/event-1-member-property-manual-address             controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney, index: Index)
-
 GET         /new-report/:index/event-1-payment-details                            controllers.event1.PaymentValueAndDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /new-report/:index/event-1-payment-details                            controllers.event1.PaymentValueAndDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
@@ -166,15 +163,19 @@ GET         /new-report/event-1-paying-charges                                  
 GET         /new-report/event-1-summary                                           controllers.event1.UnauthPaymentSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-1-summary                                           controllers.event1.UnauthPaymentSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
+GET         /new-report/:index/event-23-tax-year                                  controllers.common.ChooseTaxYearController.onPageLoadWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
+POST        /new-report/:index/event-23-tax-year                                  controllers.common.ChooseTaxYearController.onSubmitWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
+GET         /new-report/:index/event-23-total-input-amount                        controllers.common.TotalPensionAmountsController.onPageLoadWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
+POST        /new-report/:index/event-23-total-input-amount                        controllers.common.TotalPensionAmountsController.onSubmitWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
+
+GET         /new-report/:index/event-22-total-input-amount                        controllers.common.TotalPensionAmountsController.onPageLoadWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, index: Index)
+POST        /new-report/:index/event-22-total-input-amount                        controllers.common.TotalPensionAmountsController.onSubmitWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, index: Index)
+GET         /new-report/:index/event-22-tax-year                                  controllers.common.ChooseTaxYearController.onPageLoadWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, index: Index)
+POST        /new-report/:index/event-22-tax-year                                  controllers.common.ChooseTaxYearController.onSubmitWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, index: Index)
+
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.
 #
 GET         /new-report/:index/dummy-member-details                               controllers.common.MembersDetailsController.onPageLoadWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index)
 POST        /new-report/:index/dummy-member-details                               controllers.common.MembersDetailsController.onSubmitWithIndex(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index)
 
-# GET         /new-report/event-23-tax-year                                         controllers.common.ChooseTaxYearController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
-# POST        /new-report/event-23-tax-year                                         controllers.common.ChooseTaxYearController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
-# GET         /new-report/event-22-tax-year                                         controllers.common.ChooseTaxYearController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
-# POST        /new-report/event-22-tax-year                                         controllers.common.ChooseTaxYearController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
-# GET         /new-report/event-23-total-input-amount                               controllers.common.TotalPensionAmountsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
-# POST        /new-report/event-23-total-input-amount                               controllers.common.TotalPensionAmountsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)

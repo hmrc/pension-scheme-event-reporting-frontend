@@ -19,7 +19,7 @@ package pages.common
 import models.UserAnswers
 import models.common.MembersDetails
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event23}
+import models.enumeration.EventType.{Event1, Event22, Event23}
 import pages.event1.{DoYouHoldSignedMandatePage, MembersOrEmployersPage}
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath

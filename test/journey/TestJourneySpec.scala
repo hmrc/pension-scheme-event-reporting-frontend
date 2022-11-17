@@ -19,7 +19,7 @@ package journey
 import data.SampleData.{companyDetails, seqAddresses, seqTolerantAddresses}
 import generators.ModelGenerators
 import models.EventSelection._
-import models.common.MembersDetails
+import models.common.{ChooseTaxYear, MembersDetails}
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.enumeration.EventType
 import models.event1.HowAddUnauthPayment.Manual
@@ -35,7 +35,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.EventSelectionPage
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
-import pages.common.MembersDetailsPage
+import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, LoanDetailsPage}
 import pages.event1.member._
@@ -281,23 +281,31 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       )
   }
 
-  "test navigation to event22 from event selection page to membersDetails" in {
+  "test navigation to event22 from event selection page to totalAmounts page" in {
+    val membersDetails = arbitrary[MembersDetails].sample
+    val taxYear = arbitrary[ChooseTaxYear].sample
     startingFrom(EventSelectionPage)
       .run(
         submitAnswer(EventSelectionPage, Event22),
         submitAnswer(HowAddAnnualAllowancePage, models.event22.HowAddAnnualAllowance.Manual),
         next,
-        pageMustBe(pages.common.MembersDetailsPage(EventType.Event22, None))
+        submitAnswer(pages.common.MembersDetailsPage(EventType.Event22, None), membersDetails.get),
+        submitAnswer(ChooseTaxYearPage(EventType.Event22), taxYear.get),
+        pageMustBe(TotalPensionAmountsPage(EventType.Event22))
       )
   }
 
-  "test navigation to event23 from event selection page to membersDetails" in {
+  "test navigation to event23 from event selection page to totalAmounts page" in {
+    val membersDetails = arbitrary[MembersDetails].sample
+    val taxYear = arbitrary[ChooseTaxYear].sample
     startingFrom(EventSelectionPage)
       .run(
         submitAnswer(EventSelectionPage, Event23),
         submitAnswer(HowAddDualAllowancePage, models.event23.HowAddDualAllowance.Manual),
         next,
-        pageMustBe(pages.common.MembersDetailsPage(EventType.Event23, None))
+        submitAnswer(pages.common.MembersDetailsPage(EventType.Event23, None), membersDetails.get),
+        submitAnswer(ChooseTaxYearPage(EventType.Event23), taxYear.get),
+        pageMustBe(TotalPensionAmountsPage(EventType.Event23))
       )
   }
 

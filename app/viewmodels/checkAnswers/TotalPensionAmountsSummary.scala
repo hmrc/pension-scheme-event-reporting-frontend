@@ -35,7 +35,7 @@ object TotalPensionAmountsSummary {
       answer =>
 
         SummaryListRowViewModel(
-          key = "totalPensionAmounts.checkYourAnswersLabel",
+          key = s"totalPensionAmounts.event${eventType.toString}.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer)}")),
           actions = Seq(
             ActionItemViewModel("site.change", TotalPensionAmountsPage(eventType, index).changeLink(waypoints, sourcePage).url)

@@ -40,7 +40,7 @@ object ChooseTaxYearSummary {
         )
 
         SummaryListRowViewModel(
-          key = s"chooseTaxYear.event${eventType}.checkYourAnswersLabel",
+          key = s"chooseTaxYear.event${eventType.toString}.checkYourAnswersLabel",
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", common.ChooseTaxYearPage(eventType, index).changeLink(waypoints, sourcePage).url)

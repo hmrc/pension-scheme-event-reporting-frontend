@@ -28,9 +28,9 @@
 
 @(form: Form[_], waypoints: Waypoints, eventType: EventType, selectTaxYear: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("totalPensionAmounts.title", selectTaxYear))) {
+@layout(pageTitle = title(form, messages(s"totalPensionAmounts.event${eventType.toString}.title") + " " + selectTaxYear + "?")) {
 
-    @formHelper(action = routes.TotalPensionAmountsController.onSubmitWithIndex(waypoints, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.TotalPensionAmountsController.onSubmitWithIndex(waypoints, eventType, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -39,7 +39,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("totalPensionAmounts.heading", selectTaxYear)).asPageHeading()
+                label = LabelViewModel(messages(s"totalPensionAmounts.event${eventType.toString}.heading") + " " + selectTaxYear + "?").asPageHeading()
             )
                     .withWidth(OneQuarter)
                     .withPrefix(PrefixOrSuffix(content = Text("£")))

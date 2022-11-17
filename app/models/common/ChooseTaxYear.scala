@@ -18,7 +18,7 @@ package models.common
 
 import models.Enumerable
 import models.enumeration.EventType
-import models.enumeration.EventType.Event23
+import models.enumeration.EventType.{Event22, Event23}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
@@ -34,6 +34,7 @@ object ChooseTaxYear extends Enumerable.Implicits {
 
   private final val startDayOfNewTaxYear: Int = 6
   private final val minYearDefault: Int = 2013
+  private final val minYearEvent22: Int = 2013
   private final val minYearEvent23: Int = 2015
 
   def values: Seq[ChooseTaxYear] = valueMinYear(minYearDefault)
@@ -41,6 +42,7 @@ object ChooseTaxYear extends Enumerable.Implicits {
   def valuesForEventType(eventType: EventType): Seq[ChooseTaxYear] = {
     val tempMinYear = eventType match {
       case Event23 => minYearEvent23
+      case Event22 => minYearEvent22
       case _ => minYearDefault
     }
     valueMinYear(tempMinYear)
