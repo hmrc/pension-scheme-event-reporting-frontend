@@ -18,13 +18,15 @@ package pages.event1
 
 import controllers.event1.routes
 import models.UserAnswers
+import models.enumeration.EventType
+import pages.common.MembersOrEmployersPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class DoYouHoldSignedMandatePage(index: Int) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = MembersOrEmployersPage(index) \ toString
+  override def path: JsPath = MembersOrEmployersPage(EventType.Event1)(index) \ toString
 
   override def toString: String = "doYouHoldSignedMandate"
 

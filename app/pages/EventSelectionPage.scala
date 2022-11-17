@@ -17,9 +17,11 @@
 package pages
 
 import controllers.routes
-import models.EventSelection.{EventWoundUp, _}
-import models.{EventSelection, Index, UserAnswers}
-import pages.event1.{HowAddUnauthPaymentPage, MembersOrEmployersPage}
+import models.EventSelection._
+import models.enumeration.EventType
+import models.{EventSelection, UserAnswers}
+import pages.common.MembersOrEmployersPage
+import pages.event1.HowAddUnauthPaymentPage
 import pages.event18.Event18ConfirmationPage
 import pages.event22.HowAddAnnualAllowancePage
 import pages.event23.HowAddDualAllowancePage
@@ -38,10 +40,10 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
-      case Some(Event1) => HowAddUnauthPaymentPage(answers.countAll(MembersOrEmployersPage))
+      case Some(Event1) => HowAddUnauthPaymentPage(answers.countAll(MembersOrEmployersPage(EventType.Event1)))
       case Some(Event18) => Event18ConfirmationPage
-      case Some(Event22) => HowAddAnnualAllowancePage(0) // TODO: Fix to similar implementation as above.
-      case Some(Event23) => HowAddDualAllowancePage(0) // TODO: Fix to similar implementation as above.
+      case Some(Event22) => HowAddAnnualAllowancePage(answers.countAll(MembersOrEmployersPage(EventType.Event22)))
+      case Some(Event23) => HowAddDualAllowancePage(answers.countAll(MembersOrEmployersPage(EventType.Event23)))
       case Some(EventWoundUp) => SchemeWindUpDatePage
       case _ => EventSelectionPage
     }

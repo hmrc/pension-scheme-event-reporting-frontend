@@ -18,14 +18,16 @@ package pages.event1.member
 
 import controllers.event1.member.routes
 import models.UserAnswers
-import pages.event1.{MembersOrEmployersPage, PaymentValueAndDatePage}
+import models.enumeration.EventType
+import pages.common.MembersOrEmployersPage
+import pages.event1.PaymentValueAndDatePage
 import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class ErrorDescriptionPage(index: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = MembersOrEmployersPage(index) \ toString
+  override def path: JsPath = MembersOrEmployersPage(EventType.Event1)(index) \ toString
 
   override def toString: String = "errorDescription"
 

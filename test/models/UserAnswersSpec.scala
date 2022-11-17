@@ -24,10 +24,10 @@ import models.event1.HowAddUnauthPayment.Manual
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.{MembersOrEmployersSummary, PaymentDetails}
 import org.scalatest.matchers.must.Matchers
-import pages.common.MembersDetailsPage
+import pages.common.{MembersDetailsPage, MembersOrEmployersPage}
 import models.event1.MembersOrEmployersSummary.readsMemberOrEmployerValue
 import pages.event1.employer.CompanyDetailsPage
-import pages.event1.{HowAddUnauthPaymentPage, MembersOrEmployersPage, PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
+import pages.event1.{HowAddUnauthPaymentPage, PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
 
 import java.time.LocalDate
 

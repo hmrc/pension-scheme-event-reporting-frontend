@@ -18,14 +18,16 @@ package pages.event1
 
 import controllers.event1.routes
 import models.UserAnswers
+import models.enumeration.EventType
 import models.event1.PaymentDetails
+import pages.common.MembersOrEmployersPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class PaymentValueAndDatePage(index: Int) extends QuestionPage[PaymentDetails] {
 
-  override def path: JsPath = MembersOrEmployersPage(index) \ PaymentValueAndDatePage.toString
+  override def path: JsPath = MembersOrEmployersPage(EventType.Event1)(index) \ PaymentValueAndDatePage.toString
 
   override def route(waypoints: Waypoints): Call =
     routes.PaymentValueAndDateController.onPageLoad(waypoints, index)
