@@ -16,6 +16,7 @@
 
 package models.event1
 
+import models.enumeration.EventType
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import pages.event1.WhoReceivedUnauthPaymentPage
 import play.api.i18n.Messages
@@ -50,9 +51,9 @@ object MembersOrEmployersSummary {
       }
     )
 
-  private def readsEmployerSummary(implicit messages: Messages): Reads[MembersOrEmployersSummary] =
+  private def readsEmployerSummary(eventType: EventType)(implicit messages: Messages): Reads[MembersOrEmployersSummary] =
     (
-      (JsPath \ "event1" \ "companyDetails" \ "companyName").readNullable[String] and
+      (JsPath \ s"event${eventType.toString}" \ "companyDetails" \ "companyName").readNullable[String] and
         readsMemberOrEmployerValue
       ) (
       (companyName, paymentValue) => {
@@ -63,10 +64,10 @@ object MembersOrEmployersSummary {
       }
     )
 
-  def readsMemberOrEmployer(implicit messages: Messages): Reads[MembersOrEmployersSummary] = {
+  def readsMemberOrEmployer(eventType: EventType)(implicit messages: Messages): Reads[MembersOrEmployersSummary] = {
     (JsPath \ WhoReceivedUnauthPaymentPage.toString).readNullable[String].flatMap{
       case Some(Member.toString) => readsMemberSummary
-      case Some(Employer.toString) => readsEmployerSummary
+      case Some(Employer.toString) => readsEmployerSummary(eventType)
       case None => Reads.pure[MembersOrEmployersSummary](MembersOrEmployersSummary(messages("site.notEntered"), BigDecimal(0.00)))
       case e => fail
     }

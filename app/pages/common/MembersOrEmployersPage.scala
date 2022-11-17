@@ -22,7 +22,7 @@ import models.event1.MembersOrEmployersSummary
 import play.api.libs.json.JsPath
 import queries.Gettable
 
-case class MembersOrEmployersPage(eventType: EventType) extends Gettable[Seq[MembersOrEmployersSummary]] {
+case class MembersOrEmployersPage(eventType: EventType) extends Gettable[Seq[MembersOrEmployersSummary]] { // TODO: This Summary is Event1 specific.
   def apply(index: Index): JsPath = path \ index
 
   def path: JsPath = JsPath \ s"event${eventType.toString}" \ toString
