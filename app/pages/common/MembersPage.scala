@@ -22,7 +22,7 @@ import play.api.libs.json.JsPath
 import queries.Gettable
 
 case class MembersPage(eventType: EventType) extends Gettable[Seq[MembersSummary]] {
-  def apply(index: Int): JsPath = path \ index
+  def apply(): JsPath = path \ toString
 
   def path: JsPath = JsPath \ s"event${eventType.toString}" \ toString
 

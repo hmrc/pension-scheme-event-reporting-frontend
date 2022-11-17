@@ -16,7 +16,6 @@
 
 package models.common
 
-import pages.Page
 import play.api.i18n.Messages
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
@@ -53,10 +52,9 @@ object MembersSummary {
         }
       }
     )
-
-
-  def readsMember(page: Page)(implicit messages: Messages): Reads[MembersSummary] = {
-    (JsPath \ page.toString).readNullable[String].flatMap{
+  /* TODO check if this reads is working properly */
+  def readsMember(implicit messages: Messages): Reads[MembersSummary] = {
+    (JsPath \ toString).readNullable[String].flatMap {
       case Some(_) => readsMemberSummary
       case None => Reads.pure[MembersSummary](MembersSummary(messages("site.notEntered"), BigDecimal(0.00), messages("site.notEntered")))
       case e => fail

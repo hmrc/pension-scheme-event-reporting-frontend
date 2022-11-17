@@ -23,7 +23,7 @@ import models.UserAnswers
 import models.common.MembersSummary
 import models.enumeration.EventType
 import pages.Waypoints
-import pages.common.MembersPage
+import pages.common.{MembersDetailsPage, MembersPage}
 import pages.event22.AnnualAllowanceSummaryPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -53,11 +53,11 @@ class AnnualAllowanceSummaryController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
     val mappedMember = request.userAnswers
-      .getAll(MembersPage(eventType))(MembersSummary.readsMember(AnnualAllowanceSummaryPage)).zipWithIndex.map {
+      .getAll(MembersPage(eventType))(MembersSummary.readsMember).zipWithIndex.map {
       case (memberSummary, index) =>
 
       val value = ValueViewModel(HtmlFormat.escape(memberSummary.PaymentValue.toString()).toString)
-
+      /*TODO need to add NINO to the SummaryListRow- data currently not being found */
       SummaryListRow(
         key = Key(
           content = Text(memberSummary.name)

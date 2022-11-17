@@ -18,10 +18,9 @@ package controllers.event22
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import controllers.common.routes
+import controllers.event22.routes
 import data.SampleData.sampleMemberJourneyDataEvent22
 import forms.event22.AnnualAllowanceSummaryFormProvider
-import models.enumeration.EventType.Event22
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
