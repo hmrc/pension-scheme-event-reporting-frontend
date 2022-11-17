@@ -30,7 +30,7 @@ case class TotalPensionAmountsPage(eventType: EventType, index: Index) extends Q
   override def toString: String = "totalPensionAmounts"
 
   override def route(waypoints: Waypoints): Call =
-    controllers.common.routes.TotalPensionAmountsController.onPageLoad(waypoints)
+    controllers.common.routes.TotalPensionAmountsController.onPageLoadWithIndex(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     Event23CheckYourAnswersPage(index)

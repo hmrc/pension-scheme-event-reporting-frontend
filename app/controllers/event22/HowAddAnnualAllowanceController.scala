@@ -44,14 +44,14 @@ class HowAddAnnualAllowanceController @Inject()(val controllerComponents: Messag
 
   def onPageLoadWithIndex(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType22)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(HowAddAnnualAllowancePage(index))).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints))
+    Ok(view(preparedForm, waypoints, index))
   }
 
   def onSubmitWithIndex(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType22)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(HowAddAnnualAllowancePage(index), value)

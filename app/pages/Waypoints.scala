@@ -81,7 +81,7 @@ object Waypoints {
 
   def fromString(s: String, i: Index): Option[Waypoints] =
     s.split(',').toList
-      .map(Waypoint.fromString(s, i))
+      .map(Waypoint.fromString)
       .sequence
       .map(apply)
 

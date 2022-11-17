@@ -36,18 +36,19 @@ object Waypoint {
   See claim-child-benefit-frontend project for examples of how this is used.
    */
 
-  private val fragments = (index: Index) =>
+  private val fragments: Map[String, Waypoint] =
     Map(
       Event18CheckYourAnswersPage.urlFragment -> Event18CheckYourAnswersPage.waypoint,
-      Event23CheckYourAnswersPage(index).urlFragment -> Event23CheckYourAnswersPage(index).waypoint,
       EventWindUpCheckYourAnswersPage.urlFragment -> EventWindUpCheckYourAnswersPage.waypoint
     )
 
   /*
   All CYA page objects which have an index should be added below. Those without an index should be added above.
    */
-  val fromString: (String, Index) => Option[Waypoint] = (s: String, i: Index) =>
-    fragments(i).get(s)
+
+  def fromString(s: String): Option[Waypoint] =
+    fragments.get(s)
       .orElse(Event1CheckYourAnswersPage.waypointFromString(s))
+      .orElse(Event23CheckYourAnswersPage.waypointFromString(s))
 
 }
