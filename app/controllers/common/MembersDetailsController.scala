@@ -49,21 +49,6 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
     Ok(view(preparedForm, waypoints, eventType, controllers.common.routes.MembersDetailsController.onSubmitWithIndex(waypoints, eventType, index)))
   }
 
-//  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-//    val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, 0))).fold(form)(form.fill)
-//    Ok(view(preparedForm, waypoints, eventType, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType)))
-//  }
-//
-//  def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)).async {
-//    implicit request =>
-//      doOnSubmit(
-//        waypoints,
-//        eventType,
-//        MembersDetailsPage(eventType, 0),
-//        controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType)
-//      )
-//  }
-
   def onSubmitWithIndex(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       doOnSubmit(
