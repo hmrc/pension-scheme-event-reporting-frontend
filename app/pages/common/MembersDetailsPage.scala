@@ -19,7 +19,7 @@ package pages.common
 import models.UserAnswers
 import models.common.MembersDetails
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event23}
+import models.enumeration.EventType.{Event1, Event22, Event23}
 import pages.event1.{DoYouHoldSignedMandatePage, MembersOrEmployersPage}
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
@@ -30,7 +30,7 @@ case class MembersDetailsPage(eventType: EventType, index: Option[Int]) extends 
   override def path: JsPath =
     index match {
       case Some(i) => MembersOrEmployersPage(i) \ MembersDetailsPage.toString
-      case _ => JsPath \ toString
+      case _ => JsPath \ s"event${eventType.toString}" \ MembersDetailsPage.toString
     }
 
   override def route(waypoints: Waypoints): Call =
@@ -42,6 +42,7 @@ case class MembersDetailsPage(eventType: EventType, index: Option[Int]) extends 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     (eventType, index) match {
       case (Event1, Some(index)) => DoYouHoldSignedMandatePage(index)
+      case (Event22, None) => ChooseTaxYearPage(eventType)
       case (Event23, None) => ChooseTaxYearPage(eventType)
       case _ => super.nextPageNormalMode(waypoints, answers)
     }
