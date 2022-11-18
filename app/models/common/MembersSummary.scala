@@ -16,6 +16,7 @@
 
 package models.common
 
+import models.enumeration.EventType
 import play.api.i18n.Messages
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
@@ -53,11 +54,12 @@ object MembersSummary {
       }
     )
   /* TODO check if this reads is working properly */
-  def readsMember(implicit messages: Messages): Reads[MembersSummary] = {
-    (JsPath \ toString).readNullable[String].flatMap {
-      case Some(_) => readsMemberSummary
-      case None => Reads.pure[MembersSummary](MembersSummary(messages("site.notEntered"), BigDecimal(0.00), messages("site.notEntered")))
-      case e => fail
-    }
+  def readsMember(eventType: EventType)(implicit messages: Messages): Reads[MembersSummary] = {
+    (JsPath \ s"event${eventType.toString}").read(readsMemberSummary)
+//    (JsPath \ toString).readNullable[String].flatMap {
+//      case Some(_) => readsMemberSummary
+//      case None => Reads.pure[MembersSummary](MembersSummary(messages("site.notEntered"), BigDecimal(0.00), messages("site.notEntered")))
+//      case e => fail
+//    }
   }
 }

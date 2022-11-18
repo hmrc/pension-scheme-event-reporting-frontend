@@ -53,9 +53,8 @@ class AnnualAllowanceSummaryController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
     val mappedMember = request.userAnswers
-      .getAll(MembersPage(eventType))(MembersSummary.readsMember).zipWithIndex.map {
+      .getAll(MembersPage(eventType))(MembersSummary.readsMember(eventType)).zipWithIndex.map {
       case (memberSummary, index) =>
-
       val value = ValueViewModel(HtmlFormat.escape(memberSummary.PaymentValue.toString()).toString)
       /*TODO need to add NINO to the SummaryListRow- data currently not being found */
       SummaryListRow(
