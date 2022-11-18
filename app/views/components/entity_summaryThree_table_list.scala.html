@@ -14,9 +14,11 @@
  * limitations under the License.
  *@
 
-@(seqSummaryListRow: Seq[SummaryListRow], colOne: String, colTwo: String, colThree: String, total: BigDecimal)(implicit messages: Messages)
+@import utils.ExtendedList
 
-<table class="govuk-table">
+@(seqExtendedListRow: Seq[ExtendedList], colOne: String, colTwo: String, colThree: String, total: BigDecimal)(implicit messages: Messages)
+
+<table class="govuk-table" role="table">
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">@messages(colOne)</th>
@@ -26,25 +28,12 @@
         </tr>
     </thead>
     <tbody class="govuk-table__body">
-    @seqSummaryListRow.map { summaryListRow =>
+    @seqExtendedListRow.map { extendedListRow =>
         <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header govuk-!-font-weight-regular govuk-!-width-one-quarter">@summaryListRow.key.content.asHtml</th>
+            <th scope="row" class="govuk-table__header govuk-!-font-weight-regular govuk-!-width-one-quarter">@extendedListRow.key</th>
             <td class="govuk-table__cell govuk-!-width-one-quarter">nino</td>
-            <td class="govuk-table__cell govuk-!-width-one-quarter">&pound;@summaryListRow.value.content.asHtml</td>
-            @summaryListRow.actions.map { actions =>
-                <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-width-one-quarter">
-                    <ul class="govuk-summary-list__actions-list">
-                        @actions.items.map { item =>
-                        <li class="govuk-summary-list__actions-list-item">
-                            <a class="govuk-link" href="@item.href">
-                                <span aria-hidden="true">@item.content.asHtml</span>
-                                <span class="govuk-visually-hidden">@item.content.asHtml @summaryListRow.key.content.asHtml</span>
-                            </a>
-                        </li>
-                        }
-                    </ul>
-                </td>
-            }
+            <td class="govuk-table__cell govuk-!-width-one-quarter">&pound;@extendedListRow.value</td>
+            <td class="govuk-table__cell govuk-!-width-one-quarter">actions here</td>
         </tr>
     }
     </tbody>

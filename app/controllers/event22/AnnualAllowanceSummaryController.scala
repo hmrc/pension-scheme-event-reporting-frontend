@@ -23,14 +23,14 @@ import models.UserAnswers
 import models.common.MembersSummary
 import models.enumeration.EventType
 import pages.Waypoints
-import pages.common.{MembersDetailsPage, MembersPage}
+import pages.common.MembersPage
 import pages.event22.AnnualAllowanceSummaryPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.Aliases._
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.ExtendedList
 import viewmodels.Message
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -57,23 +57,10 @@ class AnnualAllowanceSummaryController @Inject()(
       case (memberSummary, index) =>
       val value = ValueViewModel(HtmlFormat.escape(memberSummary.PaymentValue.toString()).toString)
       /*TODO need to add NINO to the SummaryListRow- data currently not being found */
-      SummaryListRow(
-        key = Key(
-          content = Text(memberSummary.name)
-        ),
-        value = value,
-        actions = Some(Actions(
-          items = Seq(
-            ActionItem(
-              content = Text(Message("site.view")),
-              href = "/dummy" /* TODO Add checkYourAnswers route controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad().url */
-            ),
-            ActionItem(
-              content = Text(Message("site.remove")),
-              href = "#"
-            )
-          )
-        ))
+      ExtendedList(
+        key = memberSummary.name,
+        value = value.toString,
+        actions = Some("test")
       )
 
       }
