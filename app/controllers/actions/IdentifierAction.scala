@@ -78,7 +78,7 @@ class AuthenticatedIdentifierAction @Inject()(
 
     futureAuthInfo.flatMap { authInfo =>
       val futurePstr = getPstr(request) map {
-        case None => "123" // TODO: Once we have an event reporting dashboard then we should redirect user to ??? page at this point
+        case None => "87219363YN" // TODO: Once we have an event reporting dashboard then we should redirect user to ??? page at this point
         case Some(pstr) => pstr
       }
       futurePstr.flatMap { pstr =>

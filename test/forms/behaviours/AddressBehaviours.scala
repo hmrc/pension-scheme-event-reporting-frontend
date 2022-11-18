@@ -156,8 +156,8 @@ trait AddressBehaviours extends FormSpec with StringFieldBehaviours with Constra
     "behave like a form with Post Code and Country" - {
 
       "bind successfully when country is non UK and postcode is non-UK postal format" in {
-        val result = form.bind(validOtherData ++ Map("country" -> "IN", "postCode" -> "123"))
-        getPostCode(result.get) mustBe "123"
+        val result = form.bind(validOtherData ++ Map("country" -> "IN", "postCode" -> "87219363YN"))
+        getPostCode(result.get) mustBe "87219363YN"
       }
 
       "bind successfully when country is UK and postcode is of correct format" in {

@@ -53,11 +53,11 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
           EventType.fromEventSelection(value) match {
             case Some(eventType) =>
               userAnswersCacheConnector.get(request.pstr, eventType).map {
-                case None =>
-                  val answers = UserAnswers().setOrException(EventSelectionPage, value)
-                  Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
                 case Some(ua) =>
                   val answers = ua.setOrException(EventSelectionPage, value)
+                  Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
+                case None =>
+                  val answers = UserAnswers().setOrException(EventSelectionPage, value)
                   Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
               }
             case _ => Future.successful(Ok(view(form, waypoints)))
