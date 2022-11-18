@@ -31,8 +31,10 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import utils.DateHelper
 import views.html.common.ChooseTaxYearView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
@@ -59,6 +61,8 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    DateHelper.setDate(Some(LocalDate.of(2015, 6, 1)))
+
     reset(mockUserAnswersCacheConnector)
   }
 
