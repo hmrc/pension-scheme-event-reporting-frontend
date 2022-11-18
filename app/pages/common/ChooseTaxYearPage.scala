@@ -27,7 +27,7 @@ import play.api.mvc.Call
 
 case class ChooseTaxYearPage(eventType: EventType, index: Index) extends QuestionPage[ChooseTaxYear] {
 
-  override def path: JsPath = JsPath \ s"event${eventType.toString}" \ ChooseTaxYearPage.toString
+  override def path: JsPath = MembersOrEmployersPage(eventType)(index) \ ChooseTaxYearPage.toString
 
   override def route(waypoints: Waypoints): Call =
     routes.ChooseTaxYearController.onPageLoadWithIndex(waypoints, eventType, index)

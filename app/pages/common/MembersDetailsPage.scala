@@ -27,7 +27,7 @@ import play.api.mvc.Call
 
 case class MembersDetailsPage(eventType: EventType, index: Int) extends QuestionPage[MembersDetails] {
 
-  override def path: JsPath = MembersOrEmployersPage(EventType.Event1)(index) \ MembersDetailsPage.toString
+  override def path: JsPath = MembersOrEmployersPage(eventType)(index) \ MembersDetailsPage.toString
 
   override def route(waypoints: Waypoints): Call = controllers.common.routes.MembersDetailsController.onPageLoadWithIndex(waypoints, eventType, index)
 
