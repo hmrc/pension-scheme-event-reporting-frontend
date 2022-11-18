@@ -106,7 +106,7 @@ trait PageGenerators {
     Arbitrary(event1.DoYouHoldSignedMandatePage(Index(0)))
 
   implicit lazy val arbitraryMembersDetailsPage: Arbitrary[MembersDetailsPage] =
-    Arbitrary(MembersDetailsPage(Event1, Some(0)))
+    Arbitrary(MembersDetailsPage(Event1, 0))
 
   implicit lazy val arbitraryWhoReceivedUnauthPaymentPage: Arbitrary[event1.WhoReceivedUnauthPaymentPage] =
     Arbitrary(event1.WhoReceivedUnauthPaymentPage(Index(0)))
