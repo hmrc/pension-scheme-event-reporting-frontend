@@ -16,11 +16,23 @@
 
 package models.enumeration
 
+import models.EventSelection
 import play.api.mvc.{JavascriptLiteral, QueryStringBindable}
 
 sealed trait EventType
 
 object EventType extends Enumerable.Implicits {
+
+  def fromEventSelection(es: EventSelection): Option[EventType] = {
+    es match {
+      case EventSelection.Event1 => Some(EventType.Event1)
+      case EventSelection.Event18 => Some(EventType.Event18)
+      case EventSelection.Event22 => Some(EventType.Event22)
+      case EventSelection.Event23 => Some(EventType.Event23)
+      case EventSelection.EventWoundUp => Some(EventType.WindUp)
+      case _ => None
+    }
+  }
 
   case object WindUp extends WithName("0") with EventType
 

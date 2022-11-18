@@ -16,9 +16,9 @@
 
 package controllers
 
+import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.EventSelectionFormProvider
-import models.UserAnswers
 import models.enumeration.EventType
 import pages.{EventSelectionPage, Waypoints}
 import play.api.i18n.I18nSupport
@@ -27,14 +27,15 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.EventSelectionView
 
 import javax.inject.Inject
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class EventSelectionController @Inject()(val controllerComponents: MessagesControllerComponents,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalAction,
                                          formProvider: EventSelectionFormProvider,
-                                         view: EventSelectionView
-                                         ) extends FrontendBaseController with I18nSupport {
+                                         view: EventSelectionView,
+                                         userAnswersCacheConnector: UserAnswersCacheConnector
+                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
@@ -48,8 +49,16 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
-          val answers = UserAnswers().setOrException(EventSelectionPage, value)
-          Future.successful(Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route))
+          EventType.fromEventSelection(value) match {
+            case Some(eventType) =>
+              userAnswersCacheConnector.get(request.pstr, eventType).map {
+                case None => Ok(view(form, waypoints))
+                case Some(ua) =>
+                  val answers = ua.setOrException(EventSelectionPage, value)
+                  Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
+              }
+            case _ => Future.successful(Ok(view(form, waypoints)))
+          }
         }
       )
   }
