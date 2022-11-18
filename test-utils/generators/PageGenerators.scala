@@ -38,8 +38,8 @@ trait PageGenerators {
   implicit lazy val arbitraryPaymentValueAndDatePage: Arbitrary[event1.PaymentValueAndDatePage] =
     Arbitrary(event1.PaymentValueAndDatePage(Index(0)))
 
-  implicit lazy val arbitraryHowAddDualAllowancePage: Arbitrary[event23.HowAddDualAllowancePage.type] =
-    Arbitrary(event23.HowAddDualAllowancePage)
+  implicit lazy val arbitraryHowAddDualAllowancePage: Arbitrary[event23.HowAddDualAllowancePage] =
+    Arbitrary(event23.HowAddDualAllowancePage(Index(0)))
 
   implicit lazy val arbitraryLoanDetailsPage: Arbitrary[event1.employer.LoanDetailsPage] =
     Arbitrary(event1.employer.LoanDetailsPage(Index(0)))

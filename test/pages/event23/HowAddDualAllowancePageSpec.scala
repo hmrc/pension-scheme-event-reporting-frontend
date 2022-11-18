@@ -23,10 +23,10 @@ class HowAddDualAllowancePageSpec extends PageBehaviours {
 
   "HowAddDualAllowancePage" - {
 
-    beRetrievable[HowAddDualAllowance](HowAddDualAllowancePage)
+    beRetrievable[HowAddDualAllowance](HowAddDualAllowancePage(0))
 
-    beSettable[HowAddDualAllowance](HowAddDualAllowancePage)
+    beSettable[HowAddDualAllowance](HowAddDualAllowancePage(0))
 
-    beRemovable[HowAddDualAllowance](HowAddDualAllowancePage)
+    beRemovable[HowAddDualAllowance](HowAddDualAllowancePage(0))
   }
 }

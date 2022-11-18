@@ -21,11 +21,11 @@ import data.SampleData
 import data.SampleData.{companyDetails, memberDetails, userAnswersWithOneMemberAndEmployer}
 import models.enumeration.EventType.Event1
 import models.event1.HowAddUnauthPayment.Manual
+import models.event1.MembersOrEmployersSummary.readsMemberOrEmployerValue
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.{MembersOrEmployersSummary, PaymentDetails}
 import org.scalatest.matchers.must.Matchers
 import pages.common.{MembersDetailsPage, MembersOrEmployersPage}
-import models.event1.MembersOrEmployersSummary.readsMemberOrEmployerValue
 import pages.event1.employer.CompanyDetailsPage
 import pages.event1.{HowAddUnauthPaymentPage, PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
 
@@ -37,13 +37,13 @@ class UserAnswersSpec extends SpecBase with Matchers {
 
   "getAll" - {
     "must return the list of members or employers" in {
-      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage)(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
+      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer(Event1)) mustBe
         Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00)),
           MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00)))
     }
 
     "must return empty list if nothing present" in {
-      UserAnswers().getAll(MembersOrEmployersPage)(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe Nil
+      UserAnswers().getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer(Event1)) mustBe Nil
     }
 
     "must return the list of members or employers where member value and member details missing" in {
@@ -52,7 +52,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
         .setOrException(WhoReceivedUnauthPaymentPage(1), Employer)
         .setOrException(PaymentValueAndDatePage(1), PaymentDetails(BigDecimal(7687.00), LocalDate.of(2022, 11, 9)))
         .setOrException(CompanyDetailsPage(1), companyDetails)
-      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage)(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
+      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer(Event1)) mustBe
         Seq(MembersOrEmployersSummary("Not entered", BigDecimal(0.00)),
           MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00)))
     }
@@ -61,9 +61,9 @@ class UserAnswersSpec extends SpecBase with Matchers {
       val userAnswersWithOneMemberAndEmployer: UserAnswers = UserAnswers()
         .setOrException(WhoReceivedUnauthPaymentPage(0), Member)
         .setOrException(PaymentValueAndDatePage(0), PaymentDetails(BigDecimal(857.00), LocalDate.of(2022, 11, 9)))
-        .setOrException(MembersDetailsPage(event1, 0), memberDetails)
+        .setOrException(MembersDetailsPage(Event1, 0), memberDetails)
         .setOrException(WhoReceivedUnauthPaymentPage(1), Employer)
-      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage)(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
+      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer(Event1)) mustBe
         Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00)),
           MembersOrEmployersSummary("Not entered", BigDecimal(0.00)))
     }
@@ -71,29 +71,29 @@ class UserAnswersSpec extends SpecBase with Matchers {
       val userAnswersWithOnlyManualOrUpload: UserAnswers = UserAnswers()
         .setOrException(HowAddUnauthPaymentPage(0), Manual)
 
-      userAnswersWithOnlyManualOrUpload.getAll(MembersOrEmployersPage)(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
+      userAnswersWithOnlyManualOrUpload.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer(Event1)) mustBe
         Seq(MembersOrEmployersSummary("Not entered", BigDecimal(0.00)))
     }
   }
 
   "countAll" - {
     "must count correctly when one member and one employer" in {
-      userAnswersWithOneMemberAndEmployer.countAll(MembersOrEmployersPage) mustBe 2
+      userAnswersWithOneMemberAndEmployer.countAll(MembersOrEmployersPage(Event1)) mustBe 2
     }
 
     "must count correctly when nothing present" in {
-      UserAnswers().countAll(MembersOrEmployersPage) mustBe 0
+      UserAnswers().countAll(MembersOrEmployersPage(Event1)) mustBe 0
     }
   }
 
 
   "sumAll" - {
     "must count correctly when one member and one employer" in {
-      userAnswersWithOneMemberAndEmployer.sumAll(MembersOrEmployersPage, readsMemberOrEmployerValue) mustBe BigDecimal(8544.00)
+      userAnswersWithOneMemberAndEmployer.sumAll(MembersOrEmployersPage(Event1), readsMemberOrEmployerValue) mustBe BigDecimal(8544.00)
     }
 
     "must count correctly when nothing present" in {
-      UserAnswers().sumAll(MembersOrEmployersPage, readsMemberOrEmployerValue) mustBe 0
+      UserAnswers().sumAll(MembersOrEmployersPage(Event1), readsMemberOrEmployerValue) mustBe 0
     }
   }
 }

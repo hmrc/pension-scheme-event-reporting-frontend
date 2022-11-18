@@ -18,7 +18,6 @@ package controllers.event23
 
 import base.SpecBase
 import data.SampleData.sampleMemberJourneyDataEvent23
-import models.Index
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
