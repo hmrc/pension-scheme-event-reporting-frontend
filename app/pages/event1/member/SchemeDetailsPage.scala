@@ -18,15 +18,17 @@ package pages.event1.member
 
 import controllers.event1.member.routes
 import models.UserAnswers
+import models.enumeration.EventType
 import models.event1.member.SchemeDetails
-import pages.event1.{MembersOrEmployersPage, PaymentValueAndDatePage}
+import pages.common.MembersOrEmployersPage
+import pages.event1.PaymentValueAndDatePage
 import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class SchemeDetailsPage(index: Int) extends QuestionPage[SchemeDetails] {
 
-  override def path: JsPath = MembersOrEmployersPage(index) \ toString
+  override def path: JsPath = MembersOrEmployersPage(EventType.Event1)(index) \ toString
 
   override def toString: String = "schemeDetails"
 

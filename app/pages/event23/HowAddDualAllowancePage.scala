@@ -17,14 +17,14 @@
 package pages.event23
 
 import controllers.event23.routes
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import models.event23.HowAddDualAllowance
 import models.event23.HowAddDualAllowance.Manual
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object HowAddDualAllowancePage extends QuestionPage[HowAddDualAllowance] {
+case class HowAddDualAllowancePage(index: Index) extends QuestionPage[HowAddDualAllowance] {
 
   override def path: JsPath = JsPath \ toString
 
@@ -32,11 +32,11 @@ case object HowAddDualAllowancePage extends QuestionPage[HowAddDualAllowance] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
-      case Some(Manual) => WhatYouWillNeedPage
+      case Some(Manual) => WhatYouWillNeedPage(index)
       case _ => this
     }
 
   override def route(waypoints: Waypoints): Call = {
-    routes.HowAddDualAllowanceController.onPageLoad(waypoints)
+    routes.HowAddDualAllowanceController.onPageLoad(waypoints, index)
   }
 }

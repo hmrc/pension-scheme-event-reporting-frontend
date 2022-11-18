@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package pages.event1
+package pages.common
 
+import models.Index
+import models.enumeration.EventType
 import models.event1.MembersOrEmployersSummary
 import play.api.libs.json.JsPath
 import queries.Gettable
 
-object MembersOrEmployersPage extends Gettable[Seq[MembersOrEmployersSummary]] {
-  def apply(index: Int): JsPath = path \ index
+case class MembersOrEmployersPage(eventType: EventType) extends Gettable[Seq[MembersOrEmployersSummary]] { // TODO: This Summary is Event1 specific.
+  def apply(index: Index): JsPath = path \ index
 
-  def path: JsPath = JsPath \ "event1" \ toString
+  def path: JsPath = JsPath \ s"event${eventType.toString}" \ toString
 
   override def toString: String = "membersOrEmployers"
 

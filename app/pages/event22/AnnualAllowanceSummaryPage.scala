@@ -18,6 +18,8 @@ package pages.event22
 
 import controllers.event22.routes
 import models.UserAnswers
+import models.enumeration.EventType
+import pages.common.MembersOrEmployersPage
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -32,10 +34,12 @@ case object AnnualAllowanceSummaryPage extends QuestionPage[Boolean] {
     routes.AnnualAllowanceSummaryController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+
     answers.get(AnnualAllowanceSummaryPage) match {
-      case Some(true) => HowAddAnnualAllowancePage
+      case Some(true) => HowAddAnnualAllowancePage(answers.countAll(MembersOrEmployersPage(EventType.Event22)))
       case _ => IndexPage
     }
+
   }
 }
 

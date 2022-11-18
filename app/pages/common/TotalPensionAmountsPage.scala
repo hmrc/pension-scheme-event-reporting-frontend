@@ -16,7 +16,7 @@
 
 package pages.common
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event22, Event23}
 import pages.event23.Event23CheckYourAnswersPage
@@ -24,17 +24,17 @@ import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class TotalPensionAmountsPage(eventType: EventType) extends QuestionPage[BigDecimal] {
+case class TotalPensionAmountsPage(eventType: EventType, index: Index) extends QuestionPage[BigDecimal] {
 
-  override def path: JsPath = JsPath \ s"event${eventType.toString}" \ TotalPensionAmountsPage.toString
+  override def path: JsPath = MembersOrEmployersPage(eventType)(index) \ TotalPensionAmountsPage.toString
 
   override def route(waypoints: Waypoints): Call =
-    controllers.common.routes.TotalPensionAmountsController.onPageLoad(waypoints, eventType)
+    controllers.common.routes.TotalPensionAmountsController.onPageLoad(waypoints, eventType, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    eventType  match {
+    eventType match {
       case Event22 => IndexPage
-      case Event23 => Event23CheckYourAnswersPage
+      case Event23 => Event23CheckYourAnswersPage(index)
       case _ => IndexPage
     }
 }
