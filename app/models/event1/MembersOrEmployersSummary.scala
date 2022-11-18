@@ -29,8 +29,6 @@ case class MembersOrEmployersSummary(name: String, unauthorisedPaymentValue: Big
 object MembersOrEmployersSummary {
   implicit lazy val formats: Format[MembersOrEmployersSummary] = Json.format[MembersOrEmployersSummary]
 
-  private def fail[A]: Reads[A] = Reads.failed[A]("Unknown value")
-
   val readsMemberOrEmployerValue: Reads[BigDecimal] =
     (JsPath \ "paymentValueAndDate" \ "paymentValue").readNullable[BigDecimal]
       .map(_.getOrElse(BigDecimal(0)))
@@ -65,11 +63,10 @@ object MembersOrEmployersSummary {
     )
 
   def readsMemberOrEmployer(implicit messages: Messages): Reads[MembersOrEmployersSummary] = {
-    (JsPath \ WhoReceivedUnauthPaymentPage.toString).readNullable[String].flatMap{
+    (JsPath \ WhoReceivedUnauthPaymentPage.toString).readNullable[String].flatMap {
       case Some(Member.toString) => readsMemberSummary
       case Some(Employer.toString) => readsEmployerSummary
       case None => Reads.pure[MembersOrEmployersSummary](MembersOrEmployersSummary(messages("site.notEntered"), BigDecimal(0.00)))
     }
   }
-
 }
