@@ -38,7 +38,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
   val userAnswersCacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private val loggedInUser = LoggedInUser("user", Administrator, "psaId")
-  private val pstr = "123"
+  private val pstr = "87219363YN"
   private val request: IdentifierRequest[AnyContent] = IdentifierRequest(fakeRequest, loggedInUser, pstr)
   private val eventType = EventType.Event1
 

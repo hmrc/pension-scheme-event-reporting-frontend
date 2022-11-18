@@ -30,7 +30,7 @@ class EventReportingConnectorSpec
     with WireMockHelper
     with Enumerable.Implicits {
 
-  private val pstr = "123"
+  private val pstr = "87219363YN"
   private val eventType: EventType = EventType.Event1
   private val eventType2: EventType = EventType.Event2
 

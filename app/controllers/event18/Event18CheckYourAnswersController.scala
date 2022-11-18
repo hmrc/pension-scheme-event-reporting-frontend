@@ -72,7 +72,7 @@ class Event18CheckYourAnswersController @Inject()(
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event18) andThen requireData).async { implicit request =>
       val waypoints = EmptyWaypoints
-      connector.compileEvent("123", Event18).map {
+      connector.compileEvent("87219363YN", Event18).map {
         _ =>
           Redirect(routes.EventSummaryController.onPageLoad(waypoints).url)
       }
