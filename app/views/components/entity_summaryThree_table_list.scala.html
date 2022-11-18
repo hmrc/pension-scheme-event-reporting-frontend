@@ -14,45 +14,44 @@
  * limitations under the License.
  *@
 
-@*TODO fix this table*@
-
 @(seqSummaryListRow: Seq[SummaryListRow], colOne: String, colTwo: String, colThree: String, total: BigDecimal)(implicit messages: Messages)
 
 <table class="govuk-table">
     <thead class="govuk-table__head">
-    <tr class="govuk-table__row">
-        <th scope="col" class="govuk-table__header">@messages(colOne)</th>
-        <th scope="col" class="govuk-table__header">@messages(colTwo)</th>
-        <th scope="col" class="govuk-table__header">@messages(colThree)</th>
-        <th scope="col" class="govuk-table__header"></th>
-    </tr>
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">@messages(colOne)</th>
+            <th scope="col" class="govuk-table__header">@messages(colTwo)</th>
+            <th scope="col" class="govuk-table__header">@messages(colThree)</th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter"></th>
+        </tr>
     </thead>
     <tbody class="govuk-table__body">
     @seqSummaryListRow.map { summaryListRow =>
-
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header govuk-!-font-weight-regular govuk-!-width-one-third">@summaryListRow.key.content.asHtml</th>
-                @summaryListRow.actions.map { actions =>
-                    <td class="govuk-table__cell govuk-!-width-one-quarter">&pound;@summaryListRow.key.content.asHtml</td>
-                    <td class="govuk-table__cell govuk-!-width-one-quarter">&pound;@summaryListRow.value.content.asHtml</td>
-                    <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-width-one-quarter">
-                        <ul class="govuk-summary-list__actions-list">
-                            @actions.items.map { item =>
-                            <li class="govuk-summary-list__actions-list-item">
-                                <a class="govuk-link" href="@item.href">
-                                    <span aria-hidden="true">@item.content.asHtml</span>
-                                    <span class="govuk-visually-hidden">@item.content.asHtml @summaryListRow.key.content.asHtml</span>
-                                </a>
-                            </li>
-                            }
-                        </ul>
-                    </td>
-                }
-            </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header govuk-!-font-weight-regular govuk-!-width-one-quarter">@summaryListRow.key.content.asHtml</th>
+            <td class="govuk-table__cell govuk-!-width-one-quarter">nino</td>
+            <td class="govuk-table__cell govuk-!-width-one-quarter">&pound;@summaryListRow.value.content.asHtml</td>
+            @summaryListRow.actions.map { actions =>
+                <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-width-one-quarter">
+                    <ul class="govuk-summary-list__actions-list">
+                        @actions.items.map { item =>
+                        <li class="govuk-summary-list__actions-list-item">
+                            <a class="govuk-link" href="@item.href">
+                                <span aria-hidden="true">@item.content.asHtml</span>
+                                <span class="govuk-visually-hidden">@item.content.asHtml @summaryListRow.key.content.asHtml</span>
+                            </a>
+                        </li>
+                        }
+                    </ul>
+                </td>
+            }
+        </tr>
     }
-    <tr class="govuk-table__row">
-        <td class="govuk-table__cell govuk-table__cell--numeric"><strong>@messages("entity_list_table.total")</strong></td>
-        <td class="govuk-table__cell" colspan="2"><strong>&pound;@total</strong></td>
-    </tr>
     </tbody>
+    <tfoot>
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell govuk-table__cell--numeric" colspan="2"><strong>@messages("entity_list_table.total")</strong></td>
+            <td class="govuk-table__cell" colspan="2"><strong>&pound;@total</strong></td>
+        </tr>
+    </tfoot>
 </table>
