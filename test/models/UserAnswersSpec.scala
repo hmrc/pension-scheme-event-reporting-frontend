@@ -102,14 +102,13 @@ class UserAnswersSpec extends SpecBase with Matchers {
   "event22" - {
     "getAll" - {
       "must return the list of members or employers" in {
-        println(s"\n\n\n HERE \n $sampleMemberJourneyDataEvent22")
-        sampleMemberJourneyDataEvent22.getAll(MembersPage(Event22))(MembersSummary.readsMember(Event22)) mustBe
-          MembersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00), SampleData.memberDetails.nino)
+        sampleMemberJourneyDataEvent22.getAll(MembersPage(Event22))(MembersSummary.readsMember) mustBe
+          Seq(MembersSummary(SampleData.memberDetails.fullName, BigDecimal(14.99), SampleData.memberDetails.nino))
       }
 
-//      "must return empty list if nothing present" in {
-//        UserAnswers().getAll(MembersOrEmployersPage)(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe Nil
-//      }
+      "must return empty list if nothing present" in {
+        UserAnswers().getAll(MembersPage(Event22))(MembersSummary.readsMember) mustBe Nil
+      }
 //
 //      "must return the list of members or employers where member value and member details missing" in {
 //        val userAnswersWithOneMemberAndEmployer: UserAnswers = UserAnswers()
