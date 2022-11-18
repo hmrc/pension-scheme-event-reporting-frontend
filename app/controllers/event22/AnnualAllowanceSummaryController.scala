@@ -27,13 +27,8 @@ import pages.common.MembersPage
 import pages.event22.AnnualAllowanceSummaryPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.ExtendedList
-import viewmodels.Message
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 import views.html.event22.AnnualAllowanceSummaryView
 
 import javax.inject.Inject
@@ -55,11 +50,14 @@ class AnnualAllowanceSummaryController @Inject()(
     val mappedMember = request.userAnswers
       .getAll(MembersPage(eventType))(MembersSummary.readsMember).zipWithIndex.map {
       case (memberSummary, index) =>
-      val value = ValueViewModel(HtmlFormat.escape(memberSummary.PaymentValue.toString()).toString)
+      /* TODO:
+          Is this needed?:
+          val value = ValueViewModel(HtmlFormat.escape(memberSummary.PaymentValue.toString()).toString)
+      */
       ExtendedList(
         key = memberSummary.name,
         nino = memberSummary.nINumber,
-        value = value.toString,
+        value = memberSummary.PaymentValue.toString,
         actions = Some("test")
       )
 
