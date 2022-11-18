@@ -24,6 +24,7 @@
     govukButton: GovukButton
 )
 
+
 @(form: Form[_], waypoints: Waypoints, memberSeq: Seq[ExtendedList], total: BigDecimal)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("annualAllowanceSummary.title", "2022"))) {

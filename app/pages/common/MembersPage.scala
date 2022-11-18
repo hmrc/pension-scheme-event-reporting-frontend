@@ -16,13 +16,14 @@
 
 package pages.common
 
+import models.Index
 import models.common.MembersSummary
 import models.enumeration.EventType
 import play.api.libs.json.JsPath
 import queries.Gettable
 
 case class MembersPage(eventType: EventType) extends Gettable[Seq[MembersSummary]] {
-  def apply(): JsPath = path \ toString
+  def apply(index: Index): JsPath = path \ index
 
   def path: JsPath = JsPath \ s"event${eventType.toString}" \ toString
 

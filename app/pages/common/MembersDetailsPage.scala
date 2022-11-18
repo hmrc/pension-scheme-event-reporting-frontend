@@ -24,10 +24,17 @@ import pages.event1.DoYouHoldSignedMandatePage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.Gettable
 
 case class MembersDetailsPage(eventType: EventType, index: Int) extends QuestionPage[MembersDetails] {
 
-  override def path: JsPath = MembersOrEmployersPage(eventType)(index) \ MembersDetailsPage.toString
+  override def path: JsPath =
+    eventType match {
+      case Event1  => MembersOrEmployersPage(eventType)(index) \ MembersDetailsPage.toString
+      case Event22 => MembersPage(eventType)(index) \ MembersDetailsPage.toString
+      case Event23 => MembersPage(eventType)(index) \ MembersDetailsPage.toString
+      case _       => JsPath
+  }
 
   override def route(waypoints: Waypoints): Call = controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, eventType, index)
 

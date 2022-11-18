@@ -16,4 +16,5 @@
 
 package utils
 
-case class ExtendedList(key: String, value: String, actions: Option[String])
+case class ExtendedList(key: String, nino: String, value: String, actions: Option[String])
+

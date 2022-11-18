@@ -19,7 +19,7 @@ package pages.event22
 import controllers.event22.routes
 import models.UserAnswers
 import models.enumeration.EventType
-import pages.common.MembersOrEmployersPage
+import pages.common.{MembersOrEmployersPage, MembersPage}
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -36,7 +36,7 @@ case object AnnualAllowanceSummaryPage extends QuestionPage[Boolean] {
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
 
     answers.get(AnnualAllowanceSummaryPage) match {
-      case Some(true) => HowAddAnnualAllowancePage(answers.countAll(MembersOrEmployersPage(EventType.Event22)))
+      case Some(true) => HowAddAnnualAllowancePage(answers.countAll(MembersPage(EventType.Event22)))
       case _ => IndexPage
     }
 

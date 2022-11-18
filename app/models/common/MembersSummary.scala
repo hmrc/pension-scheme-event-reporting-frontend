@@ -16,7 +16,6 @@
 
 package models.common
 
-import models.enumeration.EventType
 import play.api.i18n.Messages
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
@@ -26,8 +25,6 @@ case class MembersSummary(name: String, PaymentValue: BigDecimal, nINumber: Stri
 
 object MembersSummary {
   implicit lazy val formats: Format[MembersSummary] = Json.format[MembersSummary]
-
-  private def fail[A]: Reads[A] = Reads.failed[A]("Unknown value")
 
   private def readsNINumber(implicit messages: Messages): Reads[String] =
     (JsPath \ "membersDetails" \ "nino").readNullable[String]
