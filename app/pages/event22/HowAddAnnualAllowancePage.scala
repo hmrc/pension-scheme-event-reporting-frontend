@@ -37,6 +37,6 @@ case class HowAddAnnualAllowancePage(index: Index) extends QuestionPage[HowAddAn
     }
 
   override def route(waypoints: Waypoints): Call = {
-    routes.HowAddAnnualAllowanceController.onPageLoadWithIndex(waypoints, index)
+    routes.HowAddAnnualAllowanceController.onPageLoad(waypoints, index)
   }
 }

@@ -18,6 +18,7 @@ package controllers.event23
 
 import base.SpecBase
 import data.SampleData.sampleMemberJourneyDataEvent23
+import models.Index
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -43,7 +44,7 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad().url)
+        val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url)
 
         val result = route(application, request).value
 
@@ -51,7 +52,8 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-23-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list,
+          "/manage-pension-scheme-event-report/new-report/event-23-click")(request, messages(application)).toString
       }
     }
 
@@ -71,7 +73,7 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
       running(application) {
         when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
-        val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad().url)
+        val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url)
         val result = route(application, request).value
         status(result) mustEqual OK
 
@@ -91,7 +93,7 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad().url)
+        val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url)
 
         val result = route(application, request).value
 

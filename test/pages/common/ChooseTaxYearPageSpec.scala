@@ -26,11 +26,11 @@ class ChooseTaxYearSpec extends PageBehaviours {
   "ChooseTaxYearPage" - {
 
     "event23" - {
-      beRetrievable[ChooseTaxYear](ChooseTaxYearPage(Event23))
+      beRetrievable[ChooseTaxYear](ChooseTaxYearPage(Event23, 0))
 
-      beSettable[ChooseTaxYear](common.ChooseTaxYearPage(Event23))
+      beSettable[ChooseTaxYear](common.ChooseTaxYearPage(Event23, 0))
 
-      beRemovable[ChooseTaxYear](common.ChooseTaxYearPage(Event23))
+      beRemovable[ChooseTaxYear](common.ChooseTaxYearPage(Event23, 0))
     }
 
     "event22" - {

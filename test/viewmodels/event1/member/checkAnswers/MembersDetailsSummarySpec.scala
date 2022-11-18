@@ -43,7 +43,7 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
 
     "must display correct information" in {
 
-      val answers = UserAnswers().setOrException(MembersDetailsPage(Event1, Some(0)), memberDetails)
+      val answers = UserAnswers().setOrException(MembersDetailsPage(event1, 0), memberDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
       val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(memberDetails.fullName)).toString))
@@ -53,7 +53,7 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
           key = "membersDetails.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", MembersDetailsPage(Event1, Some(0)).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", MembersDetailsPage(event1, 0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("membersDetails.change.hidden"))
           )
         )
@@ -65,7 +65,7 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
 
     "must display correct information" in {
 
-      val answers = UserAnswers().setOrException(MembersDetailsPage(Event1, Some(0)), memberDetails)
+      val answers = UserAnswers().setOrException(MembersDetailsPage(event1, 0), memberDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
       val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(memberDetails.nino)).toString))
@@ -75,7 +75,7 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
           key = "membersDetails.checkYourAnswersLabel.nino",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", MembersDetailsPage(Event1, Some(0)).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", MembersDetailsPage(event1, 0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("membersDetails.change.nino.hidden"))
           )
         )

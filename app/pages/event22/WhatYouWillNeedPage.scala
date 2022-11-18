@@ -26,7 +26,7 @@ import play.api.mvc.Call
 case class WhatYouWillNeedPage(index: Index) extends Page {
 
   override def route(waypoints: Waypoints): Call =
-    routes.WhatYouWillNeedController.onPageLoadWithIndex(waypoints, index)
+    routes.WhatYouWillNeedController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     MembersDetailsPage(EventType.Event22, index)

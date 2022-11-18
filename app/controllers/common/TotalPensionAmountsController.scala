@@ -42,7 +42,7 @@ class TotalPensionAmountsController @Inject()(val controllerComponents: Messages
 
   private val form = formProvider()
 
-  def onPageLoadWithIndex(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
     (identify andThen getData(eventType)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(TotalPensionAmountsPage(eventType, index))).fold(form)(form.fill)
     val selectedTaxYear = request.userAnswers.flatMap(_.get(common.ChooseTaxYearPage(eventType, index))) match {
@@ -52,7 +52,7 @@ class TotalPensionAmountsController @Inject()(val controllerComponents: Messages
     Ok(view(preparedForm, waypoints, eventType, selectedTaxYear, index))
   }
 
-  def onSubmitWithIndex(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
     (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(

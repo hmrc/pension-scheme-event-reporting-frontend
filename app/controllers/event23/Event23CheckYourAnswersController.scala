@@ -44,7 +44,7 @@ class Event23CheckYourAnswersController @Inject()(
                                                    view: CheckYourAnswersView
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoadWithIndex(index: Index): Action[AnyContent] =
+  def onPageLoad(index: Index): Action[AnyContent] =
     (identify andThen getData(Event23) andThen requireData) { implicit request =>
       val thisPage = Event23CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
@@ -60,7 +60,7 @@ class Event23CheckYourAnswersController @Inject()(
       val index = Index(0) // TODO: Not sure if right implementation.
       connector.compileEvent("123", Event23).map {
         _ =>
-          Redirect(controllers.event23.routes.Event23CheckYourAnswersController.onPageLoadWithIndex(index).url) // TODO: Not sure if right implementation.
+          Redirect(controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url) // TODO: Not sure if right implementation.
       }
     }
 

@@ -106,7 +106,7 @@ object SampleData {
   val userAnswersWithOneMemberAndEmployer: UserAnswers = UserAnswers()
     .setOrException(WhoReceivedUnauthPaymentPage(0), Member)
     .setOrException(PaymentValueAndDatePage(0), PaymentDetails(BigDecimal(857.00), LocalDate.of(2022, 11, 9)))
-    .setOrException(MembersDetailsPage(Event1, Some(0)), memberDetails)
+    .setOrException(MembersDetailsPage(event1, 0), memberDetails)
     .setOrException(WhoReceivedUnauthPaymentPage(1), Employer)
     .setOrException(PaymentValueAndDatePage(1), PaymentDetails(BigDecimal(7687.00), LocalDate.of(2022, 11, 9)))
     .setOrException(CompanyDetailsPage(1), companyDetails)
@@ -114,7 +114,7 @@ object SampleData {
   val sampleMemberJourneyData: UserAnswers = UserAnswers()
     .setOrException(HowAddUnauthPaymentPage(0), Manual)
     .setOrException(WhoReceivedUnauthPaymentPage(0), Member)
-    .setOrException(MembersDetailsPage(Event1, Some(0)), memberDetails)
+    .setOrException(MembersDetailsPage(event1, 0), memberDetails)
     .setOrException(DoYouHoldSignedMandatePage(0), false)
     .setOrException(ValueOfUnauthorisedPaymentPage(0), false)
     .setOrException(MemberPaymentNaturePage(0), BenefitInKind)
@@ -132,6 +132,6 @@ object SampleData {
 
   val sampleMemberJourneyDataEvent23: UserAnswers = UserAnswers()
     .setOrException(MembersDetailsPage(Event23, None), memberDetails)
-    .setOrException(ChooseTaxYearPage(Event23), ChooseTaxYear("2015"))
+    .setOrException(ChooseTaxYearPage(Event23, 0), ChooseTaxYear("2015"))
     .setOrException(TotalPensionAmountsPage(Event23), BigDecimal(1234.56))
 }

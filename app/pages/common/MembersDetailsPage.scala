@@ -29,7 +29,7 @@ case class MembersDetailsPage(eventType: EventType, index: Int) extends Question
 
   override def path: JsPath = MembersOrEmployersPage(eventType)(index) \ MembersDetailsPage.toString
 
-  override def route(waypoints: Waypoints): Call = controllers.common.routes.MembersDetailsController.onPageLoadWithIndex(waypoints, eventType, index)
+  override def route(waypoints: Waypoints): Call = controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, eventType, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     (eventType, index) match {

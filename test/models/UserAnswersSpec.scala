@@ -61,7 +61,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
       val userAnswersWithOneMemberAndEmployer: UserAnswers = UserAnswers()
         .setOrException(WhoReceivedUnauthPaymentPage(0), Member)
         .setOrException(PaymentValueAndDatePage(0), PaymentDetails(BigDecimal(857.00), LocalDate.of(2022, 11, 9)))
-        .setOrException(MembersDetailsPage(Event1, Some(0)), memberDetails)
+        .setOrException(MembersDetailsPage(event1, 0), memberDetails)
         .setOrException(WhoReceivedUnauthPaymentPage(1), Employer)
       userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage)(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
         Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00)),

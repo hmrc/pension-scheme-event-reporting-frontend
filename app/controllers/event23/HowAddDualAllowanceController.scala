@@ -42,12 +42,12 @@ class HowAddDualAllowanceController @Inject()(val controllerComponents: Messages
   private val form = formProvider()
   private val eventType = EventType.Event23
 
-  def onPageLoadWithIndex(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(HowAddDualAllowancePage(index))).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, index))
   }
 
-  def onSubmitWithIndex(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

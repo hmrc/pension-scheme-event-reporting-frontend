@@ -37,6 +37,6 @@ case class HowAddDualAllowancePage(index: Index) extends QuestionPage[HowAddDual
     }
 
   override def route(waypoints: Waypoints): Call = {
-    routes.HowAddDualAllowanceController.onPageLoadWithIndex(waypoints, index)
+    routes.HowAddDualAllowanceController.onPageLoad(waypoints, index)
   }
 }

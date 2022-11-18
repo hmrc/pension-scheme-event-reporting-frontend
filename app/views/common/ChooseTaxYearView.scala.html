@@ -29,7 +29,7 @@
 
 @layout(pageTitle = title(form, messages(s"chooseTaxYear.event${eventType.toString}.title"))) {
 
-    @formHelper(action = routes.ChooseTaxYearController.onSubmitWithIndex(waypoints, eventType, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.ChooseTaxYearController.onSubmit(waypoints, eventType, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))

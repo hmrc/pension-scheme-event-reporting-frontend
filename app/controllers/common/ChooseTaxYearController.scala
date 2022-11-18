@@ -38,14 +38,14 @@ class ChooseTaxYearController @Inject()(val controllerComponents: MessagesContro
                                         view: ChooseTaxYearView
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoadWithIndex(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
     (identify andThen getData(eventType)) { implicit request =>
     val form = formProvider(eventType)
     val preparedForm = request.userAnswers.flatMap(_.get(common.ChooseTaxYearPage(eventType, index))).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, eventType, index))
   }
 
-  def onSubmitWithIndex(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
     (identify andThen getData(eventType)).async {
     implicit request =>
       val form = formProvider(eventType)

@@ -29,7 +29,7 @@ case class TotalPensionAmountsPage(eventType: EventType, index: Index) extends Q
   override def path: JsPath = MembersOrEmployersPage(eventType)(index) \ TotalPensionAmountsPage.toString
 
   override def route(waypoints: Waypoints): Call =
-    controllers.common.routes.TotalPensionAmountsController.onPageLoadWithIndex(waypoints, eventType, index)
+    controllers.common.routes.TotalPensionAmountsController.onPageLoad(waypoints, eventType, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     eventType match {

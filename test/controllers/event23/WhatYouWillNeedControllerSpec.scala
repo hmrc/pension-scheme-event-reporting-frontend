@@ -36,14 +36,15 @@ class WhatYouWillNeedControllerSpec extends SpecBase {
 
       running(application) {
 
-        val request = FakeRequest(GET, routes.WhatYouWillNeedController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.WhatYouWillNeedController.onPageLoad(waypoints, 0).url)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[WhatYouWillNeedView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, event23).url)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(controllers.common.
+          routes.MembersDetailsController.onPageLoad(waypoints, event23, 0).url)(request, messages(application)).toString
       }
     }
   }

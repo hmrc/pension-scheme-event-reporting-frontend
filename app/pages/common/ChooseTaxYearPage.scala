@@ -30,7 +30,7 @@ case class ChooseTaxYearPage(eventType: EventType, index: Index) extends Questio
   override def path: JsPath = MembersOrEmployersPage(eventType)(index) \ ChooseTaxYearPage.toString
 
   override def route(waypoints: Waypoints): Call =
-    routes.ChooseTaxYearController.onPageLoadWithIndex(waypoints, eventType, index)
+    routes.ChooseTaxYearController.onPageLoad(waypoints, eventType, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     eventType match {
