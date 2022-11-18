@@ -454,10 +454,10 @@ paymentValueAndDate.heading = Payment value and date
 
 paymentValueAndDate.value.heading = Total value or amount of the unauthorised payment
 paymentValueAndDate.value.error.nothingEntered = Enter the payment value
-paymentValueAndDate.value.error.notANumber = The payment value must be an amount of money, like 87219363YN.45 or 156.00
-paymentValueAndDate.value.error.noDecimals = The payment value must include pence, like 87219363YN.45 or 156.00
+paymentValueAndDate.value.error.notANumber = The payment value must be an amount of money, like 123.45 or 156.00
+paymentValueAndDate.value.error.noDecimals = The payment value must include pence, like 123.45 or 156.00
 paymentValueAndDate.value.error.amountTooHigh = The payment value must be £999999999.99 or less
-paymentValueAndDate.value.error.negative = The payment value must not be a negative amount of money, like -87219363YN.45 or -156.00
+paymentValueAndDate.value.error.negative = The payment value must not be a negative amount of money, like -123.45 or -156.00
 paymentValueAndDate.value.change.hidden = Enter the payment value
 paymentValueAndDate.value.checkYourAnswersLabel = Payment value
 
