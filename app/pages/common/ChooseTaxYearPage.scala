@@ -20,14 +20,14 @@ import controllers.common.routes
 import models.{Index, UserAnswers}
 import models.common.ChooseTaxYear
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23}
+import models.enumeration.EventType.{Event1, Event22, Event23}
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class ChooseTaxYearPage(eventType: EventType, index: Index) extends QuestionPage[ChooseTaxYear] {
 
-  override def path: JsPath = MembersOrEmployersPage(eventType)(index) \ ChooseTaxYearPage.toString
+  override def path: JsPath = MembersPage(eventType)(index) \ ChooseTaxYearPage.toString
 
   override def route(waypoints: Waypoints): Call =
     routes.ChooseTaxYearController.onPageLoad(waypoints, eventType, index)

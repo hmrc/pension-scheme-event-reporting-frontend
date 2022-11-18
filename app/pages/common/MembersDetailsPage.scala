@@ -24,7 +24,6 @@ import pages.event1.DoYouHoldSignedMandatePage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.Gettable
 
 case class MembersDetailsPage(eventType: EventType, index: Int) extends QuestionPage[MembersDetails] {
 
