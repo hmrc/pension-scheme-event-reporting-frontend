@@ -53,13 +53,9 @@ object MembersSummary {
         }
       }
     )
-  /* TODO check if this reads is working properly */
+
   def readsMember(implicit messages: Messages): Reads[MembersSummary] = {
     JsPath.read(readsMemberSummary)
-//    (JsPath \ toString).readNullable[String].flatMap {
-//      case Some(_) => readsMemberSummary
-//      case None => Reads.pure[MembersSummary](MembersSummary(messages("site.notEntered"), BigDecimal(0.00), messages("site.notEntered")))
-//      case e => fail
-//    }
   }
+
 }
