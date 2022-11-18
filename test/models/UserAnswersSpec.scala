@@ -37,13 +37,13 @@ class UserAnswersSpec extends SpecBase with Matchers {
 
   "getAll" - {
     "must return the list of members or employers" in {
-      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer(Event1)) mustBe
+      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
         Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00)),
           MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00)))
     }
 
     "must return empty list if nothing present" in {
-      UserAnswers().getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer(Event1)) mustBe Nil
+      UserAnswers().getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe Nil
     }
 
     "must return the list of members or employers where member value and member details missing" in {
@@ -52,7 +52,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
         .setOrException(WhoReceivedUnauthPaymentPage(1), Employer)
         .setOrException(PaymentValueAndDatePage(1), PaymentDetails(BigDecimal(7687.00), LocalDate.of(2022, 11, 9)))
         .setOrException(CompanyDetailsPage(1), companyDetails)
-      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer(Event1)) mustBe
+      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
         Seq(MembersOrEmployersSummary("Not entered", BigDecimal(0.00)),
           MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00)))
     }
@@ -63,7 +63,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
         .setOrException(PaymentValueAndDatePage(0), PaymentDetails(BigDecimal(857.00), LocalDate.of(2022, 11, 9)))
         .setOrException(MembersDetailsPage(Event1, 0), memberDetails)
         .setOrException(WhoReceivedUnauthPaymentPage(1), Employer)
-      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer(Event1)) mustBe
+      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
         Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00)),
           MembersOrEmployersSummary("Not entered", BigDecimal(0.00)))
     }
@@ -71,7 +71,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
       val userAnswersWithOnlyManualOrUpload: UserAnswers = UserAnswers()
         .setOrException(HowAddUnauthPaymentPage(0), Manual)
 
-      userAnswersWithOnlyManualOrUpload.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer(Event1)) mustBe
+      userAnswersWithOnlyManualOrUpload.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
         Seq(MembersOrEmployersSummary("Not entered", BigDecimal(0.00)))
     }
   }
