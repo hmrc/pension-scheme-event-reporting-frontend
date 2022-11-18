@@ -19,6 +19,7 @@ package controllers
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.EventSelectionFormProvider
+import models.UserAnswers
 import models.enumeration.EventType
 import pages.{EventSelectionPage, Waypoints}
 import play.api.i18n.I18nSupport
@@ -52,7 +53,9 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
           EventType.fromEventSelection(value) match {
             case Some(eventType) =>
               userAnswersCacheConnector.get(request.pstr, eventType).map {
-                case None => Ok(view(form, waypoints))
+                case None =>
+                  val answers = UserAnswers().setOrException(EventSelectionPage, value)
+                  Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
                 case Some(ua) =>
                   val answers = ua.setOrException(EventSelectionPage, value)
                   Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
