@@ -20,6 +20,7 @@ import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import forms.EventSummaryFormProvider
 import models.UserAnswers
+import models.enumeration.EventType
 import pages.{EventSummaryPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -59,7 +60,10 @@ class EventSummaryController @Inject()(
               ),
               ActionItem(
                 content = Text(Message("site.remove")),
-                href = "#"
+                href = event match {
+                  case EventType.Event18 => controllers.event18.routes.RemoveEvent18Controller.onPageLoad(waypoints).url
+                  case _ => "#"
+                }
               )
             )
           ))
