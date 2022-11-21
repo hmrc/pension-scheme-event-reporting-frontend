@@ -16,11 +16,10 @@
 
 package journey
 
-import data.SampleData.{companyDetails, seqAddresses, seqTolerantAddresses}
 import generators.ModelGenerators
 import models.EventSelection._
 import models.common.{ChooseTaxYear, MembersDetails}
-import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
+import models.enumeration.AddressJourneyType.{Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.enumeration.EventType
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.PaymentDetails
@@ -34,14 +33,12 @@ import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.EventSelectionPage
-import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.event1._
-import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, LoanDetailsPage}
+import pages.event1.employer.{EmployerTangibleMoveablePropertyPage, LoanDetailsPage}
 import pages.event1.member._
-import pages.event18.Event18ConfirmationPage
+import pages.event18.{Event18CheckYourAnswersPage, Event18ConfirmationPage}
 import pages.event22.HowAddAnnualAllowancePage
-import pages.event18.Event18CheckYourAnswersPage
 import pages.event23.HowAddDualAllowancePage
 import pages.eventWindUp.{EventWindUpCheckYourAnswersPage, SchemeWindUpDatePage}
 
@@ -183,14 +180,6 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(HowAddUnauthPaymentPage(0), Manual),
         submitAnswer(WhoReceivedUnauthPaymentPage(0), Employer),
         pageMustBe(employer.WhatYouWillNeedPage(0))
-      )
-
-    startingFrom(CompanyDetailsPage(0))
-      .run(
-        submitAnswer(CompanyDetailsPage(0), companyDetails),
-        submitAnswer(EnterPostcodePage(Event1EmployerAddressJourney, 0), seqTolerantAddresses),
-        submitAnswer(ChooseAddressPage(Event1EmployerAddressJourney, 0), seqAddresses.head),
-        pageMustBe(employer.PaymentNaturePage(0))
       )
   }
 
