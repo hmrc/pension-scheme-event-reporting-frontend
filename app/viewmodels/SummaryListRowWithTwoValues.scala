@@ -16,4 +16,4 @@
 
 package viewmodels
 
-case class SummaryListRowWithNino(key: String, firstValue: String, secondValue: String, actions: Option[String])
+case class SummaryListRowWithTwoValues(key: String, firstValue: String, secondValue: String, actions: Option[String])

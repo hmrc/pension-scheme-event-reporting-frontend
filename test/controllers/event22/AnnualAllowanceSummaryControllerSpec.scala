@@ -47,7 +47,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewmodels.SummaryListRowWithNino
+import viewmodels.SummaryListRowWithTwoValues
 import views.html.event22.AnnualAllowanceSummaryView
 
 import scala.concurrent.Future
@@ -89,7 +89,7 @@ class AnnualAllowanceSummaryControllerSpec extends SpecBase with BeforeAndAfterE
         val view = application.injector.instanceOf[AnnualAllowanceSummaryView]
 
         val expectedSeq =
-          Seq(SummaryListRowWithNino(
+          Seq(SummaryListRowWithTwoValues(
             key = SampleData.memberDetails.fullName,
             firstValue = SampleData.memberDetails.nino,
             secondValue = SampleData.totalPaymentAmount.toString,
