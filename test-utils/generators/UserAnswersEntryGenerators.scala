@@ -207,10 +207,10 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryHowAddDualAllowanceUserAnswersEntry: Arbitrary[(pages.event23.HowAddDualAllowancePage.type, JsValue)] =
+  implicit lazy val arbitraryHowAddDualAllowanceUserAnswersEntry: Arbitrary[(pages.event23.HowAddDualAllowancePage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.event23.HowAddDualAllowancePage.type]
+        page <- arbitrary[pages.event23.HowAddDualAllowancePage]
         value <- arbitrary[models.event23.HowAddDualAllowance].map(Json.toJson(_))
       } yield (page, value)
     }

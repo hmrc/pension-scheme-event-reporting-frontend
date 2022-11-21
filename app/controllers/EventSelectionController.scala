@@ -16,6 +16,7 @@
 
 package controllers
 
+import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.EventSelectionFormProvider
 import models.UserAnswers
@@ -27,32 +28,40 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.EventSelectionView
 
 import javax.inject.Inject
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class EventSelectionController @Inject()(val controllerComponents: MessagesControllerComponents,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalAction,
                                          formProvider: EventSelectionFormProvider,
-                                         view: EventSelectionView
-                                         ) extends FrontendBaseController with I18nSupport {
+                                         view: EventSelectionView,
+                                         userAnswersCacheConnector: UserAnswersCacheConnector
+                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(EventSelectionPage)).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints))
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify { implicit request =>
+    Ok(view(form, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = identify.async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
-          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(EventSelectionPage, value)
-          Future.successful(Redirect(EventSelectionPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route))
+          EventType.fromEventSelection(value) match {
+            case Some(eventType) =>
+              userAnswersCacheConnector.get(request.pstr, eventType).map {
+                case Some(ua) =>
+                  val answers = ua.setOrException(EventSelectionPage, value)
+                  Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
+                case None =>
+                  val answers = UserAnswers().setOrException(EventSelectionPage, value)
+                  Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
+              }
+            case _ => Future.successful(Ok(view(form, waypoints)))
+          }
         }
       )
   }

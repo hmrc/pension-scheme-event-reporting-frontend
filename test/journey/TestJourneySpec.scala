@@ -77,7 +77,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(HowAddUnauthPaymentPage(0), Manual),
         submitAnswer(WhoReceivedUnauthPaymentPage(0), Member),
         next,
-        submitAnswer(MembersDetailsPage(EventType.Event1, Some(0)), membersDetails.get),
+        submitAnswer(MembersDetailsPage(EventType.Event1, 0), membersDetails.get),
         submitAnswer(DoYouHoldSignedMandatePage(0), true),
         submitAnswer(ValueOfUnauthorisedPaymentPage(0), true),
         submitAnswer(SchemeUnAuthPaySurchargeMemberPage(0), true),
@@ -287,11 +287,11 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
     startingFrom(EventSelectionPage)
       .run(
         submitAnswer(EventSelectionPage, Event22),
-        submitAnswer(HowAddAnnualAllowancePage, models.event22.HowAddAnnualAllowance.Manual),
+        submitAnswer(HowAddAnnualAllowancePage(0), models.event22.HowAddAnnualAllowance.Manual),
         next,
-        submitAnswer(pages.common.MembersDetailsPage(EventType.Event22, None), membersDetails.get),
-        submitAnswer(ChooseTaxYearPage(EventType.Event22), taxYear.get),
-        pageMustBe(TotalPensionAmountsPage(EventType.Event22))
+        submitAnswer(pages.common.MembersDetailsPage(EventType.Event22, 0), membersDetails.get),
+        submitAnswer(ChooseTaxYearPage(EventType.Event22, 0), taxYear.get),
+        pageMustBe(TotalPensionAmountsPage(EventType.Event22, 0))
       )
   }
 
@@ -301,11 +301,11 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
     startingFrom(EventSelectionPage)
       .run(
         submitAnswer(EventSelectionPage, Event23),
-        submitAnswer(HowAddDualAllowancePage, models.event23.HowAddDualAllowance.Manual),
+        submitAnswer(HowAddDualAllowancePage(0), models.event23.HowAddDualAllowance.Manual),
         next,
-        submitAnswer(pages.common.MembersDetailsPage(EventType.Event23, None), membersDetails.get),
-        submitAnswer(ChooseTaxYearPage(EventType.Event23), taxYear.get),
-        pageMustBe(TotalPensionAmountsPage(EventType.Event23))
+        submitAnswer(pages.common.MembersDetailsPage(EventType.Event23, 0), membersDetails.get),
+        submitAnswer(ChooseTaxYearPage(EventType.Event23, 0), taxYear.get),
+        pageMustBe(TotalPensionAmountsPage(EventType.Event23, 0))
       )
   }
 

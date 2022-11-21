@@ -16,6 +16,7 @@
 
 package models.event1
 
+import models.enumeration.EventType.Event1
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import pages.event1.WhoReceivedUnauthPaymentPage
 import play.api.i18n.Messages
@@ -27,8 +28,6 @@ case class MembersOrEmployersSummary(name: String, unauthorisedPaymentValue: Big
 
 object MembersOrEmployersSummary {
   implicit lazy val formats: Format[MembersOrEmployersSummary] = Json.format[MembersOrEmployersSummary]
-
-  private def fail[A]: Reads[A] = Reads.failed[A]("Unknown value")
 
   val readsMemberOrEmployerValue: Reads[BigDecimal] =
     (JsPath \ "paymentValueAndDate" \ "paymentValue").readNullable[BigDecimal]
@@ -52,7 +51,7 @@ object MembersOrEmployersSummary {
 
   private def readsEmployerSummary(implicit messages: Messages): Reads[MembersOrEmployersSummary] =
     (
-      (JsPath \ "event1" \ "companyDetails" \ "companyName").readNullable[String] and
+      (JsPath \ s"event${Event1.toString}" \ "companyDetails" \ "companyName").readNullable[String] and
         readsMemberOrEmployerValue
       ) (
       (companyName, paymentValue) => {
@@ -64,12 +63,10 @@ object MembersOrEmployersSummary {
     )
 
   def readsMemberOrEmployer(implicit messages: Messages): Reads[MembersOrEmployersSummary] = {
-    (JsPath \ WhoReceivedUnauthPaymentPage.toString).readNullable[String].flatMap{
+    (JsPath \ WhoReceivedUnauthPaymentPage.toString).readNullable[String].flatMap {
       case Some(Member.toString) => readsMemberSummary
       case Some(Employer.toString) => readsEmployerSummary
       case None => Reads.pure[MembersOrEmployersSummary](MembersOrEmployersSummary(messages("site.notEntered"), BigDecimal(0.00)))
-      case e => fail
     }
   }
-
 }

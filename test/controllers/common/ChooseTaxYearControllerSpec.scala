@@ -47,13 +47,13 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRouteEvent23: String = routes.ChooseTaxYearController.onPageLoad(waypoints, Event23).url
+  private def getRouteEvent23: String = routes.ChooseTaxYearController.onPageLoad(waypoints, Event23, 0).url
 
-  private def postRouteEvent23: String = routes.ChooseTaxYearController.onSubmit(waypoints, Event23).url
+  private def postRouteEvent23: String = routes.ChooseTaxYearController.onSubmit(waypoints, Event23, 0).url
 
-  private def getRouteEvent22: String = routes.ChooseTaxYearController.onPageLoad(waypoints, Event22).url
+  private def getRouteEvent22: String = routes.ChooseTaxYearController.onPageLoad(waypoints, Event22, 0).url
 
-  private def postRouteEvent22: String = routes.ChooseTaxYearController.onSubmit(waypoints, Event22).url
+  private def postRouteEvent22: String = routes.ChooseTaxYearController.onSubmit(waypoints, Event22, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -80,13 +80,13 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val view = application.injector.instanceOf[ChooseTaxYearView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent23, waypoints, Event23)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent23, waypoints, Event23, 0)(request, messages(application)).toString
         }
       }
 
       "must populate the view correctly on a GET when the question has previously been answered" in {
 
-        val userAnswers = UserAnswers().set(common.ChooseTaxYearPage(Event23), ChooseTaxYear.values.head).success.value
+        val userAnswers = UserAnswers().set(common.ChooseTaxYearPage(Event23, 0), ChooseTaxYear.values.head).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -98,7 +98,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent23.fill(ChooseTaxYear.values.head), waypoints, Event23)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent23.fill(ChooseTaxYear.values.head), waypoints, Event23, 0)(request, messages(application)).toString
         }
       }
 
@@ -115,10 +115,10 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
             FakeRequest(POST, postRouteEvent23).withFormUrlEncodedBody(("value", ChooseTaxYear.values.head.toString))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(common.ChooseTaxYearPage(Event23), ChooseTaxYear.values.head).success.value
+          val updatedAnswers = emptyUserAnswers.set(common.ChooseTaxYearPage(Event23, 0), ChooseTaxYear.values.head).success.value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual common.ChooseTaxYearPage(Event23).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          redirectLocation(result).value mustEqual common.ChooseTaxYearPage(Event23, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
           verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
         }
       }
@@ -138,7 +138,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event23)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event23, 0)(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
         }
       }
@@ -156,13 +156,13 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val view = application.injector.instanceOf[ChooseTaxYearView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent22, waypoints, Event22)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent22, waypoints, Event22, 0)(request, messages(application)).toString
         }
       }
 
       "must populate the view correctly on a GET when the question has previously been answered" in {
 
-        val userAnswers = UserAnswers().set(common.ChooseTaxYearPage(Event22), ChooseTaxYear.values.head).success.value
+        val userAnswers = UserAnswers().set(common.ChooseTaxYearPage(Event22, 0), ChooseTaxYear.values.head).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -174,7 +174,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent22.fill(ChooseTaxYear.values.head), waypoints, Event22)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent22.fill(ChooseTaxYear.values.head), waypoints, Event22, 0)(request, messages(application)).toString
         }
       }
 
@@ -191,10 +191,10 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
             FakeRequest(POST, postRouteEvent22).withFormUrlEncodedBody(("value", ChooseTaxYear.values.head.toString))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(common.ChooseTaxYearPage(Event22), ChooseTaxYear.values.head).success.value
+          val updatedAnswers = emptyUserAnswers.set(common.ChooseTaxYearPage(Event22, 0), ChooseTaxYear.values.head).success.value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual common.ChooseTaxYearPage(Event22).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          redirectLocation(result).value mustEqual common.ChooseTaxYearPage(Event22, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
           verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
         }
       }
@@ -214,7 +214,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event22)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event22, 0)(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
         }
       }

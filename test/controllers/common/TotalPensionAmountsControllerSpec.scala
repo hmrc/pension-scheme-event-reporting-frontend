@@ -46,13 +46,13 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRouteEvent23: String = routes.TotalPensionAmountsController.onPageLoad(waypoints, event23).url
+  private def getRouteEvent23: String = routes.TotalPensionAmountsController.onPageLoad(waypoints, event23, 0).url
 
-  private def postRouteEvent23: String = routes.TotalPensionAmountsController.onSubmit(waypoints, event23).url
+  private def postRouteEvent23: String = routes.TotalPensionAmountsController.onSubmit(waypoints, event23, 0).url
 
-  private def getRouteEvent22: String = routes.TotalPensionAmountsController.onPageLoad(waypoints, event22).url
+  private def getRouteEvent22: String = routes.TotalPensionAmountsController.onPageLoad(waypoints, event22, 0).url
 
-  private def postRouteEvent22: String = routes.TotalPensionAmountsController.onSubmit(waypoints, event22).url
+  private def postRouteEvent22: String = routes.TotalPensionAmountsController.onSubmit(waypoints, event22, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -80,13 +80,13 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
           val view = application.injector.instanceOf[TotalPensionAmountsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, waypoints, event23, StringUtils.EMPTY)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form, waypoints, event23, StringUtils.EMPTY, 0)(request, messages(application)).toString
         }
       }
 
       "must populate the view correctly on a GET when the question has previously been answered" in {
 
-        val userAnswers = UserAnswers().set(TotalPensionAmountsPage(event23), validValue).success.value
+        val userAnswers = UserAnswers().set(TotalPensionAmountsPage(event23, 0), validValue).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -98,7 +98,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(validValue), waypoints, event23, StringUtils.EMPTY)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form.fill(validValue), waypoints, event23, StringUtils.EMPTY, 0)(request, messages(application)).toString
         }
       }
 
@@ -115,10 +115,10 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
             FakeRequest(POST, postRouteEvent23).withFormUrlEncodedBody(("value", "33.00"))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(TotalPensionAmountsPage(event23), validValue).success.value
+          val updatedAnswers = emptyUserAnswers.set(TotalPensionAmountsPage(event23, 0), validValue).success.value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual TotalPensionAmountsPage(event23).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          redirectLocation(result).value mustEqual TotalPensionAmountsPage(event23, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
           verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
         }
       }
@@ -138,7 +138,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, event23, StringUtils.EMPTY)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, event23, StringUtils.EMPTY, 0)(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
         }
       }
@@ -156,13 +156,13 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
           val view = application.injector.instanceOf[TotalPensionAmountsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, waypoints, event22, StringUtils.EMPTY)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form, waypoints, event22, StringUtils.EMPTY, 0)(request, messages(application)).toString
         }
       }
 
       "must populate the view correctly on a GET when the question has previously been answered" in {
 
-        val userAnswers = UserAnswers().set(TotalPensionAmountsPage(event22), validValue).success.value
+        val userAnswers = UserAnswers().set(TotalPensionAmountsPage(event22, 0), validValue).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -174,7 +174,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(validValue), waypoints, event22, StringUtils.EMPTY)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(form.fill(validValue), waypoints, event22, StringUtils.EMPTY, 0)(request, messages(application)).toString
         }
       }
 
@@ -191,10 +191,10 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
             FakeRequest(POST, postRouteEvent22).withFormUrlEncodedBody(("value", "33.00"))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(TotalPensionAmountsPage(event22), validValue).success.value
+          val updatedAnswers = emptyUserAnswers.set(TotalPensionAmountsPage(event22, 0), validValue).success.value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual TotalPensionAmountsPage(event22).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          redirectLocation(result).value mustEqual TotalPensionAmountsPage(event22, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
           verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
         }
       }
@@ -214,7 +214,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, event22, StringUtils.EMPTY)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, event22, StringUtils.EMPTY, 0)(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
         }
       }

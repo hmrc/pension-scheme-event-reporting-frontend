@@ -18,7 +18,7 @@ package pages
 
 import cats.data.NonEmptyList
 import cats.implicits.toTraverseOps
-import models.{Mode, NormalMode}
+import models.{Index, Mode, NormalMode}
 import play.api.mvc.QueryStringBindable
 
 sealed trait Waypoints {

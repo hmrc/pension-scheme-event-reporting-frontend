@@ -43,17 +43,17 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
 
     "must display correct information" in {
 
-      val answers = UserAnswers().setOrException(MembersDetailsPage(Event1, Some(0)), memberDetails)
+      val answers = UserAnswers().setOrException(MembersDetailsPage(Event1, 0), memberDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
       val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(memberDetails.fullName)).toString))
 
-      MembersDetailsSummary.rowFullName(answers, waypoints, Some(0), sourcePage, Event1) mustBe Some(
+      MembersDetailsSummary.rowFullName(answers, waypoints, 0, sourcePage, Event1) mustBe Some(
         SummaryListRowViewModel(
           key = "membersDetails.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", MembersDetailsPage(Event1, Some(0)).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", MembersDetailsPage(Event1, 0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("membersDetails.change.hidden"))
           )
         )
@@ -65,17 +65,17 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
 
     "must display correct information" in {
 
-      val answers = UserAnswers().setOrException(MembersDetailsPage(Event1, Some(0)), memberDetails)
+      val answers = UserAnswers().setOrException(MembersDetailsPage(Event1, 0), memberDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
       val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(memberDetails.nino)).toString))
 
-      MembersDetailsSummary.rowNino(answers, waypoints, Some(0), sourcePage, Event1) mustBe Some(
+      MembersDetailsSummary.rowNino(answers, waypoints, 0, sourcePage, Event1) mustBe Some(
         SummaryListRowViewModel(
           key = "membersDetails.checkYourAnswersLabel.nino",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", MembersDetailsPage(Event1, Some(0)).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", MembersDetailsPage(Event1, 0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("membersDetails.change.nino.hidden"))
           )
         )

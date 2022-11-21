@@ -26,11 +26,11 @@
         govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, selectTaxYear: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, selectTaxYear: String, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"totalPensionAmounts.event${eventType.toString}.title") + " " + selectTaxYear + "?")) {
 
-    @formHelper(action = routes.TotalPensionAmountsController.onSubmit(waypoints, eventType), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.TotalPensionAmountsController.onSubmit(waypoints, eventType, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
