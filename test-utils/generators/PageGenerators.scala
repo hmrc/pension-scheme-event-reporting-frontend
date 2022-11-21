@@ -29,6 +29,9 @@ import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryRemoveEvent18Page: Arbitrary[event18.RemoveEvent18Page.type] =
+    Arbitrary(event18.RemoveEvent18Page)
+
   implicit lazy val arbitraryUnauthPaymentSummaryPage: Arbitrary[event1.UnauthPaymentSummaryPage.type] =
     Arbitrary(event1.UnauthPaymentSummaryPage)
 
