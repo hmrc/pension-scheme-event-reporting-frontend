@@ -15,6 +15,7 @@
  *@
 
 @import controllers.event18.routes
+@import viewmodels.LegendSize
 
 @this(
     layout: templates.Layout,
@@ -37,7 +38,7 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("removeEvent18.heading")).asPageHeading()
+                legend = LegendViewModel(messages("removeEvent18.heading")).asPageHeading(LegendSize.Large)
             )
         )
 
