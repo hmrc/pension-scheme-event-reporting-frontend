@@ -254,14 +254,12 @@ membersDetails.change.nino.hidden = Member’s National Insurance number
 
 doYouHoldSignedMandate.title = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.heading = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
-doYouHoldSignedMandate.hint = If you hold a signed mandate from the member, this means you will deduct the member’s tax from the unauthorised payment and pay it to HMRC. It may also determine how much scheme sanction charge you will have to pay.
 doYouHoldSignedMandate.checkYourAnswersLabel = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.error.required = Select yes if you hold a signed mandate from the member to deduct tax from their unauthorised payment
 doYouHoldSignedMandate.change.hidden = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 
 valueOfUnauthorisedPayment.title = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
 valueOfUnauthorisedPayment.heading = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
-valueOfUnauthorisedPayment.hint = If the value of the unauthorised payment is more than 25% of the individual’s pension fund, the unauthorised payment may be subject to an unauthorised payment surcharge.
 valueOfUnauthorisedPayment.checkYourAnswersLabel = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
 valueOfUnauthorisedPayment.error.required = Select yes if the value of the unauthorised payment is more than 25% of the pension fund for the individual
 valueOfUnauthorisedPayment.change.hidden = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
