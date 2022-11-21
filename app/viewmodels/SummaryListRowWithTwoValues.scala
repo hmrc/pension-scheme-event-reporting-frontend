@@ -16,4 +16,6 @@
 
 package viewmodels
 
-case class SummaryListRowWithTwoValues(key: String, firstValue: String, secondValue: String, actions: Option[String])
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
+
+case class SummaryListRowWithTwoValues(key: String, firstValue: String, secondValue: String, actions: Option[Actions])

@@ -27,8 +27,9 @@ import pages.common.MembersPage
 import pages.event22.AnnualAllowanceSummaryPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.SummaryListRowWithTwoValues
+import viewmodels.{Message, SummaryListRowWithTwoValues}
 import views.html.event22.AnnualAllowanceSummaryView
 
 import javax.inject.Inject
@@ -58,9 +59,19 @@ class AnnualAllowanceSummaryController @Inject()(
         key = memberSummary.name,
         firstValue = memberSummary.nINumber,
         secondValue = memberSummary.PaymentValue.toString,
-        actions = Some("test")
+        actions = Some(Actions(
+          items = Seq(
+            ActionItem(
+              content = Text(Message("site.view")),
+              href = "/dummy" /* TODO Add checkYourAnswers route controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad().url */
+            ),
+            ActionItem(
+              content = Text(Message("site.remove")),
+              href = "#"
+            )
+          )
+        ))
       )
-
       }
     Ok(view(form, waypoints, mappedMember, sumValue(request.userAnswers)))
   }
