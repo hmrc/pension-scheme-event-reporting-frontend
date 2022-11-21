@@ -58,7 +58,7 @@ class Event22CheckYourAnswersController @Inject()(
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event22) andThen requireData).async { implicit request =>
       val index = Index(0) // TODO: Not sure if right implementation.
-      connector.compileEvent("123", Event22).map {
+      connector.compileEvent("87219363YN", Event22).map {
         _ =>
           Redirect(controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url)
       }

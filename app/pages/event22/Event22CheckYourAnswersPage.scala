@@ -17,12 +17,13 @@
 package pages.event22
 
 import models.Index
+import models.enumeration.EventType.Event22
 import pages.{CheckAnswersPage, Waypoint, Waypoints}
 import play.api.mvc.Call
 
 case class Event22CheckYourAnswersPage(index: Index) extends CheckAnswersPage {
   override val urlFragment: String =
-    "event-22-check-your-answers"
+    s"event-${Event22.toString}-check-answers-${index.display}"
 
   override def route(waypoints: Waypoints): Call = {
     controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index)

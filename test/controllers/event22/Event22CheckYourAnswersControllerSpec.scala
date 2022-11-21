@@ -54,7 +54,7 @@ class Event22CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-22-click")(request, messages(application)).toString
       }
     }
-
+    
     "must return OK and the correct summary list row items for a GET (member)" in {
       val mockView = mock[CheckYourAnswersView]
       val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -130,23 +130,24 @@ object Event22CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlContent(
       "membersDetails.checkYourAnswersLabel",
       "Joe Bloggs",
-      "/manage-pension-scheme-event-report/new-report/1/event-22-member-details?waypoints=event-22-check-your-answers"
+      "/manage-pension-scheme-event-report/new-report/1/event-22-member-details?waypoints=event-22-check-answers-1"
+
     ),
     fakeSummaryListRowWithHtmlContent(
       "membersDetails.checkYourAnswersLabel.nino",
       "AA234567V",
-      "/manage-pension-scheme-event-report/new-report/1/event-22-member-details?waypoints=event-22-check-your-answers"
+      "/manage-pension-scheme-event-report/new-report/1/event-22-member-details?waypoints=event-22-check-answers-1"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "chooseTaxYear.event22.checkYourAnswersLabel",
       "2018 to 2019",
-      "/manage-pension-scheme-event-report/new-report/1/event-22-tax-year?waypoints=event-22-check-your-answers",
+      "/manage-pension-scheme-event-report/new-report/1/event-22-tax-year?waypoints=event-22-check-answers-1",
       "chooseTaxYear.event22.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "totalPensionAmounts.event22.checkYourAnswersLabel",
       "£999.11",
-      "/manage-pension-scheme-event-report/new-report/1/event-22-total-input-amount?waypoints=event-22-check-your-answers",
+      "/manage-pension-scheme-event-report/new-report/1/event-22-total-input-amount?waypoints=event-22-check-answers-1",
       "totalPensionAmounts.event22.change.hidden"
     )
   )
