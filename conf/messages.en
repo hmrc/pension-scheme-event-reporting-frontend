@@ -254,14 +254,12 @@ membersDetails.change.nino.hidden = Member’s National Insurance number
 
 doYouHoldSignedMandate.title = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.heading = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
-doYouHoldSignedMandate.hint = If you hold a signed mandate from the member, this means you will deduct the member’s tax from the unauthorised payment and pay it to HMRC. It may also determine how much scheme sanction charge you will have to pay.
 doYouHoldSignedMandate.checkYourAnswersLabel = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.error.required = Select yes if you hold a signed mandate from the member to deduct tax from their unauthorised payment
 doYouHoldSignedMandate.change.hidden = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 
 valueOfUnauthorisedPayment.title = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
 valueOfUnauthorisedPayment.heading = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
-valueOfUnauthorisedPayment.hint = If the value of the unauthorised payment is more than 25% of the individual’s pension fund, the unauthorised payment may be subject to an unauthorised payment surcharge.
 valueOfUnauthorisedPayment.checkYourAnswersLabel = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
 valueOfUnauthorisedPayment.error.required = Select yes if the value of the unauthorised payment is more than 25% of the pension fund for the individual
 valueOfUnauthorisedPayment.change.hidden = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
@@ -296,10 +294,9 @@ companyDetails.CYA.companyAddress = Company address
 
 enterPostcode.title = What is {0}’s postcode?
 enterPostcode.heading = What is {0}’s postcode?
-enterPostcode.checkYourAnswersLabel = What is x’s postcode?
 enterPostcode.error.required = Enter a postcode
 enterPostcode.error.length = Enter a real postcode
-enterPostcode.change.hidden = What is x’s postcode?
+enterPostcode.change.hidden = the address of the residential property
 enterPostcode.hint = You can
 enterPostcode.link = enter the address manually
 enterPostcode.error.required = Enter a postcode
@@ -780,8 +777,7 @@ testDate.error.outsideDateRanges = Enter a real date
 unauthPaymentAndSanctionCharges.title = Paying unauthorised payment and scheme sanction charges
 unauthPaymentAndSanctionCharges.heading = Paying unauthorised payment and scheme sanction charges
 unauthPaymentAndSanctionCharges.p1 = The unauthorised payments you report may be subject to charges.
-unauthPaymentAndSanctionCharges.p2 = When you submit the event report, HMRC will review the details and raise any applicable charges. This usually happens within X weeks/days of submission but might take longer than that.
-unauthPaymentAndSanctionCharges.p3 = Once any applicable charges have been raised, they will be available to view in the scheme’s financial overview on the Managing Pension Schemes service. This will include:
+unauthPaymentAndSanctionCharges.p2 = When you submit the event report, HMRC will review the details and raise any applicable charges. This information will be available to view in the scheme’s financial overview on the Managing Pension Schemes service and will include:
 unauthPaymentAndSanctionCharges.bullet1 = the total scheme sanction charge for the unauthorised payments
 unauthPaymentAndSanctionCharges.bullet2 = a charge reference for the total scheme sanction charge
 unauthPaymentAndSanctionCharges.bullet3 = if applicable, the total member unauthorised payment charge (including any surcharge) for all unauthorised payments
@@ -804,16 +800,29 @@ entity_list_table.total = Total
 
 
 chooseTaxYear.yearRangeRadio = {0} to {1}
+
 chooseTaxYear.event23.title = In which tax year was the money purchase pension savings statement issued?
 chooseTaxYear.event23.heading = In which tax year was the money purchase pension savings statement issued?
-chooseTaxYear.event23.checkYourAnswersLabel = Tax year the money purchase pension savings statement was issued
+chooseTaxYear.event23.checkYourAnswersLabel = In which tax year was the money purchase pension savings statement issued
 chooseTaxYear.event23.error.required = Select the tax year the money purchase pension savings statement was issued
-chooseTaxYear.event23.change.hidden = Tax year the money purchase pension savings statement was issued
+chooseTaxYear.event23.change.hidden = Select the tax year the money purchase pension savings statement was issued
 
-totalPensionAmounts.title = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year {0}?
-totalPensionAmounts.heading = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year {0}?
-totalPensionAmounts.checkYourAnswersLabel = Total pension input amounts
-totalPensionAmounts.change.hidden = Total pension input amounts
+chooseTaxYear.event22.title = In which tax year was the annual allowance exceeded?
+chooseTaxYear.event22.heading = In which tax year was the annual allowance exceeded?
+chooseTaxYear.event22.checkYourAnswersLabel = In which tax year was the annual allowance exceeded
+chooseTaxYear.event22.error.required = Select the tax year in which the annual allowance was exceeded
+chooseTaxYear.event22.change.hidden = Select the tax year in which the annual allowance was exceeded
+
+totalPensionAmounts.event22.title = What is the total of the member’s pension input amounts for all arrangements under the scheme for the tax year
+totalPensionAmounts.event22.heading = What is the total of the member’s pension input amounts for all arrangements under the scheme for the tax year
+totalPensionAmounts.event22.checkYourAnswersLabel = What is the total of the member’s pension input amounts for all arrangements under the scheme for the tax year
+totalPensionAmounts.event22.change.hidden = What is the total of the member’s pension input amounts for all arrangements under the scheme for the tax year
+
+totalPensionAmounts.event23.title = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year
+totalPensionAmounts.event23.heading = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year
+totalPensionAmounts.event23.checkYourAnswersLabel = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year
+totalPensionAmounts.event23.change.hidden = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year
+
 totalPensionAmounts.value.error.nothingEntered = Enter the total pension input amounts
 totalPensionAmounts.value.error.notANumber = The total pension input amounts must be an amount of money, like 123.45 or 156.00
 totalPensionAmounts.value.error.noDecimals = The total pension input amounts must include pence, like 123.45 or 156.00

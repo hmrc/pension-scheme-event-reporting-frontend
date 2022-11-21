@@ -23,10 +23,10 @@ class HowAddAnnualAllowancePageSpec extends PageBehaviours {
 
   "HowAddAnnualAllowancePage" - {
 
-    beRetrievable[HowAddAnnualAllowance](HowAddAnnualAllowancePage)
+    beRetrievable[HowAddAnnualAllowance](HowAddAnnualAllowancePage(0))
 
-    beSettable[HowAddAnnualAllowance](HowAddAnnualAllowancePage)
+    beSettable[HowAddAnnualAllowance](HowAddAnnualAllowancePage(0))
 
-    beRemovable[HowAddAnnualAllowance](HowAddAnnualAllowancePage)
+    beRemovable[HowAddAnnualAllowance](HowAddAnnualAllowancePage(0))
   }
 }

@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import models.enumeration.EventType
 import pages.common.TotalPensionAmountsPage
 import pages.{CheckAnswersPage, Waypoints}
@@ -29,16 +29,16 @@ import viewmodels.implicits._
 
 object TotalPensionAmountsSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Index)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TotalPensionAmountsPage(eventType)).map {
+    answers.get(TotalPensionAmountsPage(eventType, index)).map {
       answer =>
 
         SummaryListRowViewModel(
-          key = "totalPensionAmounts.checkYourAnswersLabel",
+          key = s"totalPensionAmounts.event${eventType.toString}.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer)}")),
           actions = Seq(
-            ActionItemViewModel("site.change", TotalPensionAmountsPage(eventType).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", TotalPensionAmountsPage(eventType, index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("totalPensionAmounts.change.hidden"))
           )
         )

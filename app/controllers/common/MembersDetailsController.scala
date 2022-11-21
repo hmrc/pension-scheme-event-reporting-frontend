@@ -43,33 +43,19 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
 
   private val form = formProvider()
 
-  def onPageLoadWithIndex(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, Some(indexToInt(index))))).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, eventType, controllers.common.routes.MembersDetailsController.onSubmitWithIndex(waypoints, eventType, index)))
+  def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
+    (identify andThen getData(eventType)) { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, indexToInt(index)))).fold(form)(form.fill)
+    Ok(view(preparedForm, waypoints, eventType, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index)))
   }
 
-  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, None))).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, eventType, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType)))
-  }
-
-  def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       doOnSubmit(
         waypoints,
         eventType,
-        MembersDetailsPage(eventType, None),
-        controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType)
-      )
-  }
-
-  def onSubmitWithIndex(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
-    implicit request =>
-      doOnSubmit(
-        waypoints,
-        eventType,
-        MembersDetailsPage(eventType, Some(index)),
-        controllers.common.routes.MembersDetailsController.onSubmitWithIndex(waypoints, eventType, index)
+        MembersDetailsPage(eventType, index),
+        controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index)
       )
   }
 
@@ -89,6 +75,4 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
         }
       }
     )
-
-
 }

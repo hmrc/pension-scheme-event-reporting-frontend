@@ -19,7 +19,7 @@ package controllers.event22
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event22.HowAddAnnualAllowanceFormProvider
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import models.enumeration.EventType
 import pages.Waypoints
 import pages.event22.HowAddAnnualAllowancePage
@@ -42,21 +42,21 @@ class HowAddAnnualAllowanceController @Inject()(val controllerComponents: Messag
   private val form = formProvider()
   private val eventType22 = EventType.Event22
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType22)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(HowAddAnnualAllowancePage)).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints))
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType22)) { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(_.get(HowAddAnnualAllowancePage(index))).fold(form)(form.fill)
+    Ok(view(preparedForm, waypoints, index))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType22)).async {
+  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType22)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(HowAddAnnualAllowancePage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(HowAddAnnualAllowancePage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType22, updatedAnswers).map { _ =>
-            Redirect(HowAddAnnualAllowancePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(HowAddAnnualAllowancePage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

@@ -18,34 +18,29 @@ package generators
 
 import models.Index
 import models.enumeration.AddressJourneyType
-import models.enumeration.EventType.{Event1, Event23}
+import models.enumeration.EventType.Event1
 import org.scalacheck.Arbitrary
-import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
+import pages._
+import pages.common.MembersDetailsPage
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.event1.{employer, member}
 import pages.eventWindUp.SchemeWindUpDatePage
-import pages.{common, _}
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryMembersTotalPensionAmountsPage: Arbitrary[TotalPensionAmountsPage] =
-    Arbitrary(common.TotalPensionAmountsPage(Event23))
-
-  implicit lazy val UnauthPaymentSummaryPage: Arbitrary[event1.UnauthPaymentSummaryPage.type] =
+  implicit lazy val arbitraryUnauthPaymentSummaryPage: Arbitrary[event1.UnauthPaymentSummaryPage.type] =
     Arbitrary(event1.UnauthPaymentSummaryPage)
 
   implicit lazy val arbitraryUnauthPaymentAndSanctionChargesPage: Arbitrary[event1.UnauthPaymentAndSanctionChargesPage.type] =
     Arbitrary(event1.UnauthPaymentAndSanctionChargesPage)
 
-  implicit lazy val arbitraryChooseTaxYearPage: Arbitrary[ChooseTaxYearPage] =
-    Arbitrary(common.ChooseTaxYearPage(Event23))
-
   implicit lazy val arbitraryPaymentValueAndDatePage: Arbitrary[event1.PaymentValueAndDatePage] =
     Arbitrary(event1.PaymentValueAndDatePage(Index(0)))
 
-  implicit lazy val arbitraryHowAddDualAllowancePage: Arbitrary[event23.HowAddDualAllowancePage.type] =
-    Arbitrary(event23.HowAddDualAllowancePage)
+  implicit lazy val arbitraryHowAddDualAllowancePage: Arbitrary[event23.HowAddDualAllowancePage] =
+    Arbitrary(event23.HowAddDualAllowancePage(Index(0)))
+
   implicit lazy val arbitraryLoanDetailsPage: Arbitrary[event1.employer.LoanDetailsPage] =
     Arbitrary(event1.employer.LoanDetailsPage(Index(0)))
 
@@ -111,7 +106,7 @@ trait PageGenerators {
     Arbitrary(event1.DoYouHoldSignedMandatePage(Index(0)))
 
   implicit lazy val arbitraryMembersDetailsPage: Arbitrary[MembersDetailsPage] =
-    Arbitrary(MembersDetailsPage(Event1, Some(0)))
+    Arbitrary(MembersDetailsPage(Event1, 0))
 
   implicit lazy val arbitraryWhoReceivedUnauthPaymentPage: Arbitrary[event1.WhoReceivedUnauthPaymentPage] =
     Arbitrary(event1.WhoReceivedUnauthPaymentPage(Index(0)))

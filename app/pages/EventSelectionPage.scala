@@ -17,9 +17,11 @@
 package pages
 
 import controllers.routes
-import models.EventSelection.{EventWoundUp, _}
+import models.enumeration.EventType
+import models.enumeration.EventType._
 import models.{EventSelection, UserAnswers}
-import pages.event1.{HowAddUnauthPaymentPage, MembersOrEmployersPage}
+import pages.common.MembersOrEmployersPage
+import pages.event1.{Event1CheckYourAnswersPage, HowAddUnauthPaymentPage}
 import pages.event18.Event18ConfirmationPage
 import pages.event22.HowAddAnnualAllowancePage
 import pages.event23.HowAddDualAllowancePage
@@ -36,13 +38,16 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
   override def route(waypoints: Waypoints): Call =
     routes.EventSelectionController.onPageLoad(waypoints)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    answers.get(this) match {
-      case Some(Event1) => HowAddUnauthPaymentPage(answers.countAll(MembersOrEmployersPage))
-      case Some(Event18) => Event18ConfirmationPage
-      case Some(Event22) => HowAddAnnualAllowancePage
-      case Some(Event23) => HowAddDualAllowancePage
-      case Some(EventWoundUp) => SchemeWindUpDatePage
-      case _ => EventSelectionPage
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    val optionEventType = answers.get(this).flatMap(es => EventType.fromEventSelection(es))
+    val optionTotalMembers = optionEventType.map(et => answers.countAll(MembersOrEmployersPage(et)))
+    (optionEventType, optionTotalMembers) match {
+      case (Some(Event1), Some(totalMembers)) => HowAddUnauthPaymentPage(totalMembers)
+      case (Some(Event18), _) => Event18ConfirmationPage
+      case (Some(Event22), Some(totalMembers)) => HowAddAnnualAllowancePage(totalMembers)
+      case (Some(Event23), Some(totalMembers)) => HowAddDualAllowancePage(totalMembers)
+      case (Some(WindUp), _) => SchemeWindUpDatePage
+      case _ => IndexPage
     }
+  }
 }

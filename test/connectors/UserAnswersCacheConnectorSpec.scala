@@ -30,7 +30,7 @@ class UserAnswersCacheConnectorSpec
     with Matchers
     with WireMockHelper {
 
-  private val pstr = "123"
+  private val pstr = "87219363YN"
   private val eventType = EventType.Event1
 
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()

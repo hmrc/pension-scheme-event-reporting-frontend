@@ -19,16 +19,18 @@ package pages.address
 import controllers.address.routes
 import models.UserAnswers
 import models.address.Address
-import models.enumeration.AddressJourneyType
+import models.enumeration.{AddressJourneyType, EventType}
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
-import pages.event1.{Event1CheckYourAnswersPage, MembersOrEmployersPage, PaymentValueAndDatePage}
+import pages.common.MembersOrEmployersPage
+import pages.event1.{Event1CheckYourAnswersPage, PaymentValueAndDatePage}
 import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class ChooseAddressPage(addressJourneyType: AddressJourneyType, index: Int) extends QuestionPage[Address] {
 
-  override def path: JsPath = MembersOrEmployersPage(index) \ s"event${addressJourneyType.eventType.toString}" \ addressJourneyType.nodeName \ toString
+  override def path: JsPath =
+    MembersOrEmployersPage(EventType.Event1)(index) \ s"event${addressJourneyType.eventType.toString}" \ addressJourneyType.nodeName \ toString
 
   override def toString: String = "chooseAddress"
 

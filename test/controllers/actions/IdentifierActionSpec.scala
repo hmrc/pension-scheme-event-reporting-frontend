@@ -123,7 +123,7 @@ class IdentifierActionSpec
       (actualJsonContent \ "pstr").asOpt[String] mustBe Some(pstrInDB)
     }
 
-    "when the user has logged in with HMRC-PODSPP-ORG enrolment must have the PSPID and when no PSTR in DB default to 123 (for now!)" in {
+    "when the user has logged in with HMRC-PODSPP-ORG enrolment must have the PSPID and when no PSTR in DB default to 87219363YN (for now!)" in {
       val controller = new Harness(authAction)
       val enrolments = Enrolments(Set(
         Enrolment(pspEnrolmentKey, Seq(EnrolmentIdentifier("PSPID", pspId)), "Activated", None)
@@ -137,7 +137,7 @@ class IdentifierActionSpec
       val actualJsonContent = contentAsJson(result)
       (actualJsonContent \ "loggedInUser").asOpt[LoggedInUser].value mustEqual
         LoggedInUser(externalId = externalId, administratorOrPractitioner = AdministratorOrPractitioner.Practitioner, psaIdOrPspId = pspId)
-      (actualJsonContent \ "pstr").asOpt[String] mustBe Some("123")
+      (actualJsonContent \ "pstr").asOpt[String] mustBe Some("87219363YN")
     }
 
     "the user has logged in with HMRC-PODS-ORG and HMRC_PODSPP_ORG enrolments and has not chosen a role " +

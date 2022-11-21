@@ -68,7 +68,7 @@ class Event1CheckYourAnswersController @Inject()(
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event1) andThen requireData).async { implicit request =>
       val waypoints = EmptyWaypoints
-      connector.compileEvent("123", Event1).map {
+      connector.compileEvent("87219363YN", Event1).map {
         _ =>
           Redirect(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(waypoints))
       }
@@ -116,8 +116,8 @@ class Event1CheckYourAnswersController @Inject()(
 
   private def event1BasicMemberDetailsRows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)
                                           (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, Some(index), sourcePage, Event1).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, Some(index), sourcePage, Event1).toSeq ++
+    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event1).toSeq ++
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event1).toSeq ++
       DoYouHoldSignedMandateSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
       ValueOfUnauthorisedPaymentSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
       schemeUnAuthPaySurchargeRow(waypoints, index, sourcePage) ++
