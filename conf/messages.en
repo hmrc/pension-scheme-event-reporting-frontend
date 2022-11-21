@@ -829,9 +829,3 @@ totalPensionAmounts.value.error.notANumber = The total pension input amounts mus
 totalPensionAmounts.value.error.noDecimals = The total pension input amounts must include pence, like 123.45 or 156.00
 totalPensionAmounts.value.error.amountTooHigh = The total pension input amounts must be £999999999.99 or less
 totalPensionAmounts.value.error.negative = The total pension input amounts must not be a negative amount of money, like -123.45 or -156.00
-
-removeEvent23.title = removeEvent23
-removeEvent23.heading = removeEvent23
-removeEvent23.checkYourAnswersLabel = removeEvent23
-removeEvent23.error.required = Select yes if removeEvent23
-removeEvent23.change.hidden = removeEvent23
