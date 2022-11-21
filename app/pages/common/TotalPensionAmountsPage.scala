@@ -42,6 +42,7 @@ case class TotalPensionAmountsPage(eventType: EventType, index: Index) extends Q
     }
   }
 
-object TotalPensionAmountsPage {
-  override def toString: String = "totalPensionAmounts"
+  object TotalPensionAmountsPage {
+    override def toString: String = "totalPensionAmounts"
+  }
 }

@@ -43,7 +43,7 @@ class Event22CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad().url)
+        val request = FakeRequest(GET, controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url)
 
         val result = route(application, request).value
 
@@ -54,10 +54,6 @@ class Event22CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-22-click")(request, messages(application)).toString
       }
     }
-    /*
-    Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/event-23-total-input-amount?waypoints=event-22-check-your-answers", Text("Change"), Some("Total pension input amounts"), "", Map())))))
-    Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/event-22-total-input-amount?waypoints=event-22-check-your-answers", Text("Change"), Some("Total pension input amounts"), "", Map())))))
-     */
 
     "must return OK and the correct summary list row items for a GET (member)" in {
       val mockView = mock[CheckYourAnswersView]
@@ -75,7 +71,7 @@ class Event22CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
       running(application) {
         when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
-        val request = FakeRequest(GET, controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad().url)
+        val request = FakeRequest(GET, controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url)
         val result = route(application, request).value
         status(result) mustEqual OK
 
@@ -95,7 +91,7 @@ class Event22CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad().url)
+        val request = FakeRequest(GET, controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url)
 
         val result = route(application, request).value
 
@@ -134,24 +130,24 @@ object Event22CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlContent(
       "membersDetails.checkYourAnswersLabel",
       "Joe Bloggs",
-      "/manage-pension-scheme-event-report/new-report/event-22-member-details?waypoints=event-22-check-your-answers"
+      "/manage-pension-scheme-event-report/new-report/1/event-22-member-details?waypoints=event-22-check-your-answers"
     ),
     fakeSummaryListRowWithHtmlContent(
       "membersDetails.checkYourAnswersLabel.nino",
       "AA234567V",
-      "/manage-pension-scheme-event-report/new-report/event-22-member-details?waypoints=event-22-check-your-answers"
+      "/manage-pension-scheme-event-report/new-report/1/event-22-member-details?waypoints=event-22-check-your-answers"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "chooseTaxYear.event22.checkYourAnswersLabel",
       "2018 to 2019",
-      "/manage-pension-scheme-event-report/new-report/event-22-tax-year?waypoints=event-22-check-your-answers",
+      "/manage-pension-scheme-event-report/new-report/1/event-22-tax-year?waypoints=event-22-check-your-answers",
       "chooseTaxYear.event22.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
-      "totalPensionAmounts.checkYourAnswersLabel",
+      "totalPensionAmounts.event22.checkYourAnswersLabel",
       "£999.11",
-      "/manage-pension-scheme-event-report/new-report/event-22-total-input-amount?waypoints=event-22-check-your-answers",
-      "totalPensionAmounts.change.hidden"
+      "/manage-pension-scheme-event-report/new-report/1/event-22-total-input-amount?waypoints=event-22-check-your-answers",
+      "totalPensionAmounts.event22.change.hidden"
     )
   )
 }

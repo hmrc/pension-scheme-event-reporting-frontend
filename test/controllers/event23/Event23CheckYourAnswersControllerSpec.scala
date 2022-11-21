@@ -148,7 +148,7 @@ object Event23CheckYourAnswersControllerSpec {
       "totalPensionAmounts.event23.checkYourAnswersLabel",
       "£1,234.56",
       "/manage-pension-scheme-event-report/new-report/1/event-23-total-input-amount?waypoints=event-23-check-answers-1",
-      "totalPensionAmounts.change.hidden"
+      "totalPensionAmounts.event23.change.hidden"
     )
   )
 }

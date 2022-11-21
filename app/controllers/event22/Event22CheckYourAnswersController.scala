@@ -19,6 +19,7 @@ package controllers.event22
 import com.google.inject.Inject
 import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import models.Index
 import models.enumeration.EventType.Event22
 import models.requests.DataRequest
 import pages.event22.Event22CheckYourAnswersPage
@@ -43,12 +44,12 @@ class Event22CheckYourAnswersController @Inject()(
                                                    view: CheckYourAnswersView
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] =
+  def onPageLoad(index: Index): Action[AnyContent] =
     (identify andThen getData(Event22) andThen requireData) { implicit request =>
-      val thisPage = Event22CheckYourAnswersPage
+      val thisPage = Event22CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event22.routes.Event22CheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent22CYARows(waypoints, thisPage)), continueUrl))
+      Ok(view(SummaryListViewModel(rows = buildEvent22CYARows(waypoints, thisPage, index)), continueUrl))
     }
 
   /**
@@ -56,17 +57,18 @@ class Event22CheckYourAnswersController @Inject()(
    */
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event22) andThen requireData).async { implicit request =>
+      val index = Index(0) // TODO: Not sure if right implementation.
       connector.compileEvent("123", Event22).map {
         _ =>
-          Redirect(controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad().url)
+          Redirect(controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url)
       }
     }
 
-  private def buildEvent22CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  private def buildEvent22CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, None, sourcePage, Event22).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, None, sourcePage, Event22).toSeq ++
-      ChooseTaxYearSummary.row(request.userAnswers, waypoints, sourcePage, Event22).toSeq ++
-      TotalPensionAmountsSummary.row(request.userAnswers, waypoints, sourcePage, Event22).toSeq
+    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event22).toSeq ++
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event22).toSeq ++
+      ChooseTaxYearSummary.row(request.userAnswers, waypoints, sourcePage, Event22, index).toSeq ++
+      TotalPensionAmountsSummary.row(request.userAnswers, waypoints, sourcePage, Event22, index).toSeq
   }
 }
