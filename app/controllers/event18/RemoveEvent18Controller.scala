@@ -41,7 +41,7 @@ class RemoveEvent18Controller @Inject()(
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event1
+  private val eventType = EventType.Event18
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
     val preparedForm = request.userAnswers.get(RemoveEvent18Page).fold(form)(form.fill)
