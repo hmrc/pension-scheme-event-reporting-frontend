@@ -14,9 +14,9 @@
  * limitations under the License.
  *@
 
-@import viewmodels.ExtendedList
+@import viewmodels.SummaryListRowWithNino
 
-@(seqExtendedListRow: Seq[ExtendedList], colOne: String, colTwo: String, colThree: String, total: BigDecimal)(implicit messages: Messages)
+@(seqSummaryListRowWithNino: Seq[SummaryListRowWithNino], colOne: String, colTwo: String, colThree: String, total: BigDecimal)(implicit messages: Messages)
 
 <table class="govuk-table" role="table">
     <thead class="govuk-table__head">
@@ -28,7 +28,7 @@
         </tr>
     </thead>
     <tbody class="govuk-table__body">
-    @seqExtendedListRow.map { extendedListRow =>
+    @seqSummaryListRowWithNino.map { extendedListRow =>
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header govuk-!-font-weight-regular govuk-!-width-one-quarter">@extendedListRow.key</th>
             <td class="govuk-table__cell govuk-!-width-one-quarter">@extendedListRow.nino</td>

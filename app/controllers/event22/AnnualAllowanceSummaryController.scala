@@ -28,7 +28,7 @@ import pages.event22.AnnualAllowanceSummaryPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.ExtendedList
+import viewmodels.SummaryListRowWithNino
 import views.html.event22.AnnualAllowanceSummaryView
 
 import javax.inject.Inject
@@ -54,7 +54,7 @@ class AnnualAllowanceSummaryController @Inject()(
           Is this needed?:
           val value = ValueViewModel(HtmlFormat.escape(memberSummary.PaymentValue.toString()).toString)
       */
-      ExtendedList(
+      SummaryListRowWithNino(
         key = memberSummary.name,
         nino = memberSummary.nINumber,
         value = memberSummary.PaymentValue.toString,

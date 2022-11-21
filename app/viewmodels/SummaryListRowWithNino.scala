@@ -16,4 +16,4 @@
 
 package viewmodels
 
-case class ExtendedList(key: String, nino: String, value: String, actions: Option[String])
+case class SummaryListRowWithNino(key: String, nino: String, value: String, actions: Option[String])

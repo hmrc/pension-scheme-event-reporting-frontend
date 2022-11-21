@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import viewmodels.ExtendedList
+@import viewmodels.SummaryListRowWithNino
 
 @this(
     layout: templates.Layout,
@@ -25,7 +25,7 @@
 )
 
 
-@(form: Form[_], waypoints: Waypoints, memberSeq: Seq[ExtendedList], total: BigDecimal)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, memberSeq: Seq[SummaryListRowWithNino], total: BigDecimal)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("annualAllowanceSummary.title", "2022"))) {
 

@@ -101,7 +101,6 @@ class UserAnswersSpec extends SpecBase with Matchers {
   "event22" - {
     "getAll" - {
       "must return the list of members" in {
-        println(s"\n\n\n HERE \n ${sampleMemberJourneyDataEvent22}")
         sampleMemberJourneyDataEvent22.getAll(MembersPage(Event22))(MembersSummary.readsMember) mustBe
           Seq(MembersSummary(SampleData.memberDetails.fullName, BigDecimal(14.99), SampleData.memberDetails.nino))
       }
