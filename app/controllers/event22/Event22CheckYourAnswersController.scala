@@ -29,6 +29,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.{ChooseTaxYearSummary, MembersDetailsSummary, TotalPensionAmountsSummary}
 import viewmodels.govuk.summarylist._
+import views.html.CheckYourAnswersView
 
 import scala.concurrent.ExecutionContext
 

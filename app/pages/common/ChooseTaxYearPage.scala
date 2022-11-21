@@ -34,6 +34,7 @@ case class ChooseTaxYearPage(eventType: EventType) extends QuestionPage[ChooseTa
   override def route(waypoints: Waypoints): Call =
     routes.ChooseTaxYearController.onPageLoad(waypoints, eventType)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     TotalPensionAmountsPage(Event23)
+  }
 }

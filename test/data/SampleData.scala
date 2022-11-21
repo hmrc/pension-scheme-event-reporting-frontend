@@ -20,7 +20,7 @@ import models.UserAnswers
 import models.address.{Address, TolerantAddress}
 import models.common.{ChooseTaxYear, MembersDetails}
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
-import models.enumeration.EventType.{Event1, Event23}
+import models.enumeration.EventType.{Event1, Event22, Event23}
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.PaymentDetails
 import models.event1.PaymentNature.BenefitInKind
@@ -134,4 +134,9 @@ object SampleData {
     .setOrException(MembersDetailsPage(Event23, None), memberDetails)
     .setOrException(ChooseTaxYearPage(Event23), ChooseTaxYear("2015"))
     .setOrException(TotalPensionAmountsPage(Event23), BigDecimal(1234.56))
+
+  val sampleMemberJourneyDataEvent22: UserAnswers = UserAnswers()
+    .setOrException(MembersDetailsPage(Event22, None), memberDetails)
+    .setOrException(ChooseTaxYearPage(Event22), ChooseTaxYear("2018"))
+    .setOrException(TotalPensionAmountsPage(Event22), BigDecimal(999.11))
 }

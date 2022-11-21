@@ -54,6 +54,10 @@ class Event22CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-22-click")(request, messages(application)).toString
       }
     }
+    /*
+    Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/event-23-total-input-amount?waypoints=event-22-check-your-answers", Text("Change"), Some("Total pension input amounts"), "", Map())))))
+    Some(Actions("", List(ActionItem("/manage-pension-scheme-event-report/new-report/event-22-total-input-amount?waypoints=event-22-check-your-answers", Text("Change"), Some("Total pension input amounts"), "", Map())))))
+     */
 
     "must return OK and the correct summary list row items for a GET (member)" in {
       val mockView = mock[CheckYourAnswersView]
@@ -134,17 +138,18 @@ object Event22CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContent(
       "membersDetails.checkYourAnswersLabel.nino",
-      "AA224567V",
+      "AA234567V",
       "/manage-pension-scheme-event-report/new-report/event-22-member-details?waypoints=event-22-check-your-answers"
     ),
-    fakeSummaryListRowWithHtmlContent(
+    fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "chooseTaxYear.event22.checkYourAnswersLabel",
-      "2015 to 2016",
-      "/manage-pension-scheme-event-report/new-report/event-22-tax-year?waypoints=event-22-check-your-answers"
+      "2018 to 2019",
+      "/manage-pension-scheme-event-report/new-report/event-22-tax-year?waypoints=event-22-check-your-answers",
+      "chooseTaxYear.event22.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "totalPensionAmounts.checkYourAnswersLabel",
-      "£1,224.56",
+      "£999.11",
       "/manage-pension-scheme-event-report/new-report/event-22-total-input-amount?waypoints=event-22-check-your-answers",
       "totalPensionAmounts.change.hidden"
     )
