@@ -90,15 +90,16 @@ class AnnualAllowanceSummaryControllerSpec extends SpecBase with BeforeAndAfterE
         val view = application.injector.instanceOf[AnnualAllowanceSummaryView]
 
         val expectedSeq =
-          Seq(SummaryListRowWithTwoValues(
-            key = SampleData.memberDetails.fullName,
-            firstValue = SampleData.memberDetails.nino,
-            secondValue = SampleData.totalPaymentAmount.toString,
-            actions = Some(Actions(
+          Seq(
+            SummaryListRowWithTwoValues(
+              key = SampleData.memberDetails.fullName,
+              firstValue = SampleData.memberDetails.nino,
+              secondValue = SampleData.totalPaymentAmount.toString,
+              actions = Some(Actions(
                 items = Seq(
                   ActionItem(
                     content = Text(Message("site.view")),
-                    href = "/dummy" /* TODO Add checkYourAnswers route controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad().url */
+                    href = controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url
                   ),
                   ActionItem(
                     content = Text(Message("site.remove")),
@@ -106,7 +107,7 @@ class AnnualAllowanceSummaryControllerSpec extends SpecBase with BeforeAndAfterE
                   )
                 )
               ))
-          ))
+            ))
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints, expectedSeq, BigDecimal(999.11))(request, messages(application)).toString
@@ -128,8 +129,8 @@ class AnnualAllowanceSummaryControllerSpec extends SpecBase with BeforeAndAfterE
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(AnnualAllowanceSummaryPage, true).success.value
 
-          status (result) mustEqual SEE_OTHER
-          redirectLocation (result).value mustEqual AnnualAllowanceSummaryPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual AnnualAllowanceSummaryPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
       }
     }
 

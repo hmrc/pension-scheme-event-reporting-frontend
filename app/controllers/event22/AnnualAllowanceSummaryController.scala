@@ -51,10 +51,6 @@ class AnnualAllowanceSummaryController @Inject()(
     val mappedMember = request.userAnswers
       .getAll(MembersPage(eventType))(MembersSummary.readsMember).zipWithIndex.map {
       case (memberSummary, index) =>
-      /* TODO:
-          Is this needed?:
-          val value = ValueViewModel(HtmlFormat.escape(memberSummary.PaymentValue.toString()).toString)
-      */
       SummaryListRowWithTwoValues(
         key = memberSummary.name,
         firstValue = memberSummary.nINumber,
@@ -63,7 +59,7 @@ class AnnualAllowanceSummaryController @Inject()(
           items = Seq(
             ActionItem(
               content = Text(Message("site.view")),
-              href = "/dummy" /* TODO Add checkYourAnswers route controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad().url */
+              href = controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
             ),
             ActionItem(
               content = Text(Message("site.remove")),

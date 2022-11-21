@@ -20,7 +20,7 @@ import controllers.event22.routes
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.common.MembersPage
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -37,7 +37,7 @@ case object AnnualAllowanceSummaryPage extends QuestionPage[Boolean] {
 
     answers.get(AnnualAllowanceSummaryPage) match {
       case Some(true) => HowAddAnnualAllowancePage(answers.countAll(MembersPage(EventType.Event22)))
-      case _ => IndexPage
+      case _ => EventSummaryPage
     }
 
   }
