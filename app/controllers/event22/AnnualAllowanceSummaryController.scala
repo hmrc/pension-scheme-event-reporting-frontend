@@ -56,8 +56,8 @@ class AnnualAllowanceSummaryController @Inject()(
       */
       SummaryListRowWithNino(
         key = memberSummary.name,
-        nino = memberSummary.nINumber,
-        value = memberSummary.PaymentValue.toString,
+        firstValue = memberSummary.nINumber,
+        secondValue = memberSummary.PaymentValue.toString,
         actions = Some("test")
       )
 

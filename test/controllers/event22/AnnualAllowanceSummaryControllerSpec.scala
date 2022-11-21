@@ -91,8 +91,8 @@ class AnnualAllowanceSummaryControllerSpec extends SpecBase with BeforeAndAfterE
         val expectedSeq =
           Seq(SummaryListRowWithNino(
             key = SampleData.memberDetails.fullName,
-            nino = SampleData.memberDetails.nino,
-            value = SampleData.totalPaymentAmount.toString,
+            firstValue = SampleData.memberDetails.nino,
+            secondValue = SampleData.totalPaymentAmount.toString,
             actions = Some("test")
 //              List(
 //                ActionItem(
