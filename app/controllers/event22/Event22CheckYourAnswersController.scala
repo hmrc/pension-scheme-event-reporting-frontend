@@ -32,7 +32,7 @@ import viewmodels.checkAnswers.{ChooseTaxYearSummary, MembersDetailsSummary, Tot
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class Event22CheckYourAnswersController @Inject()(
                                                    override val messagesApi: MessagesApi,
@@ -54,9 +54,7 @@ class Event22CheckYourAnswersController @Inject()(
 
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event22) andThen requireData).async { implicit request =>
-      val index = Index(0) // TODO: Not sure if right implementation.
-//      connector.compileEvent("87219363YN", Event22).map {
-      Future.successful(()).map{
+      connector.compileEvent("87219363YN", Event22).map {
         _ =>
           Redirect(controllers.event22.routes.AnnualAllowanceSummaryController.onPageLoad(EmptyWaypoints).url)
       }
