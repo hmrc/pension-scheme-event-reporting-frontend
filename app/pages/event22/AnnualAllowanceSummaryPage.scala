@@ -19,7 +19,7 @@ package pages.event22
 import controllers.event22.routes
 import models.UserAnswers
 import models.enumeration.EventType
-import pages.common.{MembersOrEmployersPage, MembersPage}
+import pages.common.MembersPage
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

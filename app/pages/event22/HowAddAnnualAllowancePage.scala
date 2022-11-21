@@ -17,11 +17,9 @@
 package pages.event22
 
 import controllers.event22.routes
-import models.enumeration.EventType.Event22
-import models.{Index, UserAnswers}
 import models.event22.HowAddAnnualAllowance
 import models.event22.HowAddAnnualAllowance.Manual
-import pages.common.MembersPage
+import models.{Index, UserAnswers}
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

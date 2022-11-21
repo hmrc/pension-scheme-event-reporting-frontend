@@ -47,7 +47,8 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewmodels.SummaryListRowWithTwoValues
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
+import viewmodels.{Message, SummaryListRowWithTwoValues}
 import views.html.event22.AnnualAllowanceSummaryView
 
 import scala.concurrent.Future
@@ -93,25 +94,22 @@ class AnnualAllowanceSummaryControllerSpec extends SpecBase with BeforeAndAfterE
             key = SampleData.memberDetails.fullName,
             firstValue = SampleData.memberDetails.nino,
             secondValue = SampleData.totalPaymentAmount.toString,
-            actions = Some("test")
-//              List(
-//                ActionItem(
-//                  href = "/dummy"/* "/manage-pension-scheme-event-report/new-report/event-22-check-your-answers" */,
-//                  content = Text(Messages("site.view")),
-//                  visuallyHiddenText = None,
-//                  attributes = Map()
-//                ),
-//                ActionItem(
-//                  href = "#",
-//                  content = Text(Messages("site.remove")),
-//                  visuallyHiddenText = None,
-//                  attributes = Map()
-//                )
-//              )
+            actions = Some(Actions(
+                items = Seq(
+                  ActionItem(
+                    content = Text(Message("site.view")),
+                    href = "/dummy" /* TODO Add checkYourAnswers route controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad().url */
+                  ),
+                  ActionItem(
+                    content = Text(Message("site.remove")),
+                    href = "#"
+                  )
+                )
+              ))
           ))
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, expectedSeq, BigDecimal(14.99))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, expectedSeq, BigDecimal(999.11))(request, messages(application)).toString
       }
     }
 

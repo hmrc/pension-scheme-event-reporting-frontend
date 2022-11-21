@@ -8,9 +8,9 @@ object AppDependencies {
     "uk.gov.hmrc"                   %% "play-conditional-form-mapping"  % "1.12.0-play-28",
     "uk.gov.hmrc"                   %% "bootstrap-frontend-play-28"     % "7.11.0",
     "uk.gov.hmrc"                   %% "play-language"                  % "5.3.0-play-28",
-    "org.typelevel"                 %% "cats-core"                      % "2.8.0",
+    "org.typelevel"                 %% "cats-core"                      % "2.9.0",
     "uk.gov.hmrc"                   %% "domain"                         % "8.1.0-play-28",
-    "com.fasterxml.jackson.module"  %% "jackson-module-scala"           % "2.13.4"
+    "com.fasterxml.jackson.module"  %% "jackson-module-scala"           % "2.14.0"
   )
 
   val test = Seq(

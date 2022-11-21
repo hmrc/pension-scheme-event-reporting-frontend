@@ -107,7 +107,7 @@ object SampleData {
 
   val taxYear: ChooseTaxYear = ChooseTaxYear("2013")
 
-  val totalPaymentAmount: BigDecimal = BigDecimal(14.99)
+  val totalPaymentAmount: BigDecimal = BigDecimal(999.11)
 
   val userAnswersWithOneMemberAndEmployer: UserAnswers = UserAnswers()
     .setOrException(WhoReceivedUnauthPaymentPage(0), Member)
@@ -137,15 +137,14 @@ object SampleData {
     .setOrException(PaymentValueAndDatePage(0), paymentDetails)
 
   val sampleMemberJourneyDataEvent23: UserAnswers = UserAnswers()
-    .setOrException(MembersDetailsPage(Event23, 0), memberDetails)
+  .setOrException(MembersDetailsPage(Event23, 0), memberDetails)
     .setOrException(ChooseTaxYearPage(Event23, 0), ChooseTaxYear("2015"))
     .setOrException(TotalPensionAmountsPage(Event23, 0), BigDecimal(1234.56))
 
-  val sampleMemberJourneyDataEvent22: UserAnswers =
-    UserAnswers()
-      .setOrException(MembersDetailsPage(Event22, 0), memberDetails)
-      .setOrException(ChooseTaxYearPage(Event22, 0), taxYear)
-      .setOrException(TotalPensionAmountsPage(Event22, 0), totalPaymentAmount)
+  val sampleMemberJourneyDataEvent22: UserAnswers = UserAnswers()
+    .setOrException(MembersDetailsPage(Event22, 0), memberDetails)
+    .setOrException(ChooseTaxYearPage(Event22, 0), ChooseTaxYear("2018"))
+    .setOrException(TotalPensionAmountsPage(Event22, 0), BigDecimal(999.11))
 
   def sampleTwoMemberJourneyData(eventType: EventType): UserAnswers =
     UserAnswers()

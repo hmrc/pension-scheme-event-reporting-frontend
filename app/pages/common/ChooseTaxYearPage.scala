@@ -17,10 +17,10 @@
 package pages.common
 
 import controllers.common.routes
-import models.{Index, UserAnswers}
 import models.common.ChooseTaxYear
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event22, Event23}
+import models.enumeration.EventType.{Event22, Event23}
+import models.{Index, UserAnswers}
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -38,7 +38,6 @@ case class ChooseTaxYearPage(eventType: EventType, index: Index) extends Questio
       case Event23 => TotalPensionAmountsPage(Event23, index)
       case _ => IndexPage
     }
-
   }
 }
 
