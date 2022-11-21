@@ -74,7 +74,7 @@ class PaymentValueAndDateSummarySpec extends AnyFreeSpec with Matchers with Opti
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       val date = paymentDetails.paymentDate
-      val format = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+      val format = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
       PaymentValueAndDateSummary.rowPaymentDate(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
