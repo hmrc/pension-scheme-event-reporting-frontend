@@ -177,3 +177,6 @@ POST        /new-report/:index/event-22-tax-year                                
 GET         /new-report/:index/dummy-member-details                               controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index)
 POST        /new-report/:index/dummy-member-details                               controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index)
 
+
+GET         /removeEvent23                                                        controllers.event18.removeEvent23Controller.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /removeEvent23                                                        controllers.event18.removeEvent23Controller.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
