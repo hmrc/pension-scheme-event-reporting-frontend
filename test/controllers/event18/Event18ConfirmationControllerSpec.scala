@@ -18,8 +18,8 @@ package controllers.event18
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event18.Event18ConfirmationFormProvider
 import models.UserAnswers
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -38,14 +38,11 @@ class Event18ConfirmationControllerSpec extends SpecBase with BeforeAndAfterEach
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new Event18ConfirmationFormProvider()
-  private val form = formProvider()
-
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.Event18ConfirmationController.onPageLoad(waypoints).url
 
-  private def postRoute: String = routes.Event18ConfirmationController.onSubmit(waypoints).url
+  private def getRouteOnClick: String = routes.Event18ConfirmationController.onClick(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -58,7 +55,7 @@ class Event18ConfirmationControllerSpec extends SpecBase with BeforeAndAfterEach
 
   private val validAnswer: Boolean = true
 
-  "Event18Confirmation Controller" - {
+  "Event18Confirmation Controller onPageLoad" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -72,68 +69,30 @@ class Event18ConfirmationControllerSpec extends SpecBase with BeforeAndAfterEach
         val view = application.injector.instanceOf[Event18ConfirmationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(getRouteOnClick, waypoints)(request, messages(application)).toString
       }
     }
+  }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+  "Event18Confirmation Controller onClick" - {
 
-      val userAnswers = UserAnswers().set(Event18ConfirmationPage, validAnswer).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, getRoute)
-
-        val view = application.injector.instanceOf[Event18ConfirmationView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), waypoints)(request, messages(application)).toString
-      }
-    }
-
-    "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+    "must always save the answer 'true' and redirect to the next page" in {
+      val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
           .build()
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
-            "value" -> "true"
-          )
+        val request = FakeRequest(GET, getRouteOnClick)
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(Event18ConfirmationPage, validAnswer).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual Event18ConfirmationPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-      }
-    }
-
-    "must return bad request when invalid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
-
-        val view = application.injector.instanceOf[Event18ConfirmationView]
-        val boundForm = form.bind(Map("value" -> "invalid"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        uaCaptor.getValue.get(Event18ConfirmationPage) mustBe Some(true)
       }
     }
   }

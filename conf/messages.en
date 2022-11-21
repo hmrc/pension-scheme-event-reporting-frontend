@@ -8,6 +8,7 @@ site.view = View
 site.no = No
 site.yes = Yes
 site.continue = Continue
+site.agreeAndContinue = Agree and continue
 site.start = Start now
 site.startAgain = Start again
 site.signIn = Sign in
@@ -149,7 +150,7 @@ schemeWindUpDate.change.hidden = When was the scheme wound up?
 
 event18Confirmation.title = Scheme chargeable payment
 event18Confirmation.heading = Scheme chargeable payment
-event18Confirmation.confirmation = I confirm that the scheme is to be treated as having made a scheme chargeable payment relating to income or gains from taxable property.
+event18Confirmation.confirmation = By clicking continue, you confirm that the scheme is to be treated as having made a scheme chargeable payment relating to income or gains from taxable property.
 event18Confirmation.checkYourAnswersLabel = Scheme chargeable payment
 event18Confirmation.error.required = You must tick the box to continue
 event18Confirmation.change.hidden = Event18Confirmation

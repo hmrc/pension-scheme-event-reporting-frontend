@@ -24,32 +24,16 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
+@(continueUrl: String, waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("event18Confirmation.title"))) {
+@layout(pageTitle = titleNoForm(messages("event18Confirmation.title"))) {
 
-    @formHelper(action = routes.Event18ConfirmationController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
+    <h1 class="govuk-heading-xl">@messages("event18Confirmation.heading")</h1>
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
-        }
+    <p class="govuk-body">@messages("event18Confirmation.confirmation")</p>
 
-        @govukCheckboxes(
-            CheckboxesViewModel(
-                form   = form,
-                name   = "value",
-                legend = LegendViewModel(messages("event18Confirmation.heading")).asPageHeading(),
-                items  = Seq(CheckboxItem(
-                    content = Text(messages(s"event18Confirmation.confirmation")),
-                    id      = Some("value"),
-                    name    = Some("value"),
-                    value   = "true"
-                ))
-            )
-        )
+    @govukButton(
+        ButtonViewModel(messages("site.agreeAndContinue")).asLink(continueUrl).withAttribute(("id", "submit"))
+    )
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))
-        )
-    }
 }
