@@ -28,7 +28,7 @@ import pages.event22.AnnualAllowanceSummaryPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.ExtendedList
+import viewmodels.ExtendedList
 import views.html.event22.AnnualAllowanceSummaryView
 
 import javax.inject.Inject

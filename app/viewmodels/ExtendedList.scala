@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-package utils
+package viewmodels
 
 case class ExtendedList(key: String, nino: String, value: String, actions: Option[String])
-
