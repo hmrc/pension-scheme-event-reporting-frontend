@@ -38,7 +38,6 @@ case class ChooseTaxYearPage(eventType: EventType, index: Index) extends Questio
       case Event23 => TotalPensionAmountsPage(Event23, index)
       case _ => IndexPage
     }
-
   }
 }
 

@@ -36,6 +36,9 @@ GET         /new-report/event-18-click                                          
 GET         /new-report/:index/event-23-check-your-answers                        controllers.event23.Event23CheckYourAnswersController.onPageLoad(index: Index)
 GET         /new-report/event-23-click                                            controllers.event23.Event23CheckYourAnswersController.onClick
 
+GET         /new-report/:index/event-22-check-your-answers                        controllers.event22.Event22CheckYourAnswersController.onPageLoad(index: Index)
+GET         /new-report/event-22-click                                            controllers.event22.Event22CheckYourAnswersController.onClick
+
 GET         /new-report/:index/event-1-entry-type                                 controllers.event1.HowAddUnauthPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /new-report/:index/event-1-entry-type                                 controllers.event1.HowAddUnauthPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 

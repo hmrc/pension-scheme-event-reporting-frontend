@@ -39,7 +39,7 @@ object TotalPensionAmountsSummary {
           value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer)}")),
           actions = Seq(
             ActionItemViewModel("site.change", TotalPensionAmountsPage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("totalPensionAmounts.change.hidden"))
+              .withVisuallyHiddenText(messages(s"totalPensionAmounts.event${eventType.toString}.change.hidden"))
           )
         )
     }
