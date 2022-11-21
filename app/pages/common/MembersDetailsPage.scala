@@ -29,10 +29,8 @@ case class MembersDetailsPage(eventType: EventType, index: Int) extends Question
 
   override def path: JsPath =
     eventType match {
-      case Event1  => MembersOrEmployersPage(eventType)(index) \ MembersDetailsPage.toString
-      case Event22 => MembersPage(eventType)(index) \ MembersDetailsPage.toString
-      case Event23 => MembersPage(eventType)(index) \ MembersDetailsPage.toString
-      case _       => JsPath
+      case Event22 | Event23 => MembersPage(eventType)(index) \ MembersDetailsPage.toString
+      case _  => MembersOrEmployersPage(eventType)(index) \ MembersDetailsPage.toString
   }
 
   override def route(waypoints: Waypoints): Call = controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, eventType, index)
