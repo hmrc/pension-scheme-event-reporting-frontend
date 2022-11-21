@@ -16,10 +16,11 @@
 
 package journey
 
+import data.SampleData.{companyDetails, seqTolerantAddresses}
 import generators.ModelGenerators
 import models.EventSelection._
 import models.common.{ChooseTaxYear, MembersDetails}
-import models.enumeration.AddressJourneyType.{Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
+import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.enumeration.EventType
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.PaymentDetails
@@ -33,9 +34,10 @@ import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.EventSelectionPage
+import pages.address.ManualAddressPage
 import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.event1._
-import pages.event1.employer.{EmployerTangibleMoveablePropertyPage, LoanDetailsPage}
+import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, LoanDetailsPage}
 import pages.event1.member._
 import pages.event18.{Event18CheckYourAnswersPage, Event18ConfirmationPage}
 import pages.event22.HowAddAnnualAllowancePage
@@ -181,6 +183,15 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(WhoReceivedUnauthPaymentPage(0), Employer),
         pageMustBe(employer.WhatYouWillNeedPage(0))
       )
+
+    startingFrom(CompanyDetailsPage(0))
+      .run(
+        submitAnswer(CompanyDetailsPage(0), companyDetails),
+        goTo(ManualAddressPage(Event1EmployerAddressJourney, 0)),
+        submitAnswer(ManualAddressPage(Event1EmployerAddressJourney, 0), seqTolerantAddresses.head.toAddress.get),
+        pageMustBe(employer.PaymentNaturePage(0))
+      )
+
   }
 
   "test nav to event1 residential property pages (member & employer)" in {
