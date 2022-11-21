@@ -25,7 +25,6 @@ import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class HowAddAnnualAllowancePage(index: Index) extends QuestionPage[HowAddAnnualAllowance] {
-  /* TODO: Page is repopulating previous answers, path needs index/eventType to avoid this in userAnswers?*/
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "howAddAnnualAllowance"

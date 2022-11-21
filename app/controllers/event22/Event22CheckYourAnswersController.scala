@@ -52,9 +52,6 @@ class Event22CheckYourAnswersController @Inject()(
       Ok(view(SummaryListViewModel(rows = buildEvent22CYARows(waypoints, thisPage, index)), continueUrl))
     }
 
-  /**
-   * TODO: replace controllers.event22.routes.Event22CheckYourAnswersController with actual event22.SummaryPageController
-   */
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event22) andThen requireData).async { implicit request =>
       val index = Index(0) // TODO: Not sure if right implementation.
