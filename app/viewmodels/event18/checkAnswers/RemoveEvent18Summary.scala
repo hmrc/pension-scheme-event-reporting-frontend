@@ -18,7 +18,6 @@ package viewmodels.checkAnswers
 
 import models.UserAnswers
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event18.RemoveEvent18Page
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._

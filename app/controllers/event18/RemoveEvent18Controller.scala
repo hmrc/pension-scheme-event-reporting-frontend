@@ -20,9 +20,12 @@ import connectors.UserAnswersCacheConnector
 import models.enumeration.EventType
 import controllers.actions._
 import forms.event18.RemoveEvent18FormProvider
+import models.UserAnswers
+import models.requests.DataRequest
+
 import javax.inject.Inject
 import pages.Waypoints
-import pages.event18.RemoveEvent18Page
+import pages.event18.Event18ConfirmationPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -44,8 +47,13 @@ class RemoveEvent18Controller @Inject()(
   private val eventType = EventType.Event18
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
-    val preparedForm = request.userAnswers.get(RemoveEvent18Page).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints))
+    Ok(view(form, waypoints))
+  }
+
+  private def x(implicit request: DataRequest[AnyContent]) = {
+    val originalUserAnswers = request.userAnswers
+    val updatedAnswers = originalUserAnswers.setOrException(Event18ConfirmationPage, false)
+    userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers)
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
@@ -53,11 +61,22 @@ class RemoveEvent18Controller @Inject()(
       form.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
-          val originalUserAnswers = request.userAnswers
-          val updatedAnswers = originalUserAnswers.setOrException(RemoveEvent18Page, value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-          Redirect(RemoveEvent18Page.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
-        }
+          for {
+            _ <- x
+            updatedAnswers <- y
+          } yield {
+
+          }
+//          val originalUserAnswers = request.userAnswers
+//          val result = if (value) {
+//            val updatedAnswers = originalUserAnswers.setOrException(Event18ConfirmationPage, false)
+//            userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map(_ => updatedAnswers)
+//          }
+//          else { Future.successful(originalUserAnswers)
+//          }
+//          result.map{ userAnswers =>
+//          Redirect(Event18ConfirmationPage.navigate(waypoints, originalUserAnswers, userAnswers).route)
+//        }
       }
     )
   }

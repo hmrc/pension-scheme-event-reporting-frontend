@@ -833,5 +833,5 @@ totalPensionAmounts.value.error.negative = The total pension input amounts must 
 removeEvent18.title = Are you sure you want to remove Event 18: Scheme chargeable payment?
 removeEvent18.heading = Are you sure you want to remove Event 18: Scheme chargeable payment?
 removeEvent18.checkYourAnswersLabel = Are you sure you want to remove Event 18: Scheme chargeable payment?
-removeEvent18.error.required = Select yes if removeEvent18
-removeEvent18.change.hidden = RemoveEvent18
+removeEvent18.error.required = Select if you want to remove Event 18
+removeEvent18.change.hidden = Are you sure you want to remove Event 18: Scheme chargeable payment?

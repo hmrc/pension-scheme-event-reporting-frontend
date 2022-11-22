@@ -25,7 +25,6 @@ import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
-import pages.event18.RemoveEvent18Page
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest

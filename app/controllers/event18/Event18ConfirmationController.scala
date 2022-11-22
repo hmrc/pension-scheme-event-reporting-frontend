@@ -21,7 +21,7 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
-import pages.event18.Event18ConfirmationPage
+import pages.event18.{Event18ConfirmationPage, RemoveEvent18Page}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -48,7 +48,7 @@ class Event18ConfirmationController @Inject()(val controllerComponents: Messages
       val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
       val updatedAnswers = originalUserAnswers.setOrException(Event18ConfirmationPage, true)
       userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-        Redirect(Event18ConfirmationPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+        Redirect(RemoveEvent18Page.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
       }
   }
 
