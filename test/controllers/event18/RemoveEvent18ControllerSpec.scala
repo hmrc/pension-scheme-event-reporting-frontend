@@ -20,15 +20,18 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event18.RemoveEvent18FormProvider
 import models.UserAnswers
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
+import pages.event18.{Event18ConfirmationPage, RemoveEvent18Page}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import views.html.event18.RemoveEvent18View
 
 import scala.concurrent.Future
@@ -73,25 +76,6 @@ class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach  {
       }
     }
 
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = UserAnswers().set(RemoveEvent18Page, true).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, getRoute)
-
-        val view = application.injector.instanceOf[RemoveEvent18View]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), waypoints)(request, messages(application)).toString
-      }
-    }
-
     "must save the answer and redirect to the next page when valid data is submitted" in {
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
@@ -109,6 +93,29 @@ class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach  {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveEvent18Page.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+      }
+    }
+
+    "must update event18Confirmation in userAnswers to false when selecting true" in {
+      val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+      when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any()))
+        .thenReturn(Future.successful(()))
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        uaCaptor.getValue.get(Event18ConfirmationPage) mustBe Some(false)
+        redirectLocation(result).value mustEqual RemoveEvent18Page.navigate(waypoints, emptyUserAnswers, uaCaptor.getValue).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
