@@ -21,7 +21,7 @@ import models.enumeration.EventType
 import models.enumeration.EventType._
 import models.{EventSelection, UserAnswers}
 import pages.common.MembersOrEmployersPage
-import pages.event1.{Event1CheckYourAnswersPage, HowAddUnauthPaymentPage}
+import pages.event1.HowAddUnauthPaymentPage
 import pages.event18.Event18ConfirmationPage
 import pages.event22.HowAddAnnualAllowancePage
 import pages.event23.HowAddDualAllowancePage
