@@ -25,7 +25,7 @@ import models.requests.DataRequest
 
 import javax.inject.Inject
 import pages.Waypoints
-import pages.event18.Event18ConfirmationPage
+import pages.event18.{Event18ConfirmationPage, RemoveEvent18Page}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -34,14 +34,14 @@ import views.html.event18.RemoveEvent18View
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveEvent18Controller @Inject()(
-                                        val controllerComponents: MessagesControllerComponents,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        userAnswersCacheConnector: UserAnswersCacheConnector,
-                                        formProvider: RemoveEvent18FormProvider,
-                                        view: RemoveEvent18View
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                         val controllerComponents: MessagesControllerComponents,
+                                         identify: IdentifierAction,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         userAnswersCacheConnector: UserAnswersCacheConnector,
+                                         formProvider: RemoveEvent18FormProvider,
+                                         view: RemoveEvent18View
+                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event18
@@ -50,10 +50,17 @@ class RemoveEvent18Controller @Inject()(
     Ok(view(form, waypoints))
   }
 
-  private def x(implicit request: DataRequest[AnyContent]) = {
+  private def update(value: Boolean)(implicit request: DataRequest[AnyContent]): Future[UserAnswers] = {
     val originalUserAnswers = request.userAnswers
-    val updatedAnswers = originalUserAnswers.setOrException(Event18ConfirmationPage, false)
-    userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers)
+    if (value) {
+      val updatedAnswers = originalUserAnswers.setOrException(Event18ConfirmationPage, false)
+      userAnswersCacheConnector
+        .save(request.pstr, eventType, updatedAnswers)
+        .map(_ => updatedAnswers)
+    }
+    else {
+      Future.successful(originalUserAnswers)
+    }
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
@@ -61,23 +68,13 @@ class RemoveEvent18Controller @Inject()(
       form.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
+          val originalUserAnswers = request.userAnswers
           for {
-            _ <- x
-            updatedAnswers <- y
+            userAnswers <- update(value)
           } yield {
-
+            Redirect(RemoveEvent18Page.navigate(waypoints, originalUserAnswers, userAnswers).route)
           }
-//          val originalUserAnswers = request.userAnswers
-//          val result = if (value) {
-//            val updatedAnswers = originalUserAnswers.setOrException(Event18ConfirmationPage, false)
-//            userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map(_ => updatedAnswers)
-//          }
-//          else { Future.successful(originalUserAnswers)
-//          }
-//          result.map{ userAnswers =>
-//          Redirect(Event18ConfirmationPage.navigate(waypoints, originalUserAnswers, userAnswers).route)
-//        }
-      }
-    )
+        }
+      )
   }
 }

@@ -17,13 +17,13 @@
 package controllers.event18
 
 import base.SpecBase
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
 import connectors.UserAnswersCacheConnector
 import forms.event18.RemoveEvent18FormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{never, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
