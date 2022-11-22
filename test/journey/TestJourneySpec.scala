@@ -33,7 +33,6 @@ import models.event1.member.RefundOfContributions.WidowOrOrphan
 import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
-import pages.EventSelectionPage
 import pages.address.{ChooseAddressPage, EnterPostcodePage}
 import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.event1._
@@ -41,9 +40,9 @@ import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveableProper
 import pages.event1.member._
 import pages.event18.Event18ConfirmationPage
 import pages.event22.HowAddAnnualAllowancePage
-import pages.event18.Event18CheckYourAnswersPage
 import pages.event23.HowAddDualAllowancePage
 import pages.eventWindUp.{EventWindUpCheckYourAnswersPage, SchemeWindUpDatePage}
+import pages.{EventSelectionPage, EventSummaryPage}
 
 import java.time.LocalDate
 
@@ -54,7 +53,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
     startingFrom(Event18ConfirmationPage)
       .run(
         submitAnswer(Event18ConfirmationPage, true),
-        pageMustBe(Event18CheckYourAnswersPage)
+        pageMustBe(EventSummaryPage)
       )
   }
   "test windUp journey" in {

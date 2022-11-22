@@ -21,17 +21,11 @@ import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import pages.event1.Event1CheckYourAnswersPage
-import pages.event18.Event18CheckYourAnswersPage
 import pages.eventWindUp.EventWindUpCheckYourAnswersPage
 
 class WaypointSpec extends AnyFreeSpec with Matchers with OptionValues {
 
   ".fromString" - {
-
-    "must return CheckYourAnswers for event 18 when given its waypoint" in {
-
-      Waypoint.fromString("event-18-check-answers").value mustEqual Event18CheckYourAnswersPage.waypoint
-    }
 
     "must return CheckYourAnswers for event 1 when given its waypoint, including index of up to 5 digits and adds 1 for display" in {
 
