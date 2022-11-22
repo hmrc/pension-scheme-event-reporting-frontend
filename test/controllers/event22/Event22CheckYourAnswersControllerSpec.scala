@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package controllers.event23
+package controllers.event22
 
 import base.SpecBase
-import data.SampleData.sampleMemberJourneyDataEvent23
+import data.SampleData.sampleMemberJourneyDataEvent22
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -32,9 +32,9 @@ import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
-class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
+class Event22CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
-  import Event23CheckYourAnswersControllerSpec._
+  import Event22CheckYourAnswersControllerSpec._
 
   "Check Your Answers Controller" - {
 
@@ -43,7 +43,7 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url)
+        val request = FakeRequest(GET, controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url)
 
         val result = route(application, request).value
 
@@ -51,11 +51,10 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list,
-          "/manage-pension-scheme-event-report/new-report/event-23-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-22-click")(request, messages(application)).toString
       }
     }
-
+    
     "must return OK and the correct summary list row items for a GET (member)" in {
       val mockView = mock[CheckYourAnswersView]
       val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -63,7 +62,7 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleMemberJourneyDataEvent23),
+        userAnswers = Some(sampleMemberJourneyDataEvent22),
         extraModules = extraModules
       ).build()
 
@@ -72,12 +71,12 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
       running(application) {
         when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
-        val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url)
+        val request = FakeRequest(GET, controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url)
         val result = route(application, request).value
         status(result) mustEqual OK
 
         val actual: Seq[SummaryListRow] = captor.getValue.rows
-        val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRowsEvent23
+        val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRowsEvent22
 
         actual.size mustBe expected.size
 
@@ -92,7 +91,7 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url)
+        val request = FakeRequest(GET, controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url)
 
         val result = route(application, request).value
 
@@ -103,7 +102,7 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
   }
 }
 
-object Event23CheckYourAnswersControllerSpec {
+object Event22CheckYourAnswersControllerSpec {
 
   private def fakeSummaryListRowWithHtmlContent(messageKey: String, htmlContent: String, changeLink: String)
                                                (implicit messages: Messages): SummaryListRow =
@@ -127,28 +126,29 @@ object Event23CheckYourAnswersControllerSpec {
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
 
-  private def expectedMemberSummaryListRowsEvent23(implicit messages: Messages): Seq[SummaryListRow] = Seq(
+  private def expectedMemberSummaryListRowsEvent22(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContent(
       "membersDetails.checkYourAnswersLabel",
       "Joe Bloggs",
-      "/manage-pension-scheme-event-report/new-report/1/event-23-member-details?waypoints=event-23-check-answers-1"
+      "/manage-pension-scheme-event-report/new-report/1/event-22-member-details?waypoints=event-22-check-answers-1"
+
     ),
     fakeSummaryListRowWithHtmlContent(
       "membersDetails.checkYourAnswersLabel.nino",
       "AA234567V",
-      "/manage-pension-scheme-event-report/new-report/1/event-23-member-details?waypoints=event-23-check-answers-1"
+      "/manage-pension-scheme-event-report/new-report/1/event-22-member-details?waypoints=event-22-check-answers-1"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
-      "chooseTaxYear.event23.checkYourAnswersLabel",
-      "2015 to 2016",
-      "/manage-pension-scheme-event-report/new-report/1/event-23-tax-year?waypoints=event-23-check-answers-1",
-      "chooseTaxYear.event23.change.hidden"
+      "chooseTaxYear.event22.checkYourAnswersLabel",
+      "2018 to 2019",
+      "/manage-pension-scheme-event-report/new-report/1/event-22-tax-year?waypoints=event-22-check-answers-1",
+      "chooseTaxYear.event22.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
-      "totalPensionAmounts.event23.checkYourAnswersLabel",
-      "£1,234.56",
-      "/manage-pension-scheme-event-report/new-report/1/event-23-total-input-amount?waypoints=event-23-check-answers-1",
-      "totalPensionAmounts.event23.change.hidden"
+      "totalPensionAmounts.event22.checkYourAnswersLabel",
+      "£999.11",
+      "/manage-pension-scheme-event-report/new-report/1/event-22-total-input-amount?waypoints=event-22-check-answers-1",
+      "totalPensionAmounts.event22.change.hidden"
     )
   )
 }
