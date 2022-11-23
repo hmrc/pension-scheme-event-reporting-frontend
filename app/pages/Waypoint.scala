@@ -16,9 +16,9 @@
 
 package pages
 
-import models.{Index, Mode}
+import models.Mode
 import pages.event1.Event1CheckYourAnswersPage
-import pages.event18.Event18CheckYourAnswersPage
+import pages.event22.Event22CheckYourAnswersPage
 import pages.event23.Event23CheckYourAnswersPage
 import pages.eventWindUp.EventWindUpCheckYourAnswersPage
 
@@ -38,7 +38,6 @@ object Waypoint {
 
   private val fragments: Map[String, Waypoint] =
     Map(
-      Event18CheckYourAnswersPage.urlFragment -> Event18CheckYourAnswersPage.waypoint,
       EventWindUpCheckYourAnswersPage.urlFragment -> EventWindUpCheckYourAnswersPage.waypoint
     )
 
@@ -49,6 +48,7 @@ object Waypoint {
   def fromString(s: String): Option[Waypoint] =
     fragments.get(s)
       .orElse(Event1CheckYourAnswersPage.waypointFromString(s))
+      .orElse(Event22CheckYourAnswersPage.waypointFromString(s))
       .orElse(Event23CheckYourAnswersPage.waypointFromString(s))
 
 }
