@@ -396,8 +396,8 @@ schemeDetails.checkYourAnswersLabel = Scheme details
 schemeDetails.error.required = Enter Scheme details
 schemeDetails.error.name.length = Scheme-name must be 150 characters or less
 schemeDetails.error.ref.length = Reference must be 150 characters or less
-schemeName.change.hidden = scheme name
-schemeReference.change.hidden = reference
+schemeName.change.hidden = Scheme name
+schemeReference.change.hidden = Reference
 
 memberTangibleMoveableProperty.title = Give a brief description of the tangible moveable property
 memberTangibleMoveableProperty.heading = Give a brief description of the tangible moveable property
@@ -445,7 +445,7 @@ unauthorisedPaymentRecipientName.employer.heading = What is the name of the pers
 unauthorisedPaymentRecipientName.employer.checkYourAnswersLabel = What is the name of the person or organisation that received the unauthorised payment?
 unauthorisedPaymentRecipientName.employer.error.invalid = The recipient name must only include letters, spaces, ampersands, grave accents, apostrophes, backslashes, full stops and carets
 unauthorisedPaymentRecipientName.employer.error.length = The company or organisation’s name must be 160 characters or fewer
-unauthorisedPaymentRecipientName.employer.change.hidden = the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.employer.change.hidden = The name of the person or organisation that received the unauthorised payment?
 unauthorisedPaymentRecipientName.employer.hint = Recipient name (optional)
 
 paymentValueAndDate.title = Payment value and date
@@ -466,7 +466,7 @@ paymentValueAndDate.date.error.nothingEntered = Enter the date of payment or whe
 paymentValueAndDate.date.error.noDayMonthOrYear = The date must include a day, month and year
 paymentValueAndDate.date.error.outsideDateRanges = Enter a real date
 paymentValueAndDate.date.error.outsideRelevantTaxYear = Date must be between 6 April [year] and 5 April [year]
-paymentValueAndDate.date.change.hidden = payment date
+paymentValueAndDate.date.change.hidden = Payment date
 paymentValueAndDate.date.checkYourAnswersLabel = Payment date
 
 unauthorisedPaymentRecipientName.member.title = What is the name of the person or organisation that received the unauthorised payment?
@@ -474,7 +474,7 @@ unauthorisedPaymentRecipientName.member.heading = What is the name of the person
 unauthorisedPaymentRecipientName.member.checkYourAnswersLabel = What is the name of the person or organisation that received the unauthorised payment?
 unauthorisedPaymentRecipientName.member.error.invalid = The person name must only include letters, spaces, ampersands, grave accents, apostrophes, backslashes, hyphens, full stops and carets
 unauthorisedPaymentRecipientName.member.error.length = The person name must be 150 characters or fewer
-unauthorisedPaymentRecipientName.member.change.hidden = the name of the person or organisation that received the unauthorised payment?
+unauthorisedPaymentRecipientName.member.change.hidden = The name of the person or organisation that received the unauthorised payment?
 unauthorisedPaymentRecipientName.member.hint = Recipient name (optional)
 
 reasonForTheOverpaymentOrWriteOff.title = What is the reason for the overpayment/write off?
@@ -501,7 +501,7 @@ loanDetails.checkYourAnswersLabel = loanDetails
 loanDetails.error.required = Enter loanDetails
 loanDetails.error.length = LoanDetails must be 100 characters or less
 loanAmount.change.hidden = Loan amount
-loanFundAmount.change.hidden = Fund amount
+fundAmount.change.hidden = Fund amount
 loanDetails.CYA.loanAmountLabel = Loan Amount
 loanDetails.CYA.fundValueLabel = Fund Amount
 

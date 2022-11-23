@@ -67,7 +67,7 @@ object LoanDetailsSummary extends Formatters {
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", LoanDetailsPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("loanFundAmount.change.hidden"))
+              .withVisuallyHiddenText(messages("fundAmount.change.hidden"))
           )
         )
     }
