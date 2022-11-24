@@ -219,7 +219,7 @@ object Event1CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "paymentValueAndDate.date.checkYourAnswersLabel",
-      "08/11/2022",
+      "08 November 2022",
       "/manage-pension-scheme-event-report/new-report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
       "paymentValueAndDate.date.change.hidden"
     )
@@ -259,7 +259,7 @@ object Event1CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "paymentValueAndDate.date.checkYourAnswersLabel",
-      "08/11/2022",
+      "08 November 2022",
       "/manage-pension-scheme-event-report/new-report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
       "paymentValueAndDate.date.change.hidden"
     )

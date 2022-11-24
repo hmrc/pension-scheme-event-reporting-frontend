@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 object DateHelper {
 
-  val dateFormatterDMY: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+  val dateFormatterDMY: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
   def formatDateDMY(date: LocalDate): String = date.format(dateFormatterDMY)
 
