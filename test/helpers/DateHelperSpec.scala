@@ -24,7 +24,7 @@ class DateHelperSpec extends SpecBase {
 
   "Date helper" - {
     "must return OK and the correct view for a GET" in {
-      DateHelper.formatDateDMYWithSlash(LocalDate.of(2022,8,2)) mustBe "02/08/2022"
+        DateHelper.dateFormatter.format(LocalDate.of(2022, 12, 25)) mustBe "25 December 2022"
     }
 
     "must return the year of the date inputted in August" in {
