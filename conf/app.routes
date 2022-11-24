@@ -23,7 +23,7 @@ GET         /event-summary                                                      
 POST        /event-summary                                                        controllers.EventSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-18-confirmation                                     controllers.event18.Event18ConfirmationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /new-report/event-18-confirmation                                     controllers.event18.Event18ConfirmationController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-18-on-click                                         controllers.event18.Event18ConfirmationController.onClick(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-windup-check-your-answers                           controllers.eventWindUp.EventWindUpCheckYourAnswersController.onPageLoad()
 GET         /new-report/event-windup-click                                        controllers.eventWindUp.EventWindUpCheckYourAnswersController.onClick
@@ -31,8 +31,6 @@ GET         /new-report/event-windup-click                                      
 GET         /new-report/:index/event-1-check-your-answers                         controllers.event1.Event1CheckYourAnswersController.onPageLoad(index: Index)
 GET         /new-report/event-1-click                                             controllers.event1.Event1CheckYourAnswersController.onClick
 
-GET         /new-report/event-18-check-your-answers                               controllers.event18.Event18CheckYourAnswersController.onPageLoad()
-GET         /new-report/event-18-click                                            controllers.event18.Event18CheckYourAnswersController.onClick
 GET         /new-report/:index/event-23-check-your-answers                        controllers.event23.Event23CheckYourAnswersController.onPageLoad(index: Index)
 GET         /new-report/event-23-click                                            controllers.event23.Event23CheckYourAnswersController.onClick
 
