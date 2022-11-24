@@ -14,22 +14,32 @@
  * limitations under the License.
  */
 
-package pages.common
+package forms.event22
 
-import models.common.MembersDetails
-import models.enumeration.EventType.{Event1, Event23}
-import pages.behaviours.PageBehaviours
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class MembersDetailsPageSpec extends PageBehaviours {
+class AnnualAllowanceSummaryFormProviderSpec extends BooleanFieldBehaviours {
 
-  "MembersDetailsPage" - {
+  val requiredKey = "annualAllowanceSummary.error.required"
+  val invalidKey = "error.boolean"
 
-    "event1" - {
-      beRetrievable[MembersDetails](MembersDetailsPage(Event1, 0))
+  val form = new AnnualAllowanceSummaryFormProvider()()
 
-      beSettable[MembersDetails](MembersDetailsPage(Event1, 0))
+  ".value" - {
 
-      beRemovable[MembersDetails](MembersDetailsPage(Event1, 0))
-    }
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }

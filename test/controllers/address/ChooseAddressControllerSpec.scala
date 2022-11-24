@@ -102,11 +102,11 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "0"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(ChooseAddressPage(Event1EmployerAddressJourney, 0), seqAddresses.head).success.value
+        val updatedAnswers = emptyUserAnswers.setOrException(ManualAddressPage(Event1EmployerAddressJourney, 0), seqAddresses.head)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ChooseAddressPage(Event1EmployerAddressJourney, 0)
-          .navigate(waypoints, ua.setOrException(ChooseAddressPage(Event1EmployerAddressJourney, 0), seqAddresses.head), updatedAnswers).url
+          .navigate(waypoints, updatedAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
         uaCaptor.getValue.get(ManualAddressPage(Event1EmployerAddressJourney, 0)) mustBe Some(seqAddresses.head)
       }

@@ -25,9 +25,8 @@ class DateHelper {
 
 
 object DateHelper {
-  private val dateFormatterDMYWithSlash: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyy")
 
-  def formatDateDMYWithSlash(date: LocalDate): String = date.format(dateFormatterDMYWithSlash)
+  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
   def extractTaxYear(date: LocalDate): Int = {
     val year = date.getYear

@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-package pages.common
+package forms.event22
 
-import models.common.MembersDetails
-import models.enumeration.EventType.{Event1, Event23}
-import pages.behaviours.PageBehaviours
+import forms.mappings.Mappings
+import play.api.data.Form
 
-class MembersDetailsPageSpec extends PageBehaviours {
+import javax.inject.Inject
 
-  "MembersDetailsPage" - {
+class AnnualAllowanceSummaryFormProvider @Inject() extends Mappings {
 
-    "event1" - {
-      beRetrievable[MembersDetails](MembersDetailsPage(Event1, 0))
-
-      beSettable[MembersDetails](MembersDetailsPage(Event1, 0))
-
-      beRemovable[MembersDetails](MembersDetailsPage(Event1, 0))
-    }
-  }
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("annualAllowanceSummary.error.required")
+    )
 }

@@ -799,6 +799,16 @@ unauthPaymentSummary.table.header2 = Unauthorised payment value
 
 entity_list_table.total = Total
 
+annualAllowanceSummary.title = Annual allowance events reported in the tax year ending 5 April {0}
+annualAllowanceSummary.heading = Annual allowance events reported in the tax year ending 5 April {0}
+annualAllowanceSummary.yesno.legend = Do you want to add another annual allowance event?
+annualAllowanceSummary.checkYourAnswersLabel = Check your answers
+annualAllowanceSummary.error.required = Select yes if you want to add another annual allowance event
+annualAllowanceSummary.change.hidden = Unauthorised payment summary
+annualAllowanceSummary.table.header1 = Member
+annualAllowanceSummary.table.header2 = National Insurance number
+annualAllowanceSummary.table.header3 = Pension input amounts
+
 
 
 chooseTaxYear.yearRangeRadio = {0} to {1}

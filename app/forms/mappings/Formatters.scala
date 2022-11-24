@@ -37,7 +37,7 @@ trait Formatters {
   currencyFormatter.setCurrency(Currency.getInstance(Locale.UK))
   currencyFormatter.setMinimumFractionDigits(2)
 
-  val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
   private[mappings] val optionalStringFormatter: Formatter[Option[String]] = new Formatter[Option[String]] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] =
