@@ -31,13 +31,5 @@ class MembersDetailsPageSpec extends PageBehaviours {
 
       beRemovable[MembersDetails](MembersDetailsPage(Event1, 0))
     }
-
-//    "event23" - {
-//      beRetrievable[MembersDetails](MembersDetailsPage(Event23, 0))
-//
-//      beSettable[MembersDetails](MembersDetailsPage(Event23, 0))
-//
-//      beRemovable[MembersDetails](MembersDetailsPage(Event23, 0))
-//    }
   }
 }
