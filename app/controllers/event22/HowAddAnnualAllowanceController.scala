@@ -28,14 +28,13 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event22.HowAddAnnualAllowanceView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class HowAddAnnualAllowanceController @Inject()(val controllerComponents: MessagesControllerComponents,
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
                                                 formProvider: HowAddAnnualAllowanceFormProvider,
                                                 view: HowAddAnnualAllowanceView
-                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                               ) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType22 = EventType.Event22
@@ -52,7 +51,7 @@ class HowAddAnnualAllowanceController @Inject()(val controllerComponents: Messag
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(HowAddAnnualAllowancePage(index), value)
-            Redirect(HowAddAnnualAllowancePage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+          Redirect(HowAddAnnualAllowancePage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
         }
       )
   }

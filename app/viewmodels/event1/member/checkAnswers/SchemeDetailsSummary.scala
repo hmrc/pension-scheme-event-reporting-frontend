@@ -54,7 +54,7 @@ object SchemeDetailsSummary {
         value = value.getOrElse(ValueViewModel(StringUtils.EMPTY)),
         actions = Seq(
           ActionItemViewModel("site.change", SchemeDetailsPage(index).changeLink(waypoints, sourcePage).url)
-            .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
+            .withVisuallyHiddenText(messages("schemeName.change.hidden"))
         )
       )
     )
@@ -78,7 +78,7 @@ object SchemeDetailsSummary {
         value = value.getOrElse(ValueViewModel(StringUtils.EMPTY)),
         actions = Seq(
           ActionItemViewModel("site.change", SchemeDetailsPage(index).changeLink(waypoints, sourcePage).url)
-            .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
+            .withVisuallyHiddenText(messages("schemeReference.change.hidden"))
         )
       )
     )

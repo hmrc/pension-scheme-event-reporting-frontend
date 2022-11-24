@@ -28,14 +28,13 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event1.HowAddUnauthPaymentView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class HowAddUnauthPaymentController @Inject()(val controllerComponents: MessagesControllerComponents,
                                               identify: IdentifierAction,
                                               getData: DataRetrievalAction,
                                               formProvider: HowAddUnauthPaymentFormProvider,
                                               view: HowAddUnauthPaymentView
-                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                             ) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event1
