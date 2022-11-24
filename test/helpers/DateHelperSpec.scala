@@ -16,23 +16,24 @@
 
 package helpers
 
-import base.SpecBase
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 
 import java.time.LocalDate
 
-class DateHelperSpec extends SpecBase {
+class DateHelperSpec extends AnyFreeSpec with Matchers {
 
   "Date helper" - {
     "must return OK and the correct view for a GET" in {
-        DateHelper.dateFormatter.format(LocalDate.of(2022, 12, 25)) mustBe "25 December 2022"
+      DateHelper.dateFormatter.format(LocalDate.of(2022, 12, 25)) mustBe "25 December 2022"
     }
 
     "must return the year of the date inputted in August" in {
-      DateHelper.extractTaxYear(LocalDate.of(2022,8,2)) mustBe 2022
+      DateHelper.extractTaxYear(LocalDate.of(2022, 8, 2)) mustBe 2022
     }
 
     "must return the year of the date inputted in March" in {
-      DateHelper.extractTaxYear(LocalDate.of(2022,3,2)) mustBe 2021
+      DateHelper.extractTaxYear(LocalDate.of(2022, 3, 2)) mustBe 2021
     }
   }
 }
