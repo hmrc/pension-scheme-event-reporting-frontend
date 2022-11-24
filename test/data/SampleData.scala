@@ -20,6 +20,7 @@ import models.UserAnswers
 import models.address.{Address, TolerantAddress}
 import models.common.{ChooseTaxYear, MembersDetails}
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
+import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event22, Event23}
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.PaymentDetails
@@ -94,6 +95,7 @@ object SampleData {
   val companyDetails: CompanyDetails = CompanyDetails("Company Name", "12345678")
 
   val memberDetails: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567V")
+  val memberDetails2: MembersDetails = MembersDetails("Steven", "Bloggs", "AA123456C")
 
   val paymentDetails: PaymentDetails = PaymentDetails(1000.00, LocalDate.of(2022, 11, 8))
 
@@ -102,6 +104,10 @@ object SampleData {
   val loanDetails: LoanDetails = LoanDetails(Some(BigDecimal(10.00)), Some(BigDecimal(20.57)))
 
   val schemeDetails: SchemeDetails = SchemeDetails(Some("SchemeName"), Some("SchemeReference"))
+
+  val taxYear: ChooseTaxYear = ChooseTaxYear("2013")
+
+  val totalPaymentAmount: BigDecimal = BigDecimal(999.11)
 
   val userAnswersWithOneMemberAndEmployer: UserAnswers = UserAnswers()
     .setOrException(WhoReceivedUnauthPaymentPage(0), Member)
@@ -139,4 +145,14 @@ object SampleData {
     .setOrException(MembersDetailsPage(Event22, 0), memberDetails)
     .setOrException(ChooseTaxYearPage(Event22, 0), ChooseTaxYear("2018"))
     .setOrException(TotalPensionAmountsPage(Event22, 0), BigDecimal(999.11))
+
+  def sampleTwoMemberJourneyData(eventType: EventType): UserAnswers =
+    UserAnswers()
+      .setOrException(MembersDetailsPage(eventType, 0), memberDetails)
+      .setOrException(ChooseTaxYearPage(eventType, 0), taxYear)
+      .setOrException(TotalPensionAmountsPage(eventType, 0), totalPaymentAmount)
+      .setOrException(MembersDetailsPage(eventType, 1), memberDetails2)
+      .setOrException(ChooseTaxYearPage(eventType, 1), taxYear)
+      .setOrException(TotalPensionAmountsPage(eventType, 1), totalPaymentAmount)
+
 }

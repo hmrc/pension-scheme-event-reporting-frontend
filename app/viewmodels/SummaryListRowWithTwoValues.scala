@@ -14,22 +14,8 @@
  * limitations under the License.
  */
 
-package pages.common
+package viewmodels
 
-import models.common.MembersDetails
-import models.enumeration.EventType.{Event1, Event23}
-import pages.behaviours.PageBehaviours
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 
-class MembersDetailsPageSpec extends PageBehaviours {
-
-  "MembersDetailsPage" - {
-
-    "event1" - {
-      beRetrievable[MembersDetails](MembersDetailsPage(Event1, 0))
-
-      beSettable[MembersDetails](MembersDetailsPage(Event1, 0))
-
-      beRemovable[MembersDetails](MembersDetailsPage(Event1, 0))
-    }
-  }
-}
+case class SummaryListRowWithTwoValues(key: String, firstValue: String, secondValue: String, actions: Option[Actions])

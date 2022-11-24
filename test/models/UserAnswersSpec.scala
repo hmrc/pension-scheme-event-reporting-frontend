@@ -18,14 +18,16 @@ package models
 
 import base.SpecBase
 import data.SampleData
-import data.SampleData.{companyDetails, memberDetails, userAnswersWithOneMemberAndEmployer}
-import models.enumeration.EventType.Event1
+import data.SampleData._
+import models.common.MembersSummary
+import models.common.MembersSummary.readsMemberValue
+import models.enumeration.EventType.{Event1, Event22}
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersOrEmployersSummary.readsMemberOrEmployerValue
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.{MembersOrEmployersSummary, PaymentDetails}
 import org.scalatest.matchers.must.Matchers
-import pages.common.{MembersDetailsPage, MembersOrEmployersPage}
+import pages.common.{ChooseTaxYearPage, MembersDetailsPage, MembersOrEmployersPage, MembersPage}
 import pages.event1.employer.CompanyDetailsPage
 import pages.event1.{HowAddUnauthPaymentPage, PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
 
@@ -94,6 +96,48 @@ class UserAnswersSpec extends SpecBase with Matchers {
 
     "must count correctly when nothing present" in {
       UserAnswers().sumAll(MembersOrEmployersPage(Event1), readsMemberOrEmployerValue) mustBe 0
+    }
+  }
+  "event22" - {
+    "getAll" - {
+      "must return the list of members" in {
+        sampleMemberJourneyDataEvent22.getAll(MembersPage(Event22))(MembersSummary.readsMember) mustBe
+          Seq(MembersSummary(SampleData.memberDetails.fullName, BigDecimal(999.11), SampleData.memberDetails.nino))
+      }
+
+      "must return empty list if nothing present" in {
+        UserAnswers().getAll(MembersPage(Event22))(MembersSummary.readsMember) mustBe Nil
+      }
+
+      "must return the list of members where member value and member details missing" in {
+        val userAnswersWithOneMember: UserAnswers = UserAnswers()
+          .setOrException(ChooseTaxYearPage(Event22, 0), taxYear)
+
+        userAnswersWithOneMember.getAll(MembersPage(Event22))(MembersSummary.readsMember) mustBe
+          Seq(MembersSummary("Not entered", BigDecimal(0.00), "Not entered"))
+      }
+
+    }
+
+    "countAll" - {
+      "must count correctly when two members are present" in {
+        sampleTwoMemberJourneyData(Event22).countAll(MembersPage(Event22)) mustBe 2
+      }
+
+      "must count correctly when nothing present" in {
+        UserAnswers().countAll(MembersPage(Event22)) mustBe 0
+      }
+    }
+
+
+    "sumAll" - {
+      "must count correctly when two members are present" in {
+        sampleTwoMemberJourneyData(Event22).sumAll(MembersPage(Event22), readsMemberValue) mustBe BigDecimal(1998.22)
+      }
+
+      "must count correctly when nothing present" in {
+        UserAnswers().sumAll(MembersPage(Event22), readsMemberValue) mustBe 0
+      }
     }
   }
 }

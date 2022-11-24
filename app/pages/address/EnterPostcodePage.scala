@@ -20,14 +20,13 @@ import controllers.address.routes
 import models.UserAnswers
 import models.address.TolerantAddress
 import models.enumeration.AddressJourneyType
-import pages.common.MembersOrEmployersPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class EnterPostcodePage(addressJourneyType: AddressJourneyType, index: Int) extends QuestionPage[Seq[TolerantAddress]] {
 
-  override def path: JsPath = MembersOrEmployersPage(addressJourneyType.eventType)(index) \ toString
+  override def path: JsPath = JsPath \ toString
 
   override def toString: String = "enterPostcode"
 

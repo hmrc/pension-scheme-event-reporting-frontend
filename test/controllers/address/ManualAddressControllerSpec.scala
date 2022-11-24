@@ -126,11 +126,11 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
           )
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(ChooseAddressPage(Event1EmployerAddressJourney, 0), seqAddresses.head).success.value
+        //val updatedAnswers = emptyUserAnswers.set(ChooseAddressPage(Event1EmployerAddressJourney, 0), seqAddresses.head).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ChooseAddressPage(Event1EmployerAddressJourney, 0)
-          .navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          .navigate(waypoints, emptyUserAnswers, emptyUserAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
