@@ -69,7 +69,7 @@ class SchemeDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValu
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", SchemeDetailsPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
+              .withVisuallyHiddenText(messages("schemeName.change.hidden"))
           )
         )
       )
