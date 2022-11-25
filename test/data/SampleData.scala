@@ -108,6 +108,7 @@ object SampleData {
   val taxYear: ChooseTaxYear = ChooseTaxYear("2013")
 
   val totalPaymentAmount: BigDecimal = BigDecimal(999.11)
+  val totalPaymentAmountEvent23: BigDecimal = BigDecimal(1234.56)
 
   val userAnswersWithOneMemberAndEmployer: UserAnswers = UserAnswers()
     .setOrException(WhoReceivedUnauthPaymentPage(0), Member)

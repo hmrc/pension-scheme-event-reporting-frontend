@@ -30,26 +30,26 @@
  * limitations under the License.
  */
 
-package controllers.event22
+package controllers.event23
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import data.SampleData
-import data.SampleData.sampleMemberJourneyDataEvent22
-import forms.event22.AnnualAllowanceSummaryFormProvider
+import data.SampleData.sampleMemberJourneyDataEvent23
+import forms.event23.AnnualAllowanceSummaryFormProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
-import pages.event22.AnnualAllowanceSummaryPage
+import pages.event23.AnnualAllowanceSummaryPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import viewmodels.{Message, SummaryListRowWithTwoValues}
-import views.html.event22.AnnualAllowanceSummaryView
+import views.html.event23.AnnualAllowanceSummaryView
 
 import scala.concurrent.Future
 
@@ -80,7 +80,7 @@ class AnnualAllowanceSummaryControllerSpec extends SpecBase with BeforeAndAfterE
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent22)).build()
+      val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent23)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -94,12 +94,12 @@ class AnnualAllowanceSummaryControllerSpec extends SpecBase with BeforeAndAfterE
             SummaryListRowWithTwoValues(
               key = SampleData.memberDetails.fullName,
               firstValue = SampleData.memberDetails.nino,
-              secondValue = SampleData.totalPaymentAmount.toString,
+              secondValue = SampleData.totalPaymentAmountEvent23.toString,
               actions = Some(Actions(
                 items = Seq(
                   ActionItem(
                     content = Text(Message("site.view")),
-                    href = controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url
+                    href = controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url
                   ),
                   ActionItem(
                     content = Text(Message("site.remove")),
@@ -110,7 +110,7 @@ class AnnualAllowanceSummaryControllerSpec extends SpecBase with BeforeAndAfterE
             ))
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, expectedSeq, BigDecimal(999.11))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, expectedSeq, BigDecimal(1234.56))(request, messages(application)).toString
       }
     }
 
