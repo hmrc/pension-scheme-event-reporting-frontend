@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package forms.event22
+package forms.common
 
 import forms.mappings.Mappings
+import models.enumeration.EventType
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class AnnualAllowanceSummaryFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(eventType: EventType): Form[Boolean] =
     Form(
-      "value" -> boolean("annualAllowanceSummary.error.required")
+      "value" -> boolean(s"annualAllowanceSummary.event${eventType.toString}.error.required")
     )
 }

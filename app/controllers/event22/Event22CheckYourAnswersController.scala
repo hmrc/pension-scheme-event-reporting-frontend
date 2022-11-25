@@ -56,7 +56,7 @@ class Event22CheckYourAnswersController @Inject()(
     (identify andThen getData(Event22) andThen requireData).async { implicit request =>
       connector.compileEvent("87219363YN", Event22).map {
         _ =>
-          Redirect(controllers.event22.routes.AnnualAllowanceSummaryController.onPageLoad(EmptyWaypoints).url)
+          Redirect(controllers.common.routes.AnnualAllowanceSummaryController.onPageLoad(EmptyWaypoints, Event22).url)
       }
     }
 

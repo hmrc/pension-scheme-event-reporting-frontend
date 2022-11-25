@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-package pages.event22
+package pages.common
 
-import controllers.event22.routes
 import models.UserAnswers
 import models.enumeration.EventType
-import pages.common.MembersPage
+import models.enumeration.EventType.{Event22, Event23}
+import pages.event22.HowAddAnnualAllowancePage
+import pages.event23.HowAddDualAllowancePage
 import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AnnualAllowanceSummaryPage extends QuestionPage[Boolean] {
+case class AnnualAllowanceSummaryPage(eventType: EventType) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "annualAllowanceSummary"
+  override def path: JsPath = JsPath \ s"event${eventType.toString}" \ AnnualAllowanceSummaryPage.toString
 
   override def route(waypoints: Waypoints): Call =
-    routes.AnnualAllowanceSummaryController.onPageLoad(waypoints)
+    controllers.common.routes.AnnualAllowanceSummaryController.onPageLoad(waypoints, eventType)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-
-    answers.get(AnnualAllowanceSummaryPage) match {
-      case Some(true) => HowAddAnnualAllowancePage(answers.countAll(MembersPage(EventType.Event22)))
+    (eventType, answers.get(AnnualAllowanceSummaryPage(eventType))) match {
+      case (Event22, Some(true)) => HowAddAnnualAllowancePage(answers.countAll(MembersPage(EventType.Event22)))
+      case (Event23, Some(true)) => HowAddDualAllowancePage(answers.countAll(MembersPage(EventType.Event23)))
       case _ => EventSummaryPage
     }
-
   }
+}
+object AnnualAllowanceSummaryPage {
+  override def toString: String = "annualAllowanceSummary"
 }
 
