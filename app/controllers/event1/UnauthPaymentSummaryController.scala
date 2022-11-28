@@ -25,7 +25,7 @@ import models.event1.MembersOrEmployersSummary
 import pages.Waypoints
 import pages.common.MembersOrEmployersPage
 import pages.event1.UnauthPaymentSummaryPage
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.Aliases._
@@ -39,23 +39,43 @@ import views.html.event1.UnauthPaymentSummaryView
 import javax.inject.Inject
 
 class UnauthPaymentSummaryController @Inject()(
-                                        val controllerComponents: MessagesControllerComponents,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        userAnswersCacheConnector: UserAnswersCacheConnector,
-                                        formProvider: UnauthPaymentSummaryFormProvider,
-                                        view: UnauthPaymentSummaryView
-                                 ) extends FrontendBaseController with I18nSupport {
+                                                val controllerComponents: MessagesControllerComponents,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                userAnswersCacheConnector: UserAnswersCacheConnector,
+                                                formProvider: UnauthPaymentSummaryFormProvider,
+                                                view: UnauthPaymentSummaryView
+                                              ) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(EventType.Event1) andThen requireData) { implicit request =>
-    val mappedMemberOrEmployer = request.userAnswers
-      .getAll(MembersOrEmployersPage(EventType.Event1))(MembersOrEmployersSummary.readsMemberOrEmployer).zipWithIndex.map {
+    val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers)
+    Ok(view(form, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers)))
+  }
+
+  private def sumValue(userAnswers: UserAnswers) =
+    userAnswers.sumAll(MembersOrEmployersPage(EventType.Event1), MembersOrEmployersSummary.readsMemberOrEmployerValue)
+
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(EventType.Event1) andThen requireData) {
+    implicit request =>
+      val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers)
+      form.bindFromRequest().fold(
+        formWithErrors => {
+          BadRequest(view(formWithErrors, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers)))
+        },
+        value => {
+          val userAnswerUpdated = request.userAnswers.setOrException(UnauthPaymentSummaryPage, value)
+          Redirect(UnauthPaymentSummaryPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)}
+      )
+  }
+
+  private def getMappedMemberOrEmployer(userAnswers: UserAnswers)  (implicit messages: Messages)  : Seq[SummaryListRow] = {
+    userAnswers.getAll(MembersOrEmployersPage(EventType.Event1))(MembersOrEmployersSummary.readsMemberOrEmployer).zipWithIndex.map {
       case (memberOrEmployerSummary, index) =>
 
-      val value = ValueViewModel(HtmlFormat.escape(memberOrEmployerSummary.unauthorisedPaymentValue.toString()).toString)
+        val value = ValueViewModel(HtmlFormat.escape(memberOrEmployerSummary.unauthorisedPaymentValue.toString()).toString)
 
         SummaryListRow(
           key = Key(
@@ -75,22 +95,6 @@ class UnauthPaymentSummaryController @Inject()(
             )
           ))
         )
-      }
-    Ok(view(form, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers)))
-  }
-
-  private def sumValue(userAnswers: UserAnswers) =
-    userAnswers.sumAll(MembersOrEmployersPage(EventType.Event1), MembersOrEmployersSummary.readsMemberOrEmployerValue)
-
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(EventType.Event1) andThen requireData) {
-    implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          BadRequest(view(formWithErrors, waypoints, Nil, sumValue(request.userAnswers)))
-        },
-        value => {
-          val userAnswerUpdated = request.userAnswers.setOrException(UnauthPaymentSummaryPage, value)
-          Redirect(UnauthPaymentSummaryPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)}
-    )
+    }
   }
 }

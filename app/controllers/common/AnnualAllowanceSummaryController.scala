@@ -25,7 +25,7 @@ import models.enumeration.EventType
 import models.enumeration.EventType.{Event22, Event23}
 import pages.Waypoints
 import pages.common.{AnnualAllowanceSummaryPage, MembersPage}
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -47,31 +47,8 @@ class AnnualAllowanceSummaryController @Inject()(
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val form = formProvider(eventType)
-      val mappedMember = request.userAnswers
-        .getAll(MembersPage(eventType))(MembersSummary.readsMember).zipWithIndex.map {
-        case (memberSummary, index) =>
-          SummaryListRowWithTwoValues(
-            key = memberSummary.name,
-            firstValue = memberSummary.nINumber,
-            secondValue = memberSummary.PaymentValue.toString,
-            actions = Some(Actions(
-              items = Seq(
-                ActionItem(
-                  content = Text(Message("site.view")),
-                  href = eventType match {
-                    case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
-                    case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
-                  }
-                ),
-                ActionItem(
-                  content = Text(Message("site.remove")),
-                  href = "#"
-                )
-              )
-            ))
-          )
-      }
-      Ok(view(form, waypoints, eventType, mappedMember, sumValue(request.userAnswers, eventType)))
+      val mappedMembers = getMappedMembers(request.userAnswers, eventType)
+      Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
     }
 
   private def sumValue(userAnswers: UserAnswers, eventType: EventType) =  userAnswers.sumAll(MembersPage(eventType), MembersSummary.readsMemberValue)
@@ -79,13 +56,40 @@ class AnnualAllowanceSummaryController @Inject()(
   def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
     implicit request =>
       val form = formProvider(eventType)
+      val mappedMembers = getMappedMembers(request.userAnswers, eventType)
       form.bindFromRequest().fold(
         formWithErrors => {
-          BadRequest(view(formWithErrors, waypoints, eventType, Nil, sumValue(request.userAnswers, eventType)))
+          BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
         },
         value => {
           val userAnswerUpdated = request.userAnswers.setOrException(AnnualAllowanceSummaryPage(eventType), value)
           Redirect(AnnualAllowanceSummaryPage(eventType).navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)}
       )
+  }
+
+   private def getMappedMembers(userAnswers : UserAnswers, eventType: EventType) (implicit messages: Messages) : Seq[SummaryListRowWithTwoValues] = {
+    userAnswers.getAll(MembersPage(eventType))(MembersSummary.readsMember).zipWithIndex.map {
+      case (memberSummary, index) =>
+        SummaryListRowWithTwoValues(
+          key = memberSummary.name,
+          firstValue = memberSummary.nINumber,
+          secondValue = memberSummary.PaymentValue.toString,
+          actions = Some(Actions(
+            items = Seq(
+              ActionItem(
+                content = Text(Message("site.view")),
+                href = eventType match {
+                  case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
+                  case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
+                }
+              ),
+              ActionItem(
+                content = Text(Message("site.remove")),
+                href = "#"
+              )
+            )
+          ))
+        )
+    }
   }
 }
