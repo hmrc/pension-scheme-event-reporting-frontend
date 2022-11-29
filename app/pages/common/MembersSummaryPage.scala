@@ -41,6 +41,6 @@ case class MembersSummaryPage(eventType: EventType) extends QuestionPage[Boolean
   }
 }
 object MembersSummaryPage {
-  override def toString: String = "annualAllowanceSummary"
+  override def toString: String = "membersSummary"
 }
 
