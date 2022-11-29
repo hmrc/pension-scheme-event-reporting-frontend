@@ -20,14 +20,14 @@ import forms.behaviours.BooleanFieldBehaviours
 import models.enumeration.EventType.{Event22, Event23}
 import play.api.data.FormError
 
-class AnnualAllowanceSummaryFormProviderSpec extends BooleanFieldBehaviours {
+class MembersSummaryFormProviderSpec extends BooleanFieldBehaviours {
   val invalidKey = "error.boolean"
   ".value" - {
 
     "event22" - {
       val fieldName = "value"
-      val requiredKeyEvent22 = "annualAllowanceSummary.event22.error.required"
-      val form = new AnnualAllowanceSummaryFormProvider()(Event22)
+      val requiredKeyEvent22 = "membersSummary.event22.error.required"
+      val form = new MembersSummaryFormProvider()(Event22)
 
       behave like booleanField(
         form,
@@ -44,8 +44,8 @@ class AnnualAllowanceSummaryFormProviderSpec extends BooleanFieldBehaviours {
 
     "event23" - {
       val fieldName = "value"
-      val requiredKeyEvent23 = "annualAllowanceSummary.event23.error.required"
-      val form = new AnnualAllowanceSummaryFormProvider()(Event23)
+      val requiredKeyEvent23 = "membersSummary.event23.error.required"
+      val form = new MembersSummaryFormProvider()(Event23)
 
       behave like booleanField(
         form,

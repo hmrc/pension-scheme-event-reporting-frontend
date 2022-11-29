@@ -25,22 +25,22 @@ import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AnnualAllowanceSummaryPage(eventType: EventType) extends QuestionPage[Boolean] {
+case class MembersSummaryPage(eventType: EventType) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ s"event${eventType.toString}" \ AnnualAllowanceSummaryPage.toString
+  override def path: JsPath = JsPath \ s"event${eventType.toString}" \ MembersSummaryPage.toString
 
   override def route(waypoints: Waypoints): Call =
-    controllers.common.routes.AnnualAllowanceSummaryController.onPageLoad(waypoints, eventType)
+    controllers.common.routes.MembersSummaryController.onPageLoad(waypoints, eventType)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    (eventType, answers.get(AnnualAllowanceSummaryPage(eventType))) match {
+    (eventType, answers.get(MembersSummaryPage(eventType))) match {
       case (Event22, Some(true)) => HowAddAnnualAllowancePage(answers.countAll(MembersPage(EventType.Event22)))
       case (Event23, Some(true)) => HowAddDualAllowancePage(answers.countAll(MembersPage(EventType.Event23)))
       case _ => EventSummaryPage
     }
   }
 }
-object AnnualAllowanceSummaryPage {
+object MembersSummaryPage {
   override def toString: String = "annualAllowanceSummary"
 }
 

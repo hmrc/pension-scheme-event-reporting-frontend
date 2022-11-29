@@ -36,40 +36,40 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import data.SampleData
 import data.SampleData.{sampleMemberJourneyDataEvent22, sampleMemberJourneyDataEvent23}
-import forms.common.AnnualAllowanceSummaryFormProvider
+import forms.common.MembersSummaryFormProvider
 import models.enumeration.EventType.{Event22, Event23}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
-import pages.common.AnnualAllowanceSummaryPage
+import pages.common.MembersSummaryPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import viewmodels.{Message, SummaryListRowWithTwoValues}
-import views.html.common.AnnualAllowanceSummaryView
+import views.html.common.MembersSummaryView
 
 import scala.concurrent.Future
 
-class AnnualAllowanceSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
+class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new AnnualAllowanceSummaryFormProvider()
+  private val formProvider = new MembersSummaryFormProvider()
   private val formEvent22 = formProvider(Event22)
   private val formEvent23 = formProvider(Event23)
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRouteEvent22: String = routes.AnnualAllowanceSummaryController.onPageLoad(waypoints, Event22).url
+  private def getRouteEvent22: String = routes.MembersSummaryController.onPageLoad(waypoints, Event22).url
 
-  private def postRouteEvent22: String = routes.AnnualAllowanceSummaryController.onSubmit(waypoints, Event22).url
+  private def postRouteEvent22: String = routes.MembersSummaryController.onSubmit(waypoints, Event22).url
 
-  private def getRouteEvent23: String = routes.AnnualAllowanceSummaryController.onPageLoad(waypoints, Event23).url
+  private def getRouteEvent23: String = routes.MembersSummaryController.onPageLoad(waypoints, Event23).url
 
-  private def postRouteEvent23: String = routes.AnnualAllowanceSummaryController.onSubmit(waypoints, Event23).url
+  private def postRouteEvent23: String = routes.MembersSummaryController.onSubmit(waypoints, Event23).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -92,14 +92,14 @@ class AnnualAllowanceSummaryControllerSpec extends SpecBase with BeforeAndAfterE
 
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[AnnualAllowanceSummaryView]
+          val view = application.injector.instanceOf[MembersSummaryView]
 
           val expectedSeq =
             Seq(
               SummaryListRowWithTwoValues(
                 key = SampleData.memberDetails.fullName,
                 firstValue = SampleData.memberDetails.nino,
-                secondValue = SampleData.totalPaymentAmount.toString,
+                secondValue = SampleData.totalPaymentAmount.setScale(2).toString(),
                 actions = Some(Actions(
                   items = Seq(
                     ActionItem(
@@ -132,10 +132,10 @@ class AnnualAllowanceSummaryControllerSpec extends SpecBase with BeforeAndAfterE
             FakeRequest(POST, postRouteEvent22).withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(AnnualAllowanceSummaryPage(Event22), true).success.value
+          val updatedAnswers = emptyUserAnswers.set(MembersSummaryPage(Event22), true).success.value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual AnnualAllowanceSummaryPage(Event22).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          redirectLocation(result).value mustEqual MembersSummaryPage(Event22).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         }
       }
 
@@ -151,13 +151,13 @@ class AnnualAllowanceSummaryControllerSpec extends SpecBase with BeforeAndAfterE
           val request =
             FakeRequest(POST, postRouteEvent22).withFormUrlEncodedBody(("value", "invalid"))
 
-          val view = application.injector.instanceOf[AnnualAllowanceSummaryView]
+          val view = application.injector.instanceOf[MembersSummaryView]
           val boundForm = formEvent22.bind(Map("value" -> "invalid"))
 
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event22, Nil, BigDecimal(0))(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event22, Nil, BigDecimal(0).setScale(2))(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
         }
       }
@@ -173,7 +173,7 @@ class AnnualAllowanceSummaryControllerSpec extends SpecBase with BeforeAndAfterE
 
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[AnnualAllowanceSummaryView]
+          val view = application.injector.instanceOf[MembersSummaryView]
 
           val expectedSeq =
             Seq(
@@ -213,10 +213,10 @@ class AnnualAllowanceSummaryControllerSpec extends SpecBase with BeforeAndAfterE
             FakeRequest(POST, postRouteEvent23).withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(AnnualAllowanceSummaryPage(Event23), true).success.value
+          val updatedAnswers = emptyUserAnswers.set(MembersSummaryPage(Event23), true).success.value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual AnnualAllowanceSummaryPage(Event23).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          redirectLocation(result).value mustEqual MembersSummaryPage(Event23).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         }
       }
 
@@ -232,13 +232,13 @@ class AnnualAllowanceSummaryControllerSpec extends SpecBase with BeforeAndAfterE
           val request =
             FakeRequest(POST, postRouteEvent23).withFormUrlEncodedBody(("value", "invalid"))
 
-          val view = application.injector.instanceOf[AnnualAllowanceSummaryView]
+          val view = application.injector.instanceOf[MembersSummaryView]
           val boundForm = formEvent23.bind(Map("value" -> "invalid"))
 
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event23, Nil, BigDecimal(0))(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event23, Nil, BigDecimal(0).setScale(2))(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
         }
       }

@@ -18,30 +18,30 @@ package controllers.common
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
-import forms.common.AnnualAllowanceSummaryFormProvider
+import forms.common.MembersSummaryFormProvider
 import models.UserAnswers
 import models.common.MembersSummary
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event22, Event23}
 import pages.Waypoints
-import pages.common.{AnnualAllowanceSummaryPage, MembersPage}
+import pages.common.{MembersPage, MembersSummaryPage}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.{Message, SummaryListRowWithTwoValues}
-import views.html.common.AnnualAllowanceSummaryView
+import views.html.common.MembersSummaryView
 
 import javax.inject.Inject
 
-class AnnualAllowanceSummaryController @Inject()(
+class MembersSummaryController @Inject()(
                                                   val controllerComponents: MessagesControllerComponents,
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                  formProvider: AnnualAllowanceSummaryFormProvider,
-                                                  view: AnnualAllowanceSummaryView
+                                                  formProvider: MembersSummaryFormProvider,
+                                                  view: MembersSummaryView
                                                 ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] =
@@ -51,7 +51,8 @@ class AnnualAllowanceSummaryController @Inject()(
       Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
     }
 
-  private def sumValue(userAnswers: UserAnswers, eventType: EventType) =  userAnswers.sumAll(MembersPage(eventType), MembersSummary.readsMemberValue)
+  private def sumValue(userAnswers: UserAnswers, eventType: EventType) =
+    userAnswers.sumAll(MembersPage(eventType), MembersSummary.readsMemberValue).setScale(2)
 
   def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
     implicit request =>
@@ -62,8 +63,8 @@ class AnnualAllowanceSummaryController @Inject()(
           BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
         },
         value => {
-          val userAnswerUpdated = request.userAnswers.setOrException(AnnualAllowanceSummaryPage(eventType), value)
-          Redirect(AnnualAllowanceSummaryPage(eventType).navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)}
+          val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType), value)
+          Redirect(MembersSummaryPage(eventType).navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)}
       )
   }
 
@@ -73,7 +74,7 @@ class AnnualAllowanceSummaryController @Inject()(
         SummaryListRowWithTwoValues(
           key = memberSummary.name,
           firstValue = memberSummary.nINumber,
-          secondValue = memberSummary.PaymentValue.toString,
+          secondValue = memberSummary.PaymentValue.setScale(2).toString(),
           actions = Some(Actions(
             items = Seq(
               ActionItem(
