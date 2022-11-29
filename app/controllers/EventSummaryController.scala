@@ -20,6 +20,7 @@ import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import forms.EventSummaryFormProvider
 import models.UserAnswers
+import models.enumeration.EventType
 import pages.{EventSummaryPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,13 +41,13 @@ class EventSummaryController @Inject()(
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                         formProvider: EventSummaryFormProvider,
                                         view: EventSummaryView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify.async { implicit request =>
-    connector.getEventReportSummary(request.pstr).map{ seqOfEventTypes =>
-      val mappedEvents = seqOfEventTypes.map{ event =>
+    connector.getEventReportSummary(request.pstr).map { seqOfEventTypes =>
+      val mappedEvents = seqOfEventTypes.map { event =>
         SummaryListRow(
           key = Key(
             content = Text(Message(s"eventSummary.event${event.toString}"))
@@ -55,7 +56,7 @@ class EventSummaryController @Inject()(
             items = Seq(
               ActionItem(
                 content = Text(Message("site.change")),
-                href = "#"
+                href = if (event == EventType.Event22) controllers.event22.routes.AnnualAllowanceSummaryController.onPageLoad().url else "#"
               ),
               ActionItem(
                 content = Text(Message("site.remove")),
@@ -65,7 +66,7 @@ class EventSummaryController @Inject()(
           ))
         )
       }
-    Ok(view(form, waypoints, mappedEvents))
+      Ok(view(form, waypoints, mappedEvents))
     }
   }
 
@@ -75,7 +76,8 @@ class EventSummaryController @Inject()(
         formWithErrors => BadRequest(view(formWithErrors, waypoints, Nil)),
         value => {
           val userAnswerUpdated = UserAnswers().setOrException(EventSummaryPage, value)
-          Redirect(EventSummaryPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)}
-    )
+          Redirect(EventSummaryPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)
+        }
+      )
   }
 }
