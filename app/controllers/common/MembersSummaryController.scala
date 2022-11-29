@@ -19,6 +19,7 @@ package controllers.common
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.common.MembersSummaryFormProvider
+import forms.mappings.Formatters
 import models.UserAnswers
 import models.common.MembersSummary
 import models.enumeration.EventType
@@ -42,7 +43,7 @@ class MembersSummaryController @Inject()(
                                                   userAnswersCacheConnector: UserAnswersCacheConnector,
                                                   formProvider: MembersSummaryFormProvider,
                                                   view: MembersSummaryView
-                                                ) extends FrontendBaseController with I18nSupport {
+                                                ) extends FrontendBaseController with I18nSupport with Formatters {
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
@@ -52,7 +53,7 @@ class MembersSummaryController @Inject()(
     }
 
   private def sumValue(userAnswers: UserAnswers, eventType: EventType) =
-    userAnswers.sumAll(MembersPage(eventType), MembersSummary.readsMemberValue).setScale(2)
+    currencyFormatter.format(userAnswers.sumAll(MembersPage(eventType), MembersSummary.readsMemberValue))
 
   def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
     implicit request =>
@@ -74,7 +75,7 @@ class MembersSummaryController @Inject()(
         SummaryListRowWithTwoValues(
           key = memberSummary.name,
           firstValue = memberSummary.nINumber,
-          secondValue = memberSummary.PaymentValue.setScale(2).toString(),
+          secondValue = currencyFormatter.format(memberSummary.PaymentValue),
           actions = Some(Actions(
             items = Seq(
               ActionItem(

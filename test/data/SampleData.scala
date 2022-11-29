@@ -109,7 +109,7 @@ object SampleData {
 
   val totalPaymentAmount: BigDecimal = BigDecimal(999.11)
   val totalPaymentAmountEvent23: BigDecimal = BigDecimal(1234.56)
-
+  val totalPaymentAmountEvent23CurrencyFormat: String = "1,234.56"
   val userAnswersWithOneMemberAndEmployer: UserAnswers = UserAnswers()
     .setOrException(WhoReceivedUnauthPaymentPage(0), Member)
     .setOrException(PaymentValueAndDatePage(0), PaymentDetails(BigDecimal(857.00), LocalDate.of(2022, 11, 9)))

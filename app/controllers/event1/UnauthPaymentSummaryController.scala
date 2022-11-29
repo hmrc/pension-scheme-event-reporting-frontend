@@ -19,6 +19,7 @@ package controllers.event1
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.event1.UnauthPaymentSummaryFormProvider
+import forms.mappings.Formatters
 import models.UserAnswers
 import models.enumeration.EventType
 import models.event1.MembersOrEmployersSummary
@@ -46,7 +47,7 @@ class UnauthPaymentSummaryController @Inject()(
                                                 userAnswersCacheConnector: UserAnswersCacheConnector,
                                                 formProvider: UnauthPaymentSummaryFormProvider,
                                                 view: UnauthPaymentSummaryView
-                                              ) extends FrontendBaseController with I18nSupport {
+                                              ) extends FrontendBaseController with I18nSupport with Formatters {
 
   private val form = formProvider()
 
@@ -56,7 +57,7 @@ class UnauthPaymentSummaryController @Inject()(
   }
 
   private def sumValue(userAnswers: UserAnswers) =
-    userAnswers.sumAll(MembersOrEmployersPage(EventType.Event1), MembersOrEmployersSummary.readsMemberOrEmployerValue)
+    currencyFormatter.format(userAnswers.sumAll(MembersOrEmployersPage(EventType.Event1), MembersOrEmployersSummary.readsMemberOrEmployerValue))
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(EventType.Event1) andThen requireData) {
     implicit request =>
@@ -74,9 +75,7 @@ class UnauthPaymentSummaryController @Inject()(
   private def getMappedMemberOrEmployer(userAnswers: UserAnswers)  (implicit messages: Messages)  : Seq[SummaryListRow] = {
     userAnswers.getAll(MembersOrEmployersPage(EventType.Event1))(MembersOrEmployersSummary.readsMemberOrEmployer).zipWithIndex.map {
       case (memberOrEmployerSummary, index) =>
-
-        val value = ValueViewModel(HtmlFormat.escape(memberOrEmployerSummary.unauthorisedPaymentValue.toString()).toString)
-
+        val value = ValueViewModel(HtmlFormat.escape(currencyFormatter.format(memberOrEmployerSummary.unauthorisedPaymentValue)).toString)
         SummaryListRow(
           key = Key(
             content = Text(memberOrEmployerSummary.name)
