@@ -56,7 +56,7 @@ class EventSummaryController @Inject()(
             items = Seq(
               ActionItem(
                 content = Text(Message("site.change")),
-                href = generateChangeLink(event)
+                href = changeLinkForEvent(event)
               ),
               ActionItem(
                 content = Text(Message("site.remove")),
@@ -81,7 +81,10 @@ class EventSummaryController @Inject()(
       )
   }
 
-  private def generateChangeLink(eventType: EventType): String = {
-    if (eventType == EventType.Event22) controllers.event22.routes.AnnualAllowanceSummaryController.onPageLoad().url else "#"
+  private def changeLinkForEvent(eventType: EventType): String = {
+    eventType match {
+      case EventType.Event22 => controllers.event22.routes.AnnualAllowanceSummaryController.onPageLoad().url
+      case _ => "#"
+    }
   }
 }
