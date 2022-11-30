@@ -21,7 +21,8 @@ import controllers.actions._
 import forms.EventSummaryFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
-import pages.{EventSummaryPage, Waypoints}
+import models.enumeration.EventType.{Event22, Event23}
+import pages.{EmptyWaypoints, EventSummaryPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.Aliases._
@@ -83,7 +84,8 @@ class EventSummaryController @Inject()(
 
   private def changeLinkForEvent(eventType: EventType): String = {
     eventType match {
-      case EventType.Event22 => controllers.event22.routes.AnnualAllowanceSummaryController.onPageLoad().url
+      case Event22 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event22).url
+      case Event23 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event23).url
       case _ => "#"
     }
   }
