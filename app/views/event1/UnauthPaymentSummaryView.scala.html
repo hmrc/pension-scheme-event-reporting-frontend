@@ -22,7 +22,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, memberOrEmployerSeq: Seq[SummaryListRow], total: BigDecimal)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, memberOrEmployerSeq: Seq[SummaryListRow], total: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("unauthPaymentSummary.title", "2022"))) {
 

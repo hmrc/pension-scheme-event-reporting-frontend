@@ -74,7 +74,7 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
         val expectedSeq = Seq(SummaryListRow(
           key = Key(Text(value = "Joe Bloggs")),
-          value = Value(Text(value = "857.0")),
+          value = Value(Text(value = "857.00")),
           actions = Some(Actions(
             items = List(
               ActionItem(
@@ -94,7 +94,7 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
         ),
           SummaryListRow(
             key = Key(Text(value = "Company Name")),
-            value = Value(Text(value = "7687.0")),
+            value = Value(Text(value = "7,687.00")),
             actions = Some(Actions(
               items = List(
                 ActionItem(
@@ -113,7 +113,7 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, expectedSeq, BigDecimal(8544.0))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, expectedSeq, "8,544.00")(request, messages(application)).toString
       }
     }
 
@@ -155,7 +155,7 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, Nil, BigDecimal(0))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, Nil, "0.00")(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
       }
     }

@@ -174,9 +174,11 @@ POST        /new-report/:index/event-22-total-input-amount                      
 GET         /new-report/:index/event-22-tax-year                                  controllers.common.ChooseTaxYearController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, index: Index)
 POST        /new-report/:index/event-22-tax-year                                  controllers.common.ChooseTaxYearController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, index: Index)
 
-GET         /new-report/event-22-summary                                          controllers.event22.AnnualAllowanceSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /new-report/event-22-summary                                          controllers.event22.AnnualAllowanceSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-22-summary                                          controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+POST        /new-report/event-22-summary                                          controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 
+GET         /new-report/event-23-summary                                          controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
+POST        /new-report/event-23-summary                                          controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.

@@ -15,6 +15,7 @@
  *@
 
 @import viewmodels.SummaryListRowWithTwoValues
+@import models.enumeration.EventType
 
 @this(
     layout: templates.Layout,
@@ -25,30 +26,30 @@
 )
 
 
-@(form: Form[_], waypoints: Waypoints, memberSeq: Seq[SummaryListRowWithTwoValues], total: BigDecimal)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberSeq: Seq[SummaryListRowWithTwoValues], total: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("annualAllowanceSummary.title", "2022"))) {
+@layout(pageTitle = title(form, messages(s"membersSummary.event${eventType.toString}.title", "2022"))) {
 
-    @formHelper(action = controllers.event22.routes.AnnualAllowanceSummaryController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.common.routes.MembersSummaryController.onSubmit(waypoints, eventType), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-l">@messages("annualAllowanceSummary.heading", "2022")</h1>
+        <h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", "2022")</h1>
 
         @components.entity_summaryThree_table_list(
             memberSeq,
-            colOne = "annualAllowanceSummary.table.header1",
-            colTwo = "annualAllowanceSummary.table.header2",
-            colThree = "annualAllowanceSummary.table.header3",
+            colOne = "membersSummary.table.header1",
+            colTwo = "membersSummary.table.header2",
+            colThree = "membersSummary.table.header3",
             total
         )
 
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("annualAllowanceSummary.yesno.legend")).withCssClass("govuk-fieldset__legend--m"),
+                legend = LegendViewModel(messages(s"membersSummary.event${eventType.toString}.yesno.legend")).withCssClass("govuk-fieldset__legend--m"),
             )
         )
 
