@@ -83,6 +83,7 @@ class MembersSummaryController @Inject()(
                 href = eventType match {
                   case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
                   case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
+                  case _ => "#"
                 }
               ),
               ActionItem(

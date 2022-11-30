@@ -61,9 +61,9 @@ class UnauthPaymentSummaryController @Inject()(
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(EventType.Event1) andThen requireData) {
     implicit request =>
-      val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers)
       form.bindFromRequest().fold(
         formWithErrors => {
+          val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers)
           BadRequest(view(formWithErrors, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers)))
         },
         value => {
