@@ -38,7 +38,7 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
   override def route(waypoints: Waypoints): Call =
     routes.EventSelectionController.onPageLoad(waypoints)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     val optionEventType = answers.get(this).flatMap(es => EventType.fromEventSelection(es))
 
     optionEventType match {
