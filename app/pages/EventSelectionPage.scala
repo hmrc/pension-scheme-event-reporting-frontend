@@ -45,7 +45,7 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
       case Some(Event1) => HowAddUnauthPaymentPage(answers.countAll(MembersOrEmployersPage(Event1)))
       case Some(Event18) => Event18ConfirmationPage
       case Some(Event22) => HowAddAnnualAllowancePage(answers.countAll(MembersPage(Event22)))
-      case Some(Event23) => HowAddDualAllowancePage(answers.countAll(MembersPage(Event22)))
+      case Some(Event23) => HowAddDualAllowancePage(answers.countAll(MembersPage(Event23)))
       case Some(WindUp) => SchemeWindUpDatePage
       case _ => IndexPage
     }
