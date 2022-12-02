@@ -24,7 +24,7 @@ import models.enumeration.EventType
 import org.apache.commons.lang3.StringUtils
 import pages.common.TotalPensionAmountsPage
 import pages.{Waypoints, common}
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.common.TotalPensionAmountsView
@@ -44,27 +44,33 @@ class TotalPensionAmountsController @Inject()(val controllerComponents: Messages
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
     (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(TotalPensionAmountsPage(eventType, index))).fold(form)(form.fill)
-    val selectedTaxYear = request.userAnswers.flatMap(_.get(common.ChooseTaxYearPage(eventType, index))) match {
-      case Some(taxYear) => (taxYear.toString + " to " + (taxYear.toString.toInt + 1).toString)
+      val preparedForm = request.userAnswers.flatMap(_.get(TotalPensionAmountsPage(eventType, index))).fold(form)(form.fill)
+      val selectedTaxYear = getSelectedTaxYear(request.userAnswers, eventType, index)
+      Ok(view(preparedForm, waypoints, eventType, selectedTaxYear, index))
+    }
+
+  private def getSelectedTaxYear(userAnswers: Option[UserAnswers], eventType: EventType, index: Index)(implicit messages: Messages): String = {
+    userAnswers.flatMap(_.get(common.ChooseTaxYearPage(eventType, index))) match {
+      case Some(taxYear) => messages("chooseTaxYear.yearRangeRadio", taxYear.toString, (taxYear.toString.toInt + 1).toString)
       case _ => StringUtils.EMPTY
     }
-    Ok(view(preparedForm, waypoints, eventType, selectedTaxYear, index))
   }
 
   def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
     (identify andThen getData(eventType)).async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, StringUtils.EMPTY, index))),
-        value => {
-          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(TotalPensionAmountsPage(eventType, index), value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(TotalPensionAmountsPage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+      implicit request =>
+        form.bindFromRequest().fold(
+          formWithErrors => {
+            val selectedTaxYear = getSelectedTaxYear(request.userAnswers, eventType, index)
+            Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, selectedTaxYear, index)))
+          },
+          value => {
+            val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+            val updatedAnswers = originalUserAnswers.setOrException(TotalPensionAmountsPage(eventType, index), value)
+            userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+              Redirect(TotalPensionAmountsPage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            }
           }
-        }
-      )
-  }
+        )
+    }
 }
