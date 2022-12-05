@@ -41,7 +41,7 @@ class EventSummaryController @Inject()(
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                         formProvider: EventSummaryFormProvider,
                                         view: EventSummaryView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
@@ -70,7 +70,7 @@ class EventSummaryController @Inject()(
   }
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify.async { implicit request =>
-    summaryListRows.map{ rows =>
+    summaryListRows.map { rows =>
       Ok(view(form, waypoints, rows))
     }
   }
@@ -78,15 +78,11 @@ class EventSummaryController @Inject()(
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = identify.async {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors => {
-          summaryListRows.map { rows =>
-            BadRequest(view(formWithErrors, waypoints, rows))
-          }
-        },
+        formWithErrors => summaryListRows.map(rows => BadRequest(view(formWithErrors, waypoints, rows))),
         value => {
           val userAnswerUpdated = UserAnswers().setOrException(EventSummaryPage, value)
           Future.successful(Redirect(EventSummaryPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route))
         }
-    )
+      )
   }
 }
