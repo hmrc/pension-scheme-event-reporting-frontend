@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.event23
+package controllers.event22
 
 import com.google.inject.Inject
 import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.Index
-import models.enumeration.EventType.Event23
+import models.enumeration.EventType.Event22
 import models.requests.DataRequest
-import pages.event23.Event23CheckYourAnswersPage
+import pages.event22.Event22CheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ import views.html.CheckYourAnswersView
 
 import scala.concurrent.ExecutionContext
 
-class Event23CheckYourAnswersController @Inject()(
+class Event22CheckYourAnswersController @Inject()(
                                                    override val messagesApi: MessagesApi,
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
@@ -45,26 +45,26 @@ class Event23CheckYourAnswersController @Inject()(
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] =
-    (identify andThen getData(Event23) andThen requireData) { implicit request =>
-      val thisPage = Event23CheckYourAnswersPage(index)
+    (identify andThen getData(Event22) andThen requireData) { implicit request =>
+      val thisPage = Event22CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
-      val continueUrl = controllers.event23.routes.Event23CheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent23CYARows(waypoints, thisPage, index)), continueUrl))
+      val continueUrl = controllers.event22.routes.Event22CheckYourAnswersController.onClick.url
+      Ok(view(SummaryListViewModel(rows = buildEvent22CYARows(waypoints, thisPage, index)), continueUrl))
     }
 
   def onClick: Action[AnyContent] =
-    (identify andThen getData(Event23) andThen requireData).async { implicit request =>
-      connector.compileEvent("87219363YN", Event23).map {
+    (identify andThen getData(Event22) andThen requireData).async { implicit request =>
+      connector.compileEvent("87219363YN", Event22).map {
         _ =>
-          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event23).url)
+          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event22).url)
       }
     }
 
-  private def buildEvent23CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)
+  private def buildEvent22CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event23).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event23).toSeq ++
-      ChooseTaxYearSummary.row(request.userAnswers, waypoints, sourcePage, Event23, index).toSeq ++
-      TotalPensionAmountsSummary.row(request.userAnswers, waypoints, sourcePage, Event23, index).toSeq
+    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event22).toSeq ++
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event22).toSeq ++
+      ChooseTaxYearSummary.row(request.userAnswers, waypoints, sourcePage, Event22, index).toSeq ++
+      TotalPensionAmountsSummary.row(request.userAnswers, waypoints, sourcePage, Event22, index).toSeq
   }
 }

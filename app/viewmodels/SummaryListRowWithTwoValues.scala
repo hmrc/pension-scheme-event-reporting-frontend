@@ -14,30 +14,8 @@
  * limitations under the License.
  */
 
-package helpers
+package viewmodels
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 
-class DateHelper {
-  def now = LocalDate.now()
-}
-
-
-object DateHelper {
-
-  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-
-  def extractTaxYear(date: LocalDate): Int = {
-    val year = date.getYear
-
-    val taxYearDate = LocalDate.of(year, 4, 6)
-
-    if (date.isBefore(taxYearDate)) {
-      year - 1
-    } else {
-      year
-    }
-  }
-}
-
+case class SummaryListRowWithTwoValues(key: String, firstValue: String, secondValue: String, actions: Option[Actions])

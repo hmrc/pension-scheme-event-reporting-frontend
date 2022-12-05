@@ -14,30 +14,19 @@
  * limitations under the License.
  */
 
-package helpers
+package pages.common
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import models.Index
+import models.common.MembersSummary
+import models.enumeration.EventType
+import play.api.libs.json.JsPath
+import queries.Gettable
 
-class DateHelper {
-  def now = LocalDate.now()
+case class MembersPage(eventType: EventType) extends Gettable[Seq[MembersSummary]] {
+  def apply(index: Index): JsPath = path \ index
+
+  def path: JsPath = JsPath \ s"event${eventType.toString}" \ toString
+
+  override def toString: String = "members"
+
 }
-
-
-object DateHelper {
-
-  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-
-  def extractTaxYear(date: LocalDate): Int = {
-    val year = date.getYear
-
-    val taxYearDate = LocalDate.of(year, 4, 6)
-
-    if (date.isBefore(taxYearDate)) {
-      year - 1
-    } else {
-      year
-    }
-  }
-}
-

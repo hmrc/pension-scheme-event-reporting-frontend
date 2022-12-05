@@ -14,30 +14,19 @@
  * limitations under the License.
  */
 
-package helpers
+package forms.common
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
-class DateHelper {
-  def now = LocalDate.now()
+import forms.mappings.Mappings
+import models.enumeration.EventType
+import play.api.data.Form
+
+import javax.inject.Inject
+
+class MembersSummaryFormProvider @Inject() extends Mappings {
+
+  def apply(eventType: EventType): Form[Boolean] =
+    Form(
+      "value" -> boolean(s"membersSummary.event${eventType.toString}.error.required")
+    )
 }
-
-
-object DateHelper {
-
-  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-
-  def extractTaxYear(date: LocalDate): Int = {
-    val year = date.getYear
-
-    val taxYearDate = LocalDate.of(year, 4, 6)
-
-    if (date.isBefore(taxYearDate)) {
-      year - 1
-    } else {
-      year
-    }
-  }
-}
-

@@ -16,11 +16,10 @@
 
 package controllers.event22
 
-import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event22.HowAddAnnualAllowanceFormProvider
-import models.{Index, UserAnswers}
 import models.enumeration.EventType
+import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.event22.HowAddAnnualAllowancePage
 import play.api.i18n.I18nSupport
@@ -29,35 +28,30 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event22.HowAddAnnualAllowanceView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class HowAddAnnualAllowanceController @Inject()(val controllerComponents: MessagesControllerComponents,
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
-                                                userAnswersCacheConnector: UserAnswersCacheConnector,
                                                 formProvider: HowAddAnnualAllowanceFormProvider,
                                                 view: HowAddAnnualAllowanceView
-                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                               ) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType22 = EventType.Event22
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType22)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(HowAddAnnualAllowancePage(index))).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, index))
+    Ok(view(form, waypoints, index))
   }
 
-  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType22)).async {
+  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType22)) {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
+          BadRequest(view(formWithErrors, waypoints, index)),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(HowAddAnnualAllowancePage(index), value)
-          userAnswersCacheConnector.save(request.pstr, eventType22, updatedAnswers).map { _ =>
-            Redirect(HowAddAnnualAllowancePage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
-          }
+          Redirect(HowAddAnnualAllowancePage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
         }
       )
   }

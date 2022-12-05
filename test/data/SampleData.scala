@@ -20,7 +20,8 @@ import models.UserAnswers
 import models.address.{Address, TolerantAddress}
 import models.common.{ChooseTaxYear, MembersDetails}
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
-import models.enumeration.EventType.{Event1, Event23}
+import models.enumeration.EventType
+import models.enumeration.EventType.{Event1, Event22, Event23}
 import models.event1.HowAddUnauthPayment.Manual
 import models.event1.PaymentDetails
 import models.event1.PaymentNature.BenefitInKind
@@ -94,6 +95,7 @@ object SampleData {
   val companyDetails: CompanyDetails = CompanyDetails("Company Name", "12345678")
 
   val memberDetails: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567V")
+  val memberDetails2: MembersDetails = MembersDetails("Steven", "Bloggs", "AA123456C")
 
   val paymentDetails: PaymentDetails = PaymentDetails(1000.00, LocalDate.of(2022, 11, 8))
 
@@ -103,6 +105,11 @@ object SampleData {
 
   val schemeDetails: SchemeDetails = SchemeDetails(Some("SchemeName"), Some("SchemeReference"))
 
+  val taxYear: ChooseTaxYear = ChooseTaxYear("2013")
+
+  val totalPaymentAmount: BigDecimal = BigDecimal(999.11)
+  val totalPaymentAmountEvent23: BigDecimal = BigDecimal(1234.56)
+  val totalPaymentAmountEvent23CurrencyFormat: String = "1,234.56"
   val userAnswersWithOneMemberAndEmployer: UserAnswers = UserAnswers()
     .setOrException(WhoReceivedUnauthPaymentPage(0), Member)
     .setOrException(PaymentValueAndDatePage(0), PaymentDetails(BigDecimal(857.00), LocalDate.of(2022, 11, 9)))
@@ -131,7 +138,22 @@ object SampleData {
     .setOrException(PaymentValueAndDatePage(0), paymentDetails)
 
   val sampleMemberJourneyDataEvent23: UserAnswers = UserAnswers()
-    .setOrException(MembersDetailsPage(Event23, 0), memberDetails)
+  .setOrException(MembersDetailsPage(Event23, 0), memberDetails)
     .setOrException(ChooseTaxYearPage(Event23, 0), ChooseTaxYear("2015"))
     .setOrException(TotalPensionAmountsPage(Event23, 0), BigDecimal(1234.56))
+
+  val sampleMemberJourneyDataEvent22: UserAnswers = UserAnswers()
+    .setOrException(MembersDetailsPage(Event22, 0), memberDetails)
+    .setOrException(ChooseTaxYearPage(Event22, 0), ChooseTaxYear("2018"))
+    .setOrException(TotalPensionAmountsPage(Event22, 0), BigDecimal(999.11))
+
+  def sampleTwoMemberJourneyData(eventType: EventType): UserAnswers =
+    UserAnswers()
+      .setOrException(MembersDetailsPage(eventType, 0), memberDetails)
+      .setOrException(ChooseTaxYearPage(eventType, 0), taxYear)
+      .setOrException(TotalPensionAmountsPage(eventType, 0), totalPaymentAmount)
+      .setOrException(MembersDetailsPage(eventType, 1), memberDetails2)
+      .setOrException(ChooseTaxYearPage(eventType, 1), taxYear)
+      .setOrException(TotalPensionAmountsPage(eventType, 1), totalPaymentAmount)
+
 }

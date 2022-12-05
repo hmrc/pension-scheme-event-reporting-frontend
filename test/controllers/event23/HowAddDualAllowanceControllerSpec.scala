@@ -17,23 +17,15 @@
 package controllers.event23
 
 import base.SpecBase
-import connectors.UserAnswersCacheConnector
 import forms.event23.HowAddDualAllowanceFormProvider
-import models.UserAnswers
 import models.event23.HowAddDualAllowance
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.event23.HowAddDualAllowancePage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.event23.HowAddDualAllowanceView
-
-import scala.concurrent.Future
 
 class HowAddDualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
@@ -42,20 +34,9 @@ class HowAddDualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach
   private val formProvider = new HowAddDualAllowanceFormProvider()
   private val form = formProvider()
 
-  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-
   private def getRoute: String = routes.HowAddDualAllowanceController.onPageLoad(waypoints, 0).url
 
   private def postRoute: String = routes.HowAddDualAllowanceController.onSubmit(waypoints, 0).url
-
-  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
-  )
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockUserAnswersCacheConnector)
-  }
 
   "Test Controller" - {
 
@@ -75,30 +56,9 @@ class HowAddDualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = UserAnswers().set(HowAddDualAllowancePage(0), HowAddDualAllowance.values.head).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, getRoute)
-
-        val view = application.injector.instanceOf[HowAddDualAllowanceView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(HowAddDualAllowance.values.head), waypoints, 0)(request, messages(application)).toString
-      }
-    }
-
-    "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
-
+    "must redirect to the next page when valid data is submitted" in {
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .build()
 
       running(application) {
@@ -110,13 +70,12 @@ class HowAddDualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual HowAddDualAllowancePage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
     "must return bad request when invalid data is submitted" in {
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .build()
 
       running(application) {
@@ -130,7 +89,6 @@ class HowAddDualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
   }

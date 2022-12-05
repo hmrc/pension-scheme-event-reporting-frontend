@@ -17,15 +17,14 @@
 package pages.event22
 
 import controllers.event22.routes
-import models.{Index, UserAnswers}
 import models.event22.HowAddAnnualAllowance
 import models.event22.HowAddAnnualAllowance.Manual
+import models.{Index, UserAnswers}
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class HowAddAnnualAllowancePage(index: Index) extends QuestionPage[HowAddAnnualAllowance] {
-
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "howAddAnnualAllowance"

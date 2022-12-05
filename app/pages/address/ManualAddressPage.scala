@@ -32,7 +32,6 @@ case class ManualAddressPage(addressJourneyType: AddressJourneyType, index: Int)
 
   override def path: JsPath =
     MembersOrEmployersPage(addressJourneyType.eventType)(index) \ addressJourneyType.nodeName \ toString
-  // MembersOrEmployersPage(addressJourneyType.eventType)(index) \ s"event${addressJourneyType.eventType.toString}" \ addressJourneyType.nodeName \ toString
 
   override def toString: String = "address"
 

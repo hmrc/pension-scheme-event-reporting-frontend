@@ -56,7 +56,7 @@ class LoanDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValues
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", LoanDetailsPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("loanDetails.change.hidden"))
+              .withVisuallyHiddenText(messages("loanAmount.change.hidden"))
           )
         )
       )
@@ -80,7 +80,7 @@ class LoanDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValues
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", LoanDetailsPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("loanDetails.change.hidden"))
+              .withVisuallyHiddenText(messages("fundAmount.change.hidden"))
           )
         )
       )

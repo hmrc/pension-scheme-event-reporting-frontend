@@ -17,23 +17,14 @@
 package controllers.event22
 
 import base.SpecBase
-import connectors.UserAnswersCacheConnector
 import forms.event22.HowAddAnnualAllowanceFormProvider
-import models.UserAnswers
 import models.event22.HowAddAnnualAllowance
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
 import pages.event22.HowAddAnnualAllowancePage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.event22.HowAddAnnualAllowanceView
-
-import scala.concurrent.Future
 
 class HowAddAnnualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach {
 
@@ -42,20 +33,9 @@ class HowAddAnnualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEa
   private val formProvider = new HowAddAnnualAllowanceFormProvider()
   private val form = formProvider()
 
-  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-
   private def getRoute: String = routes.HowAddAnnualAllowanceController.onPageLoad(waypoints, 0).url
 
   private def postRoute: String = routes.HowAddAnnualAllowanceController.onSubmit(waypoints, 0).url
-
-  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
-  )
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockUserAnswersCacheConnector)
-  }
 
   "Test Controller" - {
 
@@ -75,30 +55,10 @@ class HowAddAnnualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEa
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = UserAnswers().set(HowAddAnnualAllowancePage(0), HowAddAnnualAllowance.values.head).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, getRoute)
-
-        val view = application.injector.instanceOf[HowAddAnnualAllowanceView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(HowAddAnnualAllowance.values.head), waypoints, 0)(request, messages(application)).toString
-      }
-    }
-
-    "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
+    "must redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .build()
 
       running(application) {
@@ -110,13 +70,12 @@ class HowAddAnnualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEa
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual HowAddAnnualAllowancePage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
     "must return bad request when invalid data is submitted" in {
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .build()
 
       running(application) {
@@ -130,7 +89,6 @@ class HowAddAnnualAllowanceControllerSpec extends SpecBase with BeforeAndAfterEa
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
   }

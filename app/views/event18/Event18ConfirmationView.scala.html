@@ -14,14 +14,12 @@
  * limitations under the License.
  *@
 
-@import controllers.event18.routes
-
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukCheckboxes: GovukCheckboxes,
-    govukButton: GovukButton
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukCheckboxes: GovukCheckboxes,
+        govukButton: GovukButton
 )
 
 @(continueUrl: String, waypoints: Waypoints)(implicit request: Request[_], messages: Messages)

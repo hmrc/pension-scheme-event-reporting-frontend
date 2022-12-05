@@ -16,33 +16,31 @@
 
 package pages.common
 
-import models.{Index, UserAnswers}
+import models.UserAnswers
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event22, Event23}
-
-import pages.event22.Event22CheckYourAnswersPage
-
-import pages.event23.Event23CheckYourAnswersPage
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.event22.HowAddAnnualAllowancePage
+import pages.event23.HowAddDualAllowancePage
+import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class TotalPensionAmountsPage(eventType: EventType, index: Index) extends QuestionPage[BigDecimal] {
+case class MembersSummaryPage(eventType: EventType) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = MembersPage(eventType)(index) \ TotalPensionAmountsPage.toString
+  override def path: JsPath = JsPath \ s"event${eventType.toString}" \ MembersSummaryPage.toString
 
   override def route(waypoints: Waypoints): Call =
-    controllers.common.routes.TotalPensionAmountsController.onPageLoad(waypoints, eventType, index)
+    controllers.common.routes.MembersSummaryController.onPageLoad(waypoints, eventType)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    eventType match {
-      case Event22 => Event22CheckYourAnswersPage(index)
-      case Event23 => Event23CheckYourAnswersPage(index)
-      case _ => IndexPage
+    (eventType, answers.get(MembersSummaryPage(eventType))) match {
+      case (Event22, Some(true)) => HowAddAnnualAllowancePage(answers.countAll(MembersPage(EventType.Event22)))
+      case (Event23, Some(true)) => HowAddDualAllowancePage(answers.countAll(MembersPage(EventType.Event23)))
+      case _ => EventSummaryPage
     }
   }
-
-  object TotalPensionAmountsPage {
-    override def toString: String = "totalPensionAmounts"
-  }
 }
+object MembersSummaryPage {
+  override def toString: String = "membersSummary"
+}
+
