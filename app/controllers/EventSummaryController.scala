@@ -20,6 +20,7 @@ import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import forms.EventSummaryFormProvider
 import models.UserAnswers
+import models.requests.IdentifierRequest
 import pages.{EventSummaryPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,7 +30,7 @@ import viewmodels.Message
 import views.html.EventSummaryView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class EventSummaryController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
@@ -44,9 +45,9 @@ class EventSummaryController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify.async { implicit request =>
-    connector.getEventReportSummary(request.pstr).map{ seqOfEventTypes =>
-      val mappedEvents = seqOfEventTypes.map{ event =>
+  private def summaryListRows(implicit request: IdentifierRequest[AnyContent]): Future[Seq[SummaryListRow]] = {
+    connector.getEventReportSummary(request.pstr).map { seqOfEventTypes =>
+      seqOfEventTypes.map { event =>
         SummaryListRow(
           key = Key(
             content = Text(Message(s"eventSummary.event${event.toString}"))
@@ -65,17 +66,27 @@ class EventSummaryController @Inject()(
           ))
         )
       }
-    Ok(view(form, waypoints, mappedEvents))
     }
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = identify {
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify.async { implicit request =>
+    summaryListRows.map{ rows =>
+      Ok(view(form, waypoints, rows))
+    }
+  }
+
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = identify.async {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors => BadRequest(view(formWithErrors, waypoints, Nil)),
+        formWithErrors => {
+          summaryListRows.map { rows =>
+            BadRequest(view(formWithErrors, waypoints, rows))
+          }
+        },
         value => {
           val userAnswerUpdated = UserAnswers().setOrException(EventSummaryPage, value)
-          Redirect(EventSummaryPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)}
+          Future.successful(Redirect(EventSummaryPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route))
+        }
     )
   }
 }
