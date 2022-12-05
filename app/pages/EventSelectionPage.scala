@@ -38,14 +38,14 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
   override def route(waypoints: Waypoints): Call =
     routes.EventSelectionController.onPageLoad(waypoints)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     val optionEventType = answers.get(this).flatMap(es => EventType.fromEventSelection(es))
 
     optionEventType match {
       case Some(Event1) => HowAddUnauthPaymentPage(answers.countAll(MembersOrEmployersPage(Event1)))
       case Some(Event18) => Event18ConfirmationPage
       case Some(Event22) => HowAddAnnualAllowancePage(answers.countAll(MembersPage(Event22)))
-      case Some(Event23) => HowAddDualAllowancePage(answers.countAll(MembersPage(Event22)))
+      case Some(Event23) => HowAddDualAllowancePage(answers.countAll(MembersPage(Event23)))
       case Some(WindUp) => SchemeWindUpDatePage
       case _ => IndexPage
     }
