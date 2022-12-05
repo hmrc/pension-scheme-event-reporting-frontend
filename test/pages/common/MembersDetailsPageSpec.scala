@@ -17,7 +17,7 @@
 package pages.common
 
 import models.common.MembersDetails
-import models.enumeration.EventType.{Event1, Event23}
+import models.enumeration.EventType.Event1
 import pages.behaviours.PageBehaviours
 
 class MembersDetailsPageSpec extends PageBehaviours {

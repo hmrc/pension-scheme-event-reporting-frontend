@@ -22,6 +22,9 @@ import forms.EventSummaryFormProvider
 import models.UserAnswers
 import models.requests.IdentifierRequest
 import pages.{EventSummaryPage, Waypoints}
+import models.enumeration.EventType
+import models.enumeration.EventType.{Event22, Event23}
+import pages.{EmptyWaypoints, EventSummaryPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.Aliases._
@@ -56,7 +59,7 @@ class EventSummaryController @Inject()(
             items = Seq(
               ActionItem(
                 content = Text(Message("site.change")),
-                href = "#"
+                href = changeLinkForEvent(event)
               ),
               ActionItem(
                 content = Text(Message("site.remove")),
@@ -84,5 +87,13 @@ class EventSummaryController @Inject()(
           Future.successful(Redirect(EventSummaryPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route))
         }
       )
+  }
+
+  private def changeLinkForEvent(eventType: EventType): String = {
+    eventType match {
+      case Event22 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event22).url
+      case Event23 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event23).url
+      case _ => "#"
+    }
   }
 }
