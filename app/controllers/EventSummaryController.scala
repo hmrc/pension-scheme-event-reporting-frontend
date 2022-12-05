@@ -16,14 +16,13 @@
 
 package controllers
 
-import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import connectors.EventReportingConnector
 import controllers.actions._
 import forms.EventSummaryFormProvider
 import models.UserAnswers
-import models.requests.IdentifierRequest
-import pages.{EventSummaryPage, Waypoints}
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event22, Event23}
+import models.requests.IdentifierRequest
 import pages.{EmptyWaypoints, EventSummaryPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,10 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class EventSummaryController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
                                         connector: EventReportingConnector,
-                                        userAnswersCacheConnector: UserAnswersCacheConnector,
                                         formProvider: EventSummaryFormProvider,
                                         view: EventSummaryView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
