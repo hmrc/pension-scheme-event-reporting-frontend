@@ -44,7 +44,7 @@ class EventSummaryController @Inject()(
 
   private val form = formProvider()
 
-  private def summaryListRows(implicit request: IdentifierRequest[AnyContent]): Future[Seq[SummaryListRow]] = {
+  private def summaryListRows(waypoints: Waypoints)(implicit request: IdentifierRequest[AnyContent]): Future[Seq[SummaryListRow]] = {
     connector.getEventReportSummary(request.pstr).map { seqOfEventTypes =>
       seqOfEventTypes.map { event =>
         SummaryListRow(
@@ -72,7 +72,7 @@ class EventSummaryController @Inject()(
   }
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify.async { implicit request =>
-    summaryListRows.map { rows =>
+    summaryListRows(waypoints).map { rows =>
       Ok(view(form, waypoints, rows))
     }
   }
@@ -80,7 +80,7 @@ class EventSummaryController @Inject()(
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = identify.async {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors => summaryListRows.map(rows => BadRequest(view(formWithErrors, waypoints, rows))),
+        formWithErrors => summaryListRows(waypoints).map(rows => BadRequest(view(formWithErrors, waypoints, rows))),
         value => {
           val userAnswerUpdated = UserAnswers().setOrException(EventSummaryPage, value)
           Future.successful(Redirect(EventSummaryPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route))
