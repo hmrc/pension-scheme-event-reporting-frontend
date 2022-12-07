@@ -14,24 +14,32 @@
  * limitations under the License.
  */
 
-package pages.event18
+package forms.event18
 
-import controllers.event18.routes
-import models.UserAnswers
-import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-case object Event18ConfirmationPage extends QuestionPage[Boolean] {
+class RemoveEvent18FormProviderSpec extends BooleanFieldBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  private val requiredKey = "removeEvent18.error.required"
+  private val invalidKey = "error.boolean"
 
-  override def toString: String = "event18Confirmation"
+  val form = new RemoveEvent18FormProvider()()
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    EventSummaryPage
+  ".value" - {
 
+    val fieldName = "value"
 
-  override def route(waypoints: Waypoints): Call =
-    routes.Event18ConfirmationController.onPageLoad(waypoints)
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

@@ -16,22 +16,16 @@
 
 package pages.event18
 
-import controllers.event18.routes
-import models.UserAnswers
-import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.behaviours.PageBehaviours
 
-case object Event18ConfirmationPage extends QuestionPage[Boolean] {
+class RemoveEvent18PageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "RemoveEvent18Page" - {
 
-  override def toString: String = "event18Confirmation"
+    beRetrievable[Boolean](RemoveEvent18Page)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    EventSummaryPage
+    beSettable[Boolean](RemoveEvent18Page)
 
-
-  override def route(waypoints: Waypoints): Call =
-    routes.Event18ConfirmationController.onPageLoad(waypoints)
+    beRemovable[Boolean](RemoveEvent18Page)
+  }
 }

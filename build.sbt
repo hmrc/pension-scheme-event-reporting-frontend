@@ -101,6 +101,6 @@ lazy val itSettings = Defaults.itSettings ++ Seq(
   unmanagedResourceDirectories := Seq(
     baseDirectory.value / "it" / "resources"
   ),
-  parallelExecution := false,
+  parallelExecution := true,
   fork := true
 )
