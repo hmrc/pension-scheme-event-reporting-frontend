@@ -18,9 +18,9 @@ package pages.event18
 
 import controllers.event18.routes
 import models.UserAnswers
+import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
 
 case object RemoveEvent18Page extends QuestionPage[Boolean] {
 
@@ -31,7 +31,6 @@ case object RemoveEvent18Page extends QuestionPage[Boolean] {
   override def route(waypoints: Waypoints): Call =
     routes.RemoveEvent18Controller.onPageLoad(waypoints)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     EventSummaryPage
-  }
 }

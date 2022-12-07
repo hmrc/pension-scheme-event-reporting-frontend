@@ -33,7 +33,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryRemoveEvent18UserAnswersEntry: Arbitrary[(pages.event18.RemoveEvent18Page.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event18.RemoveEvent18Page.type]
+        page <- arbitrary[pages.event18.RemoveEvent18Page.type]
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }

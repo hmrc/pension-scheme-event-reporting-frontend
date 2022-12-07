@@ -29,10 +29,8 @@ case object Event18ConfirmationPage extends QuestionPage[Boolean] {
   override def toString: String = "event18Confirmation"
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    answers.get(this) match {
-      case Some(true) => EventSummaryPage
-      case _ => this
-    }
+    EventSummaryPage
+
 
   override def route(waypoints: Waypoints): Call =
     routes.Event18ConfirmationController.onPageLoad(waypoints)

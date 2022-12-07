@@ -59,7 +59,6 @@ class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach  {
 
   "RemoveEvent18 Controller" - {
 
-
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
@@ -73,27 +72,6 @@ class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach  {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
-      }
-    }
-
-    "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
-
-        val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(RemoveEvent18Page, true).success.value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RemoveEvent18Page.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
@@ -117,6 +95,23 @@ class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach  {
         uaCaptor.getValue.get(Event18ConfirmationPage) mustBe Some(false)
         redirectLocation(result).value mustEqual RemoveEvent18Page.navigate(waypoints, emptyUserAnswers, uaCaptor.getValue).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+      }
+    }
+
+    "must not change anything in userAnswer and not call user-cache connector when selecting false" in {
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual RemoveEvent18Page.navigate(waypoints, emptyUserAnswers, emptyUserAnswers).url
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
 
