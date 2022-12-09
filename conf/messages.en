@@ -843,6 +843,7 @@ totalPensionAmounts.value.error.nothingEntered = Enter the total pension input a
 totalPensionAmounts.value.error.notANumber = The total pension input amounts must be an amount of money, like 123.45 or 156.00
 totalPensionAmounts.value.error.noDecimals = The total pension input amounts must include pence, like 123.45 or 156.00
 totalPensionAmounts.value.error.amountTooHigh = The total pension input amounts must be £999999999.99 or less
+totalPensionAmounts.value.error.zeroAmount = The amount entered must be greater than zero
 totalPensionAmounts.value.error.negative = The total pension input amounts must not be a negative amount of money, like -123.45 or -156.00
 
 removeEvent18.title = Are you sure you want to remove Event 18: Scheme chargeable payment?
