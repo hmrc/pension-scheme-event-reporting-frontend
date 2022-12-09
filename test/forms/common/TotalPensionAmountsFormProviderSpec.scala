@@ -29,7 +29,7 @@ class TotalPensionAmountsFormProviderSpec extends SpecBase with BigDecimalFieldB
 
   // scalastyle:off magic.number
   val invalidDataGenerator: Gen[String] = intsInRangeWithCommas(0, 999999999)
-  val negativeValueDataGenerator: Gen[String] = decimalsBelowValue(0)
+  val negativeValueDataGenerator: Gen[String] = decimalsBelowValue(0.00)
 
   private def valueDetails(value: String): Map[String, String] = Map(valueKey -> value)
 
@@ -63,6 +63,12 @@ class TotalPensionAmountsFormProviderSpec extends SpecBase with BigDecimalFieldB
       val number = "1000000000.00"
       val result = form.bind(valueDetails(number))
       result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyValueKey.error.amountTooHigh")
+    }
+
+    "not bind 0.00" in {
+      val number = "0.00"
+      val result = form.bind(valueDetails(number))
+      result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyValueKey.error.zeroAmount")
     }
 
     "not bind numbers below 0" in {

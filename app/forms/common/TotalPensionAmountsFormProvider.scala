@@ -33,8 +33,8 @@ class TotalPensionAmountsFormProvider @Inject() extends Mappings {
         "totalPensionAmounts.value.error.noDecimals")
         .verifying(
           maximumValue[BigDecimal](maxPensionAmtValue, "totalPensionAmounts.value.error.amountTooHigh"),
-          minimumValue[BigDecimal](0.01, "totalPensionAmounts.value.error.zeroAmount"),
-          minimumValue[BigDecimal](0, "totalPensionAmounts.value.error.negative")
+          minimumValue[BigDecimal](0, "totalPensionAmounts.value.error.negative"),
+          minimumValue[BigDecimal](0.01, "totalPensionAmounts.value.error.zeroAmount")
         )
     )
 }
