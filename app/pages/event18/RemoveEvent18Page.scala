@@ -22,16 +22,15 @@ import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object Event18ConfirmationPage extends QuestionPage[Boolean] {
+case object RemoveEvent18Page extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "event18Confirmation"
+  override def toString: String = "removeEvent18"
+
+  override def route(waypoints: Waypoints): Call =
+    routes.RemoveEvent18Controller.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     EventSummaryPage
-
-
-  override def route(waypoints: Waypoints): Call =
-    routes.Event18ConfirmationController.onPageLoad(waypoints)
 }

@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package pages.event18
+package forms.event18
 
-import controllers.event18.routes
-import models.UserAnswers
-import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import javax.inject.Inject
 
-case object Event18ConfirmationPage extends QuestionPage[Boolean] {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  override def path: JsPath = JsPath \ toString
+class RemoveEvent18FormProvider @Inject() extends Mappings {
 
-  override def toString: String = "event18Confirmation"
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    EventSummaryPage
-
-
-  override def route(waypoints: Waypoints): Call =
-    routes.Event18ConfirmationController.onPageLoad(waypoints)
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("removeEvent18.error.required")
+    )
 }
