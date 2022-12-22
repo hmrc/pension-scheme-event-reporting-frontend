@@ -149,7 +149,6 @@ class Event1CheckYourAnswersController @Inject()(
       case Some(OverpaymentOrWriteOff) =>
         ReasonForTheOverpaymentOrWriteOffSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
       case Some(ResidentialPropertyHeld) =>
-        ReasonForTheOverpaymentOrWriteOffSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
           ChooseAddressSummary.row(request.userAnswers, waypoints, index, sourcePage, AddressJourneyType.Event1MemberPropertyAddressJourney).toSeq
       case Some(TangibleMoveablePropertyHeld) =>
         MemberTangibleMoveablePropertySummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
