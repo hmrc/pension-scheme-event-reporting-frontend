@@ -17,21 +17,21 @@
 package controllers.event1
 
 import base.SpecBase
-import forms.event1.HowAddUnauthPaymentFormProvider
-import models.event1.HowAddUnauthPayment
+import forms.common.ManualOrUploadFormProvider
+import models.event1.ManualOrUpload
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
-import pages.event1.HowAddUnauthPaymentPage
+import pages.common.ManualOrUploadPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.event1.HowAddUnauthPaymentView
 
-class HowAddUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
+class ManualOrUploadControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new HowAddUnauthPaymentFormProvider()
+  private val formProvider = new ManualOrUploadFormProvider()
   private val form = formProvider()
 
   private def getRoute: String = routes.HowAddUnauthPaymentController.onPageLoad(waypoints, 0).url
@@ -64,10 +64,10 @@ class HowAddUnauthPaymentControllerSpec extends SpecBase with BeforeAndAfterEach
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", HowAddUnauthPayment.values.head.toString))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ManualOrUpload.values.head.toString))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(HowAddUnauthPaymentPage(0), HowAddUnauthPayment.values.head).success.value
+        val updatedAnswers = emptyUserAnswers.set(HowAddUnauthPaymentPage(0), ManualOrUpload.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual HowAddUnauthPaymentPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url

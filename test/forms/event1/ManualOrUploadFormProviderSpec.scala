@@ -17,22 +17,23 @@
 package forms.event1
 
 import forms.behaviours.OptionFieldBehaviours
-import models.event1.HowAddUnauthPayment
+import forms.common.ManualOrUploadFormProvider
+import models.event1.ManualOrUpload
 import play.api.data.FormError
 
-class HowAddUnauthPaymentFormProviderSpec extends OptionFieldBehaviours {
+class ManualOrUploadFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new HowAddUnauthPaymentFormProvider()()
+  val form = new ManualOrUploadFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
     val requiredKey = "howAddUnauthPayment.error.required"
 
-    behave like optionsField[HowAddUnauthPayment](
+    behave like optionsField[ManualOrUpload](
       form,
       fieldName,
-      validValues  = HowAddUnauthPayment.values,
+      validValues  = ManualOrUpload.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

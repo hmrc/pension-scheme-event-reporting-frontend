@@ -116,9 +116,9 @@ trait ModelGenerators {
       Gen.oneOf(list)
     }
 
-  implicit lazy val arbitraryHowAddUnauthPayment: Arbitrary[event1.HowAddUnauthPayment] =
+  implicit lazy val arbitraryHowAddUnauthPayment: Arbitrary[event1.ManualOrUpload] =
     Arbitrary {
-      Gen.oneOf(event1.HowAddUnauthPayment.values)
+      Gen.oneOf(event1.ManualOrUpload.values)
     }
 
   implicit lazy val arbitraryPaymentNature: Arbitrary[event1.PaymentNature] =

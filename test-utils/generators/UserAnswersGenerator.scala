@@ -21,7 +21,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
-import pages.common.MembersDetailsPage
+import pages.common.{ManualOrUploadPage, MembersDetailsPage}
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.eventWindUp.SchemeWindUpDatePage
@@ -43,7 +43,7 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(event1.ValueOfUnauthorisedPaymentPage, JsValue)] ::
       arbitrary[(event1.DoYouHoldSignedMandatePage, JsValue)] ::
       arbitrary[(MembersDetailsPage, JsValue)] ::
-      arbitrary[(event1.HowAddUnauthPaymentPage, JsValue)] ::
+      arbitrary[(ManualOrUploadPage, JsValue)] ::
       arbitrary[(PaymentNaturePage, JsValue)] ::
       arbitrary[(SchemeWindUpDatePage.type, JsValue)] ::
       arbitrary[(event18.Event18ConfirmationPage.type, JsValue)] ::

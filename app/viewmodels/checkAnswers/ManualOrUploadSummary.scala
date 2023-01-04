@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package viewmodels.event1.checkAnswers
+package viewmodels.checkAnswers
 
+import models.enumeration.EventType
 import models.{Index, UserAnswers}
-import pages.event1.HowAddUnauthPaymentPage
+import pages.common.ManualOrUploadPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -26,16 +27,16 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object HowAddUnauthPaymentSummary {
+object ManualOrUploadSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, eventType: EventType, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(HowAddUnauthPaymentPage(index)).map {
+    answers.get(ManualOrUploadPage(eventType, index)).map {
       answer =>
 
         val value = ValueViewModel(
           HtmlContent(
-            HtmlFormat.escape(messages(s"howAddUnauthPayment.$answer"))
+            HtmlFormat.escape(messages(s"manualOrUpload.${eventType.toString}.$answer"))
           )
         )
 
@@ -43,8 +44,8 @@ object HowAddUnauthPaymentSummary {
           key = "howAddUnauthPayment.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", HowAddUnauthPaymentPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("howAddUnauthPayment.change.hidden"))
+            ActionItemViewModel("site.change", ManualOrUploadPage(eventType, index).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages(s"manualOrUpload.${eventType.toString}.change.hidden"))
           )
         )
     }

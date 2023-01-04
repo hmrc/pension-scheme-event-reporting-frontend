@@ -21,7 +21,7 @@ import models.enumeration.AddressJourneyType
 import models.enumeration.EventType.Event1
 import org.scalacheck.Arbitrary
 import pages._
-import pages.common.MembersDetailsPage
+import pages.common.{ManualOrUploadPage, MembersDetailsPage}
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.event1.{employer, member}
@@ -114,7 +114,7 @@ trait PageGenerators {
   implicit lazy val arbitraryWhoReceivedUnauthPaymentPage: Arbitrary[event1.WhoReceivedUnauthPaymentPage] =
     Arbitrary(event1.WhoReceivedUnauthPaymentPage(Index(0)))
 
-  implicit lazy val arbitraryHowAddUnauthPaymentPage: Arbitrary[event1.HowAddUnauthPaymentPage] =
+  implicit lazy val arbitraryHowAddUnauthPaymentPage: Arbitrary[ManualOrUploadPage] =
     Arbitrary(event1.HowAddUnauthPaymentPage(Index(0)))
 
   implicit lazy val arbitraryPaymentNaturePage: Arbitrary[PaymentNaturePage] =

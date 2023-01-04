@@ -22,7 +22,7 @@ import models.common.{ChooseTaxYear, MembersDetails}
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event22, Event23}
-import models.event1.HowAddUnauthPayment.Manual
+import models.event1.ManualOrUpload.Manual
 import models.event1.PaymentDetails
 import models.event1.PaymentNature.BenefitInKind
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}

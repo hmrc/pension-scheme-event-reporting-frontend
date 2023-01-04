@@ -20,8 +20,7 @@ import data.SampleData
 import models.UserAnswers
 import models.enumeration.EventType.{Event1, Event22, Event23}
 import pages.behaviours.PageBehaviours
-import pages.common.MembersDetailsPage
-import pages.event1.HowAddUnauthPaymentPage
+import pages.common.{ManualOrUploadPage, MembersDetailsPage}
 import pages.event22.HowAddAnnualAllowancePage
 import pages.event23.HowAddDualAllowancePage
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,36 +14,37 @@
  * limitations under the License.
  */
 
-package models.event1
+package models.common
 
+import models.enumeration.EventType
 import models.{Enumerable, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-sealed trait HowAddUnauthPayment
+sealed trait ManualOrUpload
 
-object HowAddUnauthPayment extends Enumerable.Implicits {
+object ManualOrUpload extends Enumerable.Implicits {
 
-  case object Manual extends WithName("manual") with HowAddUnauthPayment
-  case object FileUpload extends WithName("fileUpload") with HowAddUnauthPayment
+  case object Manual extends WithName("manual") with ManualOrUpload
+  case object FileUpload extends WithName("fileUpload") with ManualOrUpload
 
-  val values: Seq[HowAddUnauthPayment] = Seq(
-    Manual, FileUpload
-  )
+  def values: Seq[ManualOrUpload] = {
+      Seq(Manual, FileUpload)
+  }
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
+  def options(eventType: EventType)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
       RadioItem(
-        content = Text(messages(s"howAddUnauthPayment.${value.toString}")),
+        content = Text(messages(s"manualOrUpload.event${eventType.toString}.${value.toString}")),
         value   = Some(value.toString),
         id      = Some(s"value_$index"),
-        hint    = if (value == FileUpload) Some(Hint(content = Text(messages("howAddUnauthPayment.fileUpload.hint")))) else None,
+        hint    = if (value == FileUpload) Some(Hint(content = Text(messages(s"manualOrUpload.event${eventType.toString}.fileUpload.hint")))) else None,
         disabled = value == FileUpload
       )
   }
 
-  implicit val enumerable: Enumerable[HowAddUnauthPayment] =
+  implicit val enumerable: Enumerable[ManualOrUpload] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

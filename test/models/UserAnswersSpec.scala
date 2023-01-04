@@ -22,14 +22,14 @@ import data.SampleData._
 import models.common.MembersSummary
 import models.common.MembersSummary.readsMemberValue
 import models.enumeration.EventType.{Event1, Event22}
-import models.event1.HowAddUnauthPayment.Manual
+import models.event1.ManualOrUpload.Manual
 import models.event1.MembersOrEmployersSummary.readsMemberOrEmployerValue
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.{MembersOrEmployersSummary, PaymentDetails}
 import org.scalatest.matchers.must.Matchers
-import pages.common.{ChooseTaxYearPage, MembersDetailsPage, MembersOrEmployersPage, MembersPage}
+import pages.common.{ChooseTaxYearPage, ManualOrUploadPage, MembersDetailsPage, MembersOrEmployersPage, MembersPage}
 import pages.event1.employer.CompanyDetailsPage
-import pages.event1.{HowAddUnauthPaymentPage, PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
+import pages.event1.{PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
 
 import java.time.LocalDate
 

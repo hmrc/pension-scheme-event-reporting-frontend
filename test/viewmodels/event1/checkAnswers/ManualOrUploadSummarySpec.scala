@@ -17,21 +17,23 @@
 package viewmodels.event1.checkAnswers
 
 import models.UserAnswers
-import models.event1.HowAddUnauthPayment
+import models.event1.ManualOrUpload
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
-import pages.event1.{Event1CheckYourAnswersPage, HowAddUnauthPaymentPage}
+import pages.common.ManualOrUploadPage
+import pages.event1.Event1CheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import viewmodels.checkAnswers.ManualOrUploadSummary
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
 
-class HowAddUnauthPaymentSummarySpec extends AnyFreeSpec with Matchers with OptionValues with TryValues with SummaryListFluency {
+class ManualOrUploadSummarySpec extends AnyFreeSpec with Matchers with OptionValues with TryValues with SummaryListFluency {
 
   private implicit val messages: Messages = stubMessages()
 
@@ -39,17 +41,17 @@ class HowAddUnauthPaymentSummarySpec extends AnyFreeSpec with Matchers with Opti
 
     "must display correct information for who received the unauthorised payment or deemed unauthorised payment (Manual)" in {
 
-      val answer = UserAnswers().setOrException(HowAddUnauthPaymentPage(0), HowAddUnauthPayment.Manual)
+      val answer = UserAnswers().setOrException(HowAddUnauthPaymentPage(0), ManualOrUpload.Manual)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       val value = ValueViewModel(
         HtmlContent(
-          HtmlFormat.escape(messages(s"howAddUnauthPayment.${HowAddUnauthPayment.Manual}"))
+          HtmlFormat.escape(messages(s"howAddUnauthPayment.${ManualOrUpload.Manual}"))
         )
       )
 
-      HowAddUnauthPaymentSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
+      ManualOrUploadSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "howAddUnauthPayment.checkYourAnswersLabel",
           value = value,
@@ -63,17 +65,17 @@ class HowAddUnauthPaymentSummarySpec extends AnyFreeSpec with Matchers with Opti
 
     "must display correct information for who received the unauthorised payment or deemed unauthorised payment (FileUpload)" in {
 
-      val answer = UserAnswers().setOrException(HowAddUnauthPaymentPage(0), HowAddUnauthPayment.FileUpload)
+      val answer = UserAnswers().setOrException(HowAddUnauthPaymentPage(0), ManualOrUpload.FileUpload)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
 
       val value = ValueViewModel(
         HtmlContent(
-          HtmlFormat.escape(messages(s"howAddUnauthPayment.${HowAddUnauthPayment.FileUpload}"))
+          HtmlFormat.escape(messages(s"howAddUnauthPayment.${ManualOrUpload.FileUpload}"))
         )
       )
 
-      HowAddUnauthPaymentSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
+      ManualOrUploadSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
         SummaryListRowViewModel(
           key = "howAddUnauthPayment.checkYourAnswersLabel",
           value = value,

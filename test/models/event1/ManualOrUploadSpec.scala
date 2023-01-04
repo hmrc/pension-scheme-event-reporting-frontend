@@ -24,35 +24,35 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
-class HowAddUnauthPaymentSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class ManualOrUploadSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
   "HowAddUnauthPayment" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(HowAddUnauthPayment.values)
+      val gen = Gen.oneOf(ManualOrUpload.values)
 
       forAll(gen) {
         howAddUnauthPayment =>
 
-          JsString(howAddUnauthPayment.toString).validate[HowAddUnauthPayment].asOpt.value mustEqual howAddUnauthPayment
+          JsString(howAddUnauthPayment.toString).validate[ManualOrUpload].asOpt.value mustEqual howAddUnauthPayment
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!HowAddUnauthPayment.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!ManualOrUpload.values.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
 
-          JsString(invalidValue).validate[HowAddUnauthPayment] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[ManualOrUpload] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(HowAddUnauthPayment.values)
+      val gen = Gen.oneOf(ManualOrUpload.values)
 
       forAll(gen) {
         howAddUnauthPayment =>

@@ -16,17 +16,17 @@
 
 package pages.event1
 
-import models.event1.HowAddUnauthPayment
+import models.event1.ManualOrUpload
 import pages.behaviours.PageBehaviours
 
-class HowAddUnauthPaymentSpec extends PageBehaviours {
+class ManualOrUploadSpec extends PageBehaviours {
 
   "HowAddUnauthPaymentPage" - {
 
-    beRetrievable[HowAddUnauthPayment](HowAddUnauthPaymentPage(0))
+    beRetrievable[ManualOrUpload](HowAddUnauthPaymentPage(0))
 
-    beSettable[HowAddUnauthPayment](HowAddUnauthPaymentPage(0))
+    beSettable[ManualOrUpload](HowAddUnauthPaymentPage(0))
 
-    beRemovable[HowAddUnauthPayment](HowAddUnauthPaymentPage(0))
+    beRemovable[ManualOrUpload](HowAddUnauthPaymentPage(0))
   }
 }
