@@ -41,7 +41,7 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
     optionEventType match {
       case Some(Event1) => ManualOrUploadPage(answers.countAll(MembersOrEmployersPage(Event1)))
       case Some(Event18) => Event18ConfirmationPage
-      case Some(Event22) => ManualOrUploadPage.(answers.countAll(MembersPage(Event22)))
+      case Some(Event22) => ManualOrUploadPage(answers.countAll(MembersPage(Event22)))
       case Some(Event23) => ManualOrUploadPage(answers.countAll(MembersPage(Event23)))
       case Some(WindUp) => SchemeWindUpDatePage
       case _ => IndexPage
