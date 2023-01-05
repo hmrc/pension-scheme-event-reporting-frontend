@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,29 +14,31 @@
  * limitations under the License.
  */
 
-package controllers.event1
+package controllers.common
 
 import base.SpecBase
 import forms.common.ManualOrUploadFormProvider
-import models.event1.ManualOrUpload
+import models.common.ManualOrUpload
+import models.enumeration.EventType
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.common.ManualOrUploadPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event1.HowAddUnauthPaymentView
+import views.html.common.ManualOrUploadView
 
 class ManualOrUploadControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
+  private val event = EventType.Event1
 
   private val formProvider = new ManualOrUploadFormProvider()
-  private val form = formProvider()
+  private val form = formProvider(event)
 
-  private def getRoute: String = routes.HowAddUnauthPaymentController.onPageLoad(waypoints, 0).url
+  private def getRoute: String = routes.ManualOrUploadController.onPageLoad(waypoints, event, 0).url
 
-  private def postRoute: String = routes.HowAddUnauthPaymentController.onSubmit(waypoints, 0).url
+  private def postRoute: String = routes.ManualOrUploadController.onSubmit(waypoints, event,0).url
 
   "Test Controller" - {
 
@@ -49,10 +51,10 @@ class ManualOrUploadControllerSpec extends SpecBase with BeforeAndAfterEach with
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[HowAddUnauthPaymentView]
+        val view = application.injector.instanceOf[ManualOrUploadView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, event, 0)(request, messages(application)).toString
       }
     }
 
@@ -67,10 +69,10 @@ class ManualOrUploadControllerSpec extends SpecBase with BeforeAndAfterEach with
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ManualOrUpload.values.head.toString))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(HowAddUnauthPaymentPage(0), ManualOrUpload.values.head).success.value
+        val updatedAnswers = emptyUserAnswers.set(ManualOrUploadPage(event, 0), ManualOrUpload.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual HowAddUnauthPaymentPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual ManualOrUploadPage(event, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
       }
     }
 
@@ -83,13 +85,13 @@ class ManualOrUploadControllerSpec extends SpecBase with BeforeAndAfterEach with
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[HowAddUnauthPaymentView]
+        val view = application.injector.instanceOf[ManualOrUploadView]
         val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, event, 0)(request, messages(application)).toString
       }
     }
   }

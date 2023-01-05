@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,11 @@ import uk.gov.hmrc.domain.Nino
 import scala.math.BigDecimal.RoundingMode
 
 trait ModelGenerators {
+
+  implicit lazy val arbitraryManualOrUpload: Arbitrary[common.ManualOrUpload] =
+    Arbitrary {
+      Gen.oneOf(common.ManualOrUpload.values)
+    }
 
   implicit lazy val arbitraryChooseTaxYear: Arbitrary[ChooseTaxYear] =
     Arbitrary {
@@ -78,16 +83,6 @@ trait ModelGenerators {
       Gen.oneOf(list)
     }
 
-  implicit lazy val arbitraryHowAddDualAllowance: Arbitrary[event23.HowAddDualAllowance] =
-    Arbitrary {
-      Gen.oneOf(event23.HowAddDualAllowance.values)
-    }
-
-  implicit lazy val arbitraryHowAddAnnualAllowance: Arbitrary[event22.HowAddAnnualAllowance] =
-    Arbitrary {
-      Gen.oneOf(event22.HowAddAnnualAllowance.values)
-    }
-
   implicit lazy val arbitraryLoanDetails: Arbitrary[LoanDetails] =
     Arbitrary {
       for {
@@ -116,17 +111,12 @@ trait ModelGenerators {
       Gen.oneOf(list)
     }
 
-  implicit lazy val arbitraryHowAddUnauthPayment: Arbitrary[event1.ManualOrUpload] =
-    Arbitrary {
-      Gen.oneOf(event1.ManualOrUpload.values)
-    }
-
   implicit lazy val arbitraryPaymentNature: Arbitrary[event1.PaymentNature] =
     Arbitrary {
       Gen.oneOf(event1.PaymentNature.values)
     }
 
-  implicit lazy val arbitraryeventSelection: Arbitrary[EventSelection] =
+  implicit lazy val arbitraryEventSelection: Arbitrary[EventSelection] =
     Arbitrary {
       Gen.oneOf(EventSelection.values)
     }

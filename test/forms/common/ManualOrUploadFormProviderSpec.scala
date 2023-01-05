@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-package forms.event23
+package forms.common
 
 import forms.behaviours.OptionFieldBehaviours
-import models.event23.HowAddDualAllowance
+import models.common.ManualOrUpload
+import models.enumeration.EventType.Event1
 import play.api.data.FormError
 
-class HowAddDualAllowanceFormProviderSpec extends OptionFieldBehaviours {
+class ManualOrUploadFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new HowAddDualAllowanceFormProvider()()
+  val form = new ManualOrUploadFormProvider()(Event1)
 
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "howAddDualAllowance.error.required"
+    val requiredKey = "manualOrUpload.event1.error.required"
 
-    behave like optionsField[HowAddDualAllowance](
+    behave like optionsField[ManualOrUpload](
       form,
       fieldName,
-      validValues = HowAddDualAllowance.values,
+      validValues  = ManualOrUpload.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

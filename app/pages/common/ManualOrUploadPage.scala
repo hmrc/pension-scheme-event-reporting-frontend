@@ -31,8 +31,8 @@ case class ManualOrUploadPage(eventType: EventType, index: Int) extends Question
 
   override def path: JsPath =
     eventType match {
-      case Event1 => MembersOrEmployersPage(EventType.Event1)(index) \ toString
       case Event22 | Event23 => MembersPage(eventType)(index) \ toString
+      case _ => MembersOrEmployersPage(eventType)(index) \ toString
     }
 
   override def toString: String = "manualOrUpload"

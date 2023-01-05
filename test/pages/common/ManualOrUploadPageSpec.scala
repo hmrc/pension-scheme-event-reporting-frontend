@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package forms.event23
+package pages.common
 
-import forms.mappings.Mappings
-import models.event23.HowAddDualAllowance
-import play.api.data.Form
+import models.common.ManualOrUpload
+import models.enumeration.EventType.Event1
+import pages.behaviours.PageBehaviours
 
-import javax.inject.Inject
+class ManualOrUploadPageSpec extends PageBehaviours {
 
-class HowAddDualAllowanceFormProvider @Inject() extends Mappings {
+  "ManualOrUploadPageSpec" - {
 
-  def apply(): Form[HowAddDualAllowance] =
-    Form(
-      "value" -> enumerable[HowAddDualAllowance]("howAddDualAllowance.error.required")
-    )
+    beRetrievable[ManualOrUpload](ManualOrUploadPage(Event1, 0))
+
+    beSettable[ManualOrUpload](ManualOrUploadPage(Event1, 0))
+
+    beRemovable[ManualOrUpload](ManualOrUploadPage(Event1, 0))
+  }
 }

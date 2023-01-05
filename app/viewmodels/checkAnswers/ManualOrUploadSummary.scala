@@ -36,16 +36,16 @@ object ManualOrUploadSummary {
 
         val value = ValueViewModel(
           HtmlContent(
-            HtmlFormat.escape(messages(s"manualOrUpload.${eventType.toString}.$answer"))
+            HtmlFormat.escape(messages(s"manualOrUpload.event${eventType.toString}.$answer"))
           )
         )
 
         SummaryListRowViewModel(
-          key = "howAddUnauthPayment.checkYourAnswersLabel",
+          key = s"manualOrUpload.event${eventType.toString}.checkYourAnswersLabel",
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", ManualOrUploadPage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages(s"manualOrUpload.${eventType.toString}.change.hidden"))
+              .withVisuallyHiddenText(messages(s"manualOrUpload.event${eventType.toString}.change.hidden"))
           )
         )
     }

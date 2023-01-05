@@ -19,8 +19,6 @@ package pages.common
 import models.UserAnswers
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event22, Event23}
-import pages.event22.HowAddAnnualAllowancePage
-import pages.event23.HowAddDualAllowancePage
 import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -34,8 +32,8 @@ case class MembersSummaryPage(eventType: EventType) extends QuestionPage[Boolean
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     (eventType, answers.get(MembersSummaryPage(eventType))) match {
-      case (Event22, Some(true)) => HowAddAnnualAllowancePage(answers.countAll(MembersPage(EventType.Event22)))
-      case (Event23, Some(true)) => HowAddDualAllowancePage(answers.countAll(MembersPage(EventType.Event23)))
+      case (Event22, Some(true)) => ManualOrUploadPage(Event22, answers.countAll(MembersPage(EventType.Event22)))
+      case (Event23, Some(true)) => ManualOrUploadPage(Event23, answers.countAll(MembersPage(EventType.Event23)))
       case _ => EventSummaryPage
     }
   }
