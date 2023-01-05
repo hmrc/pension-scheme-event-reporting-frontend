@@ -29,7 +29,7 @@
 
 @(form: Form[_], waypoints: Waypoints, eventType: EventType, index: Index)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"manualOrUpload.${eventType.toString}.title"))) {
+@layout(pageTitle = title(form, messages(s"manualOrUpload.event${eventType.toString}.title"))) {
 
     @formHelper(action = routes.ManualOrUploadController.onSubmit(waypoints, eventType, index), Symbol("autoComplete") -> "off") {
 
@@ -40,7 +40,7 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages(s"manualOrUpload.${eventType.toString}.heading")).asPageHeading(),
+                legend = LegendViewModel(messages(s"manualOrUpload.event${eventType.toString}.heading")).asPageHeading(),
                 items  = ManualOrUpload.options(eventType)
             )
         )

@@ -31,9 +31,26 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
 
   import forms.event1.PaymentValueAndDateFormProvider._
 
-  // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now.
-  private val stubMin: LocalDate = LocalDate.of(LocalDate.now().getYear, 4, 6)
-  private val stubMax: LocalDate = LocalDate.of(LocalDate.now().getYear + 1, 4, 5)
+  // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now. Temporary fix for tests? Do the dates need specific 
+  private def startDate: LocalDate = {
+    val today = LocalDate.now
+    today match {
+      case _ if today.isBefore(LocalDate.of(today.getYear, 4, 6)) =>
+        LocalDate.of(today.getYear-1, 4, 6)
+      case _ =>
+        LocalDate.of(today.getYear, 4, 6)
+    }
+  }
+
+  private def endDate: LocalDate = {
+    val today = LocalDate.now
+    today match {
+      case _ if today.isBefore(LocalDate.of(today.getYear, 4, 6)) =>
+        LocalDate.of(today.getYear, 4, 5)
+      case _ =>
+        LocalDate.of(today.getYear+1, 4, 5)
+    }
+  }
 
   def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[PaymentDetails] =
     Form(
@@ -52,8 +69,8 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
                 threeDateComponentsMissingKey = "paymentValueAndDate.date.error.nothingEntered"
               ).verifying(
                 yearHas4Digits("paymentValueAndDate.date.error.outsideDateRanges"),
-                minDate(stubMin, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", formatDateDMY(stubMin), formatDateDMY(stubMax))),
-                maxDate(stubMax, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+                minDate(startDate, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", formatDateDMY(startDate), formatDateDMY(endDate))),
+                maxDate(endDate, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", formatDateDMY(startDate), formatDateDMY(endDate)))
               )
           )
       (PaymentDetails.apply)(PaymentDetails.unapply)
