@@ -39,10 +39,10 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
     val optionEventType = answers.get(this).flatMap(es => EventType.fromEventSelection(es))
 
     optionEventType match {
-      case Some(Event1) => ManualOrUploadPage(answers.countAll(MembersOrEmployersPage(Event1)))
+      case Some(Event1) => ManualOrUploadPage(Event1, answers.countAll(MembersOrEmployersPage(Event1)))
       case Some(Event18) => Event18ConfirmationPage
-      case Some(Event22) => ManualOrUploadPage(answers.countAll(MembersPage(Event22)))
-      case Some(Event23) => ManualOrUploadPage(answers.countAll(MembersPage(Event23)))
+      case Some(Event22) => ManualOrUploadPage(Event22, answers.countAll(MembersPage(Event22)))
+      case Some(Event23) => ManualOrUploadPage(Event23, answers.countAll(MembersPage(Event23)))
       case Some(WindUp) => SchemeWindUpDatePage
       case _ => IndexPage
     }
