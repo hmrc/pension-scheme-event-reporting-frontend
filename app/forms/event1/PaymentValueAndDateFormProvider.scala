@@ -31,7 +31,7 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
 
   import forms.event1.PaymentValueAndDateFormProvider._
 
-  // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now. Temporary fix for tests? Do the dates need specific 
+  // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now. 09/01/2023: Temporary fix for tests- need to discuss proper implenmentation of dates
   private val today = LocalDate.now
   private def startDate: LocalDate = {
     today match {
