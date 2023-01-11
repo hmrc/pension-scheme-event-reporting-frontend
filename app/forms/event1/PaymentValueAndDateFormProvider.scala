@@ -32,8 +32,8 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
   import forms.event1.PaymentValueAndDateFormProvider._
 
   // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now. Temporary fix for tests? Do the dates need specific 
+  private val today = LocalDate.now
   private def startDate: LocalDate = {
-    val today = LocalDate.now
     today match {
       case _ if today.isBefore(LocalDate.of(today.getYear, 4, 6)) =>
         LocalDate.of(today.getYear-1, 4, 6)
@@ -43,7 +43,6 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
   }
 
   private def endDate: LocalDate = {
-    val today = LocalDate.now
     today match {
       case _ if today.isBefore(LocalDate.of(today.getYear, 4, 6)) =>
         LocalDate.of(today.getYear, 4, 5)
