@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
-import pages.common.MembersDetailsPage
+import pages.common.{ManualOrUploadPage, MembersDetailsPage}
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.eventWindUp.SchemeWindUpDatePage
@@ -32,7 +32,6 @@ trait UserAnswersGenerator extends TryValues {
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] = {
     arbitrary[(event18.RemoveEvent18Page.type, JsValue)] ::
-      arbitrary[(event23.HowAddDualAllowancePage, JsValue)] ::
       arbitrary[(event1.PaymentValueAndDatePage, JsValue)] ::
       arbitrary[(event1.member.ErrorDescriptionPage, JsValue)] ::
       arbitrary[(BenefitsPaidEarlyPage, JsValue)] ::
@@ -43,7 +42,6 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(event1.ValueOfUnauthorisedPaymentPage, JsValue)] ::
       arbitrary[(event1.DoYouHoldSignedMandatePage, JsValue)] ::
       arbitrary[(MembersDetailsPage, JsValue)] ::
-      arbitrary[(event1.HowAddUnauthPaymentPage, JsValue)] ::
       arbitrary[(PaymentNaturePage, JsValue)] ::
       arbitrary[(SchemeWindUpDatePage.type, JsValue)] ::
       arbitrary[(event18.Event18ConfirmationPage.type, JsValue)] ::

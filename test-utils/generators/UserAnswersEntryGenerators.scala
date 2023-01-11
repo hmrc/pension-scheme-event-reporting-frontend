@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,14 @@ import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
+
+  implicit lazy val arbitraryManualOrUploadUserAnswersEntry: Arbitrary[(pages.common.ManualOrUploadPage, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[pages.common.ManualOrUploadPage]
+        value <- arbitrary[models.common.ManualOrUpload].map(Json.toJson(_))
+      } yield (page, value)
+    }
 
   implicit lazy val arbitraryRemoveEvent18UserAnswersEntry: Arbitrary[(pages.event18.RemoveEvent18Page.type, JsValue)] =
     Arbitrary {
@@ -215,27 +223,12 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryHowAddDualAllowanceUserAnswersEntry: Arbitrary[(pages.event23.HowAddDualAllowancePage, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[pages.event23.HowAddDualAllowancePage]
-        value <- arbitrary[models.event23.HowAddDualAllowance].map(Json.toJson(_))
-      } yield (page, value)
-    }
 
   implicit lazy val arbitraryWhoReceivedUnauthPaymentUserAnswersEntry: Arbitrary[(pages.event1.WhoReceivedUnauthPaymentPage, JsValue)] =
     Arbitrary {
       for {
         page <- arbitrary[pages.event1.WhoReceivedUnauthPaymentPage]
         value <- arbitrary[models.event1.WhoReceivedUnauthPayment].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryHowAddUnauthPaymentUserAnswersEntry: Arbitrary[(pages.event1.HowAddUnauthPaymentPage, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[pages.event1.HowAddUnauthPaymentPage]
-        value <- arbitrary[models.event1.HowAddUnauthPayment].map(Json.toJson(_))
       } yield (page, value)
     }
 

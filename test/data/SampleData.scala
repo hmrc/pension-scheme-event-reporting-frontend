@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@ package data
 
 import models.UserAnswers
 import models.address.{Address, TolerantAddress}
+import models.common.ManualOrUpload.Manual
 import models.common.{ChooseTaxYear, MembersDetails}
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event22, Event23}
-import models.event1.HowAddUnauthPayment.Manual
 import models.event1.PaymentDetails
 import models.event1.PaymentNature.BenefitInKind
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
@@ -30,7 +30,7 @@ import models.event1.employer.PaymentNature.TangibleMoveableProperty
 import models.event1.employer.{CompanyDetails, LoanDetails}
 import models.event1.member.SchemeDetails
 import pages.address.ManualAddressPage
-import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
+import pages.common.{ChooseTaxYearPage, ManualOrUploadPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
@@ -119,7 +119,7 @@ object SampleData {
     .setOrException(CompanyDetailsPage(1), companyDetails)
 
   val sampleMemberJourneyData: UserAnswers = UserAnswers()
-    .setOrException(HowAddUnauthPaymentPage(0), Manual)
+    .setOrException(ManualOrUploadPage(Event1, 0), Manual)
     .setOrException(WhoReceivedUnauthPaymentPage(0), Member)
     .setOrException(MembersDetailsPage(Event1, 0), memberDetails)
     .setOrException(DoYouHoldSignedMandatePage(0), false)
@@ -129,7 +129,7 @@ object SampleData {
     .setOrException(PaymentValueAndDatePage(0), paymentDetails)
 
   val sampleEmployerJourneyData: UserAnswers = UserAnswers()
-    .setOrException(HowAddUnauthPaymentPage(0), Manual)
+    .setOrException(ManualOrUploadPage(Event1, 0), Manual)
     .setOrException(WhoReceivedUnauthPaymentPage(0), Employer)
     .setOrException(CompanyDetailsPage(0), companyDetails)
     .setOrException(ManualAddressPage(Event1EmployerAddressJourney, 0), employerAddress)

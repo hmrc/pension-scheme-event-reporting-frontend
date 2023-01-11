@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.event23
+package models.common
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -24,40 +24,40 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
-class HowAddDualAllowanceSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class ManualOrUploadSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "HowAddDualAllowance" - {
+  "ManualOrUpload" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(HowAddDualAllowance.values)
+      val gen = Gen.oneOf(ManualOrUpload.values)
 
       forAll(gen) {
-        howAddDualAllowance =>
+        manualOrUpload =>
 
-          JsString(howAddDualAllowance.toString).validate[HowAddDualAllowance].asOpt.value mustEqual howAddDualAllowance
+          JsString(manualOrUpload.toString).validate[ManualOrUpload].asOpt.value mustEqual manualOrUpload
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!HowAddDualAllowance.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!ManualOrUpload.values.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
 
-          JsString(invalidValue).validate[HowAddDualAllowance] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[ManualOrUpload] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(HowAddDualAllowance.values)
+      val gen = Gen.oneOf(ManualOrUpload.values)
 
       forAll(gen) {
-        howAddDualAllowance =>
+        manualOrUpload =>
 
-          Json.toJson(howAddDualAllowance) mustEqual JsString(howAddDualAllowance.toString)
+          Json.toJson(manualOrUpload) mustEqual JsString(manualOrUpload.toString)
       }
     }
   }

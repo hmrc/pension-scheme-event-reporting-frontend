@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,9 @@ import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryManualOrUploadPage: Arbitrary[common.ManualOrUploadPage] =
+    Arbitrary(common.ManualOrUploadPage(Event1, Index(0)))
+
   implicit lazy val arbitraryRemoveEvent18Page: Arbitrary[event18.RemoveEvent18Page.type] =
     Arbitrary(event18.RemoveEvent18Page)
 
@@ -40,9 +43,6 @@ trait PageGenerators {
 
   implicit lazy val arbitraryPaymentValueAndDatePage: Arbitrary[event1.PaymentValueAndDatePage] =
     Arbitrary(event1.PaymentValueAndDatePage(Index(0)))
-
-  implicit lazy val arbitraryHowAddDualAllowancePage: Arbitrary[event23.HowAddDualAllowancePage] =
-    Arbitrary(event23.HowAddDualAllowancePage(Index(0)))
 
   implicit lazy val arbitraryLoanDetailsPage: Arbitrary[event1.employer.LoanDetailsPage] =
     Arbitrary(event1.employer.LoanDetailsPage(Index(0)))
@@ -113,9 +113,6 @@ trait PageGenerators {
 
   implicit lazy val arbitraryWhoReceivedUnauthPaymentPage: Arbitrary[event1.WhoReceivedUnauthPaymentPage] =
     Arbitrary(event1.WhoReceivedUnauthPaymentPage(Index(0)))
-
-  implicit lazy val arbitraryHowAddUnauthPaymentPage: Arbitrary[event1.HowAddUnauthPaymentPage] =
-    Arbitrary(event1.HowAddUnauthPaymentPage(Index(0)))
 
   implicit lazy val arbitraryPaymentNaturePage: Arbitrary[PaymentNaturePage] =
     Arbitrary(member.PaymentNaturePage(Index(0)))

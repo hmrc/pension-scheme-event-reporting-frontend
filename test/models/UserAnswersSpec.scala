@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,17 +19,17 @@ package models
 import base.SpecBase
 import data.SampleData
 import data.SampleData._
+import models.common.ManualOrUpload.Manual
 import models.common.MembersSummary
 import models.common.MembersSummary.readsMemberValue
 import models.enumeration.EventType.{Event1, Event22}
-import models.event1.HowAddUnauthPayment.Manual
 import models.event1.MembersOrEmployersSummary.readsMemberOrEmployerValue
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.{MembersOrEmployersSummary, PaymentDetails}
 import org.scalatest.matchers.must.Matchers
-import pages.common.{ChooseTaxYearPage, MembersDetailsPage, MembersOrEmployersPage, MembersPage}
+import pages.common.{ChooseTaxYearPage, ManualOrUploadPage, MembersDetailsPage, MembersOrEmployersPage, MembersPage}
 import pages.event1.employer.CompanyDetailsPage
-import pages.event1.{HowAddUnauthPaymentPage, PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
+import pages.event1.{PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
 
 import java.time.LocalDate
 
@@ -71,7 +71,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
     }
     "must return the list of members or employers if only first question answered" in {
       val userAnswersWithOnlyManualOrUpload: UserAnswers = UserAnswers()
-        .setOrException(HowAddUnauthPaymentPage(0), Manual)
+        .setOrException(ManualOrUploadPage(Event1, 0), Manual)
 
       userAnswersWithOnlyManualOrUpload.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
         Seq(MembersOrEmployersSummary("Not entered", BigDecimal(0.00)))

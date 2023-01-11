@@ -14,44 +14,44 @@
  * limitations under the License.
  */
 
-package controllers.event23
+package controllers.common
 
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.event23.HowAddDualAllowanceFormProvider
+import forms.common.ManualOrUploadFormProvider
 import models.enumeration.EventType
 import models.{Index, UserAnswers}
 import pages.Waypoints
-import pages.event23.HowAddDualAllowancePage
+import pages.common.ManualOrUploadPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event23.HowAddDualAllowanceView
+import views.html.common.ManualOrUploadView
 
 import javax.inject.Inject
 
-class HowAddDualAllowanceController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                              identify: IdentifierAction,
-                                              getData: DataRetrievalAction,
-                                              formProvider: HowAddDualAllowanceFormProvider,
-                                              view: HowAddDualAllowanceView
+class ManualOrUploadController @Inject()(val controllerComponents: MessagesControllerComponents,
+                                         identify: IdentifierAction,
+                                         getData: DataRetrievalAction,
+                                         formProvider: ManualOrUploadFormProvider,
+                                         view: ManualOrUploadView
                                              ) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
-  private val eventType = EventType.Event23
 
-  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    Ok(view(form, waypoints, index))
+  def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    val form = formProvider(eventType)
+    Ok(view(form, waypoints, eventType, index))
   }
 
-  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) {
+  def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) {
     implicit request =>
+      val form = formProvider(eventType)
       form.bindFromRequest().fold(
         formWithErrors =>
-          BadRequest(view(formWithErrors, waypoints, index)),
+          BadRequest(view(formWithErrors, waypoints, eventType, index)),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(HowAddDualAllowancePage(index), value)
-          Redirect(HowAddDualAllowancePage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+          val updatedAnswers = originalUserAnswers.setOrException(ManualOrUploadPage(eventType, index), value)
+          Redirect(ManualOrUploadPage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
         }
       )
   }

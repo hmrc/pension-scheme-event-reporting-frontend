@@ -40,8 +40,8 @@ GET         /new-report/event-23-click                                          
 GET         /new-report/:index/event-22-check-your-answers                        controllers.event22.Event22CheckYourAnswersController.onPageLoad(index: Index)
 GET         /new-report/event-22-click                                            controllers.event22.Event22CheckYourAnswersController.onClick
 
-GET         /new-report/:index/event-1-entry-type                                 controllers.event1.HowAddUnauthPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
-POST        /new-report/:index/event-1-entry-type                                 controllers.event1.HowAddUnauthPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+GET         /new-report/:index/event-1-entry-type                                 controllers.common.ManualOrUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1,  index: Index)
+POST        /new-report/:index/event-1-entry-type                                 controllers.common.ManualOrUploadController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1, index: Index)
 
 GET         /new-report/:index/event-1-payment-type                               controllers.event1.WhoReceivedUnauthPaymentController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /new-report/:index/event-1-payment-type                               controllers.event1.WhoReceivedUnauthPaymentController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
@@ -143,16 +143,16 @@ POST        /new-report/:index/event-1-transfer-recipient                       
 GET         /new-report/:index/event-1-scheme-details                             controllers.event1.member.SchemeDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /new-report/:index/event-1-scheme-details                             controllers.event1.member.SchemeDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
-GET         /new-report/:index/event-23-entry-type                                controllers.event23.HowAddDualAllowanceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
-POST        /new-report/:index/event-23-entry-type                                controllers.event23.HowAddDualAllowanceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+GET         /new-report/:index/event-23-entry-type                                controllers.common.ManualOrUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
+POST        /new-report/:index/event-23-entry-type                                controllers.common.ManualOrUploadController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
 
 GET         /new-report/:index/event-23-what-need                                 controllers.event23.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
 GET         /new-report/:index/event-23-member-details                            controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
 POST        /new-report/:index/event-23-member-details                            controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
 
-GET         /new-report/:index/event-22-entry-type                                controllers.event22.HowAddAnnualAllowanceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
-POST        /new-report/:index/event-22-entry-type                                controllers.event22.HowAddAnnualAllowanceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+GET         /new-report/:index/event-22-entry-type                                controllers.common.ManualOrUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, index: Index)
+POST        /new-report/:index/event-22-entry-type                                controllers.common.ManualOrUploadController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, index: Index)
 
 GET         /new-report/:index/event-22-what-need                                 controllers.event22.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 

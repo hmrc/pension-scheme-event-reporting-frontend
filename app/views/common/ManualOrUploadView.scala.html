@@ -14,8 +14,9 @@
  * limitations under the License.
  *@
 
-@import models.event1.HowAddUnauthPayment
-@import controllers.event1.routes
+@import models.common.ManualOrUpload
+@import controllers.common.routes
+@import models.enumeration.EventType
 
 @this(
     layout: templates.Layout,
@@ -25,11 +26,12 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("howAddUnauthPayment.title"))) {
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, index: Index)(implicit request: Request[_], messages: Messages)
 
-    @formHelper(action = routes.HowAddUnauthPaymentController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
+@layout(pageTitle = title(form, messages(s"manualOrUpload.event${eventType.toString}.title"))) {
+
+    @formHelper(action = routes.ManualOrUploadController.onSubmit(waypoints, eventType, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
@@ -38,8 +40,8 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("howAddUnauthPayment.heading")).asPageHeading(),
-                items  = HowAddUnauthPayment.options
+                legend = LegendViewModel(messages(s"manualOrUpload.event${eventType.toString}.heading")).asPageHeading(),
+                items  = ManualOrUpload.options(eventType)
             )
         )
 

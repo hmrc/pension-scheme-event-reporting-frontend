@@ -14,38 +14,37 @@
  * limitations under the License.
  */
 
-package models.event23
+package models.common
 
+import models.enumeration.EventType
 import models.{Enumerable, WithName}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-sealed trait HowAddDualAllowance
+sealed trait ManualOrUpload
 
-object HowAddDualAllowance extends Enumerable.Implicits {
+object ManualOrUpload extends Enumerable.Implicits {
 
-  case object Manual extends WithName("manual") with HowAddDualAllowance
+  case object Manual extends WithName("manual") with ManualOrUpload
+  case object FileUpload extends WithName("fileUpload") with ManualOrUpload
 
-  case object FileUpload extends WithName("fileUpload") with HowAddDualAllowance
+  def values: Seq[ManualOrUpload] = {
+      Seq(Manual, FileUpload)
+  }
 
-  val values: Seq[HowAddDualAllowance] = Seq(
-    Manual, FileUpload
-  )
-
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
+  def options(eventType: EventType)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
       RadioItem(
-        content = Text(messages(s"howAddDualAllowance.${value.toString}")),
-        value = Some(value.toString),
-        id = Some(s"value_$index"),
-        hint = if (value == FileUpload) Some(Hint(content = Text(messages("howAddDualAllowance.fileUpload.hint")))) else None,
+        content = Text(messages(s"manualOrUpload.event${eventType.toString}.${value.toString}")),
+        value   = Some(value.toString),
+        id      = Some(s"value_$index"),
+        hint    = if (value == FileUpload) Some(Hint(content = Text(messages(s"manualOrUpload.event${eventType.toString}.fileUpload.hint")))) else None,
         disabled = value == FileUpload
       )
   }
 
-  implicit val enumerable: Enumerable[HowAddDualAllowance] =
+  implicit val enumerable: Enumerable[ManualOrUpload] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }
-

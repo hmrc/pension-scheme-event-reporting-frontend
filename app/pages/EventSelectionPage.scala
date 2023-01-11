@@ -20,11 +20,8 @@ import controllers.routes
 import models.enumeration.EventType
 import models.enumeration.EventType._
 import models.{EventSelection, UserAnswers}
-import pages.common.{MembersOrEmployersPage, MembersPage}
-import pages.event1.HowAddUnauthPaymentPage
+import pages.common.{ManualOrUploadPage, MembersOrEmployersPage, MembersPage}
 import pages.event18.Event18ConfirmationPage
-import pages.event22.HowAddAnnualAllowancePage
-import pages.event23.HowAddDualAllowancePage
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -42,10 +39,10 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
     val optionEventType = answers.get(this).flatMap(es => EventType.fromEventSelection(es))
 
     optionEventType match {
-      case Some(Event1) => HowAddUnauthPaymentPage(answers.countAll(MembersOrEmployersPage(Event1)))
+      case Some(Event1) => ManualOrUploadPage(Event1, answers.countAll(MembersOrEmployersPage(Event1)))
       case Some(Event18) => Event18ConfirmationPage
-      case Some(Event22) => HowAddAnnualAllowancePage(answers.countAll(MembersPage(Event22)))
-      case Some(Event23) => HowAddDualAllowancePage(answers.countAll(MembersPage(Event23)))
+      case Some(Event22) => ManualOrUploadPage(Event22, answers.countAll(MembersPage(Event22)))
+      case Some(Event23) => ManualOrUploadPage(Event23, answers.countAll(MembersPage(Event23)))
       case Some(WindUp) => SchemeWindUpDatePage
       case _ => IndexPage
     }

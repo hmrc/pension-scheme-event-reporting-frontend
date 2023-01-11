@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ package journey
 import data.SampleData.{companyDetails, seqTolerantAddresses}
 import generators.ModelGenerators
 import models.EventSelection._
+import models.common.ManualOrUpload.Manual
 import models.common.{ChooseTaxYear, MembersDetails}
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.enumeration.EventType
-import models.event1.HowAddUnauthPayment.Manual
 import models.event1.PaymentDetails
 import models.event1.PaymentNature._
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
@@ -33,16 +33,14 @@ import models.event1.member.RefundOfContributions.WidowOrOrphan
 import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
-import pages.{EventSelectionPage, EventSummaryPage}
 import pages.address.ManualAddressPage
-import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
+import pages.common.{ChooseTaxYearPage, ManualOrUploadPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, LoanDetailsPage}
 import pages.event1.member._
 import pages.event18.Event18ConfirmationPage
-import pages.event22.HowAddAnnualAllowancePage
-import pages.event23.HowAddDualAllowancePage
 import pages.eventWindUp.{EventWindUpCheckYourAnswersPage, SchemeWindUpDatePage}
+import pages.{EventSelectionPage, EventSummaryPage}
 
 import java.time.LocalDate
 
@@ -73,7 +71,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
     startingFrom(EventSelectionPage)
       .run(
         submitAnswer(EventSelectionPage, Event1),
-        submitAnswer(HowAddUnauthPaymentPage(0), Manual),
+        submitAnswer(ManualOrUploadPage(EventType.Event1, 0), Manual),
         submitAnswer(WhoReceivedUnauthPaymentPage(0), Member),
         next,
         submitAnswer(MembersDetailsPage(EventType.Event1, 0), membersDetails.get),
@@ -179,7 +177,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
     startingFrom(EventSelectionPage)
       .run(
         submitAnswer(EventSelectionPage, Event1),
-        submitAnswer(HowAddUnauthPaymentPage(0), Manual),
+        submitAnswer(ManualOrUploadPage(EventType.Event1, 0), Manual),
         submitAnswer(WhoReceivedUnauthPaymentPage(0), Employer),
         pageMustBe(employer.WhatYouWillNeedPage(0))
       )
@@ -287,7 +285,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
     startingFrom(EventSelectionPage)
       .run(
         submitAnswer(EventSelectionPage, Event22),
-        submitAnswer(HowAddAnnualAllowancePage(0), models.event22.HowAddAnnualAllowance.Manual),
+        submitAnswer(ManualOrUploadPage(EventType.Event22, 0), Manual),
         next,
         submitAnswer(pages.common.MembersDetailsPage(EventType.Event22, 0), membersDetails.get),
         submitAnswer(ChooseTaxYearPage(EventType.Event22, 0), taxYear.get),
@@ -301,7 +299,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
     startingFrom(EventSelectionPage)
       .run(
         submitAnswer(EventSelectionPage, Event23),
-        submitAnswer(HowAddDualAllowancePage(0), models.event23.HowAddDualAllowance.Manual),
+        submitAnswer(ManualOrUploadPage(EventType.Event23, 0), Manual),
         next,
         submitAnswer(pages.common.MembersDetailsPage(EventType.Event23, 0), membersDetails.get),
         submitAnswer(ChooseTaxYearPage(EventType.Event23, 0), taxYear.get),
