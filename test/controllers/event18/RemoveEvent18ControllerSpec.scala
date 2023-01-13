@@ -31,12 +31,11 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import views.html.event18.RemoveEvent18View
 
 import scala.concurrent.Future
 
-class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach  {
+class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
@@ -46,13 +45,14 @@ class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach  {
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.RemoveEvent18Controller.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.RemoveEvent18Controller.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
