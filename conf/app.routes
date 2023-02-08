@@ -183,7 +183,7 @@ POST        /new-report/event-22-summary                                        
 GET         /new-report/event-23-summary                                          controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 POST        /new-report/event-23-summary                                          controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 
-
+GET         /event-reporting-partials                                             controllers.partials.EventReportingTileController.penaltiesPartial()
 
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.
