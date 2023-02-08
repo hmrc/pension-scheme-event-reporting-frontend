@@ -18,7 +18,7 @@ package controllers.partials
 
 import controllers.actions.IdentifierAction
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.partials.EventReportingTileView
 
@@ -27,9 +27,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EventReportingTileController @Inject()(
                                               identify: IdentifierAction,
-                                              view: EventReportingTileView
+                                              view: EventReportingTileView,
                                               //                                            override val messagesApi: MessagesApi,
-                                              //                                            val controllerComponents: MessagesControllerComponents,
+                                              val controllerComponents: MessagesControllerComponents,
                                               //                                            fsConnector: FinancialStatementConnector,
                                               //                                            renderer: Renderer,
                                               //                                            aftPartialService: AFTPartialService
@@ -39,7 +39,7 @@ class EventReportingTileController @Inject()(
 
   def penaltiesPartial(): Action[AnyContent] = {
     identify.async { implicit request =>
-      Future.successful(Ok(view))
+      Future.successful(Ok(view()))
       //    fsConnector.getPsaFS(request.psaIdOrException.id).flatMap { psaFS =>
       //      val result = if (psaFS.seqPsaFSDetail.isEmpty) {
       //        Future.successful(Html(""))
