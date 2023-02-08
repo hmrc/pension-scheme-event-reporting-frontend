@@ -41,7 +41,7 @@ case class ManualOrUploadPage(eventType: EventType, index: Int) extends Question
     (eventType, index, answers.get(this)) match {
       case (Event1, index, Some(Manual)) => WhoReceivedUnauthPaymentPage(index)
       case (Event22, index, Some(Manual)) => pages.event22.WhatYouWillNeedPage(index)
-      case (Event22, index, Some(FileUpload)) => pages.event22.WhatYouWillNeedPage(index)
+      case (Event22, _, Some(FileUpload)) => pages.event22.FileUploadWhatYouWillNeedPage
       case (Event23, index, Some(Manual)) => pages.event23.WhatYouWillNeedPage(index)
       case _ => this
     }
