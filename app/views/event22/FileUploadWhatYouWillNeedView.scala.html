@@ -19,7 +19,7 @@
         govukButton: GovukButton
 )
 
-@(continueUrl: String)(implicit request: Request[_], messages: Messages)
+@(continueUrl: String, templateDownloadLink: String, instructionsDownloadLink: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("fileUploadWhatYouWillNeed.event22.title"))) {
 
@@ -37,8 +37,10 @@
     <p class="govuk-body">@messages("fileUploadWhatYouWillNeed.event22.p2")</p>
 
     <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("fileUploadWhatYouWillNeed.event22.item5")</li>
-        <li>@messages("fileUploadWhatYouWillNeed.event22.item6")</li>
+        <li>@messages("fileUploadWhatYouWillNeed.event22.item5.prefix")
+            <a href=@templateDownloadLink class="govuk-link">@messages("fileUploadWhatYouWillNeed.event22.template.link.text")</a>
+            @messages("fileUploadWhatYouWillNeed.event22.item5")</li>
+        <li><a href=@instructionsDownloadLink class="govuk-link">@messages("fileUploadWhatYouWillNeed.event22.instructions.link.text")</a></li>
     </ul>
 
     <p class="govuk-inset-text">@messages("fileUploadWhatYouWillNeed.event22.inset")</p>

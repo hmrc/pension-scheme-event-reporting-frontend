@@ -38,7 +38,11 @@ class FileUploadWhatYouWillNeedController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) {
     implicit request =>
-      //TODO: The route needs to be updated to take you to the subsequent page
-      Ok(view(controllers.routes.IndexController.onPageLoad.url))
+
+      val templateDownloadLink = controllers.routes.FileDownloadController.templateFile.url
+      val instructionsDownloadLink = controllers.routes.FileDownloadController.instructionsFile.url
+
+      //TODO: The url needs to be updated to take you to the future subsequent page
+      Ok(view(controllers.routes.IndexController.onPageLoad.url, templateDownloadLink, instructionsDownloadLink))
   }
 }
