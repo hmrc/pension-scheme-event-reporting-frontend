@@ -66,6 +66,8 @@ eventSummary.checkYourAnswersLabel = Check your answers
 eventSummary.error.required = Select yes if you want to add another event
 eventSummary.change.hidden = EventSummary
 
+eventReportingTile.heading = Event Reporting
+
 eventSelection.title = Which event are you adding to the event report?
 eventSelection.heading = Which event are you adding to the event report?
 eventSelection.event1 = Event 1

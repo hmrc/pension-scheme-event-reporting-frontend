@@ -16,19 +16,44 @@
 
 @import viewmodels.partials.CardViewModel
 @this(
- layout: templates.Layout,
- govukButton: GovukButton
+        layout: templates.Layout,
+        govukButton: GovukButton
 )
 
 @(d: Seq[CardViewModel])(implicit request: Request[_])
 
 
-<div class="card" >
- <div class="card-body">
-   <h2 class="card-heading govuk-heading-m">
-  @d.map{ card =>
-    @card.heading
-  }
- </h2>
- </div>
+<div class="card" id="event-reporting">
+    <div class="card-body">
+        @d.map { card =>
+            <h2 class="card-heading govuk-heading-m">
+                @card.heading
+            </h2>
+        @card.subHeadings.map { subheading =>
+            <p class="card-sub-heading bold govuk-body-m">
+                <span class="font-xsmall">@subheading.subHeading</span>
+                @subheading.subHeadingParams.map { subParam =>
+                    <strong class="bold govuk-!-font-weight-bold govuk-!-display-inline-block @subParam.subHeadingParamClasses">
+                    @subParam.subHeadingParam
+                    </strong>
+                </p>
+        }
+        }
+        }
+    </div>
+    <div class="card-action">
+        <ul class="govuk-list">
+                @* can replace below class with class="govuk-link govuk-radios__input" when link is implemented - currently disabled*@
+            <li>
+                <a id=erContinueInProgressLink" class="govuk-hint govuk-!-padding-0">View event report in progress</a>
+            </li>
+            <li>
+                <a id="erLoginLink" class="govuk-link" href="select-year">Start a new event report</a>
+            </li>
+            <li>
+                @* can replace below class with class="govuk-link govuk-radios__input" when link is implemented - currently disabled*@
+                <a id="erAmendLink" class="govuk-hint govuk-!-padding-0">View or change past event reports</a>
+            </li>
+        </ul>
+    </div>
 </div>

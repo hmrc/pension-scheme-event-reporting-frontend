@@ -23,7 +23,7 @@ import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.partials.CardViewModel
+import viewmodels.partials.{CardSubHeading, CardSubHeadingParam, CardViewModel}
 import views.html.partials.EventReportingTileView
 
 import javax.inject.Inject
@@ -50,8 +50,10 @@ class EventReportingTileController @Inject()(
 //          (subHeadings, inProgressLink) <- getInProgressReturnsModel(overview, srn, schemeDetails.pstr)
         } yield Seq(CardViewModel(
           id = "aft-overview",
-          heading = Messages("aftPartial.head"),
-          subHeadings = Nil,
+          heading = Messages("eventReportingTile.heading"),
+          subHeadings = Seq(CardSubHeading(subHeading = "Event report 2022 to 2023:",
+            subHeadingClasses = "card-sub-heading",
+            subHeadingParams = Seq(CardSubHeadingParam(subHeadingParam = "in progress", subHeadingParamClasses = "font-small bold")))),
           links = Nil
         ))
 
