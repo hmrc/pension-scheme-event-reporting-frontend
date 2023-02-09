@@ -17,7 +17,6 @@
 package controllers.event22
 
 import controllers.actions._
-import models.enumeration.EventType
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,20 +28,17 @@ import javax.inject.Inject
 class FileUploadWhatYouWillNeedController @Inject()(
                                                      override val messagesApi: MessagesApi,
                                                      identify: IdentifierAction,
-                                                     getData: DataRetrievalAction,
                                                      val controllerComponents: MessagesControllerComponents,
                                                      view: FileUploadWhatYouWillNeedView
                                                    ) extends FrontendBaseController with I18nSupport {
 
-  private val eventType = EventType.Event22
-
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) {
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
     implicit request =>
 
-      val templateDownloadLink = controllers.routes.FileDownloadController.templateFile.url
-      val instructionsDownloadLink = controllers.routes.FileDownloadController.instructionsFile.url
+      val templateDownloadLink = controllers.routes.FileDownloadController.templateFile
+      val instructionsDownloadLink = controllers.routes.FileDownloadController.instructionsFile
 
       //TODO: The url needs to be updated to take you to the future subsequent page
-      Ok(view(controllers.routes.IndexController.onPageLoad.url, templateDownloadLink, instructionsDownloadLink))
+      Ok(view(controllers.routes.IndexController.onPageLoad, templateDownloadLink, instructionsDownloadLink))
   }
 }
