@@ -14,14 +14,24 @@
  * limitations under the License.
  *@
 
+@import viewmodels.partials.CardViewModel
 @this(
  layout: templates.Layout,
  govukButton: GovukButton
 )
 
-@()(implicit request: Request[_])
+@(d: Seq[CardViewModel])(implicit request: Request[_])
 
-**************
+
+<div class="card" >
+ <div class="card-body">
+   <h2 class="card-heading govuk-heading-m">
+  @d.map{ card =>
+    @card.heading
+  }
+ </h2>
+<p>**************
 maryiah was here
-**************
-
+**************<p>
+ </div>
+</div>

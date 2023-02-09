@@ -16,10 +16,14 @@
 
 package controllers.partials
 
+import connectors.EventReportingConnector
 import controllers.actions.IdentifierAction
-import play.api.i18n.I18nSupport
+import models.event1.member.SchemeDetails
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.partials.CardViewModel
 import views.html.partials.EventReportingTileView
 
 import javax.inject.Inject
@@ -30,16 +34,30 @@ class EventReportingTileController @Inject()(
                                               view: EventReportingTileView,
                                               //                                            override val messagesApi: MessagesApi,
                                               val controllerComponents: MessagesControllerComponents,
-                                              //                                            fsConnector: FinancialStatementConnector,
+                                              erConnector: EventReportingConnector,
                                               //                                            renderer: Renderer,
                                               //                                            aftPartialService: AFTPartialService
                                             )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
 
-  def penaltiesPartial(): Action[AnyContent] = {
+  def eventReportPartial(): Action[AnyContent] = {
     identify.async { implicit request =>
-      Future.successful(Ok(view()))
+
+       val card = for {
+          overview <- erConnector.getEventReportSummary(request.pstr)
+//          startLink <- getStartReturnLink(overview, srn, schemeDetails.pstr)
+//          (subHeadings, inProgressLink) <- getInProgressReturnsModel(overview, srn, schemeDetails.pstr)
+        } yield Seq(CardViewModel(
+          id = "aft-overview",
+          heading = Messages("aftPartial.head"),
+          subHeadings = Nil,
+          links = Nil
+        ))
+
+      card.flatMap{ d =>
+        Future.successful(Ok(view(d)))
+      }
       //    fsConnector.getPsaFS(request.psaIdOrException.id).flatMap { psaFS =>
       //      val result = if (psaFS.seqPsaFSDetail.isEmpty) {
       //        Future.successful(Html(""))
