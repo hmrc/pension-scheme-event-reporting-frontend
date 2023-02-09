@@ -16,14 +16,14 @@
 
 package controllers.partials
 
+import config.FrontendAppConfig
 import connectors.EventReportingConnector
 import controllers.actions.IdentifierAction
-import models.event1.member.SchemeDetails
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.partials.{CardSubHeading, CardSubHeadingParam, CardViewModel}
+import viewmodels.partials._
 import views.html.partials.EventReportingTileView
 
 import javax.inject.Inject
@@ -35,7 +35,7 @@ class EventReportingTileController @Inject()(
                                               //                                            override val messagesApi: MessagesApi,
                                               val controllerComponents: MessagesControllerComponents,
                                               erConnector: EventReportingConnector,
-                                              //                                            renderer: Renderer,
+                                              appConfig: FrontendAppConfig
                                               //                                            aftPartialService: AFTPartialService
                                             )(implicit ec: ExecutionContext)
   extends FrontendBaseController
@@ -54,7 +54,7 @@ class EventReportingTileController @Inject()(
           subHeadings = Seq(CardSubHeading(subHeading = "Event report 2022 to 2023:",
             subHeadingClasses = "card-sub-heading",
             subHeadingParams = Seq(CardSubHeadingParam(subHeadingParam = "in progress", subHeadingParamClasses = "font-small bold")))),
-          links = Nil
+          links = Seq(Link("erLoginLink", appConfig.erLoginUrl, Text(Messages("eventReportingTile.link.item2"))))
         ))
 
       card.flatMap{ d =>

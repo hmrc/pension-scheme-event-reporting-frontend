@@ -185,6 +185,9 @@ POST        /new-report/event-23-summary                                        
 
 GET         /event-reporting-partials                                             controllers.partials.EventReportingTileController.eventReportPartial()
 
+GET         /select-tax-year                                                      controllers.TaxYearController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /select-tax-year                                                      controllers.TaxYearController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.
 #

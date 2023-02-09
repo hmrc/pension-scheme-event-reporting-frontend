@@ -42,18 +42,20 @@
         }
     </div>
     <div class="card-action">
-        <ul class="govuk-list">
+        @d.map { card =>
+            <ul class="govuk-list">
                 @* can replace below class with class="govuk-link govuk-radios__input" when link is implemented - currently disabled*@
-            <li>
-                <a id=erContinueInProgressLink" class="govuk-hint govuk-!-padding-0">@messages("eventReportingTile.link.item1")</a>
-            </li>
-            <li>
-                <a id="erLoginLink" class="govuk-link" href="select-year">@messages("eventReportingTile.link.item2")</a>
-            </li>
-            <li>
-                @* can replace below class with class="govuk-link govuk-radios__input" when link is implemented - currently disabled*@
-                <a id="erAmendLink" class="govuk-hint govuk-!-padding-0">@messages("eventReportingTile.link.item3")</a>
-            </li>
-        </ul>
+                <li>
+                    <a id=erContinueInProgressLink" class="govuk-hint govuk-!-padding-0">@messages("eventReportingTile.link.item1")</a>
+                </li>
+                <li>
+                    <a id="erLoginLink" class="govuk-link" href=@card.links.map(_.url)>@messages("eventReportingTile.link.item2")</a>
+                </li>
+                <li>
+                    @* can replace below class with class="govuk-link govuk-radios__input" when link is implemented - currently disabled*@
+                    <a id="erAmendLink" class="govuk-hint govuk-!-padding-0">@messages("eventReportingTile.link.item3")</a>
+                </li>
+            </ul>
+        }
     </div>
 </div>

@@ -856,3 +856,11 @@ removeEvent18.heading = Are you sure you want to remove Event 18: Scheme chargea
 removeEvent18.checkYourAnswersLabel = Are you sure you want to remove Event 18: Scheme chargeable payment?
 removeEvent18.error.required = Select if you want to remove Event 18
 removeEvent18.change.hidden = Are you sure you want to remove Event 18: Scheme chargeable payment?
+
+taxYear.title = taxYear
+taxYear.heading = taxYear
+taxYear.option1 = Option 1
+taxYear.option2 = Option 2
+taxYear.checkYourAnswersLabel = taxYear
+taxYear.error.required = Select taxYear
+taxYear.change.hidden = TaxYear
