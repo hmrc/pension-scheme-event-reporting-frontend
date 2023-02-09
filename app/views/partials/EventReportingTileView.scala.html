@@ -20,7 +20,7 @@
         govukButton: GovukButton
 )
 
-@(d: Seq[CardViewModel])(implicit request: Request[_])
+@(d: Seq[CardViewModel])(implicit request: Request[_], messages: Messages)
 
 
 <div class="card" id="event-reporting">
@@ -45,14 +45,14 @@
         <ul class="govuk-list">
                 @* can replace below class with class="govuk-link govuk-radios__input" when link is implemented - currently disabled*@
             <li>
-                <a id=erContinueInProgressLink" class="govuk-hint govuk-!-padding-0">View event report in progress</a>
+                <a id=erContinueInProgressLink" class="govuk-hint govuk-!-padding-0">@messages("eventReportingTile.link.item1")</a>
             </li>
             <li>
-                <a id="erLoginLink" class="govuk-link" href="select-year">Start a new event report</a>
+                <a id="erLoginLink" class="govuk-link" href="select-year">@messages("eventReportingTile.link.item2")</a>
             </li>
             <li>
                 @* can replace below class with class="govuk-link govuk-radios__input" when link is implemented - currently disabled*@
-                <a id="erAmendLink" class="govuk-hint govuk-!-padding-0">View or change past event reports</a>
+                <a id="erAmendLink" class="govuk-hint govuk-!-padding-0">@messages("eventReportingTile.link.item3")</a>
             </li>
         </ul>
     </div>
