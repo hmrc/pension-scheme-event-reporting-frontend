@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.TaxYear
+import models.{TaxYear, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 case object TaxYearPage extends QuestionPage[TaxYear] {
@@ -28,4 +28,8 @@ case object TaxYearPage extends QuestionPage[TaxYear] {
 
   override def route(waypoints: Waypoints): Call =
     routes.TaxYearController.onPageLoad(waypoints)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    EventSelectionPage
+  }
 }

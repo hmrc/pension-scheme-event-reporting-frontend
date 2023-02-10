@@ -32,11 +32,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class EventReportingTileController @Inject()(
                                               identify: IdentifierAction,
                                               view: EventReportingTileView,
-                                              //                                            override val messagesApi: MessagesApi,
                                               val controllerComponents: MessagesControllerComponents,
-                                              erConnector: EventReportingConnector,
                                               appConfig: FrontendAppConfig
-                                              //                                            aftPartialService: AFTPartialService
                                             )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
@@ -44,11 +41,7 @@ class EventReportingTileController @Inject()(
   def eventReportPartial(): Action[AnyContent] = {
     identify.async { implicit request =>
 
-       val card = for {
-          overview <- erConnector.getEventReportSummary(request.pstr)
-//          startLink <- getStartReturnLink(overview, srn, schemeDetails.pstr)
-//          (subHeadings, inProgressLink) <- getInProgressReturnsModel(overview, srn, schemeDetails.pstr)
-        } yield Seq(CardViewModel(
+       val card = Seq(CardViewModel(
           id = "aft-overview",
           heading = Messages("eventReportingTile.heading"),
           subHeadings = Seq(CardSubHeading(subHeading = "Event report 2022 to 2023:",
@@ -57,22 +50,7 @@ class EventReportingTileController @Inject()(
           links = Seq(Link("erLoginLink", appConfig.erLoginUrl, Text(Messages("eventReportingTile.link.item2"))))
         ))
 
-      card.flatMap{ d =>
-        Future.successful(Ok(view(d)))
-      }
-      //    fsConnector.getPsaFS(request.psaIdOrException.id).flatMap { psaFS =>
-      //      val result = if (psaFS.seqPsaFSDetail.isEmpty) {
-      //        Future.successful(Html(""))
-      //      } else {
-      //        val viewModel = aftPartialService.penaltiesAndCharges(psaFS.seqPsaFSDetail)
-      //        renderer.render(
-      //          template = "partials/psaSchemeDashboardPartial.njk",
-      //          ctx = Json.obj("cards" -> Json.toJson(viewModel))
-      //        )
-      //      }
-      //      result.map(Ok(_))
-      //    }
-      //  }
+        Future.successful(Ok(view(card)))
     }
   }
 }

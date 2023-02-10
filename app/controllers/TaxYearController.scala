@@ -42,7 +42,6 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    println("\n\n\nTEDTSYGDFUYDVYVUY")
     val preparedForm = request.userAnswers.flatMap(_.get(TaxYearPage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }

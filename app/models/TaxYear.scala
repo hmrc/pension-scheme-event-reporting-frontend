@@ -19,28 +19,44 @@ package models
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import models.{Enumerable,WithName}
+import models.{Enumerable, WithName}
+import utils.DateHelper
 
-sealed trait TaxYear
+import java.time.{LocalDate, Month}
+
+case class TaxYear(startYear: String) {
+  def endYear: String = (startYear.toInt + 1).toString
+}
 
 object TaxYear extends Enumerable.Implicits {
 
-  case object Option1 extends WithName("option1") with TaxYear
-  case object Option2 extends WithName("option2") with TaxYear
+  private def values: Seq[TaxYear] = {
+    yearRange(DateHelper.today).reverse
+  }
 
-  val values: Seq[TaxYear] = Seq(
-    Option1, Option2
-  )
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
       RadioItem(
-        content = Text(messages(s"taxYear.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
+        content = Text(messages("chooseTaxYear.yearRangeRadio", value.startYear, value.endYear)),
+        value = Some(value.startYear),
+        id = Some(s"value_$index")
       )
   }
 
+  def yearRange(currentDate: LocalDate): Seq[TaxYear] = {
+    val endOfTaxYear = LocalDate.of(currentDate.getYear, 4, 5)
+    val startOfTaxYear = LocalDate.of(currentDate.getYear, 4, 6)
+
+    val currentTaxYearCalculated = if (currentDate.isBefore(endOfTaxYear)) {
+      endOfTaxYear.getYear - 1
+    }
+    else {
+      startOfTaxYear.getYear
+    }
+    (currentTaxYearCalculated - 7 to currentTaxYearCalculated).map(year => TaxYear(year.toString))
+  }
+
   implicit val enumerable: Enumerable[TaxYear] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+    Enumerable(values.map(v => v.startYear -> v): _*)
 }

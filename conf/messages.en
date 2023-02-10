@@ -857,10 +857,8 @@ removeEvent18.checkYourAnswersLabel = Are you sure you want to remove Event 18: 
 removeEvent18.error.required = Select if you want to remove Event 18
 removeEvent18.change.hidden = Are you sure you want to remove Event 18: Scheme chargeable payment?
 
-taxYear.title = taxYear
-taxYear.heading = taxYear
-taxYear.option1 = Option 1
-taxYear.option2 = Option 2
-taxYear.checkYourAnswersLabel = taxYear
+taxYear.title = Which calendar year are you submitting an AFT return for?
+taxYear.heading = Which calendar year are you submitting an AFT return for?
+taxYear.checkYourAnswersLabel = Which calendar year are you submitting an AFT return for?
 taxYear.error.required = Select taxYear
-taxYear.change.hidden = TaxYear
+taxYear.change.hidden = Which calendar year are you submitting an AFT return for?
