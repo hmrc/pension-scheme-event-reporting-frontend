@@ -22,18 +22,20 @@ import forms.TaxYearFormProvider
 import models.{TaxYear, UserAnswers}
 import pages.{EmptyWaypoints, TaxYearPage}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito.{never, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import utils.DateHelper
 import views.html.TaxYearView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
-class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach {
+class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
@@ -52,6 +54,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach {
   override def beforeEach: Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
+    DateHelper.setDate(Some(LocalDate.of(2023, 2, 10)))
   }
 
   "TaxYear Controller" - {
@@ -100,7 +103,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", TaxYear.values.head.toString))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", TaxYear.values.head.startYear))
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(TaxYearPage, TaxYear.values.head).success.value

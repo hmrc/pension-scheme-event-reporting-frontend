@@ -19,10 +19,9 @@ package models
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import models.{Enumerable, WithName}
 import utils.DateHelper
 
-import java.time.{LocalDate, Month}
+import java.time.LocalDate
 
 case class TaxYear(startYear: String) {
   def endYear: String = (startYear.toInt + 1).toString
@@ -30,7 +29,7 @@ case class TaxYear(startYear: String) {
 
 object TaxYear extends Enumerable.Implicits {
 
-  private def values: Seq[TaxYear] = {
+  def values: Seq[TaxYear] = {
     yearRange(DateHelper.today).reverse
   }
 

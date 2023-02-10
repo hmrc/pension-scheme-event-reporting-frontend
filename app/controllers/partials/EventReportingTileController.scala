@@ -17,7 +17,6 @@
 package controllers.partials
 
 import config.FrontendAppConfig
-import connectors.EventReportingConnector
 import controllers.actions.IdentifierAction
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

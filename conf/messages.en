@@ -860,5 +860,5 @@ removeEvent18.change.hidden = Are you sure you want to remove Event 18: Scheme c
 taxYear.title = Which calendar year are you submitting an AFT return for?
 taxYear.heading = Which calendar year are you submitting an AFT return for?
 taxYear.checkYourAnswersLabel = Which calendar year are you submitting an AFT return for?
-taxYear.error.required = Select taxYear
+taxYear.error.required = Select a calendar year
 taxYear.change.hidden = Which calendar year are you submitting an AFT return for?
