@@ -11,7 +11,7 @@ do
     /bin/bash $file
     rm -rf $file
 done
-
+ 
 echo ""
 echo "Moving test files from generated-test/ to test/"
 echo ""
