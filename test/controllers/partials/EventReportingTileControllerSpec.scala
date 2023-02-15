@@ -52,9 +52,12 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
         val card = Seq(CardViewModel(
           id = "aft-overview",
           heading = Messages("eventReportingTile.heading"),
-          subHeadings = Seq(CardSubHeading(subHeading = "Event report 2022 to 2023:",
+          subHeadings = Seq(CardSubHeading(subHeading = Messages("eventReportingTile.subHeading", "2022", "2023"),
             subHeadingClasses = "card-sub-heading",
-            subHeadingParams = Seq(CardSubHeadingParam(subHeadingParam = "in progress", subHeadingParamClasses = "font-small bold")))),
+            subHeadingParams = Seq(CardSubHeadingParam(
+              subHeadingParam = Messages("eventReportingTile.subHeading.param"),
+              subHeadingParamClasses = "font-small bold")
+            ))),
           links = Seq(Link("erLoginLink", appConfig.erLoginUrl, Text(Messages("eventReportingTile.link.item2"))))
         ))
 

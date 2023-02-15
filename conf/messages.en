@@ -67,6 +67,8 @@ eventSummary.error.required = Select yes if you want to add another event
 eventSummary.change.hidden = EventSummary
 
 eventReportingTile.heading = Event Reporting
+eventReportingTile.subHeading = Event report {0} to {1}:
+eventReportingTile.subHeading.param = in progress
 eventReportingTile.link.item1 = View event report in progress
 eventReportingTile.link.item2 = Start a new event report
 eventReportingTile.link.item3 = View or change past event reports
