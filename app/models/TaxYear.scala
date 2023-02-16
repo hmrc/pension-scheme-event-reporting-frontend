@@ -29,6 +29,7 @@ case class TaxYear(startYear: String) {
 
 object TaxYear extends Enumerable.Implicits {
 
+  private val numberOfYearsToShow = 7
   def values: Seq[TaxYear] = {
     yearRange(DateHelper.today).reverse
   }
@@ -53,7 +54,7 @@ object TaxYear extends Enumerable.Implicits {
     else {
       startOfTaxYear.getYear
     }
-    (currentTaxYearCalculated - 7 to currentTaxYearCalculated).map(year => TaxYear(year.toString))
+    (currentTaxYearCalculated - (numberOfYearsToShow - 1) to currentTaxYearCalculated).map(year => TaxYear(year.toString))
   }
 
   implicit val enumerable: Enumerable[TaxYear] =
