@@ -40,8 +40,7 @@ object ManualOrUpload extends Enumerable.Implicits {
         content = Text(messages(s"manualOrUpload.event${eventType.toString}.${value.toString}")),
         value   = Some(value.toString),
         id      = Some(s"value_$index"),
-        hint    = if (value == FileUpload) Some(Hint(content = Text(messages(s"manualOrUpload.event${eventType.toString}.fileUpload.hint")))) else None,
-        disabled = value == FileUpload
+        hint    = if (value == FileUpload) Some(Hint(content = Text(messages(s"manualOrUpload.event${eventType.toString}.fileUpload.hint")))) else None
       )
   }
 
