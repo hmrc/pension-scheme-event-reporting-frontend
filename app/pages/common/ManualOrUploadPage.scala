@@ -19,7 +19,7 @@ package pages.common
 import controllers.common.routes
 import models.UserAnswers
 import models.common.ManualOrUpload
-import models.common.ManualOrUpload.Manual
+import models.common.ManualOrUpload.{Manual, FileUpload}
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event22, Event23}
 import pages.event1.WhoReceivedUnauthPaymentPage
@@ -41,6 +41,7 @@ case class ManualOrUploadPage(eventType: EventType, index: Int) extends Question
     (eventType, index, answers.get(this)) match {
       case (Event1, index, Some(Manual)) => WhoReceivedUnauthPaymentPage(index)
       case (Event22, index, Some(Manual)) => pages.event22.WhatYouWillNeedPage(index)
+      case (Event22, _, Some(FileUpload)) => pages.event22.FileUploadWhatYouWillNeedPage
       case (Event23, index, Some(Manual)) => pages.event23.WhatYouWillNeedPage(index)
       case _ => this
     }
