@@ -862,5 +862,5 @@ removeEvent18.change.hidden = Are you sure you want to remove Event 18: Scheme c
 taxYear.title = Which tax year are you submitting an event report for?
 taxYear.heading = Which tax year are you submitting an event report for?
 taxYear.checkYourAnswersLabel = Which tax year are you submitting an event report for?
-taxYear.error.required = Select a calendar year
+taxYear.error.required = Select a tax year
 taxYear.change.hidden = Which tax year are you submitting an event report for?
