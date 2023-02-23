@@ -21,12 +21,16 @@ import play.api.mvc.{Request, WrappedRequest}
 
 case class OptionalDataRequest[A](
                                    pstr: String,
+                                   schemeName: String,
+                                   returnUrl: String,
                                    request: Request[A],
                                    loggedInUser: LoggedInUser,
                                    userAnswers: Option[UserAnswers]
                                  ) extends WrappedRequest[A](request)
 
 case class DataRequest[A](pstr: String,
+                          schemeName: String,
+                          returnUrl: String,
                           request: Request[A],
                           loggedInUser: LoggedInUser,
                           userAnswers: UserAnswers

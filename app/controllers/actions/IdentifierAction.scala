@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.SessionDataCacheConnector
 import models.LoggedInUser
+import models.common.EventReporting
 import models.enumeration.AdministratorOrPractitioner
 import models.enumeration.AdministratorOrPractitioner._
 import models.requests.IdentifierRequest
@@ -50,13 +51,14 @@ class AuthenticatedIdentifierAction @Inject()(
   private val enrolmentPSA = "HMRC-PODS-ORG"
   private val enrolmentPSP = "HMRC-PODSPP-ORG"
 
-  private def getPstr[A](request: Request[A])(implicit hc: HeaderCarrier): Future[Option[String]] = {
+  private def getEventReportingData[A](request: Request[A])(implicit hc: HeaderCarrier): Future[Option[EventReporting]] = {
+
     request.session.get(SessionKeys.sessionId) match {
       case None => Future.successful(None)
       case Some(sessionId) =>
         sessionDataCacheConnector.fetch(sessionId).map { optionJsValue =>
           optionJsValue.flatMap { json =>
-            (json \ "eventReporting" \ "pstr").toOption.flatMap(_.validate[String].asOpt)
+            (json \ "eventReporting").validate[EventReporting].asOpt
           }
         }
     }
@@ -77,18 +79,18 @@ class AuthenticatedIdentifierAction @Inject()(
     }
 
     futureAuthInfo.flatMap { authInfo =>
-      val futurePstr = getPstr(request) map {
-        case None => "87219363YN" // TODO: Once we have an event reporting dashboard then we should redirect user to ??? page at this point
+      val futurePstr = getEventReportingData(request) map {
+        case None => throw new RuntimeException("PSTR is not available") // TODO: Once we have an event reporting dashboard then we should redirect user to ??? page at this point
         case Some(pstr) => pstr
       }
-      futurePstr.flatMap { pstr =>
+      futurePstr.flatMap { case data =>
         authInfo match {
           case Tuple2(Some(externalId), enrolments) if bothPsaAndPspEnrolmentsPresent(enrolments) =>
-            actionForBothEnrolments(pstr, externalId, enrolments, request, block)
+            actionForBothEnrolments(data, externalId, enrolments, request, block)
           case Tuple2(Some(externalId), enrolments) if enrolments.getEnrolment(enrolmentPSA).isDefined =>
-            actionForOneEnrolment(Administrator, pstr, externalId, enrolments, request, block)
+            actionForOneEnrolment(Administrator, data, externalId, enrolments, request, block)
           case Tuple2(Some(externalId), enrolments) if enrolments.getEnrolment(enrolmentPSP).isDefined =>
-            actionForOneEnrolment(Practitioner, pstr, externalId, enrolments, request, block)
+            actionForOneEnrolment(Practitioner, data, externalId, enrolments, request, block)
           case _ => futureUnauthorisedPage
         }
       }
@@ -132,24 +134,24 @@ class AuthenticatedIdentifierAction @Inject()(
 
   private def futureUnauthorisedPage: Future[Result] = Future.successful(Redirect(config.youNeedToRegisterUrl))
 
-  private def actionForBothEnrolments[A](pstr: String, externalId: String, enrolments: Enrolments, request: Request[A],
+  private def actionForBothEnrolments[A](eventReporting: EventReporting, externalId: String, enrolments: Enrolments, request: Request[A],
                                          block: IdentifierRequest[A] => Future[Result])(implicit headerCarrier: HeaderCarrier): Future[Result] = {
     administratorOrPractitioner(externalId).flatMap {
       case None => Future.successful(Redirect(Call("GET", config.administratorOrPractitionerUrl)))
       case Some(role) =>
         getLoggedInUser(externalId, role, enrolments) match {
-          case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser, pstr))
+          case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName, eventReporting.returnUrl))
           case _ => futureUnauthorisedPage
         }
     }
   }
 
   def actionForOneEnrolment[A](administratorOrPractitioner: AdministratorOrPractitioner,
-                               pstr: String,
+                               eventReporting: EventReporting,
                                externalId: String, enrolments: Enrolments, request: Request[A],
                                block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
     getLoggedInUser(externalId, administratorOrPractitioner, enrolments) match {
-      case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser, pstr))
+      case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName, eventReporting.returnUrl))
       case _ => futureUnauthorisedPage
     }
   }

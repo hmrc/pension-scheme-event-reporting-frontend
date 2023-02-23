@@ -22,7 +22,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints)(implicit request: OptionalDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("taxYear.title"))) {
 
@@ -44,4 +44,5 @@
             ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))
         )
     }
+    @templates.ReturnToScheme()
 }

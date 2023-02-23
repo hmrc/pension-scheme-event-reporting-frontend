@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package models.requests
+package models.common
 
-import models.LoggedInUser
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.libs.json.{Format, Json}
 
-case class IdentifierRequest[A] (request: Request[A],
-                                 loggedInUser: LoggedInUser,
-                                 pstr:String,
-                                 schemeName:String,
-                                 returnUrl:String) extends WrappedRequest[A](request)
+case class EventReporting(pstr:String, schemeName: String, returnUrl:String)
+
+object EventReporting {
+  implicit val format: Format[EventReporting] = Json.format[EventReporting]
+}
