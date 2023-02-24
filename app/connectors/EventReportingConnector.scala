@@ -65,6 +65,12 @@ class EventReportingConnector @Inject()(
 
   def compileEvent(pstr: String, eventType: EventType)
                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+    println(pstr)
+    println(pstr)
+    println(pstr)
+    println(pstr)
+    println(pstr)
+    println(pstr)
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
@@ -77,6 +83,9 @@ class EventReportingConnector @Inject()(
         response.status match {
           case NO_CONTENT => ()
           case _ =>
+            println(eventCompileUrl, response.body, response.status)
+            println(eventCompileUrl, response.body, response.status)
+            println(eventCompileUrl, response.body, response.status)
             throw new HttpException(response.body, response.status)
         }
       }
