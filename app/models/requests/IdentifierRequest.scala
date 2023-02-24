@@ -23,4 +23,4 @@ case class IdentifierRequest[A] (request: Request[A],
                                  loggedInUser: LoggedInUser,
                                  pstr:String,
                                  schemeName:String,
-                                 returnUrl:String) extends WrappedRequest[A](request) with RequiredSchemeDataRequest
+                                 returnUrl:String) extends RequiredSchemeDataRequest[A](request)

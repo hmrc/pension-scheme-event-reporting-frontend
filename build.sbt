@@ -38,8 +38,6 @@ lazy val root = (project in file("."))
       "views.ViewUtils._",
       "models.Index",
       "models.Mode",
-      "models.requests.IdentifierRequest",
-      "models.requests.OptionalDataRequest",
       "models.requests.RequiredSchemeDataRequest",
       "controllers.routes._",
       "viewmodels.govuk.all._",

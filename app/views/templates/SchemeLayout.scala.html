@@ -14,7 +14,15 @@
  * limitations under the License.
  *@
 
-@()(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
-<p class="govuk-body">
-  <a href="@request.returnUrl" class="govuk-link">@messages("site.returnTo", request.schemeName)</a>
-</p>
+@this(
+  layout:templates.Layout
+)
+
+@(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true)(contentBlock: Html)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+
+@content = {
+  @contentBlock
+  @templates.ReturnToScheme()
+}
+
+@layout(pageTitle, showBackLink, timeout, showSignOut)(content)

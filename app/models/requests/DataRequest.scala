@@ -19,7 +19,7 @@ package models.requests
 import models.{LoggedInUser, UserAnswers}
 import play.api.mvc.{Request, WrappedRequest}
 
-trait RequiredSchemeDataRequest {
+abstract class RequiredSchemeDataRequest[A](request: Request[A]) extends WrappedRequest[A](request) {
   def pstr: String
   def schemeName: String
   def returnUrl: String
@@ -33,7 +33,7 @@ case class OptionalDataRequest[A](
                                    request: Request[A],
                                    loggedInUser: LoggedInUser,
                                    userAnswers: Option[UserAnswers]
-                                 ) extends WrappedRequest[A](request) with RequiredSchemeDataRequest
+                                 ) extends RequiredSchemeDataRequest[A](request)
 
 case class DataRequest[A](pstr: String,
                           schemeName: String,
@@ -41,4 +41,4 @@ case class DataRequest[A](pstr: String,
                           request: Request[A],
                           loggedInUser: LoggedInUser,
                           userAnswers: UserAnswers
-                         ) extends WrappedRequest[A](request) with RequiredSchemeDataRequest
+                         ) extends RequiredSchemeDataRequest[A](request)
