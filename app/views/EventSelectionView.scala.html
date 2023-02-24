@@ -22,7 +22,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints)(implicit request: IdentifierRequest[_], messages: Messages)
 
 @layout(
     pageTitle = title(form, messages("eventSelection.title")),
@@ -47,4 +47,5 @@
             ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))
         )
     }
+    @templates.ReturnToScheme()
 }
