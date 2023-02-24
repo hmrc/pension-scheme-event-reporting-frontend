@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@()(implicit request: OptionalDataRequest[_], messages: Messages)
+@()(implicit request: RequiredSchemeDataRequest, messages: Messages)
 <p class="govuk-body">
   <a href="@request.returnUrl" class="govuk-link">@messages("site.returnTo", request.schemeName)</a>
 </p>
