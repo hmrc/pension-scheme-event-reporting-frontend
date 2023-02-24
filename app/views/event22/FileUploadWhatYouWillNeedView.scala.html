@@ -15,11 +15,11 @@
  *@
 
 @this(
-        layout: templates.Layout,
+        layout: templates.SchemeLayout,
         govukButton: GovukButton
 )
 
-@(continueUrl: Call, templateDownloadLink: Call, instructionsDownloadLink: Call)(implicit request: Request[_], messages: Messages)
+@(continueUrl: Call, templateDownloadLink: Call, instructionsDownloadLink: Call)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("fileUploadWhatYouWillNeed.event22.title"))) {
 
