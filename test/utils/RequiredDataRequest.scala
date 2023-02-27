@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package utils
 
 import models.LoggedInUser
 import models.enumeration.AdministratorOrPractitioner.Administrator
-import models.requests.IdentifierRequest
-import play.api.mvc._
+import models.requests.OptionalDataRequest
+import play.api.test.FakeRequest
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+object RequiredDataRequest {
 
-class FakeIdentifierAction @Inject()(bodyParsers: PlayBodyParsers) extends IdentifierAction {
+  def optionalDataRequest[A](request:FakeRequest[A]): OptionalDataRequest[A] = OptionalDataRequest(
+    "pstr",
+    "schemeName",
+    "returnLink",
+    request,
+    LoggedInUser("", Administrator, ""),
+    None
+  )
 
-  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] =
-    block(IdentifierRequest(request, LoggedInUser("id", Administrator, "psaId"), "87219363YN", "schemeName", "returnLink"))
-
-  override def parser: BodyParser[AnyContent] =
-    bodyParsers.default
-
-  override protected def executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
 }
