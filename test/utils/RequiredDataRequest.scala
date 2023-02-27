@@ -26,7 +26,7 @@ object RequiredDataRequest {
   def optionalDataRequest[A](request:FakeRequest[A]): OptionalDataRequest[A] = OptionalDataRequest(
     "pstr",
     "schemeName",
-    "returnLink",
+    "returnUrl",
     request,
     LoggedInUser("", Administrator, ""),
     None
