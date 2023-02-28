@@ -17,7 +17,7 @@
 package models.requests
 
 import models.LoggedInUser
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.mvc.Request
 
 case class IdentifierRequest[A] (request: Request[A],
                                  loggedInUser: LoggedInUser,

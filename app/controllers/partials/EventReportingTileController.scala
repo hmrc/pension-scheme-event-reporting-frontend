@@ -26,14 +26,14 @@ import viewmodels.partials._
 import views.html.partials.EventReportingTileView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class EventReportingTileController @Inject()(
                                               identify: IdentifierAction,
                                               view: EventReportingTileView,
                                               val controllerComponents: MessagesControllerComponents,
                                               appConfig: FrontendAppConfig
-                                            )(implicit ec: ExecutionContext)
+                                            )
   extends FrontendBaseController
     with I18nSupport {
 

@@ -16,11 +16,9 @@
 
 package controllers
 
-import connectors.SessionDataCacheConnector
 import controllers.actions.IdentifierAction
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.IndexView
 
@@ -29,7 +27,6 @@ import scala.concurrent.ExecutionContext
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
-                                 sessionDataCacheConnector: SessionDataCacheConnector,
                                  identify: IdentifierAction,
                                  view: IndexView
                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {

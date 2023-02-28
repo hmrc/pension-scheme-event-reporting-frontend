@@ -16,7 +16,6 @@
 
 package viewmodels.partials
 
-import play.api.i18n.Messages
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{OWrites, __}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
@@ -27,7 +26,7 @@ case class Link(id: String, url: String, linkText: Content, hiddenText: Option[C
 
 object Link {
 
-  implicit def writes(implicit messages: Messages): OWrites[Link] = (
+  implicit def writes(): OWrites[Link] = (
     (__ \ "id").write[String] and
       (__ \ "url").write[String] and
       (__ \ "linkText").write[Content] and
