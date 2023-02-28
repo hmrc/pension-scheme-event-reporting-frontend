@@ -52,6 +52,27 @@ class DataRetrievalImpl(eventType: EventType,
   }
 }
 
+class DataRetrievalNoEventTypeImpl(userAnswersCacheConnector: UserAnswersCacheConnector
+                       )(implicit val executionContext: ExecutionContext)
+  extends DataRetrieval {
+  private val logger = Logger(classOf[DataRetrievalImpl])
+
+  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
+
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
+    val result = for {
+      data <- userAnswersCacheConnector.get(request.pstr)
+    } yield {
+      OptionalDataRequest[A](request.pstr, request, request.loggedInUser, data)
+    }
+    result andThen {
+      case Success(v) => logger.info("Successful response to data retrieval:" + v)
+      case Failure(t: Throwable) => logger.warn("Unable to complete dataretrieval", t)
+    }
+  }
+}
+
 class DataRetrievalActionImpl @Inject()(
                                          userAnswersCacheConnector: UserAnswersCacheConnector
                                        )
@@ -59,6 +80,9 @@ class DataRetrievalActionImpl @Inject()(
   extends DataRetrievalAction {
   override def apply(eventType: EventType): DataRetrieval =
     new DataRetrievalImpl(eventType, userAnswersCacheConnector)
+
+  override def apply: DataRetrieval =
+    new DataRetrievalNoEventTypeImpl(userAnswersCacheConnector)
 }
 
 @ImplementedBy(classOf[DataRetrievalImpl])
@@ -67,4 +91,5 @@ trait DataRetrieval extends ActionTransformer[IdentifierRequest, OptionalDataReq
 @ImplementedBy(classOf[DataRetrievalActionImpl])
 trait DataRetrievalAction {
   def apply(eventType: EventType): DataRetrieval
+  def apply(): DataRetrieval
 }

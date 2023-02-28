@@ -22,7 +22,7 @@ import forms.EventSummaryFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event22, Event23}
-import models.requests.IdentifierRequest
+import models.requests.{DataRequest, IdentifierRequest}
 import pages.{EmptyWaypoints, EventSummaryPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,6 +37,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class EventSummaryController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         identify: IdentifierAction,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
                                         connector: EventReportingConnector,
                                         formProvider: EventSummaryFormProvider,
                                         view: EventSummaryView
@@ -44,8 +46,8 @@ class EventSummaryController @Inject()(
 
   private val form = formProvider()
 
-  private def summaryListRows(waypoints: Waypoints)(implicit request: IdentifierRequest[AnyContent]): Future[Seq[SummaryListRow]] = {
-    connector.getEventReportSummary(request.pstr).map { seqOfEventTypes =>
+  private def summaryListRows(waypoints: Waypoints)(implicit request: DataRequest[AnyContent]): Future[Seq[SummaryListRow]] = {
+    connector.getEventReportSummary(request.pstr, "21/01/22").map { seqOfEventTypes =>
       seqOfEventTypes.map { event =>
         SummaryListRow(
           key = Key(
@@ -71,13 +73,13 @@ class EventSummaryController @Inject()(
     }
   }
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify.async { implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
     summaryListRows(waypoints).map { rows =>
       Ok(view(form, waypoints, rows))
     }
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = identify.async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => summaryListRows(waypoints).map(rows => BadRequest(view(formWithErrors, waypoints, rows))),
