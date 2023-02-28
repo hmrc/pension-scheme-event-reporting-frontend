@@ -20,11 +20,11 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.TaxYearFormProvider
 import models.{TaxYear, UserAnswers}
-import pages.{EmptyWaypoints, TaxYearPage}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, reset, times, verify, when}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import pages.{EmptyWaypoints, TaxYearPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -51,7 +51,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
     DateHelper.setDate(Some(LocalDate.of(2023, 2, 10)))

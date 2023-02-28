@@ -18,18 +18,12 @@ package controllers.partials
 
 import base.SpecBase
 import config.FrontendAppConfig
-import forms.EventSummaryFormProvider
-import models.UserAnswers
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.EventSummaryPage
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{GET, POST, contentAsString, redirectLocation, route, running, status}
-import uk.gov.hmrc.govukfrontend.views.Aliases._
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import viewmodels.Message
 import viewmodels.partials.{CardSubHeading, CardSubHeadingParam, CardViewModel, Link}
 import views.html.partials.EventReportingTileView
 

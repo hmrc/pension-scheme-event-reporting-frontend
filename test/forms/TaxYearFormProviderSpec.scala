@@ -42,7 +42,7 @@ import java.time.LocalDate
 
 class TaxYearFormProviderSpec extends OptionFieldBehaviours with BeforeAndAfterEach {
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     DateHelper.setDate(Some(LocalDate.of(2023, 2, 10)))
   }
