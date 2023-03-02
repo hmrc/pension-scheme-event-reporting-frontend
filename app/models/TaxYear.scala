@@ -17,6 +17,7 @@
 package models
 
 import play.api.i18n.Messages
+import play.api.libs.json.{JsString, Writes}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utils.DateHelper
@@ -28,7 +29,7 @@ case class TaxYear(startYear: String) {
 }
 
 object TaxYear extends Enumerable.Implicits {
-
+  implicit val writes: Writes[TaxYear] = (yr: TaxYear) => JsString(yr.startYear.toString)
   private val numberOfYearsToShow = 7
   def values: Seq[TaxYear] = {
     yearRange(DateHelper.today).reverse
