@@ -65,7 +65,7 @@ class TaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyCheck
       forAll(gen) {
         taxYear =>
 
-          Json.toJson(taxYear) mustEqual JsString(taxYear.toString)
+          Json.toJson(taxYear) mustEqual JsString(taxYear.startYear.toString)
       }
     }
   }
