@@ -18,6 +18,7 @@ package base
 
 import controllers.actions._
 import models.UserAnswers
+import models.requests.OptionalDataRequest
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -29,6 +30,9 @@ import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.baseApplicationBuilder.injector
 import uk.gov.hmrc.http.SessionKeys
+import utils.RequiredDataRequest
+
+import scala.language.implicitConversions
 
 trait SpecBase
   extends AnyFreeSpec
@@ -43,6 +47,9 @@ trait SpecBase
   def fakeRequest = FakeRequest("", "").withSession(
     SessionKeys.sessionId -> "sessionId"
   )
+
+  implicit def fakeRequestToRequiredDataRequest[A](fakeRequest: FakeRequest[A]): OptionalDataRequest[A] =
+    RequiredDataRequest.optionalDataRequest(fakeRequest)
 
   def emptyUserAnswers: UserAnswers = UserAnswers()
 
