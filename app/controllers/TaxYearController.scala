@@ -39,14 +39,13 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(TaxYearPage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
@@ -54,7 +53,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(TaxYearPage, value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+          userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
             Redirect(TaxYearPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
