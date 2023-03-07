@@ -26,7 +26,7 @@ import play.api.libs.json.{JsError, JsString, Json}
 
 class TypeOfProtectionSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "PaymentNature" - {
+  "TypeOfProtection" - {
 
     "must deserialise valid values" in {
 
