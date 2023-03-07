@@ -182,6 +182,15 @@ manualOrUpload.event1.error.required = Select how you want to add the unauthoris
 manualOrUpload.event1.change.hidden = How do you want to add the unauthorised payment details?
 manualOrUpload.event1.fileUpload.hint = Uploading a file will overwrite any data you have previously added for this event
 
+manualOrUpload.event6.title = How do you want to add the benefit crystallisation details?
+manualOrUpload.event6.heading = How do you want to add the benefit crystallisation details?
+manualOrUpload.event6.manual = Manually enter the details
+manualOrUpload.event6.fileUpload = Upload a file
+manualOrUpload.event6.checkYourAnswersLabel = How do you want to add the benefit crystallisation details?
+manualOrUpload.event6.error.required = Select how you want to add the benefit crystallisation details
+manualOrUpload.event6.change.hidden = How do you want to add the benefit crystallisation details?
+manualOrUpload.event6.fileUpload.hint = Uploading a file will overwrite any data you have previously added for this event
+
 whoReceivedUnauthPayment.title = Who received the unauthorised payment or deemed unauthorised payment?
 whoReceivedUnauthPayment.heading = Who received the unauthorised payment or deemed unauthorised payment?
 whoReceivedUnauthPayment.member = Member or someone in respect of the member
@@ -866,3 +875,17 @@ fileUploadWhatYouWillNeed.event22.item5.prefix = the
 fileUploadWhatYouWillNeed.event22.instructions.link.text = instructions explaining the process and the formatting that should be used
 fileUploadWhatYouWillNeed.event22.template.link.text = latest template file
 fileUploadWhatYouWillNeed.event22.inset = All the data you have previously added for this charge in this quarter will be overwritten when you upload a file.
+
+typeOfProtection.title = What is the type of protection held for the crystallisation?
+typeOfProtection.heading = What is the type of protection held for the crystallisation?
+typeOfProtection.p1 = This can be found on the member’s LTA certificate.
+typeOfProtection.enhancedLifetimeAllowance = Enhanced lifetime allowance
+typeOfProtection.enhancedProtection = Enhanced protection
+typeOfProtection.fixedProtection = Fixed protection
+typeOfProtection.fixedProtection2014 = Fixed protection 2014
+typeOfProtection.fixedProtection2016 = Fixed protection 2016
+typeOfProtection.individualProtection2014 = Individual protection 2014
+typeOfProtection.individualProtection2016 = Individual protection 2016
+typeOfProtection.checkYourAnswersLabel = What is the type of protection held for the crystallisation?
+typeOfProtection.error.required = Select what type of protection is held
+typeOfProtection.change.hidden = What is the type of protection held for the crystallisation

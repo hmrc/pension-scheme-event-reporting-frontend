@@ -217,5 +217,65 @@ class ManualOrUploadControllerSpec extends SpecBase with BeforeAndAfterEach with
         }
       }
     }
+
+    val event6 = EventType.Event6
+    val form = formProvider(event6)
+
+    def getRoute: String = routes.ManualOrUploadController.onPageLoad(waypoints, event6, 0).url
+
+    def postRoute: String = routes.ManualOrUploadController.onSubmit(waypoints, event6, 0).url
+
+    "must return OK and the correct view for a GET" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[ManualOrUploadView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form, waypoints, event6, 0)(request, messages(application)).toString
+      }
+    }
+
+    "must redirect to the next page when valid data is submitted" in {
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ManualOrUpload.values.head.toString))
+
+        val result = route(application, request).value
+        val updatedAnswers = emptyUserAnswers.set(ManualOrUploadPage(event6, 0), ManualOrUpload.values.head).success.value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual ManualOrUploadPage(event6, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+      }
+    }
+
+    "must return bad request when invalid data is submitted" in {
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
+
+        val view = application.injector.instanceOf[ManualOrUploadView]
+        val boundForm = form.bind(Map("value" -> "invalid"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(boundForm, waypoints, event6, 0)(request, messages(application)).toString
+      }
+    }
   }
 }
