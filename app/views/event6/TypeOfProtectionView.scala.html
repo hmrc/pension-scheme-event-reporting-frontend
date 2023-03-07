@@ -35,14 +35,12 @@
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
-        <p class="govuk-body">@messages("typeOfProtection.p1")</p>
-
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
                 legend = LegendViewModel(messages("typeOfProtection.heading")).asPageHeading(),
                 items  = TypeOfProtection.options
-            )
+            ).withHint(HintViewModel(messages("typeOfProtection.p1")))
         )
 
         @govukButton(
