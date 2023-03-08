@@ -16,6 +16,7 @@
 
 @import viewmodels.SummaryListRowWithTwoValues
 @import models.enumeration.EventType
+@import services.EventPaginationService._
 
 @this(
     layout: templates.Layout,
@@ -27,7 +28,7 @@
 )
 
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberSeq: Seq[SummaryListRowWithTwoValues], total: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberSeq: Seq[SummaryListRowWithTwoValues], total: String, paginatedMembers: PaginatedMembers)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"membersSummary.event${eventType.toString}.title", "2022"))) {
 
@@ -48,6 +49,8 @@
         )
 
         <p class="govuk-body">@(s"Showing 1 – 25 of ${memberSeq.length} members")</p>
+
+        <p>@(paginatedMembers.totalNumberOfMembers, paginatedMembers.numberOfPaginationItems)</p>
 
         @govukPagination(
             Pagination(

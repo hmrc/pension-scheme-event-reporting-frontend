@@ -28,6 +28,7 @@ import pages.Waypoints
 import pages.common.{MembersPage, MembersSummaryPage}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.EventPaginationService
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.{Message, SummaryListRowWithTwoValues}
@@ -42,14 +43,17 @@ class MembersSummaryController @Inject()(
                                                   requireData: DataRequiredAction,
                                                   userAnswersCacheConnector: UserAnswersCacheConnector,
                                                   formProvider: MembersSummaryFormProvider,
-                                                  view: MembersSummaryView
+                                                  view: MembersSummaryView,
+                                                  eventPaginationService: EventPaginationService
                                                 ) extends FrontendBaseController with I18nSupport with Formatters {
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
+
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
-      Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
+      val paginatedMembers = eventPaginationService.paginateMappedMembers(mappedMembers)
+      Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), paginatedMembers))
     }
 
   private def sumValue(userAnswers: UserAnswers, eventType: EventType) =
@@ -59,9 +63,10 @@ class MembersSummaryController @Inject()(
     implicit request =>
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
+      val paginatedMembers = eventPaginationService.paginateMappedMembers(mappedMembers)
       form.bindFromRequest().fold(
         formWithErrors => {
-          BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
+          BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), paginatedMembers))
         },
         value => {
           val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType), value)
