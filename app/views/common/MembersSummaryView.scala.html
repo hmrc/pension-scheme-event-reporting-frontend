@@ -47,7 +47,7 @@
             total
         )
 
-        <p class="govuk-body">Showing 1 – 25 of 26 members</p>
+        <p class="govuk-body">@(s"Showing 1 – 25 of ${memberSeq.length} members")</p>
 
         @govukPagination(
             Pagination(
