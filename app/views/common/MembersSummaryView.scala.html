@@ -22,7 +22,8 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    govukPagination: GovukPagination
 )
 
 
@@ -46,6 +47,24 @@
             total
         )
 
+        <p class="govuk-body">Showing 1 – 25 of 26 members</p>
+
+        @govukPagination(
+            Pagination(
+                items = Some(
+                    Seq(
+                        PaginationItem(href = "#", number = Some("1"), current = Some(true)),
+                        PaginationItem(href = "#", number = Some("2"))
+                    )
+                ),
+                next = Some(
+                    PaginationLink(
+                        href = "#"
+                    )
+                )
+            )
+        )
+
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
@@ -58,3 +77,5 @@
         )
     }
 }
+
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
