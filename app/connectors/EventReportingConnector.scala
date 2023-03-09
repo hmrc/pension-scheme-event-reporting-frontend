@@ -18,6 +18,7 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import models.ToggleDetails
 import models.enumeration.EventType
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
@@ -33,6 +34,8 @@ class EventReportingConnector @Inject()(
 
   private def eventRepSummaryUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/event-summary"
   private def eventCompileUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/compile"
+
+  private def eventReportingToggleUrl(toggleName:String) = s"${config.eventReportingUrl}/admin/get-toggle/$toggleName"
 
   def getEventReportSummary(pstr: String)
                            (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventType]] = {
@@ -80,6 +83,23 @@ class EventReportingConnector @Inject()(
             throw new HttpException(response.body, response.status)
         }
       }
+  }
+
+  def getFeatureToggle(toggleName: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[ToggleDetails] = {
+    http.GET[HttpResponse](eventReportingToggleUrl(toggleName))(implicitly, hc, implicitly).map { response =>
+      val toggleOpt = response.status match {
+        case NO_CONTENT => None
+        case OK =>
+          Some(response.json.as[ToggleDetails])
+        case _ =>
+          throw new HttpException(response.body, response.status)
+      }
+
+      toggleOpt match {
+        case None => ToggleDetails(toggleName, None, isEnabled = false)
+        case Some(a) => a
+      }
+    }
   }
 }
 
