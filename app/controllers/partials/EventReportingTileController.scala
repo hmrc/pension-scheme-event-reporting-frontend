@@ -35,7 +35,7 @@ class EventReportingTileController @Inject()(
                                               view: EventReportingTileView,
                                               val controllerComponents: MessagesControllerComponents,
                                               appConfig: FrontendAppConfig,
-                                              eventReportingConnector: EventReportingConnector,
+                                              eventReportingConnector: EventReportingConnector
                                             )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
