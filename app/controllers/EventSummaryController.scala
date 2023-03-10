@@ -22,8 +22,9 @@ import forms.EventSummaryFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event22, Event23}
-import models.requests.{DataRequest, IdentifierRequest}
-import pages.{EmptyWaypoints, EventSummaryPage, Waypoints}
+import models.requests.DataRequest
+import pages.{EmptyWaypoints, EventSummaryPage, TaxYearPage, Waypoints}
+import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.Aliases._
@@ -45,31 +46,40 @@ class EventSummaryController @Inject()(
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
+  private val logger = Logger(classOf[EventSummaryController])
 
   private def summaryListRows(waypoints: Waypoints)(implicit request: DataRequest[AnyContent]): Future[Seq[SummaryListRow]] = {
-    connector.getEventReportSummary(request.pstr, "21/01/22").map { seqOfEventTypes =>
-      seqOfEventTypes.map { event =>
-        SummaryListRow(
-          key = Key(
-            content = Text(Message(s"eventSummary.event${event.toString}"))
-          ),
-          actions = Some(Actions(
-            items = Seq(
-              ActionItem(
-                content = Text(Message("site.change")),
-                href = changeLinkForEvent(event)
+    request.userAnswers.get(TaxYearPage) match {
+      case Some(taxYear) =>
+        val startYear = s"01/01/ + ${taxYear.startYear}"
+        connector.getEventReportSummary(request.pstr, startYear).map { seqOfEventTypes =>
+          seqOfEventTypes.map { event =>
+            SummaryListRow(
+              key = Key(
+                content = Text(Message(s"eventSummary.event${event.toString}"))
               ),
-              ActionItem(
-                content = Text(Message("site.remove")),
-                href = event match {
-                  case EventType.Event18 => controllers.event18.routes.RemoveEvent18Controller.onPageLoad(waypoints).url
-                  case _ => "#"
-                }
-              )
+              actions = Some(Actions(
+                items = Seq(
+                  ActionItem(
+                    content = Text(Message("site.change")),
+                    href = changeLinkForEvent(event)
+                  ),
+                  ActionItem(
+                    content = Text(Message("site.remove")),
+                    href = event match {
+                      case EventType.Event18 => controllers.event18.routes.RemoveEvent18Controller.onPageLoad(waypoints).url
+                      case _ => "#"
+                    }
+                  )
+                )
+              ))
             )
-          ))
-        )
-      }
+          }
+        }
+
+      case _ =>
+        logger.warn("No tax year selected on load of summary page")
+        Future.successful(Nil)
     }
   }
 
