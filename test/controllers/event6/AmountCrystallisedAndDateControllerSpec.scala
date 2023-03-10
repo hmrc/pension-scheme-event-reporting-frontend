@@ -113,7 +113,7 @@ class AmountCrystallisedAndDateControllerSpec extends SpecBase with BeforeAndAft
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(crystallisedDetails("1000.00", Some(LocalDate.of(2023, 5, 1))): _*)
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(crystallisedDetails("1000.00", Some(LocalDate.of(2022, 5, 1))): _*)
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(AmountCrystallisedAndDatePage(0), validValue).success.value
@@ -147,21 +147,21 @@ class AmountCrystallisedAndDateControllerSpec extends SpecBase with BeforeAndAft
 }
 
 object AmountCrystallisedAndDateControllerSpec {
-  private val crystallisedValueKey = "crystallisedValue"
+  private val crystallisedValueKey = "amountCrystallised"
   private val crystallisedDateKey = "crystallisedDate"
 
   private def crystallisedDetails(
-                                   crystallisedValue: String,
+                                   amountCrystallised: String,
                                    crystallisedDate: Option[LocalDate]
                                  ): Seq[(String, String)] = crystallisedDate match {
     case Some(date) => Seq(
-      Tuple2(crystallisedValueKey, crystallisedValue),
+      Tuple2(crystallisedValueKey, amountCrystallised),
       Tuple2(crystallisedDateKey + ".day", s"${date.getDayOfMonth}"),
       Tuple2(crystallisedDateKey + ".month", s"${date.getMonthValue}"),
       Tuple2(crystallisedDateKey + ".year", s"${date.getYear}")
     )
     case None =>
-      Seq(Tuple2(crystallisedValueKey, crystallisedValue))
+      Seq(Tuple2(crystallisedValueKey, amountCrystallised))
   }
 }
 
