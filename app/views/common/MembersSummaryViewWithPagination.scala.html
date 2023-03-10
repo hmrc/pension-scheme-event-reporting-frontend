@@ -53,16 +53,26 @@
             <p class="govuk-body">@(s"Showing ${paginationStats.pageStartAndEnd._1} – ${paginationStats.pageStartAndEnd._2} of ${paginationStats.totalNumberOfMembers} members")</p>
             <nav class="govuk-margin-top-5" aria-label="page">
                 <ul class="govuk-list">
+                    @if((pageNumber.toInt + 1) >= 2) {
+                    <li class="govuk-!-display-inline govuk-!-margin-left-1 govuk-!-margin-right-1">
+                        <a href=@(pageNumber.toInt) id="value-@(pageNumber.toInt)" class="govuk-link">Previous</a>
+                    </li>
+                    }
                     @for(link <- paginationStats.pagerSeq) {
-                        @if(link.toInt != (pageNumber.toInt + 1)){
-                            <li class="govuk-!-display-inline govuk-!-margin-left-1 govuk-!-margin-right-1">
-                                <a href="@(link)" id="value-@(link)" class="govuk-link">@(link)</a>
-                            </li>
-                        } else {
-                            <li class="govuk-!-display-inline govuk-!-margin-left-1 govuk-!-margin-right-1">
-                                @(link)
-                            </li>
-                        }
+                            @if(link.toInt != (pageNumber.toInt + 1)){
+                                <li class="govuk-!-display-inline govuk-!-margin-left-1 govuk-!-margin-right-1">
+                                    <a href=@(link) id="value-@(link)" class="govuk-link">@(link)</a>
+                                </li>
+                            } else {
+                                <li class="govuk-!-display-inline govuk-!-margin-left-1 govuk-!-margin-right-1">
+                                    @(link)
+                                </li>
+                            }
+                    }
+                    @if((pageNumber.toInt + 1) < paginationStats.totalNumberOfPages) {
+                    <li class="govuk-!-display-inline govuk-!-margin-left-1 govuk-!-margin-right-1">
+                        <a href=@(pageNumber.toInt + 2) id="value-@(pageNumber.toInt + 2)" class="govuk-link">Next</a>
+                    </li>
                     }
                 </ul>
             </nav>
