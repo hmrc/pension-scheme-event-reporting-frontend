@@ -29,6 +29,9 @@ import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryTaxYearPage: Arbitrary[TaxYearPage.type] =
+    Arbitrary(TaxYearPage)
+
   implicit lazy val arbitraryManualOrUploadPage: Arbitrary[common.ManualOrUploadPage] =
     Arbitrary(common.ManualOrUploadPage(Event1, Index(0)))
 

@@ -108,7 +108,9 @@ class IdentifierActionSpec
       val pstrInDB = "456"
       val pstrJson = Json.obj(
         "eventReporting" -> Json.obj(
-          "pstr" -> pstrInDB
+          "pstr" -> pstrInDB,
+          "schemeName" -> "schemeName",
+          "returnUrl" -> "returnUrl"
         )
       )
 
@@ -123,23 +125,6 @@ class IdentifierActionSpec
       (actualJsonContent \ "pstr").asOpt[String] mustBe Some(pstrInDB)
     }
 
-    "when the user has logged in with HMRC-PODSPP-ORG enrolment must have the PSPID and when no PSTR in DB default to 87219363YN (for now!)" in {
-      val controller = new Harness(authAction)
-      val enrolments = Enrolments(Set(
-        Enrolment(pspEnrolmentKey, Seq(EnrolmentIdentifier("PSPID", pspId)), "Activated", None)
-      ))
-
-      when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
-        .thenReturn(Future.successful(new ~(Some(externalId), enrolments)))
-
-      val result = controller.onPageLoad()(fakeRequest)
-      status(result) mustBe OK
-      val actualJsonContent = contentAsJson(result)
-      (actualJsonContent \ "loggedInUser").asOpt[LoggedInUser].value mustEqual
-        LoggedInUser(externalId = externalId, administratorOrPractitioner = AdministratorOrPractitioner.Practitioner, psaIdOrPspId = pspId)
-      (actualJsonContent \ "pstr").asOpt[String] mustBe Some("87219363YN")
-    }
-
     "the user has logged in with HMRC-PODS-ORG and HMRC_PODSPP_ORG enrolments and has not chosen a role " +
       "must redirect to administrator or practitioner page" in {
       val controller = new Harness(authAction)
@@ -147,6 +132,18 @@ class IdentifierActionSpec
         Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None),
         Enrolment(pspEnrolmentKey, Seq(EnrolmentIdentifier("PSPID", pspId)), "Activated", None)
       ))
+
+      val pstrInDB = "456"
+      val pstrJson = Json.obj(
+        "eventReporting" -> Json.obj(
+          "pstr" -> pstrInDB,
+          "schemeName" -> "schemeName",
+          "returnUrl" -> "returnUrl"
+        )
+      )
+
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+        .thenReturn(Future.successful(Some(pstrJson)))
 
       val adminOrPractitionerUrl = "/dummy-url"
 
@@ -169,6 +166,18 @@ class IdentifierActionSpec
         Enrolment(pspEnrolmentKey, Seq(EnrolmentIdentifier("PSPID", pspId)), "Activated", None)
       ))
 
+      val pstrInDB = "456"
+      val pstrJson = Json.obj(
+        "eventReporting" -> Json.obj(
+          "pstr" -> pstrInDB,
+          "schemeName" -> "schemeName",
+          "returnUrl" -> "returnUrl"
+        )
+      )
+
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+        .thenReturn(Future.successful(Some(pstrJson)))
+
       when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(Future.successful(new ~(Some("id"), enrolments)))
 
@@ -187,6 +196,18 @@ class IdentifierActionSpec
         Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None),
         Enrolment(pspEnrolmentKey, Seq(EnrolmentIdentifier("PSPID", pspId)), "Activated", None)
       ))
+
+      val pstrInDB = "456"
+      val pstrJson = Json.obj(
+        "eventReporting" -> Json.obj(
+          "pstr" -> pstrInDB,
+          "schemeName" -> "schemeName",
+          "returnUrl" -> "returnUrl"
+        )
+      )
+
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+        .thenReturn(Future.successful(Some(pstrJson)))
 
       when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(Future.successful(new ~(Some("id"), enrolments)))
@@ -231,6 +252,16 @@ class IdentifierActionSpec
     status(result) mustBe SEE_OTHER
 
     redirectLocation(result) mustBe Some(testUrl)
+  }
+  "No pstr, schemeName, returnUrl in sessionCache must return runtimeException" in {
+    val authAction = new AuthenticatedIdentifierAction(
+      new FakeFailingAuthConnector(new InsufficientEnrolments),
+      mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector
+    )
+    val controller = new Harness(authAction)
+    a[RuntimeException] mustBe thrownBy {
+      status(controller.onPageLoad()(fakeRequest))
+    }
   }
 }
 

@@ -43,7 +43,7 @@ class DataRetrievalImpl(eventType: EventType,
     val result = for {
       data <- userAnswersCacheConnector.get(request.pstr, eventType)
     } yield {
-      OptionalDataRequest[A](request.pstr, request, request.loggedInUser, data)
+      OptionalDataRequest[A](request.pstr, request.schemeName, request.returnUrl, request, request.loggedInUser, data)
     }
     result andThen {
       case Success(v) => logger.info("Successful response to data retrieval:" + v)

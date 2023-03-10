@@ -15,14 +15,14 @@
  *@
 
 @this(
-    layout: templates.Layout,
+    layout: templates.SchemeLayout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, events: Seq[SummaryListRow])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, events: Seq[SummaryListRow])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("eventSummary.title", "2023"))) {
 
