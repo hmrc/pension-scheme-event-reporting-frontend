@@ -866,3 +866,26 @@ fileUploadWhatYouWillNeed.event22.item5.prefix = the
 fileUploadWhatYouWillNeed.event22.instructions.link.text = instructions explaining the process and the formatting that should be used
 fileUploadWhatYouWillNeed.event22.template.link.text = latest template file
 fileUploadWhatYouWillNeed.event22.inset = All the data you have previously added for this charge in this quarter will be overwritten when you upload a file.
+
+amountCrystallisedAndDate.title = Amount crystallised and date
+amountCrystallisedAndDate.heading = Amount crystallised and date
+
+amountCrystallisedAndDate.value.heading = Total amount crystallised
+amountCrystallisedAndDate.value.error.nothingEntered = Enter the total amount crystallised
+amountCrystallisedAndDate.value.error.notANumber = The total amount crystallised must be an amount of money, like 123.45 or 156.00
+amountCrystallisedAndDate.value.error.noDecimals = The total amount crystallised must include pence, like 123.45 or 156.00
+amountCrystallisedAndDate.value.error.amountTooHigh = The total amount crystallised must be £999999999.99 or less
+amountCrystallisedAndDate.value.error.negativeValue = The total amount crystallised must not be a negative amount of money, like -123.45 or -156.00
+amountCrystallisedAndDate.value.error.zeroEntered = The total amount crystallised must be greater than zero
+amountCrystallisedAndDate.value.change.hidden = Total amount crystallised
+amountCrystallisedAndDate.value.checkYourAnswersLabel = Total amount crystallised
+
+amountCrystallisedAndDate.date.heading = Date of the benefit crystallisation
+amountCrystallisedAndDate.date.hint = For example, 22 09 2022
+amountCrystallisedAndDate.date.error.nothingEntered = Enter the date
+amountCrystallisedAndDate.date.error.noDayMonthOrYear = The date must include a day, month and year
+amountCrystallisedAndDate.date.error.outsideDateRanges = Enter a real date
+amountCrystallisedAndDate.date.error.outsideReportedYear = The date of benefit crystallisation must fall within the tax year you are reporting
+amountCrystallisedAndDate.date.error.notANumber = The day, month and year must be numbers
+amountCrystallisedAndDate.date.change.hidden = Date of the benefit crystallisation
+amountCrystallisedAndDate.date.checkYourAnswersLabel = Date of the benefit crystallisation

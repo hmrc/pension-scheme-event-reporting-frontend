@@ -75,7 +75,14 @@ trait Constraints {
         }
     }
 
+  protected def zeroValue[A](zero: A, errorKey: String): Constraint[A] =
+    Constraint {
+      input =>
+        if (input != zero) Valid else Invalid(errorKey, zero)
+    }
+
   protected def safeText(errorKey: String): Constraint[String] = regexp(regexSafeText, errorKey)
+
   protected def companyNumber(errorKey: String): Constraint[String] = regexp(regexCrn, errorKey)
 
   protected def country(countryOptions: CountryOptions, errorKey: String): Constraint[String] = {

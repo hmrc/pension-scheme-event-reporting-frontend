@@ -188,6 +188,9 @@ GET         /bulk-what-you-need                                                 
 GET         /event-22-upload-format-instructions                                  controllers.FileDownloadController.instructionsFile
 GET         /event-22-bulk-upload-template                                        controllers.FileDownloadController.templateFile
 
+GET         /new-report/:index/event-6-payment-details                            controllers.event6.AmountCrystallisedAndDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST        /new-report/:index/event-6-payment-details                            controllers.event6.AmountCrystallisedAndDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.
 #
