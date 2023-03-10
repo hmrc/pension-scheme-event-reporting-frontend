@@ -19,13 +19,13 @@ package controllers
 import base.SpecBase
 import connectors.EventReportingConnector
 import forms.EventSummaryFormProvider
-import models.UserAnswers
+import models.{TaxYear, UserAnswers}
 import models.enumeration.EventType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, EventSummaryPage}
+import pages.{EmptyWaypoints, EventSummaryPage, TaxYearPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -55,11 +55,11 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
 
     "must return OK and the correct view for a GET" in {
 
-      val ua = emptyUserAnswers.setOrException(EventSummaryPage, true)
+      val ua = emptyUserAnswers.setOrException(EventSummaryPage, true).setOrException(TaxYearPage, TaxYear("2022"))
 
       val seqOfEvents = Seq(EventType.Event1, EventType.Event2)
 
-      when(mockEventReportSummaryConnector.getEventReportSummary(any())(any(), any())).thenReturn(
+      when(mockEventReportSummaryConnector.getEventReportSummary(any(), any())(any(), any())).thenReturn(
         Future.successful(seqOfEvents)
       )
 
@@ -103,8 +103,8 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
     }
 
     "must redirect to next page on submit (when selecting YES)" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
+      val ua = UserAnswers()
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
       running(application) {
         val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
@@ -117,8 +117,8 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
     }
 
     "must redirect to next page on submit (when selecting NO)" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
+      val ua = UserAnswers()
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
       running(application) {
         val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "false"))
 

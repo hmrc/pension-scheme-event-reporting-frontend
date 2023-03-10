@@ -25,6 +25,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class FakeDataRetrievalAction(json: Option[UserAnswers]) extends DataRetrievalAction {
   override def apply(eventType: EventType): DataRetrieval = new FakeDataRetrieval(json)
+  override def apply(): DataRetrieval = new FakeDataRetrieval(json)
 }
 
 class FakeDataRetrieval(dataToReturn: Option[UserAnswers]) extends DataRetrieval {

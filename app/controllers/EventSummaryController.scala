@@ -22,8 +22,9 @@ import forms.EventSummaryFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event22, Event23}
-import models.requests.IdentifierRequest
-import pages.{EmptyWaypoints, EventSummaryPage, Waypoints}
+import models.requests.DataRequest
+import pages.{EmptyWaypoints, EventSummaryPage, TaxYearPage, Waypoints}
+import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.Aliases._
@@ -37,47 +38,58 @@ import scala.concurrent.{ExecutionContext, Future}
 class EventSummaryController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         identify: IdentifierAction,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
                                         connector: EventReportingConnector,
                                         formProvider: EventSummaryFormProvider,
                                         view: EventSummaryView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
+  private val logger = Logger(classOf[EventSummaryController])
 
-  private def summaryListRows(waypoints: Waypoints)(implicit request: IdentifierRequest[AnyContent]): Future[Seq[SummaryListRow]] = {
-    connector.getEventReportSummary(request.pstr).map { seqOfEventTypes =>
-      seqOfEventTypes.map { event =>
-        SummaryListRow(
-          key = Key(
-            content = Text(Message(s"eventSummary.event${event.toString}"))
-          ),
-          actions = Some(Actions(
-            items = Seq(
-              ActionItem(
-                content = Text(Message("site.change")),
-                href = changeLinkForEvent(event)
+  private def summaryListRows(waypoints: Waypoints)(implicit request: DataRequest[AnyContent]): Future[Seq[SummaryListRow]] = {
+    request.userAnswers.get(TaxYearPage) match {
+      case Some(taxYear) =>
+        val startYear = s"01/01/ + ${taxYear.startYear}"
+        connector.getEventReportSummary(request.pstr, startYear).map { seqOfEventTypes =>
+          seqOfEventTypes.map { event =>
+            SummaryListRow(
+              key = Key(
+                content = Text(Message(s"eventSummary.event${event.toString}"))
               ),
-              ActionItem(
-                content = Text(Message("site.remove")),
-                href = event match {
-                  case EventType.Event18 => controllers.event18.routes.RemoveEvent18Controller.onPageLoad(waypoints).url
-                  case _ => "#"
-                }
-              )
+              actions = Some(Actions(
+                items = Seq(
+                  ActionItem(
+                    content = Text(Message("site.change")),
+                    href = changeLinkForEvent(event)
+                  ),
+                  ActionItem(
+                    content = Text(Message("site.remove")),
+                    href = event match {
+                      case EventType.Event18 => controllers.event18.routes.RemoveEvent18Controller.onPageLoad(waypoints).url
+                      case _ => "#"
+                    }
+                  )
+                )
+              ))
             )
-          ))
-        )
-      }
+          }
+        }
+
+      case _ =>
+        logger.warn("No tax year selected on load of summary page")
+        Future.successful(Nil)
     }
   }
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify.async { implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
     summaryListRows(waypoints).map { rows =>
       Ok(view(form, waypoints, rows))
     }
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = identify.async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => summaryListRows(waypoints).map(rows => BadRequest(view(formWithErrors, waypoints, rows))),

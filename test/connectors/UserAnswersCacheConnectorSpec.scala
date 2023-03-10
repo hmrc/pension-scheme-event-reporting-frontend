@@ -93,7 +93,7 @@ class UserAnswersCacheConnectorSpec
   }
 
   "save" must {
-    "return successfully when the backend has returned OK and a correct response" in {
+    "return successfully when passed event type and the backend has returned OK and a correct response" in {
       server.stubFor(
         post(urlEqualTo(userAnswersCacheUrl))
           .withHeader("eventType", equalTo(eventType.toString))
@@ -105,6 +105,20 @@ class UserAnswersCacheConnectorSpec
 
       connector.save(pstr, eventType, userAnswers) map {
         _ mustBe ()
+      }
+    }
+
+    "return successfully when passed no event type and the backend has returned OK and a correct response" in {
+      server.stubFor(
+        post(urlEqualTo(userAnswersCacheUrl))
+          .withHeader("pstr", equalTo(pstr))
+          .willReturn(
+            ok()
+          )
+      )
+
+      connector.save(pstr, userAnswers) map {
+        _ mustBe()
       }
     }
 
