@@ -16,67 +16,45 @@
 
 @import viewmodels.SummaryListRowWithTwoValues
 @import models.enumeration.EventType
-@import services.EventPaginationService._
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    govukPagination: GovukPagination
+ layout: templates.Layout,
+ formHelper: FormWithCSRF,
+ govukErrorSummary: GovukErrorSummary,
+ govukRadios: GovukRadios,
+ govukButton: GovukButton
 )
 
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberSeq: Seq[SummaryListRowWithTwoValues], total: String, paginatedMembers: PaginatedMembers)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberSeq: Seq[SummaryListRowWithTwoValues], total: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"membersSummary.event${eventType.toString}.title", "2022"))) {
 
-    @formHelper(action = controllers.common.routes.MembersSummaryController.onSubmit(waypoints, eventType), Symbol("autoComplete") -> "off") {
+ @formHelper(action = controllers.common.routes.MembersSummaryController.onSubmit(waypoints, eventType), Symbol("autoComplete") -> "off") {
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-        }
+  @if(form.errors.nonEmpty) {
+   @govukErrorSummary(ErrorSummaryViewModel(form))
+  }
 
-        <h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", "2022")</h1>
+ <h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", "2022")</h1>
 
-        @components.entity_summaryThree_table_list(
-            memberSeq,
-            colOne = "membersSummary.table.header1",
-            colTwo = "membersSummary.table.header2",
-            colThree = "membersSummary.table.header3",
-            total
-        )
+  @components.entity_summaryThree_table_list(
+   memberSeq,
+   colOne = "membersSummary.table.header1",
+   colTwo = "membersSummary.table.header2",
+   colThree = "membersSummary.table.header3",
+   total
+  )
 
-        <p class="govuk-body">@(s"Showing 1 – 25 of ${memberSeq.length} members")</p>
+  @govukRadios(
+   RadiosViewModel.yesNo(
+    field = form("value"),
+    legend = LegendViewModel(messages(s"membersSummary.event${eventType.toString}.yesno.legend")).withCssClass("govuk-fieldset__legend--m"),
+   )
+  )
 
-        <p>@(paginatedMembers.totalNumberOfMembers, paginatedMembers.numberOfPaginationItems)</p>
-
-        @govukPagination(
-            Pagination(
-                items = Some(
-                    Seq(
-                        PaginationItem(href = "#", number = Some("1"), current = Some(true)),
-                        PaginationItem(href = "#", number = Some("2"))
-                    )
-                ),
-                next = Some(
-                    PaginationLink(
-                        href = "#"
-                    )
-                )
-            )
-        )
-
-        @govukRadios(
-            RadiosViewModel.yesNo(
-                field = form("value"),
-                legend = LegendViewModel(messages(s"membersSummary.event${eventType.toString}.yesno.legend")).withCssClass("govuk-fieldset__legend--m"),
-            )
-        )
-
-        @govukButton(
-            ButtonViewModel(messages("site.saveAndContinue")).withAttribute(("id", "submit"))
-        )
-    }
+  @govukButton(
+   ButtonViewModel(messages("site.saveAndContinue")).withAttribute(("id", "submit"))
+  )
+ }
 }

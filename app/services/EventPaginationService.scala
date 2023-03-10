@@ -19,28 +19,69 @@ package services
 import viewmodels.SummaryListRowWithTwoValues
 
 class EventPaginationService {
+
   import EventPaginationService._
 
 
-  def paginateMappedMembers(mappedMembers: Seq[SummaryListRowWithTwoValues]): PaginatedMembers = {
+  def paginateMappedMembers(mappedMembers: Seq[SummaryListRowWithTwoValues], pageNumber: Int): PaginationStats = {
     val totalNumberOfMembers = mappedMembers.length
-    PaginatedMembers(totalNumberOfMembers, calculateNumberOfPaginationItems(totalNumberOfMembers))
+    val totNumOfPages = totalNumberOfPages(totalNumberOfMembers, pageSize)
+    val pagStartAndEnd = pageStartAndEnd(pageNumber, totalNumberOfMembers, pageSize)
+    val pagerSeqForNav = pagerSeq(pageNumber, totNumOfPages)
+
+    PaginationStats(
+      mappedMembers.slice(pagStartAndEnd._1, pagStartAndEnd._2),
+      totalNumberOfMembers,
+      totNumOfPages,
+      pagStartAndEnd,
+      pagerSeqForNav
+    )
   }
 
-  def calculateNumberOfPaginationItems(num: Int): Int = {
-    val numBy25 = (num / 25) + 1
-    println("\n\n\n\n\n" + numBy25)
-    numBy25 match {
-      case 5 if (numBy25 >= 5) => 5
-      case numBy25 if (numBy25 >= 0 & numBy25 < 5) => numBy25
-      case _ => 0
+  def totalNumberOfPages(totalNumberOfMembers: Int, pageSize: Int): Int = (totalNumberOfMembers.toFloat / pageSize).ceil.toInt
+
+  def pageStartAndEnd(pageNumber: Int, totalNumberOfMembers: Int, pageSize: Int): (Int, Int) = {
+    val pagNum = pageNumber + 1 // To do with Index vs Int I believe.
+    val start = if (pagNum == 1) {
+      1
+    } else {
+      ((pagNum - 1) * pageSize) + 1
+    }
+    val end = if (pagNum == 0) {
+      if (totalNumberOfMembers >= pageSize) {
+        pageSize
+      } else {
+        totalNumberOfMembers
+      }
+    } else if (pagNum * pageSize >= totalNumberOfMembers) {
+      totalNumberOfMembers
+    }
+     else {
+      pagNum * pageSize
+    }
+    (start, end)
+  }
+
+  def pagerSeq(pageNumber: Int, totalNumberOfPages: Int): Seq[Int] = {
+    (pageNumber, totalNumberOfPages) match {
+      case (_, tnop) if tnop <= 5 => 1 to tnop
+      case (pn, _) if pn < 3 => 1 to 5
+      case (pn, tnop) if pn > (tnop - 3) => (tnop - 4) to tnop
+      case (pn, _) => (pn - 2) to (pn + 2)
     }
   }
+
 }
 
 object EventPaginationService {
-  case class PaginatedMembers(
+
+  case class PaginationStats(
+                               slicedMembers: Seq[SummaryListRowWithTwoValues],
                                totalNumberOfMembers: Int,
-                               numberOfPaginationItems: Int
+                               totalNumberOfPages: Int,
+                               pageStartAndEnd: (Int, Int),
+                               pagerSeq: Seq[Int]
                              )
+
+  private val pageSize = 25
 }
