@@ -19,14 +19,14 @@
 @import models.enumeration.AddressJourneyType
 
 @this(
-        layout: templates.Layout,
+        layout: templates.SchemeLayout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
         govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String, addresses: Seq[TolerantAddress], index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String, addresses: Seq[TolerantAddress], index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, pageTitle)) {
 

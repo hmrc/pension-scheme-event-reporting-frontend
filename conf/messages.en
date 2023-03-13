@@ -14,6 +14,7 @@ site.startAgain = Start again
 site.signIn = Sign in
 site.govuk = GOV.UK
 site.saveAndContinue = Save and continue
+site.returnTo = Return to {0}
 date.day = Day
 date.month = Month
 date.year = Year
@@ -65,6 +66,13 @@ eventSummary.yesno.legend = Do you want to add another event?
 eventSummary.checkYourAnswersLabel = Check your answers
 eventSummary.error.required = Select yes if you want to add another event
 eventSummary.change.hidden = EventSummary
+
+eventReportingTile.heading = Event Reporting
+eventReportingTile.subHeading = Event report {0} to {1}:
+eventReportingTile.subHeading.param = in progress
+eventReportingTile.link.item1 = View event report in progress
+eventReportingTile.link.item2 = Start a new event report
+eventReportingTile.link.item3 = View or change past event reports
 
 eventSelection.title = Which event are you adding to the event report?
 eventSelection.heading = Which event are you adding to the event report?
@@ -860,6 +868,12 @@ removeEvent18.heading = Are you sure you want to remove Event 18: Scheme chargea
 removeEvent18.checkYourAnswersLabel = Are you sure you want to remove Event 18: Scheme chargeable payment?
 removeEvent18.error.required = Select if you want to remove Event 18
 removeEvent18.change.hidden = Are you sure you want to remove Event 18: Scheme chargeable payment?
+
+taxYear.title = Which tax year are you submitting an event report for?
+taxYear.heading = Which tax year are you submitting an event report for?
+taxYear.checkYourAnswersLabel = Which tax year are you submitting an event report for?
+taxYear.error.required = Select a tax year
+taxYear.change.hidden = Which tax year are you submitting an event report for?
 
 fileUploadWhatYouWillNeed.event22.title = What you will need
 fileUploadWhatYouWillNeed.event22.heading = What you will need
