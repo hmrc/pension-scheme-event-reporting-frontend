@@ -34,6 +34,14 @@ trait Constraints {
   val regexSafeText = """^[a-zA-Z0-9\u00C0-\u00FF !#$%&'‘’"“”«»()*+,./:;=?@\\\[\]|~£€¥\u005C\u2014\u2013\u2010\u005F\u005E\u0060\u002d]{1,160}$"""
   val regexCrn = "^[A-Za-z0-9 -]{7,8}$"
 
+  val enhancedLifetimeAllowance = "^[A-Za-z0-9 -]{15}$"
+  val enhancedProtectionRegex = """^[0-9]{7}[A-Za-z]{1}$"""
+  val fixedProtectionRegex = """^8[0-9]{6}[A-Za-z]{1}$"""
+  val fixedProtection2014Regex = """^[0-9]{7}[A-Za-z]{1}$|^IP14[0-9]{10}[A-Za-z]{1}$"""
+  val fixedProtection2016Regex = """^FP16[0-9]{11}$"""
+  val individualProtection2014Regex = """^[A-Za-z]{1}[0-9]{6}[A-Za-z]{1}$|^IP14[0-9]{10}[A-Za-z]{1}$"""
+  val individualProtection2016Regex = """^IP16[0-9]{11}$"""
+
   protected def postCode(errorKey: String): Constraint[String] = regexp(regexPostcode, errorKey)
 
   protected def postCodeNonUk(errorKey: String): Constraint[String] = regexp(regexPostCodeNonUk, errorKey)
