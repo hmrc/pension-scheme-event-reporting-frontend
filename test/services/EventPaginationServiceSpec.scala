@@ -39,21 +39,21 @@ class EventPaginationServiceSpec extends AnyFreeSpec with Matchers {
   }
 
   "pageStartAndEnd" - {
-    "must yield (1, 25) for fake data, page 1" in {
+    "must yield (1, 25) for fake data, first page" in {
       val expected = (1, 25)
+      val actual = fakeEventPaginationService.pageStartAndEnd(0, 26, 25)
+      expected mustEqual actual
+    }
+
+    "must yield (26, 26) for fake data, second page" in {
+      val expected = (26, 26)
       val actual = fakeEventPaginationService.pageStartAndEnd(1, 26, 25)
       expected mustEqual actual
     }
 
-    "must yield (26, 26) for fake data, page 2" in {
-      val expected = (26, 26)
-      val actual = fakeEventPaginationService.pageStartAndEnd(2, 26, 25)
-      expected mustEqual actual
-    }
-
-    "must yield (51, 74) for fake data, page 3" in {
+    "must yield (51, 74) for fake data, third page" in {
       val expected = (51, 74)
-      val actual = fakeEventPaginationService.pageStartAndEnd(3, 74, 25)
+      val actual = fakeEventPaginationService.pageStartAndEnd(2, 74, 25)
       expected mustEqual actual
     }
   }
