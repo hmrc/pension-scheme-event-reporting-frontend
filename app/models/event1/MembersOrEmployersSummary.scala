@@ -67,6 +67,7 @@ object MembersOrEmployersSummary {
       case Some(Member.toString) => readsMemberSummary
       case Some(Employer.toString) => readsEmployerSummary
       case None => Reads.pure[MembersOrEmployersSummary](MembersOrEmployersSummary(messages("site.notEntered"), BigDecimal(0.00)))
+      case _ => throw new RuntimeException("Failed reads. Neither Member or Employer")
     }
   }
 }

@@ -56,6 +56,26 @@ class UserAnswersCacheConnector @Inject()(
       }
   }
 
+  def get(pstr: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
+
+    val headers: Seq[(String, String)] = Seq(
+      "Content-Type" -> "application/json",
+      "pstr" -> pstr
+    )
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.GET[HttpResponse](url)(implicitly, hc, implicitly)
+      .recoverWith(mapExceptionsToStatus)
+      .map { response =>
+        response.status match {
+          case NOT_FOUND => None
+          case OK => Some(UserAnswers(response.json.as[JsObject]))
+          case _ =>
+            throw new HttpException(response.body, response.status)
+        }
+      }
+  }
+
   def save(pstr: String, eventType: EventType, userAnswers: UserAnswers)
           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
 
@@ -63,6 +83,26 @@ class UserAnswersCacheConnector @Inject()(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
       "eventType" -> eventType.toString
+    )
+
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.POST[JsValue, HttpResponse](url, userAnswers.data)(implicitly, implicitly, hc, implicitly)
+      .map { response =>
+        response.status match {
+          case OK => ()
+          case _ =>
+            throw new HttpException(response.body, response.status)
+        }
+      }
+  }
+
+  def save(pstr: String, userAnswers: UserAnswers)
+          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+
+    val headers: Seq[(String, String)] = Seq(
+      "Content-Type" -> "application/json",
+      "pstr" -> pstr
     )
 
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)

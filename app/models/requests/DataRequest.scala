@@ -19,15 +19,26 @@ package models.requests
 import models.{LoggedInUser, UserAnswers}
 import play.api.mvc.{Request, WrappedRequest}
 
+abstract class RequiredSchemeDataRequest[A](request: Request[A]) extends WrappedRequest[A](request) {
+  def pstr: String
+  def schemeName: String
+  def returnUrl: String
+  def loggedInUser: LoggedInUser
+}
+
 case class OptionalDataRequest[A](
                                    pstr: String,
+                                   schemeName: String,
+                                   returnUrl: String,
                                    request: Request[A],
                                    loggedInUser: LoggedInUser,
                                    userAnswers: Option[UserAnswers]
-                                 ) extends WrappedRequest[A](request)
+                                 ) extends RequiredSchemeDataRequest[A](request)
 
 case class DataRequest[A](pstr: String,
+                          schemeName: String,
+                          returnUrl: String,
                           request: Request[A],
                           loggedInUser: LoggedInUser,
                           userAnswers: UserAnswers
-                         ) extends WrappedRequest[A](request)
+                         ) extends RequiredSchemeDataRequest[A](request)
