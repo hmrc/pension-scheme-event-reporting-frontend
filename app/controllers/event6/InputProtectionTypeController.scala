@@ -19,11 +19,11 @@ package controllers.event6
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event6.InputProtectionTypeFormProvider
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import models.enumeration.EventType
 import pages.Waypoints
-import pages.event6.InputProtectionTypePage
-import play.api.i18n.I18nSupport
+import pages.event6.{InputProtectionTypePage, TypeOfProtectionPage}
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event6.InputProtectionTypeView
@@ -39,27 +39,34 @@ class InputProtectionTypeController @Inject()(val controllerComponents: Messages
                                               view: InputProtectionTypeView
                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val protectionType = "enhancedProtection"
-  private val form = formProvider(protectionType)
   private val eventType = EventType.Event6
-
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(InputProtectionTypePage)).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, protectionType))
+  private val form = formProvider()
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    val protectionTypeDesc = getProtectionTypeDesc(request.userAnswers, index)
+    val preparedForm = request.userAnswers.flatMap(_.get(InputProtectionTypePage(eventType, index))).fold(form)(form.fill)
+    Ok(view(preparedForm, waypoints, index, protectionTypeDesc))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
+      val protectionTypeDesc = getProtectionTypeDesc(request.userAnswers, index)
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, protectionType))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, index, protectionTypeDesc))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(InputProtectionTypePage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(InputProtectionTypePage(eventType, index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(InputProtectionTypePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(InputProtectionTypePage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )
+  }
+
+  private def getProtectionTypeDesc(userAnswers: Option[UserAnswers], index: Index)(implicit messages: Messages): String = {
+    userAnswers.flatMap(_.get(TypeOfProtectionPage(eventType, index))) match {
+      case Some(typeOfProtection) => messages(s"typeOfProtection.${typeOfProtection.toString}").toLowerCase
+      case _ => ""
+    }
   }
 }

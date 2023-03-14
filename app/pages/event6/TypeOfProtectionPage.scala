@@ -36,6 +36,7 @@ case class TypeOfProtectionPage(eventType: EventType, index: Int) extends Questi
   // scalastyle:off
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(TypeOfProtectionPage(eventType, index)) match {
+      case Some(_) => InputProtectionTypePage(eventType, index)
       case _ => IndexPage
     }
   }

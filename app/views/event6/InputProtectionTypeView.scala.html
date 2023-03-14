@@ -25,25 +25,26 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, protectionType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, index: Index, protectionTypeDesc: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"inputProtectionType.${protectionType}.title"))) {
+@layout(pageTitle = title(form, messages(s"inputProtectionType.title", protectionTypeDesc))) {
 
-    @formHelper(action = routes.InputProtectionTypeController.onSubmit(waypoints)) {
+    @formHelper(action = routes.InputProtectionTypeController.onSubmit(waypoints, index)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @govukInput(
-            InputViewModel(
-                field = form("value"),
-                label = LabelViewModel(messages(s"inputProtectionType.${protectionType}.heading")).asPageHeading()
-            )
-            .withHint(HintViewModel(messages(s"inputProtectionType.${protectionType}.hint")))
-            .withWidth(Full)
-        )
-
+         <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset" aria-describedby="value-hint">
+                <legend class="govuk-fieldset__legend  govuk-fieldset__legend--xl">
+                    <h1 class="govuk-fieldset__heading">@messages(s"inputProtectionType.heading", protectionTypeDesc)</h1>
+                </legend>
+                <div id="value-hint" class="govuk-body">@messages("typeOfProtection.p1")</div>
+                <br>
+                <input class="govuk-input govuk-!-width-full" id="value" name="value" type="text">
+            </fieldset>
+        </div>
         @govukButton(
             ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))
         )
