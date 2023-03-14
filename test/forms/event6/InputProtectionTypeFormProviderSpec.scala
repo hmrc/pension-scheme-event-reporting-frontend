@@ -23,44 +23,45 @@ import forms.mappings.Constraints
 
 class InputProtectionTypeFormProviderSpec extends StringFieldBehaviours with Constraints {
 
-  private val requiredKey = "inputProtectionType.error.required"
-  private val PROTECTION_REF_MIN_LENGTH: Int = 8
-  private val PROTECTION_REF_MAX_LENGTH: Int = 15
+  private val minLength: Int = 8
+  private val maxLength: Int = 15
 
   "InputProtectionTypeFormProviderSpec for protection type" - {
-    methodTest("enhancedLifetimeAllowance", PROTECTION_REF_MIN_LENGTH, inputProtectionTypeRegex, "ABC123654XY")
-    methodTest("enhancedProtection", PROTECTION_REF_MIN_LENGTH, inputProtectionTypeRegex, "1234567")
-    methodTest("fixedProtection", PROTECTION_REF_MIN_LENGTH, inputProtectionTypeRegex, "8111111")
-    methodTest("fixedProtection2014", PROTECTION_REF_MAX_LENGTH, inputProtectionTypeRegex, "IP149999999999X")
-    methodTest("fixedProtection2014", PROTECTION_REF_MAX_LENGTH, inputProtectionTypeRegex, "1234567")
-    methodTest("fixedProtection2016", PROTECTION_REF_MAX_LENGTH, inputProtectionTypeRegex, "FP160000000000")
-    methodTest("individualProtection2014", PROTECTION_REF_MAX_LENGTH, inputProtectionTypeRegex, "IP149999999999")
-    methodTest("individualProtection2014", PROTECTION_REF_MAX_LENGTH, inputProtectionTypeRegex, "A999999")
-    methodTest("individualProtection2016", PROTECTION_REF_MAX_LENGTH, inputProtectionTypeRegex, "IP162222222222")
+
+    testInputProtectionTypeFormProvider("enhancedLifetimeAllowance")
+    testInputProtectionTypeFormProvider("enhancedProtection")
+    testInputProtectionTypeFormProvider("fixedProtection")
+    testInputProtectionTypeFormProvider("fixedProtection2014")
+    testInputProtectionTypeFormProvider("fixedProtection2016")
+    testInputProtectionTypeFormProvider("individualProtection2014")
+    testInputProtectionTypeFormProvider("individualProtection2016")
+
   }
 
-  private def methodTest(protectionType: String, maxLength: Int, regexProtectionType: String, invalidVal: String): Unit = {
+  private def testInputProtectionTypeFormProvider(protectionType: String): Unit = {
 
-    s".value for protectionType is $protectionType and value is $invalidVal" - {
+    s".value for protectionType $protectionType" - {
 
       val fieldName = "value"
-      val lengthKey = s"inputProtectionType.error.length"
-      val invalidKey = s"inputProtectionType.error.invalid"
+      val lengthKey = "inputProtectionType.error.length"
+      val invalidKey = "inputProtectionType.error.invalid"
+      val requiredKey = "inputProtectionType.error.required"
+
       val form = new InputProtectionTypeFormProvider().apply()
 
       //valid data format test
       behave like fieldThatBindsValidData(
         form,
         fieldName,
-        RegexpGen.from(regexProtectionType)
+        RegexpGen.from(inputProtectionTypeRegex)
       )
 
       //invalid data format test
       behave like fieldWithRegex(
         form,
         fieldName,
-        invalidString = invalidVal,
-        error = FormError(fieldName, invalidKey, Seq(regexProtectionType))
+        invalidString = "A#B444-A",
+        error = FormError(fieldName, invalidKey, Seq(inputProtectionTypeRegex))
       )
 
       //max length test
@@ -69,6 +70,14 @@ class InputProtectionTypeFormProviderSpec extends StringFieldBehaviours with Con
         fieldName,
         maxLength = maxLength,
         lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      )
+
+      //min length test
+      behave like fieldWithMinLength(
+        form,
+        fieldName,
+        minLength = minLength,
+        lengthError = FormError(fieldName, lengthKey, Seq(minLength))
       )
 
       //mandatory field test
