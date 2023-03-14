@@ -193,6 +193,15 @@ GET         /bulk-what-you-need                                                 
 GET         /event-22-upload-format-instructions                                  controllers.FileDownloadController.instructionsFile
 GET         /event-22-bulk-upload-template                                        controllers.FileDownloadController.templateFile
 
+GET         /new-report/:index/event-6-entry-type                                 controllers.common.ManualOrUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6, index: Index)
+POST        /new-report/:index/event-6-entry-type                                 controllers.common.ManualOrUploadController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6, index: Index)
+
+GET         /new-report/:index/event-6-member-details                             controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6, index: Index)
+POST        /new-report/:index/event-6-member-details                             controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6, index: Index)
+
+GET         /new-report/:index/event-6-type-of-protection                         controllers.event6.TypeOfProtectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST        /new-report/:index/event-6-type-of-protection                         controllers.event6.TypeOfProtectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.
 #

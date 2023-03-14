@@ -28,19 +28,21 @@ sealed trait ManualOrUpload
 object ManualOrUpload extends Enumerable.Implicits {
 
   case object Manual extends WithName("manual") with ManualOrUpload
+
   case object FileUpload extends WithName("fileUpload") with ManualOrUpload
 
   def values: Seq[ManualOrUpload] = {
-      Seq(Manual, FileUpload)
+    Seq(Manual, FileUpload)
   }
 
   def options(eventType: EventType)(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
       RadioItem(
         content = Text(messages(s"manualOrUpload.event${eventType.toString}.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index"),
-        hint    = if (value == FileUpload) Some(Hint(content = Text(messages(s"manualOrUpload.event${eventType.toString}.fileUpload.hint")))) else None
+        value = Some(value.toString),
+        id = Some(s"value_$index"),
+        hint = if (value == FileUpload) Some(Hint(content = Text(messages(s"manualOrUpload.event${eventType.toString}.fileUpload.hint")))) else None,
+        disabled = if (eventType == EventType.Event6) value == FileUpload else false
       )
   }
 
