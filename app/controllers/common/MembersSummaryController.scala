@@ -51,15 +51,17 @@ class MembersSummaryController @Inject()(
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
-
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
-      Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
+      if (mappedMembers.length > 25) {
+        Redirect(routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, 0))
+      } else {
+        Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
+      }
     }
 
   def onPageLoadWithPageNumber(waypoints: Waypoints, eventType: EventType, pageNumber: Index): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
-
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
       val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, pageNumber)
@@ -78,8 +80,8 @@ class MembersSummaryController @Inject()(
           BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
         },
         value => {
-          val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 1), value)
-          Redirect(MembersSummaryPage(eventType, 1).navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)}
+          val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 0), value)
+          Redirect(MembersSummaryPage(eventType, 0).navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)}
       )
   }
 

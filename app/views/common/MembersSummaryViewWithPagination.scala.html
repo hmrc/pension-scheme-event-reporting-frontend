@@ -38,6 +38,10 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        @if((pageNumber.toInt + 1) > paginationStats.totalNumberOfPages) {
+            @govukErrorSummary(ErrorSummaryViewModel(form.withError(FormError("page-nav", Seq("Page number is out of bounds")))))
+        }
+
         <h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", "2022")</h1>
 
         @components.entity_summaryThree_table_list(
@@ -49,28 +53,28 @@
         )
 
         @if(paginationStats.pagerSeq) {
-        <div class="govuk-!-margin-bottom-9">
+        <div class="govuk-!-margin-bottom-9" id="page-nav">
             <p class="govuk-body">@(s"Showing ${paginationStats.pageStartAndEnd._1} – ${paginationStats.pageStartAndEnd._2} of ${paginationStats.totalNumberOfMembers} members")</p>
             <nav class="govuk-margin-top-5" aria-label="page">
                 <ul class="govuk-list">
                     @if((pageNumber.toInt + 1) >= 2) {
-                    <li class="govuk-!-display-inline govuk-!-margin-left-1 govuk-!-margin-right-1">
+                    <li class="govuk-!-display-inline govuk-!-margin-right-2">
                         <a href=@(pageNumber.toInt) id="value-@(pageNumber.toInt)" class="govuk-link">Previous</a>
                     </li>
                     }
                     @for(link <- paginationStats.pagerSeq) {
                             @if(link.toInt != (pageNumber.toInt + 1)){
-                                <li class="govuk-!-display-inline govuk-!-margin-left-1 govuk-!-margin-right-1">
+                                <li class="govuk-!-display-inline govuk-!-margin-right-2">
                                     <a href=@(link) id="value-@(link)" class="govuk-link">@(link)</a>
                                 </li>
                             } else {
-                                <li class="govuk-!-display-inline govuk-!-margin-left-1 govuk-!-margin-right-1">
+                                <li class="govuk-!-display-inline govuk-!-margin-right-2">
                                     @(link)
                                 </li>
                             }
                     }
                     @if((pageNumber.toInt + 1) < paginationStats.totalNumberOfPages) {
-                    <li class="govuk-!-display-inline govuk-!-margin-left-1 govuk-!-margin-right-1">
+                    <li class="govuk-!-display-inline">
                         <a href=@(pageNumber.toInt + 2) id="value-@(pageNumber.toInt + 2)" class="govuk-link">Next</a>
                     </li>
                     }
@@ -78,7 +82,6 @@
             </nav>
         </div>
         }
-
 
         @govukRadios(
             RadiosViewModel.yesNo(
@@ -92,27 +95,3 @@
         )
     }
 }
-
-<!--                   {% if pageLinksSeq.length > 0 %}
-                      <div class="govuk-!-margin-bottom-9">
-                       <p class="govuk-body"> {{messages('paginationForMembers.pagerSummary', paginationStatsStartMember, paginationStatsLastMember, paginationStatsTotalMembers)}}</p>
-                        <nav class="govuk-margin-top-5" aria-label="page">
-                        <ul class="govuk-list">
-                         {% for link in pageLinksSeq %}
-
-                             {% if link.url %}
-                             <li class="govuk-!-display-inline govuk-!-margin-left-1 govuk-!-margin-right-1">
-                                 <a href='{{ link.url }}' id='{{ link.id }}' class="govuk-link">{{ messages(link.linkText) }}</a>
-                             </li>
-                             {% else %}
-                             <li class="govuk-!-display-inline govuk-!-margin-left-1 govuk-!-margin-right-1">
-                                 {{ messages(link.linkText) }}
-                                 </li>
-                             {% endif %}
-
-                         {% endfor %}
-                         </ul>
-                       </nav>
-                     </div>
-                   {% endif %}-->
-

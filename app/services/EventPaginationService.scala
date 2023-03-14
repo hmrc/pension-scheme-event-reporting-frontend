@@ -41,7 +41,7 @@ class EventPaginationService {
   def totalNumberOfPages(totalNumberOfMembers: Int, pageSize: Int): Int = (totalNumberOfMembers.toFloat / pageSize).ceil.toInt
 
   def pageStartAndEnd(pageNumber: Int, totalNumberOfMembers: Int, pageSize: Int): (Int, Int) = {
-    val pagNum = pageNumber + 1 // To do with Index vs Int I believe.
+    val pagNum = pageNumber + 1
     val start = if (pagNum == 1) {
       1
     } else {
@@ -59,7 +59,11 @@ class EventPaginationService {
      else {
       pagNum * pageSize
     }
-    (start, end)
+    if (start > end) {
+      (end, end)
+    } else {
+      (start, end)
+    }
   }
 
   def pagerSeq(pageNumber: Int, totalNumberOfPages: Int): Seq[Int] = {
@@ -82,6 +86,5 @@ object EventPaginationService {
                                pageStartAndEnd: (Int, Int),
                                pagerSeq: Seq[Int]
                              )
-
   private val pageSize = 25
 }
