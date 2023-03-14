@@ -906,10 +906,8 @@ typeOfProtection.change.hidden = What is the type of protection held for the cry
 
 inputProtectionType.title = What is the member’s {0} reference?
 inputProtectionType.heading = What is the member’s {0} reference?
-inputProtectionType.hint = This can be found on the member’s LTA certificate.
-inputProtectionType.checkYourAnswersLabel = What is the member's enhanced lifetime allowance reference?
-inputProtectionType.change.hidden = What is the member's enhanced lifetime allowance reference?
-
+inputProtectionType.checkYourAnswersLabel = What is the member's protection type reference?
+inputProtectionType.change.hidden = What is the member's protection type reference?
 inputProtectionType.error.required = Enter a protection reference.
 inputProtectionType.error.length = The protection reference must be between 8 and 15 characters. It can be a mixture of numbers and letters.
 inputProtectionType.error.invalid = The protection reference can only contain letters and numbers.
