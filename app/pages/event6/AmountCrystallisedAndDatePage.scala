@@ -20,14 +20,12 @@ import controllers.event6.routes
 import models.UserAnswers
 import models.enumeration.EventType
 import models.event6.CrystallisedDetails
-import pages.common.MembersOrEmployersPage
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AmountCrystallisedAndDatePage(index: Int) extends QuestionPage[CrystallisedDetails] {
-
-  override def path: JsPath = MembersOrEmployersPage(EventType.Event6)(index) \ AmountCrystallisedAndDatePage.toString
+case class AmountCrystallisedAndDatePage(eventType: EventType, index: Int) extends QuestionPage[CrystallisedDetails] {
+  override def path: JsPath = JsPath \ s"event${eventType.toString}" \ AmountCrystallisedAndDatePage.toString
 
   override def route(waypoints: Waypoints): Call =
     routes.AmountCrystallisedAndDateController.onPageLoad(waypoints, index)

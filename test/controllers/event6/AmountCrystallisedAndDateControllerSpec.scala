@@ -20,6 +20,7 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event6.AmountCrystallisedAndDateFormProvider
 import models.UserAnswers
+import models.enumeration.EventType.Event6
 import models.event6.CrystallisedDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -48,6 +49,8 @@ class AmountCrystallisedAndDateControllerSpec extends SpecBase with BeforeAndAft
   private val form = formProvider(stubMin, stubMax)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+
+  private val eventType = Event6
 
   private def getRoute: String = routes.AmountCrystallisedAndDateController.onPageLoad(waypoints, 0).url
 
@@ -86,7 +89,7 @@ class AmountCrystallisedAndDateControllerSpec extends SpecBase with BeforeAndAft
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(AmountCrystallisedAndDatePage(0), validValue).success.value
+      val userAnswers = UserAnswers().set(AmountCrystallisedAndDatePage(eventType, 0), validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -116,10 +119,10 @@ class AmountCrystallisedAndDateControllerSpec extends SpecBase with BeforeAndAft
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(crystallisedDetails("1000.00", Some(validDate)): _*)
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(AmountCrystallisedAndDatePage(0), validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(AmountCrystallisedAndDatePage(eventType, 0), validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AmountCrystallisedAndDatePage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual AmountCrystallisedAndDatePage(eventType, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }

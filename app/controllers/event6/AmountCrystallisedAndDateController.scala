@@ -56,7 +56,7 @@ class AmountCrystallisedAndDateController @Inject()(val controllerComponents: Me
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val startDate = startOfCrystallisationDate(request.userAnswers.flatMap(_.get(TaxYearPage)))
 
-    val preparedForm = request.userAnswers.flatMap(_.get(AmountCrystallisedAndDatePage(index))) match {
+    val preparedForm = request.userAnswers.flatMap(_.get(AmountCrystallisedAndDatePage(eventType, index))) match {
       case Some(value) => form(startDate = startDate).fill(value)
       case None => form(startDate)
     }
@@ -71,9 +71,9 @@ class AmountCrystallisedAndDateController @Inject()(val controllerComponents: Me
       },
       value => {
         val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-        val updatedAnswers = originalUserAnswers.setOrException(AmountCrystallisedAndDatePage(index), value)
+        val updatedAnswers = originalUserAnswers.setOrException(AmountCrystallisedAndDatePage(eventType, index), value)
         userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-          Redirect(AmountCrystallisedAndDatePage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+          Redirect(AmountCrystallisedAndDatePage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
         }
       }
     )

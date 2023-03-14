@@ -16,6 +16,7 @@
 
 package pages.event6
 
+import models.enumeration.EventType.Event6
 import models.event6.CrystallisedDetails
 import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
@@ -30,10 +31,10 @@ class AmountCrystallisedAndDatePageSpec extends PageBehaviours {
       CrystallisedDetails(1000.00, LocalDate.now())
     }
 
-    beRetrievable[CrystallisedDetails](AmountCrystallisedAndDatePage(0))
+    beRetrievable[CrystallisedDetails](AmountCrystallisedAndDatePage(Event6, 0))
 
-    beSettable[CrystallisedDetails](AmountCrystallisedAndDatePage(0))
+    beSettable[CrystallisedDetails](AmountCrystallisedAndDatePage(Event6, 0))
 
-    beRemovable[CrystallisedDetails](AmountCrystallisedAndDatePage(0))
+    beRemovable[CrystallisedDetails](AmountCrystallisedAndDatePage(Event6, 0))
   }
 }
