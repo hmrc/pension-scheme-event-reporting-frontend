@@ -57,7 +57,7 @@ class AmountCrystallisedAndDateControllerSpec extends SpecBase with BeforeAndAft
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validValue = CrystallisedDetails(1000.00, LocalDate.now())
+  private val validValue = CrystallisedDetails(1000.00, LocalDate.of(2022, 7, 12))
 
   import AmountCrystallisedAndDateControllerSpec._
 
@@ -113,7 +113,7 @@ class AmountCrystallisedAndDateControllerSpec extends SpecBase with BeforeAndAft
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(crystallisedDetails("1000.00", Some(LocalDate.of(2022, 5, 1))): _*)
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(crystallisedDetails("1000.00", Some(validDate)): _*)
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(AmountCrystallisedAndDatePage(0), validValue).success.value
@@ -163,5 +163,16 @@ object AmountCrystallisedAndDateControllerSpec {
     case None =>
       Seq(Tuple2(crystallisedValueKey, amountCrystallised))
   }
+
+  private def validDateCalc(date: LocalDate): LocalDate = {
+    date match {
+      case _ if date.isBefore(LocalDate.of(date.getYear, 4, 6)) =>
+        LocalDate.of(date.getYear - 1, 4, 6)
+      case _ =>
+        LocalDate.of(date.getYear, 4, 6)
+    }
+  }
+
+  private val validDate = validDateCalc(LocalDate.now())
 }
 

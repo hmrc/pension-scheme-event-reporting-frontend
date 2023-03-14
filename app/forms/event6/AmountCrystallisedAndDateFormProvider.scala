@@ -30,25 +30,21 @@ class AmountCrystallisedAndDateFormProvider @Inject() extends Mappings with Tran
 
   import AmountCrystallisedAndDateFormProvider._
 
-  // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now. 09/03/2023:
-  //  Temporary fix for tests- need to discuss proper implementation of dates
-  private val today = LocalDate.now
-
-  private def startDate: LocalDate = {
-    today match {
-      case _ if today.isBefore(LocalDate.of(today.getYear, 4, 6)) =>
-        LocalDate.of(today.getYear - 1, 4, 6)
+  private def startDate(date: LocalDate): LocalDate = {
+    date match {
+      case _ if date.isBefore(LocalDate.of(date.getYear, 4, 6)) =>
+        LocalDate.of(date.getYear - 1, 4, 6)
       case _ =>
-        LocalDate.of(today.getYear, 4, 6)
+        LocalDate.of(date.getYear, 4, 6)
     }
   }
 
-  private def endDate: LocalDate = {
-    today match {
-      case _ if today.isBefore(LocalDate.of(today.getYear, 4, 6)) =>
-        LocalDate.of(today.getYear, 4, 5)
+  private def endDate(date: LocalDate): LocalDate = {
+    date match {
+      case _ if date.isBefore(LocalDate.of(date.getYear, 4, 6)) =>
+        LocalDate.of(date.getYear, 4, 5)
       case _ =>
-        LocalDate.of(today.getYear + 1, 4, 5)
+        LocalDate.of(date.getYear + 1, 4, 5)
     }
   }
 
@@ -70,8 +66,8 @@ class AmountCrystallisedAndDateFormProvider @Inject() extends Mappings with Tran
           threeDateComponentsMissingKey = "amountCrystallisedAndDate.date.error.nothingEntered"
         ).verifying(
           yearHas4Digits("amountCrystallisedAndDate.date.error.outsideDateRanges"),
-          minDate(startDate, messages("amountCrystallisedAndDate.date.error.outsideReportedYear", formatDateDMY(startDate), formatDateDMY(endDate))),
-          maxDate(endDate, messages("amountCrystallisedAndDate.date.error.outsideReportedYear", formatDateDMY(startDate), formatDateDMY(endDate)))
+          minDate(startDate(min), messages("amountCrystallisedAndDate.date.error.outsideReportedYear", formatDateDMY(startDate(min)), formatDateDMY(endDate(max)))),
+          maxDate(endDate(max), messages("amountCrystallisedAndDate.date.error.outsideReportedYear", formatDateDMY(startDate(min)), formatDateDMY(endDate(max))))
         )
       )
       (CrystallisedDetails.apply)(CrystallisedDetails.unapply)

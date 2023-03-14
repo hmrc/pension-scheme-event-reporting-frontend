@@ -18,19 +18,20 @@ package controllers.event6
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import controllers.event6.AmountCrystallisedAndDateController.startOfCrystallisationDate
 import forms.event6.AmountCrystallisedAndDateFormProvider
 import models.enumeration.EventType
 import models.event6.CrystallisedDetails
-import models.{Index, Quarters, UserAnswers}
-import pages.Waypoints
+import models.{Index, Quarters, TaxYear, UserAnswers}
 import pages.event6.AmountCrystallisedAndDatePage
+import pages.{TaxYearPage, Waypoints}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event6.AmountCrystallisedAndDateView
 
-import java.time.LocalDate
+import java.time.{LocalDate, Month}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -50,23 +51,21 @@ class AmountCrystallisedAndDateController @Inject()(val controllerComponents: Me
     )
   }
 
-
   private val eventType = EventType.Event6
 
-  // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now.
-  private val stubDate: LocalDate = LocalDate.now()
-
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    val startDate = startOfCrystallisationDate(request.userAnswers.flatMap(_.get(TaxYearPage)))
 
     val preparedForm = request.userAnswers.flatMap(_.get(AmountCrystallisedAndDatePage(index))) match {
-      case Some(value) => form(startDate = stubDate).fill(value)
-      case None => form(stubDate)
+      case Some(value) => form(startDate = startDate).fill(value)
+      case None => form(startDate)
     }
     Ok(view(preparedForm, waypoints, index))
   }
 
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
-    form(stubDate).bindFromRequest().fold(
+    val startDate = startOfCrystallisationDate(request.userAnswers.flatMap(_.get(TaxYearPage)))
+    form(startDate).bindFromRequest().fold(
       formWithErrors => {
         Future.successful(BadRequest(view(formWithErrors, waypoints, index)))
       },
@@ -78,5 +77,14 @@ class AmountCrystallisedAndDateController @Inject()(val controllerComponents: Me
         }
       }
     )
+  }
+}
+
+object AmountCrystallisedAndDateController {
+  def startOfCrystallisationDate(optTaxYear: Option[TaxYear]): LocalDate = optTaxYear match {
+    case Some(value) =>
+      val taxYear = value.startYear
+      LocalDate.of(Integer.parseInt(taxYear), Month.APRIL, 6)
+    case _ => LocalDate.now()
   }
 }
