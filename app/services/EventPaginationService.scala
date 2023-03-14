@@ -30,7 +30,7 @@ class EventPaginationService {
     val pagerSeqForNav = pagerSeq(pageNumber, totNumOfPages)
 
     PaginationStats(
-      mappedMembers.slice(pagStartAndEnd._1, pagStartAndEnd._2),
+      mappedMembers.slice(pagStartAndEnd._1 - 1, pagStartAndEnd._2 - 1),
       totalNumberOfMembers,
       totNumOfPages,
       pagStartAndEnd,
