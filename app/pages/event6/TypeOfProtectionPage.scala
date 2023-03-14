@@ -33,7 +33,6 @@ case class TypeOfProtectionPage(eventType: EventType, index: Int) extends Questi
   def route(waypoints: Waypoints): Call =
     routes.TypeOfProtectionController.onPageLoad(waypoints, index)
 
-  // scalastyle:off
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(TypeOfProtectionPage(eventType, index)) match {
       case Some(_) => InputProtectionTypePage(eventType, index)
