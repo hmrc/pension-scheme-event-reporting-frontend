@@ -23,10 +23,8 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    govukPagination: GovukPagination
+    govukButton: GovukButton
 )
-
 
 @(form: Form[_], waypoints: Waypoints, eventType: EventType, memberSeq: Seq[SummaryListRowWithTwoValues], total: String, paginationStats: PaginationStats, pageNumber: Index)(implicit request: Request[_], messages: Messages)
 
