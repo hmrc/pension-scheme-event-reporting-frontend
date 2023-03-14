@@ -16,6 +16,7 @@
 
 package pages.event6
 
+import models.enumeration.EventType.Event6
 import pages.behaviours.PageBehaviours
 
 
@@ -23,10 +24,10 @@ class InputProtectionTypePageSpec extends PageBehaviours {
 
   "InputProtectionTypePage" - {
 
-    beRetrievable[String](InputProtectionTypePage)
+    beRetrievable[String](InputProtectionTypePage(Event6, 0))
 
-    beSettable[String](InputProtectionTypePage)
+    beSettable[String](InputProtectionTypePage(Event6, 0))
 
-    beRemovable[String](InputProtectionTypePage)
+    beRemovable[String](InputProtectionTypePage(Event6, 0))
   }
 }

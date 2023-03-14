@@ -21,6 +21,7 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event6.InputProtectionTypeFormProvider
 import models.{Index, UserAnswers}
 import models.enumeration.EventType
+import org.apache.commons.lang3.StringUtils
 import pages.Waypoints
 import pages.event6.{InputProtectionTypePage, TypeOfProtectionPage}
 import play.api.i18n.{I18nSupport, Messages}
@@ -41,6 +42,7 @@ class InputProtectionTypeController @Inject()(val controllerComponents: Messages
 
   private val eventType = EventType.Event6
   private val form = formProvider()
+
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val protectionTypeDesc = getProtectionTypeDesc(request.userAnswers, index)
     val preparedForm = request.userAnswers.flatMap(_.get(InputProtectionTypePage(eventType, index))).fold(form)(form.fill)
@@ -66,7 +68,7 @@ class InputProtectionTypeController @Inject()(val controllerComponents: Messages
   private def getProtectionTypeDesc(userAnswers: Option[UserAnswers], index: Index)(implicit messages: Messages): String = {
     userAnswers.flatMap(_.get(TypeOfProtectionPage(eventType, index))) match {
       case Some(typeOfProtection) => messages(s"typeOfProtection.${typeOfProtection.toString}").toLowerCase
-      case _ => ""
+      case _ => StringUtils.EMPTY
     }
   }
 }
