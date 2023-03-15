@@ -21,8 +21,9 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event6.TypeOfProtectionFormProvider
 import models.enumeration.EventType
 import models.{Index, UserAnswers}
+import org.apache.commons.lang3.StringUtils
 import pages.Waypoints
-import pages.event6.TypeOfProtectionPage
+import pages.event6.{InputProtectionTypePage, TypeOfProtectionPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -53,13 +54,30 @@ class TypeOfProtectionController @Inject()(val controllerComponents: MessagesCon
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
+          val oldValue = getProtectionTypeValue(request.userAnswers, index)
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(TypeOfProtectionPage(eventType, index), value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(TypeOfProtectionPage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+          if (value.toString != oldValue) {
+            val updatedAnswers = originalUserAnswers.removeOrException(InputProtectionTypePage(eventType, index))
+              .setOrException(TypeOfProtectionPage(eventType, index), value)
+            userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+              Redirect(TypeOfProtectionPage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            }
+          } else {
+            val updatedAnswers = originalUserAnswers.setOrException(TypeOfProtectionPage(eventType, index), value)
+            userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+              Redirect(InputProtectionTypePage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            }
           }
         }
       )
+  }
+
+
+  private def getProtectionTypeValue(userAnswers: Option[UserAnswers], index: Index): String = {
+    userAnswers.flatMap(_.get(TypeOfProtectionPage(eventType, index))) match {
+      case Some(typeOfProtection) => typeOfProtection.toString
+      case _ => StringUtils.EMPTY
+    }
   }
 
 }
