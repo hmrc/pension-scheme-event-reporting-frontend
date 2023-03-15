@@ -19,23 +19,20 @@ package pages.event6
 import controllers.event6.routes
 import models.UserAnswers
 import models.enumeration.EventType
-import models.event6.TypeOfProtection
-import models.event6.TypeOfProtection._
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 
-case class TypeOfProtectionPage(eventType: EventType, index: Int) extends QuestionPage[TypeOfProtection] {
+case class InputProtectionTypePage(eventType: EventType, index: Int) extends QuestionPage[String] {
+
   override def path: JsPath = JsPath \ s"event${eventType.toString}" \ toString
+  override def toString: String = "inputProtectionType"
 
-  override def toString: String = "typeOfProtection"
-
-  def route(waypoints: Waypoints): Call =
-    routes.TypeOfProtectionController.onPageLoad(waypoints, index)
+  override def route(waypoints: Waypoints): Call =
+    routes.InputProtectionTypeController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(TypeOfProtectionPage(eventType, index)) match {
-      case Some(_) => InputProtectionTypePage(eventType, index)
+    answers.get(InputProtectionTypePage(eventType, index)) match {
       case _ => IndexPage
     }
   }

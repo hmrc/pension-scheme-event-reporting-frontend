@@ -125,6 +125,11 @@ trait Generators extends PageGenerators with ModelGenerators with UserAnswersEnt
       surplus <- alphaNumStr
     } yield base + surplus
 
+  def stringsShorterThan(maxLength: Int): Gen[String] =
+    for {
+      base <- Gen.listOfN(maxLength-1, alphaNumChar).map(_.mkString)
+    } yield base
+
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =
     nonEmptyString suchThat (!excluded.contains(_))
 

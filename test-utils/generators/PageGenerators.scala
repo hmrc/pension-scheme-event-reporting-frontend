@@ -29,6 +29,9 @@ import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryInputProtectionTypePage: Arbitrary[event6.InputProtectionTypePage.type] =
+    Arbitrary(event6.InputProtectionTypePage)
+
   implicit lazy val arbitraryTaxYearPage: Arbitrary[TaxYearPage.type] =
     Arbitrary(TaxYearPage)
 
