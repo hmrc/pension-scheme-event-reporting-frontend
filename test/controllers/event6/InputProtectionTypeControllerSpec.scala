@@ -46,12 +46,13 @@ class InputProtectionTypeControllerSpec extends SpecBase with BeforeAndAfterEach
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  val enhancedLifetimeAllowance: UserAnswers = UserAnswers()
+  private val enhancedLifetimeAllowance: UserAnswers = UserAnswers()
     .setOrException(TypeOfProtectionPage(EventType.Event6, 0), TypeOfProtection.EnhancedLifetimeAllowance)
-  val enhancedProtection: UserAnswers = UserAnswers().setOrException(TypeOfProtectionPage(EventType.Event6, 0), TypeOfProtection.EnhancedProtection)
-  val fixedProtection2014: UserAnswers = UserAnswers().setOrException(TypeOfProtectionPage(EventType.Event6, 0), TypeOfProtection.FixedProtection2014)
-  val fixedProtection2016: UserAnswers = UserAnswers().setOrException(TypeOfProtectionPage(EventType.Event6, 0), TypeOfProtection.FixedProtection2016)
-  val individualProtection2016: UserAnswers = UserAnswers()
+  private val enhancedProtection: UserAnswers = UserAnswers().setOrException(TypeOfProtectionPage(EventType.Event6, 0), TypeOfProtection.EnhancedProtection)
+  private val fixedProtection: UserAnswers = UserAnswers().setOrException(TypeOfProtectionPage(EventType.Event6, 0), TypeOfProtection.FixedProtection)
+  private val fixedProtection2014: UserAnswers = UserAnswers().setOrException(TypeOfProtectionPage(EventType.Event6, 0), TypeOfProtection.FixedProtection2014)
+  private val fixedProtection2016: UserAnswers = UserAnswers().setOrException(TypeOfProtectionPage(EventType.Event6, 0), TypeOfProtection.FixedProtection2016)
+  private val individualProtection2016: UserAnswers = UserAnswers()
     .setOrException(TypeOfProtectionPage(EventType.Event6, 0), TypeOfProtection.IndividualProtection2016)
 
   private def getRoute: String = routes.InputProtectionTypeController.onPageLoad(waypoints, 0).url
@@ -71,6 +72,7 @@ class InputProtectionTypeControllerSpec extends SpecBase with BeforeAndAfterEach
   "Test InputProtectionType Controller" - {
     testInputProtectionTypeReference(enhancedLifetimeAllowance, TypeOfProtection.EnhancedLifetimeAllowance.toString)
     testInputProtectionTypeReference(enhancedProtection, TypeOfProtection.EnhancedProtection.toString)
+    testInputProtectionTypeReference(fixedProtection, TypeOfProtection.FixedProtection.toString)
     testInputProtectionTypeReference(fixedProtection2014, TypeOfProtection.FixedProtection2014.toString)
     testInputProtectionTypeReference(fixedProtection2016, TypeOfProtection.FixedProtection2016.toString)
     testInputProtectionTypeReference(individualProtection2016, TypeOfProtection.IndividualProtection2016.toString)
