@@ -29,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.MembersDetailsSummary
+import viewmodels.event6.checkAnswers.{AmountCrystallisedAndDateSummary, InputProtectionTypeSummary, TypeOfProtectionSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -63,6 +64,10 @@ class Event6CheckYourAnswersController @Inject()(
   private def buildEvent6CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event6).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event6).toSeq
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event6).toSeq ++
+      TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, Event6).toSeq ++
+      InputProtectionTypeSummary.row(request.userAnswers, waypoints, sourcePage, Event6, index).toSeq ++
+      AmountCrystallisedAndDateSummary.rowCrystallisedValue(request.userAnswers, waypoints, sourcePage, Event6, index).toSeq ++
+      AmountCrystallisedAndDateSummary.rowCrystallisedDate(request.userAnswers, waypoints, sourcePage, Event6, index).toSeq
   }
 }

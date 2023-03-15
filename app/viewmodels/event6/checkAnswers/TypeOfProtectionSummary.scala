@@ -16,33 +16,36 @@
 
 package viewmodels.event6.checkAnswers
 
-import models.UserAnswers
 import models.enumeration.EventType
-import pages.event6.{InputProtectionTypePage, TypeOfProtectionPage}
+import models.{Index, UserAnswers}
+import pages.event6.TypeOfProtectionPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object InputProtectionTypeSummary  {
+object TypeOfProtectionSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Int)
-         (implicit messages: Messages): Option[SummaryListRow] = {
-
-    val protectionType = answers.get(TypeOfProtectionPage(eventType, index)).getOrElse(None).toString
-
-    answers.get(InputProtectionTypePage(eventType, index)).map {
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, eventType: EventType)
+         (implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(TypeOfProtectionPage(eventType, index)).map {
       answer =>
+        val value = ValueViewModel(
+          HtmlContent(
+            HtmlFormat.escape(messages(s"typeOfProtection.$answer"))
+          )
+        )
+
         SummaryListRowViewModel(
-          key     = messages(s"inputProtectionType.checkYourAnswersLabel", messages(s"typeOfProtection.$protectionType")),
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key = "typeOfProtection.checkYourAnswersLabel",
+          value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", InputProtectionTypePage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("inputProtectionType.change.hidden"))
+            ActionItemViewModel("site.change", TypeOfProtectionPage(eventType, index).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("typeOfProtection.change.hidden"))
           )
         )
     }
-  }
 }

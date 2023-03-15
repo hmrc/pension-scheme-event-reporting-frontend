@@ -20,7 +20,7 @@ import controllers.event6.routes
 import models.UserAnswers
 import models.enumeration.EventType
 import models.event6.CrystallisedDetails
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
