@@ -38,8 +38,8 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
   val userAnswersCacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private val loggedInUser = LoggedInUser("user", Administrator, "psaId")
-  private val pstr = "87219363YN"
-  private val request: IdentifierRequest[AnyContent] = IdentifierRequest(fakeRequest, loggedInUser, pstr)
+  private val pstr = "pstr"
+  private val request: IdentifierRequest[AnyContent] = IdentifierRequest(fakeRequest, loggedInUser, pstr, "schemeName", "returnUrl")
   private val eventType = EventType.Event1
 
   private val json = Json.obj("test" -> "test")
@@ -54,7 +54,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
       when(userAnswersCacheConnector.get(eqTo(pstr), eqTo(eventType))(any(), any())) thenReturn Future(None)
       val action = new Harness
 
-      val expectedResult = OptionalDataRequest(pstr, request, loggedInUser, None)
+      val expectedResult = OptionalDataRequest(pstr, "schemeName", "returnUrl", request, loggedInUser, None)
       val futureResult = action.callTransform(request)
 
       whenReady(futureResult) { result =>
@@ -69,7 +69,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
       when(userAnswersCacheConnector.get(eqTo(pstr), eqTo(eventType))(any(), any())) thenReturn Future(Some(userAnswers))
       val action = new Harness
 
-      val expectedResult = OptionalDataRequest(pstr, request, loggedInUser, Some(userAnswers))
+      val expectedResult = OptionalDataRequest(pstr, "schemeName", "returnUrl", request, loggedInUser, Some(userAnswers))
       val futureResult = action.callTransform(request)
 
       whenReady(futureResult) { result =>

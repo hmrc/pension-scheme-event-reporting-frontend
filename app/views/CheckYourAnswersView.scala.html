@@ -15,12 +15,12 @@
  *@
 
 @this(
-    layout: templates.Layout,
+    layout: templates.SchemeLayout,
     govukSummaryList: GovukSummaryList,
     govukButton: GovukButton
 )
 
-@(list: SummaryList, continueUrl: String)(implicit request: Request[_], messages: Messages)
+@(list: SummaryList, continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title"))) {
 

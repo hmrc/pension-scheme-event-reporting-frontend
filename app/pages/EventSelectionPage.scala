@@ -40,6 +40,7 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
 
     optionEventType match {
       case Some(Event1) => ManualOrUploadPage(Event1, answers.countAll(MembersOrEmployersPage(Event1)))
+      case Some(Event6) => ManualOrUploadPage(Event6, answers.countAll(MembersOrEmployersPage(Event6)))
       case Some(Event18) => Event18ConfirmationPage
       case Some(Event22) => ManualOrUploadPage(Event22, answers.countAll(MembersPage(Event22)))
       case Some(Event23) => ManualOrUploadPage(Event23, answers.countAll(MembersPage(Event23)))

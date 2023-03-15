@@ -14,6 +14,7 @@ site.startAgain = Start again
 site.signIn = Sign in
 site.govuk = GOV.UK
 site.saveAndContinue = Save and continue
+site.returnTo = Return to {0}
 date.day = Day
 date.month = Month
 date.year = Year
@@ -65,6 +66,13 @@ eventSummary.yesno.legend = Do you want to add another event?
 eventSummary.checkYourAnswersLabel = Check your answers
 eventSummary.error.required = Select yes if you want to add another event
 eventSummary.change.hidden = EventSummary
+
+eventReportingTile.heading = Event Reporting
+eventReportingTile.subHeading = Event report {0} to {1}:
+eventReportingTile.subHeading.param = in progress
+eventReportingTile.link.item1 = View event report in progress
+eventReportingTile.link.item2 = Start a new event report
+eventReportingTile.link.item3 = View or change past event reports
 
 eventSelection.title = Which event are you adding to the event report?
 eventSelection.heading = Which event are you adding to the event report?
@@ -181,6 +189,15 @@ manualOrUpload.event1.checkYourAnswersLabel = How do you want to add the unautho
 manualOrUpload.event1.error.required = Select how you want to add the unauthorised payment details
 manualOrUpload.event1.change.hidden = How do you want to add the unauthorised payment details?
 manualOrUpload.event1.fileUpload.hint = Uploading a file will overwrite any data you have previously added for this event
+
+manualOrUpload.event6.title = How do you want to add the benefit crystallisation details?
+manualOrUpload.event6.heading = How do you want to add the benefit crystallisation details?
+manualOrUpload.event6.manual = Manually enter the details
+manualOrUpload.event6.fileUpload = Upload a file
+manualOrUpload.event6.checkYourAnswersLabel = How do you want to add the benefit crystallisation details?
+manualOrUpload.event6.error.required = Select how you want to add the benefit crystallisation details
+manualOrUpload.event6.change.hidden = How do you want to add the benefit crystallisation details?
+manualOrUpload.event6.fileUpload.hint = Uploading a file will overwrite any data you have previously added for this event
 
 whoReceivedUnauthPayment.title = Who received the unauthorised payment or deemed unauthorised payment?
 whoReceivedUnauthPayment.heading = Who received the unauthorised payment or deemed unauthorised payment?
@@ -853,6 +870,12 @@ removeEvent18.checkYourAnswersLabel = Are you sure you want to remove Event 18: 
 removeEvent18.error.required = Select if you want to remove Event 18
 removeEvent18.change.hidden = Are you sure you want to remove Event 18: Scheme chargeable payment?
 
+taxYear.title = Which tax year are you submitting an event report for?
+taxYear.heading = Which tax year are you submitting an event report for?
+taxYear.checkYourAnswersLabel = Which tax year are you submitting an event report for?
+taxYear.error.required = Select a tax year
+taxYear.change.hidden = Which tax year are you submitting an event report for?
+
 fileUploadWhatYouWillNeed.event22.title = What you will need
 fileUploadWhatYouWillNeed.event22.heading = What you will need
 fileUploadWhatYouWillNeed.event22.p1 = To report annual allowances events you will need to upload a .csv file and include the following information for each member:
@@ -867,3 +890,17 @@ fileUploadWhatYouWillNeed.event22.item5.prefix = the
 fileUploadWhatYouWillNeed.event22.instructions.link.text = instructions explaining the process and the formatting that should be used
 fileUploadWhatYouWillNeed.event22.template.link.text = latest template file
 fileUploadWhatYouWillNeed.event22.inset = All the data you have previously added for this charge in this quarter will be overwritten when you upload a file.
+
+typeOfProtection.title = What is the type of protection held for the crystallisation?
+typeOfProtection.heading = What is the type of protection held for the crystallisation?
+typeOfProtection.p1 = This can be found on the member’s LTA certificate.
+typeOfProtection.enhancedLifetimeAllowance = Enhanced lifetime allowance
+typeOfProtection.enhancedProtection = Enhanced protection
+typeOfProtection.fixedProtection = Fixed protection
+typeOfProtection.fixedProtection2014 = Fixed protection 2014
+typeOfProtection.fixedProtection2016 = Fixed protection 2016
+typeOfProtection.individualProtection2014 = Individual protection 2014
+typeOfProtection.individualProtection2016 = Individual protection 2016
+typeOfProtection.checkYourAnswersLabel = What is the type of protection held for the crystallisation?
+typeOfProtection.error.required = Select what type of protection is held
+typeOfProtection.change.hidden = What is the type of protection held for the crystallisation
