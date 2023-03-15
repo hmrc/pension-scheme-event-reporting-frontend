@@ -21,12 +21,13 @@ import models.UserAnswers
 import models.enumeration.EventType
 import models.event6.TypeOfProtection
 import models.event6.TypeOfProtection._
+import pages.common.MembersPage
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class TypeOfProtectionPage(eventType: EventType, index: Int) extends QuestionPage[TypeOfProtection] {
-  override def path: JsPath = JsPath \ s"event${eventType.toString}" \ toString
+  override def path: JsPath = MembersPage(EventType.Event6)(index) \ toString
 
   override def toString: String = "typeOfProtection"
 

@@ -31,7 +31,7 @@ case class ManualOrUploadPage(eventType: EventType, index: Int) extends Question
 
   override def path: JsPath =
     eventType match {
-      case Event22 | Event23 => MembersPage(eventType)(index) \ toString
+      case Event6 | Event22 | Event23 => MembersPage(eventType)(index) \ toString
       case _ => MembersOrEmployersPage(eventType)(index) \ toString
     }
 
@@ -40,7 +40,7 @@ case class ManualOrUploadPage(eventType: EventType, index: Int) extends Question
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     (eventType, index, answers.get(this)) match {
       case (Event1, index, Some(Manual)) => WhoReceivedUnauthPaymentPage(index)
-      case (Event6, index, Some(Manual)) => pages.common.MembersDetailsPage(eventType, index)
+      case (Event6, index, Some(Manual)) => pages.common.MembersDetailsPage(Event6, index)
       case (Event22, index, Some(Manual)) => pages.event22.WhatYouWillNeedPage(index)
       case (Event22, _, Some(FileUpload)) => pages.event22.FileUploadWhatYouWillNeedPage
       case (Event23, index, Some(Manual)) => pages.event23.WhatYouWillNeedPage(index)
