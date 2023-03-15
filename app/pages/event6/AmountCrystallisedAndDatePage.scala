@@ -31,7 +31,7 @@ case class AmountCrystallisedAndDatePage(eventType: EventType, index: Int) exten
     routes.AmountCrystallisedAndDateController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    IndexPage
+    Event6CheckYourAnswersPage(index)
 }
 
 object AmountCrystallisedAndDatePage {
