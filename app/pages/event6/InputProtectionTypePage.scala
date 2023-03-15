@@ -33,6 +33,7 @@ case class InputProtectionTypePage(eventType: EventType, index: Int) extends Que
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(InputProtectionTypePage(eventType, index)) match {
+      case Some(_) => AmountCrystallisedAndDatePage(eventType, index)
       case _ => IndexPage
     }
   }
