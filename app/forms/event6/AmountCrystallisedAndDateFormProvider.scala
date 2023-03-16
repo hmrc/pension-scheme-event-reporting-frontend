@@ -62,7 +62,7 @@ class AmountCrystallisedAndDateFormProvider @Inject() extends Mappings with Tran
         localDate(
           oneDateComponentMissingKey = "amountCrystallisedAndDate.date.error.noDayMonthOrYear",
           twoDateComponentsMissingKey = "amountCrystallisedAndDate.date.error.noDayMonthOrYear",
-          invalidKey = "amountCrystallisedAndDate.date.error.notANumber",
+          invalidKey = "amountCrystallisedAndDate.date.error.outsideDateRanges",
           threeDateComponentsMissingKey = "amountCrystallisedAndDate.date.error.nothingEntered"
         ).verifying(
           yearHas4Digits("amountCrystallisedAndDate.date.error.outsideDateRanges"),

@@ -20,6 +20,7 @@ import base.SpecBase
 import forms.behaviours.{BigDecimalFieldBehaviours, DateBehavioursTrait}
 import org.scalacheck.Gen
 import play.api.data.FormError
+import utils.DateHelper.formatDateDMY
 
 import java.time.LocalDate
 
@@ -120,14 +121,14 @@ class AmountCrystallisedAndDateFormProviderSpec extends SpecBase
       form = form,
       key = crystallisedDateKey,
       min = stubMin,
-      formError = FormError(crystallisedDateKey, messages("amountCrystallisedAndDate.date.error.outsideReportedYear"))
+      formError = FormError(crystallisedDateKey, messages("amountCrystallisedAndDate.date.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = crystallisedDateKey,
       max = stubMax,
-      formError = FormError(crystallisedDateKey, messages("amountCrystallisedAndDate.date.error.outsideReportedYear"))
+      formError = FormError(crystallisedDateKey, messages("amountCrystallisedAndDate.date.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
   }
 }
