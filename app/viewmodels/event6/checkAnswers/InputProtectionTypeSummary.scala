@@ -16,7 +16,7 @@
 
 package viewmodels.event6.checkAnswers
 
-import models.UserAnswers
+import models.{UserAnswers}
 import models.enumeration.EventType
 import pages.event6.{InputProtectionTypePage, TypeOfProtectionPage}
 import pages.{CheckAnswersPage, Waypoints}
@@ -31,12 +31,15 @@ object InputProtectionTypeSummary  {
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Int)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
-    val protectionType = answers.get(TypeOfProtectionPage(eventType, index)).getOrElse(None).toString
+    val protectionType = answers.get(TypeOfProtectionPage(eventType, index)) match {
+      case Some(value) => value
+      case _ => None
+    }
 
     answers.get(InputProtectionTypePage(eventType, index)).map {
       answer =>
         SummaryListRowViewModel(
-          key     = messages(s"inputProtectionType.checkYourAnswersLabel", messages(s"typeOfProtection.$protectionType")),
+          key     = messages(s"inputProtectionType.checkYourAnswersLabel", messages(s"typeOfProtection.${protectionType.toString}")),
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", InputProtectionTypePage(eventType, index).changeLink(waypoints, sourcePage).url)
