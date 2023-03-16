@@ -19,13 +19,14 @@ package pages.event6
 import controllers.event6.routes
 import models.UserAnswers
 import models.enumeration.EventType
+import pages.common.MembersPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 
 case class InputProtectionTypePage(eventType: EventType, index: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ s"event${eventType.toString}" \ toString
+  override def path: JsPath = MembersPage(EventType.Event6)(index) \ toString
 
   override def toString: String = "inputProtectionType"
 
