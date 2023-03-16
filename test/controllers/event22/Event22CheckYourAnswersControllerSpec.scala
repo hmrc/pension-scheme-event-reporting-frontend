@@ -54,7 +54,7 @@ class Event22CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-22-click")(request, messages(application)).toString
       }
     }
-    
+
     "must return OK and the correct summary list row items for a GET (member)" in {
       val mockView = mock[CheckYourAnswersView]
       val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -115,6 +115,18 @@ object Event22CheckYourAnswersControllerSpec {
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(messageKey)), "", Map()))))
     )
 
+  private def fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(messageKey: String, htmlContent: String, changeLink: String,
+                                                                           hiddenContentChangeLink: String)
+                                                                          (implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      Key(
+        Text(
+          messages(messageKey)
+        ), ""),
+      Value(HtmlContent(htmlContent), ""), "",
+      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages("site.change") + " " + messages(hiddenContentChangeLink)), "", Map()))))
+    )
+
   private def fakeSummaryListRowWithHtmlContentWithHiddenContent(messageKey: String, htmlContent: String, changeLink: String, hiddenContentChangeLink: String)
                                                                 (implicit messages: Messages): SummaryListRow =
     SummaryListRow(
@@ -127,16 +139,18 @@ object Event22CheckYourAnswersControllerSpec {
     )
 
   private def expectedMemberSummaryListRowsEvent22(implicit messages: Messages): Seq[SummaryListRow] = Seq(
-    fakeSummaryListRowWithHtmlContent(
+    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "membersDetails.checkYourAnswersLabel",
       "Joe Bloggs",
-      "/manage-pension-scheme-event-report/new-report/1/event-22-member-details?waypoints=event-22-check-answers-1"
+      "/manage-pension-scheme-event-report/new-report/1/event-22-member-details?waypoints=event-22-check-answers-1",
+      "membersDetails.change.hidden"
 
     ),
-    fakeSummaryListRowWithHtmlContent(
+    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "membersDetails.checkYourAnswersLabel.nino",
       "AA234567V",
-      "/manage-pension-scheme-event-report/new-report/1/event-22-member-details?waypoints=event-22-check-answers-1"
+      "/manage-pension-scheme-event-report/new-report/1/event-22-member-details?waypoints=event-22-check-answers-1",
+      "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "chooseTaxYear.event22.checkYourAnswersLabel",
