@@ -43,7 +43,8 @@ object InputProtectionTypeSummary  {
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", InputProtectionTypePage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("inputProtectionType.change.hidden"))
+              .withVisuallyHiddenText(messages("site.change") + " " + messages("inputProtectionType.change.hidden",
+                messages(s"typeOfProtection.${protectionType.toString}").toLowerCase()))
           )
         )
     }

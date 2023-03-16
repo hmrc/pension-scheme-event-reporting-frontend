@@ -39,7 +39,7 @@ object AmountCrystallisedAndDateSummary extends Formatters {
           value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer.amountCrystallised)}")),
           actions = Seq(
             ActionItemViewModel("site.change", AmountCrystallisedAndDatePage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("mountCrystallisedAndDate.value.change.hidden"))
+              .withVisuallyHiddenText(messages("site.change") + " " + messages("amountCrystallisedAndDate.value.change.hidden"))
           )
         )
     }
@@ -54,7 +54,7 @@ object AmountCrystallisedAndDateSummary extends Formatters {
           value = ValueViewModel(dateFormatter.format(answer.crystallisedDate)),
           actions = Seq(
             ActionItemViewModel("site.change", AmountCrystallisedAndDatePage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("mountCrystallisedAndDate.date.change.hidden"))
+              .withVisuallyHiddenText(messages("site.change") + " " + messages("amountCrystallisedAndDate.date.change.hidden"))
           )
         )
     }
