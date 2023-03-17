@@ -30,7 +30,7 @@ case class MembersDetailsPage(eventType: EventType, index: Int) extends Question
 
   override def path: JsPath =
     eventType match {
-      case Event22 | Event23 => MembersPage(eventType)(index) \ MembersDetailsPage.toString
+      case Event6 | Event22 | Event23 => MembersPage(eventType)(index) \ MembersDetailsPage.toString
       case _ => MembersOrEmployersPage(eventType)(index) \ MembersDetailsPage.toString
     }
 

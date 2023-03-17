@@ -25,10 +25,20 @@ import pages._
 import pages.common.MembersDetailsPage
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
+import pages.event6._
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
+
+  implicit lazy val arbitraryInputProtectionTypeUserAnswersEntry: Arbitrary[(InputProtectionTypePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[InputProtectionTypePage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
 
   implicit lazy val arbitraryTaxYearUserAnswersEntry: Arbitrary[(pages.TaxYearPage.type, JsValue)] =
     Arbitrary {

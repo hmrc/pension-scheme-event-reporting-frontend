@@ -18,6 +18,7 @@ package controllers.actions
 
 import com.google.inject.ImplementedBy
 import connectors.UserAnswersCacheConnector
+import models.UserAnswers
 import models.enumeration.EventType
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import play.api.Logger
@@ -41,8 +42,15 @@ class DataRetrievalImpl(eventType: EventType,
 
 
     val result = for {
-      data <- userAnswersCacheConnector.get(request.pstr, eventType)
+      dataWithEventType <- userAnswersCacheConnector.get(request.pstr, eventType)
+      dataWithoutEventType <- userAnswersCacheConnector.get(request.pstr)
     } yield {
+      val data = (dataWithEventType, dataWithoutEventType) match {
+        case (Some(withEvent), Some(without)) => Some(UserAnswers(withEvent.data ++ without.data))
+        case (withEvent@Some(_), None) => withEvent
+        case (None, withoutEvent@Some(_)) => withoutEvent
+        case (None, None) => None
+      }
       OptionalDataRequest[A](request.pstr, request.schemeName, request.returnUrl, request, request.loggedInUser, data)
     }
     result andThen {
@@ -53,7 +61,7 @@ class DataRetrievalImpl(eventType: EventType,
 }
 
 class DataRetrievalNoEventTypeImpl(userAnswersCacheConnector: UserAnswersCacheConnector
-                       )(implicit val executionContext: ExecutionContext)
+                                  )(implicit val executionContext: ExecutionContext)
   extends DataRetrieval {
   private val logger = Logger(classOf[DataRetrievalImpl])
 
@@ -91,5 +99,6 @@ trait DataRetrieval extends ActionTransformer[IdentifierRequest, OptionalDataReq
 @ImplementedBy(classOf[DataRetrievalActionImpl])
 trait DataRetrievalAction {
   def apply(eventType: EventType): DataRetrieval
+
   def apply(): DataRetrieval
 }

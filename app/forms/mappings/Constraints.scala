@@ -33,6 +33,7 @@ trait Constraints {
   val regexAddressLine = """^[A-Za-z0-9 &!'‘’(),./\u2014\u2013\u2010\u002d]{1,35}$"""
   val regexSafeText = """^[a-zA-Z0-9\u00C0-\u00FF !#$%&'‘’"“”«»()*+,./:;=?@\\\[\]|~£€¥\u005C\u2014\u2013\u2010\u005F\u005E\u0060\u002d]{1,160}$"""
   val regexCrn = "^[A-Za-z0-9 -]{7,8}$"
+  val inputProtectionTypeRegex = "^[A-Za-z0-9]{8,15}$"
 
   protected def postCode(errorKey: String): Constraint[String] = regexp(regexPostcode, errorKey)
 
@@ -75,7 +76,14 @@ trait Constraints {
         }
     }
 
+  protected def zeroValue[A](zero: A, errorKey: String): Constraint[A] =
+    Constraint {
+      input =>
+        if (input != zero) Valid else Invalid(errorKey, zero)
+    }
+
   protected def safeText(errorKey: String): Constraint[String] = regexp(regexSafeText, errorKey)
+
   protected def companyNumber(errorKey: String): Constraint[String] = regexp(regexCrn, errorKey)
 
   protected def country(countryOptions: CountryOptions, errorKey: String): Constraint[String] = {

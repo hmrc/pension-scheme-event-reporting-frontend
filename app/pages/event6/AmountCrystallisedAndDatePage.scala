@@ -19,25 +19,22 @@ package pages.event6
 import controllers.event6.routes
 import models.UserAnswers
 import models.enumeration.EventType
-import models.event6.TypeOfProtection
-import models.event6.TypeOfProtection._
+import models.event6.CrystallisedDetails
 import pages.common.MembersPage
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class TypeOfProtectionPage(eventType: EventType, index: Int) extends QuestionPage[TypeOfProtection] {
-  override def path: JsPath = MembersPage(EventType.Event6)(index) \ toString
+case class AmountCrystallisedAndDatePage(eventType: EventType, index: Int) extends QuestionPage[CrystallisedDetails] {
+  override def path: JsPath = MembersPage(EventType.Event6)(index) \ AmountCrystallisedAndDatePage.toString
 
-  override def toString: String = "typeOfProtection"
+  override def route(waypoints: Waypoints): Call =
+    routes.AmountCrystallisedAndDateController.onPageLoad(waypoints, index)
 
-  def route(waypoints: Waypoints): Call =
-    routes.TypeOfProtectionController.onPageLoad(waypoints, index)
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    IndexPage
+}
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(TypeOfProtectionPage(eventType, index)) match {
-      case Some(_) => InputProtectionTypePage(eventType, index)
-      case _ => IndexPage
-    }
-  }
+object AmountCrystallisedAndDatePage {
+  override def toString: String = "AmountCrystallisedAndDate"
 }

@@ -903,3 +903,33 @@ typeOfProtection.individualProtection2016 = Individual protection 2016
 typeOfProtection.checkYourAnswersLabel = What is the type of protection held for the crystallisation?
 typeOfProtection.error.required = Select what type of protection is held
 typeOfProtection.change.hidden = What is the type of protection held for the crystallisation
+
+inputProtectionType.title = What is the member’s {0} reference?
+inputProtectionType.heading = What is the member’s {0} reference?
+inputProtectionType.checkYourAnswersLabel = What is the member's protection type reference?
+inputProtectionType.change.hidden = What is the member's protection type reference?
+inputProtectionType.error.required = Enter a protection reference
+inputProtectionType.error.length = Enter a protection reference between 8 and 15 characters (it can be a combination of numbers and letters)
+inputProtectionType.error.invalid = The protection reference can only contain letters and numbers
+
+amountCrystallisedAndDate.title = Amount crystallised and date
+amountCrystallisedAndDate.heading = Amount crystallised and date
+
+amountCrystallisedAndDate.value.heading = Total amount crystallised
+amountCrystallisedAndDate.value.error.nothingEntered = Enter the total amount crystallised
+amountCrystallisedAndDate.value.error.notANumber = The total amount crystallised must be an amount of money, like 123.45 or 156.00
+amountCrystallisedAndDate.value.error.noDecimals = The total amount crystallised must include pence, like 123.45 or 156.00
+amountCrystallisedAndDate.value.error.amountTooHigh = The total amount crystallised must be £999999999.99 or less
+amountCrystallisedAndDate.value.error.negativeValue = The total amount crystallised must not be a negative amount of money, like -123.45 or -156.00
+amountCrystallisedAndDate.value.error.zeroEntered = The total amount crystallised must be greater than zero
+amountCrystallisedAndDate.value.change.hidden = Total amount crystallised
+amountCrystallisedAndDate.value.checkYourAnswersLabel = Total amount crystallised
+
+amountCrystallisedAndDate.date.heading = Date of the benefit crystallisation
+amountCrystallisedAndDate.date.hint = For example, 22 09 2022
+amountCrystallisedAndDate.date.error.nothingEntered = Enter the date
+amountCrystallisedAndDate.date.error.noDayMonthOrYear = The date must include a day, month and year
+amountCrystallisedAndDate.date.error.outsideDateRanges = Enter a real date
+amountCrystallisedAndDate.date.error.outsideReportedYear = Date must be between {0} and {1}
+amountCrystallisedAndDate.date.change.hidden = Date of the benefit crystallisation
+amountCrystallisedAndDate.date.checkYourAnswersLabel = Date of the benefit crystallisation
