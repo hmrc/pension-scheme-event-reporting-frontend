@@ -104,17 +104,6 @@ class Event22CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
 object Event22CheckYourAnswersControllerSpec {
 
-  private def fakeSummaryListRowWithHtmlContent(messageKey: String, htmlContent: String, changeLink: String)
-                                               (implicit messages: Messages): SummaryListRow =
-    SummaryListRow(
-      Key(
-        Text(
-          messages(messageKey)
-        ), ""),
-      Value(HtmlContent(htmlContent), ""), "",
-      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(messageKey)), "", Map()))))
-    )
-
   private def fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(messageKey: String, htmlContent: String, changeLink: String,
                                                                            hiddenContentChangeLink: String)
                                                                           (implicit messages: Messages): SummaryListRow =
