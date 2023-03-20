@@ -135,7 +135,7 @@ object EventPaginationServiceSpec {
   )
 
   private val fakePaginationStats100Members = fakePaginationStats(
-    fake100MappedMembers.slice(0, 24),
+    fake100MappedMembers.slice(0, 25),
     100,
     4,
     (1, 25),
