@@ -65,7 +65,7 @@ class MembersSummaryController @Inject()(
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
       val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, pageNumber)
-      if (mappedMembers.length < 25) {
+      if (mappedMembers.length <= 25) {
         Redirect(routes.MembersSummaryController.onPageLoad(waypoints, eventType))
       } else {
         Ok(newView(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), paginationStats, pageNumber))
