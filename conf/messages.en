@@ -949,3 +949,26 @@ amountCrystallisedAndDate.date.error.outsideDateRanges = Enter a real date
 amountCrystallisedAndDate.date.error.outsideReportedYear = Date must be between {0} and {1}
 amountCrystallisedAndDate.date.change.hidden = the date of the benefit crystallisation
 amountCrystallisedAndDate.date.checkYourAnswersLabel = Date of the benefit crystallisation
+
+
+lumpSumAmountAndDate.title = Lump sum amount and date
+lumpSumAmountAndDate.heading = Lump sum amount and date
+
+lumpSumAmountAndDate.value.heading = How much lump sum was paid?
+lumpSumAmountAndDate.value.error.nothingEntered = Enter the total amount
+lumpSumAmountAndDate.value.error.notANumber = The total amount must be an amount of money, like 123.45 or 156.00
+lumpSumAmountAndDate.value.error.noDecimals = The amount must include pence, like 123.45 or 156.00
+lumpSumAmountAndDate.value.error.amountTooHigh = The total amount must be £999999999.99 or less
+lumpSumAmountAndDate.value.error.negativeValue = The amount must not be a negative amount of money, like -123.45 or -156.00
+lumpSumAmountAndDate.value.error.zeroEntered = The total amount must be greater than zero
+lumpSumAmountAndDate.value.change.hidden = the total amount
+lumpSumAmountAndDate.value.checkYourAnswersLabel = Lump sum amount
+
+lumpSumAmountAndDate.date.heading = When was the payment made?
+lumpSumAmountAndDate.date.hint = For example, 27 3 2007
+lumpSumAmountAndDate.date.error.nothingEntered = Enter the date
+lumpSumAmountAndDate.date.error.noDayMonthOrYear = The date must include a day, month and year
+lumpSumAmountAndDate.date.error.outsideDateRanges = Enter a real date
+lumpSumAmountAndDate.date.error.outsideReportedYear = Date must be between {0} and {1}
+lumpSumAmountAndDate.date.change.hidden = the date of the lump sum
+lumpSumAmountAndDate.date.checkYourAnswersLabel = The date the payment was made

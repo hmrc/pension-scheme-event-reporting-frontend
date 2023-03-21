@@ -29,6 +29,9 @@ import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryLumpSumAmountAndDatePage: Arbitrary[event8.LumpSumAmountAndDatePage.type] =
+    Arbitrary(event8.LumpSumAmountAndDatePage)
+
   implicit lazy val arbitraryTypeOfProtectionReferencePage: Arbitrary[event8.TypeOfProtectionReferencePage.type] =
     Arbitrary(event8.TypeOfProtectionReferencePage)
 
