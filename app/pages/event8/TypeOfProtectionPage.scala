@@ -17,10 +17,11 @@
 package pages.event8
 
 import controllers.event8.routes
+import models.UserAnswers
 import models.enumeration.EventType
 import models.event8.TypeOfProtection
 import pages.common.MembersPage
-import pages.{QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -32,6 +33,8 @@ case class TypeOfProtectionPage(eventType: EventType, index: Int) extends Questi
 
   override def route(waypoints: Waypoints): Call =
     routes.TypeOfProtectionController.onPageLoad(waypoints, index)
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    TypeOfProtectionReferencePage(eventType, index)
 }
 
 
