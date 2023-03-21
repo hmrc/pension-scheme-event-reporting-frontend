@@ -17,9 +17,10 @@
 package pages.event8
 
 import controllers.event8.routes
+import models.UserAnswers
 import models.enumeration.EventType
 import pages.common.MembersPage
-import pages.{QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -31,4 +32,7 @@ case class TypeOfProtectionReferencePage(eventType: EventType, index: Int) exten
 
   override def route(waypoints: Waypoints): Call =
     routes.TypeOfProtectionReferenceController.onPageLoad(waypoints, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    LumpSumAmountAndDatePage(eventType, index)
 }
