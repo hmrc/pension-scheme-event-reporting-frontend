@@ -158,6 +158,17 @@ object Event1CheckYourAnswersControllerSpec {
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(messageKey)), "", Map()))))
     )
 
+  private def fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(messageKey: String, htmlContent: String, changeLink: String, hiddenKey: String)
+                                                                          (implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      Key(
+        Text(
+          messages(messageKey)
+        ), ""),
+      Value(HtmlContent(htmlContent), ""), "",
+      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages("site.change") + " " + messages(hiddenKey)), "", Map()))))
+    )
+
   private def fakeSummaryListRowWithHtmlContentWithHiddenContent(messageKey: String, htmlContent: String, changeLink: String, hiddenContentChangeLink: String)
                                                                 (implicit messages: Messages): SummaryListRow =
     SummaryListRow(
@@ -181,15 +192,17 @@ object Event1CheckYourAnswersControllerSpec {
     )
 
   private def expectedMemberSummaryListRows(implicit messages: Messages): Seq[SummaryListRow] = Seq(
-    fakeSummaryListRowWithHtmlContent(
+    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "membersDetails.checkYourAnswersLabel",
       "Joe Bloggs",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-member-details?waypoints=event-1-check-answers-1"
+      "/manage-pension-scheme-event-report/new-report/1/event-1-member-details?waypoints=event-1-check-answers-1",
+      "membersDetails.change.hidden"
     ),
-    fakeSummaryListRowWithHtmlContent(
+    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "membersDetails.checkYourAnswersLabel.nino",
       "AA234567V",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-member-details?waypoints=event-1-check-answers-1"
+      "/manage-pension-scheme-event-report/new-report/1/event-1-member-details?waypoints=event-1-check-answers-1",
+      "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithText(
       "doYouHoldSignedMandate.checkYourAnswersLabel",

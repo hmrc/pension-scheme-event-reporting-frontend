@@ -16,9 +16,9 @@
 
 package viewmodels.event6.checkAnswers
 
-import models.UserAnswers
+import models.{UserAnswers}
 import models.enumeration.EventType
-import pages.event6.InputProtectionTypePage
+import pages.event6.{InputProtectionTypePage, TypeOfProtectionPage}
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -29,17 +29,24 @@ import viewmodels.implicits._
 object InputProtectionTypeSummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Int)
-         (implicit messages: Messages): Option[SummaryListRow] =
+         (implicit messages: Messages): Option[SummaryListRow] = {
+
+    val protectionType = answers.get(TypeOfProtectionPage(eventType, index)) match {
+      case Some(value) => value
+      case _ => None
+    }
+
     answers.get(InputProtectionTypePage(eventType, index)).map {
       answer =>
-
         SummaryListRowViewModel(
-          key     = "inputProtectionType.checkYourAnswersLabel",
+          key     = messages(s"inputProtectionType.checkYourAnswersLabel", messages(s"typeOfProtection.${protectionType.toString}")),
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", InputProtectionTypePage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("inputProtectionType.change.hidden"))
+              .withVisuallyHiddenText(messages("site.change") + " " + messages("inputProtectionType.change.hidden",
+                messages(s"typeOfProtection.${protectionType.toString}").toLowerCase()))
           )
         )
     }
+  }
 }

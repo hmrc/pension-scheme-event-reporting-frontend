@@ -21,7 +21,7 @@ import models.UserAnswers
 import models.enumeration.EventType
 import models.event6.CrystallisedDetails
 import pages.common.MembersPage
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -32,7 +32,7 @@ case class AmountCrystallisedAndDatePage(eventType: EventType, index: Int) exten
     routes.AmountCrystallisedAndDateController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    IndexPage
+    Event6CheckYourAnswersPage(index)
 }
 
 object AmountCrystallisedAndDatePage {

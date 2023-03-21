@@ -20,9 +20,8 @@ import controllers.event6.routes
 import models.UserAnswers
 import models.enumeration.EventType
 import models.event6.TypeOfProtection
-import models.event6.TypeOfProtection._
 import pages.common.MembersPage
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -34,10 +33,10 @@ case class TypeOfProtectionPage(eventType: EventType, index: Int) extends Questi
   def route(waypoints: Waypoints): Call =
     routes.TypeOfProtectionController.onPageLoad(waypoints, index)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(TypeOfProtectionPage(eventType, index)) match {
-      case Some(_) => InputProtectionTypePage(eventType, index)
-      case _ => IndexPage
-    }
-  }
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    InputProtectionTypePage(eventType, index)
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
+    InputProtectionTypePage(eventType, index)
+
 }
