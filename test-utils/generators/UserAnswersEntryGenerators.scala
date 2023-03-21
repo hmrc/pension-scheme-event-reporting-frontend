@@ -31,10 +31,18 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
+  implicit lazy val arbitraryTypeOfProtectionReferenceUserAnswersEntry: Arbitrary[(pages.event8.TypeOfProtectionReferencePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[pages.event8.TypeOfProtectionReferencePage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryTypeOfProtectionUserAnswersEntry: Arbitrary[(pages.event8.TypeOfProtectionPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event8.TypeOfProtectionPage.type]
+        page <- arbitrary[pages.event8.TypeOfProtectionPage.type]
         value <- arbitrary[models.event8.TypeOfProtection].map(Json.toJson(_))
       } yield (page, value)
     }
@@ -51,7 +59,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryTaxYearUserAnswersEntry: Arbitrary[(pages.TaxYearPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.TaxYearPage.type]
+        page <- arbitrary[pages.TaxYearPage.type]
         value <- arbitrary[models.TaxYear].map(Json.toJson(_))
       } yield (page, value)
     }

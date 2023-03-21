@@ -920,6 +920,14 @@ inputProtectionType.error.required = Enter a protection reference
 inputProtectionType.error.length = Enter a protection reference between 8 and 15 characters (it can be a combination of numbers and letters)
 inputProtectionType.error.invalid = The protection reference can only contain letters and numbers
 
+typeOfProtectionReference.title = What is the member’s {0} reference?
+typeOfProtectionReference.heading = What is the member’s {0} reference?
+typeOfProtectionReference.checkYourAnswersLabel = {0} reference
+typeOfProtectionReference.change.hidden = the {0} reference
+typeOfProtectionReference.error.required = Enter a protection reference
+typeOfProtectionReference.error.length = Enter a protection reference between 8 and 15 characters (it can be a combination of numbers and letters)
+typeOfProtectionReference.error.invalid = The protection reference can only contain letters and numbers
+
 amountCrystallisedAndDate.title = Amount crystallised and date
 amountCrystallisedAndDate.heading = Amount crystallised and date
 
