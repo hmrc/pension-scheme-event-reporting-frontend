@@ -904,6 +904,14 @@ typeOfProtection.checkYourAnswersLabel = Protection type
 typeOfProtection.error.required = Select what type of protection is held
 typeOfProtection.change.hidden = the protection type
 
+event8.typeOfProtection.title = What type of protection was held for the lump sum?
+event8.typeOfProtection.heading = What type of protection was held for the lump sum?
+event8.typeOfProtection.primaryProtection = Primary protection
+event8.typeOfProtection.enhancedProtection = Enhanced protection
+event8.typeOfProtection.checkYourAnswersLabel = Protection type
+event8.typeOfProtection.error.required = Select the type of protection that is held
+event8.typeOfProtection.change.hidden = the protection type
+
 inputProtectionType.title = What is the member’s {0} reference?
 inputProtectionType.heading = What is the member’s {0} reference?
 inputProtectionType.checkYourAnswersLabel = {0} reference

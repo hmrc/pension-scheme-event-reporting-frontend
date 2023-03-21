@@ -28,6 +28,11 @@ import scala.math.BigDecimal.RoundingMode
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryTypeOfProtection: Arbitrary[event8.TypeOfProtection] =
+    Arbitrary {
+      Gen.oneOf(event8.TypeOfProtection.values.toSeq)
+    }
+
   implicit lazy val arbitraryTaxYear: Arbitrary[TaxYear] =
     Arbitrary {
       Gen.oneOf(TaxYear.values.toSeq)

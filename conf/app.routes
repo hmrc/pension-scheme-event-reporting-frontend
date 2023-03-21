@@ -214,6 +214,9 @@ POST        /new-report/:index/event-6-payment-details                          
 GET         /new-report/:index/event-8-member-details                             controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8, index: Index)
 POST        /new-report/:index/event-8-member-details                             controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8, index: Index)
 
+GET        /new-report/:index/event-8-type-of-protection                          controllers.event8.TypeOfProtectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST       /new-report/:index/event-8-type-of-protection                          controllers.event8.TypeOfProtectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.
 #
