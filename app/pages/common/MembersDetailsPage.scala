@@ -21,7 +21,6 @@ import models.common.MembersDetails
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event22, Event23, Event6, Event8}
 import pages.event1.DoYouHoldSignedMandatePage
-import pages.event6.TypeOfProtectionPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -39,8 +38,8 @@ case class MembersDetailsPage(eventType: EventType, index: Int) extends Question
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     (eventType, index) match {
       case (Event1, index) => DoYouHoldSignedMandatePage(index)
-      case (Event6, index) => TypeOfProtectionPage(eventType, index)
-      case (Event8, index) => TypeOfProtectionPage(eventType, index) //TODO: Change to new type of protection page
+      case (Event6, index) => pages.event6.TypeOfProtectionPage(eventType, index)
+      case (Event8, index) => pages.event8.TypeOfProtectionPage(eventType, index)
       case (Event22, index) => ChooseTaxYearPage(eventType, index)
       case (Event23, index) => ChooseTaxYearPage(eventType, index)
       case _ => super.nextPageNormalMode(waypoints, answers)
