@@ -19,6 +19,8 @@ package forms.common
 import forms.common.PersonNameFormProvider.{firstNameLength, lastNameLength}
 import forms.mappings.{Mappings, Transforms}
 import models.common.MembersDetails
+import models.enumeration.EventType
+import models.enumeration.EventType.Event2
 import play.api.data.Form
 import play.api.data.Forms.mapping
 
@@ -26,26 +28,31 @@ import javax.inject.Inject
 
 class MembersDetailsFormProvider @Inject() extends Mappings with Transforms {
 
-  def apply(): Form[MembersDetails] =
+  def apply(eventType: EventType): Form[MembersDetails] = {
+    val memberType = eventType match {
+      case Event2 => "deceasedMembersDetails"
+      case _ => "membersDetails"
+    }
     Form(
       mapping("firstName" ->
-        text("membersDetails.error.firstName.required").verifying(
+        text(s"${memberType}.error.firstName.required").verifying(
           firstError(
-            maxLength(firstNameLength, "membersDetails.error.firstName.length"),
-            regexp(regexName, "membersDetails.error.firstName.invalid"))),
+            maxLength(firstNameLength, s"${memberType}.error.firstName.length"),
+            regexp(regexName, s"${memberType}.error.firstName.invalid"))),
         "lastName" ->
-          text("membersDetails.error.lastName.required").verifying(
+          text(s"${memberType}.error.lastName.required").verifying(
             firstError(
-              maxLength(lastNameLength, "membersDetails.error.lastName.length"),
-              regexp(regexName, "membersDetails.error.lastName.invalid"))
+              maxLength(lastNameLength, s"${memberType}.error.lastName.length"),
+              regexp(regexName, s"${memberType}.error.lastName.invalid"))
           ),
         "nino" ->
-          text("membersDetails.error.nino.required")
+          text(s"${memberType}.error.nino.required")
             .transform(noSpaceWithUpperCaseTransform, noTransform)
             .verifying(
-              validNino("membersDetails.error.nino.invalid")
+              validNino(s"${memberType}.error.nino.invalid")
             ))(MembersDetails.apply)(MembersDetails.unapply)
     )
+  }
 
 }
 

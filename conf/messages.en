@@ -269,6 +269,21 @@ membersDetails.error.nino.invalid = Enter a National Insurance number that is 2 
 membersDetails.change.hidden = the member’s name
 membersDetails.change.nino.hidden = the member’s national insurance number
 
+deceasedMembersDetails.title = Deceased member’s details
+deceasedMembersDetails.heading = Deceased member’s details
+deceasedMembersDetails.checkYourAnswersLabel = Deceased member’s name
+deceasedMembersDetails.checkYourAnswersLabel.nino = Deceased member’s National Insurance number
+deceasedMembersDetails.error.firstName.required = Enter the deceased member’s first name
+deceasedMembersDetails.error.lastName.required = Enter the deceased member’s last name
+deceasedMembersDetails.error.nino.required = Enter the deceased member’s National Insurance number
+deceasedMembersDetails.error.firstName.length = The deceased member’s first name must be 35 characters or fewer
+deceasedMembersDetails.error.lastName.length = The deceased member’s last name must be 35 characters or fewer
+deceasedMembersDetails.error.firstName.invalid = The deceased member’s first name must only include letters, spaces, ampersands, grave accents, apostrophes, hyphens, full stops and carets
+deceasedMembersDetails.error.lastName.invalid = The deceased member’s last name must only include letters, spaces, ampersands, grave accents, apostrophes, hyphens, full stops and carets
+deceasedMembersDetails.error.nino.invalid = Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ123456C
+deceasedMembersDetails.change.hidden = the deceased member’s name
+deceasedMembersDetails.change.nino.hidden = the deceased member’s national insurance number
+
 doYouHoldSignedMandate.title = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.heading = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.checkYourAnswersLabel = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?

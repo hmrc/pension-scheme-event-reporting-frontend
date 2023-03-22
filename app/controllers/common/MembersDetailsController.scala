@@ -41,10 +41,10 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
                                          view: MembersDetailsView
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
     (identify andThen getData(eventType)) { implicit request =>
+    val form = formProvider(eventType)
     val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, indexToInt(index)))).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, eventType, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index)))
   }
@@ -63,7 +63,8 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
                          eventType: EventType,
                          page: MembersDetailsPage,
                          postCall: => Call
-                        )(implicit request: OptionalDataRequest[_]): Future[Result] =
+                        )(implicit request: OptionalDataRequest[_]): Future[Result] = {
+    val form = formProvider(eventType)
     form.bindFromRequest().fold(
       formWithErrors =>
         Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, postCall))),
@@ -75,4 +76,5 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
         }
       }
     )
+  }
 }
