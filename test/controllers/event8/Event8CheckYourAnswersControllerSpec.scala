@@ -143,7 +143,7 @@ object Event8CheckYourAnswersControllerSpec {
     SummaryListRow(
       Key(
         Text(
-          messages(messageKeyOne, messages(messageKeyTwo))
+          messages(messageKeyOne, messages(messageKeyTwo).toLowerCase)
         ), ""),
       Value(Text(htmlContent), ""), "",
       Some(Actions("", List(ActionItem(changeLink, Text("Change"),
