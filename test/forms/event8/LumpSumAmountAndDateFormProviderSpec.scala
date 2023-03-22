@@ -107,27 +107,27 @@ class LumpSumAmountAndDateFormProviderSpec extends SpecBase
     behave like mandatoryDateField(
       form = form,
       key = lumpSumDateKey,
-      requiredAllKey = "amountCrystallisedAndDate.date.error.nothingEntered"
+      requiredAllKey = "lumpSumAmountAndDate.date.error.nothingEntered"
     )
 
     behave like dateFieldYearNot4Digits(
       form = form,
       key = lumpSumDateKey,
-      formError = FormError(lumpSumDateKey, "amountCrystallisedAndDate.date.error.outsideDateRanges")
+      formError = FormError(lumpSumDateKey, "lumpSumAmountAndDate.date.error.outsideDateRanges")
     )
 
     behave like dateFieldWithMin(
       form = form,
       key = lumpSumDateKey,
       min = stubMin,
-      formError = FormError(lumpSumDateKey, messages("amountCrystallisedAndDate.date.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(lumpSumDateKey, messages("lumpSumAmountAndDate.date.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = lumpSumDateKey,
       max = stubMax,
-      formError = FormError(lumpSumDateKey, messages("amountCrystallisedAndDate.date.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(lumpSumDateKey, messages("lumpSumAmountAndDate.date.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
   }
 }
