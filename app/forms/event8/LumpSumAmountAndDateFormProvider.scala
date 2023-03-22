@@ -26,27 +26,9 @@ import utils.DateHelper.formatDateDMY
 import java.time.LocalDate
 import javax.inject.Inject
 
-class LumpSumAmountAndDateFormProvider @Inject() extends Mappings with Transforms { // scalastyle:off magic.number
+class LumpSumAmountAndDateFormProvider @Inject() extends Mappings with Transforms {
 
   import LumpSumAmountAndDateFormProvider._
-
-  private def startDate(date: LocalDate): LocalDate = {
-    date match {
-      case _ if date.isBefore(LocalDate.of(date.getYear, 4, 6)) =>
-        LocalDate.of(2006, 4, 6)
-      case _ =>
-        LocalDate.of(date.getYear, 4, 6)
-    }
-  }
-
-  private def endDate(date: LocalDate): LocalDate = {
-    date match {
-      case _ if date.isBefore(LocalDate.of(date.getYear, 4, 6)) =>
-        LocalDate.of(date.getYear, 4, 5)
-      case _ =>
-        LocalDate.of(date.getYear + 1, 4, 5)
-    }
-  }
 
   def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[LumpSumDetails] =
     Form(
@@ -66,8 +48,8 @@ class LumpSumAmountAndDateFormProvider @Inject() extends Mappings with Transform
           threeDateComponentsMissingKey = "lumpSumAmountAndDate.date.error.nothingEntered"
         ).verifying(
           yearHas4Digits("lumpSumAmountAndDate.date.error.outsideDateRanges"),
-          minDate(startDate(min), messages("lumpSumAmountAndDate.date.error.outsideReportedYear", formatDateDMY(startDate(min)), formatDateDMY(endDate(max)))),
-          maxDate(endDate(max), messages("lumpSumAmountAndDate.date.error.outsideReportedYear", formatDateDMY(startDate(min)), formatDateDMY(endDate(max))))
+          minDate(min, messages("lumpSumAmountAndDate.date.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
+          maxDate(max, messages("lumpSumAmountAndDate.date.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
         )
       )
       (LumpSumDetails.apply)(LumpSumDetails.unapply)

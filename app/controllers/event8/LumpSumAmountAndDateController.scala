@@ -18,11 +18,11 @@ package controllers.event8
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import controllers.event8.LumpSumAmountAndDateController.startOfLumpSumDate
+import controllers.event8.LumpSumAmountAndDateController.endOfLumpSumDate
 import forms.event8.LumpSumAmountAndDateFormProvider
 import models.enumeration.EventType
 import models.event8.LumpSumDetails
-import models.{Index, Quarters, TaxYear, UserAnswers}
+import models.{Index, TaxYear, UserAnswers}
 import pages.event8.LumpSumAmountAndDatePage
 import pages.{TaxYearPage, Waypoints}
 import play.api.data.Form
@@ -41,12 +41,11 @@ class LumpSumAmountAndDateController @Inject()(val controllerComponents: Message
                                                userAnswersCacheConnector: UserAnswersCacheConnector,
                                                formProvider: LumpSumAmountAndDateFormProvider,
                                                view: LumpSumAmountAndDateView
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport { // scalastyle:off magic.number
 
   private val eventType = EventType.Event8
 
-  private def form(startDate: LocalDate)(implicit messages: Messages): Form[LumpSumDetails] = {
-    val endDate = Quarters.getQuarter(startDate).endDate
+  private def form(startDate: LocalDate, endDate: LocalDate)(implicit messages: Messages): Form[LumpSumDetails] = {
     formProvider(
       startDate,
       endDate
@@ -54,19 +53,21 @@ class LumpSumAmountAndDateController @Inject()(val controllerComponents: Message
   }
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val startDate = startOfLumpSumDate(request.userAnswers.flatMap(_.get(TaxYearPage)))
+    val startDate = LocalDate.of(2006, Month.APRIL, 6)
+    val endDate = endOfLumpSumDate(request.userAnswers.flatMap(_.get(TaxYearPage)))
 
     val preparedForm = request.userAnswers.flatMap(_.get(LumpSumAmountAndDatePage(eventType, index))) match {
-      case Some(value) => form(startDate = startDate).fill(value)
-      case None => form(startDate)
+      case Some(value) => form(startDate = startDate, endDate).fill(value)
+      case None => form(startDate, endDate)
     }
     Ok(view(preparedForm, waypoints, index))
   }
 
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
+    val startDate = LocalDate.of(2006, Month.APRIL, 6)
+    val endDate = endOfLumpSumDate(request.userAnswers.flatMap(_.get(TaxYearPage)))
 
-    val startDate = startOfLumpSumDate(request.userAnswers.flatMap(_.get(TaxYearPage)))
-    form(startDate).bindFromRequest().fold(
+    form(startDate, endDate).bindFromRequest().fold(
       formWithErrors => {
         Future.successful(BadRequest(view(formWithErrors, waypoints, index)))
       },
@@ -82,10 +83,10 @@ class LumpSumAmountAndDateController @Inject()(val controllerComponents: Message
 }
 
 object LumpSumAmountAndDateController {
-  def startOfLumpSumDate(optTaxYear: Option[TaxYear]): LocalDate = optTaxYear match {
+  def endOfLumpSumDate(optTaxYear: Option[TaxYear]): LocalDate = optTaxYear match {
     case Some(value) =>
-      val taxYear = value.startYear
-      LocalDate.of(2006, Month.APRIL, 6)
+      val taxYear = value.endYear.toInt
+      LocalDate.of(taxYear, Month.APRIL, 5)
     case _ => LocalDate.now()
   }
 }
