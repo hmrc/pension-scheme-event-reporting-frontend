@@ -20,9 +20,9 @@ import controllers.event6.routes
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.common.MembersPage
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 
 case class InputProtectionTypePage(eventType: EventType, index: Int) extends QuestionPage[String] {
 
@@ -33,10 +33,10 @@ case class InputProtectionTypePage(eventType: EventType, index: Int) extends Que
   override def route(waypoints: Waypoints): Call =
     routes.InputProtectionTypeController.onPageLoad(waypoints, index)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(InputProtectionTypePage(eventType, index)) match {
-      case Some(_) => AmountCrystallisedAndDatePage(eventType, index)
-      case _ => IndexPage
-    }
-  }
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    AmountCrystallisedAndDatePage(eventType, index)
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers,
+                                           updatedAnswers: UserAnswers): Page =
+    Event6CheckYourAnswersPage(index)
 }

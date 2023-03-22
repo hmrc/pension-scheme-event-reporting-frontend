@@ -105,15 +105,16 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
 object Event23CheckYourAnswersControllerSpec {
 
-  private def fakeSummaryListRowWithHtmlContent(messageKey: String, htmlContent: String, changeLink: String)
-                                               (implicit messages: Messages): SummaryListRow =
+  private def fakeSummaryListRowWithHtmlContentWithHiddenContentWithoutChange(messageKey: String, htmlContent: String,
+                                                                              changeLink: String, hiddenContentChangeLink: String)
+                                                                             (implicit messages: Messages): SummaryListRow =
     SummaryListRow(
       Key(
         Text(
           messages(messageKey)
         ), ""),
       Value(HtmlContent(htmlContent), ""), "",
-      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(messageKey)), "", Map()))))
+      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
 
   private def fakeSummaryListRowWithHtmlContentWithHiddenContent(messageKey: String, htmlContent: String, changeLink: String, hiddenContentChangeLink: String)
@@ -124,27 +125,29 @@ object Event23CheckYourAnswersControllerSpec {
           messages(messageKey)
         ), ""),
       Value(HtmlContent(htmlContent), ""), "",
-      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
+      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages("site.change") + " " + messages(hiddenContentChangeLink)), "", Map()))))
     )
 
   private def expectedMemberSummaryListRowsEvent23(implicit messages: Messages): Seq[SummaryListRow] = Seq(
-    fakeSummaryListRowWithHtmlContent(
+    fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel",
       "Joe Bloggs",
-      "/manage-pension-scheme-event-report/new-report/1/event-23-member-details?waypoints=event-23-check-answers-1"
-    ),
-    fakeSummaryListRowWithHtmlContent(
-      "membersDetails.checkYourAnswersLabel.nino",
-      "AA234567V",
-      "/manage-pension-scheme-event-report/new-report/1/event-23-member-details?waypoints=event-23-check-answers-1"
+      "/manage-pension-scheme-event-report/new-report/1/event-23-member-details?waypoints=event-23-check-answers-1",
+      "membersDetails.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
+      "membersDetails.checkYourAnswersLabel.nino",
+      "AA234567V",
+      "/manage-pension-scheme-event-report/new-report/1/event-23-member-details?waypoints=event-23-check-answers-1",
+      "membersDetails.change.nino.hidden"
+    ),
+    fakeSummaryListRowWithHtmlContentWithHiddenContentWithoutChange(
       "chooseTaxYear.event23.checkYourAnswersLabel",
       "2015 to 2016",
       "/manage-pension-scheme-event-report/new-report/1/event-23-tax-year?waypoints=event-23-check-answers-1",
       "chooseTaxYear.event23.change.hidden"
     ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContent(
+    fakeSummaryListRowWithHtmlContentWithHiddenContentWithoutChange(
       "totalPensionAmounts.event23.checkYourAnswersLabel",
       "£1,234.56",
       "/manage-pension-scheme-event-report/new-report/1/event-23-total-input-amount?waypoints=event-23-check-answers-1",

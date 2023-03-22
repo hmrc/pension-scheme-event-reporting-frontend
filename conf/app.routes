@@ -40,6 +40,9 @@ GET         /new-report/event-23-click                                          
 GET         /new-report/:index/event-22-check-your-answers                        controllers.event22.Event22CheckYourAnswersController.onPageLoad(index: Index)
 GET         /new-report/event-22-click                                            controllers.event22.Event22CheckYourAnswersController.onClick
 
+GET         /new-report/:index/event-6-check-your-answers                        controllers.event6.Event6CheckYourAnswersController.onPageLoad(index: Index)
+GET         /new-report/event-6-click                                            controllers.event6.Event6CheckYourAnswersController.onClick
+
 GET         /new-report/:index/event-1-entry-type                                 controllers.common.ManualOrUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1,  index: Index)
 POST        /new-report/:index/event-1-entry-type                                 controllers.common.ManualOrUploadController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1, index: Index)
 
