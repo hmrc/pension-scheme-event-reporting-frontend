@@ -37,8 +37,9 @@ case class LumpSumAmountAndDatePage(eventType: EventType, index: Int) extends Qu
     routes.LumpSumAmountAndDateController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    IndexPage
+    Event8CheckYourAnswersPage(index)
 }
+
 object LumpSumAmountAndDatePage {
   override def toString: String = "lumpSumAmountAndDate"
 }

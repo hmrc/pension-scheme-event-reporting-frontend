@@ -19,10 +19,11 @@ package controllers.event8
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event8.TypeOfProtectionFormProvider
-import models.{Index, UserAnswers}
 import models.enumeration.EventType
+import models.{Index, UserAnswers}
+import org.apache.commons.lang3.StringUtils
 import pages.Waypoints
-import pages.event8.TypeOfProtectionPage
+import pages.event8.{TypeOfProtectionPage, TypeOfProtectionReferencePage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -32,12 +33,12 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TypeOfProtectionController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                          identify: IdentifierAction,
-                                          getData: DataRetrievalAction,
-                                          userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          formProvider: TypeOfProtectionFormProvider,
-                                          view: TypeOfProtectionView
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                           identify: IdentifierAction,
+                                           getData: DataRetrievalAction,
+                                           userAnswersCacheConnector: UserAnswersCacheConnector,
+                                           formProvider: TypeOfProtectionFormProvider,
+                                           view: TypeOfProtectionView
+                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event8
@@ -53,13 +54,28 @@ class TypeOfProtectionController @Inject()(val controllerComponents: MessagesCon
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
+          val oldValue = getProtectionTypeValue(request.userAnswers, index)
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(TypeOfProtectionPage(eventType, index), value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(TypeOfProtectionPage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+          if (value.toString != oldValue) {
+            val updatedAnswers = originalUserAnswers.removeOrException(TypeOfProtectionReferencePage(eventType, index))
+              .setOrException(TypeOfProtectionPage(eventType, index), value)
+            userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+              Redirect(TypeOfProtectionPage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            }
+          } else {
+            val updatedAnswers = originalUserAnswers.setOrException(TypeOfProtectionPage(eventType, index), value)
+            userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+              Redirect(TypeOfProtectionReferencePage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            }
           }
         }
       )
   }
 
+  private def getProtectionTypeValue(userAnswers: Option[UserAnswers], index: Index): String = {
+    userAnswers.flatMap(_.get(TypeOfProtectionPage(eventType, index))) match {
+      case Some(typeOfProtection) => typeOfProtection.toString
+      case _ => StringUtils.EMPTY
+    }
+  }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event8.checkAnswers
 
 import models.UserAnswers
 import models.enumeration.EventType
@@ -40,11 +40,12 @@ object TypeOfProtectionReferenceSummary {
       answer =>
 
         SummaryListRowViewModel(
-          key = "typeOfProtectionReference.checkYourAnswersLabel",
+          key = messages(s"typeOfProtectionReference.checkYourAnswersLabel", messages(s"event8.typeOfProtection.${protectionType.toString}").toLowerCase()),
           value = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", TypeOfProtectionReferencePage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("typeOfProtectionReference.change.hidden"))
+              .withVisuallyHiddenText(messages("site.change") + " " + messages("typeOfProtectionReference.change.hidden",
+                messages(s"event8.typeOfProtection.${protectionType.toString}").toLowerCase()))
           )
         )
     }
