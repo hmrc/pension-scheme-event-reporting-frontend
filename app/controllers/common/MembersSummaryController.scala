@@ -53,7 +53,7 @@ class MembersSummaryController @Inject()(
     }
 
   private def sumValue(userAnswers: UserAnswers, eventType: EventType) =
-    currencyFormatter.format(userAnswers.sumAll(MembersPage(eventType), MembersSummary.readsMemberValue))
+    currencyFormatter.format(userAnswers.sumAll(MembersPage(eventType), MembersSummary.readsMemberValue(eventType)))
 
   def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
     implicit request =>
@@ -70,7 +70,7 @@ class MembersSummaryController @Inject()(
   }
 
    private def getMappedMembers(userAnswers : UserAnswers, eventType: EventType) (implicit messages: Messages) : Seq[SummaryListRowWithTwoValues] = {
-    userAnswers.getAll(MembersPage(eventType))(MembersSummary.readsMember).zipWithIndex.map {
+    userAnswers.getAll(MembersPage(eventType))(MembersSummary.readsMember(eventType)).zipWithIndex.map {
       case (memberSummary, index) =>
         SummaryListRowWithTwoValues(
           key = memberSummary.name,

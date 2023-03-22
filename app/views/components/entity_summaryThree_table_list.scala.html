@@ -16,7 +16,7 @@
 
 @import viewmodels.SummaryListRowWithTwoValues
 
-@(seqSummaryListRowWithTwoValues: Seq[SummaryListRowWithTwoValues], colOne: String, colTwo: String, colThree: String, total: String)(implicit messages: Messages)
+@(seqSummaryListRowWithTwoValues: Seq[SummaryListRowWithTwoValues], colOne: String, colTwo: String, colThree: String, total: String, totalTitle: String = "entity_list_table.total")(implicit messages: Messages)
 
 <table class="govuk-table" role="table">
     <thead class="govuk-table__head">
@@ -50,10 +50,12 @@
         </tr>
     }
     </tbody>
+    @if(messages(totalTitle) != "Total not required") {
     <tfoot>
         <tr class="govuk-table__row">
             <td class="govuk-table__cell govuk-table__cell--numeric" colspan="2"><strong>@messages("entity_list_table.total")</strong></td>
             <td class="govuk-table__cell" colspan="2"><strong>&pound;@total</strong></td>
         </tr>
     </tfoot>
+    }
 </table>

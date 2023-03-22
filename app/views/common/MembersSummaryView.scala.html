@@ -40,10 +40,11 @@
 
         @components.entity_summaryThree_table_list(
             memberSeq,
-            colOne = "membersSummary.table.header1",
-            colTwo = "membersSummary.table.header2",
-            colThree = "membersSummary.table.header3",
-            total
+            colOne = s"membersSummary.event${eventType.toString}.table.header1",
+            colTwo = s"membersSummary.event${eventType.toString}.table.header2",
+            colThree = s"membersSummary.event${eventType.toString}.table.header3",
+            total,
+            totalTitle = s"membersSummary.event${eventType.toString}.table.totalTitle"
         )
 
         @govukRadios(
