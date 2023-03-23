@@ -201,28 +201,27 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           contentAsString(result) mustEqual view(form.fill(validValue), waypoints, event7, submitUrlEvent7)(request, messages(application)).toString
         }
       }
-/*TODO uncomment when next page is built and redirected */
 
-//      "must save the answer and redirect to the next page when valid data is submitted" in {
-//        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-//          .thenReturn(Future.successful(()))
-//
-//        val application =
-//          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-//            .build()
-//
-//        running(application) {
-//          val request =
-//            FakeRequest(POST, postRouteEvent7).withFormUrlEncodedBody(("firstName", validValue.firstName), ("lastName", validValue.lastName), ("nino", validValue.nino))
-//
-//          val result = route(application, request).value
-//          val updatedAnswers = emptyUserAnswers.set(MembersDetailsPage(event7, 0), validValue).success.value
-//
-//          status(result) mustEqual SEE_OTHER
-//          redirectLocation(result).value mustEqual MembersDetailsPage(event7, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-//          verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
-//        }
-//      }
+      "must save the answer and redirect to the next page when valid data is submitted" in {
+        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(()))
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, postRouteEvent7).withFormUrlEncodedBody(("firstName", validValue.firstName), ("lastName", validValue.lastName), ("nino", validValue.nino))
+
+          val result = route(application, request).value
+          val updatedAnswers = emptyUserAnswers.set(MembersDetailsPage(event7, 0), validValue).success.value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual MembersDetailsPage(event7, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        }
+      }
 
       "must return bad request when invalid data is submitted" in {
 
