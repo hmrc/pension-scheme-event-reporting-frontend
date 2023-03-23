@@ -179,8 +179,7 @@ POST        /new-report/:index/event-22-tax-year                                
 
 GET         /new-report/event-22-summary                                          controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 GET         /new-report/event-22-summary/page/:pageNumber                         controllers.common.MembersSummaryController.onPageLoadWithPageNumber(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, pageNumber: Index)
-POST        /new-report/event-22-summary/                                         controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
-POST        /new-report/event-22-summary/page/:pageNumber                         controllers.common.MembersSummaryController.onSubmitWithPageNumber(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, pageNumber: Index)
+POST        /new-report/event-22-summary                                          controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 
 GET         /new-report/event-23-summary                                          controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 POST        /new-report/event-23-summary                                          controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)

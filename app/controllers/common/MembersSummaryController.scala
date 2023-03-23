@@ -89,21 +89,6 @@ class MembersSummaryController @Inject()(
       )
   }
 
-  def onSubmitWithPageNumber(waypoints: Waypoints, eventType: EventType, pageNumber: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
-    implicit request =>
-      val form = formProvider(eventType)
-      val mappedMembers = getMappedMembers(request.userAnswers, eventType)
-      val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, pageNumber)
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          BadRequest(newView(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), paginationStats, pageNumber))
-        },
-        value => {
-          val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, pageNumber), value)
-          Redirect(MembersSummaryPage(eventType, pageNumber).navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)}
-      )
-  }
-
    private def getMappedMembers(userAnswers : UserAnswers, eventType: EventType) (implicit messages: Messages) : Seq[SummaryListRowWithTwoValues] = {
     userAnswers.getAll(MembersPage(eventType))(MembersSummary.readsMember).zipWithIndex.map {
       case (memberSummary, index) =>
