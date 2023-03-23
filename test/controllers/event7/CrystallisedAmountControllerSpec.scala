@@ -18,33 +18,33 @@ package controllers.event7
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event7.LumpSumAmountFormProvider
+import forms.event7.CrystallisedAmountFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
-import pages.event7.LumpSumAmountPage
+import pages.event7.CrystallisedAmountPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event7.LumpSumAmountView
+import views.html.event7.CrystallisedAmountView
 
 import scala.concurrent.Future
 
-class LumpSumAmountControllerSpec extends SpecBase with BeforeAndAfterEach {
+class CrystallisedAmountControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new LumpSumAmountFormProvider()
+  private val formProvider = new CrystallisedAmountFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.LumpSumAmountController.onPageLoad(waypoints, 0).url
-  private def postRoute: String = routes.LumpSumAmountController.onSubmit(waypoints, 0).url
+  private def getRoute: String = routes.CrystallisedAmountController.onPageLoad(waypoints, 0).url
+  private def postRoute: String = routes.CrystallisedAmountController.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -57,7 +57,7 @@ class LumpSumAmountControllerSpec extends SpecBase with BeforeAndAfterEach {
     reset(mockUserAnswersCacheConnector)
   }
 
-  "LumpSumAmount Controller" - {
+  "CrystallisedAmount Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -68,7 +68,7 @@ class LumpSumAmountControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[LumpSumAmountView]
+        val view = application.injector.instanceOf[CrystallisedAmountView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
@@ -77,14 +77,14 @@ class LumpSumAmountControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(LumpSumAmountPage(0), validValue).success.value
+      val userAnswers = UserAnswers().set(CrystallisedAmountPage(0), validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[LumpSumAmountView]
+        val view = application.injector.instanceOf[CrystallisedAmountView]
 
         val result = route(application, request).value
 
@@ -103,13 +103,13 @@ class LumpSumAmountControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("lumpSumAmount", "100.99"))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("crystallisedAmount", "100.99"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(LumpSumAmountPage(0), validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(CrystallisedAmountPage(0), validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual LumpSumAmountPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual CrystallisedAmountPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -121,10 +121,10 @@ class LumpSumAmountControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("lumpSumAmount", ""))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("crystallisedAmount", ""))
 
-        val view = application.injector.instanceOf[LumpSumAmountView]
-        val boundForm = form.bind(Map("lumpSumAmount" -> ""))
+        val view = application.injector.instanceOf[CrystallisedAmountView]
+        val boundForm = form.bind(Map("crystallisedAmount" -> ""))
 
         val result = route(application, request).value
 

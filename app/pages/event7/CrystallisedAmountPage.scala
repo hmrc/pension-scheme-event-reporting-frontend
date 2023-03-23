@@ -22,17 +22,17 @@ import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class LumpSumAmountPage(index: Index) extends QuestionPage[BigDecimal] {
+case class CrystallisedAmountPage(index: Index) extends QuestionPage[BigDecimal] {
 
   override def path: JsPath = JsPath \ toString
 
   override def route(waypoints: Waypoints): Call =
-    routes.LumpSumAmountController.onPageLoad(waypoints, index)
+    routes.CrystallisedAmountController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    CrystallisedAmountPage(index)
+    IndexPage
 }
 
-object LumpSumAmountPage {
-  override def toString: String = "lumpSumAmount"
+object CrystallisedAmountPage {
+  override def toString: String = "crystallisedAmount"
 }

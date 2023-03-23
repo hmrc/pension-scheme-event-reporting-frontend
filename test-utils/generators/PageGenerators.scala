@@ -29,6 +29,9 @@ import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryCrystallisedAmountPage: Arbitrary[event7.CrystallisedAmountPage] =
+    Arbitrary(event7.CrystallisedAmountPage(Index(0)))
+
   implicit lazy val arbitraryLumpSumAmountPage: Arbitrary[event7.LumpSumAmountPage] =
     Arbitrary(event7.LumpSumAmountPage(Index(0)))
 

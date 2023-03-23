@@ -16,28 +16,29 @@
 
 package forms.event7
 
-import javax.inject.Inject
 import forms.mappings.Mappings
 import play.api.data.Form
 
-class LumpSumAmountFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  import forms.event7.LumpSumAmountFormProvider.maxLumpSumAmount
+class CrystallisedAmountFormProvider @Inject() extends Mappings {
+
+  import forms.event7.CrystallisedAmountFormProvider.maxCrystallisedAmount
 
   def apply(): Form[BigDecimal] =
     Form(
-      "lumpSumAmount" -> bigDecimal2DP(
-        "lumpSumAmount.value.error.nothingEntered",
+      "crystallisedAmount" -> bigDecimal2DP(
+        "crystallisedAmount.value.error.nothingEntered",
         "amounts.value.error.notANumber",
         "amounts.value.error.noDecimals")
         .verifying(
-          maximumValue[BigDecimal](maxLumpSumAmount, "amounts.value.error.amountTooHigh"),
+          maximumValue[BigDecimal](maxCrystallisedAmount, "amounts.value.error.amountTooHigh"),
           minimumValue[BigDecimal](0, "amounts.value.error.negative"),
           minimumValue[BigDecimal](0.01, "amounts.value.error.zeroAmount")
         )
     )
 }
 
-object LumpSumAmountFormProvider {
-  val maxLumpSumAmount: BigDecimal = 999999999.99
+object CrystallisedAmountFormProvider {
+  val maxCrystallisedAmount: BigDecimal = 999999999.99
 }

@@ -16,23 +16,17 @@
 
 package pages.event7
 
-import controllers.event7.routes
-import models.{Index, UserAnswers}
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import pages.behaviours.PageBehaviours
 
-case class LumpSumAmountPage(index: Index) extends QuestionPage[BigDecimal] {
 
-  override def path: JsPath = JsPath \ toString
+class CrystallisedAmountPageSpec extends PageBehaviours {
 
-  override def route(waypoints: Waypoints): Call =
-    routes.LumpSumAmountController.onPageLoad(waypoints, index)
+  "LumpSumAmountPage" - {
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    CrystallisedAmountPage(index)
-}
+    beRetrievable[BigDecimal](CrystallisedAmountPage(0))
 
-object LumpSumAmountPage {
-  override def toString: String = "lumpSumAmount"
+    beSettable[BigDecimal](CrystallisedAmountPage(0))
+
+    beRemovable[BigDecimal](CrystallisedAmountPage(0))
+  }
 }

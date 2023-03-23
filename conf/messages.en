@@ -936,13 +936,19 @@ amountCrystallisedAndDate.date.checkYourAnswersLabel = Date of the benefit cryst
 
 lumpSumAmount.title = How much lump sum was paid?
 lumpSumAmount.heading = How much lump sum was paid?
-lumpSumAmount.checkYourAnswersLabel = How much lump sum was paid?
-lumpSumAmount.change.hidden = How much lump sum was paid?
-
+lumpSumAmount.checkYourAnswersLabel = How much lump sum was paid
+lumpSumAmount.change.hidden = the amount of the lump sum that was paid
 lumpSumAmount.value.error.nothingEntered = Enter how much lump sum was paid
-lumpSumAmount.value.error.notANumber = The amount must be an amount of money, like 123.45 or 156.00
-lumpSumAmount.value.error.noDecimals = The amount must include pence, like 123.45 or 156.00
-lumpSumAmount.value.error.amountTooHigh = The amount must be £999999999.99 or less
-lumpSumAmount.value.error.zeroAmount = The amount entered must be greater than zero
-lumpSumAmount.value.error.negative = The amount must not be a negative amount of money, like -123.45 or -156.00
+
+crystallisedAmount.title = How much was crystallised?
+crystallisedAmount.heading = How much was crystallised?
+crystallisedAmount.checkYourAnswersLabel = How much was crystallised
+crystallisedAmount.change.hidden = The amount that was crystallised
+crystallisedAmount.value.error.nothingEntered = Enter how much was crystallised
+
+amounts.value.error.notANumber = The amount must be an amount of money, like 123.45 or 156.00
+amounts.value.error.noDecimals = The amount must include pence, like 123.45 or 156.00
+amounts.value.error.amountTooHigh = The amount must be £999999999.99 or less
+amounts.value.error.zeroAmount = The amount entered must be greater than zero
+amounts.value.error.negative = The amount must not be a negative amount of money, like -123.45 or -156.00
 

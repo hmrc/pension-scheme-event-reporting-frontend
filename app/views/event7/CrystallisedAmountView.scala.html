@@ -27,9 +27,9 @@
 
 @(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-    @layout(pageTitle = title(form, messages(s"lumpSumAmount.title"))) {
+    @layout(pageTitle = title(form, messages("crystallisedAmount.title"))) {
 
-        @formHelper(action = routes.LumpSumAmountController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
+        @formHelper(action = routes.CrystallisedAmountController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
 
             @if(form.errors.nonEmpty) {
                 @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -37,8 +37,8 @@
 
             @govukInput(
                 InputViewModel(
-                    field = form("lumpSumAmount"),
-                    label = LabelViewModel(messages(s"lumpSumAmount.heading")).asPageHeading()
+                    field = form("crystallisedAmount"),
+                    label = LabelViewModel(messages(s"crystallisedAmount.heading")).asPageHeading()
                 )
                         .withWidth(OneQuarter)
                         .withPrefix(PrefixOrSuffix(content = Text("£")))

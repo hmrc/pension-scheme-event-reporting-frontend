@@ -21,10 +21,10 @@ import forms.behaviours.BigDecimalFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class LumpSumAmountFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours {
+class CrystallisedAmountFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours {
 
-  private val form = new LumpSumAmountFormProvider()()
-  private val valueKey = "lumpSumAmount"
+  private val form = new CrystallisedAmountFormProvider()()
+  private val valueKey = "crystallisedAmount"
   private val messageKeyValueKey = "amounts.value"
 
   // scalastyle:off magic.number
@@ -37,7 +37,7 @@ class LumpSumAmountFormProviderSpec extends SpecBase with BigDecimalFieldBehavio
 
     "not bind no input" in {
       val result = form.bind(valueDetails(""))
-      result.errors mustEqual Seq(FormError(valueKey, "lumpSumAmount.value.error.nothingEntered"))
+      result.errors mustEqual Seq(FormError(valueKey, "crystallisedAmount.value.error.nothingEntered"))
     }
 
     "not bind non-numeric numbers" in {
