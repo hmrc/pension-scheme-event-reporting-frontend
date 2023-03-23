@@ -817,21 +817,39 @@ unauthPaymentSummary.table.header2 = Unauthorised payment value
 entity_list_table.total = Total
 entity_list_table.totalForMembersSummary = Total amount for this event
 
-membersSummary.event22.title = Annual allowance events reported in the tax year ending 5 April {0}
-membersSummary.event22.heading = Annual allowance events reported in the tax year ending 5 April {0}
-membersSummary.event22.error.required = Select yes if you want to add another annual allowance event
-membersSummary.event22.yesno.legend = Do you want to add another annual allowance event?
-
 membersSummary.checkYourAnswersLabel = Check your answers
 membersSummary.change.hidden = Unauthorised payment summary
 membersSummary.table.header1 = Member
 membersSummary.table.header2 = National Insurance number
 membersSummary.table.header3 = Pension input amounts
+membersSummary.table.totalTitle = Total
+
+membersSummary.event6.title = Event 6: Benefit crystallisation events reported in the tax year ending 5 April {0}
+membersSummary.event6.heading = Event 6: Benefit crystallisation events reported in the tax year ending 5 April {0}
+membersSummary.event6.error.required = Select yes if you want to add another entry
+membersSummary.event6.yesno.legend = Do you want to add another entry for this benefit crystallisation event?
+membersSummary.event6.table.header1 = Member
+membersSummary.event6.table.header2 = National Insurance number
+membersSummary.event6.table.header3 = Amount crystallised
+membersSummary.event6.table.totalTitle = Total not required
+
+membersSummary.event22.title = Annual allowance events reported in the tax year ending 5 April {0}
+membersSummary.event22.heading = Annual allowance events reported in the tax year ending 5 April {0}
+membersSummary.event22.error.required = Select yes if you want to add another annual allowance event
+membersSummary.event22.yesno.legend = Do you want to add another annual allowance event?
+membersSummary.event22.table.header1 = Member
+membersSummary.event22.table.header2 = National Insurance number
+membersSummary.event22.table.header3 = Pension input amount
+membersSummary.event22.table.totalTitle = Total amount for this event report
 
 membersSummary.event23.title = Dual annual allowances events for tax year ending 5 April {0}
 membersSummary.event23.heading = Dual annual allowances events for tax year ending 5 April {0}
 membersSummary.event23.error.required = Select yes if you want to add another dual annual allowances event
 membersSummary.event23.yesno.legend = Do you want to add another dual annual allowance event?
+membersSummary.event23.table.header1 = Member
+membersSummary.event23.table.header2 = National Insurance number
+membersSummary.event23.table.header3 = Pension input amount
+membersSummary.event23.table.totalTitle = Total amount for this event report
 
 chooseTaxYear.yearRangeRadio = {0} to {1}
 

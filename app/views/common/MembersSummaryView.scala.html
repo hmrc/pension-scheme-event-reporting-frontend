@@ -32,30 +32,30 @@
 
     @formHelper(action = controllers.common.routes.MembersSummaryController.onSubmit(waypoints, eventType), Symbol("autoComplete") -> "off") {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form))
-    }
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form))
+        }
 
-    <h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", "2022")</h1>
+        <h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", "2022")</h1>
 
-    @components.entity_summaryThree_table_list(
-        memberSeq,
-        colOne = "membersSummary.table.header1",
-        colTwo = "membersSummary.table.header2",
-        colThree = "membersSummary.table.header3",
-        total,
-        "entity_list_table.totalForMembersSummary"
-    )
-
-    @govukRadios(
-        RadiosViewModel.yesNo(
-            field = form("value"),
-            legend = LegendViewModel(messages(s"membersSummary.event${eventType.toString}.yesno.legend")).withCssClass("govuk-fieldset__legend--m"),
+        @components.entity_summaryThree_table_list(
+            memberSeq,
+            colOne = s"membersSummary.event${eventType.toString}.table.header1",
+            colTwo = s"membersSummary.event${eventType.toString}.table.header2",
+            colThree = s"membersSummary.event${eventType.toString}.table.header3",
+            total,
+            totalTitle = s"membersSummary.event${eventType.toString}.table.totalTitle"
         )
-    )
 
-    @govukButton(
-        ButtonViewModel(messages("site.saveAndContinue")).withAttribute(("id", "submit"))
-    )
-  }
+        @govukRadios(
+            RadiosViewModel.yesNo(
+                field = form("value"),
+                legend = LegendViewModel(messages(s"membersSummary.event${eventType.toString}.yesno.legend")).withCssClass("govuk-fieldset__legend--m"),
+            )
+        )
+
+        @govukButton(
+            ButtonViewModel(messages("site.saveAndContinue")).withAttribute(("id", "submit"))
+        )
+    }
 }
