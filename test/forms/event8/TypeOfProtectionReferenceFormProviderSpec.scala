@@ -26,9 +26,6 @@ class TypeOfProtectionReferenceFormProviderSpec extends StringFieldBehaviours wi
   private val minLength: Int = 8
   private val maxLength: Int = 15
 
-  private val requiredKey = "typeOfProtectionReference.error.required"
-  private val lengthKey = "typeOfProtectionReference.error.length"
-
   "TypeOfProtectionReferenceFormProviderSpec for protection type" - {
     testInputProtectionTypeFormProvider("primaryProtection")
     testInputProtectionTypeFormProvider("enhancedProtection")

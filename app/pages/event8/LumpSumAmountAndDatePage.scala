@@ -16,16 +16,12 @@
 
 package pages.event8
 
-import java.time.LocalDate
 import controllers.event8.routes
-import models.enumeration.EventType
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import models.UserAnswers
 import models.enumeration.EventType
 import models.event8.LumpSumDetails
 import pages.common.MembersPage
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
