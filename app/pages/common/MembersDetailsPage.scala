@@ -19,7 +19,7 @@ package pages.common
 import models.UserAnswers
 import models.common.MembersDetails
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event22, Event23, Event6}
+import models.enumeration.EventType.{Event1, Event22, Event23, Event6, Event7}
 import pages.event1.DoYouHoldSignedMandatePage
 import pages.event6.TypeOfProtectionPage
 import pages.{Page, QuestionPage, Waypoints}
@@ -30,7 +30,7 @@ case class MembersDetailsPage(eventType: EventType, index: Int) extends Question
 
   override def path: JsPath =
     eventType match {
-      case Event6 | Event22 | Event23 => MembersPage(eventType)(index) \ MembersDetailsPage.toString
+      case Event6 | Event22 | Event23 | Event7 => MembersPage(eventType)(index) \ MembersDetailsPage.toString
       case _ => MembersOrEmployersPage(eventType)(index) \ MembersDetailsPage.toString
     }
 
@@ -40,6 +40,7 @@ case class MembersDetailsPage(eventType: EventType, index: Int) extends Question
     (eventType, index) match {
       case (Event1, index) => DoYouHoldSignedMandatePage(index)
       case (Event6, index) => TypeOfProtectionPage(eventType, index)
+      case (Event7, index) => ChooseTaxYearPage(eventType, index)
       case (Event22, index) => ChooseTaxYearPage(eventType, index)
       case (Event23, index) => ChooseTaxYearPage(eventType, index)
       case _ => super.nextPageNormalMode(waypoints, answers)
