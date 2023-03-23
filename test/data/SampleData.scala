@@ -103,7 +103,7 @@ object SampleData {
 
   val paymentDetails: PaymentDetails = PaymentDetails(1000.00, LocalDate.of(2022, 11, 8))
   val crystallisedDetails: CrystallisedDetails = CrystallisedDetails(857.00, LocalDate.of(2022, 11, 8))
-  val lumpSumDetails: LumpSumDetails = LumpSumDetails(223.00, LocalDate.of(2022, 3, 22))
+  val lumpSumDetails: LumpSumDetails = LumpSumDetails(223.11, LocalDate.of(2022, 3, 22))
 
 
   def booleanCYAVal(value: Boolean) = if (value) "site.yes" else "site.no"

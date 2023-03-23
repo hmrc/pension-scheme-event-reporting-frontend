@@ -42,13 +42,13 @@ object MembersSummary {
         (JsPath \ "membersDetails" \ "lastName").readNullable[String] and
         readsMemberValue(eventType) and
         readsNINumber
-      ) (
+      )(
       (firstName, lastName, paymentValue, nINumber) => {
         (firstName, lastName, paymentValue, nINumber) match {
-          case (Some(fn), Some(ln), _, _) =>  MembersSummary(fn + " " + ln, paymentValue, nINumber)
-          case (None, Some(ln), _, _) =>  MembersSummary(ln, paymentValue, nINumber)
-          case (Some(fn), None, _, _) =>  MembersSummary(fn, paymentValue, nINumber)
-          case (None, None, _, _) =>  MembersSummary(messages("site.notEntered"), paymentValue, nINumber)
+          case (Some(fn), Some(ln), _, _) => MembersSummary(fn + " " + ln, paymentValue, nINumber)
+          case (None, Some(ln), _, _) => MembersSummary(ln, paymentValue, nINumber)
+          case (Some(fn), None, _, _) => MembersSummary(fn, paymentValue, nINumber)
+          case (None, None, _, _) => MembersSummary(messages("site.notEntered"), paymentValue, nINumber)
         }
       }
     )
@@ -59,6 +59,7 @@ object MembersSummary {
 
   def memberValuePath(eventType: EventType): JsPath = eventType match {
     case Event6 => JsPath \ "AmountCrystallisedAndDate" \ "amountCrystallised"
+    case Event8 => JsPath \ "lumpSumAmountAndDate" \ "lumpSumAmount"
     case _ => JsPath \ "totalPensionAmounts"
   }
 

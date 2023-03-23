@@ -19,9 +19,9 @@ package controllers.common
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import data.SampleData
-import data.SampleData.{sampleMemberJourneyDataEvent22, sampleMemberJourneyDataEvent23}
+import data.SampleData.{sampleMemberJourneyDataEvent22, sampleMemberJourneyDataEvent23, sampleMemberJourneyDataEvent8}
 import forms.common.MembersSummaryFormProvider
-import models.enumeration.EventType.{Event22, Event23}
+import models.enumeration.EventType.{Event22, Event23, Event8}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -43,9 +43,15 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new MembersSummaryFormProvider()
+  private val formEvent8 = formProvider(Event8)
   private val formEvent22 = formProvider(Event22)
   private val formEvent23 = formProvider(Event23)
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+
+
+  private def getRouteEvent8: String = routes.MembersSummaryController.onPageLoad(waypoints, Event8).url
+
+  private def postRouteEvent8: String = routes.MembersSummaryController.onSubmit(waypoints, Event8).url
 
   private def getRouteEvent22: String = routes.MembersSummaryController.onPageLoad(waypoints, Event22).url
 
@@ -65,6 +71,87 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
   }
 
   "AnnualAllowanceSummary Controller" - {
+
+    "Event 8" - {
+      "must return OK and the correct view for a GET" in {
+
+        val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent8)).build()
+
+        running(application) {
+          val request = FakeRequest(GET, getRouteEvent8)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[MembersSummaryView]
+
+          val expectedSeq =
+            Seq(
+              SummaryListRowWithTwoValues(
+                key = SampleData.memberDetails.fullName,
+                firstValue = SampleData.memberDetails.nino,
+                secondValue = SampleData.lumpSumDetails.lumpSumAmount.toString(),
+                actions = Some(Actions(
+                  items = Seq(
+                    ActionItem(
+                      content = Text(Message("site.view")),
+                      href = controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(0).url
+                    ),
+                    ActionItem(
+                      content = Text(Message("site.remove")),
+                      href = "#"
+                    )
+                  )
+                ))
+              ))
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(formEvent8, waypoints, Event8, expectedSeq, "223.11")(request, messages(application)).toString
+        }
+      }
+
+      "must save the answer and redirect to the next page when valid data is submitted" in {
+        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(()))
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, postRouteEvent8).withFormUrlEncodedBody(("value", "true"))
+
+          val result = route(application, request).value
+          val updatedAnswers = emptyUserAnswers.set(MembersSummaryPage(Event8, 1), true).success.value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual MembersSummaryPage(Event8, 1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        }
+      }
+
+      "must return bad request when invalid data is submitted" in {
+        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(()))
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, postRouteEvent8).withFormUrlEncodedBody(("value", "invalid"))
+
+          val view = application.injector.instanceOf[MembersSummaryView]
+          val boundForm = formEvent8.bind(Map("value" -> "invalid"))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event8, Nil, "0.00")(request, messages(application)).toString
+          verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
+        }
+      }
+    }
 
     "Event 22" - {
       "must return OK and the correct view for a GET" in {

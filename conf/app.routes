@@ -230,6 +230,9 @@ POST       /new-report/:index/event-8-protection-reference                      
 GET        /new-report/:index/event-8-lump-sum-details                            controllers.event8.LumpSumAmountAndDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST       /new-report/:index/event-8-lump-sum-details                            controllers.event8.LumpSumAmountAndDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
+GET        /new-report/event-8-summary                                            controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8)
+POST       /new-report/event-8-summary                                            controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8)
+
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.
 #
