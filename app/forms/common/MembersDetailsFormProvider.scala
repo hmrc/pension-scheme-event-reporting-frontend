@@ -28,28 +28,29 @@ import javax.inject.Inject
 
 class MembersDetailsFormProvider @Inject() extends Mappings with Transforms {
 
-  def apply(eventType: EventType): Form[MembersDetails] = {
-    val memberType = eventType match {
-      case Event2 => "deceasedMembersDetails"
+  def apply(eventType: EventType, memberPageNo: Int=0): Form[MembersDetails] = {
+    val detailsType = (eventType, memberPageNo) match {
+      case (Event2, 1) => "deceasedMembersDetails"
+      case (Event2, 2) => "BeneficiaryDetails"
       case _ => "membersDetails"
     }
     Form(
       mapping("firstName" ->
-        text(s"${memberType}.error.firstName.required").verifying(
+        text(s"${detailsType}.error.firstName.required").verifying(
           firstError(
-            maxLength(firstNameLength, s"${memberType}.error.firstName.length"),
-            regexp(regexName, s"${memberType}.error.firstName.invalid"))),
+            maxLength(firstNameLength, s"${detailsType}.error.firstName.length"),
+            regexp(regexName, s"${detailsType}.error.firstName.invalid"))),
         "lastName" ->
-          text(s"${memberType}.error.lastName.required").verifying(
+          text(s"${detailsType}.error.lastName.required").verifying(
             firstError(
-              maxLength(lastNameLength, s"${memberType}.error.lastName.length"),
-              regexp(regexName, s"${memberType}.error.lastName.invalid"))
+              maxLength(lastNameLength, s"${detailsType}.error.lastName.length"),
+              regexp(regexName, s"${detailsType}.error.lastName.invalid"))
           ),
         "nino" ->
-          text(s"${memberType}.error.nino.required")
+          text(s"${detailsType}.error.nino.required")
             .transform(noSpaceWithUpperCaseTransform, noTransform)
             .verifying(
-              validNino(s"${memberType}.error.nino.invalid")
+              validNino(s"${detailsType}.error.nino.invalid")
             ))(MembersDetails.apply)(MembersDetails.unapply)
     )
   }

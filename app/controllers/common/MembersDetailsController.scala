@@ -42,19 +42,19 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
-  def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index, memberPageNo: Int): Action[AnyContent] =
     (identify andThen getData(eventType)) { implicit request =>
     val form = formProvider(eventType)
-    val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, indexToInt(index)))).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, indexToInt(index), memberPageNo))).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, eventType, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index)))
   }
 
-  def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index, memberPageNo: Int): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       doOnSubmit(
         waypoints,
         eventType,
-        MembersDetailsPage(eventType, index),
+        MembersDetailsPage(eventType, index, memberPageNo),
         controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index)
       )
   }

@@ -25,13 +25,15 @@ import pages.event6.TypeOfProtectionPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import utils.Event2MemberPageNumbers
 
-case class MembersDetailsPage(eventType: EventType, index: Int) extends QuestionPage[MembersDetails] {
+case class MembersDetailsPage(eventType: EventType, index: Int, memberPageNo: Int=0) extends QuestionPage[MembersDetails] {
 
   override def path: JsPath =
-    eventType match {
-      case Event6 | Event22 | Event23 => MembersPage(eventType)(index) \ MembersDetailsPage.toString
-      case Event2 => MembersPage(eventType)(index) \ DeceasedMembersDetailsPage.toString
+    (eventType, memberPageNo) match {
+      case (Event2, Event2MemberPageNumbers.FIRST_PAGE_DECEASED) => MembersPage(eventType)(index) \ MembersDetailsPage.toStringEvent2Deceased
+      case (Event2, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY) => MembersPage(eventType)(index) \ MembersDetailsPage.toStringEvent2Beneficiary
+      case (Event6 | Event22 | Event23, _) => MembersPage(eventType)(index) \ MembersDetailsPage.toString
       case _ => MembersOrEmployersPage(eventType)(index) \ MembersDetailsPage.toString
     }
 
@@ -50,8 +52,6 @@ case class MembersDetailsPage(eventType: EventType, index: Int) extends Question
 
 object MembersDetailsPage {
   override def toString: String = "membersDetails"
-}
-
-object DeceasedMembersDetailsPage {
-  override def toString: String = "deceasedMembersDetails"
+  private val toStringEvent2Deceased: String = "deceasedMembersDetails"
+  private val toStringEvent2Beneficiary: String = "BeneficiaryDetails"
 }

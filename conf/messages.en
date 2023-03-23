@@ -284,6 +284,23 @@ deceasedMembersDetails.error.nino.invalid = Enter a National Insurance number th
 deceasedMembersDetails.change.hidden = the deceased member’s name
 deceasedMembersDetails.change.nino.hidden = the deceased member’s national insurance number
 
+BeneficiaryDetails.title = Details of the person who was paid
+BeneficiaryDetails.heading = Details of the person who was paid
+BeneficiaryDetails.checkYourAnswersLabel = The name of the person who was paid
+BeneficiaryDetails.checkYourAnswersLabel.nino = The National Insurance number of the person who was paid
+BeneficiaryDetails.checkYourAnswersLabel.paymentAmount = The amount that was paid to {0} {1}
+BeneficiaryDetails.checkYourAnswersLabel.paymentDate = The date the payment was made to {0} {1}
+BeneficiaryDetails.error.firstName.required = Enter the first name of the person who was paid
+BeneficiaryDetails.error.lastName.required = Enter the last name of the person who was paid
+BeneficiaryDetails.error.nino.required = Enter the member’s National Insurance number
+BeneficiaryDetails.error.firstName.length = The first name of the person who was paid must be 35 characters or fewer
+BeneficiaryDetails.error.lastName.length = The last name of the person who was paid must be 35 characters or fewer
+BeneficiaryDetails.error.firstName.invalid = The first name of the person who was paid must only include letters, spaces, ampersands, grave accents, apostrophes, hyphens, full stops and carets
+BeneficiaryDetails.error.lastName.invalid = The last name of the person who was paid must only include letters, spaces, ampersands, grave accents, apostrophes, hyphens, full stops and carets
+BeneficiaryDetails.error.nino.invalid = Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ123456C
+BeneficiaryDetails.change.hidden = the name of the person who was paid
+BeneficiaryDetails.change.nino.hidden = the National Insurance number of the person who was paid
+
 doYouHoldSignedMandate.title = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.heading = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.checkYourAnswersLabel = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
