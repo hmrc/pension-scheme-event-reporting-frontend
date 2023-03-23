@@ -37,7 +37,7 @@ case class MembersDetailsPage(eventType: EventType, index: Int, memberPageNo: In
       case _ => MembersOrEmployersPage(eventType)(index) \ MembersDetailsPage.toString
     }
 
-  override def route(waypoints: Waypoints): Call = controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, eventType, index)
+  override def route(waypoints: Waypoints): Call = controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, eventType, index, memberPageNo)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     (eventType, index) match {
