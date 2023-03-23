@@ -26,7 +26,7 @@
 )
 
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberSeq: Seq[SummaryListRowWithTwoValues], total: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberSeq: Seq[SummaryListRowWithTwoValues], total: String, taxYear: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"membersSummary.event${eventType.toString}.title", "2022"))) {
 
@@ -36,7 +36,7 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", "2022")</h1>
+        <h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", taxYear)</h1>
 
         @components.entity_summaryThree_table_list(
             memberSeq,
