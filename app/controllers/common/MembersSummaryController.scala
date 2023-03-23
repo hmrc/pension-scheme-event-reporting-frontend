@@ -20,7 +20,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.common.MembersSummaryFormProvider
 import forms.mappings.Formatters
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import models.common.MembersSummary
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event22, Event23}
@@ -28,13 +28,15 @@ import pages.Waypoints
 import pages.common.{MembersPage, MembersSummaryPage}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.EventPaginationService
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.{Message, SummaryListRowWithTwoValues}
-import views.html.common.MembersSummaryView
+import views.html.common.{MembersSummaryView, MembersSummaryViewWithPagination}
 
 import javax.inject.Inject
 
+//scalastyle:off
 class MembersSummaryController @Inject()(
                                                   val controllerComponents: MessagesControllerComponents,
                                                   identify: IdentifierAction,
@@ -42,14 +44,32 @@ class MembersSummaryController @Inject()(
                                                   requireData: DataRequiredAction,
                                                   userAnswersCacheConnector: UserAnswersCacheConnector,
                                                   formProvider: MembersSummaryFormProvider,
-                                                  view: MembersSummaryView
+                                                  view: MembersSummaryView,
+                                                  newView: MembersSummaryViewWithPagination,
+                                                  eventPaginationService: EventPaginationService
                                                 ) extends FrontendBaseController with I18nSupport with Formatters {
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
-      Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
+      if (mappedMembers.length > 25) {
+        Redirect(routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, 0))
+      } else {
+        Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
+      }
+    }
+
+  def onPageLoadWithPageNumber(waypoints: Waypoints, eventType: EventType, pageNumber: Index): Action[AnyContent] =
+    (identify andThen getData(eventType) andThen requireData) { implicit request =>
+      val form = formProvider(eventType)
+      val mappedMembers = getMappedMembers(request.userAnswers, eventType)
+      val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, pageNumber)
+      if (mappedMembers.length <= 25) {
+        Redirect(routes.MembersSummaryController.onPageLoad(waypoints, eventType))
+      } else {
+        Ok(newView(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), paginationStats, pageNumber))
+      }
     }
 
   private def sumValue(userAnswers: UserAnswers, eventType: EventType) =
@@ -64,8 +84,8 @@ class MembersSummaryController @Inject()(
           BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
         },
         value => {
-          val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType), value)
-          Redirect(MembersSummaryPage(eventType).navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)}
+          val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 0), value)
+          Redirect(MembersSummaryPage(eventType, 0).navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)}
       )
   }
 

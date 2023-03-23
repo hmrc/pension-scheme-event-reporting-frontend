@@ -1,0 +1,96 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import viewmodels.SummaryListRowWithTwoValues
+@import models.enumeration.EventType
+@import services.EventPaginationService._
+
+@this(
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios: GovukRadios,
+    govukButton: GovukButton
+)
+
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberSeq: Seq[SummaryListRowWithTwoValues], total: String, paginationStats: PaginationStats, pageNumber: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages(s"membersSummary.event${eventType.toString}.title", "2022"))) {
+
+    @formHelper(action = controllers.common.routes.MembersSummaryController.onSubmit(waypoints, eventType), Symbol("autoComplete") -> "off") {
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form))
+        }
+
+        @if((pageNumber.toInt + 1) > paginationStats.totalNumberOfPages) {
+            @govukErrorSummary(ErrorSummaryViewModel(form.withError(FormError("page-nav", Seq("Page number is out of bounds")))))
+        }
+
+        <h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", "2022")</h1>
+
+        @components.entity_summaryThree_table_list(
+            paginationStats.slicedMembers,
+            colOne = "membersSummary.table.header1",
+            colTwo = "membersSummary.table.header2",
+            colThree = "membersSummary.table.header3",
+            total,
+            "entity_list_table.totalForMembersSummary"
+        )
+
+        @if(paginationStats.pagerSeq) {
+        <div class="govuk-!-margin-bottom-9" id="page-nav">
+            <p class="govuk-body">@(s"Showing ${paginationStats.pageStartAndEnd._1} – ${paginationStats.pageStartAndEnd._2} of ${paginationStats.totalNumberOfMembers} members")</p>
+            <nav class="govuk-margin-top-5" aria-label="page">
+                <ul class="govuk-list">
+                    @if((pageNumber.toInt + 1) >= 2) {
+                    <li class="govuk-!-display-inline govuk-!-margin-right-2">
+                        <a href=@(pageNumber.toInt) id="value-@(pageNumber.toInt)" class="govuk-link">Previous</a>
+                    </li>
+                    }
+                    @for(link <- paginationStats.pagerSeq) {
+                            @if(link.toInt != (pageNumber.toInt + 1)){
+                                <li class="govuk-!-display-inline govuk-!-margin-right-2">
+                                    <a href=@(link) id="value-@(link)" class="govuk-link">@(link)</a>
+                                </li>
+                            } else {
+                                <li class="govuk-!-display-inline govuk-!-margin-right-2">
+                                    @(link)
+                                </li>
+                            }
+                    }
+                    @if((pageNumber.toInt + 1) < paginationStats.totalNumberOfPages) {
+                    <li class="govuk-!-display-inline">
+                        <a href=@(pageNumber.toInt + 2) id="value-@(pageNumber.toInt + 2)" class="govuk-link">Next</a>
+                    </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+        }
+
+        @govukRadios(
+            RadiosViewModel.yesNo(
+                field = form("value"),
+                legend = LegendViewModel(messages(s"membersSummary.event${eventType.toString}.yesno.legend")).withCssClass("govuk-fieldset__legend--m"),
+            )
+        )
+
+        @govukButton(
+            ButtonViewModel(messages("site.saveAndContinue")).withAttribute(("id", "submit"))
+        )
+    }
+}
