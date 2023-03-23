@@ -116,10 +116,10 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
             FakeRequest(POST, postRouteEvent22).withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(MembersSummaryPage(Event22), true).success.value
+          val updatedAnswers = emptyUserAnswers.set(MembersSummaryPage(Event22, 1), true).success.value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual MembersSummaryPage(Event22).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          redirectLocation(result).value mustEqual MembersSummaryPage(Event22, 1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         }
       }
 
@@ -197,10 +197,10 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
             FakeRequest(POST, postRouteEvent23).withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(MembersSummaryPage(Event23), true).success.value
+          val updatedAnswers = emptyUserAnswers.set(MembersSummaryPage(Event23, 1), true).success.value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual MembersSummaryPage(Event23).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          redirectLocation(result).value mustEqual MembersSummaryPage(Event23, 1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         }
       }
 
