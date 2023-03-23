@@ -22,6 +22,7 @@ import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event22, Event23, Event6, Event7}
 import pages.event1.DoYouHoldSignedMandatePage
 import pages.event6.TypeOfProtectionPage
+import pages.event7.LumpSumAmountPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -40,7 +41,7 @@ case class MembersDetailsPage(eventType: EventType, index: Int) extends Question
     (eventType, index) match {
       case (Event1, index) => DoYouHoldSignedMandatePage(index)
       case (Event6, index) => TypeOfProtectionPage(eventType, index)
-      case (Event7, index) => ChooseTaxYearPage(eventType, index)
+      case (Event7, index) => LumpSumAmountPage(index)
       case (Event22, index) => ChooseTaxYearPage(eventType, index)
       case (Event23, index) => ChooseTaxYearPage(eventType, index)
       case _ => super.nextPageNormalMode(waypoints, answers)

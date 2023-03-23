@@ -933,3 +933,16 @@ amountCrystallisedAndDate.date.error.outsideDateRanges = Enter a real date
 amountCrystallisedAndDate.date.error.outsideReportedYear = Date must be between {0} and {1}
 amountCrystallisedAndDate.date.change.hidden = the date of the benefit crystallisation
 amountCrystallisedAndDate.date.checkYourAnswersLabel = Date of the benefit crystallisation
+
+lumpSumAmount.title = How much lump sum was paid?
+lumpSumAmount.heading = How much lump sum was paid?
+lumpSumAmount.checkYourAnswersLabel = How much lump sum was paid?
+lumpSumAmount.change.hidden = How much lump sum was paid?
+
+lumpSumAmount.value.error.nothingEntered = Enter how much lump sum was paid
+lumpSumAmount.value.error.notANumber = The amount must be an amount of money, like 123.45 or 156.00
+lumpSumAmount.value.error.noDecimals = The amount must include pence, like 123.45 or 156.00
+lumpSumAmount.value.error.amountTooHigh = The amount must be £999999999.99 or less
+lumpSumAmount.value.error.zeroAmount = The amount entered must be greater than zero
+lumpSumAmount.value.error.negative = The amount must not be a negative amount of money, like -123.45 or -156.00
+
