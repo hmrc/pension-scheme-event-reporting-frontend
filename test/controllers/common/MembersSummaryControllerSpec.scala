@@ -99,7 +99,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
               ))
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent22, waypoints, Event22, expectedSeq, "999.11")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent22, waypoints, Event22, expectedSeq, "999.11", "")(request, messages(application)).toString
         }
       }
 
@@ -141,7 +141,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event22, Nil, "0.00")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event22, Nil, "0.00", "")(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
         }
       }
@@ -180,7 +180,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
               ))
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent23, waypoints, Event23, expectedSeq, "1,234.56")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent23, waypoints, Event23, expectedSeq, "1,234.56", "")(request, messages(application)).toString
         }
       }
 
@@ -222,7 +222,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event23, Nil, "0.00")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event23, Nil, "0.00", "")(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
         }
       }
