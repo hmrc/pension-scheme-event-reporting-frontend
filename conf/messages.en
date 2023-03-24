@@ -301,6 +301,16 @@ beneficiaryDetails.error.nino.invalid = Enter a National Insurance number that i
 beneficiaryDetails.change.hidden = the name of the person who was paid
 beneficiaryDetails.change.nino.hidden = the National Insurance number of the person who was paid
 
+amountPaid.event2.title = How much was paid?
+amountPaid.event2.heading = How much was paid to {0}?
+amountPaid.event2.checkYourAnswersLabel = The amount that was paid to d a
+amountPaid.event2.error.nonNumeric = The amount must be an amount of money, like 123.45 or 156.00
+amountPaid.event2.error.negative = The amount must not be a negative amount of money, like -123.45 or -156.00
+amountPaid.event2.error.required = Enter the amount paid
+amountPaid.event2.error.noDecimals = The amount must include pence, like 123.45 or 156.00
+amountPaid.event2.error.tooHigh = The amount must be £999999999.99 or less
+amountPaid.event2.change.hidden = How much was paid to {0}?
+
 doYouHoldSignedMandate.title = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.heading = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.checkYourAnswersLabel = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?

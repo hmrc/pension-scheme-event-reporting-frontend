@@ -152,6 +152,9 @@ POST        /new-report/:index/event-2-deceased-member-details                  
 GET         /new-report/:index/event-2-person-who-was-paid                        controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index,memberPageNo: Int = 2)
 POST        /new-report/:index/event-2-person-who-was-paid                        controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index, memberPageNo: Int = 2)
 
+GET         /new-report/:index/event-2-how-much-was-paid                          controllers.event2.AmountPaidController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST        /new-report/:index/event-2-how-much-was-paid                          controllers.event2.AmountPaidController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
 GET         /new-report/:index/event-23-entry-type                                controllers.common.ManualOrUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
 POST        /new-report/:index/event-23-entry-type                                controllers.common.ManualOrUploadController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
 

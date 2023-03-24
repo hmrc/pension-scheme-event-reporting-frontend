@@ -29,6 +29,9 @@ import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryAmountPaidPage: Arbitrary[event2.AmountPaidPage.type] =
+    Arbitrary(event2.AmountPaidPage)
+
   implicit lazy val arbitraryInputProtectionTypePage: Arbitrary[event6.InputProtectionTypePage.type] =
     Arbitrary(event6.InputProtectionTypePage)
 
