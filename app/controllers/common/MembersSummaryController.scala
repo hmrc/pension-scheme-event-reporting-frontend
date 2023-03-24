@@ -56,7 +56,7 @@ class MembersSummaryController @Inject()(
 
   private def getSelectedTaxYear(userAnswers: UserAnswers)(implicit messages: Messages): String = {
     userAnswers.get(TaxYearPage) match {
-      case Some(taxYear) => s"${Integer.parseInt(taxYear.toString.stripPrefix("TaxYear(").stripSuffix(")").trim)}"
+      case Some(taxYear) => s"${Integer.parseInt(taxYear.endYear.stripPrefix("TaxYear(").stripSuffix(")").trim)}"
       case _ => StringUtils.EMPTY
     }
   }
