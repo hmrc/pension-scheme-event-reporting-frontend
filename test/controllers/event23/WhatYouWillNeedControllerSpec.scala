@@ -44,7 +44,7 @@ class WhatYouWillNeedControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(controllers.common.
-          routes.MembersDetailsController.onPageLoad(waypoints, event23, 0).url)(request, messages(application)).toString
+          routes.MembersDetailsController.onPageLoad(waypoints, event23, 0, memberPageNo = 0).url)(request, messages(application)).toString
       }
     }
   }

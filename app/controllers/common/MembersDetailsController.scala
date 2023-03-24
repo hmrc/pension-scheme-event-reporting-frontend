@@ -44,7 +44,7 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index, memberPageNo: Int): Action[AnyContent] =
     (identify andThen getData(eventType)) { implicit request =>
-    val form = formProvider(eventType)
+    val form = formProvider(eventType, memberPageNo)
     val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, indexToInt(index), memberPageNo))).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, eventType, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index, memberPageNo)))
   }
@@ -55,16 +55,18 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
         waypoints,
         eventType,
         MembersDetailsPage(eventType, index, memberPageNo),
-        controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index, memberPageNo)
+        controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index, memberPageNo),
+        memberPageNo
       )
   }
 
   private def doOnSubmit(waypoints: Waypoints,
                          eventType: EventType,
                          page: MembersDetailsPage,
-                         postCall: => Call
+                         postCall: => Call,
+                         memberPageNo: Int
                         )(implicit request: OptionalDataRequest[_]): Future[Result] = {
-    val form = formProvider(eventType)
+    val form = formProvider(eventType,memberPageNo)
     form.bindFromRequest().fold(
       formWithErrors =>
         Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, postCall))),

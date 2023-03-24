@@ -46,27 +46,29 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
   private val event23 = EventType.Event23
 
   private val formProvider = new MembersDetailsFormProvider()
-  private val form = formProvider()
+  private val formEv1 = formProvider(event1)
+  private val formEv22 = formProvider(event22)
+  private val formEv23 = formProvider(event23)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def submitUrlEvent1: Call = controllers.common.routes.MembersDetailsController.onSubmit(waypoints, event1, 0)
+  private def submitUrlEvent1: Call = controllers.common.routes.MembersDetailsController.onSubmit(waypoints, event1, 0, memberPageNo = 0)
 
-  private def submitUrlEvent22: Call = controllers.common.routes.MembersDetailsController.onSubmit(waypoints, event22, 0)
+  private def submitUrlEvent22: Call = controllers.common.routes.MembersDetailsController.onSubmit(waypoints, event22, 0, memberPageNo = 0)
 
-  private def submitUrlEvent23: Call = controllers.common.routes.MembersDetailsController.onSubmit(waypoints, event23, 0)
+  private def submitUrlEvent23: Call = controllers.common.routes.MembersDetailsController.onSubmit(waypoints, event23, 0, memberPageNo = 0)
 
-  private def getRouteEvent1: String = routes.MembersDetailsController.onPageLoad(waypoints, event1, Index(0)).url
+  private def getRouteEvent1: String = routes.MembersDetailsController.onPageLoad(waypoints, event1, Index(0), memberPageNo = 0).url
 
-  private def postRouteEvent1: String = routes.MembersDetailsController.onSubmit(waypoints, event1, Index(0)).url
+  private def postRouteEvent1: String = routes.MembersDetailsController.onSubmit(waypoints, event1, Index(0), memberPageNo = 0).url
 
-  private def getRouteEvent22: String = routes.MembersDetailsController.onPageLoad(waypoints, event22, Index(0)).url
+  private def getRouteEvent22: String = routes.MembersDetailsController.onPageLoad(waypoints, event22, Index(0), memberPageNo = 0).url
 
-  private def postRouteEvent22: String = routes.MembersDetailsController.onSubmit(waypoints, event22, 0).url
+  private def postRouteEvent22: String = routes.MembersDetailsController.onSubmit(waypoints, event22, 0, memberPageNo = 0).url
 
-  private def getRouteEvent23: String = routes.MembersDetailsController.onPageLoad(waypoints, event23, Index(0)).url
+  private def getRouteEvent23: String = routes.MembersDetailsController.onPageLoad(waypoints, event23, Index(0), memberPageNo = 0).url
 
-  private def postRouteEvent23: String = routes.MembersDetailsController.onSubmit(waypoints, event23, 0).url
+  private def postRouteEvent23: String = routes.MembersDetailsController.onSubmit(waypoints, event23, 0, memberPageNo = 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -94,7 +96,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           val view = application.injector.instanceOf[MembersDetailsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, waypoints, event1, submitUrlEvent1)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEv1, waypoints, event1, submitUrlEvent1)(request, messages(application)).toString
         }
       }
 
@@ -112,7 +114,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(validValue), waypoints, event1, submitUrlEvent1)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEv1.fill(validValue), waypoints, event1, submitUrlEvent1)(request, messages(application)).toString
         }
       }
 
@@ -148,7 +150,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
             FakeRequest(POST, postRouteEvent1).withFormUrlEncodedBody(("firstName", "%"), ("lastName", ""), ("nino", "abc"))
 
           val view = application.injector.instanceOf[MembersDetailsView]
-          val boundForm = form.bind(Map("firstName" -> "%", "lastName" -> "", "nino" -> "abc"))
+          val boundForm = formEv1.bind(Map("firstName" -> "%", "lastName" -> "", "nino" -> "abc"))
 
           val result = route(application, request).value
 
@@ -173,7 +175,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           val view = application.injector.instanceOf[MembersDetailsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, waypoints, event22, submitUrlEvent22)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEv22, waypoints, event22, submitUrlEvent22)(request, messages(application)).toString
         }
       }
 
@@ -191,7 +193,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(validValue), waypoints, event22, submitUrlEvent22)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEv22.fill(validValue), waypoints, event22, submitUrlEvent22)(request, messages(application)).toString
         }
       }
 
@@ -227,7 +229,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
             FakeRequest(POST, postRouteEvent22).withFormUrlEncodedBody(("firstName", "%"), ("lastName", ""), ("nino", "abc"))
 
           val view = application.injector.instanceOf[MembersDetailsView]
-          val boundForm = form.bind(Map("firstName" -> "%", "lastName" -> "", "nino" -> "abc"))
+          val boundForm = formEv22.bind(Map("firstName" -> "%", "lastName" -> "", "nino" -> "abc"))
 
           val result = route(application, request).value
 
@@ -252,7 +254,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           val view = application.injector.instanceOf[MembersDetailsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, waypoints, event23, submitUrlEvent23)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEv23, waypoints, event23, submitUrlEvent23)(request, messages(application)).toString
         }
       }
 
@@ -270,7 +272,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(validValue), waypoints, event23, submitUrlEvent23)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEv23.fill(validValue), waypoints, event23, submitUrlEvent23)(request, messages(application)).toString
         }
       }
 
@@ -306,7 +308,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
             FakeRequest(POST, postRouteEvent23).withFormUrlEncodedBody(("firstName", "%"), ("lastName", ""), ("nino", "abc"))
 
           val view = application.injector.instanceOf[MembersDetailsView]
-          val boundForm = form.bind(Map("firstName" -> "%", "lastName" -> "", "nino" -> "abc"))
+          val boundForm = formEv23.bind(Map("firstName" -> "%", "lastName" -> "", "nino" -> "abc"))
 
           val result = route(application, request).value
 
