@@ -96,7 +96,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           val view = application.injector.instanceOf[MembersDetailsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEv1, waypoints, event1, submitUrlEvent1)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEv1, waypoints, event1, memberPageNo = 0, submitUrlEvent1)(request, messages(application)).toString
         }
       }
 
@@ -114,7 +114,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEv1.fill(validValue), waypoints, event1, submitUrlEvent1)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEv1.fill(validValue), waypoints, event1, memberPageNo = 0, submitUrlEvent1)(request, messages(application)).toString
         }
       }
 
@@ -155,7 +155,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, event1, submitUrlEvent1)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, event1, memberPageNo = 0, submitUrlEvent1)(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
         }
       }
@@ -175,7 +175,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           val view = application.injector.instanceOf[MembersDetailsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEv22, waypoints, event22, submitUrlEvent22)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEv22, waypoints, event22, memberPageNo = 0, submitUrlEvent22)(request, messages(application)).toString
         }
       }
 
@@ -193,7 +193,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEv22.fill(validValue), waypoints, event22, submitUrlEvent22)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEv22.fill(validValue), waypoints, event22, memberPageNo = 0, submitUrlEvent22)(request, messages(application)).toString
         }
       }
 
@@ -234,7 +234,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, event22, submitUrlEvent22)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, event22, memberPageNo = 0, submitUrlEvent22)(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
         }
       }
@@ -254,7 +254,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           val view = application.injector.instanceOf[MembersDetailsView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEv23, waypoints, event23, submitUrlEvent23)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEv23, waypoints, event23, memberPageNo = 0, submitUrlEvent23)(request, messages(application)).toString
         }
       }
 
@@ -272,7 +272,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEv23.fill(validValue), waypoints, event23, submitUrlEvent23)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEv23.fill(validValue), waypoints, event23, memberPageNo = 0, submitUrlEvent23)(request, messages(application)).toString
         }
       }
 
@@ -313,7 +313,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, event23, submitUrlEvent23)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, event23, memberPageNo = 0, submitUrlEvent23)(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
         }
       }

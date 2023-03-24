@@ -27,7 +27,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, submitUrl: Call)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberPageNo: Int, submitUrl: Call)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, if(eventType==Event2) messages("deceasedMembersDetails.title") else messages("membersDetails.title"))) {
 
@@ -38,8 +38,12 @@
         }
 
         @if(eventType== Event2) {
-            <h1 class="govuk-heading-xl">@messages("deceasedMembersDetails.heading")</h1>
-        } else {
+            @if(memberPageNo == 1) {
+                <h1 class="govuk-heading-xl">@messages("deceasedMembersDetails.heading")</h1>
+            } else {
+                <h1 class="govuk-heading-xl">@messages("beneficiaryMembersDetails.heading")</h1>
+            }
+        }else {
             <h1 class="govuk-heading-xl">@messages("membersDetails.heading")</h1>
         }
 

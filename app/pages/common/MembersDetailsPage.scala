@@ -42,6 +42,7 @@ case class MembersDetailsPage(eventType: EventType, index: Int, memberPageNo: In
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     (eventType, index) match {
       case (Event1, index) => DoYouHoldSignedMandatePage(index)
+      case (Event2, index) => MembersDetailsPage(eventType, index, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY)
       case (Event6, index) => TypeOfProtectionPage(eventType, index)
       case (Event22, index) => ChooseTaxYearPage(eventType, index)
       case (Event23, index) => ChooseTaxYearPage(eventType, index)
@@ -53,5 +54,5 @@ case class MembersDetailsPage(eventType: EventType, index: Int, memberPageNo: In
 object MembersDetailsPage {
   override def toString: String = "membersDetails"
   private val toStringEvent2Deceased: String = "deceasedMembersDetails"
-  private val toStringEvent2Beneficiary: String = "BeneficiaryDetails"
+  private val toStringEvent2Beneficiary: String = "beneficiaryDetails"
 }
