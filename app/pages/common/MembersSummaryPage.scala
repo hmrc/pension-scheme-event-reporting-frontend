@@ -32,7 +32,7 @@ case class MembersSummaryPage(eventType: EventType) extends QuestionPage[Boolean
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     (eventType, answers.get(MembersSummaryPage(eventType))) match {
-      case (Event6, Some(true)) => ManualOrUploadPage(Event6, answers.countAll(MembersPage(EventType.Event6)))
+      case (Event6, Some(true)) => MembersDetailsPage(Event6, answers.countAll(MembersPage(EventType.Event6)))
       case (Event22, Some(true)) => ManualOrUploadPage(Event22, answers.countAll(MembersPage(EventType.Event22)))
       case (Event23, Some(true)) => ManualOrUploadPage(Event23, answers.countAll(MembersPage(EventType.Event23)))
       case _ => EventSummaryPage
