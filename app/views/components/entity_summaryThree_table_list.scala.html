@@ -24,17 +24,17 @@
             <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">@messages(colOne)</th>
             <th scope="col" class="govuk-table__header">@messages(colTwo)</th>
             <th scope="col" class="govuk-table__header">@messages(colThree)</th>
-            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter"></th>
+            <th scope="col" class="govuk-table__header"></th>
         </tr>
     </thead>
     <tbody class="govuk-table__body">
     @seqSummaryListRowWithTwoValues.map { summaryListRow =>
         <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header govuk-!-font-weight-regular govuk-!-width-one-quarter">@summaryListRow.key</th>
-            <td class="govuk-table__cell govuk-!-width-one-quarter">@summaryListRow.firstValue</td>
-            <td class="govuk-table__cell govuk-!-width-one-quarter">&pound;@summaryListRow.secondValue</td>
+            <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">@summaryListRow.key</th>
+            <td class="govuk-table__cell">@summaryListRow.firstValue</td>
+            <td class="govuk-table__cell">&pound;@summaryListRow.secondValue</td>
             @summaryListRow.actions.map { actions =>
-                <td class="govuk-table__cell govuk-table__cell--numeric govuk-!-width-one-quarter">
+                <td class="govuk-table__cell govuk-table__cell--numeric whitespace-nowrap">
                     <ul class="govuk-summary-list__actions-list">
                         @actions.items.map { item =>
                             <li class="govuk-summary-list__actions-list-item">
