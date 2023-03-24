@@ -20,11 +20,12 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.common.MembersSummaryFormProvider
 import forms.mappings.Formatters
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import models.common.MembersSummary
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event22, Event23, Event6}
-import pages.Waypoints
+import org.apache.commons.lang3.StringUtils
+import pages.{TaxYearPage, Waypoints, common}
 import pages.common.{MembersPage, MembersSummaryPage}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -49,8 +50,16 @@ class MembersSummaryController @Inject()(
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
-      Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
+      val selectedTaxYear = getSelectedTaxYear(request.userAnswers)
+      Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear))
     }
+
+  private def getSelectedTaxYear(userAnswers: UserAnswers)(implicit messages: Messages): String = {
+    userAnswers.get(TaxYearPage) match {
+      case Some(taxYear) => s"${Integer.parseInt(taxYear.toString.stripPrefix("TaxYear(").stripSuffix(")").trim)}"
+      case _ => StringUtils.EMPTY
+    }
+  }
 
   private def sumValue(userAnswers: UserAnswers, eventType: EventType) =
     currencyFormatter.format(userAnswers.sumAll(MembersPage(eventType), MembersSummary.readsMemberValue(eventType)))
@@ -59,9 +68,10 @@ class MembersSummaryController @Inject()(
     implicit request =>
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
+      val selectedTaxYear = getSelectedTaxYear(request.userAnswers)
       form.bindFromRequest().fold(
         formWithErrors => {
-          BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
+          BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear))
         },
         value => {
           val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType), value)
