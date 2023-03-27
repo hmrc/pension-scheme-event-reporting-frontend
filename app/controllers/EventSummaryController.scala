@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.EventSummaryFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23}
+import models.enumeration.EventType.{Event18, Event22, Event23, Event6}
 import models.requests.DataRequest
 import pages.{EmptyWaypoints, EventSummaryPage, TaxYearPage, Waypoints}
 import play.api.Logger
@@ -66,10 +66,7 @@ class EventSummaryController @Inject()(
                   ),
                   ActionItem(
                     content = Text(Message("site.remove")),
-                    href = event match {
-                      case EventType.Event18 => controllers.event18.routes.RemoveEvent18Controller.onPageLoad(waypoints).url
-                      case _ => "#"
-                    }
+                    href = removeLinkForEvent(event)
                   )
                 )
               ))
@@ -102,8 +99,16 @@ class EventSummaryController @Inject()(
 
   private def changeLinkForEvent(eventType: EventType): String = {
     eventType match {
+      case Event6 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event6).url
       case Event22 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event22).url
       case Event23 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event23).url
+      case _ => "#"
+    }
+  }
+
+  private def removeLinkForEvent(eventType: EventType): String = {
+    eventType match {
+      case Event18 => controllers.event18.routes.RemoveEvent18Controller.onPageLoad(EmptyWaypoints).url
       case _ => "#"
     }
   }
