@@ -40,7 +40,7 @@ class SchemeStructureDescriptionController @Inject()(val controllerComponents: M
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event1
+  private val eventType = EventType.Event13
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(SchemeStructureDescriptionPage)).fold(form){v => form.fill(Some(v))}

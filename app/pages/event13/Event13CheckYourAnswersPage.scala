@@ -16,23 +16,18 @@
 
 package pages.event13
 
-import java.time.LocalDate
-import controllers.event13.routes
-import models.UserAnswers
-import play.api.libs.json.JsPath
+import models.enumeration.EventType.Event13
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.mvc.Call
-import pages.{Page, QuestionPage, Waypoints}
 
-case object ChangeDatePage extends QuestionPage[LocalDate] {
+case class Event13CheckYourAnswersPage() extends CheckAnswersPage {
+  override val urlFragment: String =
+    s"event-${Event13.toString}-check-answers"
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "changeDate"
-
-  override def route(waypoints: Waypoints): Call =
-    routes.ChangeDateController.onPageLoad(waypoints)
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    Event13CheckYourAnswersPage()
+  override def route(waypoints: Waypoints): Call = {
+    controllers.event13.routes.Event13CheckYourAnswersController.onPageLoad
   }
+
+  override def toString: String = "CheckYourAnswersPage"
 }
+

@@ -33,11 +33,11 @@ object SchemeStructureDescriptionSummary  {
       answer =>
 
         SummaryListRowViewModel(
-          key     = "schemeStructureDescription.checkYourAnswersLabel",
+          key     = "event13.schemeStructureDescription.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", SchemeStructureDescriptionPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("schemeStructureDescription.change.hidden"))
+              .withVisuallyHiddenText(messages("event13.schemeStructureDescription.change.hidden"))
           )
         )
     }

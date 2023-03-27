@@ -35,11 +35,11 @@ object ChangeDateSummary  {
         val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
         SummaryListRowViewModel(
-          key     = "changeDate.checkYourAnswersLabel",
+          key     = "event13.changeDate.checkYourAnswersLabel",
           value   = ValueViewModel(answer.format(dateFormatter)),
           actions = Seq(
             ActionItemViewModel("site.change", ChangeDatePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("changeDate.change.hidden"))
+              .withVisuallyHiddenText(messages("event13.changeDate.change.hidden"))
           )
         )
     }
