@@ -18,21 +18,23 @@ package pages.event8a
 
 import controllers.event8a.routes
 import models.enumeration.EventType
-import models.{Index, UserAnswers}
+import models.event8a.LumpSumDetails
 import pages.common.MembersPage
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class TypeOfProtectionReferencePage(eventType: EventType, index: Index) extends QuestionPage[String] {
+case class LumpSumAmountAndDatePage(eventType: EventType, index: Int) extends QuestionPage[LumpSumDetails] {
 
-  override def path: JsPath = MembersPage(EventType.Event8A)(index) \ toString
-
-  override def toString: String = "typeOfProtectionReference"
+  override def path: JsPath = MembersPage(EventType.Event8A)(index) \ LumpSumAmountAndDatePage.toString
 
   override def route(waypoints: Waypoints): Call =
-    routes.TypeOfProtectionReferenceController.onPageLoad(waypoints, index)
+    routes.LumpSumAmountAndDateController.onPageLoad(waypoints, index)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    LumpSumAmountAndDatePage(eventType, index)
+  //  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+  //    Event8ACheckYourAnswersPage(index)
+}
+
+object LumpSumAmountAndDatePage {
+  override def toString: String = "lumpSumAmountAndDate"
 }

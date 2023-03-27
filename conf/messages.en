@@ -1027,3 +1027,25 @@ event8a.typeOfProtectionReference.change.hidden = the {0} reference
 event8a.typeOfProtectionReference.error.required = Enter a protection reference
 event8a.typeOfProtectionReference.error.length = Enter a protection reference between 8 and 15 characters (it can be a combination of numbers and letters)
 event8a.typeOfProtectionReference.error.invalid = The protection reference can only contain letters and numbers
+
+event8a.lumpSumAmountAndDate.title = Lump sum amount and date
+event8a.lumpSumAmountAndDate.heading = Lump sum amount and date
+
+event8a.lumpSumAmountAndDate.value.heading = How much lump sum was paid?
+event8a.lumpSumAmountAndDate.value.error.nothingEntered = Enter the total amount
+event8a.lumpSumAmountAndDate.value.error.notANumber = The total amount must be an amount of money, like 123.45 or 156.00
+event8a.lumpSumAmountAndDate.value.error.noDecimals = The amount must include pence, like 123.45 or 156.00
+event8a.lumpSumAmountAndDate.value.error.amountTooHigh = The total amount must be £999999999.99 or less
+event8a.lumpSumAmountAndDate.value.error.negativeValue = The amount must not be a negative amount of money, like -123.45 or -156.00
+event8a.lumpSumAmountAndDate.value.error.zeroEntered = The total amount must be greater than zero
+event8a.lumpSumAmountAndDate.value.change.hidden = the total amount
+event8a.lumpSumAmountAndDate.value.checkYourAnswersLabel = Lump sum amount
+
+event8a.lumpSumAmountAndDate.date.heading = When was the payment made?
+event8a.lumpSumAmountAndDate.date.hint = For example, 27 3 2007
+event8a.lumpSumAmountAndDate.date.error.nothingEntered = Enter the date
+event8a.lumpSumAmountAndDate.date.error.noDayMonthOrYear = The date must include a day, month and year
+event8a.lumpSumAmountAndDate.date.error.outsideDateRanges = Enter a real date
+event8a.lumpSumAmountAndDate.date.error.outsideReportedYear = Date must be between {0} and {1}
+event8a.lumpSumAmountAndDate.date.change.hidden = the date of the lump sum payment
+event8a.lumpSumAmountAndDate.date.checkYourAnswersLabel = The date the payment was made

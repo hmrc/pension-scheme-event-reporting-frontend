@@ -41,9 +41,9 @@ case class PaymentTypePage(eventType: EventType, index: Int) extends QuestionPag
     optionSelected match {
       case Some(paymentType) =>
         paymentType match {
-          case PaymentType.PaymentOfAStandaloneLumpSum =>
+          case PaymentType.PaymentOfAStandAloneLumpSum =>
             TypeOfProtectionPage(eventType, index)
-          case PaymentType.PaymentOfASchemespecificLumpSum =>
+          case PaymentType.PaymentOfASchemeSpecificLumpSum =>
             IndexPage
         }
       case _ =>

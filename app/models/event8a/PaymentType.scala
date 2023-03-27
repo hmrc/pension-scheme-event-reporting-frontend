@@ -26,12 +26,12 @@ sealed trait PaymentType
 
 object PaymentType extends Enumerable.Implicits {
 
-  case object PaymentOfAStandaloneLumpSum extends WithName("paymentOfAStandAloneLumpSum") with PaymentType
+  case object PaymentOfAStandAloneLumpSum extends WithName("paymentOfAStandAloneLumpSum") with PaymentType
 
-  case object PaymentOfASchemespecificLumpSum extends WithName("paymentOfASchemeSpecificLumpSum") with PaymentType
+  case object PaymentOfASchemeSpecificLumpSum extends WithName("paymentOfASchemeSpecificLumpSum") with PaymentType
 
   val values: Seq[PaymentType] = Seq(
-    PaymentOfAStandaloneLumpSum, PaymentOfASchemespecificLumpSum
+    PaymentOfAStandAloneLumpSum, PaymentOfASchemeSpecificLumpSum
   )
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
