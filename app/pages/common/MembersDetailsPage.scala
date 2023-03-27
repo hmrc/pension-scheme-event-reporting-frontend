@@ -21,6 +21,7 @@ import models.common.MembersDetails
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event2, Event22, Event23, Event6}
 import pages.event1.DoYouHoldSignedMandatePage
+import pages.event2.AmountPaidPage
 import pages.event6.TypeOfProtectionPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
@@ -40,12 +41,13 @@ case class MembersDetailsPage(eventType: EventType, index: Int, memberPageNo: In
   override def route(waypoints: Waypoints): Call = controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, eventType, index, memberPageNo)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    (eventType, index) match {
-      case (Event1, index) => DoYouHoldSignedMandatePage(index)
-      case (Event2, index) => MembersDetailsPage(eventType, index, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY)
-      case (Event6, index) => TypeOfProtectionPage(eventType, index)
-      case (Event22, index) => ChooseTaxYearPage(eventType, index)
-      case (Event23, index) => ChooseTaxYearPage(eventType, index)
+    (eventType, index, memberPageNo) match {
+      case (Event1, index, _) => DoYouHoldSignedMandatePage(index)
+      case (Event2, index, 1) => MembersDetailsPage(eventType, index, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY)
+      case (Event2, index, 2) => AmountPaidPage(index)
+      case (Event6, index, _) => TypeOfProtectionPage(eventType, index)
+      case (Event22, index, _) => ChooseTaxYearPage(eventType, index)
+      case (Event23, index, _) => ChooseTaxYearPage(eventType, index)
       case _ => super.nextPageNormalMode(waypoints, answers)
     }
   }

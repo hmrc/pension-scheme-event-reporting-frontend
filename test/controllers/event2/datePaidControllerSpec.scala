@@ -18,46 +18,48 @@ package controllers.event2
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event2.AmountPaidFormProvider
+import forms.event2.datePaidFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.{never, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
-import pages.event2.AmountPaidPage
+import pages.event2.datePaidPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event2.AmountPaidView
+import views.html.event2.datePaidView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
-class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
+class datePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new AmountPaidFormProvider()
+  private val formProvider = new datePaidFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.AmountPaidController.onPageLoad(waypoints).url
-  private def postRoute: String = routes.AmountPaidController.onSubmit(waypoints).url
+  private def getRoute: String = routes.datePaidController.onPageLoad(waypoints, index = 0).url
+
+  private def postRoute: String = routes.datePaidController.onSubmit(waypoints, index = 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validValue = 33
+  private val validAnswer = LocalDate.of(2020, 2, 12)
 
   override def beforeEach: Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
 
-  "AmountPaid Controller" - {
+  "datePaid Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -68,7 +70,7 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[AmountPaidView]
+        val view = application.injector.instanceOf[datePaidView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
@@ -76,20 +78,18 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = UserAnswers().set(AmountPaidPage, validValue).success.value
-
+      val userAnswers = UserAnswers().set(datePaidPage(index = 0), validAnswer).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[AmountPaidView]
+        val view = application.injector.instanceOf[datePaidView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), waypoints)(request, messages(application)).toString
       }
     }
 
@@ -103,13 +103,17 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "33"))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
+            "value.day" -> "12",
+            "value.month" -> "2",
+            "value.year" -> "2020"
+          )
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(AmountPaidPage(index = 0), validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(datePaidPage(index = 0), validAnswer).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AmountPaidPage(index = 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual datePaidPage(index = 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -121,15 +125,15 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[AmountPaidView]
-        val boundForm = form.bind(Map("value" -> ""))
+        val view = application.injector.instanceOf[datePaidView]
+        val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-//        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, index = 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

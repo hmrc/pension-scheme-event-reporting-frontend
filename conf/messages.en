@@ -303,13 +303,23 @@ beneficiaryDetails.change.nino.hidden = the National Insurance number of the per
 
 amountPaid.event2.title = How much was paid?
 amountPaid.event2.heading = How much was paid to {0}?
-amountPaid.event2.checkYourAnswersLabel = The amount that was paid to d a
+amountPaid.event2.checkYourAnswersLabel = The amount that was paid to {0} (1)
 amountPaid.event2.error.nonNumeric = The amount must be an amount of money, like 123.45 or 156.00
 amountPaid.event2.error.negative = The amount must not be a negative amount of money, like -123.45 or -156.00
 amountPaid.event2.error.required = Enter the amount paid
 amountPaid.event2.error.noDecimals = The amount must include pence, like 123.45 or 156.00
 amountPaid.event2.error.tooHigh = The amount must be £999999999.99 or less
 amountPaid.event2.change.hidden = How much was paid to {0}?
+
+datePaid.event2.title = datePaid
+datePaid.event2.heading = datePaid
+datePaid.event2.hint = For example, 12 11 2007
+datePaid.event2.checkYourAnswersLabel = datePaid
+datePaid.event2.error.required.all = Enter the datePaid
+datePaid.event2.error.required.two = The datePaid must include {0} and {1}
+datePaid.event2.error.required = The datePaid must include {0}
+datePaid.event2.error.invalid = Enter a real datePaid
+datePaid.event2.change.hidden = datePaid
 
 doYouHoldSignedMandate.title = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.heading = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
