@@ -30,6 +30,9 @@ import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
 
+  implicit lazy val arbitrarySchemeStructureDescriptionPage: Arbitrary[event13.SchemeStructureDescriptionPage.type] =
+    Arbitrary(event13.SchemeStructureDescriptionPage)
+
   implicit lazy val arbitraryChangeDatePage: Arbitrary[event13.ChangeDatePage.type] =
     Arbitrary(event13.ChangeDatePage)
 

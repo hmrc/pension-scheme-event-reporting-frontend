@@ -215,3 +215,6 @@ POST       /new-report/event-13-scheme-structure                        controll
 
 GET        /new-report/event-13-date-of-change                  controllers.event13.ChangeDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-13-date-of-change                  controllers.event13.ChangeDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-13-other-structure                        controllers.event13.SchemeStructureDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-13-other-structure                        controllers.event13.SchemeStructureDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
