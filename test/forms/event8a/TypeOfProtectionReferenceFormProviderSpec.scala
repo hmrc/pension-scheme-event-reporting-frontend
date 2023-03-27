@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.event8
+package forms.event8a
 
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
@@ -36,9 +36,9 @@ class TypeOfProtectionReferenceFormProviderSpec extends StringFieldBehaviours wi
     s".value for protectionType $protectionType" - {
 
       val fieldName = "value"
-      val lengthKey = "typeOfProtectionReference.error.length"
-      val invalidKey = "typeOfProtectionReference.error.invalid"
-      val requiredKey = "typeOfProtectionReference.error.required"
+      val lengthKey = "event8a.typeOfProtectionReference.error.length"
+      val invalidKey = "event8a.typeOfProtectionReference.error.invalid"
+      val requiredKey = "event8a.typeOfProtectionReference.error.required"
 
       val form = new TypeOfProtectionReferenceFormProvider().apply()
 

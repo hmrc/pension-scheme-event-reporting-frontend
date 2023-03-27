@@ -63,11 +63,11 @@ class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAft
   }
 
   "TypeOfProtectionReference Controller" - {
-    testInputProtectionTypeReference(primaryProtection, TypeOfProtection.PrimaryProtection.toString)
-    testInputProtectionTypeReference(enhancedProtection, TypeOfProtection.EnhancedProtection.toString)
+    testTypeOfProtectionReference(primaryProtection, TypeOfProtection.PrimaryProtection.toString)
+    testTypeOfProtectionReference(enhancedProtection, TypeOfProtection.EnhancedProtection.toString)
   }
 
-  private def testInputProtectionTypeReference(userAnswers: UserAnswers, protectionType: String): Unit = {
+  private def testTypeOfProtectionReference(userAnswers: UserAnswers, protectionType: String): Unit = {
     correctViewTest(userAnswers, protectionType)
     correctViewWithExistingDataTest(userAnswers, protectionType)
     validDataTest(protectionType)

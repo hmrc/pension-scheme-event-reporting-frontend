@@ -17,23 +17,19 @@
 package pages.event8a
 
 import controllers.event8a.routes
+import models.Index
 import models.enumeration.EventType
-import models.event8a.TypeOfProtection
-import models.{Index, UserAnswers}
 import pages.common.MembersPage
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class TypeOfProtectionPage(eventType: EventType, index: Index) extends QuestionPage[TypeOfProtection] {
+case class TypeOfProtectionReferencePage(eventType: EventType, index: Index) extends QuestionPage[String] {
 
   override def path: JsPath = MembersPage(EventType.Event8A)(index) \ toString
 
-  override def toString: String = "typeOfProtection"
+  override def toString: String = "typeOfProtectionReference"
 
   override def route(waypoints: Waypoints): Call =
-    routes.TypeOfProtectionController.onPageLoad(waypoints, index)
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    TypeOfProtectionReferencePage(eventType, index)
+    routes.TypeOfProtectionReferenceController.onPageLoad(waypoints, index)
 }

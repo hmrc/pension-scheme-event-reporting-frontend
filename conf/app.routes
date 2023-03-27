@@ -242,6 +242,9 @@ POST       /new-report/:index/event-8a-lump-sum-payment-type                    
 GET        /new-report/:index/event-8a-type-of-protection-held                    controllers.event8a.TypeOfProtectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST       /new-report/:index/event-8a-type-of-protection-held                    controllers.event8a.TypeOfProtectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
+GET        /new-report/:index/event-8a-protection-reference                        controllers.event8a.TypeOfProtectionReferenceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST       /new-report/:index/event-8a-protection-reference                        controllers.event8a.TypeOfProtectionReferenceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.
 #

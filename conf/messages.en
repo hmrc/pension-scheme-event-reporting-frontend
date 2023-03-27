@@ -1018,3 +1018,12 @@ event8a.typeOfProtection.enhancedProtection = Enhanced protection
 event8a.typeOfProtection.checkYourAnswersLabel = Protection type held
 event8a.typeOfProtection.error.required = Select the type of protection that is held
 event8a.typeOfProtection.change.hidden = the protection type
+
+event8a.typeOfProtectionReference.title = What is the member’s {0} reference?
+event8a.typeOfProtectionReference.heading = What is the member’s {0} reference?
+event8a.typeOfProtectionReference.p1 = This can be found on the member’s LTA certificate.
+event8a.typeOfProtectionReference.checkYourAnswersLabel = Member’s {0} reference
+event8a.typeOfProtectionReference.change.hidden = the {0} reference
+event8a.typeOfProtectionReference.error.required = Enter a protection reference
+event8a.typeOfProtectionReference.error.length = Enter a protection reference between 8 and 15 characters (it can be a combination of numbers and letters)
+event8a.typeOfProtectionReference.error.invalid = The protection reference can only contain letters and numbers

@@ -29,6 +29,9 @@ import pages.eventWindUp.SchemeWindUpDatePage
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryEvent8aTypeOfProtectionReferencePage: Arbitrary[event8a.TypeOfProtectionReferencePage.type] =
+    Arbitrary(event8a.TypeOfProtectionReferencePage)
+
   implicit lazy val arbitraryEvent8aTypeOfProtectionPage: Arbitrary[event8a.TypeOfProtectionPage.type] =
     Arbitrary(event8a.TypeOfProtectionPage)
 
