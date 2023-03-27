@@ -40,7 +40,7 @@ case class MembersDetailsPage(eventType: EventType, index: Int) extends Question
       case (Event1, index) => DoYouHoldSignedMandatePage(index)
       case (Event6, index) => pages.event6.TypeOfProtectionPage(eventType, index)
       case (Event8, index) => pages.event8.TypeOfProtectionPage(eventType, index)
-      case (Event8A, index) => pages.event8.TypeOfProtectionPage(eventType, index) //TODO: Change this to eventa's one
+      case (Event8A, index) => pages.event8a.PaymentTypePage(eventType, index)
       case (Event22, index) => ChooseTaxYearPage(eventType, index)
       case (Event23, index) => ChooseTaxYearPage(eventType, index)
       case _ => super.nextPageNormalMode(waypoints, answers)

@@ -1000,3 +1000,13 @@ lumpSumAmountAndDate.date.error.outsideDateRanges = Enter a real date
 lumpSumAmountAndDate.date.error.outsideReportedYear = Date must be between {0} and {1}
 lumpSumAmountAndDate.date.change.hidden = the date of the lump sum payment
 lumpSumAmountAndDate.date.checkYourAnswersLabel = The date the payment was made
+
+event8a.paymentType.title = What is the lump sum payment type?
+event8a.paymentType.heading = What is the lump sum payment type?
+event8a.paymentType.paymentOfAStandAloneLumpSum = Payment of a stand-alone lump sum
+event8a.paymentType.paymentOfAStandAloneLumpSum.hint = The member had protected lump sum rights of more than £375,000 with either primary protection or enhanced protection.
+event8a.paymentType.paymentOfASchemeSpecificLumpSum = Payment of a scheme-specific lump sum
+event8a.paymentType.paymentOfASchemeSpecificLumpSum.hint = The lump sum is more than 7.5% of the lifetime allowance.
+event8a.paymentType.checkYourAnswersLabel = Lump sum type
+event8a.paymentType.error.required = Select the type of lump sum payment
+event8a.paymentType.change.hidden = the payment type
