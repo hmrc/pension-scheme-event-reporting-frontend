@@ -903,3 +903,13 @@ typeOfProtection.individualProtection2016 = Individual protection 2016
 typeOfProtection.checkYourAnswersLabel = What is the type of protection held for the crystallisation?
 typeOfProtection.error.required = Select what type of protection is held
 typeOfProtection.change.hidden = What is the type of protection held for the crystallisation
+
+schemeStructure.title = What is the new pension scheme structure?
+schemeStructure.heading = What is the new pension scheme structure?
+schemeStructure.single = A single trust under which all of the assets are held for the benefit of all members of the scheme
+schemeStructure.group = A group life or death in service scheme
+schemeStructure.corporate = A body corporate
+schemeStructure.other = Other
+schemeStructure.checkYourAnswersLabel = What is the new pension scheme structure?
+schemeStructure.error.required = Select schemeStructure
+schemeStructure.change.hidden = SchemeStructure

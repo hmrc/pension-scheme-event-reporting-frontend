@@ -209,3 +209,6 @@ GET         /new-report/:index/dummy-member-details                             
 POST        /new-report/:index/dummy-member-details                               controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index)
 
 
+
+GET        /scheme-structure                        controllers.event13.SchemeStructureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /scheme-structure                        controllers.event13.SchemeStructureController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
