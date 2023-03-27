@@ -815,6 +815,7 @@ unauthPaymentSummary.table.header1 = Member or company name
 unauthPaymentSummary.table.header2 = Unauthorised payment value
 
 entity_list_table.total = Total
+entity_list_table.totalForMembersSummary = Total amount for this event
 
 membersSummary.checkYourAnswersLabel = Check your answers
 membersSummary.change.hidden = Unauthorised payment summary
