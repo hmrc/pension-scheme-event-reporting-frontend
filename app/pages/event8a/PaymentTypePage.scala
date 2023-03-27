@@ -17,12 +17,13 @@
 package pages.event8a
 
 import controllers.event8a.routes
+import models.UserAnswers
 import models.enumeration.EventType
 import models.event8a.PaymentType
 import pages.common.MembersPage
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{QuestionPage, Waypoints}
 
 case class PaymentTypePage(eventType: EventType, index: Int) extends QuestionPage[PaymentType] {
 
@@ -32,4 +33,21 @@ case class PaymentTypePage(eventType: EventType, index: Int) extends QuestionPag
 
   override def route(waypoints: Waypoints): Call =
     routes.PaymentTypeController.onPageLoad(waypoints, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+
+    val optionSelected = answers.get(PaymentTypePage(eventType, index))
+
+    optionSelected match {
+      case Some(paymentType) =>
+        paymentType match {
+          case PaymentType.PaymentOfAStandaloneLumpSum =>
+            TypeOfProtectionPage(eventType, index)
+          case PaymentType.PaymentOfASchemespecificLumpSum =>
+            IndexPage
+        }
+      case _ =>
+        IndexPage
+    }
+  }
 }

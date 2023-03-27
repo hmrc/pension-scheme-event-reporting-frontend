@@ -31,10 +31,18 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
+  implicit lazy val arbitraryEvent8aTypeOfProtectionUserAnswersEntry: Arbitrary[(pages.event8a.TypeOfProtectionPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[pages.event8a.TypeOfProtectionPage.type]
+        value <- arbitrary[models.event8a.TypeOfProtection].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryPaymentTypeUserAnswersEntry: Arbitrary[(pages.event8a.PaymentTypePage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event8a.PaymentTypePage.type]
+        page <- arbitrary[pages.event8a.PaymentTypePage.type]
         value <- arbitrary[models.event8a.PaymentType].map(Json.toJson(_))
       } yield (page, value)
     }
@@ -42,7 +50,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryLumpSumAmountAndDateUserAnswersEntry: Arbitrary[(pages.event8.LumpSumAmountAndDatePage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event8.LumpSumAmountAndDatePage.type]
+        page <- arbitrary[pages.event8.LumpSumAmountAndDatePage.type]
         value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }

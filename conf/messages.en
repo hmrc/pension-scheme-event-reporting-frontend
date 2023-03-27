@@ -1010,3 +1010,11 @@ event8a.paymentType.paymentOfASchemeSpecificLumpSum.hint = The lump sum is more 
 event8a.paymentType.checkYourAnswersLabel = Lump sum type
 event8a.paymentType.error.required = Select the type of lump sum payment
 event8a.paymentType.change.hidden = the payment type
+
+event8a.typeOfProtection.title = What type of protection was held for the lump sum?
+event8a.typeOfProtection.heading = What type of protection was held for the lump sum?
+event8a.typeOfProtection.primaryProtection = Primary protection
+event8a.typeOfProtection.enhancedProtection = Enhanced protection
+event8a.typeOfProtection.checkYourAnswersLabel = Protection type held
+event8a.typeOfProtection.error.required = Select the type of protection that is held
+event8a.typeOfProtection.change.hidden = the protection type
