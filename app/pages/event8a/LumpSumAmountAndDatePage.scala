@@ -17,10 +17,11 @@
 package pages.event8a
 
 import controllers.event8a.routes
+import models.UserAnswers
 import models.enumeration.EventType
 import models.event8a.LumpSumDetails
 import pages.common.MembersPage
-import pages.{QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -31,8 +32,8 @@ case class LumpSumAmountAndDatePage(eventType: EventType, index: Int) extends Qu
   override def route(waypoints: Waypoints): Call =
     routes.LumpSumAmountAndDateController.onPageLoad(waypoints, index)
 
-  //  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-  //    Event8ACheckYourAnswersPage(index)
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    Event8ACheckYourAnswersPage(index)
 }
 
 object LumpSumAmountAndDatePage {

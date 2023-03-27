@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event8a.checkAnswers
 
 import models.enumeration.EventType
 import models.{Index, UserAnswers}
@@ -45,7 +45,7 @@ object TypeOfProtectionSummary {
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", TypeOfProtectionPage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("event8a.typeOfProtection.change.hidden"))
+              .withVisuallyHiddenText(messages("site.change") + " " + messages("event8a.typeOfProtection.change.hidden"))
           )
         )
     }

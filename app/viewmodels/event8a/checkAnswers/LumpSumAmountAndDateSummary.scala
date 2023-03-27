@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event8a.checkAnswers
 
 import forms.mappings.Formatters
 import models.enumeration.EventType
@@ -35,11 +35,26 @@ object LumpSumAmountAndDateSummary extends Formatters {
       answer =>
 
         SummaryListRowViewModel(
-          key = "event8a.lumpSumAmountAndDate.checkYourAnswersLabel",
+          key = "event8a.lumpSumAmountAndDate.value.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer.lumpSumAmount)}")),
           actions = Seq(
             ActionItemViewModel("site.change", LumpSumAmountAndDatePage(eventType, index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("site.change") + " " + messages("event8a.lumpSumAmountAndDate.value.change.hidden"))
+          )
+        )
+    }
+
+  def rowLumpSumDate(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Index)
+                    (implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(LumpSumAmountAndDatePage(eventType, index)).map {
+      answer =>
+
+        SummaryListRowViewModel(
+          key = messages("event8a.lumpSumAmountAndDate.date.checkYourAnswersLabel"),
+          value = ValueViewModel(dateFormatter.format(answer.lumpSumDate)),
+          actions = Seq(
+            ActionItemViewModel("site.change", LumpSumAmountAndDatePage(eventType, index).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("site.change") + " " + messages("event8a.lumpSumAmountAndDate.date.change.hidden"))
           )
         )
     }

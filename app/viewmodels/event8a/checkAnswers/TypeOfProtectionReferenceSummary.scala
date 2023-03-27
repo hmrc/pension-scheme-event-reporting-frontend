@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event8a.checkAnswers
 
 import models.enumeration.EventType
 import models.{Index, UserAnswers}
-import pages.event8a.TypeOfProtectionReferencePage
+import pages.event8a.{TypeOfProtectionPage, TypeOfProtectionReferencePage}
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -28,18 +28,27 @@ import viewmodels.implicits._
 
 object TypeOfProtectionReferenceSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, eventType: EventType)
-         (implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Index)
+         (implicit messages: Messages): Option[SummaryListRow] = {
+
+    val protectionType = answers.get(TypeOfProtectionPage(eventType, index)) match {
+      case Some(value) => value
+      case _ => None
+    }
+
     answers.get(TypeOfProtectionReferencePage(eventType, index)).map {
       answer =>
 
         SummaryListRowViewModel(
-          key = "event8a.typeOfProtectionReference.checkYourAnswersLabel",
+          key = messages(s"event8a.typeOfProtectionReference.checkYourAnswersLabel",
+            messages(s"event8.typeOfProtection.${protectionType.toString}").toLowerCase()),
           value = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", TypeOfProtectionReferencePage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("event8a.typeOfProtectionReference.change.hidden"))
+              .withVisuallyHiddenText(messages("site.change") + " " + messages("event8a.typeOfProtectionReference.change.hidden",
+                messages(s"event8a.typeOfProtection.${protectionType.toString}").toLowerCase()))
           )
         )
     }
+  }
 }

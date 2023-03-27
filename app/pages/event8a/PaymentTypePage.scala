@@ -44,7 +44,7 @@ case class PaymentTypePage(eventType: EventType, index: Int) extends QuestionPag
           case PaymentType.PaymentOfAStandAloneLumpSum =>
             TypeOfProtectionPage(eventType, index)
           case PaymentType.PaymentOfASchemeSpecificLumpSum =>
-            IndexPage
+            LumpSumAmountAndDatePage(eventType, index)
         }
       case _ =>
         IndexPage

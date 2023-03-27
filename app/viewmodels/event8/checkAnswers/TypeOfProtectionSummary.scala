@@ -45,7 +45,7 @@ object TypeOfProtectionSummary {
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", TypeOfProtectionPage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("event8.typeOfProtection.change.hidden"))
+              .withVisuallyHiddenText(messages("site.change") + " " + messages("event8.typeOfProtection.change.hidden"))
           )
         )
     }

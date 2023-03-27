@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package controllers.event8
+package controllers.event8a
 
 import base.SpecBase
-import data.SampleData.sampleMemberJourneyDataEvent8
+import data.SampleData.sampleMemberJourneyDataEvent8A
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -32,18 +32,18 @@ import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
-class Event8CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
+class Event8ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
-  import Event8CheckYourAnswersControllerSpec._
+  import Event8ACheckYourAnswersControllerSpec._
 
-  "Check Your Answers Controller for Event 8" - {
+  "Check Your Answers Controller for Event 8A" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(0).url)
+        val request = FakeRequest(GET, controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(0).url)
 
         val result = route(application, request).value
 
@@ -51,7 +51,7 @@ class Event8CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-8-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-8a-click")(request, messages(application)).toString
       }
     }
 
@@ -62,7 +62,7 @@ class Event8CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleMemberJourneyDataEvent8),
+        userAnswers = Some(sampleMemberJourneyDataEvent8A),
         extraModules = extraModules
       ).build()
 
@@ -71,12 +71,12 @@ class Event8CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
       running(application) {
         when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
-        val request = FakeRequest(GET, controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(0).url)
+        val request = FakeRequest(GET, controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(0).url)
         val result = route(application, request).value
         status(result) mustEqual OK
 
         val actual: Seq[SummaryListRow] = captor.getValue.rows
-        val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRowsEvent8
+        val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRowsEvent8A
 
         actual.size mustBe expected.size
 
@@ -91,7 +91,7 @@ class Event8CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(0).url)
+        val request = FakeRequest(GET, controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(0).url)
 
         val result = route(application, request).value
 
@@ -102,7 +102,7 @@ class Event8CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
   }
 }
 
-object Event8CheckYourAnswersControllerSpec {
+object Event8ACheckYourAnswersControllerSpec {
 
   private def fakeSummaryListRowWithHtmlContentWithHiddenContent(messageKey: String, htmlContent: String, changeLink: String, hiddenContentChangeLink: String)
                                                                 (implicit messages: Messages): SummaryListRow =
@@ -139,43 +139,43 @@ object Event8CheckYourAnswersControllerSpec {
         Some(messages("site.change") + " " + messages(hiddenContentChangeLink, messages(messageKeyTwo).toLowerCase)), "", Map()))))
     )
 
-  private def expectedMemberSummaryListRowsEvent8(implicit messages: Messages): Seq[SummaryListRow] = Seq(
+  private def expectedMemberSummaryListRowsEvent8A(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel",
       "Joe Bloggs",
-      "/manage-pension-scheme-event-report/new-report/1/event-8-member-details?waypoints=event-8-check-answers-1",
+      "/manage-pension-scheme-event-report/new-report/1/event-8a-member-details?waypoints=event-8A-check-answers-1",
       "membersDetails.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel.nino",
       "AA234567V",
-      "/manage-pension-scheme-event-report/new-report/1/event-8-member-details?waypoints=event-8-check-answers-1",
+      "/manage-pension-scheme-event-report/new-report/1/event-8a-member-details?waypoints=event-8A-check-answers-1",
       "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
-      "event8.typeOfProtection.checkYourAnswersLabel",
+      "event8a.typeOfProtection.checkYourAnswersLabel",
       "Primary protection",
-      "/manage-pension-scheme-event-report/new-report/1/event-8-type-of-protection?waypoints=event-8-check-answers-1",
-      "event8.typeOfProtection.change.hidden"
+      "/manage-pension-scheme-event-report/new-report/1/event-8a-type-of-protection-held?waypoints=event-8A-check-answers-1",
+      "event8a.typeOfProtection.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithTwoMsgKeys(
-      "typeOfProtectionReference.checkYourAnswersLabel",
-      "event8.typeOfProtection.primaryProtection",
+      "event8a.typeOfProtectionReference.checkYourAnswersLabel",
+      "event8a.typeOfProtection.primaryProtection",
       "1234567A",
-      "/manage-pension-scheme-event-report/new-report/1/event-8-protection-reference?waypoints=event-8-check-answers-1",
-      "typeOfProtectionReference.change.hidden"
+      "/manage-pension-scheme-event-report/new-report/1/event-8a-protection-reference?waypoints=event-8A-check-answers-1",
+      "event8a.typeOfProtectionReference.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
-      "lumpSumAmountAndDate.value.checkYourAnswersLabel",
+      "event8a.lumpSumAmountAndDate.value.checkYourAnswersLabel",
       "£223.11",
-      "/manage-pension-scheme-event-report/new-report/1/event-8-lump-sum-details?waypoints=event-8-check-answers-1",
-      "lumpSumAmountAndDate.value.change.hidden"
+      "/manage-pension-scheme-event-report/new-report/1/event-8a-lump-sum-details?waypoints=event-8A-check-answers-1",
+      "event8a.lumpSumAmountAndDate.value.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
-      "lumpSumAmountAndDate.date.checkYourAnswersLabel",
+      "event8a.lumpSumAmountAndDate.date.checkYourAnswersLabel",
       "22 March 2022",
-      "/manage-pension-scheme-event-report/new-report/1/event-8-lump-sum-details?waypoints=event-8-check-answers-1",
-      "lumpSumAmountAndDate.date.change.hidden"
+      "/manage-pension-scheme-event-report/new-report/1/event-8a-lump-sum-details?waypoints=event-8A-check-answers-1",
+      "event8a.lumpSumAmountAndDate.date.change.hidden"
     )
   )
 }

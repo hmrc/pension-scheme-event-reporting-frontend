@@ -90,7 +90,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
               SummaryListRowWithTwoValues(
                 key = SampleData.memberDetails.fullName,
                 firstValue = SampleData.memberDetails.nino,
-                secondValue = SampleData.lumpSumDetails.lumpSumAmount.toString(),
+                secondValue = SampleData.event8LumpSumDetails.lumpSumAmount.toString(),
                 actions = Some(Actions(
                   items = Seq(
                     ActionItem(
