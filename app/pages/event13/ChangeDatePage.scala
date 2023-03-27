@@ -16,30 +16,19 @@
 
 package pages.event13
 
+import java.time.LocalDate
+
 import controllers.event13.routes
-import models.UserAnswers
-import models.event13.SchemeStructure
-import models.event13.SchemeStructure
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.{Waypoints, QuestionPage}
 
-case object SchemeStructurePage extends QuestionPage[SchemeStructure] {
+case object ChangeDatePage extends QuestionPage[LocalDate] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "schemeStructure"
+  override def toString: String = "changeDate"
 
   override def route(waypoints: Waypoints): Call =
-    routes.SchemeStructureController.onPageLoad(waypoints)
-
-  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(SchemeStructurePage) match {
-      case Some(SchemeStructure.Single) => ChangeDatePage
-      case Some(SchemeStructure.Group) => ChangeDatePage
-      case Some(SchemeStructure.Corporate) => ChangeDatePage
-      case Some(SchemeStructure.Other) => ???
-      case _ => IndexPage
-    }
-  }
+    routes.ChangeDateController.onPageLoad(waypoints)
 }

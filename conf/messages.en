@@ -913,3 +913,13 @@ schemeStructure.other = Other
 schemeStructure.checkYourAnswersLabel = What is the new pension scheme structure?
 schemeStructure.error.required = Select schemeStructure
 schemeStructure.change.hidden = SchemeStructure
+
+event13.changeDate.title = When was the change made?
+event13.changeDate.heading = When was the change made?
+event13.changeDate.hint = For example, 27 3 2007
+event13.changeDate.checkYourAnswersLabel = When was the change made?
+event13.changeDate.error.required.all = Enter the changeDate
+event13.changeDate.error.required.two = The changeDate must include {0} and {1}
+event13.changeDate.error.required = The changeDate must include {0}
+event13.changeDate.error.invalid = Enter a real date
+event13.changeDate.change.hidden = When was the change made?
