@@ -20,12 +20,12 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.common.MembersSummaryFormProvider
 import forms.mappings.Formatters
-import models.{Index, UserAnswers}
+import models.TaxYear.getSelectedTaxYearAsString
 import models.common.MembersSummary
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event22, Event23, Event6}
-import org.apache.commons.lang3.StringUtils
-import pages.{TaxYearPage, Waypoints, common}
+import models.{Index, UserAnswers}
+import pages.Waypoints
 import pages.common.{MembersPage, MembersSummaryPage}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +33,7 @@ import services.EventPaginationService
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.{Message, SummaryListRowWithTwoValues}
-import views.html.common.{MembersSummaryView, MembersSummaryViewWithPagination}
+import views.html.common.MembersSummaryView
 
 import javax.inject.Inject
 
@@ -54,7 +54,7 @@ class MembersSummaryController @Inject()(
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
-      val selectedTaxYear = getSelectedTaxYear(request.userAnswers)
+      val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       if (mappedMembers.length > 25) {
         Redirect(routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, 0))
       } else {
@@ -74,13 +74,6 @@ class MembersSummaryController @Inject()(
       }
     }
 
-  private def getSelectedTaxYear(userAnswers: UserAnswers)(implicit messages: Messages): String = {
-    userAnswers.get(TaxYearPage) match {
-      case Some(taxYear) => s"${Integer.parseInt(taxYear.endYear.stripPrefix("TaxYear(").stripSuffix(")").trim)}"
-      case _ => StringUtils.EMPTY
-    }
-  }
-
   private def sumValue(userAnswers: UserAnswers, eventType: EventType) =
     currencyFormatter.format(userAnswers.sumAll(MembersPage(eventType), MembersSummary.readsMemberValue(eventType)))
 
@@ -88,7 +81,7 @@ class MembersSummaryController @Inject()(
     implicit request =>
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
-      val selectedTaxYear = getSelectedTaxYear(request.userAnswers)
+      val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       form.bindFromRequest().fold(
         formWithErrors => {
           BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear))
