@@ -26,9 +26,9 @@
 )
 
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberSeq: Seq[SummaryListRowWithTwoValues], total: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberSeq: Seq[SummaryListRowWithTwoValues], total: String, selectedTaxYear: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"membersSummary.event${eventType.toString}.title", "2022"))) {
+@layout(pageTitle = title(form, messages(s"membersSummary.event${eventType.toString}.title", selectedTaxYear))) {
 
     @formHelper(action = controllers.common.routes.MembersSummaryController.onSubmit(waypoints, eventType), Symbol("autoComplete") -> "off") {
 
@@ -36,7 +36,7 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading")</h1>
+        <h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", selectedTaxYear)</h1>
 
         @components.entity_summaryThree_table_list(
             memberSeq,
@@ -57,5 +57,5 @@
         @govukButton(
             ButtonViewModel(messages("site.saveAndContinue")).withAttribute(("id", "submit"))
         )
-    }
+  }
 }
