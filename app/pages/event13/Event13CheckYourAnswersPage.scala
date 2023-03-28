@@ -17,7 +17,7 @@
 package pages.event13
 
 import models.enumeration.EventType.Event13
-import pages.{CheckAnswersPage, Waypoints}
+import pages.{CheckAnswersPage, Waypoint, Waypoints}
 import play.api.mvc.Call
 
 case class Event13CheckYourAnswersPage() extends CheckAnswersPage {
@@ -31,3 +31,16 @@ case class Event13CheckYourAnswersPage() extends CheckAnswersPage {
   override def toString: String = "CheckYourAnswersPage"
 }
 
+object Event13CheckYourAnswersPage {
+
+  def waypointFromString(s: String): Option[Waypoint] = {
+    val pattern = """event-13-check-answers"""
+    println(s)
+    s match {
+      case x if x == pattern =>
+        Some(Event13CheckYourAnswersPage().waypoint)
+      case _ =>
+        None
+    }
+  }
+}

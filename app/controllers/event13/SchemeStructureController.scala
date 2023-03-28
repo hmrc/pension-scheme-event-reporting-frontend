@@ -22,7 +22,7 @@ import forms.controllers.event13.SchemeStructureFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
-import pages.event13.SchemeStructurePage
+import pages.event13.{SchemeStructureDescriptionPage, SchemeStructurePage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -55,6 +55,7 @@ class SchemeStructureController @Inject()(val controllerComponents: MessagesCont
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(SchemeStructurePage, value)
+            .removeOrException(SchemeStructureDescriptionPage)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(SchemeStructurePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }

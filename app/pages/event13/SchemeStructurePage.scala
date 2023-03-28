@@ -20,7 +20,7 @@ import controllers.event13.routes
 import models.UserAnswers
 import models.event13.SchemeStructure
 import models.event13.SchemeStructure
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{IndexPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -40,6 +40,13 @@ case object SchemeStructurePage extends QuestionPage[SchemeStructure] {
       case Some(SchemeStructure.Corporate) => ChangeDatePage
       case Some(SchemeStructure.Other) => SchemeStructureDescriptionPage
       case _ => IndexPage
+    }
+  }
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page = {
+    answers.get(SchemeStructurePage) match {
+      case Some(SchemeStructure.Other) => SchemeStructureDescriptionPage
+      case _ => super.nextPageCheckMode(waypoints, answers)
     }
   }
 }
