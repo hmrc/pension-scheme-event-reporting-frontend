@@ -44,18 +44,19 @@ final case class UserAnswers(
       .getOrElse(false)
 
   def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
+    page.cleanupBeforeSettingValue(Some(value), this).flatMap { ua =>
+      val updatedData = ua.data.setObject(page.path, Json.toJson(value)) match {
+        case JsSuccess(jsValue, _) =>
+          Success(jsValue)
+        case JsError(errors) =>
+          Failure(JsResultException(errors))
+      }
 
-    val updatedData = data.setObject(page.path, Json.toJson(value)) match {
-      case JsSuccess(jsValue, _) =>
-        Success(jsValue)
-      case JsError(errors) =>
-        Failure(JsResultException(errors))
-    }
-
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy(data = d)
-        page.cleanup(Some(value), updatedAnswers)
+      updatedData.flatMap {
+        d =>
+          val updatedAnswers = copy(data = d)
+          page.cleanup(Some(value), updatedAnswers)
+      }
     }
   }
 

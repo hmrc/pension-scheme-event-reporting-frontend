@@ -25,6 +25,8 @@ import pages.{IndexPage, JourneyRecoveryPage, NonEmptyWaypoints, Page, QuestionP
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.{Success, Try}
+
 case class PaymentTypePage(eventType: EventType, index: Int) extends QuestionPage[PaymentType] {
 
   override def path: JsPath = MembersPage(EventType.Event8A)(index) \ toString
@@ -34,11 +36,17 @@ case class PaymentTypePage(eventType: EventType, index: Int) extends QuestionPag
   override def route(waypoints: Waypoints): Call =
     routes.PaymentTypeController.onPageLoad(waypoints, index)
 
+  override def cleanupBeforeSettingValue(value: Option[PaymentType], userAnswers: UserAnswers): Try[UserAnswers] = {
+    userAnswers.get(PaymentTypePage(eventType, index)) match {
+      case originalPaymentType@Some(_) if originalPaymentType != value =>
+        userAnswers.remove(TypeOfProtectionPage(eventType, index)).
+          flatMap(ua => ua.remove(TypeOfProtectionReferencePage(eventType, index)))
+      case _ => Success(userAnswers)
+    }
+  }
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
 
     val optionSelected = answers.get(PaymentTypePage(eventType, index))
-    println(s"\n\n optionSelected ========== ${optionSelected}")
-
     optionSelected match {
       case Some(paymentType) =>
         paymentType match {
@@ -48,18 +56,14 @@ case class PaymentTypePage(eventType: EventType, index: Int) extends QuestionPag
             LumpSumAmountAndDatePage(eventType, index)
         }
       case _ =>
-        IndexPage
+        JourneyRecoveryPage
     }
   }
-
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
 
     val originalOptionSelected = originalAnswers.get(PaymentTypePage(eventType, index))
     val updatedOptionSelected = updatedAnswers.get(PaymentTypePage(eventType, index))
     val answerIsChanged = originalOptionSelected != updatedOptionSelected
-    println(s"\n\n originalOptionSelected ========== ${originalOptionSelected}")
-    println(s"\n\n updatedOptionSelected ========== ${updatedOptionSelected}")
-    println(s"\n\n answerIsChanged ========== ${answerIsChanged}")
 
     answerIsChanged match {
       case true =>
