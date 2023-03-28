@@ -65,6 +65,7 @@ class Event8ACheckYourAnswersController @Inject()(
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event8A).toSeq ++
       MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event8A).toSeq ++
+      PaymentTypeSummary.row(request.userAnswers, waypoints, index, sourcePage, Event8A).toSeq ++
       TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, Event8A).toSeq ++
       TypeOfProtectionReferenceSummary.row(request.userAnswers, waypoints, sourcePage, Event8A, index).toSeq ++
       LumpSumAmountAndDateSummary.rowLumpSumValue(request.userAnswers, waypoints, sourcePage, Event8A, index).toSeq ++

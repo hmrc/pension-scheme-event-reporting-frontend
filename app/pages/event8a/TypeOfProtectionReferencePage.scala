@@ -20,7 +20,7 @@ import controllers.event8a.routes
 import models.enumeration.EventType
 import models.{Index, UserAnswers}
 import pages.common.MembersPage
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -35,4 +35,8 @@ case class TypeOfProtectionReferencePage(eventType: EventType, index: Index) ext
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     LumpSumAmountAndDatePage(eventType, index)
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers,
+                                           updatedAnswers: UserAnswers): Page =
+    Event8ACheckYourAnswersPage(index)
 }

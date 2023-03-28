@@ -41,7 +41,7 @@ object TypeOfProtectionSummary {
         )
 
         SummaryListRowViewModel(
-          key = "event8a.typeOfProtection.checkYourAnswersLabel",
+          key = messages("event8a.typeOfProtection.checkYourAnswersLabel"),
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", TypeOfProtectionPage(eventType, index).changeLink(waypoints, sourcePage).url)

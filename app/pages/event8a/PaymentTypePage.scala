@@ -21,7 +21,7 @@ import models.UserAnswers
 import models.enumeration.EventType
 import models.event8a.PaymentType
 import pages.common.MembersPage
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{IndexPage, JourneyRecoveryPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -37,6 +37,7 @@ case class PaymentTypePage(eventType: EventType, index: Int) extends QuestionPag
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
 
     val optionSelected = answers.get(PaymentTypePage(eventType, index))
+    println(s"\n\n optionSelected ========== ${optionSelected}")
 
     optionSelected match {
       case Some(paymentType) =>
@@ -48,6 +49,33 @@ case class PaymentTypePage(eventType: EventType, index: Int) extends QuestionPag
         }
       case _ =>
         IndexPage
+    }
+  }
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
+
+    val originalOptionSelected = originalAnswers.get(PaymentTypePage(eventType, index))
+    val updatedOptionSelected = updatedAnswers.get(PaymentTypePage(eventType, index))
+    val answerIsChanged = originalOptionSelected != updatedOptionSelected
+    println(s"\n\n originalOptionSelected ========== ${originalOptionSelected}")
+    println(s"\n\n updatedOptionSelected ========== ${updatedOptionSelected}")
+    println(s"\n\n answerIsChanged ========== ${answerIsChanged}")
+
+    answerIsChanged match {
+      case true =>
+        updatedOptionSelected match {
+          case Some(paymentType) =>
+            paymentType match {
+              case PaymentType.PaymentOfAStandAloneLumpSum =>
+                TypeOfProtectionPage(eventType, index)
+              case PaymentType.PaymentOfASchemeSpecificLumpSum =>
+                Event8ACheckYourAnswersPage(index)
+            }
+          case _ =>
+            JourneyRecoveryPage
+        }
+      case false =>
+        Event8ACheckYourAnswersPage(index)
     }
   }
 }

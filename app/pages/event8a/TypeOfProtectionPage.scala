@@ -21,7 +21,7 @@ import models.enumeration.EventType
 import models.event8a.TypeOfProtection
 import models.{Index, UserAnswers}
 import pages.common.MembersPage
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -35,5 +35,8 @@ case class TypeOfProtectionPage(eventType: EventType, index: Index) extends Ques
     routes.TypeOfProtectionController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    TypeOfProtectionReferencePage(eventType, index)
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
     TypeOfProtectionReferencePage(eventType, index)
 }

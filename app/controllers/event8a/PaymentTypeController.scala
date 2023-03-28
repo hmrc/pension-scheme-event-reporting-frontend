@@ -21,8 +21,10 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event8a.PaymentTypeFormProvider
 import models.enumeration.EventType
 import models.{Index, UserAnswers}
+import org.apache.commons.lang3.StringUtils
 import pages.Waypoints
-import pages.event8a.PaymentTypePage
+import pages.event8.TypeOfProtectionReferencePage
+import pages.event8a.{PaymentTypePage, TypeOfProtectionPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -53,13 +55,28 @@ class PaymentTypeController @Inject()(val controllerComponents: MessagesControll
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
+          val oldValue = getPaymentTypeValue(request.userAnswers, index)
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(PaymentTypePage(eventType, index), value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(PaymentTypePage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+          if (value.toString != oldValue) {
+            val updatedAnswers = originalUserAnswers.removeOrException(TypeOfProtectionPage(eventType, index))
+              .removeOrException(TypeOfProtectionReferencePage(eventType, index))
+              .setOrException(PaymentTypePage(eventType, index), value)
+            userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+              Redirect(PaymentTypePage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            }
+          } else {
+            val updatedAnswers = originalUserAnswers.setOrException(PaymentTypePage(eventType, index), value)
+            userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+              Redirect(TypeOfProtectionPage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            }
           }
         }
       )
   }
-
+  private def getPaymentTypeValue(userAnswers: Option[UserAnswers], index: Index): String = {
+    userAnswers.flatMap(_.get(PaymentTypePage(eventType, index))) match {
+      case Some(paymentType) => paymentType.toString
+      case _ => StringUtils.EMPTY
+    }
+  }
 }

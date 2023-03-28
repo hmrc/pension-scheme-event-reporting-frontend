@@ -36,16 +36,16 @@ object PaymentTypeSummary {
 
         val value = ValueViewModel(
           HtmlContent(
-            HtmlFormat.escape(messages(s"paymentType.$answer"))
+            HtmlFormat.escape(messages(s"event8a.paymentType.$answer"))
           )
         )
 
         SummaryListRowViewModel(
-          key = "event8a.paymentType.checkYourAnswersLabel",
+          key = messages("event8a.paymentType.checkYourAnswersLabel"),
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", PaymentTypePage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("event8a.paymentType.change.hidden"))
+              .withVisuallyHiddenText(messages("site.change") + " " + messages("event8a.paymentType.change.hidden"))
           )
         )
     }
