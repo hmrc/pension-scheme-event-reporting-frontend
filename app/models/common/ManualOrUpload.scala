@@ -42,7 +42,7 @@ object ManualOrUpload extends Enumerable.Implicits {
         value = Some(value.toString),
         id = Some(s"value_$index"),
         hint = if (value == FileUpload) Some(Hint(content = Text(messages(s"manualOrUpload.event${eventType.toString}.fileUpload.hint")))) else None,
-        disabled = if (eventType == EventType.Event6) value == FileUpload else false
+        disabled = if (value == FileUpload) eventType != EventType.Event22 else false
       )
   }
 

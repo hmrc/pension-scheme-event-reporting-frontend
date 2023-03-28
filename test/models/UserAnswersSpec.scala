@@ -101,19 +101,19 @@ class UserAnswersSpec extends SpecBase with Matchers {
   "event22" - {
     "getAll" - {
       "must return the list of members" in {
-        sampleMemberJourneyDataEvent22.getAll(MembersPage(Event22))(MembersSummary.readsMember) mustBe
+        sampleMemberJourneyDataEvent22.getAll(MembersPage(Event22))(MembersSummary.readsMember(Event22)) mustBe
           Seq(MembersSummary(SampleData.memberDetails.fullName, BigDecimal(999.11), SampleData.memberDetails.nino))
       }
 
       "must return empty list if nothing present" in {
-        UserAnswers().getAll(MembersPage(Event22))(MembersSummary.readsMember) mustBe Nil
+        UserAnswers().getAll(MembersPage(Event22))(MembersSummary.readsMember(Event22)) mustBe Nil
       }
 
       "must return the list of members where member value and member details missing" in {
         val userAnswersWithOneMember: UserAnswers = UserAnswers()
           .setOrException(ChooseTaxYearPage(Event22, 0), taxYear)
 
-        userAnswersWithOneMember.getAll(MembersPage(Event22))(MembersSummary.readsMember) mustBe
+        userAnswersWithOneMember.getAll(MembersPage(Event22))(MembersSummary.readsMember(Event22)) mustBe
           Seq(MembersSummary("Not entered", BigDecimal(0.00), "Not entered"))
       }
 
@@ -132,11 +132,11 @@ class UserAnswersSpec extends SpecBase with Matchers {
 
     "sumAll" - {
       "must count correctly when two members are present" in {
-        sampleTwoMemberJourneyData(Event22).sumAll(MembersPage(Event22), readsMemberValue) mustBe BigDecimal(1998.22)
+        sampleTwoMemberJourneyData(Event22).sumAll(MembersPage(Event22), readsMemberValue(Event22)) mustBe BigDecimal(1998.22)
       }
 
       "must count correctly when nothing present" in {
-        UserAnswers().sumAll(MembersPage(Event22), readsMemberValue) mustBe 0
+        UserAnswers().sumAll(MembersPage(Event22), readsMemberValue(Event22)) mustBe 0
       }
     }
   }

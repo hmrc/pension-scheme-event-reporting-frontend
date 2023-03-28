@@ -26,15 +26,24 @@ import pages.common.MembersDetailsPage
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.event13.SchemeStructurePage
+import pages.event6._
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
+  implicit lazy val arbitraryInputProtectionTypeUserAnswersEntry: Arbitrary[(InputProtectionTypePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[InputProtectionTypePage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitrarySchemeStructureDescriptionUserAnswersEntry: Arbitrary[(pages.event13.SchemeStructureDescriptionPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event13.SchemeStructureDescriptionPage.type]
+        page <- arbitrary[pages.event13.SchemeStructureDescriptionPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
@@ -42,7 +51,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryChangeDateUserAnswersEntry: Arbitrary[(pages.event13.ChangeDatePage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event13.ChangeDatePage.type]
+        page <- arbitrary[pages.event13.ChangeDatePage.type]
         value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }
@@ -50,7 +59,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitrarySchemeStructureUserAnswersEntry: Arbitrary[(SchemeStructurePage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[SchemeStructurePage.type]
+        page <- arbitrary[SchemeStructurePage.type]
         value <- arbitrary[models.event13.SchemeStructure].map(Json.toJson(_))
       } yield (page, value)
     }

@@ -24,6 +24,7 @@ import models.requests.{IdentifierRequest, OptionalDataRequest}
 import models.{LoggedInUser, UserAnswers}
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
@@ -33,7 +34,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures {
+class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
   val userAnswersCacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
@@ -43,15 +44,23 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
   private val eventType = EventType.Event1
 
   private val json = Json.obj("test" -> "test")
+  private val jsonNoEvent = Json.obj("testNoEvent" -> "testNoEvent")
   private val userAnswers = UserAnswers(json)
+  private val userAnswersForNoEventType = UserAnswers(jsonNoEvent)
 
   class Harness extends DataRetrievalImpl(eventType, userAnswersCacheConnector) {
     def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
 
+  override def beforeEach: Unit = {
+    super.beforeEach
+    reset(userAnswersCacheConnector)
+  }
+
   "Data Retrieval Action when there is no data in the cache" - {
     "must set userAnswers to 'None' in the request" in {
       when(userAnswersCacheConnector.get(eqTo(pstr), eqTo(eventType))(any(), any())) thenReturn Future(None)
+      when(userAnswersCacheConnector.get(eqTo(pstr))(any(), any())) thenReturn Future(None)
       val action = new Harness
 
       val expectedResult = OptionalDataRequest(pstr, "schemeName", "returnUrl", request, loggedInUser, None)
@@ -67,9 +76,11 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
   "Data Retrieval Action when there is data in the cache" - {
     "must build a userAnswers object and add it to the request" in {
       when(userAnswersCacheConnector.get(eqTo(pstr), eqTo(eventType))(any(), any())) thenReturn Future(Some(userAnswers))
+      when(userAnswersCacheConnector.get(eqTo(pstr))(any(), any())) thenReturn Future(Some(userAnswersForNoEventType))
       val action = new Harness
 
-      val expectedResult = OptionalDataRequest(pstr, "schemeName", "returnUrl", request, loggedInUser, Some(userAnswers))
+      val expectedResult = OptionalDataRequest(pstr, "schemeName", "returnUrl", request, loggedInUser,
+        Some(UserAnswers(userAnswers.data ++ userAnswersForNoEventType.data)))
       val futureResult = action.callTransform(request)
 
       whenReady(futureResult) { result =>

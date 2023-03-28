@@ -87,6 +87,19 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
     }
   }
 
+  "zeroValue" - {
+
+    "must return Valid for a number greater than zero" in {
+      val result = zeroValue(1, "error.zero").apply(0)
+      result mustEqual Valid
+    }
+
+    "must return Invalid for a number equal to zero" in {
+      val result = zeroValue(1, "error.zero").apply(1)
+      result mustEqual Invalid("error.zero", 1)
+    }
+  }
+
   "regexp" - {
 
     "must return Valid for an input that matches the expression" in {
