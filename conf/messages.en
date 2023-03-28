@@ -303,24 +303,25 @@ beneficiaryDetails.change.nino.hidden = the National Insurance number of the per
 
 amountPaid.event2.title = How much was paid?
 amountPaid.event2.heading = How much was paid to {0}?
-amountPaid.event2.checkYourAnswersLabel = The amount that was paid to {0} (1)
+amountPaid.event2.checkYourAnswersLabel = The amount that was paid to {0}
 amountPaid.event2.error.nonNumeric = The amount must be an amount of money, like 123.45 or 156.00
 amountPaid.event2.error.negative = The amount must not be a negative amount of money, like -123.45 or -156.00
 amountPaid.event2.error.nothingEntered = Enter the amount that was paid
 amountPaid.event2.error.noDecimals = The amount must include pence, like 123.45 or 156.00
 amountPaid.event2.error.tooHigh = The amount must be £999999999.99 or less
 amountPaid.event2.error.zeroEntered = The total amount paid must be greater than zero
-amountPaid.event2.change.hidden = How much was paid to {0}?
+amountPaid.event2.change.hidden = the amount that was paid
 
-datePaid.event2.title = datePaid
-datePaid.event2.heading = datePaid
-datePaid.event2.hint = For example, 12 11 2007
+datePaid.event2.title = When was the payment made?
+datePaid.event2.heading = When was the payment made to {0}?
+datePaid.event2.hint = For example, 27 3 2007
 datePaid.event2.checkYourAnswersLabel = datePaid
-datePaid.event2.error.required.all = Enter the datePaid
-datePaid.event2.error.required.two = The datePaid must include {0} and {1}
+datePaid.event2.error.nothingEntered = Enter the date
+datePaid.event2.error.nonNumeric = Enter a real date
 datePaid.event2.error.required = The datePaid must include {0}
-datePaid.event2.error.invalid = Enter a real datePaid
-datePaid.event2.change.hidden = datePaid
+datePaid.event2.error.outside.taxYear = The date must be between 6 April {0} to 5 April {1}
+datePaid.event2.error.error.noDayMonthOrYear = The date must include a [day/month/year]
+datePaid.event2.change.hidden = when the payment was made
 
 doYouHoldSignedMandate.title = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.heading = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?

@@ -17,20 +17,24 @@
 package forms.event2
 
 import java.time.LocalDate
-
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
 class datePaidFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[LocalDate] =
+  def apply(taxYear: String): Form[LocalDate] = {
     Form(
       "value" -> localDate(
-        invalidKey                    = "datePaid.event2.error.invalid",
-        threeDateComponentsMissingKey = "datePaid.event2.error.required.all",
-        twoDateComponentsMissingKey   = "datePaid.event2.error.required.two",
-        oneDateComponentMissingKey    = "datePaid.event2.error.required"
+        invalidKey                    = "datePaid.event2.error.nonNumeric",
+        threeDateComponentsMissingKey = "datePaid.event2.error.error.noDayMonthOrYear",
+        twoDateComponentsMissingKey   = "datePaid.event2.error.error.noDayMonthOrYear",
+        oneDateComponentMissingKey    = "datePaid.event2.error.error.noDayMonthOrYear"
+      ).verifying(
+        yearHas4Digits("datePaid.event2.error.nonNumeric"),
+        minDate(LocalDate.of(taxYear.toInt, 4, 6), "datePaid.event2.error.outside.taxYear", taxYear, (taxYear.toInt + 1).toString),
+        maxDate(LocalDate.of(taxYear.toInt + 1, 4, 5), "datePaid.event2.error.outside.taxYear",taxYear, (taxYear.toInt + 1).toString)
       )
     )
+  }
 }

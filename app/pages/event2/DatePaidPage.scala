@@ -18,10 +18,10 @@ package pages.event2
 
 import java.time.LocalDate
 import controllers.event2.routes
-import models.Index
+import models.{Index, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 
 case class DatePaidPage(index:Index) extends QuestionPage[LocalDate] {
 
@@ -31,4 +31,8 @@ case class DatePaidPage(index:Index) extends QuestionPage[LocalDate] {
 
   override def route(waypoints: Waypoints): Call =
     routes.datePaidController.onPageLoad(waypoints, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    DatePaidPage(index)
+  }
 }

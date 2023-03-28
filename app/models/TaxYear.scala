@@ -26,6 +26,8 @@ import java.time.LocalDate
 
 case class TaxYear(startYear: String) {
   def endYear: String = (startYear.toInt + 1).toString
+
+  def getYearAsString: String = startYear
 }
 
 object TaxYear extends Enumerable.Implicits {
