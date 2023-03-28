@@ -17,7 +17,7 @@
 package pages.common
 
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23, Event6, Event8}
+import models.enumeration.EventType.{Event22, Event23, Event6, Event8, Event8A}
 import models.{Index, UserAnswers}
 import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
@@ -34,6 +34,7 @@ case class MembersSummaryPage(eventType: EventType, pageNumber: Index) extends Q
     (eventType, answers.get(MembersSummaryPage(eventType, pageNumber))) match {
       case (Event6, Some(true)) => MembersDetailsPage(Event6, answers.countAll(MembersPage(EventType.Event6)))
       case (Event8, Some(true)) => MembersDetailsPage(Event8, answers.countAll(MembersPage(EventType.Event8)))
+      case (Event8A, Some(true)) => MembersDetailsPage(Event8A, answers.countAll(MembersPage(EventType.Event8A)))
       case (Event22, Some(true)) => ManualOrUploadPage(Event22, answers.countAll(MembersPage(EventType.Event22)))
       case (Event23, Some(true)) => ManualOrUploadPage(Event23, answers.countAll(MembersPage(EventType.Event23)))
       case _ => EventSummaryPage

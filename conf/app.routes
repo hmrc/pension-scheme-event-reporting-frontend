@@ -251,6 +251,9 @@ POST       /new-report/:index/event-8a-lump-sum-details                         
 GET         /new-report/:index/event-8a-check-your-answers                        controllers.event8a.Event8ACheckYourAnswersController.onPageLoad(index: Index)
 GET         /new-report/event-8a-click                                            controllers.event8a.Event8ACheckYourAnswersController.onClick
 
+GET        /new-report/event-8a-summary                                           controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8A)
+POST       /new-report/event-8a-summary                                           controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8A)
+
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.
 #

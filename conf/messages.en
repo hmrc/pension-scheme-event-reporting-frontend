@@ -842,6 +842,15 @@ membersSummary.event8.table.header2 = National Insurance number
 membersSummary.event8.table.header3 = Lump sum
 membersSummary.event8.table.totalTitle = Total not required
 
+membersSummary.event8A.title = Event 8A: Stand-alone lump sum events reported in the tax year ending 5 April {0}
+membersSummary.event8A.heading = Event 8A: Stand-alone lump sum events reported in the tax year ending 5 April {0}
+membersSummary.event8A.error.required = Select yes if you want to add another entry
+membersSummary.event8A.yesno.legend = Do you want to add another entry for stand-alone lump sums?
+membersSummary.event8A.table.header1 = Member
+membersSummary.event8A.table.header2 = National Insurance number
+membersSummary.event8A.table.header3 = Lump sum
+membersSummary.event8A.table.totalTitle = Total not required
+
 membersSummary.event22.title = Annual allowance events reported in the tax year ending 5 April {0}
 membersSummary.event22.heading = Annual allowance events reported in the tax year ending 5 April {0}
 membersSummary.event22.error.required = Select yes if you want to add another annual allowance event
