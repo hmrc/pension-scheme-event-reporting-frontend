@@ -33,7 +33,7 @@ import services.EventPaginationService
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.{Message, SummaryListRowWithTwoValues}
-import views.html.common.MembersSummaryView
+import views.html.common.{MembersSummaryView, MembersSummaryViewWithPagination}
 
 import javax.inject.Inject
 
