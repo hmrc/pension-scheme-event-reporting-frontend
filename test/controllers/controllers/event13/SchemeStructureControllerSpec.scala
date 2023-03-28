@@ -20,22 +20,22 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.controllers.event13.SchemeStructureFormProvider
 import models.UserAnswers
-import models.controllers.event13.SchemeStructure
+import models.event13.SchemeStructure
 import pages.EmptyWaypoints
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito.{never, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import pages.event13.SchemeStructurePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.controllers.event13.SchemeStructureView
+import views.html.event13.SchemeStructureView
 
 import scala.concurrent.Future
 
-class SchemeStructureControllerSpec extends SpecBase with BeforeAndAfterEach {
+class SchemeStructureControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar  {
 
   private val waypoints = EmptyWaypoints
 
@@ -44,14 +44,14 @@ class SchemeStructureControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.SchemeStructureController.onPageLoad(waypoints).url
-  private def postRoute: String = routes.SchemeStructureController.onSubmit(waypoints).url
+  private def getRoute: String = controllers.event13.routes.SchemeStructureController.onPageLoad(waypoints).url
+  private def postRoute: String = controllers.event13.routes.SchemeStructureController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }

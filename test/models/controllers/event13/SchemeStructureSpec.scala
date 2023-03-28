@@ -16,6 +16,7 @@
 
 package models.controllers.event13
 
+import models.event13.SchemeStructure
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

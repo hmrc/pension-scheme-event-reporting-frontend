@@ -28,9 +28,9 @@ import scala.math.BigDecimal.RoundingMode
 
 trait ModelGenerators {
 
-  implicit lazy val arbitrarySchemeStructure: Arbitrary[controllers.event13.SchemeStructure] =
+  implicit lazy val arbitrarySchemeStructure: Arbitrary[event13.SchemeStructure] =
     Arbitrary {
-      Gen.oneOf(controllers.event13.SchemeStructure.values.toSeq)
+      Gen.oneOf(event13.SchemeStructure.values.toSeq)
     }
 
   implicit lazy val arbitraryTaxYear: Arbitrary[TaxYear] =

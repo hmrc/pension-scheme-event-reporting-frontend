@@ -17,7 +17,7 @@
 package forms.controllers.event13
 
 import forms.behaviours.OptionFieldBehaviours
-import models.controllers.event13.SchemeStructure
+import models.event13.SchemeStructure
 import play.api.data.FormError
 
 class SchemeStructureFormProviderSpec extends OptionFieldBehaviours {

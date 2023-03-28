@@ -22,11 +22,10 @@ import forms.event13.ChangeDateFormProvider
 import models.UserAnswers
 import pages.EmptyWaypoints
 import pages.event13.ChangeDatePage
-
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito.{never, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -36,12 +35,12 @@ import views.html.event13.ChangeDateView
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class ChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach {
+class ChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new ChangeDateFormProvider()
-  private val form = formProvider()
+  private val form = formProvider(2022)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
@@ -55,7 +54,7 @@ class ChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val validAnswer = LocalDate.of(2020, 2, 12)
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }

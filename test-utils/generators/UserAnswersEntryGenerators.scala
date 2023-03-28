@@ -51,7 +51,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
     Arbitrary {
       for {
         page  <- arbitrary[SchemeStructurePage.type]
-        value <- arbitrary[models.controllers.event13.SchemeStructure].map(Json.toJson(_))
+        value <- arbitrary[models.event13.SchemeStructure].map(Json.toJson(_))
       } yield (page, value)
     }
 

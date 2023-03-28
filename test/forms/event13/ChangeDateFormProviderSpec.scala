@@ -22,7 +22,7 @@ import forms.behaviours.DateBehaviours
 
 class ChangeDateFormProviderSpec extends DateBehaviours {
 
-  private val form = new ChangeDateFormProvider()()
+  private val form = new ChangeDateFormProvider()(2022)
 
   ".value" - {
 
