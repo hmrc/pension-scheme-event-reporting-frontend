@@ -26,12 +26,12 @@ import java.time.LocalDate
 
 case class TaxYear(startYear: String) {
   def endYear: String = (startYear.toInt + 1).toString
-  def getYear: String = startYear.toInt.toString
 }
 
 object TaxYear extends Enumerable.Implicits {
   implicit val writes: Writes[TaxYear] = (yr: TaxYear) => JsString(yr.startYear.toString)
   private val numberOfYearsToShow = 7
+
   def values: Seq[TaxYear] = {
     yearRange(DateHelper.today).reverse
   }

@@ -47,8 +47,6 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
   private val formEvent22 = formProvider(Event22)
   private val formEvent23 = formProvider(Event23)
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val taxYear = "2022"
-
 
   private def getRouteEvent8: String = routes.MembersSummaryController.onPageLoad(waypoints, Event8).url
 
@@ -106,7 +104,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
               ))
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent8, waypoints, Event8, expectedSeq, "223.11", taxYear)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent8, waypoints, Event8, expectedSeq, "223.11")(request, messages(application)).toString
         }
       }
 
@@ -148,7 +146,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event8, Nil, "0.00", taxYear)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event8, Nil, "0.00")(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
         }
       }
@@ -187,7 +185,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
               ))
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent22, waypoints, Event22, expectedSeq, "999.11", taxYear)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent22, waypoints, Event22, expectedSeq, "999.11")(request, messages(application)).toString
         }
       }
 
@@ -229,7 +227,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event22, Nil, "0.00", taxYear)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event22, Nil, "0.00")(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
         }
       }
@@ -268,7 +266,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
               ))
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent23, waypoints, Event23, expectedSeq, "1,234.56", taxYear)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent23, waypoints, Event23, expectedSeq, "1,234.56")(request, messages(application)).toString
         }
       }
 
@@ -310,7 +308,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event23, Nil, "0.00", taxYear)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event23, Nil, "0.00")(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
         }
       }
