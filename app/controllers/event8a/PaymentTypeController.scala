@@ -54,8 +54,7 @@ class PaymentTypeController @Inject()(val controllerComponents: MessagesControll
           Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers
-            .setOrException(PaymentTypePage(eventType, index), value)
+          val updatedAnswers = originalUserAnswers.setOrException(PaymentTypePage(eventType, index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(PaymentTypePage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }

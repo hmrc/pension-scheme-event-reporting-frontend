@@ -21,7 +21,7 @@ import models.UserAnswers
 import models.enumeration.EventType
 import models.event8a.PaymentType
 import pages.common.MembersPage
-import pages.{IndexPage, JourneyRecoveryPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{JourneyRecoveryPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -44,6 +44,7 @@ case class PaymentTypePage(eventType: EventType, index: Int) extends QuestionPag
       case _ => Success(userAnswers)
     }
   }
+
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
 
     val optionSelected = answers.get(PaymentTypePage(eventType, index))
@@ -59,6 +60,7 @@ case class PaymentTypePage(eventType: EventType, index: Int) extends QuestionPag
         JourneyRecoveryPage
     }
   }
+
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
 
     val originalOptionSelected = originalAnswers.get(PaymentTypePage(eventType, index))

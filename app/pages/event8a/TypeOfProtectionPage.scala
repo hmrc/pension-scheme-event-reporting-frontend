@@ -25,6 +25,8 @@ import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.{Success, Try}
+
 case class TypeOfProtectionPage(eventType: EventType, index: Index) extends QuestionPage[TypeOfProtection] {
 
   override def path: JsPath = MembersPage(EventType.Event8A)(index) \ toString
@@ -34,9 +36,26 @@ case class TypeOfProtectionPage(eventType: EventType, index: Index) extends Ques
   override def route(waypoints: Waypoints): Call =
     routes.TypeOfProtectionController.onPageLoad(waypoints, index)
 
+  override def cleanupBeforeSettingValue(value: Option[TypeOfProtection], userAnswers: UserAnswers): Try[UserAnswers] = {
+    userAnswers.get(TypeOfProtectionPage(eventType, index)) match {
+      case originalTypeOfProtection@Some(_) if originalTypeOfProtection != value =>
+        userAnswers.remove(TypeOfProtectionReferencePage(eventType, index))
+      case _ => Success(userAnswers)
+    }
+  }
+
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     TypeOfProtectionReferencePage(eventType, index)
 
-  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
-    TypeOfProtectionReferencePage(eventType, index)
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
+
+    val originalOptionSelected = originalAnswers.get(TypeOfProtectionPage(eventType, index))
+    val updatedOptionSelected = updatedAnswers.get(TypeOfProtectionPage(eventType, index))
+    val answerIsChanged = originalOptionSelected != updatedOptionSelected
+
+    answerIsChanged match {
+      case true => TypeOfProtectionReferencePage(eventType, index)
+      case _ => Event8ACheckYourAnswersPage(index)
+    }
+  }
 }
