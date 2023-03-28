@@ -34,8 +34,8 @@ class UserAnswersCacheConnector @Inject()(
 
   private def url = s"${config.eventReportingUrl}/pension-scheme-event-reporting/user-answers"
 
-  def get(pstr: String, eventType: EventType)
-         (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
+  private def getJson(pstr: String, eventType: EventType)
+         (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier) = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -49,14 +49,30 @@ class UserAnswersCacheConnector @Inject()(
       .map { response =>
         response.status match {
           case NOT_FOUND => None
-          case OK => Some(UserAnswers(response.json.as[JsObject]))
+          case OK => Some(response.json.as[JsObject])
           case _ =>
             throw new HttpException(response.body, response.status)
         }
       }
   }
 
-  def get(pstr: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
+  def get(pstr: String, eventType: EventType)
+         (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
+    for {
+      eventData <- getJson(pstr,eventType)
+      noEventData <- getJson(pstr)
+    } yield {
+      val json = (eventData, noEventData) match {
+        case (Some(a), Some(b)) => Some(a.deepMerge(b))
+        case (None, Some(b)) => Some(b)
+        case (Some(a), None) => Some(a)
+        case (None, None) => None
+      }
+      json.map(UserAnswers)
+    }
+  }
+
+  private def getJson(pstr: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier) = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -69,11 +85,15 @@ class UserAnswersCacheConnector @Inject()(
       .map { response =>
         response.status match {
           case NOT_FOUND => None
-          case OK => Some(UserAnswers(response.json.as[JsObject]))
+          case OK => (Some(response.json.as[JsObject]))
           case _ =>
             throw new HttpException(response.body, response.status)
         }
       }
+  }
+
+  def get(pstr: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
+    getJson(pstr).map(_.map(UserAnswers))
   }
 
   def save(pstr: String, eventType: EventType, userAnswers: UserAnswers)

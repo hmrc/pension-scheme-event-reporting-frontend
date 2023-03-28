@@ -923,6 +923,7 @@ event13.changeDate.error.required.two = The changeDate must include {0} and {1}
 event13.changeDate.error.required = The changeDate must include {0}
 event13.changeDate.error.invalid = Enter a real date
 event13.changeDate.change.hidden = When was the change made?
+event13.changeDate.error.outside.taxYear = Date must be between 6 April {0} and 5 April {1}
 
 event13.schemeStructureDescription.title = Give a brief description of the pension scheme structure
 event13.schemeStructureDescription.heading = Give a brief description of the pension scheme structure
