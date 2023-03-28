@@ -51,16 +51,12 @@ class MembersSummaryController @Inject()(
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
-      val taxYear = request.userAnswers.get(TaxYearPage) match {
-        case Some(year) => year.getYear
-        case _ => "2022"
-      }
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
       if (mappedMembers.length > 25) {
         Redirect(routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, 0))
       } else {
-        Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), taxYear))
+        Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
       }
     }
 
@@ -81,15 +77,11 @@ class MembersSummaryController @Inject()(
 
   def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
     implicit request =>
-      val taxYear = request.userAnswers.get(TaxYearPage) match {
-        case Some(year) => year.getYear
-        case _ => "2022"
-      }
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
       form.bindFromRequest().fold(
         formWithErrors => {
-          BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), taxYear))
+          BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
         },
         value => {
           val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 0), value)
