@@ -20,12 +20,13 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.common.MembersSummaryFormProvider
 import forms.mappings.Formatters
+import models.TaxYear.getSelectedTaxYearAsString
 import models.common.MembersSummary
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event22, Event23, Event6, Event8, Event8A}
 import models.{Index, UserAnswers}
+import pages.Waypoints
 import pages.common.{MembersPage, MembersSummaryPage}
-import pages.{TaxYearPage, Waypoints}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.EventPaginationService
@@ -53,10 +54,11 @@ class MembersSummaryController @Inject()(
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
+      val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       if (mappedMembers.length > 25) {
         Redirect(routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, 0))
       } else {
-        Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
+        Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear))
       }
     }
 
@@ -79,9 +81,10 @@ class MembersSummaryController @Inject()(
     implicit request =>
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
+      val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       form.bindFromRequest().fold(
         formWithErrors => {
-          BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
+          BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear))
         },
         value => {
           val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 0), value)

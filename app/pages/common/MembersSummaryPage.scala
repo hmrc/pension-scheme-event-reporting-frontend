@@ -27,8 +27,9 @@ case class MembersSummaryPage(eventType: EventType, pageNumber: Index) extends Q
 
   override def path: JsPath = JsPath \ s"event${eventType.toString}" \ MembersSummaryPage.toString
 
-  override def route(waypoints: Waypoints): Call =
-    controllers.common.routes.MembersSummaryController.onPageLoad(waypoints, eventType)
+  override def route(waypoints: Waypoints): Call = eventType match {
+    case _ => controllers.common.routes.MembersSummaryController.onPageLoad(waypoints, eventType)
+  }
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     (eventType, answers.get(MembersSummaryPage(eventType, pageNumber))) match {
