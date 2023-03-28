@@ -20,10 +20,11 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.common.MembersSummaryFormProvider
 import forms.mappings.Formatters
-import models.{Index, UserAnswers}
+import models.TaxYear.getSelectedTaxYearAsString
 import models.common.MembersSummary
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23}
+import models.enumeration.EventType.{Event22, Event23, Event6}
+import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.common.{MembersPage, MembersSummaryPage}
 import play.api.i18n.{I18nSupport, Messages}
@@ -53,10 +54,11 @@ class MembersSummaryController @Inject()(
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
+      val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       if (mappedMembers.length > 25) {
         Redirect(routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, 0))
       } else {
-        Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
+        Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear))
       }
     }
 
@@ -73,15 +75,16 @@ class MembersSummaryController @Inject()(
     }
 
   private def sumValue(userAnswers: UserAnswers, eventType: EventType) =
-    currencyFormatter.format(userAnswers.sumAll(MembersPage(eventType), MembersSummary.readsMemberValue))
+    currencyFormatter.format(userAnswers.sumAll(MembersPage(eventType), MembersSummary.readsMemberValue(eventType)))
 
   def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
     implicit request =>
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
+      val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       form.bindFromRequest().fold(
         formWithErrors => {
-          BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType)))
+          BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear))
         },
         value => {
           val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 0), value)
@@ -90,7 +93,7 @@ class MembersSummaryController @Inject()(
   }
 
    private def getMappedMembers(userAnswers : UserAnswers, eventType: EventType) (implicit messages: Messages) : Seq[SummaryListRowWithTwoValues] = {
-    userAnswers.getAll(MembersPage(eventType))(MembersSummary.readsMember).zipWithIndex.map {
+    userAnswers.getAll(MembersPage(eventType))(MembersSummary.readsMember(eventType)).zipWithIndex.map {
       case (memberSummary, index) =>
         SummaryListRowWithTwoValues(
           key = memberSummary.name,
@@ -101,6 +104,7 @@ class MembersSummaryController @Inject()(
               ActionItem(
                 content = Text(Message("site.view")),
                 href = eventType match {
+                  case Event6 => controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(index).url
                   case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
                   case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
                   case _ => "#"
