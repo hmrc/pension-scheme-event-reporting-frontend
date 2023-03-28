@@ -18,7 +18,7 @@ package models.event13
 
 import models.{Enumerable, WithName}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Hint, Text}
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 sealed trait SchemeStructure

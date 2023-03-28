@@ -19,7 +19,6 @@ package controllers.event13
 import com.google.inject.Inject
 import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.Index
 import models.enumeration.EventType.Event13
 import models.requests.DataRequest
 import pages.event13.Event13CheckYourAnswersPage

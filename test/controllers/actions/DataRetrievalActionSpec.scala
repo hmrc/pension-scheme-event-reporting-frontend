@@ -52,7 +52,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
     def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(userAnswersCacheConnector)
   }

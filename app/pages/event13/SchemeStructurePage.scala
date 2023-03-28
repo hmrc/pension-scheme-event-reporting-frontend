@@ -19,7 +19,6 @@ package pages.event13
 import controllers.event13.routes
 import models.UserAnswers
 import models.event13.SchemeStructure
-import models.event13.SchemeStructure
 import pages.{IndexPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

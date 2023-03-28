@@ -16,9 +16,9 @@
 
 package forms.event13
 
-import java.time.{LocalDate, ZoneOffset}
-
 import forms.behaviours.DateBehaviours
+
+import java.time.LocalDate
 
 class ChangeDateFormProviderSpec extends DateBehaviours {
 
