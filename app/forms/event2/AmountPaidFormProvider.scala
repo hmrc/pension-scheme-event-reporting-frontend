@@ -17,17 +17,28 @@
 package forms.event2
 
 import forms.mappings.Mappings
-import javax.inject.Inject
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class AmountPaidFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Int] =
+import forms.event2.AmountPaidFormProvider._
+
+  def apply(): Form[BigDecimal] =
     Form(
-      "value" -> int(
-        "amountPaid.event2.error.required",
-        "amountPaid.event2.error.wholeNumber",
-        "amountPaid.event2.error.nonNumeric")
-          .verifying(inRange(0, Int.MaxValue, "amountPaid.event2.error.outOfRange"))
-    )
+      "value" ->
+        bigDecimal2DP(
+        "amountPaid.event2.error.nothingEntered",
+        "amountPaid.event2.error.nonNumeric",
+        "amountPaid.event2.error.noDecimals")
+        .verifying(
+          maximumValue[BigDecimal](maxAmountPaidValue, "amountPaid.event2.error.tooHigh"),
+          minimumValue[BigDecimal](0, "amountPaid.event2.error.negative"),
+          zeroValue[BigDecimal](0.01, "amountPaid.event2.error.zeroEntered")
+        ))
+}
+
+object AmountPaidFormProvider {
+  private val maxAmountPaidValue: BigDecimal = 999999999.99
 }

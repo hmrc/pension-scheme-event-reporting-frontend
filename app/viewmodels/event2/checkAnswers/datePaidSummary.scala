@@ -19,7 +19,7 @@ package viewmodels.checkAnswers
 import java.time.format.DateTimeFormatter
 import models.{Index, UserAnswers}
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event2.datePaidPage
+import pages.event2.DatePaidPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -29,7 +29,7 @@ object datePaidSummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(datePaidPage(index)).map {
+    answers.get(DatePaidPage(index)).map {
       answer =>
 
         val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
@@ -38,7 +38,7 @@ object datePaidSummary  {
           key     = "datePaid.event2.checkYourAnswersLabel",
           value   = ValueViewModel(answer.format(dateFormatter)),
           actions = Seq(
-            ActionItemViewModel("site.change", datePaidPage(index).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", DatePaidPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("datePaid.event2.change.hidden"))
           )
         )

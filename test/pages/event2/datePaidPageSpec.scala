@@ -7,16 +7,16 @@ import pages.behaviours.PageBehaviours
 
 class datePaidPageSpec extends PageBehaviours {
 
-  "datePaidPage" - {
+  "DatePaidPage" - {
 
     implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
       datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
     }
 
-    beRetrievable[LocalDate](datePaidPage)
+    beRetrievable[LocalDate](DatePaidPage)
 
-    beSettable[LocalDate](datePaidPage)
+    beSettable[LocalDate](DatePaidPage)
 
-    beRemovable[LocalDate](datePaidPage)
+    beRemovable[LocalDate](DatePaidPage)
   }
 }

@@ -25,7 +25,7 @@ import org.mockito.Mockito.{never, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
-import pages.event2.datePaidPage
+import pages.event2.DatePaidPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -78,7 +78,7 @@ class datePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = UserAnswers().set(datePaidPage(index = 0), validAnswer).success.value
+      val userAnswers = UserAnswers().set(DatePaidPage(index = 0), validAnswer).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
@@ -110,10 +110,10 @@ class datePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
           )
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(datePaidPage(index = 0), validAnswer).success.value
+        val updatedAnswers = emptyUserAnswers.set(DatePaidPage(index = 0), validAnswer).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual datePaidPage(index = 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual DatePaidPage(index = 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }

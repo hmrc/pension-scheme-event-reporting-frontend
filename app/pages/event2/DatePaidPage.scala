@@ -23,7 +23,7 @@ import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import pages.{QuestionPage, Waypoints}
 
-case class datePaidPage(index:Index) extends QuestionPage[LocalDate] {
+case class DatePaidPage(index:Index) extends QuestionPage[LocalDate] {
 
   override def path: JsPath = JsPath \ toString
 
