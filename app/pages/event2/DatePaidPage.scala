@@ -33,6 +33,6 @@ case class DatePaidPage(index:Index) extends QuestionPage[LocalDate] {
     routes.datePaidController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    DatePaidPage(index)
+    Event2CheckYourAnswersPage(index)
   }
 }

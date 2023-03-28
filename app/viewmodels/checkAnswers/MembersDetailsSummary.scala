@@ -18,6 +18,7 @@ package viewmodels.checkAnswers
 
 import models.UserAnswers
 import models.enumeration.EventType
+import models.enumeration.EventType.Event2
 import pages.common.MembersDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -29,34 +30,44 @@ import viewmodels.implicits._
 
 object MembersDetailsSummary {
 
-  def rowFullName(answers: UserAnswers, waypoints: Waypoints, index: Int, sourcePage: CheckAnswersPage, eventType: EventType)
+  def rowFullName(answers: UserAnswers, waypoints: Waypoints, index: Int, sourcePage: CheckAnswersPage, eventType: EventType, memberPageNo: Int=0)
                  (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MembersDetailsPage(eventType, index)).map {
+    answers.get(MembersDetailsPage(eventType, index, memberPageNo)).map {
+      val detailsType = (eventType, memberPageNo) match {
+        case (Event2, 1) => "deceasedMembersDetails"
+        case (Event2, 2) => "beneficiaryDetails"
+        case _ => "membersDetails"
+      }
       answer =>
 
         val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(answer.fullName)).toString))
         SummaryListRowViewModel(
-          key = "membersDetails.checkYourAnswersLabel",
+          key =  s"${detailsType}.checkYourAnswersLabel",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", MembersDetailsPage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("membersDetails.change.hidden"))
+            ActionItemViewModel("site.change", MembersDetailsPage(eventType, index, memberPageNo).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("site.change") + " " + messages( s"${detailsType}.change.hidden"))
           )
         )
     }
 
-  def rowNino(answers: UserAnswers, waypoints: Waypoints, index: Int, sourcePage: CheckAnswersPage, eventType: EventType)
+  def rowNino(answers: UserAnswers, waypoints: Waypoints, index: Int, sourcePage: CheckAnswersPage, eventType: EventType, memberPageNo: Int=0)
              (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MembersDetailsPage(eventType, index)).map {
+    answers.get(MembersDetailsPage(eventType, index, memberPageNo)).map {
+      val detailsType = (eventType, memberPageNo) match {
+        case (Event2, 1) => "deceasedMembersDetails"
+        case (Event2, 2) => "beneficiaryDetails"
+        case _ => "membersDetails"
+      }
       answer =>
 
         val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(answer.nino)).toString))
         SummaryListRowViewModel(
-          key = "membersDetails.checkYourAnswersLabel.nino",
+          key = s"${detailsType}.checkYourAnswersLabel.nino",
           value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", MembersDetailsPage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("membersDetails.change.nino.hidden"))
+            ActionItemViewModel("site.change", MembersDetailsPage(eventType, index, memberPageNo).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("site.change") + " " + messages(s"${detailsType}.change.nino.hidden"))
           )
         )
     }
