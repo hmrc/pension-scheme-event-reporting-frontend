@@ -153,6 +153,12 @@ object Event8ACheckYourAnswersControllerSpec {
       "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
+      "event8a.paymentType.checkYourAnswersLabel",
+      "Payment of a stand-alone lump sum",
+      "/manage-pension-scheme-event-report/new-report/1/event-8a-lump-sum-payment-type?waypoints=event-8A-check-answers-1",
+      "event8a.paymentType.change.hidden"
+    ),
+    fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "event8a.typeOfProtection.checkYourAnswersLabel",
       "Primary protection",
       "/manage-pension-scheme-event-report/new-report/1/event-8a-type-of-protection-held?waypoints=event-8A-check-answers-1",

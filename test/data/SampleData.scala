@@ -31,7 +31,7 @@ import models.event1.employer.{CompanyDetails, LoanDetails}
 import models.event1.member.SchemeDetails
 import models.event6.{CrystallisedDetails, TypeOfProtection => Event6TypeOfProtection}
 import models.event8.{LumpSumDetails => Event8LumpSumDetails, TypeOfProtection => Event8TypeOfProtection}
-import models.event8a.{LumpSumDetails => Event8aLumpSumDetails, TypeOfProtection => Event8aTypeOfProtection}
+import models.event8a.{PaymentType, LumpSumDetails => Event8aLumpSumDetails, TypeOfProtection => Event8aTypeOfProtection}
 import pages.address.ManualAddressPage
 import pages.common.{ChooseTaxYearPage, ManualOrUploadPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.event1._
@@ -39,7 +39,7 @@ import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveableProper
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
 import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage => Event6TypeOfProtectionPage}
 import pages.event8.{LumpSumAmountAndDatePage => Event8LumpSumAmountAndDatePage, TypeOfProtectionPage => Event8TypeOfProtectionPage, TypeOfProtectionReferencePage => Event8TypeOfProtectionReferencePage}
-import pages.event8a.{LumpSumAmountAndDatePage => Event8aLumpSumAmountAndDatePage, TypeOfProtectionPage => Event8aTypeOfProtectionPage, TypeOfProtectionReferencePage => Event8aTypeOfProtectionReferencePage}
+import pages.event8a.{PaymentTypePage, LumpSumAmountAndDatePage => Event8aLumpSumAmountAndDatePage, TypeOfProtectionPage => Event8aTypeOfProtectionPage, TypeOfProtectionReferencePage => Event8aTypeOfProtectionReferencePage}
 import utils.{CountryOptions, InputOption}
 
 import java.time.LocalDate
@@ -171,6 +171,7 @@ object SampleData {
 
   val sampleMemberJourneyDataEvent8A: UserAnswers = UserAnswers()
     .setOrException(MembersDetailsPage(Event8A, 0), memberDetails)
+    .setOrException(PaymentTypePage(Event8A, 0), PaymentType.PaymentOfAStandAloneLumpSum)
     .setOrException(Event8aTypeOfProtectionPage(Event8A, 0), Event8aTypeOfProtection.PrimaryProtection)
     .setOrException(Event8aTypeOfProtectionReferencePage(Event8A, 0), "1234567A")
     .setOrException(Event8aLumpSumAmountAndDatePage(Event8A, 0), event8aLumpSumDetails)
