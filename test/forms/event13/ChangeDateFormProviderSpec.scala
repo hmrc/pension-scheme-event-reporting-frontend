@@ -22,13 +22,14 @@ import forms.behaviours.DateBehaviours
 
 class ChangeDateFormProviderSpec extends DateBehaviours {
 
-  private val form = new ChangeDateFormProvider()(2022)
+  private val form = new ChangeDateFormProvider()(2000)
 
   ".value" - {
 
+
     val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
+      min = LocalDate.of(2000, 4, 6),
+      max = LocalDate.of(2001, 4, 5),
     )
 
     behave like dateField(form, "value", validData)

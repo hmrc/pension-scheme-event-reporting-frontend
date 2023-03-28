@@ -19,8 +19,8 @@ package controllers.event13
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event13.ChangeDateFormProvider
-import models.UserAnswers
-import pages.EmptyWaypoints
+import models.{TaxYear, UserAnswers}
+import pages.{EmptyWaypoints, TaxYearPage}
 import pages.event13.ChangeDatePage
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, times, verify, when}
@@ -44,6 +44,8 @@ class ChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
+  private def userAnswers: UserAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022")).get
+
   private def getRoute: String = routes.ChangeDateController.onPageLoad(waypoints).url
 
   private def postRoute: String = routes.ChangeDateController.onSubmit(waypoints).url
@@ -63,7 +65,7 @@ class ChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -78,8 +80,8 @@ class ChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = UserAnswers().set(ChangeDatePage, validAnswer).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val newUserAnswers = userAnswers.set(ChangeDatePage, validAnswer).success.value
+      val application = applicationBuilder(userAnswers = Some(newUserAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -98,29 +100,29 @@ class ChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
         .thenReturn(Future.successful(()))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(userAnswers), extraModules)
           .build()
 
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(
             "value.day" -> "12",
-            "value.month" -> "2",
-            "value.year" -> "2020"
+            "value.month" -> "5",
+            "value.year" -> "2022"
           )
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(ChangeDatePage, validAnswer).success.value
+        val updatedAnswers = userAnswers.set(ChangeDatePage, validAnswer).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ChangeDatePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual ChangeDatePage.navigate(waypoints, userAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
     "must return bad request when invalid data is submitted" in {
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(userAnswers), extraModules)
           .build()
 
       running(application) {
