@@ -42,6 +42,7 @@
                 label = LabelViewModel(messages("amountPaid.event2.heading", beneficiaryName)).asPageHeading()
             )
             .asNumeric()
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
             .withWidth(Fixed10)
         )
 
