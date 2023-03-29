@@ -28,7 +28,7 @@
 
 @layout(pageTitle = title(form, messages("datePaid.event2.title"))) {
 
-    @formHelper(action = routes.datePaidController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.DatePaidController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value.day")))
