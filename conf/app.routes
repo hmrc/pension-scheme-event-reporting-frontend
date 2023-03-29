@@ -158,8 +158,8 @@ POST        /new-report/:index/event-2-person-who-was-paid                      
 GET         /new-report/:index/event-2-how-much-was-paid                          controllers.event2.AmountPaidController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /new-report/:index/event-2-how-much-was-paid                          controllers.event2.AmountPaidController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
-GET         /new-report/:index/event-2-when-was-payment-made                      controllers.event2.datePaidController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
-POST        /new-report/:index/event-2-when-was-payment-made                      controllers.event2.datePaidController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+GET         /new-report/:index/event-2-when-was-payment-made                      controllers.event2.DatePaidController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST        /new-report/:index/event-2-when-was-payment-made                      controllers.event2.DatePaidController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
 GET         /new-report/event-2-summary                                           controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2)
 POST        /new-report/event-2-summary                                           controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2)

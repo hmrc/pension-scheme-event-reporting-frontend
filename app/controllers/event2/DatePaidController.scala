@@ -32,12 +32,12 @@ import views.html.event2.datePaidView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class datePaidController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                    identify: IdentifierAction,
-                                    getData: DataRetrievalAction,
-                                    userAnswersCacheConnector: UserAnswersCacheConnector,
-                                    formProvider: datePaidFormProvider,
-                                    view: datePaidView
+class DatePaidController @Inject()(val controllerComponents: MessagesControllerComponents,
+                                   identify: IdentifierAction,
+                                   getData: DataRetrievalAction,
+                                   userAnswersCacheConnector: UserAnswersCacheConnector,
+                                   formProvider: datePaidFormProvider,
+                                   view: datePaidView
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val eventType = EventType.Event2

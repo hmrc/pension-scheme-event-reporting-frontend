@@ -20,7 +20,7 @@ import forms.behaviours.DateBehaviours
 
 import java.time.LocalDate
 
-class datePaidFormProviderSpec extends DateBehaviours {
+class DatePaidFormProviderSpec extends DateBehaviours {
 
   private val form = new datePaidFormProvider()("2022")
 

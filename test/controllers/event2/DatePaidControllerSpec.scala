@@ -39,7 +39,7 @@ import views.html.event2.datePaidView
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class datePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
+class DatePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
@@ -48,9 +48,9 @@ class datePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.datePaidController.onPageLoad(waypoints, index = 0).url
+  private def getRoute: String = routes.DatePaidController.onPageLoad(waypoints, index = 0).url
 
-  private def postRoute: String = routes.datePaidController.onSubmit(waypoints, index = 0).url
+  private def postRoute: String = routes.DatePaidController.onSubmit(waypoints, index = 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)

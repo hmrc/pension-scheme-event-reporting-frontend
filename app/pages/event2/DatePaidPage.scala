@@ -30,7 +30,7 @@ case class DatePaidPage(index:Index) extends QuestionPage[LocalDate] {
   override def toString: String = "datePaid"
 
   override def route(waypoints: Waypoints): Call =
-    routes.datePaidController.onPageLoad(waypoints, index)
+    routes.DatePaidController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     Event2CheckYourAnswersPage(index)
