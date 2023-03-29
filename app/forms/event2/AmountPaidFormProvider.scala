@@ -35,7 +35,7 @@ import forms.event2.AmountPaidFormProvider._
         .verifying(
           maximumValue[BigDecimal](maxAmountPaidValue, "amountPaid.event2.error.tooHigh"),
           minimumValue[BigDecimal](0, "amountPaid.event2.error.negative"),
-          zeroValue[BigDecimal](0.01, "amountPaid.event2.error.zeroEntered")
+          minimumValue[BigDecimal](0.01, "amountPaid.event2.error.zeroEntered")
         ))
 }
 
