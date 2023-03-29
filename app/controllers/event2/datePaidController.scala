@@ -42,14 +42,15 @@ class datePaidController @Inject()(val controllerComponents: MessagesControllerC
 
   private val eventType = EventType.Event2
 
+  private def getTaxYear(userAnswers: Option[UserAnswers]) = {
+    userAnswers.flatMap(_.get(TaxYearPage)) match {
+      case Some(year) => year.startYear
+      case _ => throw new RuntimeException("Tax year not entered")
+    }
+  }
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    //TODO: what to return in default case
-    val taxYear = request.userAnswers.flatMap(_.get(TaxYearPage)) match {
-      case Some(year) => year.getYearAsString
-      case _ => ""
-    }
-    val form = formProvider(taxYear)
+    val form = formProvider(getTaxYear(request.userAnswers))
     val preparedForm = request.userAnswers.flatMap(_.get(DatePaidPage(index))).fold(form)(form.fill)
 
     Ok(view(preparedForm, waypoints, getBeneficiaryName(request.userAnswers, index), index))
@@ -57,12 +58,7 @@ class datePaidController @Inject()(val controllerComponents: MessagesControllerC
 
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
-      //TODO: what to return in default case
-      val taxYear = request.userAnswers.flatMap(_.get(TaxYearPage)) match {
-        case Some(year) => year.getYearAsString
-        case _ => ""
-      }
-      val form = formProvider(taxYear)
+      val form = formProvider(getTaxYear(request.userAnswers))
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints, getBeneficiaryName(request.userAnswers, index), index))),

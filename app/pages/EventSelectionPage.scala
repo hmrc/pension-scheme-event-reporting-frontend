@@ -21,7 +21,6 @@ import models.enumeration.EventType
 import models.enumeration.EventType._
 import models.{EventSelection, UserAnswers}
 import pages.common.{ManualOrUploadPage, MembersDetailsPage, MembersOrEmployersPage, MembersPage}
-import pages.common.{ManualOrUploadPage, MembersOrEmployersPage, MembersPage}
 import pages.event13.SchemeStructurePage
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage

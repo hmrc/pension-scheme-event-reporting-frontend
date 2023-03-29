@@ -32,7 +32,7 @@ case class Event2CheckYourAnswersPage(index: Index) extends CheckAnswersPage {
 
   override def toString: String = "CheckYourAnswersPage"
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    MembersSummaryPage(Event2)
+    MembersSummaryPage(Event2, index)
   }
 }
 

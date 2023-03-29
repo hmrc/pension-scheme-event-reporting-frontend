@@ -19,17 +19,21 @@ package controllers.event2
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event2.AmountPaidFormProvider
-import models.UserAnswers
+import models.{TaxYear, UserAnswers}
+import models.common.MembersDetails
+import models.enumeration.EventType.Event2
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.EmptyWaypoints
+import pages.common.MembersDetailsPage
+import pages.{EmptyWaypoints, TaxYearPage}
 import pages.event2.AmountPaidPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import utils.Event2MemberPageNumbers
 import views.html.event2.AmountPaidView
 
 import scala.concurrent.Future
@@ -50,6 +54,9 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
+  private val correctUserAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022")).get
+    .set(MembersDetailsPage(Event2, 0, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY), MembersDetails("Joe", "Bloggs", "ABC1234")).get
+
   private val validValue: BigDecimal = 33.90
 
   override def beforeEach(): Unit = {
@@ -61,7 +68,7 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(correctUserAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -71,13 +78,13 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[AmountPaidView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, 0, "")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, 0, "Joe Bloggs")(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(AmountPaidPage(index = 0), validValue).success.value
+      val userAnswers = correctUserAnswers.set(AmountPaidPage(index = 0), validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -89,7 +96,7 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, 0, "")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, 0, "Joe Bloggs")(request, messages(application)).toString
       }
     }
 
@@ -98,7 +105,7 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
         .thenReturn(Future.successful(()))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(correctUserAnswers), extraModules)
           .build()
 
       running(application) {
@@ -106,17 +113,17 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "33"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(AmountPaidPage(index = 0), validValue).success.value
+        val updatedAnswers = correctUserAnswers.set(AmountPaidPage(index = 0), validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AmountPaidPage(index = 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual AmountPaidPage(index = 0).navigate(waypoints, correctUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
     "must return bad request when invalid data is submitted" in {
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(correctUserAnswers), extraModules)
           .build()
 
       running(application) {
@@ -129,7 +136,7 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, 0, "")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, 0, "Joe Bloggs")(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

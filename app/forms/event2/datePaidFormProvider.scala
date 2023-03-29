@@ -27,9 +27,9 @@ class datePaidFormProvider @Inject() extends Mappings {
     Form(
       "value" -> localDate(
         invalidKey                    = "datePaid.event2.error.nonNumeric",
-        threeDateComponentsMissingKey = "datePaid.event2.error.error.noDayMonthOrYear",
-        twoDateComponentsMissingKey   = "datePaid.event2.error.error.noDayMonthOrYear",
-        oneDateComponentMissingKey    = "datePaid.event2.error.error.noDayMonthOrYear"
+        threeDateComponentsMissingKey = "datePaid.event2.error.noDayMonthOrYear",
+        twoDateComponentsMissingKey   = "datePaid.event2.error.noDayMonthOrYear",
+        oneDateComponentMissingKey    = "datePaid.event2.error.noDayMonthOrYear"
       ).verifying(
         yearHas4Digits("datePaid.event2.error.nonNumeric"),
         minDate(LocalDate.of(taxYear.toInt, 4, 6), "datePaid.event2.error.outside.taxYear", taxYear, (taxYear.toInt + 1).toString),
