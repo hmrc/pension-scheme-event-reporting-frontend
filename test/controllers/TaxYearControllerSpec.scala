@@ -77,7 +77,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(TaxYearPage, TaxYear.values.head).success.value
+      val userAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022")).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 

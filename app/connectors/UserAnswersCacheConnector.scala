@@ -34,33 +34,22 @@ class UserAnswersCacheConnector @Inject()(
 
   private def url = s"${config.eventReportingUrl}/pension-scheme-event-reporting/user-answers"
 
-  private def getJson(pstr: String, eventType: EventType)
-         (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier) = {
+  private def noEventHeaders(pstr:String)= Seq(
+    "Content-Type" -> "application/json",
+    "pstr" -> pstr
+  )
 
-    val headers: Seq[(String, String)] = Seq(
-      "Content-Type" -> "application/json",
-      "pstr" -> pstr,
-      "eventType" -> eventType.toString
-    )
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-
-    http.GET[HttpResponse](url)(implicitly, hc, implicitly)
-      .recoverWith(mapExceptionsToStatus)
-      .map { response =>
-        response.status match {
-          case NOT_FOUND => None
-          case OK => Some(response.json.as[JsObject])
-          case _ =>
-            throw new HttpException(response.body, response.status)
-        }
-      }
-  }
+  private def eventHeaders(pstr: String, eventType: EventType) = Seq(
+    "Content-Type" -> "application/json",
+    "pstr" -> pstr,
+    "eventType" -> eventType.toString
+  )
 
   def get(pstr: String, eventType: EventType)
          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
     for {
-      eventData <- getJson(pstr,eventType)
-      noEventData <- getJson(pstr)
+      eventData <- getJson(eventHeaders(pstr, eventType))
+      noEventData <- getJson(noEventHeaders(pstr))
     } yield {
       val json = (eventData, noEventData) match {
         case (Some(a), Some(b)) => Some(a.deepMerge(b))
@@ -72,12 +61,7 @@ class UserAnswersCacheConnector @Inject()(
     }
   }
 
-  private def getJson(pstr: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier) = {
-
-    val headers: Seq[(String, String)] = Seq(
-      "Content-Type" -> "application/json",
-      "pstr" -> pstr
-    )
+  private def getJson(headers: Seq[(String, String)])(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier) = {
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
     http.GET[HttpResponse](url)(implicitly, hc, implicitly)
@@ -93,7 +77,7 @@ class UserAnswersCacheConnector @Inject()(
   }
 
   def get(pstr: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
-    getJson(pstr).map(_.map(UserAnswers))
+    getJson(noEventHeaders(pstr)).map(_.map(UserAnswers))
   }
 
   def save(pstr: String, eventType: EventType, userAnswers: UserAnswers)
