@@ -63,7 +63,7 @@ class InputProtectionTypeControllerSpec extends SpecBase with BeforeAndAfterEach
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
