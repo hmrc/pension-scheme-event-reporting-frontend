@@ -19,6 +19,7 @@ package pages
 import cats.data.NonEmptyList
 import cats.implicits.toTraverseOps
 import models.{Mode, NormalMode}
+import play.api.Logger
 import play.api.mvc.QueryStringBindable
 
 sealed trait Waypoints {
@@ -72,7 +73,7 @@ object EmptyWaypoints extends Waypoints {
 }
 
 object Waypoints {
-
+  private val logger = Logger(classOf[Waypoints])
   def apply(waypoints: List[Waypoint]): Waypoints =
     waypoints match {
       case Nil => EmptyWaypoints
@@ -94,7 +95,11 @@ object Waypoints {
           data =>
             Waypoints.fromString(data.head)
               .map(Right(_))
-              .getOrElse(Left(s"Unable to bind parameter ${data.head} as waypoints"))
+              .getOrElse({
+                val msg = s"Unable to bind parameter ${data.head} as waypoints"
+                logger.warn(msg)
+                Left(msg)
+              })
         }
       }
 

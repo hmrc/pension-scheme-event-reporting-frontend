@@ -21,6 +21,8 @@ import models.enumeration.EventType
 import models.enumeration.EventType._
 import models.{EventSelection, UserAnswers}
 import pages.common.{ManualOrUploadPage, MembersDetailsPage, MembersOrEmployersPage, MembersPage}
+import pages.common.{ManualOrUploadPage, MembersOrEmployersPage, MembersPage}
+import pages.event13.SchemeStructurePage
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.JsPath
@@ -43,6 +45,7 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
       case Some(Event1) => ManualOrUploadPage(Event1, answers.countAll(MembersOrEmployersPage(Event1)))
       case Some(Event2) => MembersDetailsPage(Event2, answers.countAll(MembersOrEmployersPage(Event2)), Event2MemberPageNumbers.FIRST_PAGE_DECEASED)
       case Some(Event6) => ManualOrUploadPage(Event6, answers.countAll(MembersPage(Event6)))
+      case Some(Event13) => SchemeStructurePage
       case Some(Event18) => Event18ConfirmationPage
       case Some(Event22) => ManualOrUploadPage(Event22, answers.countAll(MembersPage(Event22)))
       case Some(Event23) => ManualOrUploadPage(Event23, answers.countAll(MembersPage(Event23)))

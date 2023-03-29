@@ -199,6 +199,7 @@ GET         /new-report/:index/event-22-tax-year                                
 POST        /new-report/:index/event-22-tax-year                                  controllers.common.ChooseTaxYearController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, index: Index)
 
 GET         /new-report/event-22-summary                                          controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+GET         /new-report/event-22-summary/page/:pageNumber                         controllers.common.MembersSummaryController.onPageLoadWithPageNumber(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, pageNumber: Index)
 POST        /new-report/event-22-summary                                          controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 
 GET         /new-report/event-23-summary                                          controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
@@ -229,6 +230,10 @@ POST       /new-report/:index/event-6-reference-type                            
 GET         /new-report/:index/event-6-payment-details                            controllers.event6.AmountCrystallisedAndDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /new-report/:index/event-6-payment-details                            controllers.event6.AmountCrystallisedAndDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
+GET         /new-report/event-6-summary                                          controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6)
+POST        /new-report/event-6-summary                                          controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6)
+
+
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.
 #
@@ -236,3 +241,15 @@ GET         /new-report/:index/dummy-member-details                             
 POST        /new-report/:index/dummy-member-details                               controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index,memberPageNo: Int ?= 0)
 
 
+# Event 13
+GET        /new-report/event-13-scheme-structure                        controllers.event13.SchemeStructureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-13-scheme-structure                        controllers.event13.SchemeStructureController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-13-date-of-change                  controllers.event13.ChangeDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-13-date-of-change                  controllers.event13.ChangeDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-13-other-structure                        controllers.event13.SchemeStructureDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-13-other-structure                        controllers.event13.SchemeStructureDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-13-check-your-answers                               controllers.event13.Event13CheckYourAnswersController.onPageLoad
+GET         /new-report/event-13-click                                            controllers.event13.Event13CheckYourAnswersController.onClick

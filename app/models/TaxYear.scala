@@ -16,6 +16,8 @@
 
 package models
 
+import org.apache.commons.lang3.StringUtils
+import pages.TaxYearPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsString, Writes}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
@@ -58,6 +60,13 @@ object TaxYear extends Enumerable.Implicits {
       startOfTaxYear.getYear
     }
     (currentTaxYearCalculated - (numberOfYearsToShow - 1) to currentTaxYearCalculated).map(year => TaxYear(year.toString))
+  }
+
+  def getSelectedTaxYearAsString(userAnswers: UserAnswers): String = {
+    userAnswers.get(TaxYearPage) match {
+      case Some(taxYear) => s"${Integer.parseInt(taxYear.endYear.stripPrefix("TaxYear(").stripSuffix(")").trim)}"
+      case _ => StringUtils.EMPTY
+    }
   }
 
   implicit val enumerable: Enumerable[TaxYear] =
