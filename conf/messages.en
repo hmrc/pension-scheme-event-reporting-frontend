@@ -960,14 +960,14 @@ schemeStructure.group = A group life or death in service scheme
 schemeStructure.corporate = A body corporate
 schemeStructure.other = Other
 schemeStructure.checkYourAnswersLabel = Scheme structure
-schemeStructure.error.required = Select schemeStructure
+schemeStructure.error.required = Select the new pension scheme structure
 schemeStructure.change.hidden = SchemeStructure
 
 event13.changeDate.title = When was the change made?
 event13.changeDate.heading = When was the change made?
 event13.changeDate.hint = For example, 27 3 2007
 event13.changeDate.checkYourAnswersLabel = The date the change was made
-event13.changeDate.error.required.all = Enter the changeDate
+event13.changeDate.error.required.all = The changeDate must include {0} and {1}
 event13.changeDate.error.required.two = The changeDate must include {0} and {1}
 event13.changeDate.error.required = The changeDate must include {0}
 event13.changeDate.error.invalid = Enter a real date

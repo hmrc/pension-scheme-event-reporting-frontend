@@ -28,10 +28,10 @@ class ChangeDateFormProvider @Inject() extends Mappings {
   def apply(taxYear:Int): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidKey                    = "changeDate.error.invalid",
-        threeDateComponentsMissingKey = "changeDate.error.required.all",
-        twoDateComponentsMissingKey   = "changeDate.error.required.two",
-        oneDateComponentMissingKey    = "changeDate.error.required",
+        invalidKey                    = "event13.changeDate.error.invalid",
+        threeDateComponentsMissingKey = "event13.changeDate.error.required.all",
+        twoDateComponentsMissingKey   = "event13.changeDate.error.required.two",
+        oneDateComponentMissingKey    = "event13.changeDate.error.required",
         taxYearValidationDetail = Some(TaxYearValidationDetail(
           invalidKey = "event13.changeDate.error.outside.taxYear",
           taxYear = taxYear
