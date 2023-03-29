@@ -37,16 +37,12 @@ object Event7MembersSummary {
     (JsPath \ "membersDetails" \ "nino").readNullable[String]
       .map(_.getOrElse(messages("site.notEntered")))
 
-  def readsLumpSumValue: Reads[BigDecimal] =
+  private def readsLumpSumValue: Reads[BigDecimal] =
     (JsPath \ "lumpSumAmount").readNullable[BigDecimal]
       .map(_.getOrElse(BigDecimal(0)))
 
-  def readsCrystallisedValue: Reads[BigDecimal] =
+  private def readsCrystallisedValue: Reads[BigDecimal] =
     (JsPath \ "crystallisedAmount").readNullable[BigDecimal]
-      .map(_.getOrElse(BigDecimal(0)))
-
-  def readsMemberValue(eventType: EventType): Reads[BigDecimal] =
-    memberValuePath(eventType).readNullable[BigDecimal]
       .map(_.getOrElse(BigDecimal(0)))
 
   private def readsMemberSummary(implicit messages: Messages): Reads[Event7MembersSummary] =
@@ -73,10 +69,6 @@ object Event7MembersSummary {
 
   def readsMember(implicit messages: Messages): Reads[Event7MembersSummary] = {
     JsPath.read(readsMemberSummary)
-  }
-
-  def memberValuePath(eventType: EventType): JsPath = eventType match {
-    case _ => JsPath \ "totalPensionAmounts"
   }
 
 }
