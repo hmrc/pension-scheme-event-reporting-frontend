@@ -110,7 +110,7 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "33"))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "33.00"))
 
         val result = route(application, request).value
         val updatedAnswers = correctUserAnswers.set(AmountPaidPage(index = 0), validValue).success.value

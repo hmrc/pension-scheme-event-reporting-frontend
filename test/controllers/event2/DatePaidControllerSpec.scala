@@ -113,7 +113,7 @@ class DatePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(
             "value.day" -> "12",
             "value.month" -> "2",
-            "value.year" -> "2020"
+            "value.year" -> "2023"
           )
 
         val result = route(application, request).value
