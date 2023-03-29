@@ -14,38 +14,38 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.controllers.event13
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.TaxYearFormProvider
-import models.{TaxYear, UserAnswers}
+import forms.controllers.event13.SchemeStructureFormProvider
+import models.UserAnswers
+import models.event13.SchemeStructure
+import pages.EmptyWaypoints
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.{never, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, TaxYearPage}
+import pages.event13.SchemeStructurePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.DateHelper
-import views.html.TaxYearView
+import views.html.event13.SchemeStructureView
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
-class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
+class SchemeStructureControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar  {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new TaxYearFormProvider()
+  private val formProvider = new SchemeStructureFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.TaxYearController.onPageLoad(waypoints).url
-  private def postRoute: String = routes.TaxYearController.onSubmit(waypoints).url
+  private def getRoute: String = controllers.event13.routes.SchemeStructureController.onPageLoad(waypoints).url
+  private def postRoute: String = controllers.event13.routes.SchemeStructureController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -54,10 +54,9 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
   override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
-    DateHelper.setDate(Some(LocalDate.of(2023, 2, 10)))
   }
 
-  "TaxYear Controller" - {
+  "SchemeStructure Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -68,7 +67,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[TaxYearView]
+        val view = application.injector.instanceOf[SchemeStructureView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
@@ -77,24 +76,24 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022")).success.value
+      val userAnswers = UserAnswers().set(SchemeStructurePage, SchemeStructure.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[TaxYearView]
+        val view = application.injector.instanceOf[SchemeStructureView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(TaxYear.values.head), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(SchemeStructure.values.head), waypoints)(request, messages(application)).toString
       }
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
@@ -103,14 +102,14 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", TaxYear.values.head.startYear))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", SchemeStructure.values.head.toString))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(TaxYearPage, TaxYear.values.head).success.value
+        val updatedAnswers = emptyUserAnswers.set(SchemeStructurePage, SchemeStructure.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual TaxYearPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
+        redirectLocation(result).value mustEqual SchemeStructurePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
@@ -123,7 +122,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[TaxYearView]
+        val view = application.injector.instanceOf[SchemeStructureView]
         val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value

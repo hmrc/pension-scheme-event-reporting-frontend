@@ -14,61 +14,65 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.event13
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.TaxYearFormProvider
+import forms.event13.ChangeDateFormProvider
 import models.{TaxYear, UserAnswers}
+import pages.{EmptyWaypoints, TaxYearPage}
+import pages.event13.ChangeDatePage
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.{never, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, TaxYearPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.DateHelper
-import views.html.TaxYearView
+import views.html.event13.ChangeDateView
 
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
+class ChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new TaxYearFormProvider()
-  private val form = formProvider()
+  private val formProvider = new ChangeDateFormProvider()
+  private val form = formProvider(2022)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.TaxYearController.onPageLoad(waypoints).url
-  private def postRoute: String = routes.TaxYearController.onSubmit(waypoints).url
+  private def userAnswers: UserAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022")).get
+
+  private def getRoute: String = routes.ChangeDateController.onPageLoad(waypoints).url
+
+  private def postRoute: String = routes.ChangeDateController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
+  private val validAnswer = LocalDate.of(2020, 2, 12)
+
   override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
-    DateHelper.setDate(Some(LocalDate.of(2023, 2, 10)))
   }
 
-  "TaxYear Controller" - {
+  "ChangeDate Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[TaxYearView]
+        val view = application.injector.instanceOf[ChangeDateView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
@@ -76,54 +80,56 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022")).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val newUserAnswers = userAnswers.set(ChangeDatePage, validAnswer).success.value
+      val application = applicationBuilder(userAnswers = Some(newUserAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[TaxYearView]
+        val view = application.injector.instanceOf[ChangeDateView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(TaxYear.values.head), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), waypoints)(request, messages(application)).toString
       }
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(userAnswers), extraModules)
           .build()
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", TaxYear.values.head.startYear))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
+            "value.day" -> "12",
+            "value.month" -> "5",
+            "value.year" -> "2022"
+          )
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(TaxYearPage, TaxYear.values.head).success.value
+        val updatedAnswers = userAnswers.set(ChangeDatePage, validAnswer).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual TaxYearPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
+        redirectLocation(result).value mustEqual ChangeDatePage.navigate(waypoints, userAnswers, updatedAnswers).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
     "must return bad request when invalid data is submitted" in {
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(userAnswers), extraModules)
           .build()
 
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[TaxYearView]
+        val view = application.injector.instanceOf[ChangeDateView]
         val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value

@@ -89,7 +89,7 @@ class DataRetrievalActionImpl @Inject()(
   override def apply(eventType: EventType): DataRetrieval =
     new DataRetrievalImpl(eventType, userAnswersCacheConnector)
 
-  override def apply: DataRetrieval =
+  override def apply(): DataRetrieval =
     new DataRetrievalNoEventTypeImpl(userAnswersCacheConnector)
 }
 
