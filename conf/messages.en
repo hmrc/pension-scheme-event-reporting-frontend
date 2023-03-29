@@ -315,13 +315,18 @@ amountPaid.event2.change.hidden = the amount that was paid
 datePaid.event2.title = When was the payment made?
 datePaid.event2.heading = When was the payment made to {0}?
 datePaid.event2.hint = For example, 27 3 2007
-datePaid.event2.checkYourAnswersLabel = datePaid
+datePaid.event2.checkYourAnswersLabel = The date the payment was made to {0}
 datePaid.event2.error.nothingEntered = Enter the date
 datePaid.event2.error.nonNumeric = Enter a real date
 datePaid.event2.error.required = The datePaid must include {0}
 datePaid.event2.error.outside.taxYear = The date must be between 6 April {0} to 5 April {1}
 datePaid.event2.error.error.noDayMonthOrYear = The date must include a [day/month/year]
 datePaid.event2.change.hidden = when the payment was made
+
+membersSummary.event2.title = Annual allowance events reported in the tax year ending 5 April {0}
+membersSummary.event2.heading = Event 2: Lump sum death benefit payment events reported in the tax year ending 5 April {0}
+membersSummary.event2.error.required = Select yes if you want to add another entry
+membersSummary.event2.yesno.legend = Do you want to add another lump sum death benefit entry?
 
 doYouHoldSignedMandate.title = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.heading = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?

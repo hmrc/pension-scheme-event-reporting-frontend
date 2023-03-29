@@ -40,7 +40,7 @@ class datePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new datePaidFormProvider()
-  private val form = formProvider()
+  private val form = formProvider("2021")
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
@@ -52,9 +52,9 @@ class datePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validAnswer = LocalDate.of(2020, 2, 12)
+  private val validAnswer = LocalDate.of(2022, 2, 12)
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
@@ -73,7 +73,7 @@ class datePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[datePaidView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, "", index = 0)(request, messages(application)).toString
       }
     }
 
@@ -89,7 +89,7 @@ class datePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), waypoints, "", 0)(request, messages(application)).toString
       }
     }
 
@@ -133,7 +133,7 @@ class datePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, index = 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, "", 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event2.checkAnswers
 
 import models.{Index, UserAnswers}
-import pages.{CheckAnswersPage, Waypoints}
 import pages.event2.AmountPaidPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.BeneficiaryDetailsEvent2.getBeneficiaryName
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
@@ -30,9 +31,8 @@ object AmountPaidSummary  {
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AmountPaidPage(index)).map {
       answer =>
-
         SummaryListRowViewModel(
-          key     = "amountPaid.event2.checkYourAnswersLabel",
+          key     = messages("amountPaid.event2.checkYourAnswersLabel", getBeneficiaryName(Some(answers), index)),
           value   = ValueViewModel(answer.toString),
           actions = Seq(
             ActionItemViewModel("site.change", AmountPaidPage(index).changeLink(waypoints, sourcePage).url)

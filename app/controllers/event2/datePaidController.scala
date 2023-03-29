@@ -19,17 +19,14 @@ package controllers.event2
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event2.datePaidFormProvider
-import models.common.MembersDetails
 import models.enumeration.EventType
 import models.{Index, UserAnswers}
-import pages.common.MembersDetailsPage
 import pages.event2.DatePaidPage
 import pages.{TaxYearPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Event2MemberPageNumbers
-import viewmodels.Message
+import utils.BeneficiaryDetailsEvent2.getBeneficiaryName
 import views.html.event2.datePaidView
 
 import javax.inject.Inject
@@ -45,29 +42,17 @@ class datePaidController @Inject()(val controllerComponents: MessagesControllerC
 
   private val eventType = EventType.Event2
 
+
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     //TODO: what to return in default case
     val taxYear = request.userAnswers.flatMap(_.get(TaxYearPage)) match {
       case Some(year) => year.getYearAsString
       case _ => ""
     }
-
     val form = formProvider(taxYear)
-
-    //TODO: remove duplicate code, find more effective method
-    val beneficiaryFullNameOpt = request.userAnswers.flatMap {
-      _.get(MembersDetailsPage(eventType, index, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY)).map {
-        g => MembersDetails(g.firstName, g.lastName, g.nino).fullName
-      }
-    }
-    val datePaidHeadingMessage = beneficiaryFullNameOpt match {
-      case Some(beneficiaryName) => Message("datePaid.event2.heading", beneficiaryName)
-      //TODO: what to do when no name is pulled back here
-      case _ => Message("datePaid.event2.heading", "")
-    }
     val preparedForm = request.userAnswers.flatMap(_.get(DatePaidPage(index))).fold(form)(form.fill)
 
-    Ok(view(preparedForm, waypoints, datePaidHeadingMessage, index))
+    Ok(view(preparedForm, waypoints, getBeneficiaryName(request.userAnswers, index), index))
   }
 
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
@@ -78,21 +63,9 @@ class datePaidController @Inject()(val controllerComponents: MessagesControllerC
         case _ => ""
       }
       val form = formProvider(taxYear)
-
-      //TODO: remove duplicate code, find more effective method
-      val beneficiaryFullNameOpt = request.userAnswers.flatMap {
-        _.get(MembersDetailsPage(eventType, index, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY)).map {
-          g => MembersDetails(g.firstName, g.lastName, g.nino).fullName
-        }
-      }
-      val datePaidHeadingMessage = beneficiaryFullNameOpt match {
-        case Some(beneficiaryName) => Message("datePaid.event2.heading", beneficiaryName)
-        //TODO: what to do when no name is pulled back here
-        case _ => Message("datePaid.event2.heading", "")
-      }
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, datePaidHeadingMessage, index))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, getBeneficiaryName(request.userAnswers, index), index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(DatePaidPage(index), value)

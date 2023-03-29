@@ -19,17 +19,14 @@ package controllers.event2
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event2.AmountPaidFormProvider
-import models.common.MembersDetails
-import models.{Index, UserAnswers}
 import models.enumeration.EventType
+import models.{Index, UserAnswers}
 import pages.Waypoints
-import pages.common.MembersDetailsPage
 import pages.event2.AmountPaidPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Event2MemberPageNumbers
-import viewmodels.Message
+import utils.BeneficiaryDetailsEvent2.getBeneficiaryName
 import views.html.event2.AmountPaidView
 
 import javax.inject.Inject
@@ -47,37 +44,15 @@ class AmountPaidController @Inject()(val controllerComponents: MessagesControlle
   private val eventType = EventType.Event2
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-
-    //TODO: remove duplicate code, find more effective method
-    val beneficiaryFullNameOpt = request.userAnswers.flatMap {
-      _.get(MembersDetailsPage(eventType, index, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY)).map {
-        g => MembersDetails(g.firstName, g.lastName, g.nino).fullName
-      }
-    }
-    val amountPaidHeadingMessage = beneficiaryFullNameOpt match {
-      case Some(beneficiaryName) => Message("amountPaid.event2.heading", beneficiaryName)
-      //TODO: what to do when no name is pulled back here
-      case _ => Message("amountPaid.event2.heading", "")
-    }
     val preparedForm = request.userAnswers.flatMap(_.get(AmountPaidPage(index))).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, index, amountPaidHeadingMessage))
+    Ok(view(preparedForm, waypoints, index, getBeneficiaryName(request.userAnswers, index)))
   }
 
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
-      val beneficiaryFullNameOpt = request.userAnswers.flatMap {
-        _.get(MembersDetailsPage(eventType, index, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY)).map {
-          g => MembersDetails(g.firstName, g.lastName, g.nino).fullName
-        }
-      }
-      val amountPaidHeadingMessage = beneficiaryFullNameOpt match {
-        case Some(beneficiaryName) => Message("amountPaid.event2.heading", beneficiaryName)
-        //TODO: what to do when no name is pulled back here
-        case _ => Message("amountPaid.event2.heading", "")
-      }
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, index, amountPaidHeadingMessage))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, index, getBeneficiaryName(request.userAnswers, index)))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(AmountPaidPage(index), value)

@@ -23,7 +23,7 @@ import forms.mappings.Formatters
 import models.UserAnswers
 import models.common.MembersSummary
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23}
+import models.enumeration.EventType.{Event2, Event22, Event23}
 import pages.Waypoints
 import pages.common.{MembersPage, MembersSummaryPage}
 import play.api.i18n.{I18nSupport, Messages}
@@ -81,6 +81,7 @@ class MembersSummaryController @Inject()(
               ActionItem(
                 content = Text(Message("site.view")),
                 href = eventType match {
+                  case Event2 => controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(index).url
                   case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
                   case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
                   case _ => "#"

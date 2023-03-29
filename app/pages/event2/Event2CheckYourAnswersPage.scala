@@ -16,9 +16,10 @@
 
 package pages.event2
 
-import models.Index
+import models.{Index, UserAnswers}
 import models.enumeration.EventType.Event2
-import pages.{CheckAnswersPage, Waypoint, Waypoints}
+import pages.common.MembersSummaryPage
+import pages.{CheckAnswersPage, Page, Waypoint, Waypoints}
 import play.api.mvc.Call
 
 case class Event2CheckYourAnswersPage(index: Index) extends CheckAnswersPage {
@@ -30,6 +31,9 @@ case class Event2CheckYourAnswersPage(index: Index) extends CheckAnswersPage {
   }
 
   override def toString: String = "CheckYourAnswersPage"
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    MembersSummaryPage(Event2)
+  }
 }
 
 object Event2CheckYourAnswersPage {

@@ -24,7 +24,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, heading: String, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, beneficiaryName: String, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("datePaid.event2.title"))) {
 
@@ -37,7 +37,7 @@
         @govukDateInput(
             DateViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(heading).asPageHeading()
+                legend = LegendViewModel(messages("datePaid.event2.heading", beneficiaryName)).asPageHeading()
             )
             .withHint(HintViewModel(messages("datePaid.event2.hint")))
         )
