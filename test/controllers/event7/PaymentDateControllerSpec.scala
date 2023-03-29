@@ -50,8 +50,6 @@ class PaymentDateControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private val eventType = Event7
-
   private def getRoute: String = routes.PaymentDateController.onPageLoad(waypoints, 0).url
 
   private def postRoute: String = routes.PaymentDateController.onSubmit(waypoints, 0).url

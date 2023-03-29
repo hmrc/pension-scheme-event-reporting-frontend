@@ -962,7 +962,7 @@ lumpSumAmount.value.error.nothingEntered = Enter how much lump sum was paid
 crystallisedAmount.title = How much was crystallised?
 crystallisedAmount.heading = How much was crystallised?
 crystallisedAmount.checkYourAnswersLabel = How much was crystallised
-crystallisedAmount.change.hidden = The amount that was crystallised
+crystallisedAmount.change.hidden = the amount that was crystallised
 crystallisedAmount.value.error.nothingEntered = Enter how much was crystallised
 
 amounts.value.error.notANumber = The amount must be an amount of money, like 123.45 or 156.00

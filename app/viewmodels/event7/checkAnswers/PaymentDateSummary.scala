@@ -16,30 +16,29 @@
 
 package viewmodels.event7.checkAnswers
 
+import forms.mappings.Formatters
+import models.enumeration.EventType
 import models.{Index, UserAnswers}
+import pages.event6.AmountCrystallisedAndDatePage
+import pages.event7.PaymentDatePage
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event7.LumpSumAmountPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.event1.checkAnswers.PaymentValueAndDateSummary.currencyFormatter
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object LumpSumAmountSummary  {
+object PaymentDateSummary extends Formatters {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(LumpSumAmountPage(index)).map {
+  def rowPaymentDate(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Index)
+                         (implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(PaymentDatePage(index)).map {
       answer =>
-
         SummaryListRowViewModel(
-          key     = "lumpSumAmount.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer)}")),
+          key = messages("paymentDate.date.checkYourAnswersLabel"),
+          value = ValueViewModel(dateFormatter.format(answer.date)),
           actions = Seq(
-            ActionItemViewModel("site.change", LumpSumAmountPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("lumpSumAmount.change.hidden"))
+            ActionItemViewModel("site.change", PaymentDatePage(index).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("site.change") + " " + messages("paymentDate.date.change.hidden"))
           )
         )
     }

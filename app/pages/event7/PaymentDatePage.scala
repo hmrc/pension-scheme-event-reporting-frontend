@@ -21,7 +21,7 @@ import models.UserAnswers
 import models.enumeration.EventType
 import models.event7.PaymentDate
 import pages.common.MembersPage
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -32,10 +32,9 @@ case class PaymentDatePage(index: Int) extends QuestionPage[PaymentDate] {
     routes.PaymentDateController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    IndexPage
-    /*Event7CheckYourAnswersPage(index)*/
+   Event7CheckYourAnswersPage(index)
 }
 
 object PaymentDatePage {
-  override def toString: String = "PaymentDate"
+  override def toString: String = "paymentDate"
 }

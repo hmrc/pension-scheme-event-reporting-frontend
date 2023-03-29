@@ -17,29 +17,28 @@
 package viewmodels.event7.checkAnswers
 
 import models.{Index, UserAnswers}
+import pages.event7.CrystallisedAmountPage
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event7.LumpSumAmountPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.event1.checkAnswers.PaymentValueAndDateSummary.currencyFormatter
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object LumpSumAmountSummary  {
+object CrystallisedAmountSummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(LumpSumAmountPage(index)).map {
+    answers.get(CrystallisedAmountPage(index)).map {
       answer =>
 
         SummaryListRowViewModel(
-          key     = "lumpSumAmount.checkYourAnswersLabel",
+          key     = "crystallisedAmount.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer)}")),
           actions = Seq(
-            ActionItemViewModel("site.change", LumpSumAmountPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("lumpSumAmount.change.hidden"))
+            ActionItemViewModel("site.change", CrystallisedAmountPage(index).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("site.change") + " " + messages("crystallisedAmount.change.hidden"))
           )
         )
     }
