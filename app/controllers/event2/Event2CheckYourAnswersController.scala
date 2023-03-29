@@ -55,11 +55,11 @@ class Event2CheckYourAnswersController @Inject()(
     }
 
   def onClick: Action[AnyContent] =
-    (identify andThen getData(Event2) andThen requireData).async { implicit request =>
-      connector.compileEvent(request.pstr, Event2).map {
-        _ =>
+    (identify andThen getData(Event2) andThen requireData) { implicit request => // TODO: reimplement async when compile is added in backend: `...().async`
+          //      connector.compileEvent(request.pstr, Event2).map {
+          //        _ =>
           Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event2).url)
-      }
+          //}
     }
 
   private def buildEvent2CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
@@ -72,3 +72,4 @@ class Event2CheckYourAnswersController @Inject()(
     DatePaidSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq
   }
 }
+
