@@ -16,6 +16,8 @@
 
 package models.common
 
+import models.enumeration.EventType
+import models.enumeration.EventType._
 import play.api.i18n.Messages
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
@@ -30,15 +32,15 @@ object MembersSummary {
     (JsPath \ "membersDetails" \ "nino").readNullable[String]
       .map(_.getOrElse(messages("site.notEntered")))
 
-  val readsMemberValue: Reads[BigDecimal] =
-    (JsPath \ "totalPensionAmounts").readNullable[BigDecimal]
+  def readsMemberValue(eventType: EventType): Reads[BigDecimal] =
+    memberValuePath(eventType).readNullable[BigDecimal]
       .map(_.getOrElse(BigDecimal(0)))
 
-  private def readsMemberSummary(implicit messages: Messages): Reads[MembersSummary] =
+  private def readsMemberSummary(eventType: EventType)(implicit messages: Messages): Reads[MembersSummary] =
     (
       (JsPath \ "membersDetails" \ "firstName").readNullable[String] and
         (JsPath \ "membersDetails" \ "lastName").readNullable[String] and
-        readsMemberValue and
+        readsMemberValue(eventType) and
         readsNINumber
       ) (
       (firstName, lastName, paymentValue, nINumber) => {
@@ -51,8 +53,13 @@ object MembersSummary {
       }
     )
 
-  def readsMember(implicit messages: Messages): Reads[MembersSummary] = {
-    JsPath.read(readsMemberSummary)
+  def readsMember(eventType: EventType)(implicit messages: Messages): Reads[MembersSummary] = {
+    JsPath.read(readsMemberSummary(eventType))
+  }
+
+  def memberValuePath(eventType: EventType): JsPath = eventType match {
+    case Event6 => JsPath \ "AmountCrystallisedAndDate" \ "amountCrystallised"
+    case _ => JsPath \ "totalPensionAmounts"
   }
 
 }
