@@ -35,7 +35,6 @@ object Event13CheckYourAnswersPage {
 
   def waypointFromString(s: String): Option[Waypoint] = {
     val pattern = """event-13-check-answers"""
-    println(s)
     s match {
       case x if x == pattern =>
         Some(Event13CheckYourAnswersPage().waypoint)
