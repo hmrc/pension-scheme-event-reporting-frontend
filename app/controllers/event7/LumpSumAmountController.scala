@@ -19,10 +19,10 @@ package controllers.event7
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event7.LumpSumAmountFormProvider
-import models.{Index, UserAnswers}
 import models.enumeration.EventType
-import pages.event7.LumpSumAmountPage
+import models.{Index, UserAnswers}
 import pages.Waypoints
+import pages.event7.LumpSumAmountPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController

@@ -20,7 +20,6 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event7.PaymentDateFormProvider
 import models.UserAnswers
-import models.enumeration.EventType.Event7
 import models.event7.PaymentDate
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
