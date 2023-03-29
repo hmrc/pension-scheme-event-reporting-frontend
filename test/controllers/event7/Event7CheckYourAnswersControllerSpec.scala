@@ -141,13 +141,13 @@ object Event7CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "lumpSumAmount.checkYourAnswersLabel",
-      "£845.99",
+      "£100.00",
       "/manage-pension-scheme-event-report/new-report/1/event-7-lump-sum-amount?waypoints=event-7-check-answers-1",
       "lumpSumAmount.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "crystallisedAmount.checkYourAnswersLabel",
-      "£345.50",
+      "£50.00",
       "/manage-pension-scheme-event-report/new-report/1/event-7-crystallisation-amount?waypoints=event-7-check-answers-1",
       "crystallisedAmount.change.hidden"
     ),

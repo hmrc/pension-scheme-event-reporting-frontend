@@ -54,11 +54,12 @@ class Event7CheckYourAnswersController @Inject()(
     }
 
   def onClick: Action[AnyContent] =
-    (identify andThen getData(Event7) andThen requireData).async { implicit request =>
-      connector.compileEvent(request.pstr, Event7).map {
-        _ =>
-          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event7).url)
-      }
+    (identify andThen getData(Event7) andThen requireData)/*.async*/ { implicit request =>
+//      TODO re-add when backend transformation complete
+      /* connector.compileEvent(request.pstr, Event7).map {
+        _ =>*/
+          Redirect(controllers.event7.routes.Event7MembersSummaryController.onPageLoad(EmptyWaypoints).url)
+//      }
     }
 
   private def buildEvent7CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)

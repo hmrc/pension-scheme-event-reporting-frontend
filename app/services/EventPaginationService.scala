@@ -16,7 +16,7 @@
 
 package services
 
-import viewmodels.SummaryListRowWithTwoValues
+import viewmodels.{SummaryListRowWithThreeValues, SummaryListRowWithTwoValues}
 
 class EventPaginationService {
 
@@ -30,6 +30,21 @@ class EventPaginationService {
     val pagerSeqForNav = pagerSeq(pageNumber, totNumOfPages)
 
     PaginationStats(
+      mappedMembers.slice(pagStartAndEnd._1 - 1, pagStartAndEnd._2),
+      totalNumberOfMembers,
+      totNumOfPages,
+      pagStartAndEnd,
+      pagerSeqForNav
+    )
+  }
+
+  def paginateMappedMembersThreeValues(mappedMembers: Seq[SummaryListRowWithThreeValues], pageNumber: Int): PaginationStatsEvent7 = {
+    val totalNumberOfMembers = mappedMembers.length
+    val totNumOfPages = totalNumberOfPages(totalNumberOfMembers, pageSize)
+    val pagStartAndEnd = pageStartAndEnd(pageNumber, totalNumberOfMembers, pageSize)
+    val pagerSeqForNav = pagerSeq(pageNumber, totNumOfPages)
+
+    PaginationStatsEvent7(
       mappedMembers.slice(pagStartAndEnd._1 - 1, pagStartAndEnd._2),
       totalNumberOfMembers,
       totNumOfPages,
@@ -78,6 +93,14 @@ class EventPaginationService {
 }
 
 object EventPaginationService {
+
+  case class PaginationStatsEvent7(
+                              slicedMembers: Seq[SummaryListRowWithThreeValues],
+                              totalNumberOfMembers: Int,
+                              totalNumberOfPages: Int,
+                              pageStartAndEnd: (Int, Int),
+                              pagerSeq: Seq[Int]
+                            )
 
   case class PaginationStats(
                                slicedMembers: Seq[SummaryListRowWithTwoValues],

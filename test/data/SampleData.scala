@@ -105,6 +105,8 @@ object SampleData {
   val crystallisedDetails: CrystallisedDetails = CrystallisedDetails(857.00, LocalDate.of(2022, 11, 8))
 
   val event7PaymentDate: PaymentDate = PaymentDate(LocalDate.of(2022, 11, 8))
+  val lumpSumAmount: BigDecimal = BigDecimal(100.00)
+  val crystallisedAmount: BigDecimal = BigDecimal(50.00)
 
   def booleanCYAVal(value: Boolean) = if (value) "site.yes" else "site.no"
 
@@ -162,8 +164,8 @@ object SampleData {
 
   val sampleMemberJourneyDataEvent7: UserAnswers = UserAnswers()
     .setOrException(MembersDetailsPage(Event7, 0), memberDetails)
-    .setOrException(LumpSumAmountPage(0), BigDecimal(845.99))
-    .setOrException(CrystallisedAmountPage(0), BigDecimal(345.50))
+    .setOrException(LumpSumAmountPage(0), lumpSumAmount)
+    .setOrException(CrystallisedAmountPage(0), crystallisedAmount)
     .setOrException(PaymentDatePage(0),event7PaymentDate)
 
 
