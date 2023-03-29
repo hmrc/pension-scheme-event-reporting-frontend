@@ -19,6 +19,7 @@ package controllers
 import connectors.EventReportingConnector
 import controllers.actions._
 import forms.EventSummaryFormProvider
+import models.TaxYear.getSelectedTaxYearAsString
 import models.UserAnswers
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event18, Event22, Event23, Event6}
@@ -82,14 +83,16 @@ class EventSummaryController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
     summaryListRows(waypoints).map { rows =>
-      Ok(view(form, waypoints, rows))
+      val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
+      Ok(view(form, waypoints, rows, selectedTaxYear))
     }
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
+      val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       form.bindFromRequest().fold(
-        formWithErrors => summaryListRows(waypoints).map(rows => BadRequest(view(formWithErrors, waypoints, rows))),
+        formWithErrors => summaryListRows(waypoints).map(rows => BadRequest(view(formWithErrors, waypoints, rows, selectedTaxYear))),
         value => {
           val userAnswerUpdated = UserAnswers().setOrException(EventSummaryPage, value)
           Future.successful(Redirect(EventSummaryPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route))

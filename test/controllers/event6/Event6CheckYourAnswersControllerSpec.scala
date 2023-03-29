@@ -155,14 +155,14 @@ object Event6CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "typeOfProtection.checkYourAnswersLabel",
       "Enhanced lifetime allowance",
-      "/manage-pension-scheme-event-report/new-report/1/event-6-type-of-protection?waypoints=event-6-check-answers-1",
+      "/manage-pension-scheme-event-report/new-report/1/event-6-what-type-protection-reference?waypoints=event-6-check-answers-1",
       "typeOfProtection.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithTwoMsgKeys(
       "inputProtectionType.checkYourAnswersLabel",
       "typeOfProtection.enhancedLifetimeAllowance",
       "1234567A",
-      "/manage-pension-scheme-event-report/new-report/1/event-6-reference-type?waypoints=event-6-check-answers-1",
+      "/manage-pension-scheme-event-report/new-report/1/event-6-protection-reference?waypoints=event-6-check-answers-1",
       "inputProtectionType.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
