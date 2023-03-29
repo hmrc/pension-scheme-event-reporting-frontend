@@ -69,7 +69,7 @@ class UserAnswersCacheConnector @Inject()(
       .map { response =>
         response.status match {
           case NOT_FOUND => None
-          case OK => (Some(response.json.as[JsObject]))
+          case OK => Some(response.json.as[JsObject])
           case _ =>
             throw new HttpException(response.body, response.status)
         }
