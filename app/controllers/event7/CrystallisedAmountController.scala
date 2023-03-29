@@ -40,7 +40,7 @@ class CrystallisedAmountController @Inject()(val controllerComponents: MessagesC
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event1
+  private val eventType = EventType.Event7
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(CrystallisedAmountPage(index))).fold(form)(form.fill)

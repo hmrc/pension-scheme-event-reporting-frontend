@@ -17,20 +17,22 @@
 package pages.event7
 
 import controllers.event7.routes
+import models.enumeration.EventType
 import models.{Index, UserAnswers}
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.common.MembersPage
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class CrystallisedAmountPage(index: Index) extends QuestionPage[BigDecimal] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = MembersPage(EventType.Event7)(index) \ CrystallisedAmountPage.toString
 
   override def route(waypoints: Waypoints): Call =
     routes.CrystallisedAmountController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    IndexPage
+    PaymentDatePage(index)
 }
 
 object CrystallisedAmountPage {

@@ -17,24 +17,25 @@
 package pages.event7
 
 import controllers.event7.routes
+import models.UserAnswers
 import models.enumeration.EventType
-import models.{Index, UserAnswers}
+import models.event7.PaymentDate
 import pages.common.MembersPage
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class LumpSumAmountPage(index: Index) extends QuestionPage[BigDecimal] {
-
-  override def path: JsPath = MembersPage(EventType.Event7)(index) \ LumpSumAmountPage.toString
+case class PaymentDatePage(index: Int) extends QuestionPage[PaymentDate] {
+  override def path: JsPath = MembersPage(EventType.Event7)(index) \ PaymentDatePage.toString
 
   override def route(waypoints: Waypoints): Call =
-    routes.LumpSumAmountController.onPageLoad(waypoints, index)
+    routes.PaymentDateController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    CrystallisedAmountPage(index)
+    IndexPage
+    /*Event7CheckYourAnswersPage(index)*/
 }
 
-object LumpSumAmountPage {
-  override def toString: String = "lumpSumAmount"
+object PaymentDatePage {
+  override def toString: String = "PaymentDate"
 }

@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package pages.event7
+package models.event7
 
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{Format, Json}
 
+import java.time.LocalDate
 
-class CrystallisedAmountPageSpec extends PageBehaviours {
+case class PaymentDate(date: LocalDate)
 
-  "CrystallisedAmountPage" - {
-
-    beRetrievable[BigDecimal](CrystallisedAmountPage(0))
-
-    beSettable[BigDecimal](CrystallisedAmountPage(0))
-
-    beRemovable[BigDecimal](CrystallisedAmountPage(0))
-  }
+object PaymentDate {
+  implicit val format: Format[PaymentDate] = Json.format[PaymentDate]
 }
+
