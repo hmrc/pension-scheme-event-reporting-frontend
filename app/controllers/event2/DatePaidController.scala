@@ -18,7 +18,7 @@ package controllers.event2
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.event2.datePaidFormProvider
+import forms.event2.DatePaidFormProvider
 import models.enumeration.EventType
 import models.{Index, UserAnswers}
 import pages.event2.DatePaidPage
@@ -27,7 +27,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.BeneficiaryDetailsEvent2.getBeneficiaryName
-import views.html.event2.datePaidView
+import views.html.event2.DatePaidView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,8 +36,8 @@ class DatePaidController @Inject()(val controllerComponents: MessagesControllerC
                                    identify: IdentifierAction,
                                    getData: DataRetrievalAction,
                                    userAnswersCacheConnector: UserAnswersCacheConnector,
-                                   formProvider: datePaidFormProvider,
-                                   view: datePaidView
+                                   formProvider: DatePaidFormProvider,
+                                   view: DatePaidView
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val eventType = EventType.Event2

@@ -36,7 +36,7 @@ object AmountPaidSummary  {
           value   = ValueViewModel(answer.toString),
           actions = Seq(
             ActionItemViewModel("site.change", AmountPaidPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("amountPaid.event2.change.hidden"))
+              .withVisuallyHiddenText(messages("amountPaid.event2.change.hidden", getBeneficiaryName(Some(answers), index)))
           )
         )
     }

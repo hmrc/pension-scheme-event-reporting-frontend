@@ -22,7 +22,7 @@ import models.common.ManualOrUpload.Manual
 import models.common.{ChooseTaxYear, MembersDetails}
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event22, Event23, Event6}
+import models.enumeration.EventType.{Event1, Event2, Event22, Event23, Event6}
 import models.event1.PaymentDetails
 import models.event1.PaymentNature.BenefitInKind
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
@@ -35,8 +35,9 @@ import pages.common.{ChooseTaxYearPage, ManualOrUploadPage, MembersDetailsPage, 
 import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
+import pages.event2.{AmountPaidPage, DatePaidPage}
 import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage}
-import utils.{CountryOptions, InputOption}
+import utils.{CountryOptions, Event2MemberPageNumbers, InputOption}
 
 import java.time.LocalDate
 
@@ -102,6 +103,8 @@ object SampleData {
   val paymentDetails: PaymentDetails = PaymentDetails(1000.00, LocalDate.of(2022, 11, 8))
   val crystallisedDetails: CrystallisedDetails = CrystallisedDetails(857.00, LocalDate.of(2022, 11, 8))
 
+  val datePaid: LocalDate = LocalDate.of(2022,5,19)
+
 
   def booleanCYAVal(value: Boolean) = if (value) "site.yes" else "site.no"
 
@@ -156,6 +159,12 @@ object SampleData {
     .setOrException(TypeOfProtectionPage(Event6, 0), TypeOfProtection.EnhancedLifetimeAllowance)
     .setOrException(InputProtectionTypePage(Event6, 0), "1234567A")
     .setOrException(AmountCrystallisedAndDatePage(Event6, 0), crystallisedDetails)
+
+  val sampleMemberJourneyDataEvent2: UserAnswers = UserAnswers()
+    .setOrException(MembersDetailsPage(Event2, 0, Event2MemberPageNumbers.FIRST_PAGE_DECEASED), memberDetails)
+    .setOrException(MembersDetailsPage(Event2, 0, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY), memberDetails)
+    .setOrException(AmountPaidPage(0), BigDecimal(999.11))
+    .setOrException(DatePaidPage(0), datePaid)
 
   def sampleTwoMemberJourneyData(eventType: EventType): UserAnswers =
     UserAnswers()

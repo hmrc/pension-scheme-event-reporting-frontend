@@ -21,7 +21,7 @@ import java.time.LocalDate
 import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
 
-class datePaidPageSpec extends PageBehaviours {
+class DatePaidPageSpec extends PageBehaviours {
 
   "DatePaidPage" - {
 

@@ -21,7 +21,7 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class datePaidFormProvider @Inject() extends Mappings {
+class DatePaidFormProvider @Inject() extends Mappings {
 
   def apply(taxYear: String): Form[LocalDate] = {
     Form(

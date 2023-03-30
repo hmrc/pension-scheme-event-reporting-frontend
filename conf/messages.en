@@ -310,7 +310,7 @@ amountPaid.event2.error.nothingEntered = Enter the amount that was paid
 amountPaid.event2.error.noDecimals = The amount must include pence, like 123.45 or 156.00
 amountPaid.event2.error.tooHigh = The amount must be £999999999.99 or less
 amountPaid.event2.error.zeroEntered = The total amount paid must be greater than zero
-amountPaid.event2.change.hidden = the amount that was paid
+amountPaid.event2.change.hidden = The amount that was paid to {0}
 
 datePaid.event2.title = When was the payment made?
 datePaid.event2.heading = When was the payment made to {0}?
@@ -327,6 +327,10 @@ membersSummary.event2.title = Annual allowance events reported in the tax year e
 membersSummary.event2.heading = Event 2: Lump sum death benefit payment events reported in the tax year ending 5 April {0}
 membersSummary.event2.error.required = Select yes if you want to add another entry
 membersSummary.event2.yesno.legend = Do you want to add another lump sum death benefit entry?
+membersSummary.event2.table.header1 = Deceased member
+membersSummary.event2.table.header2 = National Insurance number
+membersSummary.event2.table.header3 = Amount paid
+membersSummary.event2.table.totalTitle = Total not required
 
 doYouHoldSignedMandate.title = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.heading = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?

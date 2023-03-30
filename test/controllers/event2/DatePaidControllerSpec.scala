@@ -18,7 +18,7 @@ package controllers.event2
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event2.datePaidFormProvider
+import forms.event2.DatePaidFormProvider
 import models.common.MembersDetails
 import models.enumeration.EventType.Event2
 import models.{TaxYear, UserAnswers}
@@ -34,7 +34,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.Event2MemberPageNumbers
-import views.html.event2.datePaidView
+import views.html.event2.DatePaidView
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -43,7 +43,7 @@ class DatePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new datePaidFormProvider()
+  private val formProvider = new DatePaidFormProvider()
   private val form = formProvider("2021")
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
@@ -77,7 +77,7 @@ class DatePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[datePaidView]
+        val view = application.injector.instanceOf[DatePaidView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints, "Joe Bloggs", index = 0)(request, messages(application)).toString
@@ -91,7 +91,7 @@ class DatePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[datePaidView]
+        val view = application.injector.instanceOf[DatePaidView]
 
         val result = route(application, request).value
 
@@ -134,7 +134,7 @@ class DatePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[datePaidView]
+        val view = application.injector.instanceOf[DatePaidView]
         val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value
