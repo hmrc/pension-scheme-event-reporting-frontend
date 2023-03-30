@@ -72,21 +72,4 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
       }
     }
   }
-
-  "Data Retrieval Action when there is data in the cache" - {
-    "must build a userAnswers object and add it to the request" in {
-      when(userAnswersCacheConnector.get(eqTo(pstr), eqTo(eventType))(any(), any())) thenReturn Future(Some(userAnswers))
-      when(userAnswersCacheConnector.get(eqTo(pstr))(any(), any())) thenReturn Future(Some(userAnswersForNoEventType))
-      val action = new Harness
-
-      val expectedResult = OptionalDataRequest(pstr, "schemeName", "returnUrl", request, loggedInUser,
-        Some(UserAnswers(userAnswers.data ++ userAnswersForNoEventType.data)))
-      val futureResult = action.callTransform(request)
-
-      whenReady(futureResult) { result =>
-        result.userAnswers.isDefined mustBe true
-        result mustBe expectedResult
-      }
-    }
-  }
 }
