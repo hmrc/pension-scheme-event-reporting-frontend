@@ -64,7 +64,7 @@ object TaxYear extends Enumerable.Implicits {
   def getSelectedTaxYearAsString(userAnswers: UserAnswers): String = {
     userAnswers.get(TaxYearPage) match {
       case Some(taxYear) => s"${Integer.parseInt(taxYear.endYear.stripPrefix("TaxYear(").stripSuffix(")").trim)}"
-      case _ => StringUtils.EMPTY
+      case _ => throw new RuntimeException("Tax year unavailable")
     }
   }
 

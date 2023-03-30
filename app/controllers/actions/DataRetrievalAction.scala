@@ -42,15 +42,8 @@ class DataRetrievalImpl(eventType: EventType,
 
 
     val result = for {
-      dataWithEventType <- userAnswersCacheConnector.get(request.pstr, eventType)
-      dataWithoutEventType <- userAnswersCacheConnector.get(request.pstr)
+      data <- userAnswersCacheConnector.get(request.pstr, eventType)
     } yield {
-      val data = (dataWithEventType, dataWithoutEventType) match {
-        case (Some(withEvent), Some(without)) => Some(UserAnswers(withEvent.data ++ without.data))
-        case (withEvent@Some(_), None) => withEvent
-        case (None, withoutEvent@Some(_)) => withoutEvent
-        case (None, None) => None
-      }
       OptionalDataRequest[A](request.pstr, request.schemeName, request.returnUrl, request, request.loggedInUser, data)
     }
     result andThen {
