@@ -26,7 +26,13 @@
 )
 
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberSeq: Seq[SummaryListRowWithThreeValues], total: String, selectedTaxYear: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(
+        form: Form[_],
+        waypoints: Waypoints,
+        eventType: EventType,
+        memberSeq: Seq[SummaryListRowWithThreeValues],
+        total: String,
+        selectedTaxYear: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"membersSummary.event${eventType.toString}.title", selectedTaxYear))) {
 

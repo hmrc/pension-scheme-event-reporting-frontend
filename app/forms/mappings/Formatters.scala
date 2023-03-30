@@ -31,7 +31,7 @@ trait Formatters {
 
   private[mappings] val numericRegexp = """^-?(\-?)(\d*)(\.?)(\d*)$"""
   private[mappings] val decimal2DPRegexp = """^-?(\d*\.\d{2})$"""
-  private[mappings] val decimalFormat = new DecimalFormat("0.00")
+  protected val decimalFormat = new DecimalFormat("0.00")
 
   val currencyFormatter = new DecimalFormat()
   currencyFormatter.setCurrency(Currency.getInstance(Locale.UK))

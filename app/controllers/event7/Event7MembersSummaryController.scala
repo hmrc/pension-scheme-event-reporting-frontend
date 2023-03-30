@@ -25,7 +25,7 @@ import models.enumeration.EventType.Event7
 import models.event7.Event7MembersSummary
 import models.{Index, UserAnswers}
 import pages.Waypoints
-import pages.common.{MembersPage, MembersSummaryPage}
+import pages.common.MembersSummaryPage
 import pages.event7.Event7MembersPage
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,6 +35,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.{Message, SummaryListRowWithThreeValues}
 import views.html.event7.{Event7MembersSummaryView, Event7MembersSummaryViewWithPagination}
 
+import java.text.DecimalFormat
 import javax.inject.Inject
 
 //scalastyle:off
@@ -76,7 +77,7 @@ class Event7MembersSummaryController @Inject()(
     }
 
   private def sumValue(userAnswers: UserAnswers) =
-    currencyFormatter.format(userAnswers.sumAll(Event7MembersPage(eventType), Event7MembersSummary.readsMemberValue(eventType)))
+    currencyFormatter.format(userAnswers.sumAll(Event7MembersPage(eventType), Event7MembersSummary.readsCombinedPayments))
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
     implicit request =>
@@ -99,8 +100,8 @@ class Event7MembersSummaryController @Inject()(
         SummaryListRowWithThreeValues(
           key = memberSummary.name,
           firstValue = memberSummary.nINumber,
-          secondValue = currencyFormatter.format(memberSummary.PaymentValue),
-          thirdValue = currencyFormatter.format(memberSummary.PaymentValueTwo),
+          secondValue = decimalFormat.format(memberSummary.PaymentValue),
+          thirdValue = decimalFormat.format(memberSummary.PaymentValueTwo),
           actions = Some(Actions(
             items = Seq(
               ActionItem(

@@ -21,6 +21,7 @@ import connectors.UserAnswersCacheConnector
 import data.SampleData
 import data.SampleData.sampleMemberJourneyDataEvent7
 import forms.common.MembersSummaryFormProvider
+import forms.mappings.Formatters
 import models.enumeration.EventType.Event7
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -38,7 +39,7 @@ import views.html.event7.Event7MembersSummaryView
 
 import scala.concurrent.Future
 
-class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
+class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar with Formatters {
 
   private val waypoints = EmptyWaypoints
 
@@ -78,8 +79,8 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
               SummaryListRowWithThreeValues(
                 key = SampleData.memberDetails.fullName,
                 firstValue = SampleData.memberDetails.nino,
-                secondValue = SampleData.lumpSumAmount.toString(),
-                thirdValue = SampleData.crystallisedAmount.toString(),
+                secondValue = decimalFormat.format(SampleData.lumpSumAmount),
+                thirdValue = decimalFormat.format(SampleData.crystallisedAmount),
                 actions = Some(Actions(
                   items = Seq(
                     ActionItem(
@@ -94,7 +95,8 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
                 ))
               ))
 
-          println(s"\n\n expected = \n $expectedSeq \n\n\n actual = \n $result")
+
+
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(formEvent7, waypoints, Event7, expectedSeq, "150.00", "")(request, messages(application)).toString
         }

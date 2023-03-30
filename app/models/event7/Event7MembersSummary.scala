@@ -16,8 +16,6 @@
 
 package models.event7
 
-import models.enumeration.EventType
-import models.enumeration.EventType._
 import play.api.i18n.Messages
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
@@ -71,4 +69,12 @@ object Event7MembersSummary {
     JsPath.read(readsMemberSummary)
   }
 
+  private def readsCombinedPaymentValues: Reads[BigDecimal] =
+    (readsLumpSumValue and readsCrystallisedValue)(
+      (lumpSum, crystallised) => lumpSum + crystallised
+    )
+
+  def readsCombinedPayments: Reads[BigDecimal] = {
+    JsPath.read(readsCombinedPaymentValues)
+  }
 }
