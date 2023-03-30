@@ -41,20 +41,19 @@ class TypeOfProtectionReferenceController @Inject()(val controllerComponents: Me
                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event8
 
-  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val protectionTypeDesc = getProtectionTypeDesc(request.userAnswers, index)
+  def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    val protectionTypeDesc = getProtectionTypeDesc(request.userAnswers, eventType, index)
     val preparedForm = request.userAnswers.flatMap(_.get(TypeOfProtectionReferencePage(eventType, index))).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, index, protectionTypeDesc))
+    Ok(view(preparedForm, waypoints, eventType, index, protectionTypeDesc))
   }
 
-  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
-      val protectionTypeDesc = getProtectionTypeDesc(request.userAnswers, index)
+      val protectionTypeDesc = getProtectionTypeDesc(request.userAnswers, eventType, index)
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, index, protectionTypeDesc))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, index, protectionTypeDesc))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(TypeOfProtectionReferencePage(eventType, index), value)
@@ -65,9 +64,9 @@ class TypeOfProtectionReferenceController @Inject()(val controllerComponents: Me
       )
   }
 
-  private def getProtectionTypeDesc(userAnswers: Option[UserAnswers], index: Index)(implicit messages: Messages): String = {
+  private def getProtectionTypeDesc(userAnswers: Option[UserAnswers], eventType: EventType, index: Index)(implicit messages: Messages): String = {
     userAnswers.flatMap(_.get(TypeOfProtectionPage(eventType, index))) match {
-      case Some(typeOfProtection) => messages(s"event8.typeOfProtection.${typeOfProtection.toString}").toLowerCase
+      case Some(typeOfProtection) => messages(s"typeOfProtection.${typeOfProtection.toString}").toLowerCase
       case _ => StringUtils.EMPTY
     }
   }

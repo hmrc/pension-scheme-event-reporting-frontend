@@ -18,7 +18,6 @@ package controllers.actions
 
 import com.google.inject.ImplementedBy
 import connectors.UserAnswersCacheConnector
-import models.UserAnswers
 import models.enumeration.EventType
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import play.api.Logger

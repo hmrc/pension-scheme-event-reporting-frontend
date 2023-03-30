@@ -29,12 +29,12 @@ import scala.util.{Success, Try}
 
 case class TypeOfProtectionPage(eventType: EventType, index: Int) extends QuestionPage[TypeOfProtection] {
 
-  override def path: JsPath = MembersPage(EventType.Event8)(index) \ toString
+  override def path: JsPath = MembersPage(eventType)(index) \ toString
 
   override def toString: String = "typeOfProtection"
 
   override def route(waypoints: Waypoints): Call =
-    routes.TypeOfProtectionController.onPageLoad(waypoints, index)
+    routes.TypeOfProtectionController.onPageLoad(waypoints, eventType, index)
 
   override def cleanupBeforeSettingValue(value: Option[TypeOfProtection], userAnswers: UserAnswers): Try[UserAnswers] = {
     userAnswers.get(TypeOfProtectionPage(eventType, index)) match {

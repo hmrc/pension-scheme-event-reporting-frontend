@@ -39,19 +39,23 @@ import scala.concurrent.Future
 class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
-  private val eventType = EventType.Event8
+  private val event8 = EventType.Event8
+  private val event8a = EventType.Event8A
 
   private val formProvider = new TypeOfProtectionReferenceFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private val primaryProtection: UserAnswers = UserAnswers().setOrException(TypeOfProtectionPage(EventType.Event8, 0), TypeOfProtection.PrimaryProtection)
-  private val enhancedProtection: UserAnswers = UserAnswers().setOrException(TypeOfProtectionPage(EventType.Event8, 0), TypeOfProtection.EnhancedProtection)
+  private def primaryProtection(eventType: EventType): UserAnswers = UserAnswers()
+    .setOrException(TypeOfProtectionPage(eventType, 0), TypeOfProtection.PrimaryProtection)
 
-  private def getRoute: String = routes.TypeOfProtectionReferenceController.onPageLoad(waypoints, 0).url
+  private def enhancedProtection(eventType: EventType): UserAnswers = UserAnswers()
+    .setOrException(TypeOfProtectionPage(eventType, 0), TypeOfProtection.EnhancedProtection)
 
-  private def postRoute: String = routes.TypeOfProtectionReferenceController.onSubmit(waypoints, 0).url
+  private def getRoute(eventType: EventType): String = routes.TypeOfProtectionReferenceController.onPageLoad(waypoints, eventType, 0).url
+
+  private def postRoute(eventType: EventType): String = routes.TypeOfProtectionReferenceController.onSubmit(waypoints, eventType, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -63,56 +67,58 @@ class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAft
   }
 
   "TypeOfProtectionReference Controller" - {
-    testTypeOfProtectionReference(primaryProtection, TypeOfProtection.PrimaryProtection.toString)
-    testTypeOfProtectionReference(enhancedProtection, TypeOfProtection.EnhancedProtection.toString)
+    testTypeOfProtectionReference(primaryProtection(event8), TypeOfProtection.PrimaryProtection.toString, event8)
+    testTypeOfProtectionReference(enhancedProtection(event8), TypeOfProtection.EnhancedProtection.toString, event8)
+    testTypeOfProtectionReference(primaryProtection(event8a), TypeOfProtection.PrimaryProtection.toString, event8a)
+    testTypeOfProtectionReference(enhancedProtection(event8a), TypeOfProtection.EnhancedProtection.toString, event8a)
   }
 
-  private def testTypeOfProtectionReference(userAnswers: UserAnswers, protectionType: String): Unit = {
-    correctViewTest(userAnswers, protectionType)
-    correctViewWithExistingDataTest(userAnswers, protectionType)
-    validDataTest(protectionType)
-    invalidDataTest(userAnswers, protectionType)
+  private def testTypeOfProtectionReference(userAnswers: UserAnswers, protectionType: String, eventType: EventType): Unit = {
+    correctViewTest(userAnswers, protectionType, eventType)
+    correctViewWithExistingDataTest(userAnswers, protectionType, eventType)
+    validDataTest(protectionType, eventType)
+    invalidDataTest(userAnswers, protectionType, eventType)
   }
 
-  private def correctViewTest(userAnswers: UserAnswers, typeOfProtection: String): Unit = {
-    s"must return OK and the correct view for a GET for $typeOfProtection reference" in {
+  private def correctViewTest(userAnswers: UserAnswers, typeOfProtection: String, eventType: EventType): Unit = {
+    s"must return OK and the correct view for a GET for $typeOfProtection reference for Event $eventType" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      val protectionType = messages(s"event8.typeOfProtection.$typeOfProtection").toLowerCase
+      val protectionType = messages(s"typeOfProtection.$typeOfProtection").toLowerCase
       running(application) {
-        val request = FakeRequest(GET, getRoute)
+        val request = FakeRequest(GET, getRoute(eventType))
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[TypeOfProtectionReferenceView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, 0, protectionType)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, eventType, 0, protectionType)(request, messages(application)).toString
       }
     }
   }
 
-  private def correctViewWithExistingDataTest(userAnswers: UserAnswers, typeOfProtection: String): Unit = {
-    s"must populate the view correctly on a GET when the question has previously been answered for $typeOfProtection reference" in {
+  private def correctViewWithExistingDataTest(userAnswers: UserAnswers, typeOfProtection: String, eventType: EventType): Unit = {
+    s"must populate the view correctly on a GET when the question has previously been answered for $typeOfProtection reference for Event $eventType" in {
       val updatedAnswers = userAnswers.setOrException(TypeOfProtectionReferencePage(eventType, 0), "ABCDE123")
       val application = applicationBuilder(userAnswers = Some(updatedAnswers)).build()
-      val protectionTypeDesc = messages(s"event8.typeOfProtection.$typeOfProtection").toLowerCase
+      val protectionTypeDesc = messages(s"typeOfProtection.$typeOfProtection").toLowerCase
 
       running(application) {
-        val request = FakeRequest(GET, getRoute)
+        val request = FakeRequest(GET, getRoute(eventType))
 
         val view = application.injector.instanceOf[TypeOfProtectionReferenceView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("ABCDE123"), waypoints, 0, protectionTypeDesc)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("ABCDE123"), waypoints, eventType, 0, protectionTypeDesc)(request, messages(application)).toString
       }
     }
   }
 
-  private def validDataTest(typeOfProtection: String): Unit = {
-    s"must save the answer and redirect to the next page when valid data is submitted for $typeOfProtection reference" in {
+  private def validDataTest(typeOfProtection: String, eventType: EventType): Unit = {
+    s"must save the answer and redirect to the next page when valid data is submitted for $typeOfProtection reference for Event $eventType" in {
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
@@ -122,10 +128,10 @@ class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAft
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "ABCDE123"))
+          FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("value", "ABCDE123"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(TypeOfProtectionReferencePage(eventType = eventType, index = 0), "ABCDE123").success.value
+        val updatedAnswers = emptyUserAnswers.set(TypeOfProtectionReferencePage(eventType, index = 0), "ABCDE123").success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual TypeOfProtectionReferencePage(eventType, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
@@ -134,16 +140,16 @@ class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAft
     }
   }
 
-  private def invalidDataTest(userAnswers: UserAnswers, typeOfProtection: String): Unit = {
-    s"must return bad request when invalid data is submitted for $typeOfProtection reference" in {
+  private def invalidDataTest(userAnswers: UserAnswers, typeOfProtection: String, eventType: EventType): Unit = {
+    s"must return bad request when invalid data is submitted for $typeOfProtection reference for Event $eventType" in {
       val application =
         applicationBuilder(userAnswers = Some(userAnswers), extraModules)
           .build()
-      val protectionTypeDesc = messages(s"event8.typeOfProtection.$typeOfProtection").toLowerCase
+      val protectionTypeDesc = messages(s"typeOfProtection.$typeOfProtection").toLowerCase
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid-data"))
+          FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("value", "invalid-data"))
 
         val view = application.injector.instanceOf[TypeOfProtectionReferenceView]
         val boundForm = form.bind(Map("value" -> "invalid-data"))
@@ -151,7 +157,7 @@ class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAft
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, 0, protectionTypeDesc)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, eventType, 0, protectionTypeDesc)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

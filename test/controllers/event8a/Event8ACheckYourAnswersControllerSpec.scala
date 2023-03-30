@@ -161,7 +161,7 @@ object Event8ACheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "event8a.typeOfProtection.checkYourAnswersLabel",
       "Primary protection",
-      "/manage-pension-scheme-event-report/new-report/1/event-8a-type-of-protection-held?waypoints=event-8A-check-answers-1",
+      "/manage-pension-scheme-event-report/new-report/1/event-8a-type-of-protection?waypoints=event-8A-check-answers-1",
       "event8a.typeOfProtection.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithTwoMsgKeys(

@@ -21,6 +21,7 @@ import models.UserAnswers
 import models.enumeration.EventType
 import models.event8a.PaymentType
 import pages.common.MembersPage
+import pages.event8.{LumpSumAmountAndDatePage, TypeOfProtectionPage, TypeOfProtectionReferencePage}
 import pages.{JourneyRecoveryPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

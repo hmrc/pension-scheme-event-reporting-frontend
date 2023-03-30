@@ -16,7 +16,6 @@
 
 package models
 
-import org.apache.commons.lang3.StringUtils
 import pages.TaxYearPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsString, Writes}

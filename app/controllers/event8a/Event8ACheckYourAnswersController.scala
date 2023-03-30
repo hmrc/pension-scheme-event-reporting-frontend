@@ -29,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.MembersDetailsSummary
+import viewmodels.event8.checkAnswers.{LumpSumAmountAndDateSummary, TypeOfProtectionReferenceSummary, TypeOfProtectionSummary}
 import viewmodels.event8a.checkAnswers._
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView

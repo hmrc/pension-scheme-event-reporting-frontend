@@ -27,10 +27,10 @@ import play.api.mvc.Call
 
 case class LumpSumAmountAndDatePage(eventType: EventType, index: Int) extends QuestionPage[LumpSumDetails] {
 
-  override def path: JsPath = MembersPage(EventType.Event8)(index) \ LumpSumAmountAndDatePage.toString
+  override def path: JsPath = MembersPage(eventType)(index) \ LumpSumAmountAndDatePage.toString
 
   override def route(waypoints: Waypoints): Call =
-    routes.LumpSumAmountAndDateController.onPageLoad(waypoints, index)
+    routes.LumpSumAmountAndDateController.onPageLoad(waypoints, eventType, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     Event8CheckYourAnswersPage(index)

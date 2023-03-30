@@ -45,7 +45,7 @@ object TypeOfProtectionReferenceSummary {
           actions = Seq(
             ActionItemViewModel("site.change", TypeOfProtectionReferencePage(eventType, index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("site.change") + " " + messages("typeOfProtectionReference.change.hidden",
-                messages(s"event8.typeOfProtection.${protectionType.toString}").toLowerCase()))
+                messages(s"typeOfProtection.${protectionType.toString}").toLowerCase()))
           )
         )
     }

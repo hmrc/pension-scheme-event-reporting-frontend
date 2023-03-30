@@ -16,6 +16,7 @@
 
 @import controllers.event8.routes
 @import viewmodels.InputWidth._
+@import models.enumeration.EventType
 
 @this(
     layout: templates.SchemeLayout,
@@ -25,11 +26,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, index: Index, protectionTypeDesc: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, index: Index, protectionTypeDesc: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("typeOfProtectionReference.title", protectionTypeDesc))) {
 
-    @formHelper(action = routes.TypeOfProtectionReferenceController.onSubmit(waypoints, index)) {
+    @formHelper(action = routes.TypeOfProtectionReferenceController.onSubmit(waypoints, eventType, index)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

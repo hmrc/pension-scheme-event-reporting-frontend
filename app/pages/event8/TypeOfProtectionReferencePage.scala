@@ -26,12 +26,12 @@ import play.api.mvc.Call
 
 case class TypeOfProtectionReferencePage(eventType: EventType, index: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = MembersPage(EventType.Event8)(index) \ toString
+  override def path: JsPath = MembersPage(eventType)(index) \ toString
 
   override def toString: String = "typeOfProtectionReference"
 
   override def route(waypoints: Waypoints): Call =
-    routes.TypeOfProtectionReferenceController.onPageLoad(waypoints, index)
+    routes.TypeOfProtectionReferenceController.onPageLoad(waypoints, eventType, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     LumpSumAmountAndDatePage(eventType, index)
