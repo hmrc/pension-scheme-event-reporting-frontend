@@ -43,6 +43,11 @@ trait ModelGenerators {
       Gen.oneOf(event8.TypeOfProtection.values.toSeq)
     }
 
+  implicit lazy val arbitrarySchemeStructure: Arbitrary[event13.SchemeStructure] =
+    Arbitrary {
+      Gen.oneOf(event13.SchemeStructure.values.toSeq)
+    }
+
   implicit lazy val arbitraryTaxYear: Arbitrary[TaxYear] =
     Arbitrary {
       Gen.oneOf(TaxYear.values.toSeq)

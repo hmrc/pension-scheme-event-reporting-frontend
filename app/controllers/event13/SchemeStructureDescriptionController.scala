@@ -14,51 +14,55 @@
  * limitations under the License.
  */
 
-package controllers.event8
+package controllers.event13
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.event8.TypeOfProtectionFormProvider
+import forms.event13.SchemeStructureDescriptionFormProvider
+import models.UserAnswers
 import models.enumeration.EventType
-import models.{Index, UserAnswers}
 import pages.Waypoints
-import pages.event8.TypeOfProtectionPage
+import pages.event13.SchemeStructureDescriptionPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event8.TypeOfProtectionView
+import views.html.event13.SchemeStructureDescriptionView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TypeOfProtectionController @Inject()(val controllerComponents: MessagesControllerComponents,
+class SchemeStructureDescriptionController @Inject()(val controllerComponents: MessagesControllerComponents,
                                            identify: IdentifierAction,
                                            getData: DataRetrievalAction,
                                            userAnswersCacheConnector: UserAnswersCacheConnector,
-                                           formProvider: TypeOfProtectionFormProvider,
-                                           view: TypeOfProtectionView
+                                           formProvider: SchemeStructureDescriptionFormProvider,
+                                           view: SchemeStructureDescriptionView
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event8
+  private val eventType = EventType.Event13
 
-  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(TypeOfProtectionPage(eventType, index))).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, index))
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(_.get(SchemeStructureDescriptionPage)).fold(form){v => form.fill(Some(v))}
+    Ok(view(preparedForm, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(TypeOfProtectionPage(eventType, index), value)
+          val updatedAnswers = value match {
+            case Some(v) => originalUserAnswers.setOrException(SchemeStructureDescriptionPage, v)
+            case None => originalUserAnswers.removeOrException(SchemeStructureDescriptionPage)
+          }
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(TypeOfProtectionPage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(SchemeStructureDescriptionPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )
   }
+
 }

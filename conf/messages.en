@@ -1058,3 +1058,31 @@ event8a.lumpSumAmountAndDate.date.error.outsideDateRanges = Enter a real date
 event8a.lumpSumAmountAndDate.date.error.outsideReportedYear = Date must be between {0} and {1}
 event8a.lumpSumAmountAndDate.date.change.hidden = the date of the lump sum payment
 event8a.lumpSumAmountAndDate.date.checkYourAnswersLabel = The date the payment was made
+
+schemeStructure.title = What is the new pension scheme structure?
+schemeStructure.heading = What is the new pension scheme structure?
+schemeStructure.single = A single trust under which all of the assets are held for the benefit of all members of the scheme
+schemeStructure.group = A group life or death in service scheme
+schemeStructure.corporate = A body corporate
+schemeStructure.other = Other
+schemeStructure.checkYourAnswersLabel = Scheme structure
+schemeStructure.error.required = Select schemeStructure
+schemeStructure.change.hidden = SchemeStructure
+
+event13.changeDate.title = When was the change made?
+event13.changeDate.heading = When was the change made?
+event13.changeDate.hint = For example, 27 3 2007
+event13.changeDate.checkYourAnswersLabel = The date the change was made
+event13.changeDate.error.required.all = Enter the changeDate
+event13.changeDate.error.required.two = The changeDate must include {0} and {1}
+event13.changeDate.error.required = The changeDate must include {0}
+event13.changeDate.error.invalid = Enter a real date
+event13.changeDate.change.hidden = When was the change made?
+event13.changeDate.error.outside.taxYear = Date must be between 6 April {0} and 5 April {1}
+
+event13.schemeStructureDescription.title = Give a brief description of the pension scheme structure
+event13.schemeStructureDescription.heading = Give a brief description of the pension scheme structure
+event13.schemeStructureDescription.hint = You can enter up to 150 characters
+event13.schemeStructureDescription.checkYourAnswersLabel = Description of the scheme structure
+event13.schemeStructureDescription.error.length = You can enter up to 150 characters
+event13.schemeStructureDescription.change.hidden = Give a brief description of the pension scheme structure

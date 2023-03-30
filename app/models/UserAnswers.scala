@@ -98,6 +98,7 @@ final case class UserAnswers(
 
   def sumAll(page: Query, readsBigDecimal: Reads[BigDecimal]): BigDecimal = {
     def zeroValue = BigDecimal(0)
+
     page.path.readNullable[JsArray].reads(data).asOpt.flatten
       .map(_.value.map(jsValue => readsBigDecimal.reads(jsValue).asOpt.getOrElse(zeroValue)).sum)
       .getOrElse(zeroValue)
