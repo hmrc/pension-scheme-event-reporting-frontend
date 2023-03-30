@@ -14,28 +14,18 @@
  * limitations under the License.
  */
 
-package queries
+package forms.event8
 
-import models.UserAnswers
-import play.api.libs.json.JsPath
+import javax.inject.Inject
 
-import scala.util.{Success, Try}
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.event8.TypeOfProtection
 
-sealed trait Query {
+class TypeOfProtectionFormProvider @Inject() extends Mappings {
 
-  def path: JsPath
-}
-
-trait Gettable[A] extends Query
-
-trait Settable[A] extends Query {
-
-  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
-    Success(userAnswers)
-
-  def cleanupBeforeSettingValue(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] = Success(userAnswers)
-}
-
-trait Derivable[A, B] extends Query {
-  val derive: A => B
+  def apply(): Form[TypeOfProtection] =
+    Form(
+      "value" -> enumerable[TypeOfProtection]("event8.typeOfProtection.error.required")
+    )
 }

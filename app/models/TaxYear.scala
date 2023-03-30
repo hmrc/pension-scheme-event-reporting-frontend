@@ -33,6 +33,7 @@ case class TaxYear(startYear: String) {
 object TaxYear extends Enumerable.Implicits {
   implicit val writes: Writes[TaxYear] = (yr: TaxYear) => JsString(yr.startYear.toString)
   private val numberOfYearsToShow = 7
+
   def values: Seq[TaxYear] = {
     yearRange(DateHelper.today).reverse
   }

@@ -14,28 +14,15 @@
  * limitations under the License.
  */
 
-package queries
+package models.event8
 
-import models.UserAnswers
-import play.api.libs.json.JsPath
+import play.api.libs.json.{Format, Json}
 
-import scala.util.{Success, Try}
+import java.time.LocalDate
 
-sealed trait Query {
+case class LumpSumDetails(lumpSumAmount: BigDecimal, lumpSumDate: LocalDate)
 
-  def path: JsPath
+object LumpSumDetails {
+  implicit val format: Format[LumpSumDetails] = Json.format[LumpSumDetails]
 }
 
-trait Gettable[A] extends Query
-
-trait Settable[A] extends Query {
-
-  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
-    Success(userAnswers)
-
-  def cleanupBeforeSettingValue(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] = Success(userAnswers)
-}
-
-trait Derivable[A, B] extends Query {
-  val derive: A => B
-}

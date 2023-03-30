@@ -22,6 +22,7 @@ import pages.event13.Event13CheckYourAnswersPage
 import pages.event22.Event22CheckYourAnswersPage
 import pages.event23.Event23CheckYourAnswersPage
 import pages.event6.Event6CheckYourAnswersPage
+import pages.event8.Event8CheckYourAnswersPage
 import pages.eventWindUp.EventWindUpCheckYourAnswersPage
 
 case class Waypoint(
@@ -51,6 +52,7 @@ object Waypoint {
     fragments.get(s)
       .orElse(Event1CheckYourAnswersPage.waypointFromString(s))
       .orElse(Event6CheckYourAnswersPage.waypointFromString(s))
+      .orElse(Event8CheckYourAnswersPage.waypointFromString(s))
       .orElse(Event13CheckYourAnswersPage.waypointFromString(s))
       .orElse(Event22CheckYourAnswersPage.waypointFromString(s))
       .orElse(Event23CheckYourAnswersPage.waypointFromString(s))

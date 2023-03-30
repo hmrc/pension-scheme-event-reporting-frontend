@@ -14,28 +14,20 @@
  * limitations under the License.
  */
 
-package queries
+package pages.event8
 
-import models.UserAnswers
-import play.api.libs.json.JsPath
+import models.event8.TypeOfProtection
+import pages.behaviours.PageBehaviours
+import models.enumeration.EventType.Event8
 
-import scala.util.{Success, Try}
+class TypeOfProtectionSpec extends PageBehaviours {
 
-sealed trait Query {
+  "TypeOfProtectionPage" - {
 
-  def path: JsPath
-}
+    beRetrievable[TypeOfProtection](TypeOfProtectionPage(Event8, 0))
 
-trait Gettable[A] extends Query
+    beSettable[TypeOfProtection](TypeOfProtectionPage(Event8, 0))
 
-trait Settable[A] extends Query {
-
-  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
-    Success(userAnswers)
-
-  def cleanupBeforeSettingValue(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] = Success(userAnswers)
-}
-
-trait Derivable[A, B] extends Query {
-  val derive: A => B
+    beRemovable[TypeOfProtection](TypeOfProtectionPage(Event8, 0))
+  }
 }
