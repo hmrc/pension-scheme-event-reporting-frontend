@@ -50,7 +50,7 @@ class PaymentDateFormProvider @Inject() extends Mappings with Transforms { // sc
           threeDateComponentsMissingKey = "paymentDate.date.error.nothingEntered"
         ).verifying(
           yearHas4Digits("paymentDate.date.error.outsideDateRanges"),
-          minDate(startDate, messages("paymentDate.date.error.notBefore")),
+          minDate(startDate, messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(endDate(max)))),
           maxDate(endDate(max), messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(endDate(max))))
         )
       )
