@@ -51,7 +51,7 @@ class DatePaidController @Inject()(val controllerComponents: MessagesControllerC
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val form = formProvider(getTaxYear(request.userAnswers))
-    val preparedForm = request.userAnswers.flatMap(_.get(DatePaidPage(index))).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(DatePaidPage(index, eventType))).fold(form)(form.fill)
 
     Ok(view(preparedForm, waypoints, getBeneficiaryName(request.userAnswers, index), index))
   }
@@ -64,9 +64,9 @@ class DatePaidController @Inject()(val controllerComponents: MessagesControllerC
           Future.successful(BadRequest(view(formWithErrors, waypoints, getBeneficiaryName(request.userAnswers, index), index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(DatePaidPage(index), value)
+          val updatedAnswers = originalUserAnswers.setOrException(DatePaidPage(index, eventType), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(DatePaidPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(DatePaidPage(index, eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

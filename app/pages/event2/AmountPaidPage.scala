@@ -18,13 +18,15 @@ package pages.event2
 
 import controllers.event2.routes
 import models.UserAnswers
+import models.enumeration.EventType
+import pages.common.MembersPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import pages.{Page, QuestionPage, Waypoints}
 
-case class AmountPaidPage(index: Int) extends QuestionPage[BigDecimal] {
+case class AmountPaidPage(index: Int, eventType: EventType) extends QuestionPage[BigDecimal] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = MembersPage(eventType)(index) \ toString
 
   override def toString: String = "amountPaid"
 
@@ -32,6 +34,6 @@ case class AmountPaidPage(index: Int) extends QuestionPage[BigDecimal] {
     routes.AmountPaidController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    DatePaidPage(index)
+    DatePaidPage(index, eventType)
   }
 }

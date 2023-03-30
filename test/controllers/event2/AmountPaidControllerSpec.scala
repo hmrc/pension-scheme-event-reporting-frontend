@@ -84,7 +84,7 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = correctUserAnswers.set(AmountPaidPage(index = 0), validValue).success.value
+      val userAnswers = correctUserAnswers.set(AmountPaidPage(index = 0, Event2), validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -113,10 +113,10 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "33.00"))
 
         val result = route(application, request).value
-        val updatedAnswers = correctUserAnswers.set(AmountPaidPage(index = 0), validValue).success.value
+        val updatedAnswers = correctUserAnswers.set(AmountPaidPage(index = 0, Event2), validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AmountPaidPage(index = 0).navigate(waypoints, correctUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual AmountPaidPage(index = 0, Event2).navigate(waypoints, correctUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }

@@ -18,14 +18,16 @@ package pages.event2
 
 import java.time.LocalDate
 import controllers.event2.routes
+import models.enumeration.EventType
 import models.{Index, UserAnswers}
+import pages.common.MembersPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import pages.{Page, QuestionPage, Waypoints}
 
-case class DatePaidPage(index:Index) extends QuestionPage[LocalDate] {
+case class DatePaidPage(index:Index, eventType: EventType) extends QuestionPage[LocalDate] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = MembersPage(eventType)(index) \ toString
 
   override def toString: String = "datePaid"
 

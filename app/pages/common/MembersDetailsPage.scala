@@ -44,7 +44,7 @@ case class MembersDetailsPage(eventType: EventType, index: Int, memberPageNo: In
     (eventType, index, memberPageNo) match {
       case (Event1, index, _) => DoYouHoldSignedMandatePage(index)
       case (Event2, index, 1) => MembersDetailsPage(eventType, index, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY)
-      case (Event2, index, 2) => AmountPaidPage(index)
+      case (Event2, index, 2) => AmountPaidPage(index, Event2)
       case (Event6, index, _) => TypeOfProtectionPage(eventType, index)
       case (Event22, index, _) => ChooseTaxYearPage(eventType, index)
       case (Event23, index, _) => ChooseTaxYearPage(eventType, index)

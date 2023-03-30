@@ -25,6 +25,7 @@ import models.requests.DataRequest
 import pages.event2.Event2CheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -71,5 +72,58 @@ class Event2CheckYourAnswersController @Inject()(
     AmountPaidSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq ++
     DatePaidSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq
   }
+
+  private def jsons: JsObject =
+    Json.obj(
+      "event2" -> Json.obj(
+        "members" -> Json.arr(
+          Json.obj(
+            "deceasedMembersDetails"-> Json.obj(
+            "firstName"-> "Jane",
+            "lastName"-> "Doe",
+            "nino" -> "AB123456C"
+          ),
+            "beneficiaryDetails"-> Json.obj(
+              "firstName" -> "Joe",
+              "lastName"-> "Bloggs",
+              "nino"-> "AD123456F"
+            ))
+        )
+      )
+    )
+  """{
+    "apiTypes": "1830",
+    "pstr": "24000001IN",
+    "data": {
+      "amountPaid": 89,
+      "taxYear": "2022",
+      "event2": {
+      "members": [
+    {
+      "deceasedMembersDetails": {
+      "firstName": "maryiah",
+      "lastName": "m",
+      "nino": "AB123456C"
+    },
+      "beneficiaryDetails": {
+      "firstName": "z",
+      "lastName": "z",
+      "nino": "AB123456C"
+    }
+    }
+      ]
+    },
+      "datePaid": "2023-03-08"
+    },
+    "expireAt": {
+      "$date": {
+      "$numberLong": "1682636400000"
+    }
+    },
+    "lastUpdated": {
+      "$date": {
+      "$numberLong": "1680172462707"
+    }
+    }""".stripMargin
 }
 

@@ -16,8 +16,9 @@
 
 package pages.event2
 
-import java.time.LocalDate
+import models.enumeration.EventType.Event2
 
+import java.time.LocalDate
 import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
 
@@ -29,10 +30,10 @@ class DatePaidPageSpec extends PageBehaviours {
       datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
     }
 
-    beRetrievable[LocalDate](DatePaidPage(index = 0))
+    beRetrievable[LocalDate](DatePaidPage(index = 0, Event2))
 
-    beSettable[LocalDate](DatePaidPage(index = 0))
+    beSettable[LocalDate](DatePaidPage(index = 0, Event2))
 
-    beRemovable[LocalDate](DatePaidPage(index = 0))
+    beRemovable[LocalDate](DatePaidPage(index = 0, Event2))
   }
 }

@@ -85,7 +85,7 @@ class DatePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = taxYearUserAnswers.set(DatePaidPage(index = 0), validAnswer).success.value
+      val userAnswers = taxYearUserAnswers.set(DatePaidPage(index = 0, Event2), validAnswer).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
@@ -117,10 +117,10 @@ class DatePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
           )
 
         val result = route(application, request).value
-        val updatedAnswers = taxYearUserAnswers.set(DatePaidPage(index = 0), validAnswer).success.value
+        val updatedAnswers = taxYearUserAnswers.set(DatePaidPage(index = 0, Event2), validAnswer).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual DatePaidPage(index = 0).navigate(waypoints, taxYearUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual DatePaidPage(index = 0, Event2).navigate(waypoints, taxYearUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }

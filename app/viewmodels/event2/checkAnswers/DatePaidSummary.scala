@@ -35,7 +35,7 @@ object DatePaidSummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DatePaidPage(index)).map {
+    answers.get(DatePaidPage(index, Event2)).map {
       answer =>
         //TODO: remove duplicate code, find more effective method
         val beneficiaryFullNameOpt = answers.get(MembersDetailsPage(Event2, index, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY)).map {
@@ -52,7 +52,7 @@ object DatePaidSummary  {
           key     = amountPaidHeadingMessage,
           value   = ValueViewModel(answer.format(dateFormatter)),
           actions = Seq(
-            ActionItemViewModel("site.change", DatePaidPage(index).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", DatePaidPage(index, Event2).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("datePaid.event2.change.hidden"))
           )
         )

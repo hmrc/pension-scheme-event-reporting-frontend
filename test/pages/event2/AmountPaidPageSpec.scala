@@ -16,16 +16,17 @@
 
 package pages.event2
 
+import models.enumeration.EventType.Event2
 import pages.behaviours.PageBehaviours
 
 class AmountPaidPageSpec extends PageBehaviours {
 
   "AmountPaidPage" - {
 
-    beRetrievable[BigDecimal](AmountPaidPage(index = 0))
+    beRetrievable[BigDecimal](AmountPaidPage(index = 0,Event2))
 
-    beSettable[BigDecimal](AmountPaidPage(index = 0))
+    beSettable[BigDecimal](AmountPaidPage(index = 0,Event2))
 
-    beRemovable[BigDecimal](AmountPaidPage(index = 0))
+    beRemovable[BigDecimal](AmountPaidPage(index = 0,Event2))
   }
 }

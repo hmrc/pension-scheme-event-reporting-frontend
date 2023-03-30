@@ -16,6 +16,7 @@
 
 package viewmodels.event2.checkAnswers
 
+import models.enumeration.EventType.Event2
 import models.{Index, UserAnswers}
 import pages.event2.AmountPaidPage
 import pages.{CheckAnswersPage, Waypoints}
@@ -29,13 +30,13 @@ object AmountPaidSummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmountPaidPage(index)).map {
+    answers.get(AmountPaidPage(index, Event2)).map {
       answer =>
         SummaryListRowViewModel(
           key     = messages("amountPaid.event2.checkYourAnswersLabel", getBeneficiaryName(Some(answers), index)),
           value   = ValueViewModel(answer.toString),
           actions = Seq(
-            ActionItemViewModel("site.change", AmountPaidPage(index).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", AmountPaidPage(index, Event2).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("amountPaid.event2.change.hidden", getBeneficiaryName(Some(answers), index)))
           )
         )
