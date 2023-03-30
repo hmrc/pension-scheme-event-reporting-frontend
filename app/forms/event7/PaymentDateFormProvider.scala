@@ -29,14 +29,7 @@ import javax.inject.Inject
 
 class PaymentDateFormProvider @Inject() extends Mappings with Transforms { // scalastyle:off magic.number
 
-  private def startDate(date: LocalDate): LocalDate = {
-    date match {
-      case _ if date.isBefore(LocalDate.of(date.getYear, 4, 6)) =>
-        LocalDate.of(date.getYear - 1, 4, 6)
-      case _ =>
-        LocalDate.of(date.getYear, 4, 6)
-    }
-  }
+  private val startDate: LocalDate = LocalDate.of(2006, 4, 6)
 
   private def endDate(date: LocalDate): LocalDate = {
     date match {
@@ -57,8 +50,8 @@ class PaymentDateFormProvider @Inject() extends Mappings with Transforms { // sc
           threeDateComponentsMissingKey = "paymentDate.date.error.nothingEntered"
         ).verifying(
           yearHas4Digits("paymentDate.date.error.outsideDateRanges"),
-          minDate(startDate(min), messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(startDate(min)), formatDateDMY(endDate(max)))),
-          maxDate(endDate(max), messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(startDate(min)), formatDateDMY(endDate(max))))
+          minDate(startDate, messages("paymentDate.date.error.notBefore")),
+          maxDate(endDate(max), messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(endDate(max))))
         )
       )
       (PaymentDate.apply)(PaymentDate.unapply)
