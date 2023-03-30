@@ -21,7 +21,7 @@ import models.enumeration.EventType
 import models.event7.Event7MembersSummary
 import play.api.libs.json.JsPath
 import queries.Gettable
-
+//TODO refactor this to use reusable membersSummary again, removing duplication of code- if statement in the view
 case class Event7MembersPage(eventType: EventType) extends Gettable[Seq[Event7MembersSummary]] {
   def apply(index: Index): JsPath = path \ index
 

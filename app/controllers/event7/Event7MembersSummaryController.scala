@@ -37,7 +37,7 @@ import views.html.event7.{Event7MembersSummaryView, Event7MembersSummaryViewWith
 
 import java.text.DecimalFormat
 import javax.inject.Inject
-
+//TODO refactor this to use reusable membersSummary again, removing duplication of code- if statement in the view
 //scalastyle:off
 class Event7MembersSummaryController @Inject()(
                                                   val controllerComponents: MessagesControllerComponents,
