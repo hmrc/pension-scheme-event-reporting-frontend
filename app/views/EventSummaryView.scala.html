@@ -22,9 +22,9 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, events: Seq[SummaryListRow])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, events: Seq[SummaryListRow], selectedTaxYear: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("eventSummary.title", "2023"))) {
+@layout(pageTitle = title(form, messages("eventSummary.title", selectedTaxYear))) {
 
     @formHelper(action = routes.EventSummaryController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
@@ -34,7 +34,7 @@
 
         <span class="govuk-caption-xl">Company pension scheme ABC</span>
 
-        <h1 class="govuk-heading-xl">@messages("eventSummary.heading", "2023")</h1>
+        <h1 class="govuk-heading-xl">@messages("eventSummary.heading", selectedTaxYear)</h1>
 
         @components.entity_list(events)
 
