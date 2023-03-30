@@ -109,7 +109,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
               ))
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent8, waypoints, Event8, expectedSeq, "223.11", "")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent8, waypoints, Event8, expectedSeq, "223.11", "2023")(request, messages(application)).toString
         }
       }
 
@@ -118,7 +118,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           .thenReturn(Future.successful(()))
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {
@@ -126,10 +126,10 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
             FakeRequest(POST, postRouteEvent8).withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(MembersSummaryPage(Event8, 1), true).success.value
+          val updatedAnswers = emptyUserAnswersWithTaxYear.set(MembersSummaryPage(Event8, 1), true).success.value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual MembersSummaryPage(Event8, 1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          redirectLocation(result).value mustEqual MembersSummaryPage(Event8, 1).navigate(waypoints, emptyUserAnswersWithTaxYear, updatedAnswers).url
         }
       }
 
@@ -138,7 +138,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           .thenReturn(Future.successful(()))
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {
@@ -151,7 +151,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event8, Nil, "0.00", "")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event8, Nil, "0.00", "2023")(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
         }
       }
@@ -190,7 +190,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
               ))
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent8a, waypoints, Event8A, expectedSeq, "223.11", "")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent8a, waypoints, Event8A, expectedSeq, "223.11", "2023")(request, messages(application)).toString
         }
       }
 
@@ -199,7 +199,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           .thenReturn(Future.successful(()))
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {
@@ -207,10 +207,10 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
             FakeRequest(POST, postRouteEvent8a).withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(MembersSummaryPage(Event8A, 1), true).success.value
+          val updatedAnswers = emptyUserAnswersWithTaxYear.set(MembersSummaryPage(Event8A, 1), true).success.value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual MembersSummaryPage(Event8A, 1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          redirectLocation(result).value mustEqual MembersSummaryPage(Event8A, 1).navigate(waypoints, emptyUserAnswersWithTaxYear, updatedAnswers).url
         }
       }
 
@@ -219,7 +219,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           .thenReturn(Future.successful(()))
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {
@@ -232,7 +232,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event8A, Nil, "0.00", "")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event8A, Nil, "0.00", "2023")(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
         }
       }
@@ -271,7 +271,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
               ))
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent22, waypoints, Event22, expectedSeq, "999.11", "")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent22, waypoints, Event22, expectedSeq, "999.11", "2023")(request, messages(application)).toString
         }
       }
 
@@ -280,7 +280,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           .thenReturn(Future.successful(()))
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {
@@ -288,10 +288,10 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
             FakeRequest(POST, postRouteEvent22).withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(MembersSummaryPage(Event22, 1), true).success.value
+          val updatedAnswers = emptyUserAnswersWithTaxYear.set(MembersSummaryPage(Event22, 1), true).success.value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual MembersSummaryPage(Event22, 1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          redirectLocation(result).value mustEqual MembersSummaryPage(Event22, 1).navigate(waypoints, emptyUserAnswersWithTaxYear, updatedAnswers).url
         }
       }
 
@@ -300,7 +300,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           .thenReturn(Future.successful(()))
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {
@@ -313,7 +313,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event22, Nil, "0.00", "")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event22, Nil, "0.00", "2023")(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
         }
       }
@@ -352,7 +352,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
               ))
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent23, waypoints, Event23, expectedSeq, "1,234.56", "")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent23, waypoints, Event23, expectedSeq, "1,234.56", "2023")(request, messages(application)).toString
         }
       }
 
@@ -361,7 +361,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           .thenReturn(Future.successful(()))
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {
@@ -369,10 +369,10 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
             FakeRequest(POST, postRouteEvent23).withFormUrlEncodedBody(("value", "true"))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(MembersSummaryPage(Event23, 1), true).success.value
+          val updatedAnswers = emptyUserAnswersWithTaxYear.set(MembersSummaryPage(Event23, 1), true).success.value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual MembersSummaryPage(Event23, 1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          redirectLocation(result).value mustEqual MembersSummaryPage(Event23, 1).navigate(waypoints, emptyUserAnswersWithTaxYear, updatedAnswers).url
         }
       }
 
@@ -381,7 +381,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           .thenReturn(Future.successful(()))
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {
@@ -394,7 +394,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event23, Nil, "0.00", "")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event23, Nil, "0.00", "2023")(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
         }
       }

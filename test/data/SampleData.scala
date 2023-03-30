@@ -167,7 +167,7 @@ object SampleData {
     .setOrException(AmountCrystallisedAndDatePage(Event6, 0), crystallisedDetails)
 
   val sampleMemberJourneyDataEvent8: UserAnswers = UserAnswers()
-    .setOrException(TaxYearPage, TaxYear("2023"))
+    .setOrException(TaxYearPage, TaxYear("2022"))
     .setOrException(MembersDetailsPage(Event8, 0), memberDetails)
     .setOrException(TypeOfProtectionPage(Event8, 0), TypeOfProtection.PrimaryProtection)
     .setOrException(TypeOfProtectionReferencePage(Event8, 0), "1234567A")
