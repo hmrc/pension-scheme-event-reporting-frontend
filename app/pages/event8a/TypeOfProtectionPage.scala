@@ -53,9 +53,6 @@ case class TypeOfProtectionPage(eventType: EventType, index: Index) extends Ques
     val updatedOptionSelected = updatedAnswers.get(TypeOfProtectionPage(eventType, index))
     val answerIsChanged = originalOptionSelected != updatedOptionSelected
 
-    answerIsChanged match {
-      case true => TypeOfProtectionReferencePage(eventType, index)
-      case _ => Event8ACheckYourAnswersPage(index)
-    }
+    if(answerIsChanged) TypeOfProtectionReferencePage(eventType, index) else Event8ACheckYourAnswersPage(index)
   }
 }

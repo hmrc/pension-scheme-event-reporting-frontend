@@ -84,7 +84,7 @@ class LumpSumAmountAndDateController @Inject()(val controllerComponents: Message
 }
 
 object LumpSumAmountAndDateController {
-  def endOfLumpSumDate(optTaxYear: Option[TaxYear]): LocalDate = optTaxYear match {
+  private def endOfLumpSumDate(optTaxYear: Option[TaxYear]): LocalDate = optTaxYear match {
     case Some(value) =>
       val taxYear = value.endYear.toInt
       LocalDate.of(taxYear, Month.APRIL, 5)
