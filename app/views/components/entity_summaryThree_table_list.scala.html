@@ -32,7 +32,8 @@
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header govuk-!-font-weight-regular govuk-!-width-one-quarter">@summaryListRow.key</th>
             <td class="govuk-table__cell govuk-!-width-one-quarter">@summaryListRow.firstValue</td>
-            <td class="govuk-table__cell govuk-!-width-one-quarter govuk-table__cell--numeric">&pound;@summaryListRow.secondValue</td>
+            <td class="govuk-table__cell govuk-!-width-one-quarter">&pound;@summaryListRow.secondValue</td>
+
             @summaryListRow.actions.map { actions =>
                 <td class="govuk-table__cell govuk-table__cell--numeric whitespace-nowrap">
                     <ul class="govuk-summary-list__actions-list">
