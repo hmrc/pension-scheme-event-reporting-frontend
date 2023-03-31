@@ -30,6 +30,12 @@ import pages.{event13, _}
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryCrystallisedAmountPage: Arbitrary[event7.CrystallisedAmountPage] =
+    Arbitrary(event7.CrystallisedAmountPage(Index(0)))
+
+  implicit lazy val arbitraryLumpSumAmountPage: Arbitrary[event7.LumpSumAmountPage] =
+    Arbitrary(event7.LumpSumAmountPage(Index(0)))
+
   implicit lazy val arbitraryPaymentTypePage: Arbitrary[event8a.PaymentTypePage.type] =
     Arbitrary(event8a.PaymentTypePage)
 

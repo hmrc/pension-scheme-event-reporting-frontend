@@ -16,13 +16,12 @@
 
 package data
 
-import models.{TaxYear, UserAnswers}
 import models.address.{Address, TolerantAddress}
 import models.common.ManualOrUpload.Manual
 import models.common.{ChooseTaxYear, MembersDetails}
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event22, Event23, Event6, Event8, Event8A}
+import models.enumeration.EventType.{Event1, Event22, Event23, Event6, Event7, Event8, Event8A}
 import models.event1.PaymentDetails
 import models.event1.PaymentNature.BenefitInKind
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
@@ -30,8 +29,10 @@ import models.event1.employer.PaymentNature.TangibleMoveableProperty
 import models.event1.employer.{CompanyDetails, LoanDetails}
 import models.event1.member.SchemeDetails
 import models.event6.{CrystallisedDetails, TypeOfProtection => Event6TypeOfProtection}
-import models.event8.{LumpSumDetails, TypeOfProtection}
+import models.event7.PaymentDate
+import models.event8.{LumpSumDetails, TypeOfProtection => Event8TypeOfProtection}
 import models.event8a.PaymentType
+import models.{TaxYear, UserAnswers}
 import pages.TaxYearPage
 import pages.address.ManualAddressPage
 import pages.common.{ChooseTaxYearPage, ManualOrUploadPage, MembersDetailsPage, TotalPensionAmountsPage}
@@ -39,7 +40,8 @@ import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
 import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage => Event6TypeOfProtectionPage}
-import pages.event8.{LumpSumAmountAndDatePage, TypeOfProtectionPage, TypeOfProtectionReferencePage}
+import pages.event7.{CrystallisedAmountPage, LumpSumAmountPage, PaymentDatePage}
+import pages.event8.{LumpSumAmountAndDatePage, TypeOfProtectionReferencePage, TypeOfProtectionPage => Event8TypeOfProtectionPage}
 import pages.event8a.PaymentTypePage
 import utils.{CountryOptions, InputOption}
 
@@ -108,6 +110,9 @@ object SampleData {
   val crystallisedDetails: CrystallisedDetails = CrystallisedDetails(857.00, LocalDate.of(2022, 11, 8))
   val lumpSumDetails = LumpSumDetails(223.11, LocalDate.of(2022, 3, 22))
 
+  val event7PaymentDate: PaymentDate = PaymentDate(LocalDate.of(2022, 11, 8))
+  val lumpSumAmount: BigDecimal = BigDecimal(100.00)
+  val crystallisedAmount: BigDecimal = BigDecimal(50.00)
 
   def booleanCYAVal(value: Boolean): String = if (value) "site.yes" else "site.no"
 
@@ -166,10 +171,18 @@ object SampleData {
     .setOrException(InputProtectionTypePage(Event6, 0), "1234567A")
     .setOrException(AmountCrystallisedAndDatePage(Event6, 0), crystallisedDetails)
 
+  val sampleMemberJourneyDataEvent7: UserAnswers = UserAnswers()
+    .setOrException(TaxYearPage, TaxYear("2022"))
+    .setOrException(MembersDetailsPage(Event7, 0), memberDetails)
+    .setOrException(LumpSumAmountPage(0), lumpSumAmount)
+    .setOrException(CrystallisedAmountPage(0), crystallisedAmount)
+    .setOrException(PaymentDatePage(0),event7PaymentDate)
+
+
   val sampleMemberJourneyDataEvent8: UserAnswers = UserAnswers()
     .setOrException(TaxYearPage, TaxYear("2022"))
     .setOrException(MembersDetailsPage(Event8, 0), memberDetails)
-    .setOrException(TypeOfProtectionPage(Event8, 0), TypeOfProtection.PrimaryProtection)
+    .setOrException(Event8TypeOfProtectionPage(Event8, 0), Event8TypeOfProtection.PrimaryProtection)
     .setOrException(TypeOfProtectionReferencePage(Event8, 0), "1234567A")
     .setOrException(LumpSumAmountAndDatePage(Event8, 0), lumpSumDetails)
 
@@ -177,7 +190,7 @@ object SampleData {
     .setOrException(TaxYearPage, TaxYear("2022"))
     .setOrException(MembersDetailsPage(Event8A, 0), memberDetails)
     .setOrException(PaymentTypePage(Event8A, 0), PaymentType.PaymentOfAStandAloneLumpSum)
-    .setOrException(TypeOfProtectionPage(Event8A, 0), TypeOfProtection.PrimaryProtection)
+    .setOrException(Event8TypeOfProtectionPage(Event8A, 0), Event8TypeOfProtection.PrimaryProtection)
     .setOrException(TypeOfProtectionReferencePage(Event8A, 0), "1234567A")
     .setOrException(LumpSumAmountAndDatePage(Event8A, 0), lumpSumDetails)
 

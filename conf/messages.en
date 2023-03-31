@@ -89,7 +89,7 @@ eventSelection.event5.hint = Cessation of ill-health pension
 eventSelection.event6 = Event 6
 eventSelection.event6.hint = Benefit crystallisation events (BCEs) with reduced or eliminated liability
 eventSelection.event7 = Event 7
-eventSelection.event7.hint = Pension commencement lump sum without primary/enhanced protection
+eventSelection.event7.hint = Pension commencement lump sum more than 25% of the fund where the member does not have primary/enhanced protection
 eventSelection.event8 = Event 8
 eventSelection.event8.hint = Pension commencement lump sum with primary/enhanced protection
 eventSelection.event8a = Event 8A
@@ -824,6 +824,16 @@ membersSummary.table.header2 = National Insurance number
 membersSummary.table.header3 = Pension input amounts
 membersSummary.table.totalTitle = Total
 
+membersSummary.event7.title = Event 7: Pension commencement lump sum (more than 25% of the fund where the member does not have primary/enhanced protection) in the tax year ending 5 April {0}
+membersSummary.event7.heading = Event 7: Pension commencement lump sum (more than 25% of the fund where the member does not have primary/enhanced protection) in the tax year ending 5 April {0}
+membersSummary.event7.error.required = Select yes if you want to add another entry
+membersSummary.event7.yesno.legend = Do you want to add another pension commencement lump sum entry?
+membersSummary.event7.table.header1 = Member
+membersSummary.event7.table.header2 = National Insurance number
+membersSummary.event7.table.header3 = Lump sum
+membersSummary.event7.table.header4 = Amount crystallised
+membersSummary.event7.table.totalTitle = Total not required
+
 membersSummary.event6.title = Event 6: Benefit crystallisation events reported in the tax year ending 5 April {0}
 membersSummary.event6.heading = Event 6: Benefit crystallisation events reported in the tax year ending 5 April {0}
 membersSummary.event6.error.required = Select yes if you want to add another entry
@@ -986,6 +996,36 @@ amountCrystallisedAndDate.date.error.outsideDateRanges = Enter a real date
 amountCrystallisedAndDate.date.error.outsideReportedYear = Date must be between {0} and {1}
 amountCrystallisedAndDate.date.change.hidden = the date of the benefit crystallisation
 amountCrystallisedAndDate.date.checkYourAnswersLabel = Date of the benefit crystallisation
+
+lumpSumAmount.title = How much lump sum was paid?
+lumpSumAmount.heading = How much lump sum was paid?
+lumpSumAmount.checkYourAnswersLabel = The amount of the lump sum
+lumpSumAmount.change.hidden = the amount of the lump sum that was paid
+lumpSumAmount.value.error.nothingEntered = Enter how much lump sum was paid
+
+crystallisedAmount.title = How much was crystallised?
+crystallisedAmount.heading = How much was crystallised?
+crystallisedAmount.checkYourAnswersLabel = The amount crystallised
+crystallisedAmount.change.hidden = the amount that was crystallised
+crystallisedAmount.value.error.nothingEntered = Enter how much was crystallised
+
+amounts.value.error.notANumber = The amount must be an amount of money, like 123.45 or 156.00
+amounts.value.error.noDecimals = The amount must include pence, like 123.45 or 156.00
+amounts.value.error.amountTooHigh = The amount must be £999999999.99 or less
+amounts.value.error.zeroAmount = The amount entered must be greater than zero
+amounts.value.error.negative = The amount must not be a negative amount of money, like -123.45 or -156.00
+
+paymentDate.heading = When was the payment made?
+paymentDate.title = When was the payment made?
+paymentDate.date.hint = For example, 22 09 2022
+paymentDate.date.error.nothingEntered = Enter the date
+paymentDate.date.error.noDayMonthOrYear = The date must include a day, month and year
+paymentDate.date.error.outsideDateRanges = Enter a real date
+paymentDate.date.error.outsideReportedYear = The date must be between 6 April 2006 and {0}
+paymentDate.date.change.hidden = the date of the payment
+paymentDate.date.checkYourAnswersLabel = The date the payment was made
+
+
 
 
 lumpSumAmountAndDate.title = Lump sum amount and date
