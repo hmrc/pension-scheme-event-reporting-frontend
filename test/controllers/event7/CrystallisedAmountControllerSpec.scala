@@ -52,7 +52,7 @@ class CrystallisedAmountControllerSpec extends SpecBase with BeforeAndAfterEach 
 
   private val validValue = BigDecimal(1000.99)
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
