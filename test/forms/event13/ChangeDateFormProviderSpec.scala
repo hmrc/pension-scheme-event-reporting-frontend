@@ -34,6 +34,6 @@ class ChangeDateFormProviderSpec extends DateBehaviours {
 
     behave like dateField(form, "value", validData)
 
-    behave like mandatoryDateField(form, "value", "changeDate.error.required.all")
+    behave like mandatoryDateField(form, "value", "event13.changeDate.error.required.all")
   }
 }
