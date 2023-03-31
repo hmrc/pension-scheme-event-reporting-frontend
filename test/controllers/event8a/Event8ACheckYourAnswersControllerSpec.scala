@@ -153,35 +153,35 @@ object Event8ACheckYourAnswersControllerSpec {
       "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
-      "event8a.paymentType.checkYourAnswersLabel",
+      "paymentType.checkYourAnswersLabel",
       "Payment of a stand-alone lump sum",
       "/manage-pension-scheme-event-report/new-report/1/event-8a-lump-sum-payment-type?waypoints=event-8A-check-answers-1",
-      "event8a.paymentType.change.hidden"
+      "paymentType.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
-      "event8a.typeOfProtection.checkYourAnswersLabel",
+      "event8.typeOfProtection.checkYourAnswersLabel",
       "Primary protection",
       "/manage-pension-scheme-event-report/new-report/1/event-8a-type-of-protection?waypoints=event-8A-check-answers-1",
-      "event8a.typeOfProtection.change.hidden"
+      "event8.typeOfProtection.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithTwoMsgKeys(
-      "event8a.typeOfProtectionReference.checkYourAnswersLabel",
-      "event8a.typeOfProtection.primaryProtection",
+      "typeOfProtectionReference.checkYourAnswersLabel",
+      "event8.typeOfProtection.primaryProtection",
       "1234567A",
       "/manage-pension-scheme-event-report/new-report/1/event-8a-protection-reference?waypoints=event-8A-check-answers-1",
-      "event8a.typeOfProtectionReference.change.hidden"
+      "typeOfProtectionReference.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
-      "event8a.lumpSumAmountAndDate.value.checkYourAnswersLabel",
+      "lumpSumAmountAndDate.value.checkYourAnswersLabel",
       "£223.11",
       "/manage-pension-scheme-event-report/new-report/1/event-8a-lump-sum-details?waypoints=event-8A-check-answers-1",
-      "event8a.lumpSumAmountAndDate.value.change.hidden"
+      "lumpSumAmountAndDate.value.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
-      "event8a.lumpSumAmountAndDate.date.checkYourAnswersLabel",
+      "lumpSumAmountAndDate.date.checkYourAnswersLabel",
       "22 March 2022",
       "/manage-pension-scheme-event-report/new-report/1/event-8a-lump-sum-details?waypoints=event-8A-check-answers-1",
-      "event8a.lumpSumAmountAndDate.date.change.hidden"
+      "lumpSumAmountAndDate.date.change.hidden"
     )
   )
 }

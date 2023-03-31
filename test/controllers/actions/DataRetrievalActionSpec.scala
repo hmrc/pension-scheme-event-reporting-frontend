@@ -18,16 +18,15 @@ package controllers.actions
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
+import models.LoggedInUser
 import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.enumeration.EventType
 import models.requests.{IdentifierRequest, OptionalDataRequest}
-import models.{LoggedInUser, UserAnswers}
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -42,11 +41,6 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
   private val pstr = "pstr"
   private val request: IdentifierRequest[AnyContent] = IdentifierRequest(fakeRequest, loggedInUser, pstr, "schemeName", "returnUrl")
   private val eventType = EventType.Event1
-
-  private val json = Json.obj("test" -> "test")
-  private val jsonNoEvent = Json.obj("testNoEvent" -> "testNoEvent")
-  private val userAnswers = UserAnswers(json)
-  private val userAnswersForNoEventType = UserAnswers(jsonNoEvent)
 
   class Harness extends DataRetrievalImpl(eventType, userAnswersCacheConnector) {
     def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)

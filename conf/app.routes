@@ -221,14 +221,14 @@ POST        /new-report/event-6-summary                                         
 GET         /new-report/:index/event-8-member-details                             controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8, index: Index)
 POST        /new-report/:index/event-8-member-details                             controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8, index: Index)
 
-GET        /new-report/:index/event-8-type-of-protection                          controllers.event8.TypeOfProtectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType, index: Index)
-POST       /new-report/:index/event-8-type-of-protection                          controllers.event8.TypeOfProtectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType, index: Index)
+GET        /new-report/:index/event-8-type-of-protection                          controllers.event8.TypeOfProtectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8, index: Index)
+POST       /new-report/:index/event-8-type-of-protection                          controllers.event8.TypeOfProtectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8, index: Index)
 
-GET        /new-report/:index/event-8-protection-reference                        controllers.event8.TypeOfProtectionReferenceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType, index: Index)
-POST       /new-report/:index/event-8-protection-reference                        controllers.event8.TypeOfProtectionReferenceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType, index: Index)
+GET        /new-report/:index/event-8-protection-reference                        controllers.event8.TypeOfProtectionReferenceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8, index: Index)
+POST       /new-report/:index/event-8-protection-reference                        controllers.event8.TypeOfProtectionReferenceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8, index: Index)
 
-GET        /new-report/:index/event-8-lump-sum-details                            controllers.event8.LumpSumAmountAndDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType, index: Index)
-POST       /new-report/:index/event-8-lump-sum-details                            controllers.event8.LumpSumAmountAndDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType, index: Index)
+GET        /new-report/:index/event-8-lump-sum-details                            controllers.event8.LumpSumAmountAndDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8, index: Index)
+POST       /new-report/:index/event-8-lump-sum-details                            controllers.event8.LumpSumAmountAndDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8, index: Index)
 
 GET        /new-report/event-8-summary                                            controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8)
 POST       /new-report/event-8-summary                                            controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8)

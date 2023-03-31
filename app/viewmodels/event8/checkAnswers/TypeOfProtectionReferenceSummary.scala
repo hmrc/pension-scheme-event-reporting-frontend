@@ -40,12 +40,13 @@ object TypeOfProtectionReferenceSummary {
       answer =>
 
         SummaryListRowViewModel(
-          key = messages(s"typeOfProtectionReference.checkYourAnswersLabel", messages(s"event8.typeOfProtection.${protectionType.toString}").toLowerCase()),
+          key = messages(s"typeOfProtectionReference.checkYourAnswersLabel",
+            messages(s"event8.typeOfProtection.${protectionType.toString}").toLowerCase()),
           value = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", TypeOfProtectionReferencePage(eventType, index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("site.change") + " " + messages("typeOfProtectionReference.change.hidden",
-                messages(s"typeOfProtection.${protectionType.toString}").toLowerCase()))
+                messages(s"event8.typeOfProtection.${protectionType.toString}").toLowerCase()))
           )
         )
     }
