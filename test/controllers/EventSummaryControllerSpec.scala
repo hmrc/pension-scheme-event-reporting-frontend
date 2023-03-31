@@ -19,8 +19,8 @@ package controllers
 import base.SpecBase
 import connectors.EventReportingConnector
 import forms.EventSummaryFormProvider
-import models.{TaxYear, UserAnswers}
 import models.enumeration.EventType
+import models.{TaxYear, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -98,12 +98,12 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
         }
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, mappedEvents)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, mappedEvents, "2023")(request, messages(application)).toString
       }
     }
 
     "must redirect to next page on submit (when selecting YES)" in {
-      val ua = UserAnswers()
+      val ua = emptyUserAnswersWithTaxYear
       val application = applicationBuilder(userAnswers = Some(ua)).build()
       running(application) {
         val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
@@ -117,7 +117,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
     }
 
     "must redirect to next page on submit (when selecting NO)" in {
-      val ua = UserAnswers()
+      val ua = emptyUserAnswersWithTaxYear
       val application = applicationBuilder(userAnswers = Some(ua)).build()
       running(application) {
         val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "false"))

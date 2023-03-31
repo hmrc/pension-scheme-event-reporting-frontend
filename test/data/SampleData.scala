@@ -16,20 +16,24 @@
 
 package data
 
-import models.UserAnswers
 import models.address.{Address, TolerantAddress}
 import models.common.ManualOrUpload.Manual
 import models.common.{ChooseTaxYear, MembersDetails}
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event2, Event22, Event23, Event6}
+import models.enumeration.EventType.{Event1, Event2, Event22, Event23, Event6,  Event7, Event8, Event8A}
 import models.event1.PaymentDetails
 import models.event1.PaymentNature.BenefitInKind
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.employer.PaymentNature.TangibleMoveableProperty
 import models.event1.employer.{CompanyDetails, LoanDetails}
 import models.event1.member.SchemeDetails
-import models.event6.{CrystallisedDetails, TypeOfProtection}
+import models.event6.{CrystallisedDetails, TypeOfProtection => Event6TypeOfProtection}
+import models.event7.PaymentDate
+import models.event8.{LumpSumDetails, TypeOfProtection => Event8TypeOfProtection}
+import models.event8a.PaymentType
+import models.{TaxYear, UserAnswers}
+import pages.TaxYearPage
 import pages.address.ManualAddressPage
 import pages.common.{ChooseTaxYearPage, ManualOrUploadPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.event1._
@@ -38,6 +42,11 @@ import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage
 import pages.event2.{AmountPaidPage, DatePaidPage}
 import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage}
 import utils.{CountryOptions, Event2MemberPageNumbers, InputOption}
+import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage => Event6TypeOfProtectionPage}
+import pages.event7.{CrystallisedAmountPage, LumpSumAmountPage, PaymentDatePage}
+import pages.event8.{LumpSumAmountAndDatePage, TypeOfProtectionReferencePage, TypeOfProtectionPage => Event8TypeOfProtectionPage}
+import pages.event8a.PaymentTypePage
+import utils.{CountryOptions, InputOption}
 
 import java.time.LocalDate
 
@@ -102,11 +111,15 @@ object SampleData {
 
   val paymentDetails: PaymentDetails = PaymentDetails(1000.00, LocalDate.of(2022, 11, 8))
   val crystallisedDetails: CrystallisedDetails = CrystallisedDetails(857.00, LocalDate.of(2022, 11, 8))
+  val lumpSumDetails = LumpSumDetails(223.11, LocalDate.of(2022, 3, 22))
 
   val datePaid: LocalDate = LocalDate.of(2022,5,19)
 
+  val event7PaymentDate: PaymentDate = PaymentDate(LocalDate.of(2022, 11, 8))
+  val lumpSumAmount: BigDecimal = BigDecimal(100.00)
+  val crystallisedAmount: BigDecimal = BigDecimal(50.00)
 
-  def booleanCYAVal(value: Boolean) = if (value) "site.yes" else "site.no"
+  def booleanCYAVal(value: Boolean): String = if (value) "site.yes" else "site.no"
 
   val loanDetails: LoanDetails = LoanDetails(Some(BigDecimal(10.00)), Some(BigDecimal(20.57)))
 
@@ -145,18 +158,21 @@ object SampleData {
     .setOrException(PaymentValueAndDatePage(0), paymentDetails)
 
   val sampleMemberJourneyDataEvent23: UserAnswers = UserAnswers()
+    .setOrException(TaxYearPage, TaxYear("2022"))
     .setOrException(MembersDetailsPage(Event23, 0), memberDetails)
     .setOrException(ChooseTaxYearPage(Event23, 0), ChooseTaxYear("2015"))
     .setOrException(TotalPensionAmountsPage(Event23, 0), BigDecimal(1234.56))
 
   val sampleMemberJourneyDataEvent22: UserAnswers = UserAnswers()
+    .setOrException(TaxYearPage, TaxYear("2022"))
     .setOrException(MembersDetailsPage(Event22, 0), memberDetails)
     .setOrException(ChooseTaxYearPage(Event22, 0), ChooseTaxYear("2018"))
     .setOrException(TotalPensionAmountsPage(Event22, 0), BigDecimal(999.11))
 
   val sampleMemberJourneyDataEvent6: UserAnswers = UserAnswers()
+    .setOrException(TaxYearPage, TaxYear("2022"))
     .setOrException(MembersDetailsPage(Event6, 0), memberDetails)
-    .setOrException(TypeOfProtectionPage(Event6, 0), TypeOfProtection.EnhancedLifetimeAllowance)
+    .setOrException(Event6TypeOfProtectionPage(Event6, 0), Event6TypeOfProtection.EnhancedLifetimeAllowance)
     .setOrException(InputProtectionTypePage(Event6, 0), "1234567A")
     .setOrException(AmountCrystallisedAndDatePage(Event6, 0), crystallisedDetails)
 
@@ -165,6 +181,29 @@ object SampleData {
     .setOrException(MembersDetailsPage(Event2, 0, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY), memberDetails)
     .setOrException(AmountPaidPage(0, Event2), BigDecimal(999.11))
     .setOrException(DatePaidPage(0, Event2), datePaid)
+
+  val sampleMemberJourneyDataEvent7: UserAnswers = UserAnswers()
+    .setOrException(TaxYearPage, TaxYear("2022"))
+    .setOrException(MembersDetailsPage(Event7, 0), memberDetails)
+    .setOrException(LumpSumAmountPage(0), lumpSumAmount)
+    .setOrException(CrystallisedAmountPage(0), crystallisedAmount)
+    .setOrException(PaymentDatePage(0),event7PaymentDate)
+
+
+  val sampleMemberJourneyDataEvent8: UserAnswers = UserAnswers()
+    .setOrException(TaxYearPage, TaxYear("2022"))
+    .setOrException(MembersDetailsPage(Event8, 0), memberDetails)
+    .setOrException(Event8TypeOfProtectionPage(Event8, 0), Event8TypeOfProtection.PrimaryProtection)
+    .setOrException(TypeOfProtectionReferencePage(Event8, 0), "1234567A")
+    .setOrException(LumpSumAmountAndDatePage(Event8, 0), lumpSumDetails)
+
+  val sampleMemberJourneyDataEvent8A: UserAnswers = UserAnswers()
+    .setOrException(TaxYearPage, TaxYear("2022"))
+    .setOrException(MembersDetailsPage(Event8A, 0), memberDetails)
+    .setOrException(PaymentTypePage(Event8A, 0), PaymentType.PaymentOfAStandAloneLumpSum)
+    .setOrException(Event8TypeOfProtectionPage(Event8A, 0), Event8TypeOfProtection.PrimaryProtection)
+    .setOrException(TypeOfProtectionReferencePage(Event8A, 0), "1234567A")
+    .setOrException(LumpSumAmountAndDatePage(Event8A, 0), lumpSumDetails)
 
   def sampleTwoMemberJourneyData(eventType: EventType): UserAnswers =
     UserAnswers()

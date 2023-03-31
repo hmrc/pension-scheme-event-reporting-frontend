@@ -34,12 +34,9 @@ case class Event13CheckYourAnswersPage() extends CheckAnswersPage {
 object Event13CheckYourAnswersPage {
 
   def waypointFromString(s: String): Option[Waypoint] = {
-    val pattern = """event-13-check-answers"""
     s match {
-      case x if x == pattern =>
-        Some(Event13CheckYourAnswersPage().waypoint)
-      case _ =>
-        None
+      case "event-13-check-answers" => Some(Event13CheckYourAnswersPage().waypoint)
+      case _ => None
     }
   }
 }

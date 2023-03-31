@@ -23,7 +23,7 @@ import forms.mappings.Formatters
 import models.TaxYear.getSelectedTaxYearAsString
 import models.common.MembersSummary
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event2, Event22, Event23, Event6}
+import models.enumeration.EventType.{Event2, Event22, Event23, Event6,  Event8, Event8A}
 import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.common.{MembersPage, MembersSummaryPage}
@@ -39,16 +39,16 @@ import javax.inject.Inject
 
 //scalastyle:off
 class MembersSummaryController @Inject()(
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  identify: IdentifierAction,
-                                                  getData: DataRetrievalAction,
-                                                  requireData: DataRequiredAction,
-                                                  userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                  formProvider: MembersSummaryFormProvider,
-                                                  view: MembersSummaryView,
-                                                  newView: MembersSummaryViewWithPagination,
-                                                  eventPaginationService: EventPaginationService
-                                                ) extends FrontendBaseController with I18nSupport with Formatters {
+                                          val controllerComponents: MessagesControllerComponents,
+                                          identify: IdentifierAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          userAnswersCacheConnector: UserAnswersCacheConnector,
+                                          formProvider: MembersSummaryFormProvider,
+                                          view: MembersSummaryView,
+                                          newView: MembersSummaryViewWithPagination,
+                                          eventPaginationService: EventPaginationService
+                                        ) extends FrontendBaseController with I18nSupport with Formatters {
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
@@ -91,11 +91,12 @@ class MembersSummaryController @Inject()(
           println(222222)
           println(222222)
           val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 0), value)
-          Redirect(MembersSummaryPage(eventType, 0).navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)}
+          Redirect(MembersSummaryPage(eventType, 0).navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)
+        }
       )
   }
 
-   private def getMappedMembers(userAnswers : UserAnswers, eventType: EventType) (implicit messages: Messages) : Seq[SummaryListRowWithTwoValues] = {
+  private def getMappedMembers(userAnswers: UserAnswers, eventType: EventType)(implicit messages: Messages): Seq[SummaryListRowWithTwoValues] = {
     userAnswers.getAll(MembersPage(eventType))(MembersSummary.readsMember(eventType)).zipWithIndex.map {
       case (memberSummary, index) =>
         SummaryListRowWithTwoValues(
@@ -109,6 +110,8 @@ class MembersSummaryController @Inject()(
                 href = eventType match {
                   case Event2 => controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(index).url
                   case Event6 => controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(index).url
+                  case Event8 => controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(index).url
+                  case Event8A => controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(index).url
                   case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
                   case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
                   case _ => "#"

@@ -17,12 +17,13 @@
 package base
 
 import controllers.actions._
-import models.UserAnswers
+import models.{TaxYear, UserAnswers}
 import models.requests.OptionalDataRequest
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
+import pages.TaxYearPage
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
@@ -44,6 +45,7 @@ trait SpecBase
 
   val userAnswersId: String = "id"
 
+
   def fakeRequest = FakeRequest("", "").withSession(
     SessionKeys.sessionId -> "sessionId"
   )
@@ -52,6 +54,7 @@ trait SpecBase
     RequiredDataRequest.optionalDataRequest(fakeRequest)
 
   def emptyUserAnswers: UserAnswers = UserAnswers()
+  def emptyUserAnswersWithTaxYear: UserAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022")).get
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 

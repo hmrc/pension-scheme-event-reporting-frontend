@@ -48,6 +48,38 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
+  implicit lazy val arbitraryPaymentTypeUserAnswersEntry: Arbitrary[(pages.event8a.PaymentTypePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[pages.event8a.PaymentTypePage.type]
+        value <- arbitrary[models.event8a.PaymentType].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryLumpSumAmountAndDateUserAnswersEntry: Arbitrary[(pages.event8.LumpSumAmountAndDatePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[pages.event8.LumpSumAmountAndDatePage.type]
+        value <- arbitrary[Int].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryTypeOfProtectionReferenceUserAnswersEntry: Arbitrary[(pages.event8.TypeOfProtectionReferencePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[pages.event8.TypeOfProtectionReferencePage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryTypeOfProtectionUserAnswersEntry: Arbitrary[(pages.event8.TypeOfProtectionPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[pages.event8.TypeOfProtectionPage.type]
+        value <- arbitrary[models.event8.TypeOfProtection].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryInputProtectionTypeUserAnswersEntry: Arbitrary[(InputProtectionTypePage.type, JsValue)] =
     Arbitrary {
       for {
@@ -83,7 +115,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryTaxYearUserAnswersEntry: Arbitrary[(pages.TaxYearPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.TaxYearPage.type]
+        page <- arbitrary[pages.TaxYearPage.type]
         value <- arbitrary[models.TaxYear].map(Json.toJson(_))
       } yield (page, value)
     }

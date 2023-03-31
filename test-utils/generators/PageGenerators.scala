@@ -20,13 +20,13 @@ import models.Index
 import models.enumeration.AddressJourneyType
 import models.enumeration.EventType.Event1
 import org.scalacheck.Arbitrary
-import pages.{event13, _}
 import pages.common.MembersDetailsPage
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.event1.{employer, member}
 import pages.event13.SchemeStructurePage
 import pages.eventWindUp.SchemeWindUpDatePage
+import pages.{event13, _}
 
 trait PageGenerators {
 
@@ -35,6 +35,24 @@ trait PageGenerators {
 
   implicit lazy val arbitraryAmountPaidPage: Arbitrary[event2.AmountPaidPage.type] =
     Arbitrary(event2.AmountPaidPage)
+
+  implicit lazy val arbitraryCrystallisedAmountPage: Arbitrary[event7.CrystallisedAmountPage] =
+    Arbitrary(event7.CrystallisedAmountPage(Index(0)))
+
+  implicit lazy val arbitraryLumpSumAmountPage: Arbitrary[event7.LumpSumAmountPage] =
+    Arbitrary(event7.LumpSumAmountPage(Index(0)))
+
+  implicit lazy val arbitraryPaymentTypePage: Arbitrary[event8a.PaymentTypePage.type] =
+    Arbitrary(event8a.PaymentTypePage)
+
+  implicit lazy val arbitraryLumpSumAmountAndDatePage: Arbitrary[event8.LumpSumAmountAndDatePage.type] =
+    Arbitrary(event8.LumpSumAmountAndDatePage)
+
+  implicit lazy val arbitraryTypeOfProtectionReferencePage: Arbitrary[event8.TypeOfProtectionReferencePage.type] =
+    Arbitrary(event8.TypeOfProtectionReferencePage)
+
+  implicit lazy val arbitraryTypeOfProtectionPage: Arbitrary[event8.TypeOfProtectionPage.type] =
+    Arbitrary(event8.TypeOfProtectionPage)
 
   implicit lazy val arbitraryInputProtectionTypePage: Arbitrary[event6.InputProtectionTypePage.type] =
     Arbitrary(event6.InputProtectionTypePage)

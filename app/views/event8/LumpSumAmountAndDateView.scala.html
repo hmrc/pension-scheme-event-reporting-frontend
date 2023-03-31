@@ -1,0 +1,64 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.event8.routes
+@import viewmodels.InputWidth._
+@import models.enumeration.EventType
+
+@this(
+    layout: templates.SchemeLayout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukInput: GovukInput,
+    govukButton: GovukButton,
+    govukDateInput: GovukDateInput
+)
+
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages("lumpSumAmountAndDate.title"))) {
+
+    @formHelper(action = routes.LumpSumAmountAndDateController.onSubmit(waypoints, eventType, index), Symbol("autoComplete") -> "off") {
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("lumpSumDate" -> "lumpSumDate.day")))
+        }
+
+        <h1 class="govuk-heading-xl">@messages("lumpSumAmountAndDate.heading")</h1>
+
+        @govukInput(
+                InputViewModel(
+                    field = form("lumpSumAmount"),
+                    label = Label(content = Text(messages("lumpSumAmountAndDate.value.heading"))).withCssClass("govuk-label--m")
+                )
+                .withWidth(OneQuarter)
+                .withPrefix(PrefixOrSuffix(content = Text("£")))
+                .asNumeric()
+            )
+
+        @govukDateInput(
+            DateViewModel(
+                field  = form("lumpSumDate"),
+                legend = Legend(content = Text(messages("lumpSumAmountAndDate.date.heading"))).withCssClass("govuk-label--m")
+            )
+            .withHint(Hint(content = Text(messages("lumpSumAmountAndDate.date.hint"))))
+        )
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))
+        )
+    }
+}

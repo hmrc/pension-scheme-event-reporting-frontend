@@ -16,7 +16,6 @@
 
 package models
 
-import org.apache.commons.lang3.StringUtils
 import pages.TaxYearPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsString, Writes}
@@ -33,6 +32,7 @@ case class TaxYear(startYear: String) {
 object TaxYear extends Enumerable.Implicits {
   implicit val writes: Writes[TaxYear] = (yr: TaxYear) => JsString(yr.startYear.toString)
   private val numberOfYearsToShow = 7
+
   def values: Seq[TaxYear] = {
     yearRange(DateHelper.today).reverse
   }
@@ -63,7 +63,7 @@ object TaxYear extends Enumerable.Implicits {
   def getSelectedTaxYearAsString(userAnswers: UserAnswers): String = {
     userAnswers.get(TaxYearPage) match {
       case Some(taxYear) => s"${Integer.parseInt(taxYear.endYear.stripPrefix("TaxYear(").stripSuffix(")").trim)}"
-      case _ => StringUtils.EMPTY
+      case _ => throw new RuntimeException("Tax year unavailable")
     }
   }
 
