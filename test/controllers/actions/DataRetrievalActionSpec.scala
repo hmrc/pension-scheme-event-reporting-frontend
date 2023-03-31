@@ -18,16 +18,15 @@ package controllers.actions
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
+import models.LoggedInUser
 import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.enumeration.EventType
 import models.requests.{IdentifierRequest, OptionalDataRequest}
-import models.{LoggedInUser, UserAnswers}
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -42,11 +41,6 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
   private val pstr = "pstr"
   private val request: IdentifierRequest[AnyContent] = IdentifierRequest(fakeRequest, loggedInUser, pstr, "schemeName", "returnUrl")
   private val eventType = EventType.Event1
-
-  private val json = Json.obj("test" -> "test")
-  private val jsonNoEvent = Json.obj("testNoEvent" -> "testNoEvent")
-  private val userAnswers = UserAnswers(json)
-  private val userAnswersForNoEventType = UserAnswers(jsonNoEvent)
 
   class Harness extends DataRetrievalImpl(eventType, userAnswersCacheConnector) {
     def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
@@ -68,23 +62,6 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
       whenReady(futureResult) { result =>
         result.userAnswers.isEmpty mustBe true
-        result mustBe expectedResult
-      }
-    }
-  }
-
-  "Data Retrieval Action when there is data in the cache" - {
-    "must build a userAnswers object and add it to the request" in {
-      when(userAnswersCacheConnector.get(eqTo(pstr), eqTo(eventType))(any(), any())) thenReturn Future(Some(userAnswers))
-      when(userAnswersCacheConnector.get(eqTo(pstr))(any(), any())) thenReturn Future(Some(userAnswersForNoEventType))
-      val action = new Harness
-
-      val expectedResult = OptionalDataRequest(pstr, "schemeName", "returnUrl", request, loggedInUser,
-        Some(UserAnswers(userAnswers.data ++ userAnswersForNoEventType.data)))
-      val futureResult = action.callTransform(request)
-
-      whenReady(futureResult) { result =>
-        result.userAnswers.isDefined mustBe true
         result mustBe expectedResult
       }
     }

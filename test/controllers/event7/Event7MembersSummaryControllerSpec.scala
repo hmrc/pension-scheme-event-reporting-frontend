@@ -98,7 +98,7 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent7, waypoints, Event7, expectedSeq, "150.00", "")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent7, waypoints, Event7, expectedSeq, "150.00", "2023")(request, messages(application)).toString
         }
       }
 
@@ -107,7 +107,7 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
           .thenReturn(Future.successful(()))
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {
@@ -118,7 +118,7 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
           val updatedAnswers = emptyUserAnswers.set(MembersSummaryPage(Event7, 1), true).success.value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual MembersSummaryPage(Event7, 1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+          redirectLocation(result).value mustEqual MembersSummaryPage(Event7, 1).navigate(waypoints, emptyUserAnswersWithTaxYear, updatedAnswers).url
         }
       }
 
@@ -127,7 +127,7 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
           .thenReturn(Future.successful(()))
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {
@@ -140,7 +140,7 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event7, Nil, "0.00", "")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event7, Nil, "0.00", "2023")(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
         }
       }

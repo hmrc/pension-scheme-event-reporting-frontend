@@ -35,7 +35,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.{Message, SummaryListRowWithThreeValues}
 import views.html.event7.{Event7MembersSummaryView, Event7MembersSummaryViewWithPagination}
 
-import java.text.DecimalFormat
 import javax.inject.Inject
 //TODO refactor this to use reusable membersSummary again, removing duplication of code- if statement in the view
 //scalastyle:off

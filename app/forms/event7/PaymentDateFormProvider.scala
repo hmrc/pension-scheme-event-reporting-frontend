@@ -40,7 +40,7 @@ class PaymentDateFormProvider @Inject() extends Mappings with Transforms { // sc
     }
   }
 
-  def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[PaymentDate] =
+  def apply(max: LocalDate)(implicit messages: Messages): Form[PaymentDate] =
     Form(
       mapping("paymentDate" ->
         localDate(

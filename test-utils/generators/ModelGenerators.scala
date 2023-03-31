@@ -28,6 +28,16 @@ import scala.math.BigDecimal.RoundingMode
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryPaymentType: Arbitrary[event8a.PaymentType] =
+    Arbitrary {
+      Gen.oneOf(event8a.PaymentType.values.toSeq)
+    }
+
+  implicit lazy val arbitraryTypeOfProtection: Arbitrary[event8.TypeOfProtection] =
+    Arbitrary {
+      Gen.oneOf(event8.TypeOfProtection.values.toSeq)
+    }
+
   implicit lazy val arbitrarySchemeStructure: Arbitrary[event13.SchemeStructure] =
     Arbitrary {
       Gen.oneOf(event13.SchemeStructure.values.toSeq)

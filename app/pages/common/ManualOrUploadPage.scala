@@ -21,7 +21,7 @@ import models.UserAnswers
 import models.common.ManualOrUpload
 import models.common.ManualOrUpload.{FileUpload, Manual}
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event22, Event23, Event6}
+import models.enumeration.EventType.{Event1, Event22, Event23, Event6, Event8}
 import pages.event1.WhoReceivedUnauthPaymentPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
@@ -31,7 +31,7 @@ case class ManualOrUploadPage(eventType: EventType, index: Int) extends Question
 
   override def path: JsPath =
     eventType match {
-      case Event6 | Event22 | Event23 => MembersPage(eventType)(index) \ toString
+      case Event6 | Event8 | Event22 | Event23 => MembersPage(eventType)(index) \ toString
       case _ => MembersOrEmployersPage(eventType)(index) \ toString
     }
 

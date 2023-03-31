@@ -18,13 +18,11 @@ package controllers.event7
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import controllers.event6.AmountCrystallisedAndDateController.startOfCrystallisationDate
 import controllers.event7.PaymentDateController.paymentDateOpt
 import forms.event7.PaymentDateFormProvider
 import models.enumeration.EventType
 import models.event7.PaymentDate
 import models.{Index, Quarters, TaxYear, UserAnswers}
-import pages.event6.AmountCrystallisedAndDatePage
 import pages.event7.PaymentDatePage
 import pages.{TaxYearPage, Waypoints}
 import play.api.data.Form
@@ -48,7 +46,6 @@ class PaymentDateController @Inject()(val controllerComponents: MessagesControll
   private def form(startDate: LocalDate)(implicit messages: Messages): Form[PaymentDate] = {
     val endDate = Quarters.getQuarter(startDate).endDate
     formProvider(
-      startDate,
       endDate
     )
   }

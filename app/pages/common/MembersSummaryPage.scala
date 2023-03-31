@@ -16,9 +16,9 @@
 
 package pages.common
 
-import models.{Index, UserAnswers}
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23, Event6, Event7}
+import models.enumeration.EventType.{Event22, Event23, Event6, Event7, Event8, Event8A}
+import models.{Index, UserAnswers}
 import pages.event7.Event7MembersPage
 import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
@@ -31,19 +31,21 @@ case class MembersSummaryPage(eventType: EventType, pageNumber: Index) extends Q
   override def route(waypoints: Waypoints): Call = eventType match {
     case Event7 => controllers.event7.routes.Event7MembersSummaryController.onPageLoad(waypoints)
     case _ => controllers.common.routes.MembersSummaryController.onPageLoad(waypoints, eventType)
-
   }
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     (eventType, answers.get(MembersSummaryPage(eventType, pageNumber))) match {
       case (Event6, Some(true)) => MembersDetailsPage(Event6, answers.countAll(MembersPage(EventType.Event6)))
       case (Event7, Some(true)) => MembersDetailsPage(Event7, answers.countAll(Event7MembersPage(EventType.Event7)))
+      case (Event8, Some(true)) => MembersDetailsPage(Event8, answers.countAll(MembersPage(EventType.Event8)))
+      case (Event8A, Some(true)) => MembersDetailsPage(Event8A, answers.countAll(MembersPage(EventType.Event8A)))
       case (Event22, Some(true)) => ManualOrUploadPage(Event22, answers.countAll(MembersPage(EventType.Event22)))
       case (Event23, Some(true)) => ManualOrUploadPage(Event23, answers.countAll(MembersPage(EventType.Event23)))
       case _ => EventSummaryPage
     }
   }
 }
+
 object MembersSummaryPage {
   override def toString: String = "membersSummary"
 }
