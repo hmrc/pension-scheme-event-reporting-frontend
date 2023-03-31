@@ -19,7 +19,6 @@ package viewmodels.event7.checkAnswers
 import forms.mappings.Formatters
 import models.enumeration.EventType
 import models.{Index, UserAnswers}
-import pages.event6.AmountCrystallisedAndDatePage
 import pages.event7.PaymentDatePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages

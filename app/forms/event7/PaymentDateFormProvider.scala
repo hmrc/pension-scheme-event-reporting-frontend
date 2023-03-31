@@ -17,7 +17,6 @@
 package forms.event7
 
 import forms.mappings.{Mappings, Transforms}
-import models.event6.CrystallisedDetails
 import models.event7.PaymentDate
 import play.api.data.Form
 import play.api.data.Forms.mapping

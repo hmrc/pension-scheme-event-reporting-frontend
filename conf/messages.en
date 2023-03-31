@@ -941,6 +941,7 @@ typeOfProtection.title = What is the type of protection held for the crystallisa
 typeOfProtection.heading = What is the type of protection held for the crystallisation?
 typeOfProtection.p1 = This can be found on the member’s LTA certificate.
 typeOfProtection.enhancedLifetimeAllowance = Enhanced lifetime allowance
+typeOfProtection.primaryProtection = Primary protection
 typeOfProtection.enhancedProtection = Enhanced protection
 typeOfProtection.fixedProtection = Fixed protection
 typeOfProtection.fixedProtection2014 = Fixed protection 2014
