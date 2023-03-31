@@ -842,6 +842,15 @@ membersSummary.event8.table.header2 = National Insurance number
 membersSummary.event8.table.header3 = Lump sum
 membersSummary.event8.table.totalTitle = Total not required
 
+membersSummary.event8A.title = Event 8A: Stand-alone lump sum events reported in the tax year ending 5 April {0}
+membersSummary.event8A.heading = Event 8A: Stand-alone lump sum events reported in the tax year ending 5 April {0}
+membersSummary.event8A.error.required = Select yes if you want to add another entry
+membersSummary.event8A.yesno.legend = Do you want to add another entry for stand-alone lump sums?
+membersSummary.event8A.table.header1 = Member
+membersSummary.event8A.table.header2 = National Insurance number
+membersSummary.event8A.table.header3 = Lump sum
+membersSummary.event8A.table.totalTitle = Total not required
+
 membersSummary.event22.title = Annual allowance events reported in the tax year ending 5 April {0}
 membersSummary.event22.heading = Annual allowance events reported in the tax year ending 5 April {0}
 membersSummary.event22.error.required = Select yes if you want to add another annual allowance event
@@ -1000,6 +1009,16 @@ lumpSumAmountAndDate.date.error.outsideDateRanges = Enter a real date
 lumpSumAmountAndDate.date.error.outsideReportedYear = Date must be between {0} and {1}
 lumpSumAmountAndDate.date.change.hidden = the date of the lump sum payment
 lumpSumAmountAndDate.date.checkYourAnswersLabel = The date the payment was made
+
+paymentType.title = What is the lump sum payment type?
+paymentType.heading = What is the lump sum payment type?
+paymentType.paymentOfAStandAloneLumpSum = Payment of a stand-alone lump sum
+paymentType.paymentOfAStandAloneLumpSum.hint = The member had protected lump sum rights of more than £375,000 with either primary protection or enhanced protection.
+paymentType.paymentOfASchemeSpecificLumpSum = Payment of a scheme-specific lump sum
+paymentType.paymentOfASchemeSpecificLumpSum.hint = The lump sum is more than 7.5% of the lifetime allowance.
+paymentType.checkYourAnswersLabel = Lump sum type
+paymentType.error.required = Select the type of lump sum payment
+paymentType.change.hidden = the payment type
 
 schemeStructure.title = What is the new pension scheme structure?
 schemeStructure.heading = What is the new pension scheme structure?

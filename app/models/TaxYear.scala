@@ -16,7 +16,6 @@
 
 package models
 
-import org.apache.commons.lang3.StringUtils
 import pages.TaxYearPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsString, Writes}
@@ -64,7 +63,7 @@ object TaxYear extends Enumerable.Implicits {
   def getSelectedTaxYearAsString(userAnswers: UserAnswers): String = {
     userAnswers.get(TaxYearPage) match {
       case Some(taxYear) => s"${Integer.parseInt(taxYear.endYear.stripPrefix("TaxYear(").stripSuffix(")").trim)}"
-      case _ => StringUtils.EMPTY
+      case _ => throw new RuntimeException("Tax year unavailable")
     }
   }
 

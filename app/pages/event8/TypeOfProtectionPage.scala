@@ -19,9 +19,11 @@ package pages.event8
 import controllers.event8.routes
 import models.UserAnswers
 import models.enumeration.EventType
+import models.enumeration.EventType.{Event8, Event8A}
 import models.event8.TypeOfProtection
 import pages.common.MembersPage
-import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.event8a.Event8ACheckYourAnswersPage
+import pages.{JourneyRecoveryPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -29,12 +31,12 @@ import scala.util.{Success, Try}
 
 case class TypeOfProtectionPage(eventType: EventType, index: Int) extends QuestionPage[TypeOfProtection] {
 
-  override def path: JsPath = MembersPage(EventType.Event8)(index) \ toString
+  override def path: JsPath = MembersPage(eventType)(index) \ toString
 
   override def toString: String = "typeOfProtection"
 
   override def route(waypoints: Waypoints): Call =
-    routes.TypeOfProtectionController.onPageLoad(waypoints, index)
+    routes.TypeOfProtectionController.onPageLoad(waypoints, eventType, index)
 
   override def cleanupBeforeSettingValue(value: Option[TypeOfProtection], userAnswers: UserAnswers): Try[UserAnswers] = {
     userAnswers.get(TypeOfProtectionPage(eventType, index)) match {
@@ -52,7 +54,12 @@ case class TypeOfProtectionPage(eventType: EventType, index: Int) extends Questi
     val updatedOptionSelected = updatedAnswers.get(TypeOfProtectionPage(eventType, index))
     val answerIsChanged = originalOptionSelected != updatedOptionSelected
 
-    if (answerIsChanged) TypeOfProtectionReferencePage(eventType, index) else Event8CheckYourAnswersPage(index)
-
+    (answerIsChanged, eventType) match {
+      case (true, Event8) => TypeOfProtectionReferencePage(eventType, index)
+      case (false, Event8) => Event8CheckYourAnswersPage(index)
+      case (true, Event8A) => TypeOfProtectionReferencePage(eventType, index)
+      case (false, Event8A) => Event8ACheckYourAnswersPage(index)
+      case _ => JourneyRecoveryPage
+    }
   }
 }

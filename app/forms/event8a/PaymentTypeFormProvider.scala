@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package forms.event8
+package forms.event8a
+
+import forms.mappings.Mappings
+import models.event8a.PaymentType
+import play.api.data.Form
 
 import javax.inject.Inject
 
-import forms.mappings.Mappings
-import play.api.data.Form
-import models.event8.TypeOfProtection
+class PaymentTypeFormProvider @Inject() extends Mappings {
 
-class TypeOfProtectionFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[TypeOfProtection] =
+  def apply(): Form[PaymentType] =
     Form(
-      "value" -> enumerable[TypeOfProtection]("typeOfProtection.error.required")
+      "value" -> enumerable[PaymentType]("paymentType.error.required")
     )
 }

@@ -43,8 +43,6 @@ class LumpSumAmountAndDateController @Inject()(val controllerComponents: Message
                                                view: LumpSumAmountAndDateView
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport { // scalastyle:off magic.number
 
-  private val eventType = EventType.Event8
-
   private def form(startDate: LocalDate, endDate: LocalDate)(implicit messages: Messages): Form[LumpSumDetails] = {
     formProvider(
       startDate,
@@ -52,7 +50,7 @@ class LumpSumAmountAndDateController @Inject()(val controllerComponents: Message
     )
   }
 
-  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+  def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val startDate = LocalDate.of(2006, Month.APRIL, 6)
     val endDate = endOfLumpSumDate(request.userAnswers.flatMap(_.get(TaxYearPage)))
 
@@ -60,16 +58,16 @@ class LumpSumAmountAndDateController @Inject()(val controllerComponents: Message
       case Some(value) => form(startDate = startDate, endDate).fill(value)
       case None => form(startDate, endDate)
     }
-    Ok(view(preparedForm, waypoints, index))
+    Ok(view(preparedForm, waypoints, eventType, index))
   }
 
-  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
+  def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
     val startDate = LocalDate.of(2006, Month.APRIL, 6)
     val endDate = endOfLumpSumDate(request.userAnswers.flatMap(_.get(TaxYearPage)))
 
     form(startDate, endDate).bindFromRequest().fold(
       formWithErrors => {
-        Future.successful(BadRequest(view(formWithErrors, waypoints, index)))
+        Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, index)))
       },
       value => {
         val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)

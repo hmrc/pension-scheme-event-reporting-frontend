@@ -18,7 +18,7 @@ package pages
 
 import data.SampleData
 import models.UserAnswers
-import models.enumeration.EventType.{Event1, Event22, Event23, Event6, Event8}
+import models.enumeration.EventType.{Event1, Event22, Event23, Event6, Event8, Event8A}
 import pages.behaviours.PageBehaviours
 import pages.common.{ManualOrUploadPage, MembersDetailsPage}
 
@@ -46,6 +46,13 @@ class EventSelectionPageSpec extends PageBehaviours {
         .setOrException(MembersDetailsPage(Event8, 0), SampleData.memberDetails)
         .setOrException(MembersDetailsPage(Event8, 1), SampleData.memberDetails)
       EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe MembersDetailsPage(Event8, 2).route(EmptyWaypoints)
+    }
+    "must get the correct page with correct index for event 8A" in {
+      val ua = UserAnswers()
+        .setOrException(EventSelectionPage, models.EventSelection.Event8A)
+        .setOrException(MembersDetailsPage(Event8A, 0), SampleData.memberDetails)
+        .setOrException(MembersDetailsPage(Event8A, 1), SampleData.memberDetails)
+      EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe MembersDetailsPage(Event8A, 2).route(EmptyWaypoints)
     }
     "must get the correct page with correct index for event 22" in {
       val ua = UserAnswers()

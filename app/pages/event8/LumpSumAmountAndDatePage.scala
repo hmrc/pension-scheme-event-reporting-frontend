@@ -21,19 +21,21 @@ import models.UserAnswers
 import models.enumeration.EventType
 import models.event8.LumpSumDetails
 import pages.common.MembersPage
+import pages.event8a.Event8ACheckYourAnswersPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class LumpSumAmountAndDatePage(eventType: EventType, index: Int) extends QuestionPage[LumpSumDetails] {
 
-  override def path: JsPath = MembersPage(EventType.Event8)(index) \ LumpSumAmountAndDatePage.toString
+  override def path: JsPath = MembersPage(eventType)(index) \ LumpSumAmountAndDatePage.toString
 
   override def route(waypoints: Waypoints): Call =
-    routes.LumpSumAmountAndDateController.onPageLoad(waypoints, index)
+    routes.LumpSumAmountAndDateController.onPageLoad(waypoints, eventType, index)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    Event8CheckYourAnswersPage(index)
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    if (eventType == EventType.Event8) Event8CheckYourAnswersPage(index) else Event8ACheckYourAnswersPage(index)
+  }
 }
 
 object LumpSumAmountAndDatePage {

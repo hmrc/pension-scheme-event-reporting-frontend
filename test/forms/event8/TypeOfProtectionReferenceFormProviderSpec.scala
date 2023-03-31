@@ -27,11 +27,11 @@ class TypeOfProtectionReferenceFormProviderSpec extends StringFieldBehaviours wi
   private val maxLength: Int = 15
 
   "TypeOfProtectionReferenceFormProviderSpec for protection type" - {
-    testInputProtectionTypeFormProvider("primaryProtection")
-    testInputProtectionTypeFormProvider("enhancedProtection")
+    testTypeOfProtectionReferenceFormProvider("primaryProtection")
+    testTypeOfProtectionReferenceFormProvider("enhancedProtection")
   }
 
-  private def testInputProtectionTypeFormProvider(protectionType: String): Unit = {
+  private def testTypeOfProtectionReferenceFormProvider(protectionType: String): Unit = {
 
     s".value for protectionType $protectionType" - {
 

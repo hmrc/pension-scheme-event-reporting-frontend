@@ -14,9 +14,8 @@
  * limitations under the License.
  *@
 
-@import models.event8.TypeOfProtection
-@import controllers.event8.routes
-@import models.enumeration.EventType
+@import models.event8a.PaymentType
+@import controllers.event8a.routes
 
 @this(
     layout: templates.SchemeLayout,
@@ -26,11 +25,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("event8.typeOfProtection.title"))) {
+@layout(pageTitle = title(form, messages("paymentType.title"))) {
 
-    @formHelper(action = routes.TypeOfProtectionController.onSubmit(waypoints, eventType, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.PaymentTypeController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
@@ -39,8 +38,8 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("event8.typeOfProtection.heading")).asPageHeading(),
-                items  = TypeOfProtection.options
+                legend = LegendViewModel(messages("paymentType.heading")).asPageHeading(),
+                items  = PaymentType.options
             )
         )
 

@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package forms.event8
+package pages.event8a
 
-import javax.inject.Inject
+import models.enumeration.EventType.Event8A
+import models.event8a.PaymentType
+import pages.behaviours.PageBehaviours
 
-import forms.mappings.Mappings
-import play.api.data.Form
-import models.event8.TypeOfProtection
+class PaymentTypeSpec extends PageBehaviours {
 
-class TypeOfProtectionFormProvider @Inject() extends Mappings {
+  "PaymentTypePage" - {
 
-  def apply(): Form[TypeOfProtection] =
-    Form(
-      "value" -> enumerable[TypeOfProtection]("typeOfProtection.error.required")
-    )
+    beRetrievable[PaymentType](PaymentTypePage(Event8A, 0))
+
+    beSettable[PaymentType](PaymentTypePage(Event8A, 0))
+
+    beRemovable[PaymentType](PaymentTypePage(Event8A, 0))
+  }
 }

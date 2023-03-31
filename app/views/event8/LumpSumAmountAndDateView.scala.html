@@ -16,6 +16,7 @@
 
 @import controllers.event8.routes
 @import viewmodels.InputWidth._
+@import models.enumeration.EventType
 
 @this(
     layout: templates.SchemeLayout,
@@ -26,11 +27,11 @@
     govukDateInput: GovukDateInput
 )
 
-@(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("lumpSumAmountAndDate.title"))) {
 
-    @formHelper(action = routes.LumpSumAmountAndDateController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.LumpSumAmountAndDateController.onSubmit(waypoints, eventType, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("lumpSumDate" -> "lumpSumDate.day")))

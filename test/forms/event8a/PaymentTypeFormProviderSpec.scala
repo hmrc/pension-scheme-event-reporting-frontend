@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package forms.event8
+package forms.event8a
 
 import forms.behaviours.OptionFieldBehaviours
-import models.event8.TypeOfProtection
+import models.event8a.PaymentType
 import play.api.data.FormError
 
-class TypeOfProtectionFormProviderSpec extends OptionFieldBehaviours {
+class PaymentTypeFormProviderSpec extends OptionFieldBehaviours {
 
-  private val form = new TypeOfProtectionFormProvider()()
+  private val form = new PaymentTypeFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "typeOfProtection.error.required"
+    val requiredKey = "paymentType.error.required"
 
-    behave like optionsField[TypeOfProtection](
+    behave like optionsField[PaymentType](
       form,
       fieldName,
-      validValues  = TypeOfProtection.values,
+      validValues = PaymentType.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

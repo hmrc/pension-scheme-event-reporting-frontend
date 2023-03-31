@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event8.LumpSumAmountAndDateFormProvider
 import models.UserAnswers
-import models.enumeration.EventType.Event8
+import models.enumeration.EventType.{Event8, Event8A}
 import models.event8.LumpSumDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -47,11 +47,16 @@ class LumpSumAmountAndDateControllerSpec extends SpecBase with BeforeAndAfterEac
   private val formProvider = new LumpSumAmountAndDateFormProvider()
   private val form = formProvider(stubMin, stubMax)
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val eventType = Event8
+  private val event8 = Event8
+  private val event8a = Event8A
 
-  private def getRoute: String = routes.LumpSumAmountAndDateController.onPageLoad(waypoints, 0).url
+  private def getRouteEvent8: String = routes.LumpSumAmountAndDateController.onPageLoad(waypoints, event8, 0).url
 
-  private def postRoute: String = routes.LumpSumAmountAndDateController.onSubmit(waypoints, 0).url
+  private def postRouteEvent8: String = routes.LumpSumAmountAndDateController.onSubmit(waypoints, event8, 0).url
+
+  private def getRouteEvent8A: String = routes.LumpSumAmountAndDateController.onPageLoad(waypoints, event8a, 0).url
+
+  private def postRouteEvent8A: String = routes.LumpSumAmountAndDateController.onSubmit(waypoints, event8a, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -66,37 +71,37 @@ class LumpSumAmountAndDateControllerSpec extends SpecBase with BeforeAndAfterEac
     reset(mockUserAnswersCacheConnector)
   }
 
-  "LumpSumAmountAndDate Controller" - {
+  "LumpSumAmountAndDate Controller for Event 8" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, getRoute)
+        val request = FakeRequest(GET, getRouteEvent8)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[LumpSumAmountAndDateView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, event8, 0)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = UserAnswers().set(LumpSumAmountAndDatePage(eventType, 0), validValue).success.value
+      val userAnswers = UserAnswers().set(LumpSumAmountAndDatePage(event8, 0), validValue).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, getRoute)
+        val request = FakeRequest(GET, getRouteEvent8)
 
         val view = application.injector.instanceOf[LumpSumAmountAndDateView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, event8, 0)(request, messages(application)).toString
       }
     }
 
@@ -110,13 +115,13 @@ class LumpSumAmountAndDateControllerSpec extends SpecBase with BeforeAndAfterEac
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(lumpSumDetails("1000.00", Some(validDate)): _*)
+          FakeRequest(POST, postRouteEvent8).withFormUrlEncodedBody(lumpSumDetails("1000.00", Some(validDate)): _*)
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(LumpSumAmountAndDatePage(eventType, 0), validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(LumpSumAmountAndDatePage(event8, 0), validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual LumpSumAmountAndDatePage(eventType, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual LumpSumAmountAndDatePage(event8, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -128,7 +133,7 @@ class LumpSumAmountAndDateControllerSpec extends SpecBase with BeforeAndAfterEac
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
+          FakeRequest(POST, postRouteEvent8).withFormUrlEncodedBody(("value", "invalid"))
 
         val view = application.injector.instanceOf[LumpSumAmountAndDateView]
         val boundForm = form.bind(Map("value" -> "invalid"))
@@ -136,7 +141,83 @@ class LumpSumAmountAndDateControllerSpec extends SpecBase with BeforeAndAfterEac
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, event8, 0)(request, messages(application)).toString
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
+  }
+
+  "LumpSumAmountAndDate Controller for Event 8A" - {
+
+    "must return OK and the correct view for a GET" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRouteEvent8A)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[LumpSumAmountAndDateView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form, waypoints, event8a, 0)(request, messages(application)).toString
+      }
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+      val userAnswers = UserAnswers().set(LumpSumAmountAndDatePage(event8a, 0), validValue).success.value
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRouteEvent8A)
+
+        val view = application.injector.instanceOf[LumpSumAmountAndDateView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, event8a, 0)(request, messages(application)).toString
+      }
+    }
+
+    "must save the answer and redirect to the next page when valid data is submitted" in {
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRouteEvent8A).withFormUrlEncodedBody(lumpSumDetails("1000.00", Some(validDate)): _*)
+
+        val result = route(application, request).value
+        val updatedAnswers = emptyUserAnswers.set(LumpSumAmountAndDatePage(event8a, 0), validValue).success.value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual LumpSumAmountAndDatePage(event8a, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+      }
+    }
+
+    "must return bad request when invalid data is submitted" in {
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRouteEvent8A).withFormUrlEncodedBody(("value", "invalid"))
+
+        val view = application.injector.instanceOf[LumpSumAmountAndDateView]
+        val boundForm = form.bind(Map("value" -> "invalid"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(boundForm, waypoints, event8a, 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
