@@ -27,12 +27,12 @@ class PaymentTypeFormProviderSpec extends OptionFieldBehaviours {
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "event8a.paymentType.error.required"
+    val requiredKey = "paymentType.error.required"
 
     behave like optionsField[PaymentType](
       form,
       fieldName,
-      validValues  = PaymentType.values,
+      validValues = PaymentType.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

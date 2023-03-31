@@ -37,10 +37,10 @@ object PaymentType extends Enumerable.Implicits {
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
       RadioItem(
-        content = Text(messages(s"event8a.paymentType.${value.toString}")),
+        content = Text(messages(s"paymentType.${value.toString}")),
         value = Some(value.toString),
         id = Some(s"value_$index"),
-        hint = Some(Hint(content = Text(messages(s"event8a.paymentType.${value.toString}.hint"))))
+        hint = Some(Hint(content = Text(messages(s"paymentType.${value.toString}.hint"))))
       )
   }
 

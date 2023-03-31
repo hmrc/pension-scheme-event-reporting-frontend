@@ -19,7 +19,9 @@ package pages.event8
 import controllers.event8.routes
 import models.UserAnswers
 import models.enumeration.EventType
+import models.enumeration.EventType.Event8
 import pages.common.MembersPage
+import pages.event8a.Event8ACheckYourAnswersPage
 import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -38,5 +40,5 @@ case class TypeOfProtectionReferencePage(eventType: EventType, index: Int) exten
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers,
                                            updatedAnswers: UserAnswers): Page =
-    Event8CheckYourAnswersPage(index)
+    if (eventType == Event8) Event8CheckYourAnswersPage(index) else Event8ACheckYourAnswersPage(index)
 }

@@ -19,8 +19,10 @@ package pages.event8
 import controllers.event8.routes
 import models.UserAnswers
 import models.enumeration.EventType
+import models.enumeration.EventType.{Event8, Event8A}
 import models.event8.TypeOfProtection
 import pages.common.MembersPage
+import pages.event8a.Event8ACheckYourAnswersPage
 import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -52,7 +54,11 @@ case class TypeOfProtectionPage(eventType: EventType, index: Int) extends Questi
     val updatedOptionSelected = updatedAnswers.get(TypeOfProtectionPage(eventType, index))
     val answerIsChanged = originalOptionSelected != updatedOptionSelected
 
-    if (answerIsChanged) TypeOfProtectionReferencePage(eventType, index) else Event8CheckYourAnswersPage(index)
-
+    (answerIsChanged, eventType) match {
+      case (true, Event8) => TypeOfProtectionReferencePage(eventType, index)
+      case (false, Event8) => Event8CheckYourAnswersPage(index)
+      case (true, Event8A) => TypeOfProtectionReferencePage(eventType, index)
+      case (false, Event8A) => Event8ACheckYourAnswersPage(index)
+    }
   }
 }

@@ -16,16 +16,16 @@
 
 package forms.event8a
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
-import play.api.data.Form
 import models.event8a.PaymentType
+import play.api.data.Form
+
+import javax.inject.Inject
 
 class PaymentTypeFormProvider @Inject() extends Mappings {
 
   def apply(): Form[PaymentType] =
     Form(
-      "value" -> enumerable[PaymentType]("event8a.paymentType.error.required")
+      "value" -> enumerable[PaymentType]("paymentType.error.required")
     )
 }

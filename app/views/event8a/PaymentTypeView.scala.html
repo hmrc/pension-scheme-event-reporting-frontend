@@ -27,7 +27,7 @@
 
 @(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("event8a.paymentType.title"))) {
+@layout(pageTitle = title(form, messages("paymentType.title"))) {
 
     @formHelper(action = routes.PaymentTypeController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
 
@@ -38,7 +38,7 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("event8a.paymentType.heading")).asPageHeading(),
+                legend = LegendViewModel(messages("paymentType.heading")).asPageHeading(),
                 items  = PaymentType.options
             )
         )
