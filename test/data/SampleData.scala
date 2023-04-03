@@ -21,7 +21,7 @@ import models.common.ManualOrUpload.Manual
 import models.common.{ChooseTaxYear, MembersDetails}
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event2, Event22, Event23, Event6,  Event7, Event8, Event8A}
+import models.enumeration.EventType.{Event1, Event2, Event22, Event23, Event6, Event7, Event8, Event8A}
 import models.event1.PaymentDetails
 import models.event1.PaymentNature.BenefitInKind
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
@@ -40,13 +40,11 @@ import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
 import pages.event2.{AmountPaidPage, DatePaidPage}
-import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage}
-import utils.{CountryOptions, Event2MemberPageNumbers, InputOption}
 import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage => Event6TypeOfProtectionPage}
 import pages.event7.{CrystallisedAmountPage, LumpSumAmountPage, PaymentDatePage}
 import pages.event8.{LumpSumAmountAndDatePage, TypeOfProtectionReferencePage, TypeOfProtectionPage => Event8TypeOfProtectionPage}
 import pages.event8a.PaymentTypePage
-import utils.{CountryOptions, InputOption}
+import utils.{CountryOptions, Event2MemberPageNumbers, InputOption}
 
 import java.time.LocalDate
 

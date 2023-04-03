@@ -44,7 +44,7 @@ class DatePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new DatePaidFormProvider()
-  private val form = formProvider("2021")
+  private val form = formProvider(2021)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 

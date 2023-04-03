@@ -22,7 +22,7 @@ import java.time.LocalDate
 
 class DatePaidFormProviderSpec extends DateBehaviours {
 
-  private val form = new DatePaidFormProvider()("2022")
+  private val form = new DatePaidFormProvider()(2022)
 
   ".value" - {
 
@@ -33,6 +33,6 @@ class DatePaidFormProviderSpec extends DateBehaviours {
 
     behave like dateField(form, "value", validData)
 
-    behave like mandatoryDateField(form, "value", "datePaid.event2.error.noDayMonthOrYear")
+    behave like mandatoryDateField(form, "value", "datePaid.event2.error.required.all")
   }
 }
