@@ -112,6 +112,7 @@ object SampleData {
   val lumpSumDetails = LumpSumDetails(223.11, LocalDate.of(2022, 3, 22))
 
   val datePaid: LocalDate = LocalDate.of(2022,5,19)
+  val amountPaid: BigDecimal = 999.11
 
   val event7PaymentDate: PaymentDate = PaymentDate(LocalDate.of(2022, 11, 8))
   val lumpSumAmount: BigDecimal = BigDecimal(100.00)
@@ -177,7 +178,7 @@ object SampleData {
   val sampleMemberJourneyDataEvent2: UserAnswers = UserAnswers()
     .setOrException(MembersDetailsPage(Event2, 0, Event2MemberPageNumbers.FIRST_PAGE_DECEASED), memberDetails)
     .setOrException(MembersDetailsPage(Event2, 0, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY), memberDetails)
-    .setOrException(AmountPaidPage(0, Event2), BigDecimal(999.11))
+    .setOrException(AmountPaidPage(0, Event2), amountPaid)
     .setOrException(DatePaidPage(0, Event2), datePaid)
 
   val sampleMemberJourneyDataEvent7: UserAnswers = UserAnswers()
