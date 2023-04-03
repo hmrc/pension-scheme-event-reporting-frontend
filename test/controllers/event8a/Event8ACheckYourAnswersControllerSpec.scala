@@ -174,13 +174,13 @@ object Event8ACheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "lumpSumAmountAndDate.value.checkYourAnswersLabel",
       "£223.11",
-      "/manage-pension-scheme-event-report/new-report/1/event-8a-lump-sum-details?waypoints=event-8A-check-answers-1",
+      "/manage-pension-scheme-event-report/new-report/1/event-8a-payment-details?waypoints=event-8A-check-answers-1",
       "lumpSumAmountAndDate.value.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "lumpSumAmountAndDate.date.checkYourAnswersLabel",
       "22 March 2022",
-      "/manage-pension-scheme-event-report/new-report/1/event-8a-lump-sum-details?waypoints=event-8A-check-answers-1",
+      "/manage-pension-scheme-event-report/new-report/1/event-8a-payment-details?waypoints=event-8A-check-answers-1",
       "lumpSumAmountAndDate.date.change.hidden"
     )
   )

@@ -249,8 +249,8 @@ POST       /new-report/:index/event-8a-type-of-protection                       
 GET        /new-report/:index/event-8a-protection-reference                       controllers.event8.TypeOfProtectionReferenceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8A, index: Index)
 POST       /new-report/:index/event-8a-protection-reference                       controllers.event8.TypeOfProtectionReferenceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8A, index: Index)
 
-GET        /new-report/:index/event-8a-lump-sum-details                           controllers.event8.LumpSumAmountAndDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8A, index: Index)
-POST       /new-report/:index/event-8a-lump-sum-details                           controllers.event8.LumpSumAmountAndDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8A, index: Index)
+GET        /new-report/:index/event-8a-payment-details                            controllers.event8.LumpSumAmountAndDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8A, index: Index)
+POST       /new-report/:index/event-8a-payment-details                            controllers.event8.LumpSumAmountAndDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8A, index: Index)
 
 GET         /new-report/:index/event-8a-check-your-answers                        controllers.event8a.Event8ACheckYourAnswersController.onPageLoad(index: Index)
 GET         /new-report/event-8a-click                                            controllers.event8a.Event8ACheckYourAnswersController.onClick
