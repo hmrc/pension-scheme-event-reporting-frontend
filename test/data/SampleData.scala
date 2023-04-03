@@ -176,6 +176,7 @@ object SampleData {
     .setOrException(AmountCrystallisedAndDatePage(Event6, 0), crystallisedDetails)
 
   val sampleMemberJourneyDataEvent2: UserAnswers = UserAnswers()
+    .setOrException(TaxYearPage, TaxYear("2022"))
     .setOrException(MembersDetailsPage(Event2, 0, Event2MemberPageNumbers.FIRST_PAGE_DECEASED), memberDetails)
     .setOrException(MembersDetailsPage(Event2, 0, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY), memberDetails)
     .setOrException(AmountPaidPage(0, Event2), amountPaid)
