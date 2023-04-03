@@ -46,16 +46,18 @@ class Event8ACheckYourAnswersController @Inject()(
                                                    connector: EventReportingConnector,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: CheckYourAnswersView
-                                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport { //scalastyle:off method.length
 
-  private def missingDataResult(userAnswers: UserAnswers, index:Index, waypoints: Waypoints) = {
+  private def missingDataResult(userAnswers: UserAnswers, index: Index, waypoints: Waypoints) = {
     def missingDataStandAloneLumpSumPage = {
       val typeOfProtection = pages.event8.TypeOfProtectionPage(Event8A, index)
       val typeOfProtectionRef = pages.event8.TypeOfProtectionReferencePage(Event8A, index)
+      val lumpSumDetails = pages.event8.LumpSumAmountAndDatePage(Event8A, index)
 
       val requiredData = Seq(
         typeOfProtection -> userAnswers.get(typeOfProtection),
-        typeOfProtectionRef -> userAnswers.get(typeOfProtectionRef)
+        typeOfProtectionRef -> userAnswers.get(typeOfProtectionRef),
+        lumpSumDetails -> userAnswers.get(lumpSumDetails)
       )
 
       requiredData.collectFirst {
@@ -64,13 +66,12 @@ class Event8ACheckYourAnswersController @Inject()(
     }
 
     def missingDataSchemeSpecificLumpSumPage = {
-      val page  = pages.event8.LumpSumAmountAndDatePage(Event8A, index)
+      val page = pages.event8.LumpSumAmountAndDatePage(Event8A, index)
       userAnswers.get(page) match {
         case None => Some(page)
         case _ => None
       }
     }
-
 
     val details = MembersDetailsPage(Event8A, index)
     val paymentType = pages.event8a.PaymentTypePage(Event8A, index)
@@ -87,12 +88,12 @@ class Event8ACheckYourAnswersController @Inject()(
 
     val finalPage = page match {
       case None => paymentTypeUserAnswers.flatMap({ paymentType =>
-          if(paymentType == PaymentType.PaymentOfAStandAloneLumpSum) {
-            missingDataStandAloneLumpSumPage
-          } else {
-            missingDataSchemeSpecificLumpSumPage
-          }
-        })
+        if (paymentType == PaymentType.PaymentOfAStandAloneLumpSum) {
+          missingDataStandAloneLumpSumPage
+        } else {
+          missingDataSchemeSpecificLumpSumPage
+        }
+      })
       case _ => page
     }
 
@@ -100,7 +101,6 @@ class Event8ACheckYourAnswersController @Inject()(
       Redirect(page.changeLink(waypoints, Event8ACheckYourAnswersPage(index)).route)
     }
   }
-
 
 
   def onPageLoad(index: Index): Action[AnyContent] =
