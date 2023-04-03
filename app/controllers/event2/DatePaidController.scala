@@ -31,6 +31,7 @@ import views.html.event2.DatePaidView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success, Try}
 
 class DatePaidController @Inject()(val controllerComponents: MessagesControllerComponents,
                                    identify: IdentifierAction,
@@ -42,9 +43,12 @@ class DatePaidController @Inject()(val controllerComponents: MessagesControllerC
 
   private val eventType = EventType.Event2
 
-  private def getTaxYear(userAnswers: Option[UserAnswers]) = {
+  private def getTaxYear(userAnswers: Option[UserAnswers]): Int = {
     userAnswers.flatMap(_.get(TaxYearPage)) match {
-      case Some(year) => year.startYear
+      case Some(year) => Try(year.startYear.toInt) match {
+        case Success(value) => value
+        case Failure(exception) => throw new RuntimeException("Tax year is not a number", exception)
+      }
       case _ => throw new RuntimeException("Tax year not entered")
     }
   }

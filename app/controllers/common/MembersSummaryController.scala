@@ -87,9 +87,6 @@ class MembersSummaryController @Inject()(
           BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear))
         },
         value => {
-          println(222222)
-          println(222222)
-          println(222222)
           val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 0), value)
           Redirect(MembersSummaryPage(eventType, 0).navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)
         }
