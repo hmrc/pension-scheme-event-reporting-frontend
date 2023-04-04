@@ -17,14 +17,14 @@
 @import controllers.event2.routes
 
 @this(
-    layout: templates.Layout,
+    layout: templates.SchemeLayout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukDateInput: GovukDateInput,
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, beneficiaryName: String, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, beneficiaryName: String, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("datePaid.event2.title"))) {
 
