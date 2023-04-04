@@ -39,8 +39,8 @@ case class MembersDetailsPage(eventType: EventType, index: Int) extends Question
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     (eventType, index) match {
       case (Event1, index) => DoYouHoldSignedMandatePage(index)
-      case (Event4, index) => ???
-      case (Event5, index) => ???
+      case (Event4, index) => pages.common.AmountPaidAndDatePage(eventType, index)
+      case (Event5, index) => pages.common.AmountPaidAndDatePage(eventType, index)
       case (Event6, index) => pages.event6.TypeOfProtectionPage(eventType, index)
       case (Event7, index) => LumpSumAmountPage(index)
       case (Event8, index) => pages.event8.TypeOfProtectionPage(eventType, index)
