@@ -28,10 +28,6 @@ class DatePaidFormProvider @Inject() extends Mappings {
   // scalastyle:off magic.number
   val startDate: LocalDate = LocalDate.of(2006, Month.APRIL, 6)
   val endDate: LocalDate = LocalDate.of(taxYear + 1, Month.APRIL, 5)
-    println(endDate)
-    println(endDate)
-    println(endDate)
-    println(endDate)
     Form(
       "value" -> localDate(
         invalidKey = "datePaid.event2.error.invalid",
