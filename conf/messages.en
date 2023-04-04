@@ -323,7 +323,7 @@ datePaid.event2.error.invalid = Enter a real date
 datePaid.event2.error.outside.taxYear = The date must be between 6 April {0} to 5 April {1}
 datePaid.event2.change.hidden = when the payment was made
 
-membersSummary.event2.title = Event report summary
+membersSummary.event2.title = Event 2: Lump sum death benefit payment events reported in the tax year ending 5 April {0}
 membersSummary.event2.heading = Event 2: Lump sum death benefit payment events reported in the tax year ending 5 April {0}
 membersSummary.event2.error.required = Select yes if you want to add another entry
 membersSummary.event2.yesno.legend = Do you want to add another lump sum death benefit entry?
