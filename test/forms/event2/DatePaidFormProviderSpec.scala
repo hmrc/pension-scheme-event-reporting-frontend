@@ -16,23 +16,45 @@
 
 package forms.event2
 
-import forms.behaviours.DateBehaviours
+import base.SpecBase
+import forms.behaviours.{BigDecimalFieldBehaviours, DateBehavioursTrait}
+import play.api.data.FormError
 
 import java.time.LocalDate
 
-class DatePaidFormProviderSpec extends DateBehaviours {
-
+class DatePaidFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours with DateBehavioursTrait  {
+  // scalastyle:off magic.number
   private val form = new DatePaidFormProvider()(2022)
+  private val stubMin: LocalDate = LocalDate.of(2006, 4, 6)
+  private val stubMax: LocalDate = LocalDate.of(2023, 4, 5)
+  
+  private val datePaidKey = "value"
+  "datePaid" - {
 
-  ".value" - {
-
-    val validData = datesBetween(
-      min = LocalDate.of(2022, 4, 6),
-      max = LocalDate.of(2023, 4, 5)
+    behave like mandatoryDateField(
+      form = form,
+      key = datePaidKey,
+      requiredAllKey = "datePaid.event2.error.required.all"
     )
 
-    behave like dateField(form, "value", validData)
+    behave like dateFieldYearNot4Digits(
+      form = form,
+      key = datePaidKey,
+      formError = FormError(datePaidKey, "datePaid.event2.error.invalid")
+    )
 
-    behave like mandatoryDateField(form, "value", "datePaid.event2.error.required.all")
+    behave like dateFieldWithMin(
+      form = form,
+      key = datePaidKey,
+      min = stubMin,
+      formError = FormError(datePaidKey, messages("datePaid.event2.error.outside.taxYear", stubMin.getYear.toString, stubMax.getYear.toString))
+    )
+
+    behave like dateFieldWithMax(
+      form = form,
+      key = datePaidKey,
+      max = stubMax,
+      formError = FormError(datePaidKey, messages("datePaid.event2.error.outside.taxYear", stubMin.getYear.toString, stubMax.getYear.toString))
+    )
   }
 }

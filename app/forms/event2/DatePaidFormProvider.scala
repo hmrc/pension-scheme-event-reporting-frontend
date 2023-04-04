@@ -16,14 +16,14 @@
 
 package forms.event2
 
-import forms.mappings.Mappings
+import forms.mappings.{Mappings, Transforms}
 import play.api.data.Form
 import play.api.i18n.Messages
 
 import java.time.{LocalDate, Month}
 import javax.inject.Inject
 
-class DatePaidFormProvider @Inject() extends Mappings {
+class DatePaidFormProvider @Inject() extends Mappings with Transforms {
   def apply(taxYear: Int)(implicit messages: Messages): Form[LocalDate] = {
   // scalastyle:off magic.number
   val startDate: LocalDate = LocalDate.of(2006, Month.APRIL, 6)
