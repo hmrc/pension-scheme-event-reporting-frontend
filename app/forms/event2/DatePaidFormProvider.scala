@@ -16,27 +16,32 @@
 
 package forms.event2
 
-import java.time.LocalDate
 import forms.mappings.Mappings
-import models.TaxYearValidationDetail
-
-import javax.inject.Inject
 import play.api.data.Form
+import play.api.i18n.Messages
+
+import java.time.{LocalDate, Month}
+import javax.inject.Inject
 
 class DatePaidFormProvider @Inject() extends Mappings {
-
-  def apply(taxYear: Int): Form[LocalDate] = {
+  def apply(taxYear: Int)(implicit messages: Messages): Form[LocalDate] = {
+  // scalastyle:off magic.number
+  val startDate: LocalDate = LocalDate.of(2006, Month.APRIL, 6)
+  val endDate: LocalDate = LocalDate.of(taxYear + 1, Month.APRIL, 5)
+    println(endDate)
+    println(endDate)
+    println(endDate)
+    println(endDate)
     Form(
       "value" -> localDate(
         invalidKey = "datePaid.event2.error.invalid",
         threeDateComponentsMissingKey = "datePaid.event2.error.required.all",
         twoDateComponentsMissingKey = "datePaid.event2.error.required.two",
-        oneDateComponentMissingKey = "datePaid.event2.error.required",
-        taxYearValidationDetail = Some(TaxYearValidationDetail(
-          invalidKey = "event13.changeDate.error.outside.taxYear",
-          taxYear = taxYear
-        ))
+        oneDateComponentMissingKey = "datePaid.event2.error.required"
+      ).verifying(
+        yearHas4Digits("datePaid.event2.error.invalid"),
+        minDate(startDate, messages("datePaid.event2.error.outside.taxYear", startDate.getYear.toString,(taxYear + 1).toString)),
+        maxDate(endDate, messages("datePaid.event2.error.outside.taxYear", startDate.getYear.toString,(taxYear + 1).toString)))
       )
-    )
   }
 }

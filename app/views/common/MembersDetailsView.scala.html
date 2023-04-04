@@ -29,7 +29,7 @@
 
 @(form: Form[_], waypoints: Waypoints, eventType: EventType, memberPageNo: Int, submitUrl: Call)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, if(eventType==Event2) messages("deceasedMembersDetails.title") else messages("membersDetails.title"))) {
+@layout(pageTitle = title(form, if(eventType==Event2) {if(memberPageNo == 1) messages("deceasedMembersDetails.title") else messages("beneficiaryDetails.title") } else messages("membersDetails.title"))) {
 
     @formHelper(action = submitUrl) {
 
