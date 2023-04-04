@@ -274,6 +274,12 @@ GET         /new-report/event-7-summary                                         
 GET         /new-report/event-7-summary/page/:pageNumber                          controllers.event7.Event7MembersSummaryController.onPageLoadWithPageNumber(waypoints: Waypoints ?= EmptyWaypoints, pageNumber: Index)
 POST        /new-report/event-7-summary                                           controllers.event7.Event7MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
+GET         /new-report/:index/event-4-member-details                             controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event4, index: Index)
+POST        /new-report/:index/event-4-member-details                             controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event4, index: Index)
+
+GET         /new-report/:index/event-5-member-details                             controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event5, index: Index)
+POST        /new-report/:index/event-5-member-details                             controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event5, index: Index)
+
 
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.

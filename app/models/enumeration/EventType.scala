@@ -26,6 +26,8 @@ object EventType extends Enumerable.Implicits {
   def fromEventSelection(es: EventSelection): Option[EventType] = {
     es match {
       case EventSelection.Event1 => Some(EventType.Event1)
+      case EventSelection.Event4 => Some(EventType.Event4)
+      case EventSelection.Event5 => Some(EventType.Event5)
       case EventSelection.Event6 => Some(EventType.Event6)
       case EventSelection.Event7 => Some(EventType.Event7)
       case EventSelection.Event8 => Some(EventType.Event8)

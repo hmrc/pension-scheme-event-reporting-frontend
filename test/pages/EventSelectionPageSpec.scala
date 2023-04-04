@@ -18,7 +18,7 @@ package pages
 
 import data.SampleData
 import models.UserAnswers
-import models.enumeration.EventType.{Event1, Event22, Event23, Event6, Event8, Event8A}
+import models.enumeration.EventType.{Event1, Event22, Event23, Event4, Event5, Event6, Event8, Event8A}
 import pages.behaviours.PageBehaviours
 import pages.common.{ManualOrUploadPage, MembersDetailsPage}
 
@@ -32,6 +32,20 @@ class EventSelectionPageSpec extends PageBehaviours {
         .setOrException(MembersDetailsPage(Event1, 0), SampleData.memberDetails)
         .setOrException(MembersDetailsPage(Event1, 1), SampleData.memberDetails)
       EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe ManualOrUploadPage(Event1, 2).route(EmptyWaypoints)
+    }
+    "must get the correct page with correct index for event 4" in {
+      val ua = UserAnswers()
+        .setOrException(EventSelectionPage, models.EventSelection.Event4)
+        .setOrException(MembersDetailsPage(Event4, 0), SampleData.memberDetails)
+        .setOrException(MembersDetailsPage(Event4, 1), SampleData.memberDetails)
+      EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe MembersDetailsPage(Event4, 2).route(EmptyWaypoints)
+    }
+    "must get the correct page with correct index for event 5" in {
+      val ua = UserAnswers()
+        .setOrException(EventSelectionPage, models.EventSelection.Event5)
+        .setOrException(MembersDetailsPage(Event5, 0), SampleData.memberDetails)
+        .setOrException(MembersDetailsPage(Event5, 1), SampleData.memberDetails)
+      EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe MembersDetailsPage(Event5, 2).route(EmptyWaypoints)
     }
     "must get the correct page with correct index for event 6" in {
       val ua = UserAnswers()
