@@ -29,20 +29,20 @@
 
 @(form: Form[_], waypoints: Waypoints, eventType: EventType, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"event$eventType.amountPaidAndDate.title"))) {
+@layout(pageTitle = title(form, messages(s"event$eventType.paymentDetails.title"))) {
 
-    @formHelper(action = routes.AmountPaidAndDateController.onSubmit(waypoints, eventType, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.PaymentDetailsController.onSubmit(waypoints, eventType, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("eventDate" -> "eventDate.day")))
         }
 
-        <h1 class="govuk-heading-xl">@messages(s"event$eventType.amountPaidAndDate.heading")</h1>
+        <h1 class="govuk-heading-xl">@messages(s"event$eventType.paymentDetails.heading")</h1>
 
         @govukInput(
                 InputViewModel(
                     field = form("amountPaid"),
-                    label = Label(content = Text(messages("amountPaidAndDate.value.heading")))
+                    label = Label(content = Text(messages("paymentDetails.value.heading")))
                 )
                 .withWidth(OneQuarter)
                 .withPrefix(PrefixOrSuffix(content = Text("£")))
@@ -52,9 +52,9 @@
         @govukDateInput(
             DateViewModel(
                 field  = form("eventDate"),
-                legend = Legend(content = Text(messages(s"event$eventType.amountPaidAndDate.date.heading")))
+                legend = Legend(content = Text(messages(s"event$eventType.paymentDetails.date.heading")))
             )
-            .withHint(Hint(content = Text(messages("amountPaidAndDate.date.hint"))))
+            .withHint(Hint(content = Text(messages("paymentDetails.date.hint"))))
         )
 
         @govukButton(

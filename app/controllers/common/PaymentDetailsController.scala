@@ -18,30 +18,30 @@ package controllers.common
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import controllers.common.AmountPaidAndDateController.endOfPaymentDate
-import forms.common.AmountPaidAndDateFormProvider
+import controllers.common.PaymentDetailsController.endOfPaymentDate
+import forms.common.PaymentDetailsFormProvider
 import models.common.PaymentDetails
 import models.enumeration.EventType
 import models.{Index, TaxYear, UserAnswers}
-import pages.common.AmountPaidAndDatePage
+import pages.common.PaymentDetailsPage
 import pages.{TaxYearPage, Waypoints}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.common.AmountPaidAndDateView
+import views.html.common.PaymentDetailsView
 
 import java.time.{LocalDate, Month}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AmountPaidAndDateController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                            identify: IdentifierAction,
-                                            getData: DataRetrievalAction,
-                                            userAnswersCacheConnector: UserAnswersCacheConnector,
-                                            formProvider: AmountPaidAndDateFormProvider,
-                                            view: AmountPaidAndDateView
-                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport { // scalastyle:off magic.number
+class PaymentDetailsController @Inject()(val controllerComponents: MessagesControllerComponents,
+                                         identify: IdentifierAction,
+                                         getData: DataRetrievalAction,
+                                         userAnswersCacheConnector: UserAnswersCacheConnector,
+                                         formProvider: PaymentDetailsFormProvider,
+                                         view: PaymentDetailsView
+                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport { // scalastyle:off magic.number
 
   private def form(startDate: LocalDate, endDate: LocalDate)(implicit messages: Messages): Form[PaymentDetails] = {
     formProvider(
@@ -54,7 +54,7 @@ class AmountPaidAndDateController @Inject()(val controllerComponents: MessagesCo
     val startDate = LocalDate.of(2006, Month.APRIL, 6)
     val endDate = endOfPaymentDate(request.userAnswers.flatMap(_.get(TaxYearPage)))
 
-    val preparedForm = request.userAnswers.flatMap(_.get(AmountPaidAndDatePage(eventType, index))) match {
+    val preparedForm = request.userAnswers.flatMap(_.get(PaymentDetailsPage(eventType, index))) match {
       case Some(value) => form(startDate = startDate, endDate).fill(value)
       case None => form(startDate, endDate)
     }
@@ -71,16 +71,16 @@ class AmountPaidAndDateController @Inject()(val controllerComponents: MessagesCo
       },
       value => {
         val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-        val updatedAnswers = originalUserAnswers.setOrException(AmountPaidAndDatePage(eventType, index), value)
+        val updatedAnswers = originalUserAnswers.setOrException(PaymentDetailsPage(eventType, index), value)
         userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-          Redirect(AmountPaidAndDatePage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+          Redirect(PaymentDetailsPage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
         }
       }
     )
   }
 }
 
-object AmountPaidAndDateController {
+object PaymentDetailsController {
   private def endOfPaymentDate(optTaxYear: Option[TaxYear]): LocalDate = optTaxYear match {
     case Some(value) =>
       val taxYear = value.endYear.toInt

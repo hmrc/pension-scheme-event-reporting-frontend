@@ -25,12 +25,12 @@ import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AmountPaidAndDatePage(eventType: EventType, index: Int) extends QuestionPage[PaymentDetails] {
+case class PaymentDetailsPage(eventType: EventType, index: Int) extends QuestionPage[PaymentDetails] {
 
-  override def path: JsPath = MembersPage(eventType)(index) \ AmountPaidAndDatePage.toString
+  override def path: JsPath = MembersPage(eventType)(index) \ PaymentDetailsPage.toString
 
   override def route(waypoints: Waypoints): Call = {
-    routes.AmountPaidAndDateController.onPageLoad(waypoints, eventType, index)
+    routes.PaymentDetailsController.onPageLoad(waypoints, eventType, index)
   }
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
@@ -39,6 +39,6 @@ case class AmountPaidAndDatePage(eventType: EventType, index: Int) extends Quest
   }
 }
 
-object LumpSumAmountAndDatePage {
-  override def toString: String = "amountPaidAndDate"
+object PaymentDetailsPage {
+  override def toString: String = "paymentDetails"
 }
