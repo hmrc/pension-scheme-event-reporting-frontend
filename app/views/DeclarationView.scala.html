@@ -21,19 +21,56 @@
 
 @(continueUrl: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("declaration.title"))) {
+@layout(pageTitle = titleNoForm(messages("confirmation.title"))) {
 
-<h1 class="govuk-heading-xl">@messages("declaration.heading")</h1>
+<div class="govuk-panel govuk-panel--confirmation">
+    <h1 class="govuk-panel__title">
+        @messages("confirmation.panel.h1")
+    </h1>
+    <div class="govuk-panel__body">
+        @messages("confirmation.panel.body")
+    </div>
+</div>
 
-<p class="govuk-body">@messages("declaration.p")</p>
+<p class="govuk-body">@messages("confirmation.p1")</p>
+
+<dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            @messages("confirmation.summaryList.label1")
+        </dt>
+        <dd class="govuk-summary-list__value">
+
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            @messages("confirmation.summaryList.label2")
+        </dt>
+        <dd class="govuk-summary-list__value">
+
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            @messages("confirmation.summaryList.label3")
+        </dt>
+        <dd class="govuk-summary-list__value">
+
+        </dd>
+    </div>
+</dl>
+
+<h1 class="govuk-heading-m">What to do next</h1>
+
+<p class="govuk-body">@messages("confirmation.p2")</p>
+<p class="govuk-body">@messages("confirmation.p3")</p>
 
 <ul class="govuk-list govuk-list--bullet">
-    <li>@messages("declaration.item1")</li>
-    <li>@messages("declaration.item2")</li>
+    <li>@messages("confirmation.li1")</li>
+    <li>@messages("confirmation.li2")</li>
+    <li>@messages("confirmation.li3")</li>
+    <li>@messages("confirmation.li4")</li>
 </ul>
-
-@govukButton(
-    ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit")).asLink(continueUrl)
-)
 
 }
