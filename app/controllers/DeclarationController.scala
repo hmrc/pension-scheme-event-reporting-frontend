@@ -20,11 +20,13 @@ import connectors.EventReportingConnector
 import controllers.actions._
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.DeclarationView
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
+import models.UserAnswers
 
 class DeclarationController @Inject()(
                                            override val messagesApi: MessagesApi,
@@ -35,6 +37,7 @@ class DeclarationController @Inject()(
                                            view: DeclarationView
                                          ) (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
+  import DeclarationController.testDataPsa
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
     implicit request =>
       Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
@@ -42,12 +45,48 @@ class DeclarationController @Inject()(
 
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
+
+      val testUserAnswers = UserAnswers(testDataPsa(request.pstr))
+
       request.userAnswers match {
-        case Some(ua) => erConnector.submitReport(request.pstr, ua).map {
+        //TODO: Replace test user answers above with ua when FE captures sufficient data
+        case Some(_) => erConnector.submitReport(request.pstr, testUserAnswers).map {
           _ =>
             Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
         }
         case None => throw new RuntimeException("No user answers found in DeclarationController - required for report submit")
       }
     }
+}
+object DeclarationController {
+
+  /**
+   * The frontend and backend changes for report submission are complete, however the correct data is not captured in the frontend yet
+   * Please see the To Do comments below for more info
+   *
+   * val currentUserAnswers = ua.data: {"taxYear":"2022","wantToSubmit":true}
+   *  */
+
+  private def testDataPsa(pstr: String): JsObject = Json.obj(
+    "declarationDetails" -> Json.obj(
+      "erDetails" -> Json.obj(
+        "pSTR" -> pstr,
+        //TODO: Do we capture report start date?
+        "reportStartDate" -> "2020-04-06",
+        //TODO: Do we capture report end date?
+        "reportEndDate" -> "2021-04-05"
+      ),
+      "erDeclarationDetails" -> Json.obj(
+        //TODO: Get PSA or PSP here from user answers
+        "submittedBy" -> "PSA",
+        //TODO: Get PSA or PSP ID from user answers
+        "submittedID" -> "A2345678",
+      ),
+      "psaDeclaration" -> Json.obj(
+        //TODO: Clarify what psaDeclaration1 and 2 correspond to. Do these relate to wantToSubmit and Declaration?
+        "psaDeclaration1" -> "Selected",
+        "psaDeclaration2" -> "Selected"
+      )
+    )
+  )
 }
