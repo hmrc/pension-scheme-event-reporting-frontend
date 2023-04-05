@@ -22,6 +22,9 @@ POST        /event-selection                                                    
 GET         /event-summary                                                        controllers.EventSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /event-summary                                                        controllers.EventSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
+GET         /new-report/want-to-submit                                            controllers.WantToSubmitController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/want-to-submit                                            controllers.WantToSubmitController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
 GET         /new-report/event-18-confirmation                                     controllers.event18.Event18ConfirmationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 GET         /new-report/event-18-on-click                                         controllers.event18.Event18ConfirmationController.onClick(waypoints: Waypoints ?= EmptyWaypoints)
 

@@ -67,6 +67,10 @@ eventSummary.checkYourAnswersLabel = Check your answers
 eventSummary.error.required = Select yes if you want to add another event
 eventSummary.change.hidden = EventSummary
 
+wantToSubmit.title =
+wantToSubmit.heading = Do you want to submit this event report to HMRC?
+wantToSubmit.error.required =
+
 eventReportingTile.heading = Event Reporting
 eventReportingTile.subHeading = Event report {0} to {1}:
 eventReportingTile.subHeading.param = in progress
