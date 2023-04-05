@@ -22,7 +22,7 @@
     govukSummaryList : GovukSummaryList,
 )
 
-@(continueUrl: String, yourPensionSchemesUrl: String, schemeName: String, dateSubmitted: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(continueUrl: String, email: String, yourPensionSchemesUrl: String, schemeName: String, taxYear: TaxYear, dateSubmitted: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("confirmation.title"))) {
 
@@ -33,7 +33,7 @@
 
 <p class="govuk-body">
     @messages("confirmation.p1")
-    <span class="govuk-!-font-weight-bold">Add Email Here</span>
+    <span class="govuk-!-font-weight-bold">email</span>
 </p>
 
 @govukSummaryList(SummaryList(
@@ -51,7 +51,7 @@
           content = messages("confirmation.summaryList.l2.taxYear")
         ),
         value = Value(
-          content = Text("Add Tax Year Here")
+          content = taxTear
         )
       ),
       SummaryListRow(
