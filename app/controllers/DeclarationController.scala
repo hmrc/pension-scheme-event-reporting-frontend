@@ -16,24 +16,38 @@
 
 package controllers
 
+import connectors.EventReportingConnector
 import controllers.actions._
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.DeclarationView
-
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class DeclarationController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            identify: IdentifierAction,
+                                           getData: DataRetrievalAction,
+                                           erConnector: EventReportingConnector,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: DeclarationView
-                                         ) extends FrontendBaseController with I18nSupport {
+                                         ) (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
     implicit request =>
-      Ok(view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
+      Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
   }
+
+  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
+    implicit request =>
+      request.userAnswers match {
+        case Some(ua) => erConnector.submitReport(request.pstr, ua).map {
+          _ =>
+            Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
+        }
+        case None => throw new RuntimeException("No user answers found in DeclarationController - required for report submit")
+      }
+    }
 }
