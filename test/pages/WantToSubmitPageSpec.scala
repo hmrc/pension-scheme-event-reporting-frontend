@@ -22,10 +22,10 @@ class WantToSubmitPageSpec extends PageBehaviours {
 
   "WantToSubmitPage" - {
 
-    beRetrievable[Boolean](WantToSubmitPage())
+    beRetrievable[Boolean](WantToSubmitPage)
 
-    beSettable[Boolean](WantToSubmitPage())
+    beSettable[Boolean](WantToSubmitPage)
 
-    beRemovable[Boolean](WantToSubmitPage())
+    beRemovable[Boolean](WantToSubmitPage)
   }
 }

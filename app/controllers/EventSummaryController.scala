@@ -95,14 +95,8 @@ class EventSummaryController @Inject()(
       form.bindFromRequest().fold(
         formWithErrors => summaryListRows(waypoints).map(rows => BadRequest(view(formWithErrors, waypoints, rows, selectedTaxYear))),
         value => {
-          val ua = UserAnswers().setOrException(WantToSubmitPage(), value)
-          Redirect(WantToSubmitPage().navigate(waypoints, ua, ua).route)
-
-          if (value) {
-            Future.successful(Redirect(EventSummaryPage.navigate(waypoints, ua, ua).route))
-          } else {
-            Future.successful(Redirect(WantToSubmitPage().navigate(waypoints, ua, ua).route))
-          }
+          val ua = UserAnswers().setOrException(EventSummaryPage, value)
+          Future.successful(Redirect(EventSummaryPage.navigate(waypoints, ua, ua).route))
         }
       )
   }

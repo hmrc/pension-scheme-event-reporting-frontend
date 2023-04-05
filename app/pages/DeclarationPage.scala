@@ -20,7 +20,7 @@ import controllers.routes
 import models.UserAnswers
 import play.api.mvc.Call
 
-case class DeclarationPage() extends Page {
+case object DeclarationPage extends Page {
 
   override def route(waypoints: Waypoints): Call =
     routes.DeclarationController.onPageLoad(waypoints)

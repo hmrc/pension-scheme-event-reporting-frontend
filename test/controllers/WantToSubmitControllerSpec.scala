@@ -27,8 +27,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.WantToSubmitView
 
-import scala.concurrent.Future
-
 class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
@@ -59,7 +57,7 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = UserAnswers().set(WantToSubmitPage(), true).success.value
+      val userAnswers = UserAnswers().set(WantToSubmitPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -85,10 +83,10 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(WantToSubmitPage(), true).success.value
+        val updatedAnswers = emptyUserAnswers.set(WantToSubmitPage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual WantToSubmitPage().navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual WantToSubmitPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
       }
     }
 

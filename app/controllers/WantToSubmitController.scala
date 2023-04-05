@@ -45,8 +45,8 @@ class WantToSubmitController @Inject()(
       form.bindFromRequest().fold(
         formWithErrors => BadRequest(view(formWithErrors, waypoints)),
         value => {
-          val ua: UserAnswers = UserAnswers().setOrException(WantToSubmitPage(), value)
-          Redirect(WantToSubmitPage().navigate(waypoints, ua, ua).route)
+          val ua: UserAnswers = UserAnswers().setOrException(WantToSubmitPage, value)
+          Redirect(WantToSubmitPage.navigate(waypoints, ua, ua).route)
         }
       )
   }

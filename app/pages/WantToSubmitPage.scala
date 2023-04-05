@@ -18,12 +18,10 @@ package pages
 
 import controllers.routes
 import models.UserAnswers
-import models.enumeration.EventType
-import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class WantToSubmitPage() extends QuestionPage[Boolean] {
+case object WantToSubmitPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
@@ -32,11 +30,10 @@ case class WantToSubmitPage() extends QuestionPage[Boolean] {
   override def route(waypoints: Waypoints): Call =
     routes.WantToSubmitController.onPageLoad(waypoints)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, ua: UserAnswers): Page = {
-    if () {
-      DeclarationPage()
-    } else {
-      WantToSubmitPage()
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    answers.get(WantToSubmitPage) match {
+      case Some(true) => DeclarationPage
+      case Some(false) => ???
     }
   }
 }
