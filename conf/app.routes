@@ -286,6 +286,12 @@ POST       /new-report/:index/event-4-payment-details                           
 GET        /new-report/:index/event-5-payment-details                             controllers.common.PaymentDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event5, index: Index)
 POST       /new-report/:index/event-5-payment-details                             controllers.common.PaymentDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event5, index: Index)
 
+GET         /new-report/:index/event-4-check-your-answers                        controllers.event4.Event4CheckYourAnswersController.onPageLoad(index: Index)
+GET         /new-report/event-4-click                                            controllers.event4.Event4CheckYourAnswersController.onClick
+
+GET         /new-report/:index/event-5-check-your-answers                        controllers.event5.Event5CheckYourAnswersController.onPageLoad(index: Index)
+GET         /new-report/event-5-click                                            controllers.event5.Event5CheckYourAnswersController.onClick
+
 
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.

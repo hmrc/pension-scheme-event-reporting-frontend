@@ -21,6 +21,8 @@ import models.UserAnswers
 import models.common.PaymentDetails
 import models.enumeration.EventType
 import models.enumeration.EventType.Event4
+import pages.event4.Event4CheckYourAnswersPage
+import pages.event5.Event5CheckYourAnswersPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -34,8 +36,7 @@ case class PaymentDetailsPage(eventType: EventType, index: Int) extends Question
   }
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    //if(eventType == Event4) Event4CheckYourAnswersPage(index) else Event5CheckYourAnswersPage(index)
-    ???
+    if (eventType == Event4) Event4CheckYourAnswersPage(index) else Event5CheckYourAnswersPage(index)
   }
 }
 
