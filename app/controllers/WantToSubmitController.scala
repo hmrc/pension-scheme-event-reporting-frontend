@@ -16,10 +16,9 @@
 
 package controllers
 
-import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.WantToSubmitFormProvider
-import models.enumeration.EventType
+import models.UserAnswers
 import pages.Waypoints
 import pages.WantToSubmitPage
 import play.api.i18n.I18nSupport
@@ -28,36 +27,27 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.WantToSubmitView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class WantToSubmitController @Inject()(
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  identify: IdentifierAction,
-                                                  getData: DataRetrievalAction,
-                                                  requireData: DataRequiredAction,
-                                                  userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                  formProvider: WantToSubmitFormProvider,
-                                                  view: WantToSubmitView
-                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                        val controllerComponents: MessagesControllerComponents,
+                                        identify: IdentifierAction,
+                                        formProvider: WantToSubmitFormProvider,
+                                        view: WantToSubmitView
+                                      ) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
-    val preparedForm = request.userAnswers.get(WantToSubmitPage()).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints))
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify { implicit request =>
+    Ok(view(form, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = identify {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints))),
+        formWithErrors => BadRequest(view(formWithErrors, waypoints)),
         value => {
-          val originalUserAnswers = request.userAnswers
-          val updatedAnswers = originalUserAnswers.setOrException(WantToSubmitPage(), value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(WantToSubmitPage().navigate(waypoints, originalUserAnswers, updatedAnswers).route)
-          }
+          val ua: UserAnswers = UserAnswers().setOrException(WantToSubmitPage(), value)
+          Redirect(WantToSubmitPage().navigate(waypoints, ua, ua).route)
         }
       )
   }
