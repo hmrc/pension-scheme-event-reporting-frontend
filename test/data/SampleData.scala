@@ -107,7 +107,7 @@ object SampleData {
   val memberDetails2: MembersDetails = MembersDetails("Steven", "Bloggs", "AA123456C")
 
   val paymentDetails: Event1PaymentDetails = Event1PaymentDetails(1000.00, LocalDate.of(2022, 11, 8))
-  val crystallisedDetails: CrystallisedDetails = CrystallisedDetails(857.00, LocalDate.of(2022, 11, 8))
+  val crystallisedDetails: CrystallisedDetails = CrystallisedDetails(857.12, LocalDate.of(2022, 11, 8))
   val lumpSumDetails = LumpSumDetails(223.11, LocalDate.of(2022, 3, 22))
   val paymentDetailsCommon: CommonPaymentDetails = CommonPaymentDetails(54.23, LocalDate.of(2022, 4, 5))
 

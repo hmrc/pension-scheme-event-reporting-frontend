@@ -824,6 +824,24 @@ membersSummary.table.header2 = National Insurance number
 membersSummary.table.header3 = Pension input amounts
 membersSummary.table.totalTitle = Total
 
+membersSummary.event4.title = Event 4: Payment of serious ill-health lump sum in the tax year ending 5 April {0}
+membersSummary.event4.heading = Event 4: Payment of serious ill-health lump sum in the tax year ending 5 April {0}
+membersSummary.event4.error.required = Select yes if you want to add another entry
+membersSummary.event4.yesno.legend = Do you want to add another entry for this payment of serious ill-health lump sum?
+membersSummary.event4.table.header1 = Member
+membersSummary.event4.table.header2 = National Insurance number
+membersSummary.event4.table.header3 = Amount paid
+membersSummary.event4.table.totalTitle = Total not required
+
+membersSummary.event5.title = Event 5: Cessation of ill-health pension in the tax year ending 5 April {0}
+membersSummary.event5.heading = Event 5: Cessation of ill-health pension in the tax year ending 5 April {0}
+membersSummary.event5.error.required = Select yes if you want to add another entry
+membersSummary.event5.yesno.legend = Do you want to add another entry for this cessation of ill-health pension?
+membersSummary.event5.table.header1 = Member
+membersSummary.event5.table.header2 = National Insurance number
+membersSummary.event5.table.header3 = Amount paid
+membersSummary.event5.table.totalTitle = Total not required
+
 membersSummary.event7.title = Event 7: Pension commencement lump sum (more than 25% of the fund where the member does not have primary/enhanced protection) in the tax year ending 5 April {0}
 membersSummary.event7.heading = Event 7: Pension commencement lump sum (more than 25% of the fund where the member does not have primary/enhanced protection) in the tax year ending 5 April {0}
 membersSummary.event7.error.required = Select yes if you want to add another entry

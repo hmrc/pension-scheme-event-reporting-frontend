@@ -19,9 +19,9 @@ package controllers.common
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import data.SampleData
-import data.SampleData.{sampleMemberJourneyDataEvent22, sampleMemberJourneyDataEvent23, sampleMemberJourneyDataEvent8, sampleMemberJourneyDataEvent8A}
+import data.SampleData._
 import forms.common.MembersSummaryFormProvider
-import models.enumeration.EventType.{Event22, Event23, Event8, Event8A}
+import models.enumeration.EventType.{Event22, Event23, Event4, Event5, Event6, Event8, Event8A}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -43,11 +43,26 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new MembersSummaryFormProvider()
+  private val formEvent4 = formProvider(Event4)
+  private val formEvent5 = formProvider(Event5)
+  private val formEvent6 = formProvider(Event6)
   private val formEvent8 = formProvider(Event8)
   private val formEvent8a = formProvider(Event8A)
   private val formEvent22 = formProvider(Event22)
   private val formEvent23 = formProvider(Event23)
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+
+  private def getRouteEvent4: String = routes.MembersSummaryController.onPageLoad(waypoints, Event4).url
+
+  private def postRouteEvent4: String = routes.MembersSummaryController.onSubmit(waypoints, Event4).url
+
+  private def getRouteEvent5: String = routes.MembersSummaryController.onPageLoad(waypoints, Event5).url
+
+  private def postRouteEvent5: String = routes.MembersSummaryController.onSubmit(waypoints, Event5).url
+
+  private def getRouteEvent6: String = routes.MembersSummaryController.onPageLoad(waypoints, Event6).url
+
+  private def postRouteEvent6: String = routes.MembersSummaryController.onSubmit(waypoints, Event6).url
 
   private def getRouteEvent8: String = routes.MembersSummaryController.onPageLoad(waypoints, Event8).url
 
@@ -75,6 +90,249 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
   }
 
   "AnnualAllowanceSummary Controller" - {
+
+    "Event 4" - {
+      "must return OK and the correct view for a GET" in {
+
+        val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent4and5(Event4))).build()
+
+        running(application) {
+          val request = FakeRequest(GET, getRouteEvent4)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[MembersSummaryView]
+
+          val expectedSeq =
+            Seq(
+              SummaryListRowWithTwoValues(
+                key = SampleData.memberDetails.fullName,
+                firstValue = SampleData.memberDetails.nino,
+                secondValue = SampleData.paymentDetailsCommon.amountPaid.toString(),
+                actions = Some(Actions(
+                  items = Seq(
+                    ActionItem(
+                      content = Text(Message("site.view")),
+                      href = controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url
+                    ),
+                    ActionItem(
+                      content = Text(Message("site.remove")),
+                      href = "#"
+                    )
+                  )
+                ))
+              ))
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(formEvent4, waypoints, Event4, expectedSeq, "54.23", "2023")(request, messages(application)).toString
+        }
+      }
+
+      "must save the answer and redirect to the next page when valid data is submitted" in {
+        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(()))
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, postRouteEvent4).withFormUrlEncodedBody(("value", "true"))
+
+          val result = route(application, request).value
+          val updatedAnswers = emptyUserAnswersWithTaxYear.set(MembersSummaryPage(Event4, 1), true).success.value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual MembersSummaryPage(Event4, 1).navigate(waypoints, emptyUserAnswersWithTaxYear, updatedAnswers).url
+        }
+      }
+
+      "must return bad request when invalid data is submitted" in {
+        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(()))
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, postRouteEvent4).withFormUrlEncodedBody(("value", "invalid"))
+
+          val view = application.injector.instanceOf[MembersSummaryView]
+          val boundForm = formEvent4.bind(Map("value" -> "invalid"))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event4, Nil, "0.00", "2023")(request, messages(application)).toString
+          verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
+        }
+      }
+    }
+
+    "Event 5" - {
+      "must return OK and the correct view for a GET" in {
+
+        val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent4and5(Event5))).build()
+
+        running(application) {
+          val request = FakeRequest(GET, getRouteEvent5)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[MembersSummaryView]
+
+          val expectedSeq =
+            Seq(
+              SummaryListRowWithTwoValues(
+                key = SampleData.memberDetails.fullName,
+                firstValue = SampleData.memberDetails.nino,
+                secondValue = SampleData.paymentDetailsCommon.amountPaid.toString(),
+                actions = Some(Actions(
+                  items = Seq(
+                    ActionItem(
+                      content = Text(Message("site.view")),
+                      href = controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(0).url
+                    ),
+                    ActionItem(
+                      content = Text(Message("site.remove")),
+                      href = "#"
+                    )
+                  )
+                ))
+              ))
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(formEvent5, waypoints, Event5, expectedSeq, "54.23", "2023")(request, messages(application)).toString
+        }
+      }
+
+      "must save the answer and redirect to the next page when valid data is submitted" in {
+        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(()))
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, postRouteEvent5).withFormUrlEncodedBody(("value", "true"))
+
+          val result = route(application, request).value
+          val updatedAnswers = emptyUserAnswersWithTaxYear.set(MembersSummaryPage(Event5, 1), true).success.value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual MembersSummaryPage(Event5, 1).navigate(waypoints, emptyUserAnswersWithTaxYear, updatedAnswers).url
+        }
+      }
+
+      "must return bad request when invalid data is submitted" in {
+        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(()))
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, postRouteEvent5).withFormUrlEncodedBody(("value", "invalid"))
+
+          val view = application.injector.instanceOf[MembersSummaryView]
+          val boundForm = formEvent5.bind(Map("value" -> "invalid"))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event5, Nil, "0.00", "2023")(request, messages(application)).toString
+          verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
+        }
+      }
+    }
+
+    "Event 6" - {
+      "must return OK and the correct view for a GET" in {
+
+        val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent6)).build()
+
+        running(application) {
+          val request = FakeRequest(GET, getRouteEvent6)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[MembersSummaryView]
+
+          val expectedSeq =
+            Seq(
+              SummaryListRowWithTwoValues(
+                key = SampleData.memberDetails.fullName,
+                firstValue = SampleData.memberDetails.nino,
+                secondValue = SampleData.crystallisedDetails.amountCrystallised.toString(),
+                actions = Some(Actions(
+                  items = Seq(
+                    ActionItem(
+                      content = Text(Message("site.view")),
+                      href = controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(0).url
+                    ),
+                    ActionItem(
+                      content = Text(Message("site.remove")),
+                      href = "#"
+                    )
+                  )
+                ))
+              ))
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(formEvent6, waypoints, Event6, expectedSeq, "857.12", "2023")(request, messages(application)).toString
+        }
+      }
+
+      "must save the answer and redirect to the next page when valid data is submitted" in {
+        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(()))
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, postRouteEvent6).withFormUrlEncodedBody(("value", "true"))
+
+          val result = route(application, request).value
+          val updatedAnswers = emptyUserAnswersWithTaxYear.set(MembersSummaryPage(Event6, 1), true).success.value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual MembersSummaryPage(Event6, 1).navigate(waypoints, emptyUserAnswersWithTaxYear, updatedAnswers).url
+        }
+      }
+
+      "must return bad request when invalid data is submitted" in {
+        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(()))
+
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, postRouteEvent6).withFormUrlEncodedBody(("value", "invalid"))
+
+          val view = application.injector.instanceOf[MembersSummaryView]
+          val boundForm = formEvent6.bind(Map("value" -> "invalid"))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event6, Nil, "0.00", "2023")(request, messages(application)).toString
+          verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
+        }
+      }
+    }
 
     "Event 8" - {
       "must return OK and the correct view for a GET" in {
