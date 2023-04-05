@@ -20,7 +20,9 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.WantToSubmitFormProvider
 import models.UserAnswers
-import org.mockito.Mockito.reset
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.{EmptyWaypoints, WantToSubmitPage}
@@ -29,6 +31,8 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.WantToSubmitView
+
+import scala.concurrent.Future
 
 class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
@@ -41,17 +45,15 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
   private def postRoute: String = routes.WantToSubmitController.onSubmit(waypoints).url
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
-
-  override def beforeEach: Unit = reset(mockUserAnswersCacheConnector)
+  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
 
   "WantToSubmit Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -68,7 +70,7 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val userAnswers = UserAnswers().set(WantToSubmitPage, true).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers), extraModules).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -83,6 +85,9 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
           .build()
@@ -96,10 +101,14 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual WantToSubmitPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
     "must return bad request when invalid data is submitted" in {
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
           .build()
@@ -115,6 +124,7 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
       }
     }
 

@@ -58,7 +58,6 @@ class DoYouHoldSignedMandateControllerSpec extends SpecBase with BeforeAndAfterE
 
   "DoYouHoldSignedMandate Controller" - {
 
-
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
@@ -74,7 +73,6 @@ class DoYouHoldSignedMandateControllerSpec extends SpecBase with BeforeAndAfterE
         contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
       }
     }
-
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 

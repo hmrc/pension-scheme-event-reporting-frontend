@@ -52,9 +52,10 @@ class WantToSubmitController @Inject()(
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(WantToSubmitPage, value)
           userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
-            value match {
-              case true => Redirect(WantToSubmitPage.navigate(waypoints, updatedAnswers, updatedAnswers).route)
-              case false => Redirect(request.returnUrl)
+            if (value) {
+              Redirect(WantToSubmitPage.navigate(waypoints, updatedAnswers, updatedAnswers).route)
+            } else {
+              Redirect(request.returnUrl)
             }
           }
         }
