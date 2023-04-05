@@ -25,6 +25,7 @@ import views.html.ReturnSubmittedView
 class ReturnSubmittedControllerSpec extends SpecBase {
 
   private val waypoints = EmptyWaypoints
+  private val yourPensionSchemesUrl: String = ""
 
   "Return Submitted Controller" - {
 
@@ -41,7 +42,8 @@ class ReturnSubmittedControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[ReturnSubmittedView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)(request, messages(application)).toString
+        contentAsString(result) mustEqual
+          view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url, yourPensionSchemesUrl)(request, messages(application)).toString
       }
     }
   }
