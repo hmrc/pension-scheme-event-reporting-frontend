@@ -71,9 +71,9 @@ object DeclarationController {
     "declarationDetails" -> Json.obj(
       "erDetails" -> Json.obj(
         "pSTR" -> pstr,
-        //TODO: Do we capture report start date?
+        //TODO: Report start date = tax year start date
         "reportStartDate" -> "2020-04-06",
-        //TODO: Do we capture report end date?
+        //TODO: Report end date = tax year end date
         "reportEndDate" -> "2021-04-05"
       ),
       "erDeclarationDetails" -> Json.obj(
@@ -83,7 +83,7 @@ object DeclarationController {
         "submittedID" -> "A2345678",
       ),
       "psaDeclaration" -> Json.obj(
-        //TODO: Clarify what psaDeclaration1 and 2 correspond to. Do these relate to wantToSubmit and Declaration?
+        //TODO: Relate to wantToSubmit and Declaration
         "psaDeclaration1" -> "Selected",
         "psaDeclaration2" -> "Selected"
       )
