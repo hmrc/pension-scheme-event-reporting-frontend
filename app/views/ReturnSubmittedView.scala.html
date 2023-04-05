@@ -19,7 +19,7 @@
     govukButton: GovukButton
 )
 
-@(continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(continueUrl: String, yourPensionSchemesUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("confirmation.title"))) {
 
@@ -68,9 +68,8 @@
 
 <ul class="govuk-list govuk-list--bullet">
     <li>@messages("confirmation.li1")</li>
-    <li>@messages("confirmation.li2")</li>
-    <li>@messages("confirmation.li3")</li>
-    <li>@messages("confirmation.li4")</li>
+    <li><a class="govuk-link" href="@yourPensionSchemesUrl">@messages("confirmation.li2")</a></li>
+    <li><a id="print-this-page-link" class="govuk-link" href="">@messages("confirmation.li3")</a></li>
 </ul>
 
 }

@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions._
 import pages.Waypoints
 import play.api.i18n.I18nSupport
@@ -28,10 +29,11 @@ import javax.inject.Inject
 class ReturnSubmittedController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         identify: IdentifierAction,
-                                        view: ReturnSubmittedView
+                                        view: ReturnSubmittedView,
+                                        config: FrontendAppConfig
                                       ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify { implicit request =>
-      Ok(view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
+      Ok(view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url, config.yourPensionSchemesUrl))
   }
 }
