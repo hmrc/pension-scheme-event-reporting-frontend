@@ -23,7 +23,7 @@ import models.TaxYear.getSelectedTaxYearAsString
 import models.UserAnswers
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event22, Event23}
-import pages.{EmptyWaypoints, EventSummaryPage, WantToSubmitPage, Waypoints, TaxYearPage}
+import pages.{EmptyWaypoints, EventSummaryPage, Waypoints, TaxYearPage}
 import models.enumeration.EventType.{Event18, Event6}
 import models.requests.DataRequest
 import play.api.Logger

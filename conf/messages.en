@@ -70,7 +70,7 @@ eventSummary.change.hidden = EventSummary
 
 wantToSubmit.title = Do you want to submit this event report to HMRC?
 wantToSubmit.heading = Do you want to submit this event report to HMRC?
-wantToSubmit.error.required = Select yes to submit another report
+wantToSubmit.error.required = Select yes to submit this report
 
 declaration.title = Declaration
 declaration.heading = Declaration

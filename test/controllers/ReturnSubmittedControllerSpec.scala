@@ -53,7 +53,7 @@ class ReturnSubmittedControllerSpec extends SpecBase {
 
         contentAsString(result) mustEqual
           view(
-            controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url,
+            routes.ReturnSubmittedController.onPageLoad(waypoints).url,
             yourPensionSchemesUrl,
             schemeName,
             taxYear,
