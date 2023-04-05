@@ -90,7 +90,7 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
     }
 
     "must return bad request when invalid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
@@ -108,12 +108,12 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never).save(any(), any())(any(), any())
       }
     }
 
     "must save the answer and redirect to next page on submit (when selecting YES)" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
@@ -127,13 +127,13 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
         val userAnswerUpdated = UserAnswers().setOrException(WantToSubmitPage, true)
 
         status(result) mustEqual SEE_OTHER
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
         redirectLocation(result).value mustEqual WantToSubmitPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).url
       }
     }
 
     "must save the answer and redirect to next page on submit (when selecting NO)" in {
-        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
           .thenReturn(Future.successful(()))
 
         val application =
@@ -142,20 +142,13 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
 
         running(application) {
           val request =
-            FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
+            FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "false"))
 
           val result = route(application, request).value
-
-        println("\n\n\n\n\n\n\n -----yyyyyyyyyyyyyyyy--------")
-
-        println(s"\n\n\n\n result = : ${result.value} \n\n\n")
-        println("\n\n\n\n\n\n\n ------qqqqqqqqqqqqq-------")
-
-        val x = redirectLocation(result)
-        println(s"x = ($x)")
+          UserAnswers().setOrException(WantToSubmitPage, false)
 
         status(result) mustEqual SEE_OTHER
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
         redirectLocation(result).value mustEqual request.returnUrl
       }
     }
