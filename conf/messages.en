@@ -80,7 +80,7 @@ declaration.item2 = you understand that if you have made a false statement in th
 confirmation.title = Return submitted
 confirmation.panel.h1 = Return submitted
 confirmation.panel.body = Event Report
-confirmation.p1 = We have sent a confirmation email to
+confirmation.p1 = We have sent a confirmation email to {0}
 confirmation.summaryList.label1 = Scheme
 confirmation.summaryList.label2 = Tax Year
 confirmation.summaryList.label3 = Date Submitted
@@ -88,7 +88,7 @@ confirmation.p2 = You must include the correct charge reference with any payment
 confirmation.p3 = You can:
 confirmation.li1 = view payments and charge references for your Event reports
 confirmation.li2 = view your other pension schemes
-confirmation.li3 = return to Smith Harper pension scheme
+confirmation.li3 = return to {0} pension scheme
 confirmation.li4 = print this page
 
 eventReportingTile.heading = Event Reporting

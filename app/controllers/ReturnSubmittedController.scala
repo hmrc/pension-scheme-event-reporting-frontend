@@ -18,22 +18,20 @@ package controllers
 
 import controllers.actions._
 import pages.Waypoints
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.DeclarationView
+import views.html.ReturnSubmittedView
 
 import javax.inject.Inject
 
-class DeclarationController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           identify: IdentifierAction,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: DeclarationView
-                                         ) extends FrontendBaseController with I18nSupport {
+class ReturnSubmittedController @Inject()(
+                                        val controllerComponents: MessagesControllerComponents,
+                                        identify: IdentifierAction,
+                                        view: ReturnSubmittedView
+                                      ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
-    implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify { implicit request =>
       Ok(view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
   }
 }

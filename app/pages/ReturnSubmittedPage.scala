@@ -18,13 +18,19 @@ package pages
 
 import controllers.routes
 import models.UserAnswers
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object DeclarationPage extends Page {
+case object ReturnSubmittedPage extends QuestionPage[Boolean] {
+
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "returnSubmitted"
 
   override def route(waypoints: Waypoints): Call =
-    routes.DeclarationController.onPageLoad(waypoints)
+    routes.ReturnSubmittedController.onPageLoad(waypoints)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     ReturnSubmittedPage
+    }
 }
