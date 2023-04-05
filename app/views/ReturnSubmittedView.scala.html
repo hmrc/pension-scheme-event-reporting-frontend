@@ -14,52 +14,82 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+
 @this(
     layout: templates.SchemeLayout,
-    govukButton: GovukButton
+    govukPanel : GovukPanel,
+    govukSummaryList : GovukSummaryList,
 )
 
 @(continueUrl: String, yourPensionSchemesUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("confirmation.title"))) {
 
-<div class="govuk-panel govuk-panel--confirmation">
-    <h1 class="govuk-panel__title">
-        @messages("confirmation.panel.h1")
-    </h1>
-    <div class="govuk-panel__body">
-        @messages("confirmation.panel.body")
-    </div>
-</div>
+@govukPanel(Panel(
+    title = messages("confirmation.panel.h1"),
+    content = messages("confirmation.panel.body")
+))
 
-<p class="govuk-body">@messages("confirmation.p1")</p>
+<p class="govuk-body">
+    @messages("confirmation.p1")
+    <span class="govuk-!-font-weight-bold">Add Email Here</span>
+</p>
 
-<dl class="govuk-summary-list">
-    <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-            @messages("confirmation.summaryList.label1")
-        </dt>
-        <dd class="govuk-summary-list__value">
-
-        </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-            @messages("confirmation.summaryList.label2")
-        </dt>
-        <dd class="govuk-summary-list__value">
-
-        </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-            @messages("confirmation.summaryList.label3")
-        </dt>
-        <dd class="govuk-summary-list__value">
-
-        </dd>
-    </div>
-</dl>
+@govukSummaryList(SummaryList(
+    rows = Seq(
+      SummaryListRow(
+        key = Key(
+          content = messages("confirmation.summaryList.l1.scheme")
+        ),
+        value = Value(
+          content = Text("Add Scheme Name Here")
+        ),
+        actions = Some(Actions(
+          items = Seq(
+            ActionItem(
+              href = "#",
+              content = Text("Change"),
+              visuallyHiddenText = Some("scheme name")
+            )
+          )
+        ))
+      ),
+      SummaryListRow(
+        key = Key(
+          content = messages("confirmation.summaryList.l2.taxYear")
+        ),
+        value = Value(
+          content = Text("Add Tax Year Here")
+        ),
+        actions = Some(Actions(
+          items = Seq(
+            ActionItem(
+              href = "#",
+              content = Text("Change"),
+              visuallyHiddenText = Some("tax year")
+            )
+          )
+        ))
+      ),
+      SummaryListRow(
+        key = Key(
+          content = messages("confirmation.summaryList.l3.dateSubmitted")
+        ),
+        value = Value(
+          content = Text("Add Date Submitted Here")
+        ),
+        actions = Some(Actions(
+          items = Seq(
+            ActionItem(
+              href = "#",
+              content = Text("Change"),
+              visuallyHiddenText = Some("date submitted")
+            )
+          )
+        ))
+      ),
+    )))
 
 <h2 class="govuk-heading-m">What to do next</h2>
 
