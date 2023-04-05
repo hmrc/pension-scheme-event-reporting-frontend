@@ -59,7 +59,7 @@ object MembersSummary {
 
   def memberValuePath(eventType: EventType): JsPath = eventType match {
     case Event4 => JsPath \ "paymentDetails" \ "amountPaid"
-    case Event5 => JsPath \ "paymentDetails" \ "amountPaid" //TODO: Change this to annualRate when PaymentDetails model is updated
+    case Event5 => JsPath \ "paymentDetails" \ "amountPaid"
     case Event6 => JsPath \ "AmountCrystallisedAndDate" \ "amountCrystallised"
     case Event8 => JsPath \ "lumpSumAmountAndDate" \ "lumpSumAmount"
     case Event8A => JsPath \ "lumpSumAmountAndDate" \ "lumpSumAmount"
