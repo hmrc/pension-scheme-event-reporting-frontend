@@ -17,7 +17,6 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.MinimalDetailsConnector
 import controllers.actions._
 import helpers.DateHelper
 import helpers.DateHelper.dateFormatter
@@ -28,7 +27,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ReturnSubmittedView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class ReturnSubmittedController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
@@ -36,13 +34,10 @@ class ReturnSubmittedController @Inject()(
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         view: ReturnSubmittedView,
-                                        minimalDetailsConnector: MinimalDetailsConnector,
                                         config: FrontendAppConfig
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                      ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) async { implicit request =>
-
-    val email = minimalDetailsConnector.getPSAEmail
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) { implicit request =>
 
     val schemeName = request.schemeName
 
@@ -54,8 +49,6 @@ class ReturnSubmittedController @Inject()(
     val dateHelper = new DateHelper
     val dateSubmitted: String = dateHelper.now.format(dateFormatter)
 
-    email.map( email =>
-      Ok(view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url, email, config.yourPensionSchemesUrl, schemeName, taxYear, dateSubmitted))
-    )
+      Ok(view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url, config.yourPensionSchemesUrl, schemeName, taxYear, dateSubmitted))
   }
 }
