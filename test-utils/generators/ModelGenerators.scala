@@ -28,6 +28,11 @@ import scala.math.BigDecimal.RoundingMode
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryReasonForBenefits: Arbitrary[event3.ReasonForBenefits] =
+    Arbitrary {
+      Gen.oneOf(event3.ReasonForBenefits.values.toSeq)
+    }
+
   implicit lazy val arbitraryPaymentType: Arbitrary[event8a.PaymentType] =
     Arbitrary {
       Gen.oneOf(event8a.PaymentType.values.toSeq)

@@ -30,6 +30,9 @@ import pages.{event13, _}
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryReasonForBenefitsPage: Arbitrary[event3.ReasonForBenefitsPage] =
+    Arbitrary(event3.ReasonForBenefitsPage(Index(0)))
+
   implicit lazy val arbitraryCrystallisedAmountPage: Arbitrary[event7.CrystallisedAmountPage] =
     Arbitrary(event7.CrystallisedAmountPage(Index(0)))
 

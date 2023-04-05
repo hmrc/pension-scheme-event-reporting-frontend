@@ -1088,3 +1088,12 @@ event13.schemeStructureDescription.hint = You can enter up to 150 characters
 event13.schemeStructureDescription.checkYourAnswersLabel = Description of the scheme structure
 event13.schemeStructureDescription.error.length = You can enter up to 150 characters
 event13.schemeStructureDescription.change.hidden = Give a brief description of the pension scheme structure
+
+reasonForBenefits.event3.title = Reason for the benefits being taken
+reasonForBenefits.event3.heading = What is the reason for the benefits being taken?
+reasonForBenefits.event3.illHealth = Ill health
+reasonForBenefits.event3.protectedPensionAge = Protected pension age
+reasonForBenefits.event3.other = Other
+reasonForBenefits.event3.checkYourAnswersLabel = Reason for the benefits being taken
+reasonForBenefits.event3.error.required = Select the reason for the benefits being taken
+reasonForBenefits.event3.change.hidden = the reason for the benefits being taken

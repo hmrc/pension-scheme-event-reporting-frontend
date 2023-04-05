@@ -34,19 +34,10 @@ class PaymentDateFormProviderSpec extends SpecBase
   private val form = new PaymentDateFormProvider().apply(max = stubMax)
 
   private val paymentDateKey = "paymentDate"
-  private val messageKeyPaymentValueKey = "paymentDate.value"
-
   // scalastyle:off magic.number
   val invalidDataGenerator: Gen[String] = intsInRangeWithCommas(0, 999999999)
   val negativeValueDataGenerator: Gen[String] = decimalsBelowValue(0)
 
-  private def paymentDetails(
-                                   paymentDate: LocalDate
-                                 ): Map[String, String] = {
-    Map(
-      paymentDateKey -> paymentDate.toString
-    )
-  }
   "paymentDate" - {
 
     behave like mandatoryDateField(
