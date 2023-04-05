@@ -43,7 +43,7 @@ class ReturnSubmittedController @Inject()(
 
     val taxYear = request.userAnswers.get(TaxYearPage) match {
       case Some(taxYear) => s"${taxYear.startYear} to ${taxYear.endYear}"
-      case _ => throw new RuntimeException("Tax year not available")
+      case _ => throw new RuntimeException("Tax year not available on Return Submitted Controller")
     }
 
     val dateHelper = new DateHelper

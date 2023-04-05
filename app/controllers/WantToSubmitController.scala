@@ -16,38 +16,47 @@
 
 package controllers
 
-import controllers.actions._
+import connectors.UserAnswersCacheConnector
 import forms.WantToSubmitFormProvider
 import models.UserAnswers
 import pages.{WantToSubmitPage, Waypoints}
 import play.api.i18n.I18nSupport
+import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.WantToSubmitView
-
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class WantToSubmitController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         identify: IdentifierAction,
+                                        getData: DataRetrievalAction,
                                         formProvider: WantToSubmitFormProvider,
+                                        userAnswersCacheConnector: UserAnswersCacheConnector,
                                         view: WantToSubmitView
-                                      ) extends FrontendBaseController with I18nSupport {
+                                      ) (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify { implicit request =>
-    Ok(view(form, waypoints))
-  }
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()) { implicit request =>
+      val preparedForm = request.userAnswers.flatMap(_.get(WantToSubmitPage)).fold(form)(form.fill)
+      Ok(view(preparedForm, waypoints))
+    }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = identify {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors => BadRequest(view(formWithErrors, waypoints)), {
-          case true =>
-            val ua = UserAnswers()
-            Redirect(WantToSubmitPage.navigate(waypoints, ua, ua).route)
-          case false => Redirect(request.returnUrl)
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints))),
+        value => {
+          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+          val updatedAnswers = originalUserAnswers.setOrException(WantToSubmitPage, value)
+          userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
+            value match {
+              case true => Redirect(WantToSubmitPage.navigate(waypoints, updatedAnswers, updatedAnswers).route)
+              case false => Redirect(request.returnUrl)
+            }
+          }
         }
       )
   }
