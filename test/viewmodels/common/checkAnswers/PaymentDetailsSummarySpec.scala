@@ -50,7 +50,7 @@ class PaymentDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
   testRowEventDate(Event5, Event5CheckYourAnswersPage(0))
 
   private def testRowAmountPaid(eventType: EventType, sourcePage: CheckAnswersPage) = {
-    s"rowAmountPaid for event$eventType" - {
+    s"rowAmountPaid for Event $eventType" - {
 
       "must display correct information for the amount paid" in {
 
@@ -72,7 +72,7 @@ class PaymentDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
   }
 
   private def testRowEventDate(eventType: EventType, sourcePage: CheckAnswersPage) = {
-    s"rowEventDate for event$eventType" - {
+    s"rowEventDate for Event $eventType" - {
 
       "must display correct information for the event date" in {
 
