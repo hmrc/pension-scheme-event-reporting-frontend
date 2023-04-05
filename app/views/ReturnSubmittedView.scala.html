@@ -17,12 +17,12 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
-    layout: templates.SchemeLayout,
+    layout: templates.Layout,
     govukPanel : GovukPanel,
     govukSummaryList : GovukSummaryList,
 )
 
-@(continueUrl: String, yourPensionSchemesUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(continueUrl: String, yourPensionSchemesUrl: String, schemeName: String, dateSubmitted: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("confirmation.title"))) {
 
@@ -43,7 +43,7 @@
           content = messages("confirmation.summaryList.l1.scheme")
         ),
         value = Value(
-          content = Text("Add Scheme Name Here")
+          content = schemeName
         ),
       ),
       SummaryListRow(
@@ -59,7 +59,7 @@
           content = messages("confirmation.summaryList.l3.dateSubmitted")
         ),
         value = Value(
-          content = Text("Add Date Submitted Here")
+          content = dateSubmitted
         ),
     ))))
 
@@ -72,6 +72,7 @@
     <li>@messages("confirmation.li1")</li>
     <li><a class="govuk-link" href="@yourPensionSchemesUrl">@messages("confirmation.li2")</a></li>
     <li><a id="print-this-page-link" class="govuk-link" href="">@messages("confirmation.li3")</a></li>
+    <li>@templates.ReturnToScheme()</li>
 </ul>
 
 }

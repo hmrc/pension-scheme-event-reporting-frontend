@@ -21,8 +21,7 @@ import forms.WantToSubmitFormProvider
 import models.UserAnswers
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.EmptyWaypoints
-import pages.WantToSubmitPage
+import pages.{EmptyWaypoints, ReturnSubmittedPage, WantToSubmitPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.WantToSubmitView
@@ -35,7 +34,6 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
   private val form = formProvider()
 
   private def getRoute: String = routes.WantToSubmitController.onPageLoad(waypoints).url
-
   private def postRoute: String = routes.WantToSubmitController.onSubmit(waypoints).url
 
   "WantToSubmit Controller" - {
@@ -54,7 +52,6 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
         contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
       }
     }
-
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val userAnswers = UserAnswers().set(WantToSubmitPage, true).success.value
@@ -106,6 +103,34 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+      }
+    }
+
+    "must redirect to next page on submit (when selecting YES)" in {
+      val ua = UserAnswers()
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
+      running(application) {
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+        val userAnswerUpdated = UserAnswers().setOrException(ReturnSubmittedPage, true)
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual ReturnSubmittedPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).url
+      }
+    }
+
+    "must redirect to next page on submit (when selecting NO)" in {
+      val ua = UserAnswers()
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
+      running(application) {
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(application, request).value
+        val userAnswerUpdated = UserAnswers().setOrException(ReturnSubmittedPage, false)
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual ReturnSubmittedPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).url
       }
     }
   }

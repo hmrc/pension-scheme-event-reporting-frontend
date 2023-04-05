@@ -20,7 +20,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class DateHelper {
-  def now = LocalDate.now()
+  def now: LocalDate = LocalDate.now()
 }
 
 

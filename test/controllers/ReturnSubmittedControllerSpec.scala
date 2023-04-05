@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.ReturnSubmittedView
@@ -26,6 +26,11 @@ class ReturnSubmittedControllerSpec extends SpecBase {
 
   private val waypoints = EmptyWaypoints
   private val yourPensionSchemesUrl: String = ""
+
+  private val email: String = "email@email.com"
+  private val schemeName: String = "Scheme Name"
+  private val taxYear = ???
+  private val dateSubmitted: String = ""
 
   "Return Submitted Controller" - {
 
@@ -43,7 +48,11 @@ class ReturnSubmittedControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url, yourPensionSchemesUrl)(request, messages(application)).toString
+          view(
+            controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url,
+            yourPensionSchemesUrl,
+            schemeName,
+            dateSubmitted)(request, messages(application)).toString
       }
     }
   }
