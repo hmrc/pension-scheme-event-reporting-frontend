@@ -25,10 +25,14 @@ import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTang
 import pages.event1.member._
 import pages.event1.{employer, member}
 import pages.event13.SchemeStructurePage
+import pages.event3.EarlyBenefitsBriefDescriptionPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{event13, _}
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryEarlyBenefitsBriefDescriptionPage: Arbitrary[EarlyBenefitsBriefDescriptionPage] =
+    Arbitrary(event3.EarlyBenefitsBriefDescriptionPage(Index(0)))
 
   implicit lazy val arbitraryReasonForBenefitsPage: Arbitrary[event3.ReasonForBenefitsPage] =
     Arbitrary(event3.ReasonForBenefitsPage(Index(0)))

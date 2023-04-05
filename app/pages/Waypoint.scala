@@ -53,6 +53,7 @@ object Waypoint {
   def fromString(s: String): Option[Waypoint] =
     fragments.get(s)
       .orElse(Event1CheckYourAnswersPage.waypointFromString(s))
+      /*.orElse(Event3CheckYourAnswersPage.waypointFromString(s))*//*TODO Add when complete CYA page*/
       .orElse(Event6CheckYourAnswersPage.waypointFromString(s))
       .orElse(Event7CheckYourAnswersPage.waypointFromString(s))
       .orElse(Event8CheckYourAnswersPage.waypointFromString(s))

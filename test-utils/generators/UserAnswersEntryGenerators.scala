@@ -26,13 +26,22 @@ import pages.common.MembersDetailsPage
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.event13.SchemeStructurePage
+import pages.event3.EarlyBenefitsBriefDescriptionPage
 import pages.event6._
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
-  implicit lazy val arbitraryReasonForBenefitsUserAnswersEntry: Arbitrary[(pages.event3.ReasonForBenefitsPage, JsValue)] =
+  implicit lazy val arbitraryEarlyBenefitsBriefDescriptionUserAnswersEntry: Arbitrary[(EarlyBenefitsBriefDescriptionPage, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[EarlyBenefitsBriefDescriptionPage]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+      implicit lazy val arbitraryReasonForBenefitsUserAnswersEntry: Arbitrary[(pages.event3.ReasonForBenefitsPage, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[pages.event3.ReasonForBenefitsPage]

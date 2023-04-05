@@ -1097,3 +1097,11 @@ reasonForBenefits.event3.other = Other
 reasonForBenefits.event3.checkYourAnswersLabel = Reason for the benefits being taken
 reasonForBenefits.event3.error.required = Select the reason for the benefits being taken
 reasonForBenefits.event3.change.hidden = the reason for the benefits being taken
+
+earlyBenefitsBriefDescription.heading = Give a brief description of why the benefits were taken early
+earlyBenefitsBriefDescription.title = Brief description of why the benefits were taken early
+earlyBenefitsBriefDescription.hint = You can enter a maximum of 150 characters (optional).
+earlyBenefitsBriefDescription.checkYourAnswersLabel = Give a brief description of why the benefits were taken early
+earlyBenefitsBriefDescription.error.length = You can enter a maximum of 150 characters (optional)
+earlyBenefitsBriefDescription.change.hidden = Give a brief description of why the benefits were taken early
+
