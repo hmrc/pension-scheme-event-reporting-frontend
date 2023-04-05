@@ -18,25 +18,13 @@ package pages
 
 import controllers.routes
 import models.UserAnswers
-import models.enumeration.EventType
-import pages.{Page, QuestionPage, Waypoints}
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class WantToSubmitPage() extends QuestionPage[Boolean] {
-
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "wantToSubmit"
+case class DeclarationPage() extends Page {
 
   override def route(waypoints: Waypoints): Call =
-    routes.WantToSubmitController.onPageLoad(waypoints)
+    routes.DeclarationController.onPageLoad(waypoints)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, ua: UserAnswers): Page = {
-    if () {
-      DeclarationPage()
-    } else {
-      WantToSubmitPage()
-    }
-  }
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    ???
 }

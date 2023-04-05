@@ -23,7 +23,7 @@ import models.TaxYear.getSelectedTaxYearAsString
 import models.UserAnswers
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event22, Event23}
-import pages.{EmptyWaypoints, WantToSubmitPage, Waypoints, TaxYearPage}
+import pages.{EmptyWaypoints, EventSummaryPage, WantToSubmitPage, Waypoints, TaxYearPage}
 import models.enumeration.EventType.{Event18, Event6}
 import models.requests.DataRequest
 import play.api.Logger
@@ -95,8 +95,14 @@ class EventSummaryController @Inject()(
       form.bindFromRequest().fold(
         formWithErrors => summaryListRows(waypoints).map(rows => BadRequest(view(formWithErrors, waypoints, rows, selectedTaxYear))),
         value => {
-          val userAnswersUpdated = UserAnswers().setOrException(WantToSubmitPage(), value)
-          Future.successful(Redirect(WantToSubmitPage().navigate(waypoints, userAnswersUpdated, userAnswersUpdated).route))
+          val ua = UserAnswers().setOrException(WantToSubmitPage(), value)
+          Redirect(WantToSubmitPage().navigate(waypoints, ua, ua).route)
+
+          if (value) {
+            Future.successful(Redirect(EventSummaryPage.navigate(waypoints, ua, ua).route))
+          } else {
+            Future.successful(Redirect(WantToSubmitPage().navigate(waypoints, ua, ua).route))
+          }
         }
       )
   }

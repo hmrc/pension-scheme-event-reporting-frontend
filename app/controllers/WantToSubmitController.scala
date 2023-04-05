@@ -19,8 +19,7 @@ package controllers
 import controllers.actions._
 import forms.WantToSubmitFormProvider
 import models.UserAnswers
-import pages.Waypoints
-import pages.WantToSubmitPage
+import pages.{WantToSubmitPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController

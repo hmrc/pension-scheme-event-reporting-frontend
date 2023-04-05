@@ -25,7 +25,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, EventSummaryPage, TaxYearPage}
+import pages.{EmptyWaypoints, EventSummaryPage, WantToSubmitPage, TaxYearPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -123,10 +123,10 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
         val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, request).value
-        val userAnswerUpdated = UserAnswers().setOrException(EventSummaryPage, false)
+        val userAnswerUpdated = UserAnswers().setOrException(WantToSubmitPage(), false)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual EventSummaryPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).url
+        redirectLocation(result).value mustEqual WantToSubmitPage().navigate(waypoints, userAnswerUpdated, userAnswerUpdated).url
       }
     }
   }
