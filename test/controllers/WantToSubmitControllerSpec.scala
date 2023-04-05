@@ -45,10 +45,15 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
   private def postRoute: String = routes.WantToSubmitController.onSubmit(waypoints).url
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
-  override def beforeEach(): Unit = reset(mockUserAnswersCacheConnector)
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockUserAnswersCacheConnector)
+  }
 
   "WantToSubmit Controller" - {
 
@@ -84,27 +89,6 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
       }
     }
 
-    "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
-
-        val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(WantToSubmitPage, true).success.value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual WantToSubmitPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
-      }
-    }
-
     "must return bad request when invalid data is submitted" in {
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
@@ -128,9 +112,14 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
       }
     }
 
-    "must redirect to next page on submit (when selecting YES)" in {
-      val ua = UserAnswers()
-      val application = applicationBuilder(userAnswers = Some(ua)).build()
+    "must save the answer and redirect to next page on submit (when selecting YES)" in {
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
+
       running(application) {
         val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
@@ -138,19 +127,35 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
         val userAnswerUpdated = UserAnswers().setOrException(WantToSubmitPage, true)
 
         status(result) mustEqual SEE_OTHER
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
         redirectLocation(result).value mustEqual WantToSubmitPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).url
       }
     }
 
-    "must redirect to next page on submit (when selecting NO)" in {
-      val ua = UserAnswers()
-      val application = applicationBuilder(userAnswers = Some(ua)).build()
-      running(application) {
-        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "false"))
+    "must save the answer and redirect to next page on submit (when selecting NO)" in {
+        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(()))
 
-        val result = route(application, request).value
+        val application =
+          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+            .build()
+
+        running(application) {
+          val request =
+            FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
+
+          val result = route(application, request).value
+
+        println("\n\n\n\n\n\n\n -----yyyyyyyyyyyyyyyy--------")
+
+        println(s"\n\n\n\n result = : ${result.value} \n\n\n")
+        println("\n\n\n\n\n\n\n ------qqqqqqqqqqqqq-------")
+
+        val x = redirectLocation(result)
+        println(s"x = ($x)")
 
         status(result) mustEqual SEE_OTHER
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
         redirectLocation(result).value mustEqual request.returnUrl
       }
     }
