@@ -41,7 +41,7 @@ class DeclarationControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[DeclarationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(routes.DeclarationController.onClick(waypoints).url)(request, messages(application)).toString
       }
     }
   }
