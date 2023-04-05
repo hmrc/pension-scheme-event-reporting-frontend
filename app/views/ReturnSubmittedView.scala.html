@@ -22,7 +22,7 @@
     govukSummaryList : GovukSummaryList,
 )
 
-@(continueUrl: String, email: String, yourPensionSchemesUrl: String, schemeName: String, taxYear: TaxYear, dateSubmitted: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(continueUrl: String, email: String, yourPensionSchemesUrl: String, schemeName: String, taxYear: String, dateSubmitted: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("confirmation.title"))) {
 
@@ -51,8 +51,8 @@
           content = messages("confirmation.summaryList.l2.taxYear")
         ),
         value = Value(
-          content = taxTear
-        )
+          content = Text(taxYear)
+        ),
       ),
       SummaryListRow(
         key = Key(

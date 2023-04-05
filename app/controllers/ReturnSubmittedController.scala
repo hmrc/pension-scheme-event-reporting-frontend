@@ -23,12 +23,12 @@ import helpers.DateHelper
 import helpers.DateHelper.dateFormatter
 import pages.{TaxYearPage, Waypoints}
 import play.api.i18n.I18nSupport
-import play.api.i18n.Lang.logger
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ReturnSubmittedView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class ReturnSubmittedController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
@@ -38,22 +38,24 @@ class ReturnSubmittedController @Inject()(
                                         view: ReturnSubmittedView,
                                         minimalDetailsConnector: MinimalDetailsConnector,
                                         config: FrontendAppConfig
-                                      ) extends FrontendBaseController with I18nSupport {
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData)  { implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) async { implicit request =>
 
-    val email = minimalDetailsConnector.getPSAEmail()
+    val email = minimalDetailsConnector.getPSAEmail
 
-    val schemeName: String = request.schemeName
+    val schemeName = request.schemeName
 
     val taxYear = request.userAnswers.get(TaxYearPage) match {
-      case Some(taxYear) => taxYear.toString
-      case _ => logger.error("No tax year on return submitted page")
+      case Some(taxYear) => s"${taxYear.startYear} to ${taxYear.endYear}"
+      case _ => throw new RuntimeException("Tax year not available")
     }
 
     val dateHelper = new DateHelper
     val dateSubmitted: String = dateHelper.now.format(dateFormatter)
 
+    email.map( email =>
       Ok(view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url, email, config.yourPensionSchemesUrl, schemeName, taxYear, dateSubmitted))
+    )
   }
 }

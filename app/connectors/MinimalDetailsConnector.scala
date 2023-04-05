@@ -16,51 +16,111 @@
 
 package connectors
 
-import com.google.inject.ImplementedBy
+import com.google.inject.Inject
 import config.FrontendAppConfig
-import models.MinPSA
-import play.api.Logger
-import play.api.http.Status.OK
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import models.requests.IdentifierRequest
+import play.api.http.Status._
+import play.api.libs.json._
+import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HttpClient, _}
 import utils.HttpResponseHelper
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Try}
 
-@ImplementedBy(classOf[MinimalDetailsConnectorImpl])
-trait MinimalDetailsConnector {
+class MinimalDetailsConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
+  extends HttpResponseHelper {
 
-  def getPSAEmail(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String]
+  import MinimalConnector._
+
+  def getMinimalDetails[A](
+                            implicit hc: HeaderCarrier,
+                            ec: ExecutionContext,
+                            request: IdentifierRequest[A]
+                          ): Future[MinimalDetails] = {
+
+    val hcWithId: HeaderCarrier =
+      (request.psaId, request.pspId) match {
+        case (Some(psa), _) => hc.withExtraHeaders("psaId" -> psa.id)
+        case (_, Some(psp)) => hc.withExtraHeaders("pspId" -> psp.id)
+        case _ => throw new Exception("Could not retrieve ID from request")
+      }
+
+    minDetails(hcWithId)
+  }
+
+  def getMinimalPsaDetails(psaId: String)
+                          (implicit hc: HeaderCarrier,
+                           ec: ExecutionContext
+                          ): Future[MinimalDetails] = {
+
+    val hcWithId: HeaderCarrier = hc.withExtraHeaders("psaId" -> psaId)
+    minDetails(hcWithId)
+  }
+
+  def getPsaOrPspName[A](implicit hc: HeaderCarrier, ec: ExecutionContext, request: IdentifierRequest[A]): Future[String] =
+    getMinimalDetails.map(_.name)
+
+  private def minDetails(hcWithId: HeaderCarrier)
+                        (implicit ec: ExecutionContext): Future[MinimalDetails] = {
+
+    val url = config.minimalPsaDetailsUrl
+
+    http.GET[HttpResponse](url)(implicitly, hcWithId, implicitly) map {
+      response =>
+        response.status match {
+          case OK =>
+            Json.parse(response.body).validate[MinimalDetails] match {
+              case JsSuccess(value, _) => value
+              case JsError(errors) => throw JsResultException(errors)
+            }
+          case FORBIDDEN if response.body.contains(delimitedErrorMsg) => throw new DelimitedAdminException
+          case _ =>
+            handleErrorResponse("GET", url)(response)
+        }
+    }
+  }
+
+  val delimitedErrorMsg: String = "DELIMITED_PSAID"
+}
+
+object MinimalConnector {
+
+  case class MinimalDetails(
+                             email: String,
+                             isPsaSuspended: Boolean,
+                             organisationName: Option[String],
+                             individualDetails: Option[IndividualDetails],
+                             rlsFlag: Boolean,
+                             deceasedFlag: Boolean
+                           ) {
+
+    def name: String = {
+      individualDetails
+        .map(_.fullName)
+        .orElse(organisationName)
+        .getOrElse("Pension Scheme Administrator")
+    }
+  }
+
+  object MinimalDetails {
+    implicit val format: Format[MinimalDetails] = Json.format[MinimalDetails]
+  }
+
+  case class IndividualDetails(firstName: String,
+                               middleName: Option[String],
+                               lastName: String) {
+
+    def fullName: String = middleName match {
+      case Some(middle) => s"$firstName $middle $lastName"
+      case _ => s"$firstName $lastName"
+    }
+  }
+
+  object IndividualDetails {
+    implicit val format: Format[IndividualDetails] = Json.format[IndividualDetails]
+  }
 
 }
 
-@Singleton
-class MinimalDetailsConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
-  extends MinimalDetailsConnector with HttpResponseHelper {
-
-  private val logger = Logger(classOf[MinimalDetailsConnectorImpl])
-
-  def getPSAEmail(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
-
-    val url = config.getPSAEmail
-
-    http.GET[HttpResponse](url) map { response =>
-      require(response.status == OK)
-
-      response.body
-
-    } andThen logExceptions("email")
-
-  }
-
-  private def logExceptions(token: String): PartialFunction[Try[String], Unit] = {
-    case Failure(t: Throwable) => logger.error(s"Unable to retrieve $token for PSA", t)
-  }
-
-  private def logExceptions: PartialFunction[Try[MinPSA], Unit] = {
-    case Failure(t: Throwable) => logger.error(s"Unable to retrieve details for PSA", t)
-  }
-
-}
-
+class DelimitedAdminException extends
+  Exception("The administrator has already de-registered. The minimal details API has returned a DELIMITED PSA response")
