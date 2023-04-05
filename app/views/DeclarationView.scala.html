@@ -15,11 +15,11 @@
  *@
 
 @this(
-    layout: templates.Layout,
+    layout: templates.SchemeLayout,
     govukButton: GovukButton
 )
 
-@(continueUrl: String)(implicit request: Request[_], messages: Messages)
+@(continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("declaration.title"))) {
 

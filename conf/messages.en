@@ -90,6 +90,7 @@ confirmation.li1 = view payments and charge references for your Event reports
 confirmation.li2 = view your other pension schemes
 confirmation.li3 = return to {0} pension scheme
 confirmation.li4 = print this page
+confirmation.print.page.link.text = print this page
 
 eventReportingTile.heading = Event Reporting
 eventReportingTile.subHeading = Event report {0} to {1}:

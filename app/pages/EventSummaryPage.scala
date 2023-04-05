@@ -34,6 +34,7 @@ case object EventSummaryPage extends QuestionPage[Boolean] {
     answers.get(EventSummaryPage) match {
       case Some(true) => EventSelectionPage
       case Some(false) => WantToSubmitPage
+      case _ => IndexPage
     }
   }
 }

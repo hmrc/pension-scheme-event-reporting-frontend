@@ -43,10 +43,11 @@ class WantToSubmitController @Inject()(
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = identify {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors => BadRequest(view(formWithErrors, waypoints)),
-        value => {
-          val ua: UserAnswers = UserAnswers().setOrException(WantToSubmitPage, value)
-          Redirect(WantToSubmitPage.navigate(waypoints, ua, ua).route)
+        formWithErrors => BadRequest(view(formWithErrors, waypoints)), {
+          case true =>
+            val ua = UserAnswers()
+            Redirect(WantToSubmitPage.navigate(waypoints, ua, ua).route)
+          case false => Redirect(request.returnUrl)
         }
       )
   }

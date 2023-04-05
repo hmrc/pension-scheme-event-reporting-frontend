@@ -31,9 +31,6 @@ case object WantToSubmitPage extends QuestionPage[Boolean] {
     routes.WantToSubmitController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(WantToSubmitPage) match {
-      case Some(true) => DeclarationPage
-      case Some(false) => ???
-    }
+    WantToSubmitPage
   }
 }
