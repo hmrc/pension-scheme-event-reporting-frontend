@@ -31,27 +31,9 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
 
   import forms.event1.PaymentValueAndDateFormProvider._
 
-  // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now. 09/01/2023: Temporary fix for tests- need to discuss proper implenmentation of dates
-  private val today = LocalDate.now
-  private def startDate: LocalDate = {
-    today match {
-      case _ if today.isBefore(LocalDate.of(today.getYear, 4, 6)) =>
-        LocalDate.of(today.getYear-1, 4, 6)
-      case _ =>
-        LocalDate.of(today.getYear, 4, 6)
-    }
-  }
-
-  private def endDate: LocalDate = {
-    today match {
-      case _ if today.isBefore(LocalDate.of(today.getYear, 4, 6)) =>
-        LocalDate.of(today.getYear, 4, 5)
-      case _ =>
-        LocalDate.of(today.getYear+1, 4, 5)
-    }
-  }
-
-  def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[PaymentDetails] =
+  def apply(taxYear: Int)(implicit messages: Messages): Form[PaymentDetails] = {
+    val startDate: LocalDate = LocalDate.of(taxYear, 4, 6)
+    val endDate: LocalDate = LocalDate.of(taxYear + 1, 4, 5)
     Form(
       mapping("paymentValue" ->
         bigDecimal2DP("paymentValueAndDate.value.error.nothingEntered",
@@ -59,21 +41,22 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
           "paymentValueAndDate.value.error.noDecimals")
           .verifying(
             maximumValue[BigDecimal](maxPaymentValue, "paymentValueAndDate.value.error.amountTooHigh"),
-              minimumValue[BigDecimal](0, "paymentValueAndDate.value.error.negative")
+            minimumValue[BigDecimal](0, "paymentValueAndDate.value.error.negative")
           ), "paymentDate" ->
-              localDate(
-                oneDateComponentMissingKey = "paymentValueAndDate.date.error.noDayMonthOrYear",
-                twoDateComponentsMissingKey = "paymentValueAndDate.date.error.noDayMonthOrYear",
-                invalidKey = "paymentValueAndDate.date.error.outsideDateRanges",
-                threeDateComponentsMissingKey = "paymentValueAndDate.date.error.nothingEntered"
-              ).verifying(
-                yearHas4Digits("paymentValueAndDate.date.error.outsideDateRanges"),
-                minDate(startDate, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", formatDateDMY(startDate), formatDateDMY(endDate))),
-                maxDate(endDate, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", formatDateDMY(startDate), formatDateDMY(endDate)))
-              )
-          )
+        localDate(
+          invalidKey = "paymentValueAndDate.date.error.outsideDateRanges",
+          threeDateComponentsMissingKey = "paymentValueAndDate.date.error.nothingEntered",
+          twoDateComponentsMissingKey = "paymentValueAndDate.date.error.noDayMonthOrYear",
+          oneDateComponentMissingKey = "paymentValueAndDate.date.error.noDayMonthOrYear"
+        ).verifying(
+          yearHas4Digits("paymentValueAndDate.date.error.outsideDateRanges"),
+          minDate(startDate, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", formatDateDMY(startDate), formatDateDMY(endDate))),
+          maxDate(endDate, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", formatDateDMY(startDate), formatDateDMY(endDate)))
+        )
+      )
       (PaymentDetails.apply)(PaymentDetails.unapply)
     )
+  }
 }
 
 object PaymentValueAndDateFormProvider {

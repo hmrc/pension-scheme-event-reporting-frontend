@@ -20,19 +20,17 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.PaymentValueAndDateFormProvider
 import models.enumeration.EventType
-import models.event1.PaymentDetails
-import models.{Index, Quarters, UserAnswers}
-import pages.Waypoints
+import models.{Index, UserAnswers}
 import pages.event1.PaymentValueAndDatePage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages}
+import pages.{TaxYearPage, Waypoints}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event1.PaymentValueAndDateView
 
-import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success, Try}
 
 class PaymentValueAndDateController @Inject()(val controllerComponents: MessagesControllerComponents,
                                               identify: IdentifierAction,
@@ -42,30 +40,27 @@ class PaymentValueAndDateController @Inject()(val controllerComponents: Messages
                                               view: PaymentValueAndDateView
                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def form(startDate: LocalDate)(implicit messages: Messages): Form[PaymentDetails] = {
-    val endDate = Quarters.getQuarter(startDate).endDate
-    formProvider(
-      startDate,
-      endDate
-    )
+  private def getTaxYear(userAnswers: Option[UserAnswers]): Int = {
+    userAnswers.flatMap(_.get(TaxYearPage)) match {
+      case Some(year) => Try(year.startYear.toInt) match {
+        case Success(value) => value
+        case Failure(exception) => throw new RuntimeException("Tax year is not a number", exception)
+      }
+      case _ => throw new RuntimeException("Tax year not entered")
+    }
   }
-
 
   private val eventType = EventType.Event1
 
-  // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now.
-  private val stubDate: LocalDate = LocalDate.now()
-
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(PaymentValueAndDatePage(index))) match {
-      case Some(value) => form(startDate = stubDate).fill(value)
-      case None => form(stubDate)
-    }
+    val form = formProvider(getTaxYear(request.userAnswers))
+    val preparedForm = request.userAnswers.flatMap(_.get(PaymentValueAndDatePage(index))).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, index))
   }
 
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
-    form(stubDate).bindFromRequest().fold(
+    val form = formProvider(getTaxYear(request.userAnswers))
+    form.bindFromRequest().fold(
       formWithErrors => {
         Future.successful(BadRequest(view(formWithErrors, waypoints, index)))
       },
