@@ -17,8 +17,9 @@
 package pages
 
 import data.SampleData
-import models.UserAnswers
-import models.enumeration.EventType.{Event1, Event22, Event23, Event4, Event5, Event6, Event8, Event8A}
+import models.enumeration.EventType
+import models.enumeration.EventType.{Event1, Event22, Event23, Event4, Event5, Event6, Event7, Event8, Event8A}
+import models.{EventSelection, UserAnswers}
 import pages.behaviours.PageBehaviours
 import pages.common.{ManualOrUploadPage, MembersDetailsPage}
 
@@ -26,62 +27,34 @@ import pages.common.{ManualOrUploadPage, MembersDetailsPage}
 class EventSelectionPageSpec extends PageBehaviours {
 
   "nextPageNormalMode" - {
-    "must get the correct page with correct index for event 1" in {
-      val ua = UserAnswers()
-        .setOrException(EventSelectionPage, models.EventSelection.Event1)
-        .setOrException(MembersDetailsPage(Event1, 0), SampleData.memberDetails)
-        .setOrException(MembersDetailsPage(Event1, 1), SampleData.memberDetails)
-      EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe ManualOrUploadPage(Event1, 2).route(EmptyWaypoints)
-    }
-    "must get the correct page with correct index for event 4" in {
-      val ua = UserAnswers()
-        .setOrException(EventSelectionPage, models.EventSelection.Event4)
-        .setOrException(MembersDetailsPage(Event4, 0), SampleData.memberDetails)
-        .setOrException(MembersDetailsPage(Event4, 1), SampleData.memberDetails)
-      EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe MembersDetailsPage(Event4, 2).route(EmptyWaypoints)
-    }
-    "must get the correct page with correct index for event 5" in {
-      val ua = UserAnswers()
-        .setOrException(EventSelectionPage, models.EventSelection.Event5)
-        .setOrException(MembersDetailsPage(Event5, 0), SampleData.memberDetails)
-        .setOrException(MembersDetailsPage(Event5, 1), SampleData.memberDetails)
-      EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe MembersDetailsPage(Event5, 2).route(EmptyWaypoints)
-    }
-    "must get the correct page with correct index for event 6" in {
-      val ua = UserAnswers()
-        .setOrException(EventSelectionPage, models.EventSelection.Event6)
-        .setOrException(MembersDetailsPage(Event6, 0), SampleData.memberDetails)
-        .setOrException(MembersDetailsPage(Event6, 1), SampleData.memberDetails)
-      EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe ManualOrUploadPage(Event6, 2).route(EmptyWaypoints)
-    }
-    "must get the correct page with correct index for event 8" in {
-      val ua = UserAnswers()
-        .setOrException(EventSelectionPage, models.EventSelection.Event8)
-        .setOrException(MembersDetailsPage(Event8, 0), SampleData.memberDetails)
-        .setOrException(MembersDetailsPage(Event8, 1), SampleData.memberDetails)
-      EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe MembersDetailsPage(Event8, 2).route(EmptyWaypoints)
-    }
-    "must get the correct page with correct index for event 8A" in {
-      val ua = UserAnswers()
-        .setOrException(EventSelectionPage, models.EventSelection.Event8A)
-        .setOrException(MembersDetailsPage(Event8A, 0), SampleData.memberDetails)
-        .setOrException(MembersDetailsPage(Event8A, 1), SampleData.memberDetails)
-      EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe MembersDetailsPage(Event8A, 2).route(EmptyWaypoints)
-    }
-    "must get the correct page with correct index for event 22" in {
-      val ua = UserAnswers()
-        .setOrException(EventSelectionPage, models.EventSelection.Event22)
-        .setOrException(MembersDetailsPage(Event22, 0), SampleData.memberDetails)
-        .setOrException(MembersDetailsPage(Event22, 1), SampleData.memberDetails)
-      EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe ManualOrUploadPage(Event22, 2).route(EmptyWaypoints)
-    }
-    "must get the correct page with correct index for event 23" in {
-      val ua = UserAnswers()
-        .setOrException(EventSelectionPage, models.EventSelection.Event23)
-        .setOrException(MembersDetailsPage(Event23, 0), SampleData.memberDetails)
-        .setOrException(MembersDetailsPage(Event23, 1), SampleData.memberDetails)
-      EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe ManualOrUploadPage(Event23, 2).route(EmptyWaypoints)
-    }
+    testGetCorrectPageWithIndexManualOrUpload(Event1, models.EventSelection.Event1, ManualOrUploadPage(Event1, 2))
+    testGetCorrectPageWithIndexMemberDetails(Event4, models.EventSelection.Event4, MembersDetailsPage(Event4, 2))
+    testGetCorrectPageWithIndexMemberDetails(Event5, models.EventSelection.Event5, MembersDetailsPage(Event5, 2))
+    testGetCorrectPageWithIndexManualOrUpload(Event6, models.EventSelection.Event6, ManualOrUploadPage(Event6, 2))
+    testGetCorrectPageWithIndexMemberDetails(Event7, models.EventSelection.Event7, MembersDetailsPage(Event7, 2))
+    testGetCorrectPageWithIndexMemberDetails(Event8, models.EventSelection.Event8, MembersDetailsPage(Event8, 2))
+    testGetCorrectPageWithIndexMemberDetails(Event8A, models.EventSelection.Event8A, MembersDetailsPage(Event8A, 2))
+    testGetCorrectPageWithIndexManualOrUpload(Event22, models.EventSelection.Event22, ManualOrUploadPage(Event22, 2))
+    testGetCorrectPageWithIndexManualOrUpload(Event23, models.EventSelection.Event23, ManualOrUploadPage(Event23, 2))
+  }
 
+  private def testGetCorrectPageWithIndexManualOrUpload(eventType: EventType, eventSelection: EventSelection, page: ManualOrUploadPage): Unit = {
+    s"must get the correct page with correct index for Event $eventType" in {
+      val ua = UserAnswers()
+        .setOrException(EventSelectionPage, eventSelection)
+        .setOrException(MembersDetailsPage(eventType, 0), SampleData.memberDetails)
+        .setOrException(MembersDetailsPage(eventType, 1), SampleData.memberDetails)
+      EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe page.route(EmptyWaypoints)
+    }
+  }
+
+  private def testGetCorrectPageWithIndexMemberDetails(eventType: EventType, eventSelection: EventSelection, page: MembersDetailsPage): Unit = {
+    s"must get the correct page with correct index for Event $eventType" in {
+      val ua = UserAnswers()
+        .setOrException(EventSelectionPage, eventSelection)
+        .setOrException(MembersDetailsPage(eventType, 0), SampleData.memberDetails)
+        .setOrException(MembersDetailsPage(eventType, 1), SampleData.memberDetails)
+      EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe page.route(EmptyWaypoints)
+    }
   }
 }
