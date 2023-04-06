@@ -28,8 +28,6 @@ case class EarlyBenefitsBriefDescriptionPage(index: Int) extends QuestionPage[St
 
   override def path: JsPath = MembersPage(EventType.Event3)(index) \ "paymentDetails" \ toString
 
-  override def toString: String = "other"
-
   override def route(waypoints: Waypoints): Call =
     routes.EarlyBenefitsBriefDescriptionController.onPageLoad(waypoints, index)
 
@@ -41,4 +39,7 @@ case class EarlyBenefitsBriefDescriptionPage(index: Int) extends QuestionPage[St
    IndexPage
   }
 
+}
+object EarlyBenefitsBriefDescriptionPage {
+  override def toString: String = "other"
 }
