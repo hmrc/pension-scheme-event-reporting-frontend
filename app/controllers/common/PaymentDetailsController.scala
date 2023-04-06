@@ -20,13 +20,11 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import controllers.common.PaymentDetailsController.endOfPaymentDate
 import forms.common.PaymentDetailsFormProvider
-import models.common.PaymentDetails
 import models.enumeration.EventType
 import models.{Index, TaxYear, UserAnswers}
 import pages.common.PaymentDetailsPage
 import pages.{TaxYearPage, Waypoints}
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.common.PaymentDetailsView
@@ -43,20 +41,13 @@ class PaymentDetailsController @Inject()(val controllerComponents: MessagesContr
                                          view: PaymentDetailsView
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport { // scalastyle:off magic.number
 
-  private def form(startDate: LocalDate, endDate: LocalDate)(implicit messages: Messages): Form[PaymentDetails] = {
-    formProvider(
-      startDate,
-      endDate
-    )
-  }
-
   def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val startDate = LocalDate.of(2006, Month.APRIL, 6)
     val endDate = endOfPaymentDate(request.userAnswers.flatMap(_.get(TaxYearPage)))
 
     val preparedForm = request.userAnswers.flatMap(_.get(PaymentDetailsPage(eventType, index))) match {
-      case Some(value) => form(startDate = startDate, endDate).fill(value)
-      case None => form(startDate, endDate)
+      case Some(value) => formProvider(startDate, endDate).fill(value)
+      case None => formProvider(startDate, endDate)
     }
     Ok(view(preparedForm, waypoints, eventType, index))
   }
@@ -65,7 +56,7 @@ class PaymentDetailsController @Inject()(val controllerComponents: MessagesContr
     val startDate = LocalDate.of(2006, Month.APRIL, 6)
     val endDate = endOfPaymentDate(request.userAnswers.flatMap(_.get(TaxYearPage)))
 
-    form(startDate, endDate).bindFromRequest().fold(
+    formProvider(startDate, endDate).bindFromRequest().fold(
       formWithErrors => {
         Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, index)))
       },
