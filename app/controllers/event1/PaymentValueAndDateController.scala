@@ -67,7 +67,6 @@ class PaymentValueAndDateController @Inject()(val controllerComponents: Messages
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
     form(stubDate).bindFromRequest().fold(
       formWithErrors => {
-        println(formWithErrors.errors)
         Future.successful(BadRequest(view(formWithErrors, waypoints, index)))
       },
 
