@@ -38,11 +38,10 @@ class TaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyCheck
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(TaxYear.values.toSeq)
+      val gen = Gen.oneOf(TaxYear.values)
 
       forAll(gen) {
         taxYear =>
-
           JsString(taxYear.startYear).validate[TaxYear].asOpt.value mustEqual taxYear
       }
     }
