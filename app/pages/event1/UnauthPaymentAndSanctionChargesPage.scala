@@ -16,11 +16,17 @@
 
 package pages.event1
 
-import pages.{Page, Waypoints}
+import pages.{Page, Waypoints, EventSummaryPage}
 import play.api.mvc.Call
+import models.UserAnswers
 
 case object UnauthPaymentAndSanctionChargesPage extends Page {
 
   override def route(waypoints: Waypoints): Call =
     controllers.event1.routes.UnauthPaymentAndSanctionChargesController.onPageLoad(waypoints)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    EventSummaryPage
+  }
+
 }
