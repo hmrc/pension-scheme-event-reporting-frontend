@@ -34,7 +34,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
-import viewmodels.{Message, SummaryListRowWithThreeValues, SummaryListRowWithTwoValues}
+import viewmodels.{Message, SummaryListRowWithThreeValues}
 import views.html.event7.Event7MembersSummaryView
 
 import scala.concurrent.Future
@@ -94,7 +94,6 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
                   )
                 ))
               ))
-
 
 
           status(result) mustEqual OK

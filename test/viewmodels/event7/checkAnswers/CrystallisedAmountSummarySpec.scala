@@ -20,7 +20,7 @@ import models.UserAnswers
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
-import pages.event7.{CrystallisedAmountPage, Event7CheckYourAnswersPage, LumpSumAmountPage}
+import pages.event7.{CrystallisedAmountPage, Event7CheckYourAnswersPage}
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
