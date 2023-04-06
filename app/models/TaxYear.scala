@@ -18,7 +18,7 @@ package models
 
 import pages.TaxYearPage
 import play.api.i18n.Messages
-import play.api.libs.json.{JsString, Reads, Writes}
+import play.api.libs.json.{JsString, Writes}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utils.DateHelper
