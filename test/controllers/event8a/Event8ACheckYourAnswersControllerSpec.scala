@@ -40,7 +40,7 @@ class Event8ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent8A)).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(0).url)
@@ -48,7 +48,7 @@ class Event8ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[CheckYourAnswersView]
-        val list = SummaryListViewModel(Seq.empty)
+        val list = SummaryListViewModel(expectedMemberSummaryListRowsEvent8A)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-8a-click")(request, messages(application)).toString
@@ -174,13 +174,13 @@ object Event8ACheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "lumpSumAmountAndDate.value.checkYourAnswersLabel",
       "£223.11",
-      "/manage-pension-scheme-event-report/new-report/1/event-8a-lump-sum-details?waypoints=event-8A-check-answers-1",
+      "/manage-pension-scheme-event-report/new-report/1/event-8a-payment-details?waypoints=event-8A-check-answers-1",
       "lumpSumAmountAndDate.value.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "lumpSumAmountAndDate.date.checkYourAnswersLabel",
       "22 March 2022",
-      "/manage-pension-scheme-event-report/new-report/1/event-8a-lump-sum-details?waypoints=event-8A-check-answers-1",
+      "/manage-pension-scheme-event-report/new-report/1/event-8a-payment-details?waypoints=event-8A-check-answers-1",
       "lumpSumAmountAndDate.date.change.hidden"
     )
   )

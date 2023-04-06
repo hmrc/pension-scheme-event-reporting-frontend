@@ -40,8 +40,9 @@ case class PaymentTypePage(eventType: EventType, index: Int) extends QuestionPag
   override def cleanupBeforeSettingValue(value: Option[PaymentType], userAnswers: UserAnswers): Try[UserAnswers] = {
     userAnswers.get(PaymentTypePage(eventType, index)) match {
       case originalPaymentType@Some(_) if originalPaymentType != value =>
-        userAnswers.remove(TypeOfProtectionPage(eventType, index)).
-          flatMap(ua => ua.remove(TypeOfProtectionReferencePage(eventType, index)))
+        userAnswers.remove(TypeOfProtectionPage(eventType, index))
+          .flatMap(ua => ua.remove(TypeOfProtectionReferencePage(eventType, index)))
+          .flatMap(ua => ua.remove(LumpSumAmountAndDatePage(eventType, index)))
       case _ => Success(userAnswers)
     }
   }
@@ -76,7 +77,7 @@ case class PaymentTypePage(eventType: EventType, index: Int) extends QuestionPag
               case PaymentType.PaymentOfAStandAloneLumpSum =>
                 TypeOfProtectionPage(eventType, index)
               case PaymentType.PaymentOfASchemeSpecificLumpSum =>
-                Event8ACheckYourAnswersPage(index)
+                LumpSumAmountAndDatePage(eventType, index)
             }
           case _ =>
             JourneyRecoveryPage

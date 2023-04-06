@@ -93,7 +93,7 @@ eventSelection.event7.hint = Pension commencement lump sum more than 25% of the 
 eventSelection.event8 = Event 8
 eventSelection.event8.hint = Pension commencement lump sum with primary/enhanced protection
 eventSelection.event8a = Event 8A
-eventSelection.event8a.hint = Standalone lump sums
+eventSelection.event8a.hint = Stand-alone lump sums
 eventSelection.event10 = Event 10
 eventSelection.event10.hint = Investment-regulated pension scheme
 eventSelection.event11 = Event 11
@@ -824,6 +824,24 @@ membersSummary.table.header2 = National Insurance number
 membersSummary.table.header3 = Pension input amounts
 membersSummary.table.totalTitle = Total
 
+membersSummary.event4.title = Event 4: Payment of serious ill-health lump sum in the tax year ending 5 April {0}
+membersSummary.event4.heading = Event 4: Payment of serious ill-health lump sum in the tax year ending 5 April {0}
+membersSummary.event4.error.required = Select yes if you want to add another entry
+membersSummary.event4.yesno.legend = Do you want to add another entry for this payment of serious ill-health lump sum?
+membersSummary.event4.table.header1 = Member
+membersSummary.event4.table.header2 = National Insurance number
+membersSummary.event4.table.header3 = Amount paid
+membersSummary.event4.table.totalTitle = Total not required
+
+membersSummary.event5.title = Event 5: Cessation of ill-health pension in the tax year ending 5 April {0}
+membersSummary.event5.heading = Event 5: Cessation of ill-health pension in the tax year ending 5 April {0}
+membersSummary.event5.error.required = Select yes if you want to add another entry
+membersSummary.event5.yesno.legend = Do you want to add another entry for this cessation of ill-health pension?
+membersSummary.event5.table.header1 = Member
+membersSummary.event5.table.header2 = National Insurance number
+membersSummary.event5.table.header3 = Amount paid
+membersSummary.event5.table.totalTitle = Total not required
+
 membersSummary.event7.title = Event 7: Pension commencement lump sum (more than 25% of the fund where the member does not have primary/enhanced protection) in the tax year ending 5 April {0}
 membersSummary.event7.heading = Event 7: Pension commencement lump sum (more than 25% of the fund where the member does not have primary/enhanced protection) in the tax year ending 5 April {0}
 membersSummary.event7.error.required = Select yes if you want to add another entry
@@ -957,7 +975,7 @@ event8.typeOfProtection.heading = What type of protection was held for the lump 
 event8.typeOfProtection.primaryProtection = Primary protection
 event8.typeOfProtection.enhancedProtection = Enhanced protection
 event8.typeOfProtection.checkYourAnswersLabel = Protection type held
-event8.typeOfProtection.error.required = Select the type of protection that is held
+event8.typeOfProtection.error.required = Select the type of protection that was held
 event8.typeOfProtection.change.hidden = the protection type
 
 inputProtectionType.title = What is the member’s {0} reference?
@@ -972,7 +990,7 @@ typeOfProtectionReference.title = What is the member’s {0} reference?
 typeOfProtectionReference.heading = What is the member’s {0} reference?
 typeOfProtectionReference.checkYourAnswersLabel = Member’s {0} reference
 typeOfProtectionReference.change.hidden = the {0} reference
-typeOfProtectionReference.error.required = Enter a protection reference
+typeOfProtectionReference.error.required = Enter the protection reference
 typeOfProtectionReference.error.length = Enter a protection reference between 8 and 15 characters (it can be a combination of numbers and letters)
 typeOfProtectionReference.error.invalid = The protection reference can only contain letters and numbers
 
@@ -1026,20 +1044,17 @@ paymentDate.date.error.outsideReportedYear = The date must be between 6 April 20
 paymentDate.date.change.hidden = the date of the payment
 paymentDate.date.checkYourAnswersLabel = The date the payment was made
 
-
-
-
 lumpSumAmountAndDate.title = Lump sum amount and date
 lumpSumAmountAndDate.heading = Lump sum amount and date
 
 lumpSumAmountAndDate.value.heading = How much lump sum was paid?
-lumpSumAmountAndDate.value.error.nothingEntered = Enter the total amount
-lumpSumAmountAndDate.value.error.notANumber = The total amount must be an amount of money, like 123.45 or 156.00
-lumpSumAmountAndDate.value.error.noDecimals = The amount must include pence, like 123.45 or 156.00
-lumpSumAmountAndDate.value.error.amountTooHigh = The total amount must be £999999999.99 or less
-lumpSumAmountAndDate.value.error.negativeValue = The amount must not be a negative amount of money, like -123.45 or -156.00
-lumpSumAmountAndDate.value.error.zeroEntered = The total amount must be greater than zero
-lumpSumAmountAndDate.value.change.hidden = the total amount
+lumpSumAmountAndDate.value.error.nothingEntered = Enter the lump sum amount
+lumpSumAmountAndDate.value.error.notANumber = The lump sum amount must be an amount of money, like 123.45 or 156.00
+lumpSumAmountAndDate.value.error.noDecimals = The lump sum amount must include pence, like 123.45 or 156.00
+lumpSumAmountAndDate.value.error.amountTooHigh = The lump sum amount must be £999999999.99 or less
+lumpSumAmountAndDate.value.error.negativeValue = The lump sum amount must not be a negative amount of money, like -123.45 or -156.00
+lumpSumAmountAndDate.value.error.zeroEntered = The lump sum amount must be greater than zero
+lumpSumAmountAndDate.value.change.hidden = the lump sum amount
 lumpSumAmountAndDate.value.checkYourAnswersLabel = Lump sum amount
 
 lumpSumAmountAndDate.date.heading = When was the payment made?
@@ -1105,3 +1120,40 @@ earlyBenefitsBriefDescription.checkYourAnswersLabel = Give a brief description o
 earlyBenefitsBriefDescription.error.length = You can enter a maximum of 150 characters (optional)
 earlyBenefitsBriefDescription.change.hidden = Give a brief description of why the benefits were taken early
 
+event4.paymentDetails.title = Amount paid and date
+event4.paymentDetails.heading = Amount paid and date
+event5.paymentDetails.title = What was the member’s annual rate of pension entitlement immediately before the date of non-payment started?
+event5.paymentDetails.heading = What was the member’s annual rate of pension entitlement immediately before the date of non-payment started?
+event4.paymentDetails.value.heading = Total amount paid
+event5.paymentDetails.value.heading = Total amount paid
+
+paymentDetails.value.error.nothingEntered = Enter the total amount that was paid
+paymentDetails.value.error.notANumber = The total amount must be an amount of money, like 123.45 or 156.00
+paymentDetails.value.error.noDecimals = The total amount must include pence, like 123.45 or 156.00
+paymentDetails.value.error.amountTooHigh = The total amount must be £999999999.99 or less
+paymentDetails.value.error.negativeValue = The total amount must not be a negative amount of money, like -123.45 or -156.00
+paymentDetails.value.error.zeroEntered = The total amount must be greater than zero
+paymentDetails.value.change.hidden = the total amount
+paymentDetails.value.checkYourAnswersLabel = Total amount paid
+
+event3.paymentDetails.value.heading = Total amount of benefits taken
+event3.paymentDetails.value.checkYourAnswersLabel = Total amount of benefits taken
+event3.paymentDetails.value.change.hidden = the total amount of benefits taken
+event3.paymentDetails.date.heading = Date benefits were taken
+event3.paymentDetails.title = Amount and date
+event3.paymentDetails.heading = Amount and date
+event3.paymentDetails.date.change.hidden = the date benefits were taken
+event3.paymentDetails.date.checkYourAnswersLabel = Date benefits were taken
+
+event4.paymentDetails.date.heading = Date of payment
+event5.paymentDetails.date.heading = Date the period of non-payment started
+event4.paymentDetails.date.change.hidden = the date of the payment
+event5.paymentDetails.date.checkYourAnswersLabel = Date of the payment
+
+paymentDetails.date.hint = For example, 22 09 2022
+paymentDetails.date.error.nothingEntered = Enter the date
+paymentDetails.date.error.noDayMonthOrYear = The date must include a day, month and year
+paymentDetails.date.error.outsideDateRanges = Enter a real date
+paymentDetails.date.error.outsideReportedYear = Date must be between {0} and {1}
+paymentDetails.date.change.hidden = the date of the payment
+paymentDetails.date.checkYourAnswersLabel = Date of the payment

@@ -19,20 +19,21 @@ package pages.event3
 import controllers.event3.routes
 import models.UserAnswers
 import models.enumeration.EventType
-import pages.common.MembersPage
+import models.enumeration.EventType.Event3
+import pages.common.{MembersPage, PaymentDetailsPage}
 import pages.{IndexPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class EarlyBenefitsBriefDescriptionPage(index: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = MembersPage(EventType.Event3)(index) \ "paymentDetails" \ toString
+  override def path: JsPath = MembersPage(EventType.Event3)(index) \ PaymentDetailsPage(Event3, index).toString \ toString
 
   override def route(waypoints: Waypoints): Call =
     routes.EarlyBenefitsBriefDescriptionController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    IndexPage
+    PaymentDetailsPage(Event3, index)
   }
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
@@ -41,5 +42,5 @@ case class EarlyBenefitsBriefDescriptionPage(index: Int) extends QuestionPage[St
 
 }
 object EarlyBenefitsBriefDescriptionPage {
-  override def toString: String = "other"
+  override def toString: String = "freeText"
 }

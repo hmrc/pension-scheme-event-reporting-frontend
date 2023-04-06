@@ -17,7 +17,7 @@
 package pages.common
 
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23, Event6, Event7, Event8, Event8A}
+import models.enumeration.EventType.{Event22, Event23, Event4, Event5, Event6, Event7, Event8, Event8A}
 import models.{Index, UserAnswers}
 import pages.event7.Event7MembersPage
 import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
@@ -35,6 +35,8 @@ case class MembersSummaryPage(eventType: EventType, pageNumber: Index) extends Q
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     (eventType, answers.get(MembersSummaryPage(eventType, pageNumber))) match {
+      case (Event4, Some(true)) => MembersDetailsPage(Event4, answers.countAll(MembersPage(EventType.Event4)))
+      case (Event5, Some(true)) => MembersDetailsPage(Event5, answers.countAll(MembersPage(EventType.Event5)))
       case (Event6, Some(true)) => MembersDetailsPage(Event6, answers.countAll(MembersPage(EventType.Event6)))
       case (Event7, Some(true)) => MembersDetailsPage(Event7, answers.countAll(Event7MembersPage(EventType.Event7)))
       case (Event8, Some(true)) => MembersDetailsPage(Event8, answers.countAll(MembersPage(EventType.Event8)))

@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package forms.event8
+package models.common
 
-import javax.inject.Inject
+import play.api.libs.json._
 
-import forms.mappings.Mappings
-import play.api.data.Form
-import models.event8.TypeOfProtection
+import java.time.LocalDate
 
-class TypeOfProtectionFormProvider @Inject() extends Mappings {
+case class PaymentDetails(amountPaid: BigDecimal, eventDate: LocalDate)
 
-  def apply(): Form[TypeOfProtection] =
-    Form(
-      "value" -> enumerable[TypeOfProtection]("event8.typeOfProtection.error.required")
-    )
+object PaymentDetails {
+  implicit val format: Format[PaymentDetails] = Json.format[PaymentDetails]
 }
+
+
+

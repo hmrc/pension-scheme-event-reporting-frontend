@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.event6
+package controllers.event4
 
 import base.SpecBase
-import data.SampleData.sampleMemberJourneyDataEvent6
+import data.SampleData.sampleMemberJourneyDataEvent4and5
+import models.enumeration.EventType.Event4
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -32,18 +33,18 @@ import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
-class Event6CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
+class Event4CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
-  import Event6CheckYourAnswersControllerSpec._
+  import Event4CheckYourAnswersControllerSpec._
 
-  "Check Your Answers Controller for Event 6" - {
+  "Check Your Answers Controller for Event 4" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(0).url)
+        val request = FakeRequest(GET, controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url)
 
         val result = route(application, request).value
 
@@ -51,7 +52,7 @@ class Event6CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-6-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-4-click")(request, messages(application)).toString
       }
     }
 
@@ -62,7 +63,7 @@ class Event6CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleMemberJourneyDataEvent6),
+        userAnswers = Some(sampleMemberJourneyDataEvent4and5(Event4)),
         extraModules = extraModules
       ).build()
 
@@ -71,12 +72,12 @@ class Event6CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
       running(application) {
         when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
-        val request = FakeRequest(GET, controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(0).url)
+        val request = FakeRequest(GET, controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url)
         val result = route(application, request).value
         status(result) mustEqual OK
 
         val actual: Seq[SummaryListRow] = captor.getValue.rows
-        val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRowsEvent6
+        val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRowsEvent4
 
         actual.size mustBe expected.size
 
@@ -91,7 +92,7 @@ class Event6CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(0).url)
+        val request = FakeRequest(GET, controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url)
 
         val result = route(application, request).value
 
@@ -102,7 +103,7 @@ class Event6CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
   }
 }
 
-object Event6CheckYourAnswersControllerSpec {
+object Event4CheckYourAnswersControllerSpec {
 
   private def fakeSummaryListRowWithHtmlContentWithHiddenContent(messageKey: String, htmlContent: String, changeLink: String, hiddenContentChangeLink: String)
                                                                 (implicit messages: Messages): SummaryListRow =
@@ -126,56 +127,30 @@ object Event6CheckYourAnswersControllerSpec {
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages("site.change") + " " + messages(hiddenContentChangeLink)), "", Map()))))
     )
 
-  private def fakeSummaryListRowWithHtmlContentWithHiddenContentWithTwoMsgKeys(messageKeyOne: String, messageKeyTwo: String, htmlContent: String,
-                                                                               changeLink: String, hiddenContentChangeLink: String)
-                                                                              (implicit messages: Messages): SummaryListRow =
-    SummaryListRow(
-      Key(
-        Text(
-          messages(messageKeyOne, messages(messageKeyTwo))
-        ), ""),
-      Value(Text(htmlContent), ""), "",
-      Some(Actions("", List(ActionItem(changeLink, Text("Change"),
-        Some(messages("site.change") + " " + messages(hiddenContentChangeLink, messages(messageKeyTwo).toLowerCase)), "", Map()))))
-    )
-
-  private def expectedMemberSummaryListRowsEvent6(implicit messages: Messages): Seq[SummaryListRow] = Seq(
+  private def expectedMemberSummaryListRowsEvent4(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel",
       "Joe Bloggs",
-      "/manage-pension-scheme-event-report/new-report/1/event-6-member-details?waypoints=event-6-check-answers-1",
+      "/manage-pension-scheme-event-report/new-report/1/event-4-member-details?waypoints=event-4-check-answers-1",
       "membersDetails.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel.nino",
       "AA234567V",
-      "/manage-pension-scheme-event-report/new-report/1/event-6-member-details?waypoints=event-6-check-answers-1",
+      "/manage-pension-scheme-event-report/new-report/1/event-4-member-details?waypoints=event-4-check-answers-1",
       "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
-      "typeOfProtection.checkYourAnswersLabel",
-      "Enhanced lifetime allowance",
-      "/manage-pension-scheme-event-report/new-report/1/event-6-what-type-protection-reference?waypoints=event-6-check-answers-1",
-      "typeOfProtection.change.hidden"
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContentWithTwoMsgKeys(
-      "inputProtectionType.checkYourAnswersLabel",
-      "typeOfProtection.enhancedLifetimeAllowance",
-      "1234567A",
-      "/manage-pension-scheme-event-report/new-report/1/event-6-protection-reference?waypoints=event-6-check-answers-1",
-      "inputProtectionType.change.hidden"
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContent(
-      "amountCrystallisedAndDate.value.checkYourAnswersLabel",
-      "£857.12",
-      "/manage-pension-scheme-event-report/new-report/1/event-6-payment-details?waypoints=event-6-check-answers-1",
-      "amountCrystallisedAndDate.value.change.hidden"
+      "paymentDetails.value.checkYourAnswersLabel",
+      "£54.23",
+      "/manage-pension-scheme-event-report/new-report/1/event-4-payment-details?waypoints=event-4-check-answers-1",
+      "paymentDetails.value.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
-      "amountCrystallisedAndDate.date.checkYourAnswersLabel",
-      "08 November 2022",
-      "/manage-pension-scheme-event-report/new-report/1/event-6-payment-details?waypoints=event-6-check-answers-1",
-      "amountCrystallisedAndDate.date.change.hidden"
+      "paymentDetails.date.checkYourAnswersLabel",
+      "05 April 2022",
+      "/manage-pension-scheme-event-report/new-report/1/event-4-payment-details?waypoints=event-4-check-answers-1",
+      "paymentDetails.date.change.hidden"
     )
   )
 }
