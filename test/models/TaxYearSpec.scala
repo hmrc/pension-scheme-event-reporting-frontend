@@ -42,7 +42,6 @@ class TaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyCheck
 
       forAll(gen) {
         taxYear =>
-          println(taxYear)
           JsString(taxYear.startYear).validate[TaxYear].asOpt.value mustEqual taxYear
       }
     }
