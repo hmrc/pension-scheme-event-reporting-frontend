@@ -50,8 +50,8 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
           oneDateComponentMissingKey = "paymentValueAndDate.date.error.noDayMonthOrYear"
         ).verifying(
           yearHas4Digits("paymentValueAndDate.date.error.outsideDateRanges"),
-          minDate(startDate, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", formatDateDMY(startDate), formatDateDMY(endDate))),
-          maxDate(endDate, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", formatDateDMY(startDate), formatDateDMY(endDate)))
+          minDate(startDate, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", startDate.getYear.toString, endDate.getYear.toString)),
+          maxDate(endDate, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", startDate.getYear.toString, endDate.getYear.toString))
         )
       )
       (PaymentDetails.apply)(PaymentDetails.unapply)
