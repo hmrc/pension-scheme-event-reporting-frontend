@@ -21,6 +21,7 @@ import pages.event1.Event1CheckYourAnswersPage
 import pages.event13.Event13CheckYourAnswersPage
 import pages.event22.Event22CheckYourAnswersPage
 import pages.event23.Event23CheckYourAnswersPage
+import pages.event3.Event3CheckYourAnswersPage
 import pages.event4.Event4CheckYourAnswersPage
 import pages.event5.Event5CheckYourAnswersPage
 import pages.event6.Event6CheckYourAnswersPage
@@ -55,7 +56,7 @@ object Waypoint {
   def fromString(s: String): Option[Waypoint] =
     fragments.get(s)
       .orElse(Event1CheckYourAnswersPage.waypointFromString(s))
-      /*.orElse(Event3CheckYourAnswersPage.waypointFromString(s))*//*TODO Add when complete CYA page*/
+      .orElse(Event3CheckYourAnswersPage.waypointFromString(s))
       .orElse(Event4CheckYourAnswersPage.waypointFromString(s))
       .orElse(Event5CheckYourAnswersPage.waypointFromString(s))
       .orElse(Event6CheckYourAnswersPage.waypointFromString(s))

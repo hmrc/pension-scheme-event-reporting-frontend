@@ -19,11 +19,12 @@ package controllers.event3
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event3.ReasonForBenefitsFormProvider
-import models.{Index, UserAnswers}
 import models.enumeration.EventType
+import models.{Index, UserAnswers}
+import org.apache.commons.lang3.StringUtils
 import pages.Waypoints
 import pages.event3.ReasonForBenefitsPage
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event3.ReasonForBenefitsView
@@ -61,5 +62,7 @@ class ReasonForBenefitsController @Inject()(val controllerComponents: MessagesCo
         }
       )
   }
+
+
 
 }

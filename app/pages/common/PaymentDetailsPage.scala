@@ -21,6 +21,7 @@ import models.UserAnswers
 import models.common.PaymentDetails
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event3, Event4, Event5}
+import pages.event3.Event3CheckYourAnswersPage
 import pages.event4.Event4CheckYourAnswersPage
 import pages.event5.Event5CheckYourAnswersPage
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
@@ -37,7 +38,7 @@ case class PaymentDetailsPage(eventType: EventType, index: Int) extends Question
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     eventType match {
-      case Event3 => IndexPage /*TODO Add Event3CheckYourAnswersPage(Index)*/
+      case Event3 => Event3CheckYourAnswersPage(index)
       case Event4 => Event4CheckYourAnswersPage(index)
       case Event5 => Event5CheckYourAnswersPage(index)
       case _ => IndexPage
