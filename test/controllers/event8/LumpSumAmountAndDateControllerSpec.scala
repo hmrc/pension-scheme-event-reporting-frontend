@@ -42,7 +42,7 @@ class LumpSumAmountAndDateControllerSpec extends SpecBase with BeforeAndAfterEac
   private val waypoints = EmptyWaypoints
 
   private val stubMin: LocalDate = LocalDate.of(2006, 4, 6) //06-04-2006
-  private val stubMax: LocalDate = LocalDate.of(LocalDate.now().getYear, 4, 5) //05-04-2023
+  private val stubMax: LocalDate = LocalDate.of(2023, 4, 5) //05-04-2023
 
   private val formProvider = new LumpSumAmountAndDateFormProvider()
   private val form = formProvider(stubMin, stubMax)
@@ -251,5 +251,5 @@ object LumpSumAmountAndDateControllerSpec {
     }
   }
 
-  private val validDate = validDateCalc(LocalDate.now())
+  private val validDate = validDateCalc(LocalDate.of(2023, 1, 1))
 }
