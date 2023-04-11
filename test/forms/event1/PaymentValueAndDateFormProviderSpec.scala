@@ -28,9 +28,9 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
 
   // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now.
   private val stubMin: LocalDate = LocalDate.of(2022, 4, 6)
-  private val stubMax: LocalDate = LocalDate.of(2024, 4, 5)
+  private val stubMax: LocalDate = LocalDate.of(2023, 4, 5)
 
-  private val form = new PaymentValueAndDateFormProvider().apply(min = stubMin, max = stubMax)
+  private val form = new PaymentValueAndDateFormProvider().apply(stubMin.getYear)
 
   private val paymentValueKey = "paymentValue"
   private val paymentDateKey = "paymentDate"
@@ -58,39 +58,39 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
   "paymentValue" - {
 
     "not bind no input" in {
-      val result = form.bind(paymentDetails(paymentValue = "", Some(LocalDate.now())))
+      val result = form.bind(paymentDetails(paymentValue = "", Some(LocalDate.of(2022,6,4))))
       result.errors mustEqual Seq(FormError(paymentValueKey, s"$messageKeyPaymentValueKey.error.nothingEntered"))
     }
 
     "not bind non-numeric numbers" in {
-      val result = form.bind(paymentDetails(paymentValue = "one,two.three", Some(LocalDate.now())))
+      val result = form.bind(paymentDetails(paymentValue = "one,two.three", Some(LocalDate.of(2022,6,4))))
       result.errors mustEqual Seq(FormError(paymentValueKey, s"$messageKeyPaymentValueKey.error.notANumber"))
     }
 
     "not bind integers" in {
       forAll(invalidDataGenerator -> "noDecimals") {
         int: String =>
-          val result = form.bind(paymentDetails(paymentValue = int, Some(LocalDate.now())))
+          val result = form.bind(paymentDetails(paymentValue = int, Some(LocalDate.of(2022,6,4))))
           result.errors mustEqual Seq(FormError(paymentValueKey, s"$messageKeyPaymentValueKey.error.noDecimals"))
       }
     }
 
     "bind within the range 0 to 999999999.99" in {
       val number = "999999999.99"
-          val result = form.bind(paymentDetails(paymentValue = number, Some(LocalDate.now())))
+          val result = form.bind(paymentDetails(paymentValue = number, Some(LocalDate.of(2022,6,4))))
           result.errors mustEqual Nil
     }
 
     "not bind outside the range 0 to 999999999.99" in {
       val number = "1000000000.00"
-          val result = form.bind(paymentDetails(paymentValue = number, Some(LocalDate.now())))
+          val result = form.bind(paymentDetails(paymentValue = number, Some(LocalDate.of(2022,6,4))))
           result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyPaymentValueKey.error.amountTooHigh")
     }
 
     "not bind numbers below 0" in {
       forAll(negativeValueDataGenerator -> "negative") {
         number: String =>
-          val result = form.bind(paymentDetails(paymentValue = number, Some(LocalDate.now())))
+          val result = form.bind(paymentDetails(paymentValue = number, Some(LocalDate.of(2022,6,4))))
           result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyPaymentValueKey.error.negative")
       }
     }
@@ -114,14 +114,14 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
       form = form,
       key = paymentDateKey,
       min = stubMin,
-      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear"))
+      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", "2022", "2023"))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = paymentDateKey,
       max = stubMax,
-      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear"))
+      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", "2022", "2023"))
     )
   }
 }
