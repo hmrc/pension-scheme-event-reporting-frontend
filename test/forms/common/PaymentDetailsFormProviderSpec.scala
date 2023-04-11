@@ -28,9 +28,10 @@ class PaymentDetailsFormProviderSpec extends SpecBase
   with BigDecimalFieldBehaviours with DateBehavioursTrait {
 
   private val stubMin: LocalDate = LocalDate.of(2006, 4, 6)
-  private val stubMax: LocalDate = LocalDate.of(2024, 4, 5)
+  private val stubMax: LocalDate = LocalDate.of(2023, 4, 5)
 
   private val form = new PaymentDetailsFormProvider().apply(min = stubMin, max = stubMax)
+  private val validDate = LocalDate.of(2023, 1, 1)
 
   private val amountPaidKey = "amountPaid"
   private val eventDateKey = "eventDate"
@@ -58,45 +59,45 @@ class PaymentDetailsFormProviderSpec extends SpecBase
   "amountPaid" - {
 
     "not bind no input" in {
-      val result = form.bind(paymentDetails(amountPaid = "", Some(LocalDate.now())))
+      val result = form.bind(paymentDetails(amountPaid = "", Some(validDate)))
       result.errors mustEqual Seq(FormError(amountPaidKey, s"$messageKeyAmountPaidKey.error.nothingEntered"))
     }
 
     "not bind non-numeric numbers" in {
-      val result = form.bind(paymentDetails(amountPaid = "one,two.three", Some(LocalDate.now())))
+      val result = form.bind(paymentDetails(amountPaid = "one,two.three", Some(validDate)))
       result.errors mustEqual Seq(FormError(amountPaidKey, s"$messageKeyAmountPaidKey.error.notANumber"))
     }
 
     "not bind integers" in {
       forAll(invalidDataGenerator -> "noDecimals") {
         int: String =>
-          val result = form.bind(paymentDetails(amountPaid = int, Some(LocalDate.now())))
+          val result = form.bind(paymentDetails(amountPaid = int, Some(validDate)))
           result.errors mustEqual Seq(FormError(amountPaidKey, s"$messageKeyAmountPaidKey.error.noDecimals"))
       }
     }
 
     "bind within the range 0 to 999999999.99" in {
       val number = "999999999.99"
-      val result = form.bind(paymentDetails(amountPaid = number, Some(LocalDate.now())))
+      val result = form.bind(paymentDetails(amountPaid = number, Some(validDate)))
       result.errors mustEqual Nil
     }
 
     "not bind outside the range 0 to 999999999.99" in {
       val number = "1000000000.00"
-      val result = form.bind(paymentDetails(amountPaid = number, Some(LocalDate.now())))
+      val result = form.bind(paymentDetails(amountPaid = number, Some(validDate)))
       result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyAmountPaidKey.error.amountTooHigh")
     }
 
     "not bind numbers equal to 0" in {
       val number = "0.00"
-      val result = form.bind(paymentDetails(amountPaid = number, Some(LocalDate.now())))
+      val result = form.bind(paymentDetails(amountPaid = number, Some(validDate)))
       result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyAmountPaidKey.error.zeroEntered")
     }
 
     "not bind numbers below 0" in {
       forAll(negativeValueDataGenerator -> "negative") {
         number: String =>
-          val result = form.bind(paymentDetails(amountPaid = number, Some(LocalDate.now())))
+          val result = form.bind(paymentDetails(amountPaid = number, Some(validDate)))
           result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyAmountPaidKey.error.negativeValue")
       }
     }

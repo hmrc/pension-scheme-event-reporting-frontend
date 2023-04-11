@@ -44,7 +44,11 @@ case class ReasonForBenefitsPage(index: Int) extends QuestionPage[ReasonForBenef
   }
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
-    IndexPage
+    updatedAnswers.get(this) match {
+      case Some(Other) => EarlyBenefitsBriefDescriptionPage(index)
+      case _ => PaymentDetailsPage(Event3, index)
+    }
+
 
 
 }

@@ -34,6 +34,7 @@ class PaymentDateFormProviderSpec extends SpecBase
   private val form = new PaymentDateFormProvider().apply(max = stubMax)
 
   private val paymentDateKey = "paymentDate"
+
   // scalastyle:off magic.number
   val invalidDataGenerator: Gen[String] = intsInRangeWithCommas(0, 999999999)
   val negativeValueDataGenerator: Gen[String] = decimalsBelowValue(0)
