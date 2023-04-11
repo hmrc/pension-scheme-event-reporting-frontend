@@ -41,32 +41,35 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
                                          view: MembersDetailsView
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
 
-  def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index, memberPageNo: Int): Action[AnyContent] =
     (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, indexToInt(index)))).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, eventType, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index)))
+    val form = formProvider(eventType, memberPageNo)
+    val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, indexToInt(index), memberPageNo))).fold(form)(form.fill)
+    Ok(view(preparedForm, waypoints, eventType, memberPageNo, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index, memberPageNo)))
   }
 
-  def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index, memberPageNo: Int): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       doOnSubmit(
         waypoints,
         eventType,
-        MembersDetailsPage(eventType, index),
-        controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index)
+        MembersDetailsPage(eventType, index, memberPageNo),
+        controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index, memberPageNo),
+        memberPageNo
       )
   }
 
   private def doOnSubmit(waypoints: Waypoints,
                          eventType: EventType,
                          page: MembersDetailsPage,
-                         postCall: => Call
-                        )(implicit request: OptionalDataRequest[_]): Future[Result] =
+                         postCall: => Call,
+                         memberPageNo: Int
+                        )(implicit request: OptionalDataRequest[_]): Future[Result] = {
+    val form = formProvider(eventType,memberPageNo)
     form.bindFromRequest().fold(
       formWithErrors =>
-        Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, postCall))),
+        Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, memberPageNo, postCall))),
       value => {
         val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
         val updatedAnswers = originalUserAnswers.setOrException(page, value)
@@ -75,4 +78,5 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
         }
       }
     )
+  }
 }

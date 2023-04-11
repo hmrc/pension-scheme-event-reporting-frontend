@@ -23,7 +23,7 @@ import data.SampleData._
 import forms.common.MembersSummaryFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23, Event4, Event5, Event6, Event8, Event8A}
+import models.enumeration.EventType.{Event2, Event22, Event23, Event4, Event5, Event6, Event8, Event8A}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -46,13 +46,6 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new MembersSummaryFormProvider()
-  private val formEvent4 = formProvider(Event4)
-  private val formEvent5 = formProvider(Event5)
-  private val formEvent6 = formProvider(Event6)
-  private val formEvent8 = formProvider(Event8)
-  private val formEvent8a = formProvider(Event8A)
-  private val formEvent22 = formProvider(Event22)
-  private val formEvent23 = formProvider(Event23)
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute(eventType: EventType): String = routes.MembersSummaryController.onPageLoad(waypoints, eventType).url
@@ -68,26 +61,29 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
     reset(mockUserAnswersCacheConnector)
   }
 
-  "AnnualAllowanceSummary Controller" - {
-    testSuite(formEvent4, Event4, sampleMemberJourneyDataEvent4and5(Event4), SampleData.paymentDetailsCommon.amountPaid.toString(),
+  "MembersSummary Controller" - {
+    testSuite(formProvider(Event2), Event2, sampleMemberJourneyDataEvent2, SampleData.amountPaid.toString(),
+      controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(0).url, "999.11")
+
+    testSuite(formProvider(Event4), Event4, sampleMemberJourneyDataEvent4and5(Event4), SampleData.paymentDetailsCommon.amountPaid.toString(),
       controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url, "54.23")
 
-    testSuite(formEvent5, Event5, sampleMemberJourneyDataEvent4and5(Event5), SampleData.paymentDetailsCommon.amountPaid.toString(),
+    testSuite(formProvider(Event5), Event5, sampleMemberJourneyDataEvent4and5(Event5), SampleData.paymentDetailsCommon.amountPaid.toString(),
       controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(0).url, "54.23")
 
-    testSuite(formEvent6, Event6, sampleMemberJourneyDataEvent6, SampleData.crystallisedDetails.amountCrystallised.toString(),
+    testSuite(formProvider(Event6), Event6, sampleMemberJourneyDataEvent6, SampleData.crystallisedDetails.amountCrystallised.toString(),
       controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(0).url, "857.12")
 
-    testSuite(formEvent8, Event8, sampleMemberJourneyDataEvent8, SampleData.lumpSumDetails.lumpSumAmount.toString(),
+    testSuite(formProvider(Event8), Event8, sampleMemberJourneyDataEvent8, SampleData.lumpSumDetails.lumpSumAmount.toString(),
       controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(0).url, "223.11")
 
-    testSuite(formEvent8a, Event8A, sampleMemberJourneyDataEvent8A, SampleData.lumpSumDetails.lumpSumAmount.toString(),
+    testSuite(formProvider(Event8A), Event8A, sampleMemberJourneyDataEvent8A, SampleData.lumpSumDetails.lumpSumAmount.toString(),
       controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(0).url, "223.11")
 
-    testSuite(formEvent22, Event22, sampleMemberJourneyDataEvent22, SampleData.totalPaymentAmount.toString(),
+    testSuite(formProvider(Event22), Event22, sampleMemberJourneyDataEvent22, SampleData.totalPaymentAmount.toString(),
       controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url, "999.11")
 
-    testSuite(formEvent23, Event23, sampleMemberJourneyDataEvent23, SampleData.totalPaymentAmountEvent23CurrencyFormat,
+    testSuite(formProvider(Event23), Event23, sampleMemberJourneyDataEvent23, SampleData.totalPaymentAmountEvent23CurrencyFormat,
       controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url, "1,234.56")
   }
 

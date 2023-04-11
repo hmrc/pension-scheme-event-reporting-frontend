@@ -29,6 +29,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.common.MembersDetailsPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Call
@@ -44,14 +45,16 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
   private val seqOfEvents = Seq(Event1, Event4, Event5, Event6, Event7, Event8, Event8A, Event22, Event23)
 
   private val formProvider = new MembersDetailsFormProvider()
-  private val form = formProvider()
+
+  private def form(eventType: EventType): Form[MembersDetails] = formProvider(eventType)
+
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute(eventType: EventType): String = routes.MembersDetailsController.onPageLoad(waypoints, eventType, Index(0)).url
+  private def getRoute(eventType: EventType): String = routes.MembersDetailsController.onPageLoad(waypoints, eventType, Index(0), memberPageNo = 0).url
 
-  private def postRoute(eventType: EventType): String = routes.MembersDetailsController.onSubmit(waypoints, eventType, 0).url
+  private def postRoute(eventType: EventType): String = routes.MembersDetailsController.onSubmit(waypoints, eventType, 0, memberPageNo = 0).url
 
-  private def submitUrl(eventType: EventType): Call = controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, 0)
+  private def submitUrl(eventType: EventType): Call = controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, 0, memberPageNo = 0)
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -91,7 +94,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
         val view = application.injector.instanceOf[MembersDetailsView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, eventType, submitUrl(eventType))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form(eventType), waypoints, eventType, 0, submitUrl(eventType))(request, messages(application)).toString
       }
     }
   }
@@ -110,7 +113,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, eventType, submitUrl(eventType))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form(eventType).fill(validValue), waypoints, eventType, 0, submitUrl(eventType))(request, messages(application)).toString
       }
     }
   }
@@ -150,12 +153,12 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("firstName", "%"), ("lastName", ""), ("nino", "abc"))
 
         val view = application.injector.instanceOf[MembersDetailsView]
-        val boundForm = form.bind(Map("firstName" -> "%", "lastName" -> "", "nino" -> "abc"))
+        val boundForm = form(eventType).bind(Map("firstName" -> "%", "lastName" -> "", "nino" -> "abc"))
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, eventType, submitUrl(eventType))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, eventType, 0, submitUrl(eventType))(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
