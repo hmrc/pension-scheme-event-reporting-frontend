@@ -28,20 +28,25 @@ case class MembersSummary(name: String, PaymentValue: BigDecimal, nINumber: Stri
 object MembersSummary {
   implicit lazy val formats: Format[MembersSummary] = Json.format[MembersSummary]
 
-  private def readsNINumber(implicit messages: Messages): Reads[String] =
-    (JsPath \ "membersDetails" \ "nino").readNullable[String]
+  private def membersDetailsNodeName(eventType: EventType) = eventType match {
+    case Event2 => "deceasedMembersDetails"
+    case _ => "membersDetails"
+  }
+
+  private def readsNINumber(eventType: EventType)(implicit messages: Messages): Reads[String] =
+    (JsPath \ membersDetailsNodeName(eventType) \ "nino").readNullable[String]
       .map(_.getOrElse(messages("site.notEntered")))
 
   def readsMemberValue(eventType: EventType): Reads[BigDecimal] =
     memberValuePath(eventType).readNullable[BigDecimal]
       .map(_.getOrElse(BigDecimal(0)))
 
-  private def readsMemberSummary(eventType: EventType)(implicit messages: Messages): Reads[MembersSummary] =
+  private def readsMemberSummary(eventType: EventType)(implicit messages: Messages): Reads[MembersSummary] = {
     (
-      (JsPath \ "membersDetails" \ "firstName").readNullable[String] and
-        (JsPath \ "membersDetails" \ "lastName").readNullable[String] and
+      (JsPath \ membersDetailsNodeName(eventType) \ "firstName").readNullable[String] and
+        (JsPath \ membersDetailsNodeName(eventType) \ "lastName").readNullable[String] and
         readsMemberValue(eventType) and
-        readsNINumber
+        readsNINumber(eventType)
       )(
       (firstName, lastName, paymentValue, nINumber) => {
         (firstName, lastName, paymentValue, nINumber) match {
@@ -52,12 +57,14 @@ object MembersSummary {
         }
       }
     )
+  }
 
   def readsMember(eventType: EventType)(implicit messages: Messages): Reads[MembersSummary] = {
     JsPath.read(readsMemberSummary(eventType))
   }
 
   def memberValuePath(eventType: EventType): JsPath = eventType match {
+    case Event2 => JsPath \ "amountPaid"
     case Event6 => JsPath \ "AmountCrystallisedAndDate" \ "amountCrystallised"
     case Event8 => JsPath \ "lumpSumAmountAndDate" \ "lumpSumAmount"
     case Event8A => JsPath \ "lumpSumAmountAndDate" \ "lumpSumAmount"
