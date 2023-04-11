@@ -824,6 +824,15 @@ membersSummary.table.header2 = National Insurance number
 membersSummary.table.header3 = Pension input amounts
 membersSummary.table.totalTitle = Total
 
+membersSummary.event3.title = Event 3: Benefits provided before normal minimum pension age
+membersSummary.event3.heading = Event 3: Benefits provided before normal minimum pension age
+membersSummary.event3.error.required = Select yes if you want to add another entry
+membersSummary.event3.yesno.legend = Do you want to add another entry for this event?
+membersSummary.event3.table.header1 = Member
+membersSummary.event3.table.header2 = National Insurance number
+membersSummary.event3.table.header3 = Amount paid
+membersSummary.event3.table.totalTitle = Total not required
+
 membersSummary.event4.title = Event 4: Payment of serious ill-health lump sum in the tax year ending 5 April {0}
 membersSummary.event4.heading = Event 4: Payment of serious ill-health lump sum in the tax year ending 5 April {0}
 membersSummary.event4.error.required = Select yes if you want to add another entry

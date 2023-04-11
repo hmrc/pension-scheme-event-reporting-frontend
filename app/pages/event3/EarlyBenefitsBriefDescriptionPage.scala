@@ -21,13 +21,13 @@ import models.UserAnswers
 import models.enumeration.EventType
 import models.enumeration.EventType.Event3
 import pages.common.{MembersPage, PaymentDetailsPage}
-import pages.{IndexPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class EarlyBenefitsBriefDescriptionPage(index: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = MembersPage(EventType.Event3)(index) \ "paymentDetails" \ toString
+  override def path: JsPath = MembersPage(EventType.Event3)(index) \ "benefitType" \ toString
 
   override def route(waypoints: Waypoints): Call =
     routes.EarlyBenefitsBriefDescriptionController.onPageLoad(waypoints, index)
@@ -37,7 +37,7 @@ case class EarlyBenefitsBriefDescriptionPage(index: Int) extends QuestionPage[St
   }
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
-   IndexPage
+    PaymentDetailsPage(Event3, index)
   }
 
 }

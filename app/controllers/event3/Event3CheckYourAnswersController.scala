@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.Index
-import models.enumeration.EventType.{Event3, Event4}
+import models.enumeration.EventType.Event3
 import models.event3.ReasonForBenefits.Other
 import models.requests.DataRequest
 import pages.event3.{Event3CheckYourAnswersPage, ReasonForBenefitsPage}
@@ -56,11 +56,12 @@ class Event3CheckYourAnswersController @Inject()(
     }
 
   def onClick: Action[AnyContent] =
-    (identify andThen getData(Event3) andThen requireData).async { implicit request =>
+    (identify andThen getData(Event3) andThen requireData)/*.async*/ { /* implicit request =>
+      TODO re-add when backend transformation complete
       connector.compileEvent(request.pstr, Event3).map {
-        _ =>
-          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event4).url)
-      }
+        _ => */
+          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event3).url)
+//      }
     }
 
   private def event3ReasonForBenefitsRows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)

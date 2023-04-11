@@ -23,7 +23,7 @@ import data.SampleData._
 import forms.common.MembersSummaryFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23, Event4, Event5, Event6, Event8, Event8A}
+import models.enumeration.EventType.{Event22, Event23, Event3, Event4, Event5, Event6, Event8, Event8A}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -46,6 +46,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new MembersSummaryFormProvider()
+  private val formEvent3 = formProvider(Event3)
   private val formEvent4 = formProvider(Event4)
   private val formEvent5 = formProvider(Event5)
   private val formEvent6 = formProvider(Event6)
@@ -68,11 +69,14 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
     reset(mockUserAnswersCacheConnector)
   }
 
-  "AnnualAllowanceSummary Controller" - {
-    testSuite(formEvent4, Event4, sampleMemberJourneyDataEvent4and5(Event4), SampleData.paymentDetailsCommon.amountPaid.toString(),
+  "MembersSummary Controller" - {
+    testSuite(formEvent3, Event3, sampleMemberJourneyDataEvent3and4and5(Event3), SampleData.paymentDetailsCommon.amountPaid.toString(),
+      controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(0).url, "54.23")
+
+    testSuite(formEvent4, Event4, sampleMemberJourneyDataEvent3and4and5(Event4), SampleData.paymentDetailsCommon.amountPaid.toString(),
       controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url, "54.23")
 
-    testSuite(formEvent5, Event5, sampleMemberJourneyDataEvent4and5(Event5), SampleData.paymentDetailsCommon.amountPaid.toString(),
+    testSuite(formEvent5, Event5, sampleMemberJourneyDataEvent3and4and5(Event5), SampleData.paymentDetailsCommon.amountPaid.toString(),
       controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(0).url, "54.23")
 
     testSuite(formEvent6, Event6, sampleMemberJourneyDataEvent6, SampleData.crystallisedDetails.amountCrystallised.toString(),

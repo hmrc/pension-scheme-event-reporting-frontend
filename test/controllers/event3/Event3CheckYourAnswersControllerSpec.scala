@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.event4
+package controllers.event3
 
 import base.SpecBase
 import data.SampleData.sampleMemberJourneyDataEvent3and4and5
-import models.enumeration.EventType.Event4
+import models.enumeration.EventType.Event3
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -33,18 +33,18 @@ import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
-class Event4CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
+class Event3CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
-  import Event4CheckYourAnswersControllerSpec._
+  import Event3CheckYourAnswersControllerSpec._
 
-  "Check Your Answers Controller for Event 4" - {
+  "Check Your Answers Controller for Event 3" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url)
+        val request = FakeRequest(GET, controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(0).url)
 
         val result = route(application, request).value
 
@@ -52,7 +52,7 @@ class Event4CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-4-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-3-click")(request, messages(application)).toString
       }
     }
 
@@ -63,7 +63,7 @@ class Event4CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleMemberJourneyDataEvent3and4and5(Event4)),
+        userAnswers = Some(sampleMemberJourneyDataEvent3and4and5(Event3)),
         extraModules = extraModules
       ).build()
 
@@ -72,12 +72,12 @@ class Event4CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
       running(application) {
         when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
-        val request = FakeRequest(GET, controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url)
+        val request = FakeRequest(GET, controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(0).url)
         val result = route(application, request).value
         status(result) mustEqual OK
 
         val actual: Seq[SummaryListRow] = captor.getValue.rows
-        val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRowsEvent4
+        val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRowsEvent3
 
         actual.size mustBe expected.size
 
@@ -92,7 +92,7 @@ class Event4CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url)
+        val request = FakeRequest(GET, controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(0).url)
 
         val result = route(application, request).value
 
@@ -103,7 +103,7 @@ class Event4CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
   }
 }
 
-object Event4CheckYourAnswersControllerSpec {
+object Event3CheckYourAnswersControllerSpec {
 
   private def fakeSummaryListRowWithHtmlContentWithHiddenContent(messageKey: String, htmlContent: String, changeLink: String, hiddenContentChangeLink: String)
                                                                 (implicit messages: Messages): SummaryListRow =
@@ -127,29 +127,29 @@ object Event4CheckYourAnswersControllerSpec {
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages("site.change") + " " + messages(hiddenContentChangeLink)), "", Map()))))
     )
 
-  private def expectedMemberSummaryListRowsEvent4(implicit messages: Messages): Seq[SummaryListRow] = Seq(
+  private def expectedMemberSummaryListRowsEvent3(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel",
       "Joe Bloggs",
-      "/manage-pension-scheme-event-report/new-report/1/event-4-member-details?waypoints=event-4-check-answers-1",
+      "/manage-pension-scheme-event-report/new-report/1/event-3-member-details?waypoints=event-3-check-answers-1",
       "membersDetails.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel.nino",
       "AA234567V",
-      "/manage-pension-scheme-event-report/new-report/1/event-4-member-details?waypoints=event-4-check-answers-1",
+      "/manage-pension-scheme-event-report/new-report/1/event-3-member-details?waypoints=event-3-check-answers-1",
       "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "paymentDetails.value.checkYourAnswersLabel",
       "£54.23",
-      "/manage-pension-scheme-event-report/new-report/1/event-4-payment-details?waypoints=event-4-check-answers-1",
+      "/manage-pension-scheme-event-report/new-report/1/event-3-payment-details?waypoints=event-3-check-answers-1",
       "paymentDetails.value.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "paymentDetails.date.checkYourAnswersLabel",
       "05 April 2022",
-      "/manage-pension-scheme-event-report/new-report/1/event-4-payment-details?waypoints=event-4-check-answers-1",
+      "/manage-pension-scheme-event-report/new-report/1/event-3-payment-details?waypoints=event-3-check-answers-1",
       "paymentDetails.date.change.hidden"
     )
   )

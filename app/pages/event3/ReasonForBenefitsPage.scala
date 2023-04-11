@@ -23,13 +23,13 @@ import models.enumeration.EventType.Event3
 import models.event3.ReasonForBenefits
 import models.event3.ReasonForBenefits.Other
 import pages.common.{MembersPage, PaymentDetailsPage}
-import pages.{IndexPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class ReasonForBenefitsPage(index: Int) extends QuestionPage[ReasonForBenefits] {
 
-  override def path: JsPath = MembersPage(EventType.Event3)(index) \ "paymentDetails" \ toString
+  override def path: JsPath = MembersPage(EventType.Event3)(index) \ "benefitType" \ toString
 
   override def toString: String = "reasonBenefitTaken"
 

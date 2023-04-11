@@ -17,7 +17,7 @@
 package controllers.event5
 
 import base.SpecBase
-import data.SampleData.sampleMemberJourneyDataEvent4and5
+import data.SampleData.sampleMemberJourneyDataEvent3and4and5
 import models.enumeration.EventType.Event5
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -63,7 +63,7 @@ class Event5CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleMemberJourneyDataEvent4and5(Event5)),
+        userAnswers = Some(sampleMemberJourneyDataEvent3and4and5(Event5)),
         extraModules = extraModules
       ).build()
 
