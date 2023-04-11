@@ -23,7 +23,7 @@ import forms.mappings.Formatters
 import models.TaxYear.getSelectedTaxYearAsString
 import models.common.MembersSummary
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23, Event6, Event8, Event8A}
+import models.enumeration.EventType.{Event2, Event22, Event23, Event6,  Event8, Event8A}
 import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.common.{MembersPage, MembersSummaryPage}
@@ -105,6 +105,7 @@ class MembersSummaryController @Inject()(
               ActionItem(
                 content = Text(Message("site.view")),
                 href = eventType match {
+                  case Event2 => controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(index).url
                   case Event6 => controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(index).url
                   case Event8 => controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(index).url
                   case Event8A => controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(index).url

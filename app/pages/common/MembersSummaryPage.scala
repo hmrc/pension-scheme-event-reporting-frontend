@@ -17,12 +17,13 @@
 package pages.common
 
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23, Event6, Event7, Event8, Event8A}
+import models.enumeration.EventType.{Event2, Event22, Event23, Event6,  Event7, Event8, Event8A}
 import models.{Index, UserAnswers}
 import pages.event7.Event7MembersPage
 import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import utils.Event2MemberPageNumbers
 
 case class MembersSummaryPage(eventType: EventType, pageNumber: Index) extends QuestionPage[Boolean] {
 
@@ -35,6 +36,7 @@ case class MembersSummaryPage(eventType: EventType, pageNumber: Index) extends Q
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     (eventType, answers.get(MembersSummaryPage(eventType, pageNumber))) match {
+      case (Event2, Some(true)) => MembersDetailsPage(Event2, answers.countAll(MembersPage(EventType.Event2)), Event2MemberPageNumbers.FIRST_PAGE_DECEASED)
       case (Event6, Some(true)) => MembersDetailsPage(Event6, answers.countAll(MembersPage(EventType.Event6)))
       case (Event7, Some(true)) => MembersDetailsPage(Event7, answers.countAll(Event7MembersPage(EventType.Event7)))
       case (Event8, Some(true)) => MembersDetailsPage(Event8, answers.countAll(MembersPage(EventType.Event8)))

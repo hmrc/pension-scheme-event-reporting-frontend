@@ -14,57 +14,47 @@
  * limitations under the License.
  */
 
-package forms.event7
+package forms.event2
 
 import base.SpecBase
 import forms.behaviours.{BigDecimalFieldBehaviours, DateBehavioursTrait}
-import org.scalacheck.Gen
 import play.api.data.FormError
-import utils.DateHelper.formatDateDMY
 
 import java.time.LocalDate
 
-class PaymentDateFormProviderSpec extends SpecBase
-  with BigDecimalFieldBehaviours with DateBehavioursTrait {
-
-  // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now.
+class DatePaidFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours with DateBehavioursTrait  {
+  // scalastyle:off magic.number
+  private val form = new DatePaidFormProvider()(2022)
   private val stubMin: LocalDate = LocalDate.of(2006, 4, 6)
   private val stubMax: LocalDate = LocalDate.of(2023, 4, 5)
-
-  private val form = new PaymentDateFormProvider().apply(max = stubMax)
-
-  private val paymentDateKey = "paymentDate"
-
-  // scalastyle:off magic.number
-  val invalidDataGenerator: Gen[String] = intsInRangeWithCommas(0, 999999999)
-  val negativeValueDataGenerator: Gen[String] = decimalsBelowValue(0)
-
-  "paymentDate" - {
+  
+  private val datePaidKey = "value"
+  "datePaid" - {
 
     behave like mandatoryDateField(
       form = form,
-      key = paymentDateKey,
-      requiredAllKey = "paymentDate.date.error.nothingEntered"
+      key = datePaidKey,
+      requiredAllKey = "datePaid.event2.error.required.all"
     )
 
     behave like dateFieldYearNot4Digits(
       form = form,
-      key = paymentDateKey,
-      formError = FormError(paymentDateKey, "paymentDate.date.error.outsideDateRanges")
+      key = datePaidKey,
+      formError = FormError(datePaidKey, "datePaid.event2.error.invalid")
     )
 
     behave like dateFieldWithMin(
       form = form,
-      key = paymentDateKey,
+      key = datePaidKey,
       min = stubMin,
-      formError = FormError(paymentDateKey, messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(stubMax)))
+      formError = FormError(datePaidKey, messages("datePaid.event2.error.outside.taxYear", stubMin.getYear.toString, stubMax.getYear.toString))
     )
 
     behave like dateFieldWithMax(
       form = form,
-      key = paymentDateKey,
+      key = datePaidKey,
       max = stubMax,
-      formError = FormError(paymentDateKey, messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(stubMax)))
+      formError = FormError(datePaidKey, messages("datePaid.event2.error.outside.taxYear", stubMin.getYear.toString, stubMax.getYear.toString))
     )
   }
 }

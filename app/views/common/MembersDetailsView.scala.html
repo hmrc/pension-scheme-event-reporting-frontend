@@ -17,6 +17,7 @@
 @import controllers.routes
 @import models.enumeration.EventType
 @import viewmodels.InputWidth._
+@import models.enumeration.EventType.Event2
 
 @this(
     layout: templates.SchemeLayout,
@@ -26,10 +27,9 @@
     govukButton: GovukButton
 )
 
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberPageNo: Int, submitUrl: Call)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, submitUrl: Call)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
-
-@layout(pageTitle = title(form, messages("membersDetails.title"))) {
+@layout(pageTitle = title(form, if(eventType==Event2) {if(memberPageNo == 1) messages("deceasedMembersDetails.title") else messages("beneficiaryDetails.title") } else messages("membersDetails.title"))) {
 
     @formHelper(action = submitUrl) {
 
@@ -37,7 +37,15 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-xl">@messages("membersDetails.heading")</h1>
+        @if(eventType== Event2) {
+            @if(memberPageNo == 1) {
+                <h1 class="govuk-heading-xl">@messages("deceasedMembersDetails.heading")</h1>
+            } else {
+                <h1 class="govuk-heading-xl">@messages("beneficiaryDetails.heading")</h1>
+            }
+        }else {
+            <h1 class="govuk-heading-xl">@messages("membersDetails.heading")</h1>
+        }
 
         @govukInput(
             InputViewModel(
