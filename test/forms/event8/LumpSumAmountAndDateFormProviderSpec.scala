@@ -31,6 +31,7 @@ class LumpSumAmountAndDateFormProviderSpec extends SpecBase
   private val stubMax: LocalDate = LocalDate.of(2023, 4, 5)
 
   private val form = new LumpSumAmountAndDateFormProvider().apply(min = stubMin, max = stubMax)
+  private val validDate = LocalDate.of(2023, 1, 1)
 
   private val lumpSumAmountKey = "lumpSumAmount"
   private val lumpSumDateKey = "lumpSumDate"
@@ -58,45 +59,45 @@ class LumpSumAmountAndDateFormProviderSpec extends SpecBase
   "lumpSumValue" - {
 
     "not bind no input" in {
-      val result = form.bind(lumpSumDetails(lumpSumAmount = "", Some(LocalDate.now())))
+      val result = form.bind(lumpSumDetails(lumpSumAmount = "", Some(validDate)))
       result.errors mustEqual Seq(FormError(lumpSumAmountKey, s"$messageKeyLumpSumValueKey.error.nothingEntered"))
     }
 
     "not bind non-numeric numbers" in {
-      val result = form.bind(lumpSumDetails(lumpSumAmount = "one,two.three", Some(LocalDate.now())))
+      val result = form.bind(lumpSumDetails(lumpSumAmount = "one,two.three", Some(validDate)))
       result.errors mustEqual Seq(FormError(lumpSumAmountKey, s"$messageKeyLumpSumValueKey.error.notANumber"))
     }
 
     "not bind integers" in {
       forAll(invalidDataGenerator -> "noDecimals") {
         int: String =>
-          val result = form.bind(lumpSumDetails(lumpSumAmount = int, Some(LocalDate.now())))
+          val result = form.bind(lumpSumDetails(lumpSumAmount = int, Some(validDate)))
           result.errors mustEqual Seq(FormError(lumpSumAmountKey, s"$messageKeyLumpSumValueKey.error.noDecimals"))
       }
     }
 
     "bind within the range 0 to 999999999.99" in {
       val number = "999999999.99"
-      val result = form.bind(lumpSumDetails(lumpSumAmount = number, Some(LocalDate.now())))
+      val result = form.bind(lumpSumDetails(lumpSumAmount = number, Some(validDate)))
       result.errors mustEqual Nil
     }
 
     "not bind outside the range 0 to 999999999.99" in {
       val number = "1000000000.00"
-      val result = form.bind(lumpSumDetails(lumpSumAmount = number, Some(LocalDate.now())))
+      val result = form.bind(lumpSumDetails(lumpSumAmount = number, Some(validDate)))
       result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyLumpSumValueKey.error.amountTooHigh")
     }
 
     "not bind numbers equal to 0" in {
       val number = "0.00"
-      val result = form.bind(lumpSumDetails(lumpSumAmount = number, Some(LocalDate.now())))
+      val result = form.bind(lumpSumDetails(lumpSumAmount = number, Some(validDate)))
       result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyLumpSumValueKey.error.zeroEntered")
     }
 
     "not bind numbers below 0" in {
       forAll(negativeValueDataGenerator -> "negative") {
         number: String =>
-          val result = form.bind(lumpSumDetails(lumpSumAmount = number, Some(LocalDate.now())))
+          val result = form.bind(lumpSumDetails(lumpSumAmount = number, Some(validDate)))
           result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyLumpSumValueKey.error.negativeValue")
       }
     }

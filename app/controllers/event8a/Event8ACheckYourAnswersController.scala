@@ -19,9 +19,11 @@ package controllers.event8a
 import com.google.inject.Inject
 import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.Index
 import models.enumeration.EventType.Event8A
+import models.event8a.PaymentType
 import models.requests.DataRequest
+import models.{Index, UserAnswers}
+import pages.common.MembersDetailsPage
 import pages.event8a.Event8ACheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -44,14 +46,72 @@ class Event8ACheckYourAnswersController @Inject()(
                                                    connector: EventReportingConnector,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: CheckYourAnswersView
-                                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport { //scalastyle:off method.length
+
+  private def missingDataResult(userAnswers: UserAnswers, index: Index, waypoints: Waypoints) = {
+    def missingDataStandAloneLumpSumPage = {
+      val typeOfProtection = pages.event8.TypeOfProtectionPage(Event8A, index)
+      val typeOfProtectionRef = pages.event8.TypeOfProtectionReferencePage(Event8A, index)
+      val lumpSumDetails = pages.event8.LumpSumAmountAndDatePage(Event8A, index)
+
+      val requiredData = Seq(
+        typeOfProtection -> userAnswers.get(typeOfProtection),
+        typeOfProtectionRef -> userAnswers.get(typeOfProtectionRef),
+        lumpSumDetails -> userAnswers.get(lumpSumDetails)
+      )
+
+      requiredData.collectFirst {
+        case (page, None) => page
+      }
+    }
+
+    def missingDataSchemeSpecificLumpSumPage = {
+      val page = pages.event8.LumpSumAmountAndDatePage(Event8A, index)
+      userAnswers.get(page) match {
+        case None => Some(page)
+        case _ => None
+      }
+    }
+
+    val details = MembersDetailsPage(Event8A, index)
+    val paymentType = pages.event8a.PaymentTypePage(Event8A, index)
+    lazy val paymentTypeUserAnswers = userAnswers.get(paymentType)
+
+    val requiredData = Seq(
+      details -> userAnswers.get(details),
+      paymentType -> paymentTypeUserAnswers
+    )
+
+    val page = requiredData.collectFirst {
+      case (page, None) => page
+    }
+
+    val finalPage = page match {
+      case None => paymentTypeUserAnswers.flatMap({ paymentType =>
+        if (paymentType == PaymentType.PaymentOfAStandAloneLumpSum) {
+          missingDataStandAloneLumpSumPage
+        } else {
+          missingDataSchemeSpecificLumpSumPage
+        }
+      })
+      case _ => page
+    }
+
+    finalPage.map { page =>
+      Redirect(page.changeLink(waypoints, Event8ACheckYourAnswersPage(index)).route)
+    }
+  }
+
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (identify andThen getData(Event8A) andThen requireData) { implicit request =>
       val thisPage = Event8ACheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event8a.routes.Event8ACheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent8aCYARows(waypoints, thisPage, index)), continueUrl))
+
+      missingDataResult(request.userAnswers, index, waypoints).getOrElse(
+        Ok(view(SummaryListViewModel(rows = buildEvent8aCYARows(waypoints, thisPage, index)), continueUrl))
+      )
     }
 
   def onClick: Action[AnyContent] =

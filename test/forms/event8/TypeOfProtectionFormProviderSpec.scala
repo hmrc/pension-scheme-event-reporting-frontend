@@ -27,7 +27,7 @@ class TypeOfProtectionFormProviderSpec extends OptionFieldBehaviours {
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "typeOfProtection.error.required"
+    val requiredKey = "event8.typeOfProtection.error.required"
 
     behave like optionsField[TypeOfProtection](
       form,

@@ -93,7 +93,7 @@ eventSelection.event7.hint = Pension commencement lump sum more than 25% of the 
 eventSelection.event8 = Event 8
 eventSelection.event8.hint = Pension commencement lump sum with primary/enhanced protection
 eventSelection.event8a = Event 8A
-eventSelection.event8a.hint = Standalone lump sums
+eventSelection.event8a.hint = Stand-alone lump sums
 eventSelection.event10 = Event 10
 eventSelection.event10.hint = Investment-regulated pension scheme
 eventSelection.event11 = Event 11
@@ -545,7 +545,7 @@ paymentValueAndDate.date.hint = For example, 22 09 2022
 paymentValueAndDate.date.error.nothingEntered = Enter the date of payment or when benefit made available
 paymentValueAndDate.date.error.noDayMonthOrYear = The date must include a day, month and year
 paymentValueAndDate.date.error.outsideDateRanges = Enter a real date
-paymentValueAndDate.date.error.outsideRelevantTaxYear = Date must be between 6 April 2022 and 5 April 2023
+paymentValueAndDate.date.error.outsideRelevantTaxYear = Date must be between 6 April {0} and 5 April {1}
 paymentValueAndDate.date.change.hidden = Payment date
 paymentValueAndDate.date.checkYourAnswersLabel = Payment date
 
@@ -1020,7 +1020,7 @@ event8.typeOfProtection.heading = What type of protection was held for the lump 
 event8.typeOfProtection.primaryProtection = Primary protection
 event8.typeOfProtection.enhancedProtection = Enhanced protection
 event8.typeOfProtection.checkYourAnswersLabel = Protection type held
-event8.typeOfProtection.error.required = Select the type of protection that is held
+event8.typeOfProtection.error.required = Select the type of protection that was held
 event8.typeOfProtection.change.hidden = the protection type
 
 inputProtectionType.title = What is the member’s {0} reference?
@@ -1035,7 +1035,7 @@ typeOfProtectionReference.title = What is the member’s {0} reference?
 typeOfProtectionReference.heading = What is the member’s {0} reference?
 typeOfProtectionReference.checkYourAnswersLabel = Member’s {0} reference
 typeOfProtectionReference.change.hidden = the {0} reference
-typeOfProtectionReference.error.required = Enter a protection reference
+typeOfProtectionReference.error.required = Enter the protection reference
 typeOfProtectionReference.error.length = Enter a protection reference between 8 and 15 characters (it can be a combination of numbers and letters)
 typeOfProtectionReference.error.invalid = The protection reference can only contain letters and numbers
 
@@ -1089,20 +1089,17 @@ paymentDate.date.error.outsideReportedYear = The date must be between 6 April 20
 paymentDate.date.change.hidden = the date of the payment
 paymentDate.date.checkYourAnswersLabel = The date the payment was made
 
-
-
-
 lumpSumAmountAndDate.title = Lump sum amount and date
 lumpSumAmountAndDate.heading = Lump sum amount and date
 
 lumpSumAmountAndDate.value.heading = How much lump sum was paid?
-lumpSumAmountAndDate.value.error.nothingEntered = Enter the total amount
-lumpSumAmountAndDate.value.error.notANumber = The total amount must be an amount of money, like 123.45 or 156.00
-lumpSumAmountAndDate.value.error.noDecimals = The amount must include pence, like 123.45 or 156.00
-lumpSumAmountAndDate.value.error.amountTooHigh = The total amount must be £999999999.99 or less
-lumpSumAmountAndDate.value.error.negativeValue = The amount must not be a negative amount of money, like -123.45 or -156.00
-lumpSumAmountAndDate.value.error.zeroEntered = The total amount must be greater than zero
-lumpSumAmountAndDate.value.change.hidden = the total amount
+lumpSumAmountAndDate.value.error.nothingEntered = Enter the lump sum amount
+lumpSumAmountAndDate.value.error.notANumber = The lump sum amount must be an amount of money, like 123.45 or 156.00
+lumpSumAmountAndDate.value.error.noDecimals = The lump sum amount must include pence, like 123.45 or 156.00
+lumpSumAmountAndDate.value.error.amountTooHigh = The lump sum amount must be £999999999.99 or less
+lumpSumAmountAndDate.value.error.negativeValue = The lump sum amount must not be a negative amount of money, like -123.45 or -156.00
+lumpSumAmountAndDate.value.error.zeroEntered = The lump sum amount must be greater than zero
+lumpSumAmountAndDate.value.change.hidden = the lump sum amount
 lumpSumAmountAndDate.value.checkYourAnswersLabel = Lump sum amount
 
 lumpSumAmountAndDate.date.heading = When was the payment made?

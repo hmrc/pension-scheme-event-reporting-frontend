@@ -19,7 +19,6 @@ package controllers.event1
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event1.PaymentValueAndDateFormProvider
-import models.UserAnswers
 import models.event1.PaymentDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -40,12 +39,8 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
 
   private val waypoints = EmptyWaypoints
 
-  // TODO: change implementation to real date once preceding pages are implemented, using stubDate for now.
-  private val stubMin: LocalDate = LocalDate.of(LocalDate.now().getYear, 4, 6)
-  private val stubMax: LocalDate = LocalDate.of(LocalDate.now().getYear + 1, 4, 5)
-
   private val formProvider = new PaymentValueAndDateFormProvider()
-  private val form = formProvider(stubMin, stubMax)
+  private val form = formProvider(2022)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
@@ -57,7 +52,8 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validValue = PaymentDetails(1000.00, LocalDate.now())
+  private val validDate = LocalDate.of(2023, 1, 1)
+  private val validValue = PaymentDetails(1000.00, validDate)
 
   import PaymentValueAndDateControllerSpec._
 
@@ -70,7 +66,7 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -86,7 +82,7 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(PaymentValueAndDatePage(0), validValue).success.value
+      val userAnswers = emptyUserAnswersWithTaxYear.set(PaymentValueAndDatePage(0), validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -108,15 +104,15 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
         .thenReturn(Future.successful(()))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(paymentDetails("1000.00", Some(LocalDate.of(2022, 5, 1))): _*)
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(paymentDetails("1000.00", Some(validDate)): _*)
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(PaymentValueAndDatePage(0), validValue).success.value
+        val updatedAnswers = emptyUserAnswersWithTaxYear.set(PaymentValueAndDatePage(0), validValue).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual PaymentValueAndDatePage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
@@ -126,7 +122,7 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
 
     "must return bad request when invalid data is submitted" in {
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
 
       running(application) {

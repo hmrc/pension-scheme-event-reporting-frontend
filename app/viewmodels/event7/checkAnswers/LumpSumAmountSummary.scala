@@ -17,10 +17,9 @@
 package viewmodels.event7.checkAnswers
 
 import models.{Index, UserAnswers}
-import pages.{CheckAnswersPage, Waypoints}
 import pages.event7.LumpSumAmountPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.event1.checkAnswers.PaymentValueAndDateSummary.currencyFormatter
