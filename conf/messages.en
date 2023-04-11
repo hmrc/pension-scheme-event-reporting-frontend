@@ -1157,3 +1157,5 @@ paymentDetails.date.error.outsideDateRanges = Enter a real date
 paymentDetails.date.error.outsideReportedYear = Date must be between {0} and {1}
 paymentDetails.date.change.hidden = the date of the payment
 paymentDetails.date.checkYourAnswersLabel = Date of the payment
+
+characterCount = You can enter up to {0} characters
