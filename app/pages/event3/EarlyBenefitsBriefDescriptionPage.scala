@@ -27,7 +27,7 @@ import play.api.mvc.Call
 
 case class EarlyBenefitsBriefDescriptionPage(index: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = MembersPage(EventType.Event3)(index) \ "benefitType" \ toString
+  override def path: JsPath = MembersPage(EventType.Event3)(index) \ "benefitType" \ EarlyBenefitsBriefDescriptionPage.toString
 
   override def route(waypoints: Waypoints): Call =
     routes.EarlyBenefitsBriefDescriptionController.onPageLoad(waypoints, index)
