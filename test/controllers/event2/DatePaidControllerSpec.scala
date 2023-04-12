@@ -14,81 +14,89 @@
  * limitations under the License.
  */
 
-package controllers.event3
+package controllers.event2
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event3.ReasonForBenefitsFormProvider
-import models.UserAnswers
-import models.event3.ReasonForBenefits
+import forms.event2.DatePaidFormProvider
+import models.common.MembersDetails
+import models.enumeration.EventType.Event2
+import models.{TaxYear, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.{never, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.EmptyWaypoints
-import pages.event3.ReasonForBenefitsPage
+import pages.common.MembersDetailsPage
+import pages.{EmptyWaypoints, TaxYearPage}
+import pages.event2.DatePaidPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event3.ReasonForBenefitsView
+import utils.Event2MemberPageNumbers
+import views.html.event2.DatePaidView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
-class ReasonForBenefitsControllerSpec extends SpecBase with BeforeAndAfterEach {
+class DatePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new ReasonForBenefitsFormProvider()
-  private val form = formProvider()
+  private val formProvider = new DatePaidFormProvider()
+  private val form = formProvider(2021)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.ReasonForBenefitsController.onPageLoad(waypoints, 0).url
-  private def postRoute: String = routes.ReasonForBenefitsController.onSubmit(waypoints, 0).url
+  private def getRoute: String = routes.DatePaidController.onPageLoad(waypoints, index = 0).url
+
+  private def postRoute: String = routes.DatePaidController.onSubmit(waypoints, index = 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  override def beforeEach: Unit = {
+  private val taxYearUserAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022")).get
+    .set(MembersDetailsPage(Event2, 0, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY), MembersDetails("Joe", "Bloggs", "ABC1234")).get
+
+  private val validAnswer = LocalDate.of(2022, 2, 12)
+
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
 
-  "ReasonForBenefits Controller" - {
+  "datePaid Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(Some(taxYearUserAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[ReasonForBenefitsView]
+        val view = application.injector.instanceOf[DatePaidView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, "Joe Bloggs", index = 0)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = UserAnswers().set(ReasonForBenefitsPage(0), ReasonForBenefits.values.head).success.value
-
+      val userAnswers = taxYearUserAnswers.set(DatePaidPage(index = 0, Event2), validAnswer).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[ReasonForBenefitsView]
+        val view = application.injector.instanceOf[DatePaidView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(ReasonForBenefits.values.head), waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), waypoints, "Joe Bloggs", 0)(request, messages(application)).toString
       }
     }
 
@@ -97,38 +105,42 @@ class ReasonForBenefitsControllerSpec extends SpecBase with BeforeAndAfterEach {
         .thenReturn(Future.successful(()))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(taxYearUserAnswers), extraModules)
           .build()
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ReasonForBenefits.values.head.toString))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
+            "value.day" -> "12",
+            "value.month" -> "2",
+            "value.year" -> "2023"
+          )
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(ReasonForBenefitsPage(0), ReasonForBenefits.values.head).success.value
+        val updatedAnswers = taxYearUserAnswers.set(DatePaidPage(index = 0, Event2), validAnswer).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ReasonForBenefitsPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual DatePaidPage(index = 0, Event2).navigate(waypoints, taxYearUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
     "must return bad request when invalid data is submitted" in {
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(taxYearUserAnswers), extraModules)
           .build()
 
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[ReasonForBenefitsView]
+        val view = application.injector.instanceOf[DatePaidView]
         val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, "Joe Bloggs", 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

@@ -14,19 +14,26 @@
  * limitations under the License.
  */
 
-package pages.event1
+package pages.event2
 
-import pages.{Page, Waypoints, EventSummaryPage}
-import play.api.mvc.Call
-import models.UserAnswers
+import models.enumeration.EventType.Event2
 
-case object UnauthPaymentAndSanctionChargesPage extends Page {
+import java.time.LocalDate
+import org.scalacheck.Arbitrary
+import pages.behaviours.PageBehaviours
 
-  override def route(waypoints: Waypoints): Call =
-    controllers.event1.routes.UnauthPaymentAndSanctionChargesController.onPageLoad(waypoints)
+class DatePaidPageSpec extends PageBehaviours {
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    EventSummaryPage
+  "DatePaidPage" - {
+
+    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
+      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
+    }
+
+    beRetrievable[LocalDate](DatePaidPage(index = 0, Event2))
+
+    beSettable[LocalDate](DatePaidPage(index = 0, Event2))
+
+    beRemovable[LocalDate](DatePaidPage(index = 0, Event2))
   }
-
 }

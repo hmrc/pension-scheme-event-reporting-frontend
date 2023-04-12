@@ -14,19 +14,9 @@
  * limitations under the License.
  */
 
-package pages.event1
+package utils
 
-import pages.{Page, Waypoints, EventSummaryPage}
-import play.api.mvc.Call
-import models.UserAnswers
-
-case object UnauthPaymentAndSanctionChargesPage extends Page {
-
-  override def route(waypoints: Waypoints): Call =
-    controllers.event1.routes.UnauthPaymentAndSanctionChargesController.onPageLoad(waypoints)
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    EventSummaryPage
-  }
-
+object Event2MemberPageNumbers {
+  val FIRST_PAGE_DECEASED = 1
+  val SECOND_PAGE_BENEFICIARY = 2
 }

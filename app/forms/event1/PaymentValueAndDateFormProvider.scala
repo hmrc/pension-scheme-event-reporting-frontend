@@ -22,7 +22,6 @@ import models.event1.PaymentDetails
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.i18n.Messages
-import utils.DateHelper.formatDateDMY
 
 import java.time.LocalDate
 import javax.inject.Inject

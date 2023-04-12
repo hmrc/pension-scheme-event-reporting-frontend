@@ -18,7 +18,8 @@ package controllers.event1
 
 import controllers.actions._
 import models.enumeration.EventType
-import pages.Waypoints
+import pages.event1.UnauthPaymentAndSanctionChargesPage
+import pages.{EventSummaryPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -30,7 +31,6 @@ class UnauthPaymentAndSanctionChargesController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            identify: IdentifierAction,
                                            getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: UnauthPaymentAndSanctionChargesView
                                          ) extends FrontendBaseController with I18nSupport {
@@ -39,6 +39,6 @@ class UnauthPaymentAndSanctionChargesController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) {
     implicit request =>
-      Ok(view(controllers.routes.IndexController.onPageLoad.url))
+      Ok(view(continueUrl = controllers.routes.EventSummaryController.onPageLoad().url))
   }
 }

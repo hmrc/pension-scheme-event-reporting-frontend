@@ -14,19 +14,27 @@
  * limitations under the License.
  */
 
-package pages.event1
+package pages.event2
 
-import pages.{Page, Waypoints, EventSummaryPage}
+import java.time.LocalDate
+import controllers.event2.routes
+import models.enumeration.EventType
+import models.{Index, UserAnswers}
+import pages.common.MembersPage
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import models.UserAnswers
+import pages.{Page, QuestionPage, Waypoints}
 
-case object UnauthPaymentAndSanctionChargesPage extends Page {
+case class DatePaidPage(index:Index, eventType: EventType) extends QuestionPage[LocalDate] {
+
+  override def path: JsPath = MembersPage(eventType)(index) \ toString
+
+  override def toString: String = "datePaid"
 
   override def route(waypoints: Waypoints): Call =
-    controllers.event1.routes.UnauthPaymentAndSanctionChargesController.onPageLoad(waypoints)
+    routes.DatePaidController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    EventSummaryPage
+    Event2CheckYourAnswersPage(index)
   }
-
 }

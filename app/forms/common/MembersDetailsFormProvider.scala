@@ -19,6 +19,8 @@ package forms.common
 import forms.common.PersonNameFormProvider.{firstNameLength, lastNameLength}
 import forms.mappings.{Mappings, Transforms}
 import models.common.MembersDetails
+import models.enumeration.EventType
+import models.enumeration.EventType.Event2
 import play.api.data.Form
 import play.api.data.Forms.mapping
 
@@ -26,26 +28,32 @@ import javax.inject.Inject
 
 class MembersDetailsFormProvider @Inject() extends Mappings with Transforms {
 
-  def apply(): Form[MembersDetails] =
+  def apply(eventType: EventType, memberPageNo: Int=0): Form[MembersDetails] = {
+    val detailsType = (eventType, memberPageNo) match {
+      case (Event2, 1) => "deceasedMembersDetails"
+      case (Event2, 2) => "beneficiaryDetails"
+      case _ => "membersDetails"
+    }
     Form(
       mapping("firstName" ->
-        text("membersDetails.error.firstName.required").verifying(
+        text(s"${detailsType}.error.firstName.required").verifying(
           firstError(
-            maxLength(firstNameLength, "membersDetails.error.firstName.length"),
-            regexp(regexName, "membersDetails.error.firstName.invalid"))),
+            maxLength(firstNameLength, s"${detailsType}.error.firstName.length"),
+            regexp(regexName, s"${detailsType}.error.firstName.invalid"))),
         "lastName" ->
-          text("membersDetails.error.lastName.required").verifying(
+          text(s"${detailsType}.error.lastName.required").verifying(
             firstError(
-              maxLength(lastNameLength, "membersDetails.error.lastName.length"),
-              regexp(regexName, "membersDetails.error.lastName.invalid"))
+              maxLength(lastNameLength, s"${detailsType}.error.lastName.length"),
+              regexp(regexName, s"${detailsType}.error.lastName.invalid"))
           ),
         "nino" ->
-          text("membersDetails.error.nino.required")
+          text(s"${detailsType}.error.nino.required")
             .transform(noSpaceWithUpperCaseTransform, noTransform)
             .verifying(
-              validNino("membersDetails.error.nino.invalid")
+              validNino(s"${detailsType}.error.nino.invalid")
             ))(MembersDetails.apply)(MembersDetails.unapply)
     )
+  }
 
 }
 

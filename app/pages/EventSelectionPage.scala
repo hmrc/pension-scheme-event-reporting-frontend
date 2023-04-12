@@ -26,6 +26,7 @@ import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import utils.Event2MemberPageNumbers
 
 case object EventSelectionPage extends QuestionPage[EventSelection] {
 
@@ -41,6 +42,7 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
 
     optionEventType match {
       case Some(Event1) => ManualOrUploadPage(Event1, answers.countAll(MembersOrEmployersPage(Event1)))
+      case Some(Event2) => MembersDetailsPage(Event2, answers.countAll(MembersPage(Event2)), Event2MemberPageNumbers.FIRST_PAGE_DECEASED)
       case Some(Event3) => MembersDetailsPage(Event3, answers.countAll(MembersPage(Event3)))
       case Some(Event4) => MembersDetailsPage(Event4, answers.countAll(MembersPage(Event4)))
       case Some(Event5) => MembersDetailsPage(Event5, answers.countAll(MembersPage(Event5)))

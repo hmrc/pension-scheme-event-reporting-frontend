@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package pages.event1
+package pages.event2
 
-import pages.{Page, Waypoints, EventSummaryPage}
-import play.api.mvc.Call
-import models.UserAnswers
+import models.enumeration.EventType.Event2
+import pages.behaviours.PageBehaviours
 
-case object UnauthPaymentAndSanctionChargesPage extends Page {
+class AmountPaidPageSpec extends PageBehaviours {
 
-  override def route(waypoints: Waypoints): Call =
-    controllers.event1.routes.UnauthPaymentAndSanctionChargesController.onPageLoad(waypoints)
+  "AmountPaidPage" - {
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    EventSummaryPage
+    beRetrievable[BigDecimal](AmountPaidPage(index = 0,Event2))
+
+    beSettable[BigDecimal](AmountPaidPage(index = 0,Event2))
+
+    beRemovable[BigDecimal](AmountPaidPage(index = 0,Event2))
   }
-
 }
