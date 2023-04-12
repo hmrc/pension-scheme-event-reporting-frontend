@@ -25,9 +25,9 @@ sealed trait ReasonForBenefits
 
 object ReasonForBenefits extends Enumerable.Implicits {
 
-  case object IllHealth extends WithName("Ill Health") with ReasonForBenefits
-  case object ProtectedPensionAge extends WithName("Protected Pension Age") with ReasonForBenefits
-  case object Other extends WithName("Other") with ReasonForBenefits
+  case object IllHealth extends WithName("illHealth") with ReasonForBenefits
+  case object ProtectedPensionAge extends WithName("protectedPensionAge") with ReasonForBenefits
+  case object Other extends WithName("other") with ReasonForBenefits
 
   val values: Seq[ReasonForBenefits] = Seq(
     IllHealth, ProtectedPensionAge, Other

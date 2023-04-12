@@ -56,12 +56,12 @@ class Event3CheckYourAnswersController @Inject()(
     }
 
   def onClick: Action[AnyContent] =
-    (identify andThen getData(Event3) andThen requireData)/*.async*/ { /* implicit request =>
-      TODO re-add when backend transformation complete
+    (identify andThen getData(Event3) andThen requireData).async {  implicit request =>
+
       connector.compileEvent(request.pstr, Event3).map {
-        _ => */
+        _ =>
           Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event3).url)
-//      }
+      }
     }
 
   private def event3ReasonForBenefitsRows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)
