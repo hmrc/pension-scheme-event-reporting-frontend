@@ -15,14 +15,13 @@
  *@
 
 @import controllers.event3.routes
-
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Textarea
+@import uk.gov.hmrc.govukfrontend.views.Aliases.CharacterCount
 
 @this(
     layout: templates.SchemeLayout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukTextarea: GovukTextarea,
+    govukCharacterCount: GovukCharacterCount,
     govukButton: GovukButton
 )
 
@@ -36,23 +35,14 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="150">
-            @govukTextarea(
-                Textarea(
-                    id = form("value").id,
-                    name = form("value").name,
-                    hint = Some(HintViewModel(messages("earlyBenefitsBriefDescription.hint"))),
-                    label = LabelViewModel(messages("earlyBenefitsBriefDescription.heading")).asPageHeading(),
-                    value = form("value").value,
-                    errorMessage = form("value").error.map(error => ErrorMessage(content = error.format)),
-                    classes = "govuk-js-character-count",
-                    describedBy = Some("value-info")
-                )
-            )
-            <div id="value-info" class="govuk-hint govuk-character-count__message">
-                @messages("characterCount", 150)
-            </div>
-        </div>
+        @govukCharacterCount(CharacterCount(
+            id = form("value").id,
+            name = form("value").name,
+            maxLength = Some(150),
+            label = LabelViewModel(messages("earlyBenefitsBriefDescription.heading")).asPageHeading(),
+            value = form("value").value,
+            errorMessage = form("value").error.map(error => ErrorMessage(content = error.format)),
+        ))
 
         @govukButton(
             ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))

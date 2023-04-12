@@ -1187,9 +1187,8 @@ reasonForBenefits.event3.change.hidden = the reason for the benefits being taken
 
 earlyBenefitsBriefDescription.heading = Give a brief description of why the benefits were taken early
 earlyBenefitsBriefDescription.title = Brief description of why the benefits were taken early
-earlyBenefitsBriefDescription.hint = You can enter a maximum of 150 characters (optional).
 earlyBenefitsBriefDescription.checkYourAnswersLabel = Give a brief description of why the benefits were taken early
-earlyBenefitsBriefDescription.error.length = You can enter a maximum of 150 characters (optional)
+earlyBenefitsBriefDescription.error.length = The description must be 150 characters or fewer
 earlyBenefitsBriefDescription.change.hidden = Give a brief description of why the benefits were taken early
 
 event4.paymentDetails.title = Amount paid and date
