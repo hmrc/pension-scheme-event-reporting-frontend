@@ -112,7 +112,7 @@ object SampleData {
   val lumpSumDetails = LumpSumDetails(223.11, LocalDate.of(2022, 3, 22))
   val paymentDetailsCommon: CommonPaymentDetails = CommonPaymentDetails(54.23, LocalDate.of(2022, 4, 5))
 
-  val datePaid: LocalDate = LocalDate.of(2022,5,19)
+  val datePaid: LocalDate = LocalDate.of(2022, 5, 19)
   val amountPaid: BigDecimal = 999.11
 
   val event7PaymentDate: PaymentDate = PaymentDate(LocalDate.of(2022, 11, 8))
