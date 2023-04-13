@@ -82,7 +82,7 @@ object DeclarationController {
           //TODO: Get PSA ID or PSP ID here from user answers
           "submittedBy" -> "PSA",
           //TODO: Get PSA or PSP ID from user answers
-          "submittedID" -> "A2345678",
+          "submittedID" -> "A2345678"
         ),
         "psaDeclaration" -> Json.obj(
           //TODO: Relates to wantToSubmit and Declaration
