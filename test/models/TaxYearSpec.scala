@@ -21,7 +21,6 @@ import org.scalacheck.Gen
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
-import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 import utils.DateHelper
