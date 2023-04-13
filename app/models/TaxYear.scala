@@ -34,6 +34,7 @@ object TaxYear extends Enumerable.Implicits {
   private val numberOfYearsToShow = 7
 
   val values: Seq[TaxYear] = {
+    println(yearRange(DateHelper.today).reverse)
     yearRange(DateHelper.today).reverse
   }
 
@@ -51,7 +52,7 @@ object TaxYear extends Enumerable.Implicits {
     val endOfTaxYear = LocalDate.of(currentDate.getYear, 4, 5)
     val startOfTaxYear = LocalDate.of(currentDate.getYear, 4, 6)
 
-    val currentTaxYearCalculated = if (currentDate.isBefore(endOfTaxYear)) {
+    val currentTaxYearCalculated = if (currentDate.isBefore(startOfTaxYear)) {
       endOfTaxYear.getYear - 1
     }
     else {

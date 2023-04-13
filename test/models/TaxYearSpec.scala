@@ -21,6 +21,7 @@ import org.scalacheck.Gen
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 import utils.DateHelper
@@ -31,7 +32,7 @@ class TaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyCheck
 
   override def beforeEach(): Unit = {
     super.beforeEach
-    DateHelper.setDate(Some(LocalDate.of(2023, 2, 10)))
+    DateHelper.setDate(Some(LocalDate.of(2024, 4, 5)))
   }
 
   "TaxYear" - {
@@ -59,13 +60,21 @@ class TaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyCheck
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(TaxYear.values.toSeq)
+      val gen = Gen.oneOf(TaxYear.values)
 
       forAll(gen) {
         taxYear =>
 
-          Json.toJson(taxYear) mustEqual JsString(taxYear.startYear.toString)
+          Json.toJson(taxYear) mustEqual JsString(taxYear.startYear)
       }
+    }
+  }
+
+  "Values" - {
+    "must return a sequence of 7 year ranges from 2023-2024 to 2017-2018" in {
+      TaxYear.values mustEqual
+        Seq(
+          TaxYear("2023"), TaxYear("2022"), TaxYear( "2021"), TaxYear( "2020"), TaxYear( "2019"), TaxYear( "2018"), TaxYear( "2017"))
     }
   }
 }
