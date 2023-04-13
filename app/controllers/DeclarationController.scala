@@ -27,17 +27,17 @@ import views.html.DeclarationView
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import models.UserAnswers
+import DeclarationController.testDataPsa
 
 class DeclarationController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           identify: IdentifierAction,
-                                           getData: DataRetrievalAction,
-                                           erConnector: EventReportingConnector,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: DeclarationView
-                                         ) (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                       override val messagesApi: MessagesApi,
+                                       identify: IdentifierAction,
+                                       getData: DataRetrievalAction,
+                                       erConnector: EventReportingConnector,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       view: DeclarationView
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  import DeclarationController.testDataPsa
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
     implicit request =>
       Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
@@ -56,8 +56,9 @@ class DeclarationController @Inject()(
         }
         case None => throw new RuntimeException("No user answers found in DeclarationController - required for report submit")
       }
-    }
+  }
 }
+
 object DeclarationController {
 
   /**
@@ -65,28 +66,30 @@ object DeclarationController {
    * Please see the To Do comments below for more info
    *
    * val currentUserAnswers = ua.data: {"taxYear":"2022","wantToSubmit":true}
-   *  */
+   *   */
 
-  private def testDataPsa(pstr: String): JsObject = Json.obj(
-    "declarationDetails" -> Json.obj(
-      "erDetails" -> Json.obj(
-        "pSTR" -> pstr,
-        //TODO: Report start date = tax year start date
-        "reportStartDate" -> "2020-04-06",
-        //TODO: Report end date = tax year end date
-        "reportEndDate" -> "2021-04-05"
-      ),
-      "erDeclarationDetails" -> Json.obj(
-        //TODO: Get PSA or PSP here from user answers
-        "submittedBy" -> "PSA",
-        //TODO: Get PSA or PSP ID from user answers
-        "submittedID" -> "A2345678",
-      ),
-      "psaDeclaration" -> Json.obj(
-        //TODO: Relate to wantToSubmit and Declaration
-        "psaDeclaration1" -> "Selected",
-        "psaDeclaration2" -> "Selected"
+  private def testDataPsa(pstr: String): JsObject = {
+    Json.obj(
+      "declarationDetails" -> Json.obj(
+        "erDetails" -> Json.obj(
+          "pSTR" -> pstr,
+          //TODO: Report start date = tax year start date
+          "reportStartDate" -> "2020-04-06",
+          //TODO: Report end date = tax year end date
+          "reportEndDate" -> "2021-04-05"
+        ),
+        "erDeclarationDetails" -> Json.obj(
+          //TODO: Get PSA ID or PSP ID here from user answers
+          "submittedBy" -> "PSA",
+          //TODO: Get PSA or PSP ID from user answers
+          "submittedID" -> "A2345678",
+        ),
+        "psaDeclaration" -> Json.obj(
+          //TODO: Relates to wantToSubmit and Declaration
+          "psaDeclaration1" -> "Selected",
+          "psaDeclaration2" -> "Selected"
+        )
       )
     )
-  )
+  }
 }
