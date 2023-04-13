@@ -23,7 +23,6 @@ import models.enumeration.EventType.{Event1, Event2, Event22, Event23, Event3, E
 import pages.event1.DoYouHoldSignedMandatePage
 import pages.event2.AmountPaidPage
 import pages.event3.ReasonForBenefitsPage
-import pages.event6.TypeOfProtectionPage
 import pages.event7.LumpSumAmountPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
