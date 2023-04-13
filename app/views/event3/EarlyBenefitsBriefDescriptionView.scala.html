@@ -27,7 +27,7 @@
 
 @(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("benefitInKindBriefDescription.title"))) {
+@layout(pageTitle = title(form, messages("earlyBenefitsBriefDescription.title"))) {
 
     @formHelper(action = routes.EarlyBenefitsBriefDescriptionController.onSubmit(waypoints, index)) {
 
