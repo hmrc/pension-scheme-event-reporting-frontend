@@ -34,7 +34,6 @@ object TaxYear extends Enumerable.Implicits {
   private val numberOfYearsToShow = 7
 
   val values: Seq[TaxYear] = {
-    println(yearRange(DateHelper.today).reverse)
     yearRange(DateHelper.today).reverse
   }
 
