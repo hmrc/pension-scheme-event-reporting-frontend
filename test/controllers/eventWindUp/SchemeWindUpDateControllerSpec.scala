@@ -68,7 +68,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -83,7 +83,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = UserAnswers().set(SchemeWindUpDatePage, validAnswer).success.value
+      val userAnswers = emptyUserAnswersWithTaxYear.set(SchemeWindUpDatePage, validAnswer).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
@@ -104,7 +104,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         .thenReturn(Future.successful(()))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
 
       running(application) {
@@ -119,7 +119,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val updatedAnswers = emptyUserAnswers.set(SchemeWindUpDatePage, validAnswer).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual SchemeWindUpDatePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual SchemeWindUpDatePage.navigate(waypoints, emptyUserAnswersWithTaxYear, updatedAnswers).url
         uaCaptor.getValue.get(SchemeWindUpDatePage) mustBe Some(validAnswer)
       }
     }
@@ -129,7 +129,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         .thenReturn(Future.successful(()))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
 
       running(application) {
