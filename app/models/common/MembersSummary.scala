@@ -65,6 +65,8 @@ object MembersSummary {
 
   def memberValuePath(eventType: EventType): JsPath = eventType match {
     case Event2 => JsPath \ "amountPaid"
+    case Event4 => JsPath \ "paymentDetails" \ "amountPaid"
+    case Event5 => JsPath \ "paymentDetails" \ "amountPaid"
     case Event6 => JsPath \ "AmountCrystallisedAndDate" \ "amountCrystallised"
     case Event8 => JsPath \ "lumpSumAmountAndDate" \ "lumpSumAmount"
     case Event8A => JsPath \ "lumpSumAmountAndDate" \ "lumpSumAmount"
