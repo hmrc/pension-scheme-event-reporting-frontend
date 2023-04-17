@@ -58,7 +58,7 @@ class AmountCrystallisedAndDateSummarySpec extends AnyFreeSpec with Matchers wit
           value = ValueViewModel(HtmlContent(Html(amountCrystallised))),
           actions = Seq(
             ActionItemViewModel("site.change", AmountCrystallisedAndDatePage(eventType, index = 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("amountCrystallisedAndDate.value.change.hidden"))
+              .withVisuallyHiddenText(messages("amountCrystallisedAndDate.value.change.hidden"))
           )
         )
       )
@@ -84,7 +84,7 @@ class AmountCrystallisedAndDateSummarySpec extends AnyFreeSpec with Matchers wit
           value = ValueViewModel(format.format(date)),
           actions = Seq(
             ActionItemViewModel("site.change", AmountCrystallisedAndDatePage(eventType, 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("amountCrystallisedAndDate.date.change.hidden"))
+              .withVisuallyHiddenText(messages("amountCrystallisedAndDate.date.change.hidden"))
           )
         )
       )

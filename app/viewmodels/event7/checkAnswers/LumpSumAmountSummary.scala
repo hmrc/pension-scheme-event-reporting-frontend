@@ -38,7 +38,7 @@ object LumpSumAmountSummary  {
           value   = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer)}")),
           actions = Seq(
             ActionItemViewModel("site.change", LumpSumAmountPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("lumpSumAmount.change.hidden"))
+              .withVisuallyHiddenText(messages("lumpSumAmount.change.hidden"))
           )
         )
     }
