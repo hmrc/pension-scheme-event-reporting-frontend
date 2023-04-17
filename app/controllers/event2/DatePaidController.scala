@@ -19,10 +19,11 @@ package controllers.event2
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event2.DatePaidFormProvider
+import helpers.DateHelper.getTaxYear
 import models.enumeration.EventType
 import models.{Index, UserAnswers}
+import pages.Waypoints
 import pages.event2.DatePaidPage
-import pages.{TaxYearPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -31,7 +32,6 @@ import views.html.event2.DatePaidView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success, Try}
 
 class DatePaidController @Inject()(val controllerComponents: MessagesControllerComponents,
                                    identify: IdentifierAction,
@@ -42,16 +42,6 @@ class DatePaidController @Inject()(val controllerComponents: MessagesControllerC
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val eventType = EventType.Event2
-
-  private def getTaxYear(userAnswers: Option[UserAnswers]): Int = {
-    userAnswers.flatMap(_.get(TaxYearPage)) match {
-      case Some(year) => Try(year.startYear.toInt) match {
-        case Success(value) => value
-        case Failure(exception) => throw new RuntimeException("Tax year is not a number", exception)
-      }
-      case _ => throw new RuntimeException("Tax year not entered")
-    }
-  }
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val form = formProvider(getTaxYear(request.userAnswers))
