@@ -21,10 +21,9 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event3.ReasonForBenefitsFormProvider
 import models.enumeration.EventType
 import models.{Index, UserAnswers}
-import org.apache.commons.lang3.StringUtils
 import pages.Waypoints
 import pages.event3.ReasonForBenefitsPage
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event3.ReasonForBenefitsView
@@ -33,12 +32,12 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ReasonForBenefitsController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                          identify: IdentifierAction,
-                                          getData: DataRetrievalAction,
-                                          userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          formProvider: ReasonForBenefitsFormProvider,
-                                          view: ReasonForBenefitsView
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                            identify: IdentifierAction,
+                                            getData: DataRetrievalAction,
+                                            userAnswersCacheConnector: UserAnswersCacheConnector,
+                                            formProvider: ReasonForBenefitsFormProvider,
+                                            view: ReasonForBenefitsView
+                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event3
@@ -62,7 +61,4 @@ class ReasonForBenefitsController @Inject()(val controllerComponents: MessagesCo
         }
       )
   }
-
-
-
 }
