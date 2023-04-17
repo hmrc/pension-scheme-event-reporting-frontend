@@ -17,13 +17,12 @@
 package controllers.common
 
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import controllers.common.PaymentDetailsController.endOfPaymentDate
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.common.PaymentDetailsFormProvider
 import models.enumeration.EventType
-import models.{Index, TaxYear, UserAnswers}
+import models.{Index, TaxYear}
+import pages.Waypoints
 import pages.common.PaymentDetailsPage
-import pages.{TaxYearPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -36,46 +35,42 @@ import scala.concurrent.{ExecutionContext, Future}
 class PaymentDetailsController @Inject()(val controllerComponents: MessagesControllerComponents,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
                                          userAnswersCacheConnector: UserAnswersCacheConnector,
                                          formProvider: PaymentDetailsFormProvider,
                                          view: PaymentDetailsView
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport { // scalastyle:off magic.number
 
-  def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val startDate = LocalDate.of(2006, Month.APRIL, 6)
-    val endDate = endOfPaymentDate(request.userAnswers.flatMap(_.get(TaxYearPage)))
+  private def taxYearToLocalDate(taxYear: String): LocalDate = {
+    LocalDate.of(taxYear.toInt, Month.APRIL, 5)
+  }
 
-    val preparedForm = request.userAnswers.flatMap(_.get(PaymentDetailsPage(eventType, index))) match {
+  def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
+    val startDate = LocalDate.of(2006, Month.APRIL, 6)
+    val endDate = taxYearToLocalDate(TaxYear.getSelectedTaxYearAsString(request.userAnswers))
+
+    val preparedForm = request.userAnswers.get(PaymentDetailsPage(eventType, index)) match {
       case Some(value) => formProvider(startDate, endDate).fill(value)
       case None => formProvider(startDate, endDate)
     }
     Ok(view(preparedForm, waypoints, eventType, index))
   }
 
-  def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
+  def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async { implicit request =>
     val startDate = LocalDate.of(2006, Month.APRIL, 6)
-    val endDate = endOfPaymentDate(request.userAnswers.flatMap(_.get(TaxYearPage)))
+    val endDate = taxYearToLocalDate(TaxYear.getSelectedTaxYearAsString(request.userAnswers))
 
     formProvider(startDate, endDate).bindFromRequest().fold(
       formWithErrors => {
         Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, index)))
       },
       value => {
-        val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+        val originalUserAnswers = request.userAnswers
         val updatedAnswers = originalUserAnswers.setOrException(PaymentDetailsPage(eventType, index), value)
         userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
           Redirect(PaymentDetailsPage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
         }
       }
     )
-  }
-}
-
-object PaymentDetailsController {
-  private def endOfPaymentDate(optTaxYear: Option[TaxYear]): LocalDate = optTaxYear match {
-    case Some(value) =>
-      val taxYear = value.endYear.toInt
-      LocalDate.of(taxYear, Month.APRIL, 5)
-    case _ => LocalDate.now()
   }
 }
