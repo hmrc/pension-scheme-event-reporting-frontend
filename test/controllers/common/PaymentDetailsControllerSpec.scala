@@ -47,6 +47,7 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
   private val formProvider = new PaymentDetailsFormProvider()
   private val form = formProvider(stubMin, stubMax)
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val event3 = EventType.Event3
   private val event4 = EventType.Event4
   private val event5 = EventType.Event5
 
@@ -66,6 +67,7 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
   }
 
   "PaymentDetails Controller" - {
+    testSuite(event3)
     testSuite(event4)
     testSuite(event5)
   }

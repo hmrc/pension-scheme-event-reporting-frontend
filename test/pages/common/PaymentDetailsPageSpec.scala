@@ -17,7 +17,7 @@
 package pages.common
 
 import models.common.PaymentDetails
-import models.enumeration.EventType.{Event4, Event5}
+import models.enumeration.EventType.{Event3, Event4, Event5}
 import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
 
@@ -26,12 +26,21 @@ import java.time.LocalDate
 class PaymentDetailsPageSpec extends PageBehaviours {
 
   "PaymentDetailsPage" - {
-
-    implicit lazy val arbitraryPaymentDetails: Arbitrary[PaymentDetails] = Arbitrary {
+    implicit lazy val arbitraryPaymentDetailsEvent3: Arbitrary[PaymentDetails] = Arbitrary {
       PaymentDetails(1000.00, LocalDate.now())
     }
 
+    "event3" - {
+
+      beRetrievable[PaymentDetails](PaymentDetailsPage(Event3, 0))
+
+      beSettable[PaymentDetails](PaymentDetailsPage(Event3, 0))
+
+      beRemovable[PaymentDetails](PaymentDetailsPage(Event3, 0))
+    }
+
     "event4" - {
+
       beRetrievable[PaymentDetails](PaymentDetailsPage(Event4, 0))
 
       beSettable[PaymentDetails](PaymentDetailsPage(Event4, 0))
@@ -40,6 +49,7 @@ class PaymentDetailsPageSpec extends PageBehaviours {
     }
 
     "event5" - {
+
       beRetrievable[PaymentDetails](PaymentDetailsPage(Event5, 0))
 
       beSettable[PaymentDetails](PaymentDetailsPage(Event5, 0))

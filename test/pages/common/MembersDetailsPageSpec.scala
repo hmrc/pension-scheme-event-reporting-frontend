@@ -17,7 +17,7 @@
 package pages.common
 
 import models.common.MembersDetails
-import models.enumeration.EventType.{Event1, Event6, Event8, Event8A}
+import models.enumeration.EventType.{Event1, Event3, Event6, Event7, Event8, Event8A}
 import pages.behaviours.PageBehaviours
 
 class MembersDetailsPageSpec extends PageBehaviours {
@@ -32,6 +32,14 @@ class MembersDetailsPageSpec extends PageBehaviours {
       beRemovable[MembersDetails](MembersDetailsPage(Event1, 0))
     }
 
+    "event3" - {
+      beRetrievable[MembersDetails](MembersDetailsPage(Event3, 0))
+
+      beSettable[MembersDetails](MembersDetailsPage(Event3, 0))
+
+      beRemovable[MembersDetails](MembersDetailsPage(Event3, 0))
+    }
+
     "event6" - {
       beRetrievable[MembersDetails](MembersDetailsPage(Event6, 0))
 
@@ -39,6 +47,15 @@ class MembersDetailsPageSpec extends PageBehaviours {
 
       beRemovable[MembersDetails](MembersDetailsPage(Event6, 0))
     }
+
+    "event7" - {
+      beRetrievable[MembersDetails](MembersDetailsPage(Event7, 0))
+
+      beSettable[MembersDetails](MembersDetailsPage(Event7, 0))
+
+      beRemovable[MembersDetails](MembersDetailsPage(Event7, 0))
+    }
+
 
     "event8" - {
       beRetrievable[MembersDetails](MembersDetailsPage(Event8, 0))

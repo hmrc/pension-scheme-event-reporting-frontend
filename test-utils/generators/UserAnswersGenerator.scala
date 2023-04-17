@@ -25,6 +25,7 @@ import pages.common.MembersDetailsPage
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.event13.SchemeStructurePage
+import pages.event3.{EarlyBenefitsBriefDescriptionPage, ReasonForBenefitsPage}
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.{JsValue, Json}
 
@@ -34,6 +35,8 @@ trait UserAnswersGenerator extends TryValues {
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] = {
     arbitrary[(event2.DatePaidPage, JsValue)] ::
     arbitrary[(event2.AmountPaidPage, JsValue)] ::
+    arbitrary[(EarlyBenefitsBriefDescriptionPage, JsValue)] ::
+    arbitrary[(ReasonForBenefitsPage, JsValue)] ::
     arbitrary[(event13.SchemeStructureDescriptionPage.type, JsValue)] ::
     arbitrary[(event13.ChangeDatePage.type, JsValue)] ::
     arbitrary[(SchemeStructurePage.type, JsValue)] ::

@@ -19,10 +19,10 @@ package pages.common
 import models.UserAnswers
 import models.common.MembersDetails
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event2, Event22, Event23, Event4, Event5, Event6, Event7, Event8, Event8A}
+import models.enumeration.EventType.{Event1, Event2, Event22, Event23, Event3, Event4, Event5, Event6, Event7, Event8, Event8A}
 import pages.event1.DoYouHoldSignedMandatePage
 import pages.event2.AmountPaidPage
-import pages.event6.TypeOfProtectionPage
+import pages.event3.ReasonForBenefitsPage
 import pages.event7.LumpSumAmountPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
@@ -35,7 +35,7 @@ case class MembersDetailsPage(eventType: EventType, index: Int, memberPageNo: In
     (eventType, memberPageNo) match {
       case (Event2, Event2MemberPageNumbers.FIRST_PAGE_DECEASED) => MembersPage(eventType)(index) \ MembersDetailsPage.toStringEvent2Deceased
       case (Event2, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY) => MembersPage(eventType)(index) \ MembersDetailsPage.toStringEvent2Beneficiary
-      case (Event4 | Event5 | Event6 | Event7 | Event8 | Event8A | Event22 | Event23, _) => MembersPage(eventType)(index) \ MembersDetailsPage.toString
+      case (Event3 | Event4 | Event5 | Event6 | Event7 | Event8 | Event8A | Event22 | Event23, _) => MembersPage(eventType)(index) \ MembersDetailsPage.toString
       case _ => MembersOrEmployersPage(eventType)(index) \ MembersDetailsPage.toString
     }
 
@@ -46,9 +46,10 @@ case class MembersDetailsPage(eventType: EventType, index: Int, memberPageNo: In
       case (Event1, index, _) => DoYouHoldSignedMandatePage(index)
       case (Event2, index, 1) => MembersDetailsPage(eventType, index, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY)
       case (Event2, index, 2) => AmountPaidPage(index, Event2)
+      case (Event3, index, _) => ReasonForBenefitsPage(index)
       case (Event4, index, _) => pages.common.PaymentDetailsPage(eventType, index)
       case (Event5, index, _) => pages.common.PaymentDetailsPage(eventType, index)
-      case (Event6, index, _) => TypeOfProtectionPage(eventType, index)
+      case (Event6, index, _) => pages.event6.TypeOfProtectionPage(eventType, index)
       case (Event7, index, _) => LumpSumAmountPage(index)
       case (Event8, index, _) => pages.event8.TypeOfProtectionPage(eventType, index)
       case (Event8A, index, _) => pages.event8a.PaymentTypePage(eventType, index)

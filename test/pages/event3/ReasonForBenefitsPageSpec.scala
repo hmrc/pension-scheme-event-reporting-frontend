@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package models.common
+package pages.event3
 
-import play.api.libs.json._
+import models.event3.ReasonForBenefits
+import pages.behaviours.PageBehaviours
 
-import java.time.LocalDate
+class ReasonForBenefitsSpec extends PageBehaviours {
 
-case class PaymentDetails(amountPaid: BigDecimal, eventDate: LocalDate)
+  "ReasonForBenefitsPage" - {
 
-object PaymentDetails {
-  implicit val format: Format[PaymentDetails] = Json.format[PaymentDetails]
+    beRetrievable[ReasonForBenefits](ReasonForBenefitsPage(0))
+
+    beSettable[ReasonForBenefits](ReasonForBenefitsPage(0))
+
+    beRemovable[ReasonForBenefits](ReasonForBenefitsPage(0))
+  }
 }
-
-
-

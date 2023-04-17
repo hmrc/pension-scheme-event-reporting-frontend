@@ -887,6 +887,15 @@ membersSummary.table.header2 = National Insurance number
 membersSummary.table.header3 = Pension input amounts
 membersSummary.table.totalTitle = Total
 
+membersSummary.event3.title = Event 3: Benefits provided before normal minimum pension age
+membersSummary.event3.heading = Event 3: Benefits provided before normal minimum pension age
+membersSummary.event3.error.required = Select yes if you want to add another entry
+membersSummary.event3.yesno.legend = Do you want to add another entry for this event?
+membersSummary.event3.table.header1 = Member
+membersSummary.event3.table.header2 = National Insurance number
+membersSummary.event3.table.header3 = Amount paid
+membersSummary.event3.table.totalTitle = Total not required
+
 membersSummary.event4.title = Event 4: Payment of serious ill-health lump sum in the tax year ending 5 April {0}
 membersSummary.event4.heading = Event 4: Payment of serious ill-health lump sum in the tax year ending 5 April {0}
 membersSummary.event4.error.required = Select yes if you want to add another entry
@@ -1167,12 +1176,28 @@ event13.schemeStructureDescription.checkYourAnswersLabel = Description of the sc
 event13.schemeStructureDescription.error.length = You can enter up to 150 characters
 event13.schemeStructureDescription.change.hidden = Give a brief description of the pension scheme structure
 
+reasonForBenefits.event3.title = Reason for the benefits being taken
+reasonForBenefits.event3.heading = What is the reason for the benefits being taken?
+reasonForBenefits.event3.illHealth = Ill health
+reasonForBenefits.event3.protectedPensionAge = Protected pension age
+reasonForBenefits.event3.other = Other
+reasonForBenefits.event3.checkYourAnswersLabel = Reason for the benefits being taken
+reasonForBenefits.event3.error.required = Select the reason for the benefits being taken
+reasonForBenefits.event3.change.hidden = the reason for the benefits being taken
+
+earlyBenefitsBriefDescription.heading = Give a brief description of why the benefits were taken early
+earlyBenefitsBriefDescription.title = Brief description of why the benefits were taken early
+earlyBenefitsBriefDescription.checkYourAnswersLabel = Give a brief description of why the benefits were taken early
+earlyBenefitsBriefDescription.error.length = The description must be 150 characters or fewer
+earlyBenefitsBriefDescription.change.hidden = Give a brief description of why the benefits were taken early
+
 event4.paymentDetails.title = Amount paid and date
 event4.paymentDetails.heading = Amount paid and date
 event5.paymentDetails.title = What was the member’s annual rate of pension entitlement immediately before the date of non-payment started?
 event5.paymentDetails.heading = What was the member’s annual rate of pension entitlement immediately before the date of non-payment started?
+event4.paymentDetails.value.heading = Total amount paid
+event5.paymentDetails.value.heading = Total amount paid
 
-paymentDetails.value.heading = Total amount paid
 paymentDetails.value.error.nothingEntered = Enter the total amount that was paid
 paymentDetails.value.error.notANumber = The total amount must be an amount of money, like 123.45 or 156.00
 paymentDetails.value.error.noDecimals = The total amount must include pence, like 123.45 or 156.00
@@ -1182,8 +1207,20 @@ paymentDetails.value.error.zeroEntered = The total amount must be greater than z
 paymentDetails.value.change.hidden = the total amount
 paymentDetails.value.checkYourAnswersLabel = Total amount paid
 
+event3.paymentDetails.value.heading = Total amount of benefits taken
+event3.paymentDetails.value.checkYourAnswersLabel = Total amount of benefits taken
+event3.paymentDetails.value.change.hidden = the total amount of benefits taken
+event3.paymentDetails.date.heading = Date benefits were taken
+event3.paymentDetails.title = Amount and date
+event3.paymentDetails.heading = Amount and date
+event3.paymentDetails.date.change.hidden = the date benefits were taken
+event3.paymentDetails.date.checkYourAnswersLabel = Date benefits were taken
+
 event4.paymentDetails.date.heading = Date of payment
 event5.paymentDetails.date.heading = Date the period of non-payment started
+event4.paymentDetails.date.change.hidden = the date of the payment
+event5.paymentDetails.date.checkYourAnswersLabel = Date of the payment
+
 paymentDetails.date.hint = For example, 22 09 2022
 paymentDetails.date.error.nothingEntered = Enter the date
 paymentDetails.date.error.noDayMonthOrYear = The date must include a day, month and year
@@ -1191,3 +1228,5 @@ paymentDetails.date.error.outsideDateRanges = Enter a real date
 paymentDetails.date.error.outsideReportedYear = Date must be between {0} and {1}
 paymentDetails.date.change.hidden = the date of the payment
 paymentDetails.date.checkYourAnswersLabel = Date of the payment
+
+characterCount = You can enter up to {0} characters

@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package models.common
+package pages.event3
 
-import play.api.libs.json._
+import pages.behaviours.PageBehaviours
+import pages.event3.EarlyBenefitsBriefDescriptionPage
 
-import java.time.LocalDate
 
-case class PaymentDetails(amountPaid: BigDecimal, eventDate: LocalDate)
+class EarlyBenefitsBriefDescriptionPageSpec extends PageBehaviours {
 
-object PaymentDetails {
-  implicit val format: Format[PaymentDetails] = Json.format[PaymentDetails]
+  "EarlyBenefitsBriefDescriptionPage" - {
+
+    beRetrievable[String](EarlyBenefitsBriefDescriptionPage(0))
+
+    beSettable[String](EarlyBenefitsBriefDescriptionPage(0))
+
+    beRemovable[String](EarlyBenefitsBriefDescriptionPage(0))
+  }
 }
-
-
-

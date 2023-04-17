@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package models.common
+package forms.event3
 
-import play.api.libs.json._
+import forms.mappings.Mappings
+import play.api.data.Form
 
-import java.time.LocalDate
+import javax.inject.Inject
 
-case class PaymentDetails(amountPaid: BigDecimal, eventDate: LocalDate)
+class EarlyBenefitsBriefDescriptionFormProvider @Inject() extends Mappings {
 
-object PaymentDetails {
-  implicit val format: Format[PaymentDetails] = Json.format[PaymentDetails]
+  def apply(): Form[Option[String]] =
+    Form(
+      "value" -> optionalText()
+        .verifying(maxLength(150, "earlyBenefitsBriefDescription.error.length"))
+    )
 }
-
-
-

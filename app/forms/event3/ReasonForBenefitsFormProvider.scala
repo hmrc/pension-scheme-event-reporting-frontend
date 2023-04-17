@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package models.common
+package forms.event3
 
-import play.api.libs.json._
+import javax.inject.Inject
 
-import java.time.LocalDate
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.event3.ReasonForBenefits
 
-case class PaymentDetails(amountPaid: BigDecimal, eventDate: LocalDate)
+class ReasonForBenefitsFormProvider @Inject() extends Mappings {
 
-object PaymentDetails {
-  implicit val format: Format[PaymentDetails] = Json.format[PaymentDetails]
+  def apply(): Form[ReasonForBenefits] =
+    Form(
+      "value" -> enumerable[ReasonForBenefits]("reasonForBenefits.event3.error.required")
+    )
 }
-
-
-

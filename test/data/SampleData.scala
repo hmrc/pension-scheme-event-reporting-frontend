@@ -206,10 +206,11 @@ object SampleData {
     .setOrException(TypeOfProtectionReferencePage(Event8A, 0), "1234567A")
     .setOrException(LumpSumAmountAndDatePage(Event8A, 0), lumpSumDetails)
 
-  def sampleMemberJourneyDataEvent4and5(eventType: EventType): UserAnswers = UserAnswers()
+  def sampleMemberJourneyDataEvent3and4and5(eventType: EventType): UserAnswers = UserAnswers()
     .setOrException(TaxYearPage, TaxYear("2022"))
     .setOrException(MembersDetailsPage(eventType, 0), memberDetails)
     .setOrException(PaymentDetailsPage(eventType, 0), paymentDetailsCommon)
+
 
   def sampleTwoMemberJourneyData(eventType: EventType): UserAnswers =
     UserAnswers()

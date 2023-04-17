@@ -23,7 +23,7 @@ import data.SampleData._
 import forms.common.MembersSummaryFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event2, Event22, Event23, Event4, Event5, Event6, Event8, Event8A}
+import models.enumeration.EventType.{Event2, Event22, Event23, Event3, Event4, Event5, Event6, Event8, Event8A}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -65,10 +65,13 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
     testSuite(formProvider(Event2), Event2, sampleMemberJourneyDataEvent2, SampleData.amountPaid.toString(),
       controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(0).url, "999.11")
 
-    testSuite(formProvider(Event4), Event4, sampleMemberJourneyDataEvent4and5(Event4), SampleData.paymentDetailsCommon.amountPaid.toString(),
+    testSuite(formProvider(Event3), Event3, sampleMemberJourneyDataEvent3and4and5(Event3), SampleData.paymentDetailsCommon.amountPaid.toString(),
+      controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(0).url, "54.23")
+
+    testSuite(formProvider(Event4), Event4, sampleMemberJourneyDataEvent3and4and5(Event4), SampleData.paymentDetailsCommon.amountPaid.toString(),
       controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url, "54.23")
 
-    testSuite(formProvider(Event5), Event5, sampleMemberJourneyDataEvent4and5(Event5), SampleData.paymentDetailsCommon.amountPaid.toString(),
+    testSuite(formProvider(Event5), Event5, sampleMemberJourneyDataEvent3and4and5(Event5), SampleData.paymentDetailsCommon.amountPaid.toString(),
       controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(0).url, "54.23")
 
     testSuite(formProvider(Event6), Event6, sampleMemberJourneyDataEvent6, SampleData.crystallisedDetails.amountCrystallised.toString(),

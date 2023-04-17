@@ -42,7 +42,7 @@
         @govukInput(
                 InputViewModel(
                     field = form("amountPaid"),
-                    label = Label(content = Text(messages("paymentDetails.value.heading")))
+                    label = Label(content = Text(messages(s"event$eventType.paymentDetails.value.heading")))
                 )
                 .withWidth(OneQuarter)
                 .withPrefix(PrefixOrSuffix(content = Text("£")))
