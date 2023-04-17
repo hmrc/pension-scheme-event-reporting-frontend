@@ -20,7 +20,6 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import controllers.common.PaymentDetailsControllerSpec.{paymentDetails, validDate}
 import forms.common.PaymentDetailsFormProvider
-import models.UserAnswers
 import models.common.PaymentDetails
 import models.enumeration.EventType
 import org.mockito.ArgumentMatchers.any
@@ -81,7 +80,7 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
   private def testReturnOkAndCorrectView(eventType: EventType): Unit = {
     s"must return OK and the correct view for a GET for Event $eventType" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute(eventType))
@@ -98,7 +97,7 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
 
   private def testPopulateCorrectViewOnGetWhenPrevAnswered(eventType: EventType): Unit = {
     s"must populate the view correctly on a GET when the question has previously been answered  for Event $eventType" in {
-      val userAnswers = UserAnswers().set(PaymentDetailsPage(eventType, 0), validValue).success.value
+      val userAnswers = emptyUserAnswersWithTaxYear.set(PaymentDetailsPage(eventType, 0), validValue).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
@@ -120,7 +119,7 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
         .thenReturn(Future.successful(()))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
 
       running(application) {
@@ -128,10 +127,10 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(paymentDetails("1000.00", Some(validDate)): _*)
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(PaymentDetailsPage(eventType, 0), validValue).success.value
+        val updatedAnswers = emptyUserAnswersWithTaxYear.set(PaymentDetailsPage(eventType, 0), validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual PaymentDetailsPage(eventType, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual PaymentDetailsPage(eventType, 0).navigate(waypoints, emptyUserAnswersWithTaxYear, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -140,7 +139,7 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
   private def testBadRequestForInvalidDataSubmission(eventType: EventType): Unit = {
     s"must return bad request when invalid data is submitted for Event $eventType" in {
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
 
       running(application) {
