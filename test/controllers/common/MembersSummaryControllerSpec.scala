@@ -35,9 +35,10 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.EventPaginationService
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import viewmodels.{Message, SummaryListRowWithTwoValues}
-import views.html.common.MembersSummaryView
+import views.html.common.{MembersSummaryView, MembersSummaryViewWithPagination}
 
 import scala.concurrent.Future
 
@@ -48,7 +49,11 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
   private val formProvider = new MembersSummaryFormProvider()
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
+  private val mockEventPaginationService = mock[EventPaginationService]
+
   private def getRoute(eventType: EventType): String = routes.MembersSummaryController.onPageLoad(waypoints, eventType).url
+
+  private def getRouteWithPagination(eventType: EventType): String = routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, eventType, 0).url
 
   private def postRoute(eventType: EventType): String = routes.MembersSummaryController.onSubmit(waypoints, eventType).url
 
@@ -59,6 +64,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockUserAnswersCacheConnector)
+    reset(mockEventPaginationService)
   }
 
   "MembersSummary Controller" - {
@@ -133,6 +139,45 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
       }
     }
   }
+
+//  private def testReturnOkAndCorrectViewWithPagination(eventType: EventType, form: Form[Boolean], sampleData: UserAnswers, secondValue: String, href: String, arbitraryAmount: String): Unit = {
+//    s"must return OK and the correct view for a GET for Event $eventType" in {
+//
+//      val application = applicationBuilder(userAnswers = Some(sampleData)).build()
+//
+//      running(application) {
+//        val request = FakeRequest(GET, getRouteWithPagination(eventType))
+//
+//        val result = route(application, request).value
+//
+//        val view = application.injector.instanceOf[MembersSummaryViewWithPagination]
+//
+//        val expectedSeq =
+//          Seq(
+//            SummaryListRowWithTwoValues(
+//              key = SampleData.memberDetails.fullName,
+//              firstValue = SampleData.memberDetails.nino,
+//              secondValue = secondValue,
+//              actions = Some(Actions(
+//                items = Seq(
+//                  ActionItem(
+//                    content = Text(Message("site.view")),
+//                    href = href
+//                  ),
+//                  ActionItem(
+//                    content = Text(Message("site.remove")),
+//                    href = "#"
+//                  )
+//                )
+//              ))
+//            ))
+//
+//        status(result) mustEqual OK
+//        contentAsString(result) mustEqual view(form, waypoints, eventType, expectedSeq, arbitraryAmount, "2023", 0)(request, messages(application)).toString
+//      }
+//    }
+//  }
+
 
   private def testSaveAnswerAndRedirectWhenValid(eventType: EventType): Unit = {
     s"must save the answer and redirect to the next page when valid data is submitted for Event $eventType" in {

@@ -27,9 +27,9 @@
 )
 
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberSeq: Seq[SummaryListRowWithThreeValues], total: String, paginationStats: PaginationStatsEvent7, pageNumber: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberSeq: Seq[SummaryListRowWithThreeValues], total: String, selectedTaxYear: String, paginationStats: PaginationStatsEvent7, pageNumber: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"membersSummary.event${eventType.toString}.title", "2022"))) {
+@layout(pageTitle = title(form, messages(s"membersSummary.event${eventType.toString}.title", selectedTaxYear))) {
 
     @formHelper(action = controllers.event7.routes.Event7MembersSummaryController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
@@ -41,7 +41,7 @@
             @govukErrorSummary(ErrorSummaryViewModel(form.withError(FormError("page-nav", Seq("Page number is out of bounds")))))
         }
 
-        <h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", "2022")</h1>
+        <h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", selectedTaxYear)</h1>
 
         @components.entity_summaryFour_table_list(
             paginationStats.slicedMembers,
