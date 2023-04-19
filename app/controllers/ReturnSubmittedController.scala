@@ -21,7 +21,7 @@ import controllers.actions._
 import helpers.DateHelper
 import helpers.DateHelper.dateFormatter
 import pages.{TaxYearPage, Waypoints}
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ReturnSubmittedView
@@ -42,7 +42,7 @@ class ReturnSubmittedController @Inject()(
     val schemeName = request.schemeName
 
     val taxYear = request.userAnswers.get(TaxYearPage) match {
-      case Some(taxYear) => s"${taxYear.startYear} to ${taxYear.endYear}"
+      case Some(taxYear) => s"${taxYear.startYear} ${Messages("confirmation.taxYear.to")} ${taxYear.endYear}"
       case _ => throw new RuntimeException("Tax year not available on Return Submitted Controller")
     }
 

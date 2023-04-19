@@ -85,6 +85,7 @@ confirmation.p1 = We have sent a confirmation email to
 confirmation.summaryList.l1.scheme = Scheme
 confirmation.summaryList.l2.taxYear = Tax year
 confirmation.summaryList.l3.dateSubmitted = Date submitted
+confirmation.taxYear.to = to
 confirmation.p2 = You must include the correct charge reference with any payment for this submission.
 confirmation.p3 = You can:
 confirmation.li1 = view payments and charge references for your Event reports

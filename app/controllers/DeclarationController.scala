@@ -24,6 +24,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.DeclarationView
+
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import models.UserAnswers
@@ -46,7 +47,7 @@ class DeclarationController @Inject()(
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
 
-      val testUserAnswers = UserAnswers(testDataPsa(request.pstr))
+      val testUserAnswers: UserAnswers = UserAnswers(testDataPsa(request.pstr))
 
       request.userAnswers match {
         //TODO: Replace test user answers above with ua when FE captures sufficient data

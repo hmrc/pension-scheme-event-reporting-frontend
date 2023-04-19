@@ -17,14 +17,10 @@
 package pages
 
 import controllers.routes
-import models.UserAnswers
 import play.api.mvc.Call
 
 case object DeclarationPage extends Page {
 
   override def route(waypoints: Waypoints): Call =
     routes.DeclarationController.onPageLoad(waypoints)
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    ReturnSubmittedPage
 }

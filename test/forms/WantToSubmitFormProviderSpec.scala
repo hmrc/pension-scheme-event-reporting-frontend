@@ -14,23 +14,32 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.UserAnswers
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-case object ReturnSubmittedPage extends QuestionPage[Boolean] {
+class WantToSubmitFormProviderSpec extends BooleanFieldBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  private val requiredKey = "wantToSubmit.error.required"
+  private val invalidKey = "error.boolean"
 
-  override def toString: String = "returnSubmitted"
+  val form = new WantToSubmitFormProvider()()
 
-  override def route(waypoints: Waypoints): Call =
-    routes.ReturnSubmittedController.onPageLoad(waypoints)
+  ".value" - {
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    ReturnSubmittedPage
-    }
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }
