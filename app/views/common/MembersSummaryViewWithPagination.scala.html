@@ -52,6 +52,7 @@
         )
 
         @if(paginationStats.pagerSeq) {
+
         <div class="govuk-!-margin-bottom-9" id="page-nav">
             <p class="govuk-body">@(s"Showing ${paginationStats.pageStartAndEnd._1} – ${paginationStats.pageStartAndEnd._2} of ${paginationStats.totalNumberOfMembers} members")</p>
             <nav class="govuk-margin-top-5" aria-label="page">

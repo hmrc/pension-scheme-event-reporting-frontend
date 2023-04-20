@@ -37,6 +37,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import services.EventPaginationService
 import services.EventPaginationService.PaginationStats
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
@@ -54,7 +55,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockEventPaginationService = mock[EventPaginationService]
 
-  private def fake26MappedMembers(href: String, eventType: EventType): Seq[SummaryListRowWithTwoValues] = fakeXMappedMembers(26, href, eventType)
+  private def fake26MappedMembers(href: String, eventType: EventType): Seq[SummaryListRowWithTwoValues] = fakeXMappedMembers(25, href, eventType)
 
   private val mockTaxYear = mock[DateHelper]
   private val validAnswer = LocalDate.of(2022, 5, 12)
@@ -106,7 +107,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
     //    testSuite(formProvider(Event23), Event23, sampleMemberJourneyDataEvent23, SampleData.totalPaymentAmountEvent23CurrencyFormat,
     //      controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url, "1,234.56")
 
-    testSuiteWithPagination(formProvider(Event23), Event23, cYAHref(Event23, 0), "260.00")
+    behave like testSuiteWithPagination(formProvider(Event23), Event23, cYAHref(Event23, 0), "260.00")
   }
 
   private def testSuite(form: Form[Boolean], eventType: EventType, sampleData: UserAnswers, secondValue: String, href: String, arbitraryAmount: String): Unit = {
@@ -162,14 +163,14 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
 
     s"must return OK and the correct view with pagination for a GET for Event $eventType" in {
 
-      val sampleData =
+      val sampleUAData =
         (0 to 25).foldLeft(emptyUserAnswersWithTaxYear) { (acc, i) =>
           acc.setOrException(MembersDetailsPage(Event23, i), memberDetails)
             .setOrException(ChooseTaxYearPage(Event23, i), ChooseTaxYear("2015"))
             .setOrException(TotalPensionAmountsPage(Event23, i), BigDecimal(10.00))
         }
 
-      val application = applicationBuilder(userAnswers = Some(sampleData)).build()
+      val application = applicationBuilder(userAnswers = Some(sampleUAData)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRouteWithPagination(eventType))
@@ -178,13 +179,29 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
 
         val view = application.injector.instanceOf[MembersSummaryViewWithPagination]
 
-        val expectedPaginationStats = PaginationStats(fake26MappedMembers(href, eventType), 26, 2, (1, 25), 1 to 2)
+        val expectedPaginationStats = PaginationStats(slicedMembers = fake26MappedMembers(href, eventType),
+          totalNumberOfMembers = 26,
+          totalNumberOfPages = 2,
+          pageStartAndEnd = (1, 25),
+          pagerSeq = Seq(1, 2))
 
         status(result) mustEqual OK
 
-        println(s"\n\n expected === \n\n $expectedPaginationStats \n")
-        contentAsString(result) mustEqual view(form, waypoints, eventType, fake26MappedMembers(href, eventType), arbitraryAmount, "2023", expectedPaginationStats, 0)(request, messages(application)).toString
+        val expectedView = view(form, waypoints, eventType, fake26MappedMembers(href, eventType), arbitraryAmount, "2023", expectedPaginationStats, 0)(request, messages(application)).toString
+
+        contentAsString(result) mustEqual expectedView
       }
+
+
+
+
+
+
+
+
+
+
+
 
     }
   }
@@ -276,7 +293,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
   )
 
   private def paginationStats26Members(href: String, eventType: EventType) = fakePaginationStats(
-    fake26MappedMembers(href, eventType).slice(0, 25),
+    fake26MappedMembers(href, eventType).slice(0, 24),
     26,
     2,
     (1, 25),
