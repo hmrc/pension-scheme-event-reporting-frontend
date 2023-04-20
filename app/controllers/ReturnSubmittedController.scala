@@ -24,7 +24,6 @@ import helpers.DateHelper.dateFormatter
 import pages.{TaxYearPage, Waypoints}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ReturnSubmittedView
 
@@ -32,29 +31,30 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ReturnSubmittedController @Inject()(
-                                        val controllerComponents: MessagesControllerComponents,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        view: ReturnSubmittedView,
-                                        config: FrontendAppConfig,
-                                        minimalConnector: MinimalConnector
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                           val controllerComponents: MessagesControllerComponents,
+                                           identify: IdentifierAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           view: ReturnSubmittedView,
+                                           config: FrontendAppConfig,
+                                           minimalConnector: MinimalConnector
+                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) { implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
 
-    minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId)
+    minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map { minimalDetails =>
+      val email = minimalDetails.email
+      val schemeName = request.schemeName
 
-    val schemeName = request.schemeName
+      val taxYear = request.userAnswers.get(TaxYearPage) match {
+        case Some(taxYear) => s"${taxYear.startYear} ${Messages("confirmation.taxYear.to")} ${taxYear.endYear}"
+        case _ => throw new RuntimeException("Tax year not available on Return Submitted Controller")
+      }
 
-    val taxYear = request.userAnswers.get(TaxYearPage) match {
-      case Some(taxYear) => s"${taxYear.startYear} ${Messages("confirmation.taxYear.to")} ${taxYear.endYear}"
-      case _ => throw new RuntimeException("Tax year not available on Return Submitted Controller")
-    }
-
-    val dateHelper = new DateHelper
-    val dateSubmitted: String = dateHelper.now.format(dateFormatter)
+      val dateHelper = new DateHelper
+      val dateSubmitted: String = dateHelper.now.format(dateFormatter)
 
       Ok(view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url, config.yourPensionSchemesUrl, schemeName, taxYear, dateSubmitted))
+    }
   }
 }

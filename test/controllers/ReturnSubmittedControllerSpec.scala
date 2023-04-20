@@ -17,13 +17,20 @@
 package controllers
 
 import base.SpecBase
+import connectors.MinimalConnector
+import connectors.MinimalConnector.MinimalDetails
 import helpers.DateHelper
 import helpers.DateHelper.dateFormatter
 import models.{TaxYear, UserAnswers}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{EmptyWaypoints, TaxYearPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.ReturnSubmittedView
+
+import scala.concurrent.Future
 
 class ReturnSubmittedControllerSpec extends SpecBase {
 
@@ -33,10 +40,14 @@ class ReturnSubmittedControllerSpec extends SpecBase {
   private val taxYear = "2022 to 2023"
   private val dateHelper = new DateHelper
   private val dateSubmitted: String = dateHelper.now.format(dateFormatter)
+  private val mockMinimalConnector = mock[MinimalConnector]
 
   "Return Submitted Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      val minimalDetails = MinimalDetails(email = "", isPsaSuspended = false,
+        organisationName = None, individualDetails = None, rlsFlag = false, deceasedFlag = false)
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
 
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"))
       val application = applicationBuilder(userAnswers = Some(ua)).build()
