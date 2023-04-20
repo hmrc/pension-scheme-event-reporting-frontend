@@ -29,7 +29,6 @@ class DeclarationControllerSpec extends SpecBase {
   "Declaration Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
@@ -42,6 +41,24 @@ class DeclarationControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(routes.DeclarationController.onClick(waypoints).url)(request, messages(application)).toString
+      }
+    }
+
+    //TODO - add tests for submitting event report/ connector once sufficient data is captured in the FE (separate ticket being raised)
+
+    "must redirect to the correct page for method onClick" in {
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+
+        val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[DeclarationView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(routes.ReturnSubmittedController.onPageLoad(waypoints).url)(request, messages(application)).toString
       }
     }
   }
