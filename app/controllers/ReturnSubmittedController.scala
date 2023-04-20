@@ -43,7 +43,6 @@ class ReturnSubmittedController @Inject()(
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
 
     minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map { minimalDetails =>
-      val email = minimalDetails.email
       val schemeName = request.schemeName
 
       val taxYear = request.userAnswers.get(TaxYearPage) match {
@@ -54,7 +53,8 @@ class ReturnSubmittedController @Inject()(
       val dateHelper = new DateHelper
       val dateSubmitted: String = dateHelper.now.format(dateFormatter)
 
-      Ok(view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url, config.yourPensionSchemesUrl, schemeName, taxYear, dateSubmitted))
+      Ok(view(controllers.routes.ReturnSubmittedController
+        .onPageLoad(waypoints).url, config.yourPensionSchemesUrl, schemeName, taxYear, dateSubmitted, minimalDetails.email))
     }
   }
 }

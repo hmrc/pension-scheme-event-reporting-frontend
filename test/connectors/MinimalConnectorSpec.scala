@@ -31,9 +31,7 @@ class MinimalConnectorSpec
   import MinimalConnector._
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  private val pstr = "pstr"
   private val psaIdName = "psaId"
-  private val pspIdName = "pspId"
   private val psaId = "A2100005"
 
   override protected def portConfigKey: String = "microservice.services.pension-administrator.port"
@@ -53,7 +51,7 @@ class MinimalConnectorSpec
       )
     )
 
-  "getMinimalPsaDetails" must {
+  "getMinimalDetails" must {
 
     "return successfully when the backend has returned OK and a false response" in {
       server.stubFor(
