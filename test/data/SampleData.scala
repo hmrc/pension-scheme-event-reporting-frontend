@@ -16,6 +16,7 @@
 
 package data
 
+import base.SpecBase
 import models.address.{Address, TolerantAddress}
 import models.common.ManualOrUpload.Manual
 import models.common.{ChooseTaxYear, MembersDetails, PaymentDetails => CommonPaymentDetails}
@@ -48,7 +49,7 @@ import utils.{CountryOptions, Event2MemberPageNumbers, InputOption}
 
 import java.time.LocalDate
 
-object SampleData {
+object SampleData extends SpecBase {
   private val options: Seq[InputOption] = Seq(
     InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"),
     InputOption("GB", "Great Britain")
@@ -109,8 +110,11 @@ object SampleData {
 
   val paymentDetails: Event1PaymentDetails = Event1PaymentDetails(1000.00, LocalDate.of(2022, 11, 8))
   val crystallisedDetails: CrystallisedDetails = CrystallisedDetails(857.12, LocalDate.of(2022, 11, 8))
+  val crystallisedDetailsPagination: CrystallisedDetails = CrystallisedDetails(10.00, LocalDate.of(2022, 11, 8))
   val lumpSumDetails = LumpSumDetails(223.11, LocalDate.of(2022, 3, 22))
+  val lumpSumDetailsPagination = LumpSumDetails(10.00, LocalDate.of(2022, 3, 22))
   val paymentDetailsCommon: CommonPaymentDetails = CommonPaymentDetails(54.23, LocalDate.of(2022, 4, 5))
+  val paymentDetailsPagination: CommonPaymentDetails = CommonPaymentDetails(10.00, LocalDate.of(2022, 4, 5))
 
   val datePaid: LocalDate = LocalDate.of(2022, 5, 19)
   val amountPaid: BigDecimal = 999.11
@@ -220,5 +224,43 @@ object SampleData {
       .setOrException(MembersDetailsPage(eventType, 1), memberDetails2)
       .setOrException(ChooseTaxYearPage(eventType, 1), taxYear)
       .setOrException(TotalPensionAmountsPage(eventType, 1), totalPaymentAmount)
+
+  def event345UADataWithPagnination(eventType: EventType): UserAnswers =
+    (0 to 25).foldLeft(emptyUserAnswersWithTaxYear) { (acc, i) =>
+      acc.setOrException(MembersDetailsPage(eventType, i), memberDetails)
+        .setOrException(PaymentDetailsPage(eventType, i), paymentDetailsPagination)
+    }
+
+  val event6UADataWithPagination: UserAnswers =
+    (0 to 25).foldLeft(emptyUserAnswersWithTaxYear) { (acc, i) =>
+    acc.setOrException(MembersDetailsPage(Event6, i), memberDetails)
+      .setOrException(Event6TypeOfProtectionPage(Event6, i), Event6TypeOfProtection.EnhancedLifetimeAllowance)
+      .setOrException(InputProtectionTypePage(Event6, i), "1234567A")
+      .setOrException(AmountCrystallisedAndDatePage(Event6, i), crystallisedDetailsPagination)
+  }
+
+  val event8UADataWithPagination: UserAnswers =
+    (0 to 25).foldLeft(emptyUserAnswersWithTaxYear) { (acc, i) =>
+      acc.setOrException(MembersDetailsPage(Event8, i), memberDetails)
+        .setOrException(Event8TypeOfProtectionPage(Event8, i), Event8TypeOfProtection.PrimaryProtection)
+        .setOrException(TypeOfProtectionReferencePage(Event8, i), "1234567A")
+        .setOrException(LumpSumAmountAndDatePage(Event8, i), lumpSumDetailsPagination)
+    }
+
+  val event8aUADataWithPagination: UserAnswers =
+    (0 to 25).foldLeft(emptyUserAnswersWithTaxYear) { (acc, i) =>
+      acc.setOrException(MembersDetailsPage(Event8A, i), memberDetails)
+        .setOrException(PaymentTypePage(Event8A, i), PaymentType.PaymentOfAStandAloneLumpSum)
+        .setOrException(Event8TypeOfProtectionPage(Event8A, i), Event8TypeOfProtection.PrimaryProtection)
+        .setOrException(TypeOfProtectionReferencePage(Event8A, i), "1234567A")
+        .setOrException(LumpSumAmountAndDatePage(Event8A, i), lumpSumDetailsPagination)
+    }
+
+  def event22and23UADataWithPagination(eventType: EventType) =
+    (0 to 25).foldLeft(emptyUserAnswersWithTaxYear) { (acc, i) =>
+      acc.setOrException(MembersDetailsPage(eventType, i), memberDetails)
+        .setOrException(ChooseTaxYearPage(eventType, i), ChooseTaxYear("2015"))
+        .setOrException(TotalPensionAmountsPage(eventType, i), BigDecimal(10.00))
+    }
 
 }

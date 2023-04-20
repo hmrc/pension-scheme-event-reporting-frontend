@@ -107,20 +107,27 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
     //    testSuite(formProvider(Event23), Event23, sampleMemberJourneyDataEvent23, SampleData.totalPaymentAmountEvent23CurrencyFormat,
     //      controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url, "1,234.56")
 
-    behave like testSuiteWithPagination(formProvider(Event23), Event23, cYAHref(Event23, 0), "260.00")
+    behave like testSuiteWithPagination(formProvider(Event3), Event3, cYAHref(Event3, 0), "260.00", SampleData.event345UADataWithPagnination(Event3))
+    behave like testSuiteWithPagination(formProvider(Event4), Event4, cYAHref(Event4, 0), "260.00", SampleData.event345UADataWithPagnination(Event4))
+    behave like testSuiteWithPagination(formProvider(Event5), Event5, cYAHref(Event5, 0), "260.00", SampleData.event345UADataWithPagnination(Event5))
+    behave like testSuiteWithPagination(formProvider(Event6), Event6, cYAHref(Event6, 0), "260.00", SampleData.event6UADataWithPagination)
+    behave like testSuiteWithPagination(formProvider(Event8), Event8, cYAHref(Event8, 0), "260.00", SampleData.event8UADataWithPagination)
+    behave like testSuiteWithPagination(formProvider(Event8A), Event8A, cYAHref(Event8A, 0), "260.00", SampleData.event8aUADataWithPagination)
+    behave like testSuiteWithPagination(formProvider(Event22), Event22, cYAHref(Event22, 0), "260.00", SampleData.event22and23UADataWithPagination(Event22))
+    behave like testSuiteWithPagination(formProvider(Event23), Event23, cYAHref(Event23, 0), "260.00", SampleData.event22and23UADataWithPagination(Event23))
   }
 
-  private def testSuite(form: Form[Boolean], eventType: EventType, sampleData: UserAnswers, secondValue: String, href: String, arbitraryAmount: String): Unit = {
-    testReturnOkAndCorrectView(eventType, form, sampleData, secondValue, href, arbitraryAmount)
+  private def testSuite(form: Form[Boolean], eventType: EventType, sampleData: UserAnswers, secondValue: String, href: String, totalAmount: String): Unit = {
+    testReturnOkAndCorrectView(eventType, form, sampleData, secondValue, href, totalAmount)
     testSaveAnswerAndRedirectWhenValid(eventType)
     testBadRequestForInvalidDataSubmission(eventType, form)
   }
 
-  private def testSuiteWithPagination(form: Form[Boolean], eventType: EventType, href: String, arbitraryAmount: String): Unit = {
-    testReturnOkAndCorrectViewWithPagination(eventType, form, href, arbitraryAmount)
+  private def testSuiteWithPagination(form: Form[Boolean], eventType: EventType, href: String, totalAmount: String, sampleData: UserAnswers): Unit = {
+    testReturnOkAndCorrectViewWithPagination(eventType, form, href, totalAmount, sampleData)
   }
 
-  private def testReturnOkAndCorrectView(eventType: EventType, form: Form[Boolean], sampleData: UserAnswers, secondValue: String, href: String, arbitraryAmount: String): Unit = {
+  private def testReturnOkAndCorrectView(eventType: EventType, form: Form[Boolean], sampleData: UserAnswers, secondValue: String, href: String, totalAmount: String): Unit = {
     s"must return OK and the correct view for a GET for Event $eventType" in {
 
       val application = applicationBuilder(userAnswers = Some(sampleData)).build()
@@ -153,24 +160,17 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
             ))
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, eventType, expectedSeq, arbitraryAmount, "2023")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, eventType, expectedSeq, totalAmount, "2023")(request, messages(application)).toString
       }
     }
   }
 
-  private def testReturnOkAndCorrectViewWithPagination(eventType: EventType, form: Form[Boolean], href: String, arbitraryAmount: String): Unit = {
+  private def testReturnOkAndCorrectViewWithPagination(eventType: EventType, form: Form[Boolean], href: String, totalAmount: String, sampleData: UserAnswers): Unit = {
     when(mockEventPaginationService.paginateMappedMembers(any(), any())).thenReturn(paginationStats26Members(href, eventType))
 
     s"must return OK and the correct view with pagination for a GET for Event $eventType" in {
 
-      val sampleUAData =
-        (0 to 25).foldLeft(emptyUserAnswersWithTaxYear) { (acc, i) =>
-          acc.setOrException(MembersDetailsPage(Event23, i), memberDetails)
-            .setOrException(ChooseTaxYearPage(Event23, i), ChooseTaxYear("2015"))
-            .setOrException(TotalPensionAmountsPage(Event23, i), BigDecimal(10.00))
-        }
-
-      val application = applicationBuilder(userAnswers = Some(sampleUAData)).build()
+      val application = applicationBuilder(userAnswers = Some(sampleData)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRouteWithPagination(eventType))
@@ -179,7 +179,8 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
 
         val view = application.injector.instanceOf[MembersSummaryViewWithPagination]
 
-        val expectedPaginationStats = PaginationStats(slicedMembers = fake26MappedMembers(href, eventType),
+        val expectedPaginationStats = PaginationStats(
+          slicedMembers = fake26MappedMembers(href, eventType),
           totalNumberOfMembers = 26,
           totalNumberOfPages = 2,
           pageStartAndEnd = (1, 25),
@@ -187,22 +188,10 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
 
         status(result) mustEqual OK
 
-        val expectedView = view(form, waypoints, eventType, fake26MappedMembers(href, eventType), arbitraryAmount, "2023", expectedPaginationStats, 0)(request, messages(application)).toString
+        val expectedView = view(form, waypoints, eventType, fake26MappedMembers(href, eventType), totalAmount, "2023", expectedPaginationStats, 0)(request, messages(application)).toString
 
         contentAsString(result) mustEqual expectedView
       }
-
-
-
-
-
-
-
-
-
-
-
-
     }
   }
 
@@ -255,6 +244,13 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
 
   private def cYAHref(eventType: EventType, index: Int) = {
       eventType match {
+        case Event3 => controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(index).url
+        case Event4 => controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(index).url
+        case Event5 => controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(index).url
+        case Event6 => controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(index).url
+        case Event8 => controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(index).url
+        case Event8A => controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(index).url
+        case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
         case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
         case _ => "Failed this bit"
       }
