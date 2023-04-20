@@ -52,7 +52,6 @@ class AuthenticatedIdentifierAction @Inject()(
   private val enrolmentPSP = "HMRC-PODSPP-ORG"
 
   private def getEventReportingData[A](request: Request[A])(implicit hc: HeaderCarrier): Future[Option[EventReporting]] = {
-
     request.session.get(SessionKeys.sessionId) match {
       case None => Future.successful(None)
       case Some(sessionId) =>
@@ -62,46 +61,44 @@ class AuthenticatedIdentifierAction @Inject()(
           }
         }
     }
+  }
 
+  private def withAuthInfo[A](
+                               block: (Option[String], Enrolments, Option[EventReporting]) => Future[Result]
+                             )(implicit request: Request[A], hd: HeaderCarrier): Future[Result] = {
+    authorised(Enrolment(enrolmentPSA) or Enrolment(enrolmentPSP)).retrieve(
+      Retrievals.externalId and Retrievals.allEnrolments
+    ) {
+      case optionExternalId ~ enrolments =>
+        getEventReportingData(request).flatMap(block.apply(optionExternalId, enrolments, _))
+    }
+  }
+
+  private def recoverFromError: PartialFunction[Throwable, Future[Result]] = {
+    case _: NoActiveSession =>
+      Future.successful(Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl))))
+    case e: AuthorisationException =>
+      logger.warn(s"Authorization Failed with error $e")
+      Future.successful(Redirect(config.youNeedToRegisterUrl))
   }
 
   override def invokeBlock[A](
                                request: Request[A],
                                block: IdentifierRequest[A] => Future[Result]
                              ): Future[Result] = {
-    implicit val hc: HeaderCarrier =
-      HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    implicit val req: Request[A] = request
 
-    val futureAuthInfo = authorised(Enrolment(enrolmentPSA) or Enrolment(enrolmentPSP)).retrieve(
-      Retrievals.externalId and Retrievals.allEnrolments
-    ) {
-      case optionExternalId ~ enrolments => Future.successful(Tuple2(optionExternalId, enrolments))
-    }
-
-    futureAuthInfo.flatMap { authInfo =>
-      val futurePstr = getEventReportingData(request) map {
-        case None => throw new RuntimeException("PSTR is not available") // TODO: Once we have an event reporting dashboard then we should redirect user to ??? page at this point
-        case Some(pstr) => pstr
-      }
-      futurePstr.flatMap { case data =>
-        authInfo match {
-          case Tuple2(Some(externalId), enrolments) if bothPsaAndPspEnrolmentsPresent(enrolments) =>
-            actionForBothEnrolments(data, externalId, enrolments, request, block)
-          case Tuple2(Some(externalId), enrolments) if enrolments.getEnrolment(enrolmentPSA).isDefined =>
-            actionForOneEnrolment(Administrator, data, externalId, enrolments, request, block)
-          case Tuple2(Some(externalId), enrolments) if enrolments.getEnrolment(enrolmentPSP).isDefined =>
-            actionForOneEnrolment(Practitioner, data, externalId, enrolments, request, block)
-          case _ => futureUnauthorisedPage
-        }
-      }
-
-    } recover {
-      case _: NoActiveSession =>
-        Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
-      case e: AuthorisationException =>
-        logger.warn(s"Authorization Failed with error $e")
-        Redirect(config.youNeedToRegisterUrl)
-    }
+    withAuthInfo {
+      case (Some(_), _, None) => throw new RuntimeException("PSTR is not available")
+      case (Some(externalId), enrolments, Some(data)) if bothPsaAndPspEnrolmentsPresent(enrolments) =>
+        actionForBothEnrolments(data, externalId, enrolments, request, block)
+      case (Some(externalId), enrolments, Some(data)) if enrolments.getEnrolment(enrolmentPSA).isDefined =>
+        actionForOneEnrolment(Administrator, data, externalId, enrolments, request, block)
+      case (Some(externalId), enrolments, Some(data)) if enrolments.getEnrolment(enrolmentPSP).isDefined =>
+        actionForOneEnrolment(Practitioner, data, externalId, enrolments, request, block)
+      case _ => futureUnauthorisedPage
+    } recoverWith recoverFromError
   }
 
   private def getPsaId(enrolments: Enrolments): Option[String] =
