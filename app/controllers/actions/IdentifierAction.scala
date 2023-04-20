@@ -91,12 +91,12 @@ class AuthenticatedIdentifierAction @Inject()(
 
     withAuthInfo {
       case (Some(_), _, None) => throw new RuntimeException("PSTR is not available")
-      case (Some(externalId), enrolments, Some(data)) if bothPsaAndPspEnrolmentsPresent(enrolments) =>
-        actionForBothEnrolments(data, externalId, enrolments, request, block)
-      case (Some(externalId), enrolments, Some(data)) if enrolments.getEnrolment(enrolmentPSA).isDefined =>
-        actionForOneEnrolment(Administrator, data, externalId, enrolments, request, block)
-      case (Some(externalId), enrolments, Some(data)) if enrolments.getEnrolment(enrolmentPSP).isDefined =>
-        actionForOneEnrolment(Practitioner, data, externalId, enrolments, request, block)
+      case (Some(externalId), enrolments, Some(er)) if bothPsaAndPspEnrolmentsPresent(enrolments) =>
+        actionForBothEnrolments(er, externalId, enrolments, request, block)
+      case (Some(externalId), enrolments, Some(er)) if enrolments.getEnrolment(enrolmentPSA).isDefined =>
+        actionForOneEnrolment(Administrator, er, externalId, enrolments, request, block)
+      case (Some(externalId), enrolments, Some(er)) if enrolments.getEnrolment(enrolmentPSP).isDefined =>
+        actionForOneEnrolment(Practitioner, er, externalId, enrolments, request, block)
       case _ => futureUnauthorisedPage
     } recoverWith recoverFromError
   }
