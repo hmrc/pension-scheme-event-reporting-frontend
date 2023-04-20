@@ -18,7 +18,6 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import models.requests.IdentifierRequest
 import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -51,14 +50,13 @@ class MinimalConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
               case JsSuccess(value, _) => value
               case JsError(errors) => throw JsResultException(errors)
             }
-          case FORBIDDEN if response.body.contains(delimitedErrorMsg) => throw new DelimitedAdminException
+          case FORBIDDEN if response.body.contains("DELIMITED_PSAID") => throw new DelimitedAdminException
           case _ =>
             handleErrorResponse("GET", url)(response)
         }
     }
   }
 
-  val delimitedErrorMsg: String = "DELIMITED_PSAID"
 }
 
 object MinimalConnector {
@@ -70,15 +68,7 @@ object MinimalConnector {
                              individualDetails: Option[IndividualDetails],
                              rlsFlag: Boolean,
                              deceasedFlag: Boolean
-                           ) {
-
-    def name: String = {
-      individualDetails
-        .map(_.fullName)
-        .orElse(organisationName)
-        .getOrElse("Pension Scheme Administrator")
-    }
-  }
+                           )
 
   object MinimalDetails {
     implicit val format: Format[MinimalDetails] = Json.format[MinimalDetails]
