@@ -32,17 +32,11 @@ class MinimalConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
 
   import MinimalConnector._
 
-  def getMinimalDetails[A](
+  def getMinimalDetails(idName: String, idValue: String)(
                             implicit hc: HeaderCarrier,
                             ec: ExecutionContext,
-                            request: IdentifierRequest[A]
-                          ): Future[MinimalDetails] = {
-
-    val hcWithId: HeaderCarrier =
-      hc.withExtraHeaders(request.loggedInUser.idName -> request.loggedInUser.psaIdOrPspId)
-
-    minDetails(hcWithId)
-  }
+                          ): Future[MinimalDetails] =
+    minDetails(hc.withExtraHeaders(idName -> idValue))
 
   private def minDetails(hcWithId: HeaderCarrier)
                         (implicit ec: ExecutionContext): Future[MinimalDetails] = {

@@ -17,16 +17,19 @@
 package controllers
 
 import config.FrontendAppConfig
+import connectors.MinimalConnector
 import controllers.actions._
 import helpers.DateHelper
 import helpers.DateHelper.dateFormatter
 import pages.{TaxYearPage, Waypoints}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ReturnSubmittedView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class ReturnSubmittedController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
@@ -34,10 +37,13 @@ class ReturnSubmittedController @Inject()(
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         view: ReturnSubmittedView,
-                                        config: FrontendAppConfig
-                                      ) extends FrontendBaseController with I18nSupport {
+                                        config: FrontendAppConfig,
+                                        minimalConnector: MinimalConnector
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) { implicit request =>
+
+    minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId)
 
     val schemeName = request.schemeName
 

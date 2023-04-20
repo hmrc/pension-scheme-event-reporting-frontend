@@ -17,15 +17,9 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.LoggedInUser
-import models.enumeration.AdministratorOrPractitioner.Administrator
-import models.requests.IdentifierRequest
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContent, AnyContentAsEmpty}
-import play.api.test.FakeRequest
-import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http._
 import utils.WireMockHelper
 
@@ -37,12 +31,10 @@ class MinimalConnectorSpec
   import MinimalConnector._
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  private val loggedInUser = LoggedInUser(externalId = "user", administratorOrPractitioner = Administrator, psaIdOrPspId = "A2100005")
   private val pstr = "pstr"
-  private implicit val request: IdentifierRequest[AnyContent] = IdentifierRequest(FakeRequest("GET", "/"), loggedInUser, pstr, "schemeName", "returnUrl")
-
-
-  //private implicit lazy val req = IdentifierRequest("id", FakeRequest("GET", "/"), Some(PsaId("A2100005")), None)
+  private val psaIdName = "psaId"
+  private val pspIdName = "pspId"
+  private val psaId = "A2100005"
 
   override protected def portConfigKey: String = "microservice.services.pension-administrator.port"
 
@@ -72,7 +64,7 @@ class MinimalConnectorSpec
           )
       )
 
-      connector.getMinimalDetails map {
+      connector.getMinimalDetails(psaIdName, psaId) map {
         _ mustBe MinimalDetails(email, isPsaSuspended = false, Some("test ltd"), None, rlsFlag = false, deceasedFlag = false)
       }
     }
@@ -86,7 +78,7 @@ class MinimalConnectorSpec
           )
       )
 
-      connector.getMinimalDetails map {
+      connector.getMinimalDetails(psaIdName, psaId) map {
         _ mustBe MinimalDetails(email, isPsaSuspended = true, Some("test ltd"), None, rlsFlag = false, deceasedFlag = false)
       }
     }
@@ -101,7 +93,7 @@ class MinimalConnectorSpec
       )
 
       recoverToSucceededIf[BadRequestException] {
-        connector.getMinimalDetails
+        connector.getMinimalDetails(psaIdName, psaId)
       }
     }
   }
