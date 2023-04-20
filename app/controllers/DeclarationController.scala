@@ -46,14 +46,12 @@ class DeclarationController @Inject()(
 
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
-
       val testUserAnswers: UserAnswers = UserAnswers(testDataPsa(request.pstr))
 
       request.userAnswers match {
         //TODO: Replace test user answers above with ua when FE captures sufficient data
         case Some(_) => erConnector.submitReport(request.pstr, testUserAnswers).map {
-          _ =>
-            Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
+          _ => Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
         }
         case None => throw new RuntimeException("No user answers found in DeclarationController - required for report submit")
       }
@@ -65,9 +63,7 @@ object DeclarationController {
   /**
    * The frontend and backend changes for report submission are complete, however the correct data is not captured in the frontend yet
    * Please see the To Do comments below for more info
-   *
-   * val currentUserAnswers = ua.data: {"taxYear":"2022","wantToSubmit":true}
-   *   */
+   **/
 
   private def testDataPsa(pstr: String): JsObject = {
     Json.obj(
