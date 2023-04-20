@@ -61,5 +61,4 @@ class PaymentNatureController @Inject()(val controllerComponents: MessagesContro
         }
       )
   }
-
 }

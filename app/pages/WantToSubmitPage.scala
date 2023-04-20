@@ -21,21 +21,16 @@ import models.UserAnswers
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object EventSummaryPage extends QuestionPage[Boolean] {
+case object WantToSubmitPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "eventSummary"
+  override def toString: String = "wantToSubmit"
 
   override def route(waypoints: Waypoints): Call =
-    routes.EventSummaryController.onPageLoad(waypoints)
+    routes.WantToSubmitController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(EventSummaryPage) match {
-      case Some(true) => EventSelectionPage
-      case Some(false) => WantToSubmitPage
-      case _ => IndexPage
-    }
+    DeclarationPage
   }
 }
-

@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter
 import scala.util.{Failure, Success, Try}
 
 class DateHelper {
-  def now = LocalDate.now()
+  def now: LocalDate = LocalDate.now()
 }
 
 

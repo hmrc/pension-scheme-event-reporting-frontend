@@ -68,7 +68,7 @@ class DataRetrievalNoEventTypeImpl(userAnswersCacheConnector: UserAnswersCacheCo
     }
     result andThen {
       case Success(v) => logger.info("Successful response to data retrieval:" + v)
-      case Failure(t: Throwable) => logger.warn("Unable to complete dataretrieval", t)
+      case Failure(t: Throwable) => logger.warn("Unable to complete data retrieval", t)
     }
   }
 }
