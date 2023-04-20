@@ -15,6 +15,15 @@ document.addEventListener('DOMContentLoaded', function(event) {
         });
     }
 
+    // handle print link
+    var printLink = document.querySelector('#print-this-page-link');
+    if (printLink) {
+        printLink.addEventListener('click', function (e) {
+            window.print();
+            return false;
+        });
+    }
+
     // handle country picker
     var selectEl = document.querySelector('#country')
     if( selectEl !== null ){

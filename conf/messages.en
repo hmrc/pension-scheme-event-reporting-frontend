@@ -1,4 +1,4 @@
-service.name = Managing pension schemes
+service.name = Managing Pension Schemes
 
 site.back = Back
 site.notEntered = Not entered
@@ -9,6 +9,7 @@ site.no = No
 site.yes = Yes
 site.continue = Continue
 site.agreeAndContinue = Agree and continue
+site.declaration = Agree and submit this event report
 site.start = Start now
 site.startAgain = Start again
 site.signIn = Sign in
@@ -66,6 +67,30 @@ eventSummary.yesno.legend = Do you want to add another event?
 eventSummary.checkYourAnswersLabel = Check your answers
 eventSummary.error.required = Select yes if you want to add another event
 eventSummary.change.hidden = EventSummary
+
+wantToSubmit.title = Do you want to submit this event report to HMRC?
+wantToSubmit.heading = Do you want to submit this event report to HMRC?
+wantToSubmit.error.required = Select yes to submit this report
+
+declaration.title = Declaration
+declaration.heading = Declaration
+declaration.p = By submitting this event report, you declare that:
+declaration.item1 = to the best of your knowledge and belief, the information given in this tax return is correct and complete
+declaration.item2 = you understand that if you have made a false statement in this tax return, you may be liable to a penalty, and that false statements may also lead to prosecution
+
+confirmation.title = Return submitted
+confirmation.panel.h1 = Return submitted
+confirmation.panel.body = Event report
+confirmation.p1 = We have sent a confirmation email to
+confirmation.summaryList.l1.scheme = Scheme
+confirmation.summaryList.l2.taxYear = Tax year
+confirmation.summaryList.l3.dateSubmitted = Date submitted
+confirmation.taxYear.to = to
+confirmation.p2 = You must include the correct charge reference with any payment for this submission.
+confirmation.p3 = You can:
+confirmation.li1 = view payments and charge references for your Event reports
+confirmation.li2 = view your other pension schemes
+confirmation.li3 = print this page
 
 eventReportingTile.heading = Event Reporting
 eventReportingTile.subHeading = Event report {0} to {1}:

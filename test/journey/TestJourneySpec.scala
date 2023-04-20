@@ -40,7 +40,7 @@ import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveableProper
 import pages.event1.member._
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.{EventWindUpCheckYourAnswersPage, SchemeWindUpDatePage}
-import pages.{EventSelectionPage, EventSummaryPage}
+import pages.{DeclarationPage, EventSelectionPage, EventSummaryPage, WantToSubmitPage}
 
 import java.time.LocalDate
 
@@ -334,6 +334,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         comparePageMustBeAsString(Event1CheckYourAnswersPage(0))
       )
   }
+
   "testing nav from summary page to sanctions page in event 1" in {
     startingFrom(UnauthPaymentSummaryPage)
       .run(
@@ -342,4 +343,19 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       )
   }
 
+  "testing navigation from event summary to wantToSubmit page" in {
+    startingFrom(EventSummaryPage)
+      .run(
+        submitAnswer(EventSummaryPage, false),
+        pageMustBe(WantToSubmitPage)
+      )
+  }
+
+  "testing navigation from wantToSubmitPage to Declaration page" in {
+    startingFrom(WantToSubmitPage)
+      .run(
+        submitAnswer(WantToSubmitPage, true),
+        pageMustBe(DeclarationPage)
+      )
+  }
 }
