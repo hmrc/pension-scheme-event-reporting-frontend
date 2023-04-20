@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import models.enumeration.AdministratorOrPractitioner.Administrator
+import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
 import models.enumeration.EventType
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import models.{LoggedInUser, UserAnswers}
@@ -28,10 +28,24 @@ class FakeDataRetrievalAction(json: Option[UserAnswers]) extends DataRetrievalAc
   override def apply(): DataRetrieval = new FakeDataRetrieval(json)
 }
 
+class FakeDataRetrievalActionForPSP(json: Option[UserAnswers]) extends DataRetrievalAction {
+  override def apply(eventType: EventType): DataRetrieval = new FakeDataRetrievalForPSP(json)
+  override def apply(): DataRetrieval = new FakeDataRetrievalForPSP(json)
+}
+
 class FakeDataRetrieval(dataToReturn: Option[UserAnswers]) extends DataRetrieval {
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
     Future(OptionalDataRequest("87219363YN", "schemeName", "returnUrl", request.request, LoggedInUser("user-id", Administrator, "psaId"), dataToReturn))
+
+  override protected implicit val executionContext: ExecutionContext =
+    scala.concurrent.ExecutionContext.Implicits.global
+}
+
+class FakeDataRetrievalForPSP(dataToReturn: Option[UserAnswers]) extends DataRetrieval {
+
+  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
+    Future(OptionalDataRequest("87219363YN", "schemeName", "returnUrl", request.request, LoggedInUser("user-id", Practitioner, "pspId"), dataToReturn))
 
   override protected implicit val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
