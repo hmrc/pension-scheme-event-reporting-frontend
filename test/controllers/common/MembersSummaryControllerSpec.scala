@@ -54,7 +54,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockEventPaginationService = mock[EventPaginationService]
 
-  private def fake26MappedMembers(href: String): Seq[SummaryListRowWithTwoValues] = fakeXMappedMembers(26, href)
+  private def fake26MappedMembers(href: String, eventType: EventType): Seq[SummaryListRowWithTwoValues] = fakeXMappedMembers(26, href, eventType)
 
   private val mockTaxYear = mock[DateHelper]
   private val validAnswer = LocalDate.of(2022, 5, 12)
@@ -106,7 +106,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
     //    testSuite(formProvider(Event23), Event23, sampleMemberJourneyDataEvent23, SampleData.totalPaymentAmountEvent23CurrencyFormat,
     //      controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url, "1,234.56")
 
-    testSuiteWithPagination(formProvider(Event23), Event23, controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url, "260.00")
+    testSuiteWithPagination(formProvider(Event23), Event23, cYAHref(Event23, 0), "260.00")
   }
 
   private def testSuite(form: Form[Boolean], eventType: EventType, sampleData: UserAnswers, secondValue: String, href: String, arbitraryAmount: String): Unit = {
@@ -158,7 +158,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
   }
 
   private def testReturnOkAndCorrectViewWithPagination(eventType: EventType, form: Form[Boolean], href: String, arbitraryAmount: String): Unit = {
-    when(mockEventPaginationService.paginateMappedMembers(any(), any())).thenReturn(paginationStats26Members(href))
+    when(mockEventPaginationService.paginateMappedMembers(any(), any())).thenReturn(paginationStats26Members(href, eventType))
 
     s"must return OK and the correct view with pagination for a GET for Event $eventType" in {
 
@@ -178,11 +178,12 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
 
         val view = application.injector.instanceOf[MembersSummaryViewWithPagination]
 
-        val expectedPaginationStats = PaginationStats(fake26MappedMembers(href), 26, 2, (1, 25), Nil)
+        val expectedPaginationStats = PaginationStats(fake26MappedMembers(href, eventType), 26, 2, (1, 25), 1 to 2)
 
         status(result) mustEqual OK
 
-        contentAsString(result) mustEqual view(form, waypoints, eventType, fake26MappedMembers(href), arbitraryAmount, "2023", expectedPaginationStats, 0)(request, messages(application)).toString
+        println(s"\n\n expected === \n\n $expectedPaginationStats \n")
+        contentAsString(result) mustEqual view(form, waypoints, eventType, fake26MappedMembers(href, eventType), arbitraryAmount, "2023", expectedPaginationStats, 0)(request, messages(application)).toString
       }
 
     }
@@ -235,7 +236,14 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
     }
   }
 
-  private def fakeXMappedMembers(x: Int, href: String): Seq[SummaryListRowWithTwoValues] = for {
+  private def cYAHref(eventType: EventType, index: Int) = {
+      eventType match {
+        case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
+        case _ => "Failed this bit"
+      }
+  }
+
+  private def fakeXMappedMembers(x: Int, href: String, eventType: EventType): Seq[SummaryListRowWithTwoValues] = for {
     i <- 1 to x
   } yield {
     SummaryListRowWithTwoValues(s"${memberDetails.fullName}", s"${memberDetails.nino}", "10.00",
@@ -243,7 +251,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
         items = Seq(
           ActionItem(
             content = Text(Message("site.view")),
-            href = href
+            href = cYAHref(eventType, i-1)
           ),
           ActionItem(
             content = Text(Message("site.remove")),
@@ -267,8 +275,8 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
     pagerSeq = pagSeq
   )
 
-  private def paginationStats26Members(href: String) = fakePaginationStats(
-    fake26MappedMembers(href).slice(0, 25),
+  private def paginationStats26Members(href: String, eventType: EventType) = fakePaginationStats(
+    fake26MappedMembers(href, eventType).slice(0, 25),
     26,
     2,
     (1, 25),
