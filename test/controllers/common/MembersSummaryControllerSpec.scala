@@ -76,36 +76,35 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
     super.beforeEach()
     reset(mockUserAnswersCacheConnector)
     when(mockTaxYear.now).thenReturn(validAnswer)
-    reset(mockEventPaginationService)
   }
 
   "MembersSummary Controller" - {
-    //    testSuite(formProvider(Event2), Event2, sampleMemberJourneyDataEvent2, SampleData.amountPaid.toString(),
-    //      controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(0).url, "999.11")
-    //
-    //    testSuite(formProvider(Event3), Event3, sampleMemberJourneyDataEvent3and4and5(Event3), SampleData.paymentDetailsCommon.amountPaid.toString(),
-    //      controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(0).url, "54.23")
-    //
-    //    testSuite(formProvider(Event4), Event4, sampleMemberJourneyDataEvent3and4and5(Event4), SampleData.paymentDetailsCommon.amountPaid.toString(),
-    //      controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url, "54.23")
-    //
-    //    testSuite(formProvider(Event5), Event5, sampleMemberJourneyDataEvent3and4and5(Event5), SampleData.paymentDetailsCommon.amountPaid.toString(),
-    //      controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(0).url, "54.23")
-    //
-    //    testSuite(formProvider(Event6), Event6, sampleMemberJourneyDataEvent6, SampleData.crystallisedDetails.amountCrystallised.toString(),
-    //      controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(0).url, "857.12")
-    //
-    //    testSuite(formProvider(Event8), Event8, sampleMemberJourneyDataEvent8, SampleData.lumpSumDetails.lumpSumAmount.toString(),
-    //      controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(0).url, "223.11")
-    //
-    //    testSuite(formProvider(Event8A), Event8A, sampleMemberJourneyDataEvent8A, SampleData.lumpSumDetails.lumpSumAmount.toString(),
-    //      controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(0).url, "223.11")
-    //
-    //    testSuite(formProvider(Event22), Event22, sampleMemberJourneyDataEvent22, SampleData.totalPaymentAmount.toString(),
-    //      controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url, "999.11")
+        testSuite(formProvider(Event2), Event2, sampleMemberJourneyDataEvent2, SampleData.amountPaid.toString(),
+          controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(0).url, "999.11")
 
-    //    testSuite(formProvider(Event23), Event23, sampleMemberJourneyDataEvent23, SampleData.totalPaymentAmountEvent23CurrencyFormat,
-    //      controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url, "1,234.56")
+        testSuite(formProvider(Event3), Event3, sampleMemberJourneyDataEvent3and4and5(Event3), SampleData.paymentDetailsCommon.amountPaid.toString(),
+          controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(0).url, "54.23")
+
+        testSuite(formProvider(Event4), Event4, sampleMemberJourneyDataEvent3and4and5(Event4), SampleData.paymentDetailsCommon.amountPaid.toString(),
+          controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url, "54.23")
+
+        testSuite(formProvider(Event5), Event5, sampleMemberJourneyDataEvent3and4and5(Event5), SampleData.paymentDetailsCommon.amountPaid.toString(),
+          controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(0).url, "54.23")
+
+        testSuite(formProvider(Event6), Event6, sampleMemberJourneyDataEvent6, SampleData.crystallisedDetails.amountCrystallised.toString(),
+          controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(0).url, "857.12")
+
+        testSuite(formProvider(Event8), Event8, sampleMemberJourneyDataEvent8, SampleData.lumpSumDetails.lumpSumAmount.toString(),
+          controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(0).url, "223.11")
+
+        testSuite(formProvider(Event8A), Event8A, sampleMemberJourneyDataEvent8A, SampleData.lumpSumDetails.lumpSumAmount.toString(),
+          controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(0).url, "223.11")
+
+        testSuite(formProvider(Event22), Event22, sampleMemberJourneyDataEvent22, SampleData.totalPaymentAmount.toString(),
+          controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url, "999.11")
+
+        testSuite(formProvider(Event23), Event23, sampleMemberJourneyDataEvent23, SampleData.totalPaymentAmountEvent23CurrencyFormat,
+          controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url, "1,234.56")
 
     behave like testSuiteWithPagination(formProvider(Event3), Event3, cYAHref(Event3, 0), "260.00", SampleData.event345UADataWithPagnination(Event3))
     behave like testSuiteWithPagination(formProvider(Event4), Event4, cYAHref(Event4, 0), "260.00", SampleData.event345UADataWithPagnination(Event4))
