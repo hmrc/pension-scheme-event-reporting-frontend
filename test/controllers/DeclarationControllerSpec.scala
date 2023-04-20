@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import connectors.UserAnswersCacheConnector
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -38,16 +38,11 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
 
   private val waypoints = EmptyWaypoints
 
-  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val mockERConnector = mock[EventReportingConnector]
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
+    bind[EventReportingConnector].toInstance(mockERConnector)
   )
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockUserAnswersCacheConnector)
-  }
 
   "Declaration Controller" - {
 
@@ -71,9 +66,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
 
     "must redirect to the correct page for method onClick" in {
 
-      val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any()))
-        .thenReturn(Future.successful(()))
+      when(mockERConnector.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(()))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
