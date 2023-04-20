@@ -18,16 +18,16 @@ package data
 
 import models.address.{Address, TolerantAddress}
 import models.common.ManualOrUpload.Manual
-import models.common.{ChooseTaxYear, MembersDetails}
+import models.common.{ChooseTaxYear, MembersDetails, PaymentDetails => CommonPaymentDetails}
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event22, Event23, Event6, Event7, Event8, Event8A}
-import models.event1.PaymentDetails
+import models.enumeration.EventType.{Event1, Event2, Event22, Event23, Event6, Event7, Event8, Event8A}
 import models.event1.PaymentNature.BenefitInKind
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.employer.PaymentNature.TangibleMoveableProperty
 import models.event1.employer.{CompanyDetails, LoanDetails}
 import models.event1.member.SchemeDetails
+import models.event1.{PaymentDetails => Event1PaymentDetails}
 import models.event6.{CrystallisedDetails, TypeOfProtection => Event6TypeOfProtection}
 import models.event7.PaymentDate
 import models.event8.{LumpSumDetails, TypeOfProtection => Event8TypeOfProtection}
@@ -35,15 +35,16 @@ import models.event8a.PaymentType
 import models.{TaxYear, UserAnswers}
 import pages.TaxYearPage
 import pages.address.ManualAddressPage
-import pages.common.{ChooseTaxYearPage, ManualOrUploadPage, MembersDetailsPage, TotalPensionAmountsPage}
+import pages.common._
 import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
+import pages.event2.{AmountPaidPage, DatePaidPage}
 import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage => Event6TypeOfProtectionPage}
 import pages.event7.{CrystallisedAmountPage, LumpSumAmountPage, PaymentDatePage}
 import pages.event8.{LumpSumAmountAndDatePage, TypeOfProtectionReferencePage, TypeOfProtectionPage => Event8TypeOfProtectionPage}
 import pages.event8a.PaymentTypePage
-import utils.{CountryOptions, InputOption}
+import utils.{CountryOptions, Event2MemberPageNumbers, InputOption}
 
 import java.time.LocalDate
 
@@ -106,9 +107,13 @@ object SampleData {
   val memberDetails: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567V")
   val memberDetails2: MembersDetails = MembersDetails("Steven", "Bloggs", "AA123456C")
 
-  val paymentDetails: PaymentDetails = PaymentDetails(1000.00, LocalDate.of(2022, 11, 8))
-  val crystallisedDetails: CrystallisedDetails = CrystallisedDetails(857.00, LocalDate.of(2022, 11, 8))
+  val paymentDetails: Event1PaymentDetails = Event1PaymentDetails(1000.00, LocalDate.of(2022, 11, 8))
+  val crystallisedDetails: CrystallisedDetails = CrystallisedDetails(857.12, LocalDate.of(2022, 11, 8))
   val lumpSumDetails = LumpSumDetails(223.11, LocalDate.of(2022, 3, 22))
+  val paymentDetailsCommon: CommonPaymentDetails = CommonPaymentDetails(54.23, LocalDate.of(2022, 4, 5))
+
+  val datePaid: LocalDate = LocalDate.of(2022, 5, 19)
+  val amountPaid: BigDecimal = 999.11
 
   val event7PaymentDate: PaymentDate = PaymentDate(LocalDate.of(2022, 11, 8))
   val lumpSumAmount: BigDecimal = BigDecimal(100.00)
@@ -127,10 +132,10 @@ object SampleData {
   val totalPaymentAmountEvent23CurrencyFormat: String = "1,234.56"
   val userAnswersWithOneMemberAndEmployer: UserAnswers = UserAnswers()
     .setOrException(WhoReceivedUnauthPaymentPage(0), Member)
-    .setOrException(PaymentValueAndDatePage(0), PaymentDetails(BigDecimal(857.00), LocalDate.of(2022, 11, 9)))
+    .setOrException(PaymentValueAndDatePage(0), Event1PaymentDetails(BigDecimal(857.00), LocalDate.of(2022, 11, 9)))
     .setOrException(MembersDetailsPage(Event1, 0), memberDetails)
     .setOrException(WhoReceivedUnauthPaymentPage(1), Employer)
-    .setOrException(PaymentValueAndDatePage(1), PaymentDetails(BigDecimal(7687.00), LocalDate.of(2022, 11, 9)))
+    .setOrException(PaymentValueAndDatePage(1), Event1PaymentDetails(BigDecimal(7687.00), LocalDate.of(2022, 11, 9)))
     .setOrException(CompanyDetailsPage(1), companyDetails)
 
   val sampleMemberJourneyData: UserAnswers = UserAnswers()
@@ -171,12 +176,19 @@ object SampleData {
     .setOrException(InputProtectionTypePage(Event6, 0), "1234567A")
     .setOrException(AmountCrystallisedAndDatePage(Event6, 0), crystallisedDetails)
 
+  val sampleMemberJourneyDataEvent2: UserAnswers = UserAnswers()
+    .setOrException(TaxYearPage, TaxYear("2022"))
+    .setOrException(MembersDetailsPage(Event2, 0, Event2MemberPageNumbers.FIRST_PAGE_DECEASED), memberDetails)
+    .setOrException(MembersDetailsPage(Event2, 0, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY), memberDetails)
+    .setOrException(AmountPaidPage(0, Event2), amountPaid)
+    .setOrException(DatePaidPage(0, Event2), datePaid)
+
   val sampleMemberJourneyDataEvent7: UserAnswers = UserAnswers()
     .setOrException(TaxYearPage, TaxYear("2022"))
     .setOrException(MembersDetailsPage(Event7, 0), memberDetails)
     .setOrException(LumpSumAmountPage(0), lumpSumAmount)
     .setOrException(CrystallisedAmountPage(0), crystallisedAmount)
-    .setOrException(PaymentDatePage(0),event7PaymentDate)
+    .setOrException(PaymentDatePage(0), event7PaymentDate)
 
 
   val sampleMemberJourneyDataEvent8: UserAnswers = UserAnswers()
@@ -193,6 +205,12 @@ object SampleData {
     .setOrException(Event8TypeOfProtectionPage(Event8A, 0), Event8TypeOfProtection.PrimaryProtection)
     .setOrException(TypeOfProtectionReferencePage(Event8A, 0), "1234567A")
     .setOrException(LumpSumAmountAndDatePage(Event8A, 0), lumpSumDetails)
+
+  def sampleMemberJourneyDataEvent3and4and5(eventType: EventType): UserAnswers = UserAnswers()
+    .setOrException(TaxYearPage, TaxYear("2022"))
+    .setOrException(MembersDetailsPage(eventType, 0), memberDetails)
+    .setOrException(PaymentDetailsPage(eventType, 0), paymentDetailsCommon)
+
 
   def sampleTwoMemberJourneyData(eventType: EventType): UserAnswers =
     UserAnswers()

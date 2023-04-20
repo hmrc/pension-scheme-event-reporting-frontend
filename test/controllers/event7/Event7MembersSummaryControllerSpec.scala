@@ -96,7 +96,6 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
               ))
 
 
-
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(formEvent7, waypoints, Event7, expectedSeq, "150.00", "2023")(request, messages(application)).toString
         }
