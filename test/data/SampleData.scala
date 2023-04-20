@@ -239,6 +239,14 @@ object SampleData extends SpecBase {
       .setOrException(AmountCrystallisedAndDatePage(Event6, i), crystallisedDetailsPagination)
   }
 
+  val event7UADataWithPagination: UserAnswers =
+    (0 to 25).foldLeft(emptyUserAnswersWithTaxYear) { (acc, i) =>
+      acc.setOrException(MembersDetailsPage(Event7, i), memberDetails)
+        .setOrException(LumpSumAmountPage(i), lumpSumAmount)
+        .setOrException(CrystallisedAmountPage(i), crystallisedAmount)
+        .setOrException(PaymentDatePage(i), event7PaymentDate)
+    }
+
   val event8UADataWithPagination: UserAnswers =
     (0 to 25).foldLeft(emptyUserAnswersWithTaxYear) { (acc, i) =>
       acc.setOrException(MembersDetailsPage(Event8, i), memberDetails)
