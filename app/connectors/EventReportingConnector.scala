@@ -18,7 +18,7 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import models.ToggleDetails
+import models.{ToggleDetails, UserAnswers}
 import models.enumeration.EventType
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
@@ -34,6 +34,7 @@ class EventReportingConnector @Inject()(
 
   private def eventRepSummaryUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/event-summary"
   private def eventCompileUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/compile"
+  private def eventSubmitUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event-declaration-report"
 
   private def eventReportingToggleUrl(toggleName:String) = s"${config.eventReportingUrl}/admin/get-toggle/$toggleName"
 
@@ -79,6 +80,26 @@ class EventReportingConnector @Inject()(
       .map { response =>
         response.status match {
           case NO_CONTENT => ()
+          case _ =>
+            throw new HttpException(response.body, response.status)
+        }
+      }
+  }
+
+  def submitReport(pstr: String, ua: UserAnswers)
+                  (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+
+    val headers: Seq[(String, String)] = Seq(
+      "Content-Type" -> "application/json",
+      "pstr" -> pstr
+    )
+
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.POST[JsValue, HttpResponse](eventSubmitUrl, ua.data)(implicitly, implicitly, hc, implicitly)
+      .map { response =>
+        response.status match {
+          case OK => ()
           case _ =>
             throw new HttpException(response.body, response.status)
         }
