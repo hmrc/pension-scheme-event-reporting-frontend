@@ -90,7 +90,9 @@ class AuthenticatedIdentifierAction @Inject()(
     implicit val req: Request[A] = request
 
     withAuthInfo {
-      case (Some(_), _, None) => throw new RuntimeException("PSTR is not available")
+      case (Some(_), _, None) =>
+        throw new RuntimeException("PSTR is not available") // TODO: Once we have an event reporting dashboard then
+                                                            // we should redirect user to ??? page at this point
       case (Some(externalId), enrolments, Some(er)) if bothPsaAndPspEnrolmentsPresent(enrolments) =>
         actionForBothEnrolments(er, externalId, enrolments, request, block)
       case (Some(externalId), enrolments, Some(er)) if enrolments.getEnrolment(enrolmentPSA).isDefined =>
