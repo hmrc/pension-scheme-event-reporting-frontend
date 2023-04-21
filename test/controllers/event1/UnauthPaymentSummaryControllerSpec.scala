@@ -18,7 +18,7 @@ package controllers.event1
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import data.SampleData.userAnswersWithOneMemberAndEmployer
+import data.SampleData.userAnswersWithOneMemberAndEmployerEvent1
 import forms.event1.UnauthPaymentSummaryFormProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -63,7 +63,7 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersWithOneMemberAndEmployer)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithOneMemberAndEmployerEvent1)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)

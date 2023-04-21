@@ -17,7 +17,7 @@
 package controllers.event1
 
 import base.SpecBase
-import data.SampleData.{sampleEmployerJourneyData, sampleMemberJourneyData}
+import data.SampleData.{sampleEmployerJourneyDataEvent1, sampleMemberJourneyDataEvent1}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -63,7 +63,7 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleMemberJourneyData),
+        userAnswers = Some(sampleMemberJourneyDataEvent1),
         extraModules = extraModules
       ).build()
 
@@ -94,7 +94,7 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleEmployerJourneyData),
+        userAnswers = Some(sampleEmployerJourneyDataEvent1),
         extraModules = extraModules
       ).build()
 

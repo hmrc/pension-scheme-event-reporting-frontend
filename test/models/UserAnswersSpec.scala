@@ -39,7 +39,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
 
   "getAll" - {
     "must return the list of members or employers" in {
-      userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
+      userAnswersWithOneMemberAndEmployerEvent1.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
         Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00)),
           MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00)))
     }
@@ -80,7 +80,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
 
   "countAll" - {
     "must count correctly when one member and one employer" in {
-      userAnswersWithOneMemberAndEmployer.countAll(MembersOrEmployersPage(Event1)) mustBe 2
+      userAnswersWithOneMemberAndEmployerEvent1.countAll(MembersOrEmployersPage(Event1)) mustBe 2
     }
 
     "must count correctly when nothing present" in {
@@ -91,7 +91,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
 
   "sumAll" - {
     "must count correctly when one member and one employer" in {
-      userAnswersWithOneMemberAndEmployer.sumAll(MembersOrEmployersPage(Event1), readsMemberOrEmployerValue) mustBe BigDecimal(8544.00)
+      userAnswersWithOneMemberAndEmployerEvent1.sumAll(MembersOrEmployersPage(Event1), readsMemberOrEmployerValue) mustBe BigDecimal(8544.00)
     }
 
     "must count correctly when nothing present" in {
@@ -101,8 +101,8 @@ class UserAnswersSpec extends SpecBase with Matchers {
   "event22" - {
     "getAll" - {
       "must return the list of members" in {
-        sampleMemberJourneyDataEvent22.getAll(MembersPage(Event22))(MembersSummary.readsMember(Event22)) mustBe
-          Seq(MembersSummary(SampleData.memberDetails.fullName, BigDecimal(999.11), SampleData.memberDetails.nino))
+        sampleMemberJourneyDataEvent22and23(Event22).getAll(MembersPage(Event22))(MembersSummary.readsMember(Event22)) mustBe
+          Seq(MembersSummary(SampleData.memberDetails.fullName, BigDecimal(10.00), SampleData.memberDetails.nino))
       }
 
       "must return empty list if nothing present" in {
@@ -121,7 +121,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
 
     "countAll" - {
       "must count correctly when two members are present" in {
-        sampleTwoMemberJourneyData(Event22).countAll(MembersPage(Event22)) mustBe 2
+        sampleTwoMemberJourneyDataEvent22and23(Event22).countAll(MembersPage(Event22)) mustBe 2
       }
 
       "must count correctly when nothing present" in {
@@ -132,7 +132,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
 
     "sumAll" - {
       "must count correctly when two members are present" in {
-        sampleTwoMemberJourneyData(Event22).sumAll(MembersPage(Event22), readsMemberValue(Event22)) mustBe BigDecimal(1998.22)
+        sampleTwoMemberJourneyDataEvent22and23(Event22).sumAll(MembersPage(Event22), readsMemberValue(Event22)) mustBe BigDecimal(20.00)
       }
 
       "must count correctly when nothing present" in {

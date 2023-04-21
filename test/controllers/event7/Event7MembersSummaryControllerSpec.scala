@@ -18,6 +18,7 @@ package controllers.event7
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
+import controllers.event7.Event7MembersSummaryControllerSpec.{fake26MappedMembers, paginationStats26Members}
 import data.SampleData
 import data.SampleData.{event7UADataWithPagination, memberDetails, sampleMemberJourneyDataEvent7}
 import forms.common.MembersSummaryFormProvider
@@ -35,7 +36,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.EventPaginationService
-import services.EventPaginationService.{PaginationStats, PaginationStatsEvent7}
+import services.EventPaginationService.PaginationStatsEvent7
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import viewmodels.{Message, SummaryListRowWithThreeValues}
 import views.html.event7.{Event7MembersSummaryView, Event7MembersSummaryViewWithPagination}
@@ -89,8 +90,8 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
               SummaryListRowWithThreeValues(
                 key = SampleData.memberDetails.fullName,
                 firstValue = SampleData.memberDetails.nino,
-                secondValue = decimalFormat.format(SampleData.lumpSumAmount),
-                thirdValue = decimalFormat.format(SampleData.crystallisedAmount),
+                secondValue = decimalFormat.format(SampleData.lumpSumAmountEvent7),
+                thirdValue = decimalFormat.format(SampleData.crystallisedAmountEvent7),
                 actions = Some(Actions(
                   items = Seq(
                     ActionItem(
@@ -112,6 +113,8 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
       }
       "must return OK and the correct view for a GET with pagination" in {
 
+        when(mockEventPaginationService.paginateMappedMembersThreeValues(any(), any())).thenReturn(paginationStats26Members)
+
         val application = applicationBuilder(userAnswers = Some(event7UADataWithPagination)).build()
 
         running(application) {
@@ -121,68 +124,17 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
           val view = application.injector.instanceOf[Event7MembersSummaryViewWithPagination]
 
-          val href = {
-
-            controllers.event7.routes.Event7CheckYourAnswersController.onPageLoad(0).url
-          }
-
           val expectedPaginationStats = PaginationStatsEvent7(
-            slicedMembers = fake26MappedMembers(href),
+            slicedMembers = fake26MappedMembers,
             totalNumberOfMembers = 26,
             totalNumberOfPages = 2,
             pageStartAndEnd = (1, 25),
             pagerSeq = Seq(1, 2))
-//          val expectedSeq =
-//            Seq(
-//              SummaryListRowWithThreeValues(
-//                key = SampleData.memberDetails.fullName,
-//                firstValue = SampleData.memberDetails.nino,
-//                secondValue = decimalFormat.format(SampleData.lumpSumAmount),
-//                thirdValue = decimalFormat.format(SampleData.crystallisedAmount),
-//                actions = Some(Actions(
-//                  items = Seq(
-//                    ActionItem(
-//                      content = Text(Message("site.view")),
-//                      href = controllers.event7.routes.Event7CheckYourAnswersController.onPageLoad(0).url
-//                    ),
-//                    ActionItem(
-//                      content = Text(Message("site.remove")),
-//                      href = "#"
-//                    )
-//                  )
-//                ))
-//              ))
-
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent7, waypoints, Event7, fake26MappedMembers(href), "3,900.00", "2023", expectedPaginationStats, 0)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent7, waypoints, Event7, fake26MappedMembers, "3,900.00", "2023", expectedPaginationStats, 0)(request, messages(application)).toString
         }
       }
-      /*s"must return OK and the correct view with pagination for a GET for Event $eventType" in {
-
-        val application = applicationBuilder(userAnswers = Some(sampleData)).build()
-
-        running(application) {
-          val request = FakeRequest(GET, getRouteWithPagination(eventType))
-
-          val result = route(application, request).value
-
-          val view = application.injector.instanceOf[MembersSummaryViewWithPagination]
-
-          val expectedPaginationStats = PaginationStats(
-            slicedMembers = fake26MappedMembers(href, eventType),
-            totalNumberOfMembers = 26,
-            totalNumberOfPages = 2,
-            pageStartAndEnd = (1, 25),
-            pagerSeq = Seq(1, 2))
-
-          status(result) mustEqual OK
-
-          val expectedView = view(form, waypoints, eventType, fake26MappedMembers(href, eventType), totalAmount, "2023", expectedPaginationStats, 0)(request, messages(application)).toString
-
-          contentAsString(result) mustEqual expectedView
-        }
-      }*/
 
       "must save the answer and redirect to the next page when valid data is submitted" in {
         when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
@@ -228,47 +180,51 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
       }
     }
   }
+}
+  object Event7MembersSummaryControllerSpec extends SpecBase {
 
-  private def fake26MappedMembers(href: String): Seq[SummaryListRowWithThreeValues] = fakeXMappedMembers(25, href)
+    private def fake26MappedMembers: Seq[SummaryListRowWithThreeValues] = fakeXMappedMembers(25)
 
-  private def fakeXMappedMembers(x: Int, href: String): Seq[SummaryListRowWithThreeValues] = for {
-    i <- 1 to x
-  } yield {
-    SummaryListRowWithThreeValues(s"${memberDetails.fullName}", s"${memberDetails.nino}", "50.00", "100.00",
-      actions = Some(Actions(
-        items = Seq(
-          ActionItem(
-            content = Text(Message("site.view")),
-            href = controllers.event7.routes.Event7CheckYourAnswersController.onPageLoad(i - 1).url
-          ),
-          ActionItem(
-            content = Text(Message("site.remove")),
-            href = "#"
+    private def fakeXMappedMembers(x: Int): Seq[SummaryListRowWithThreeValues] = for {
+      i <- 1 to x
+    } yield {
+      SummaryListRowWithThreeValues(s"${memberDetails.fullName}", s"${memberDetails.nino}", "100.00", "50.00",
+        actions = Some(Actions(
+          items = Seq(
+            ActionItem(
+              content = Text(Message("site.view")),
+              href = controllers.event7.routes.Event7CheckYourAnswersController.onPageLoad(i - 1).url
+            ),
+            ActionItem(
+              content = Text(Message("site.remove")),
+              href = "#"
+            )
           )
-        )
-      )))
+        )))
+    }
+
+    private def fakePaginationStats(
+                                     slicedMems: Seq[SummaryListRowWithThreeValues],
+                                     totMems: Int,
+                                     totPages: Int,
+                                     pagStartEnd: (Int, Int),
+                                     pagSeq: Seq[Int]
+                                   ): PaginationStatsEvent7 = PaginationStatsEvent7(
+      slicedMembers = slicedMems,
+      totalNumberOfMembers = totMems,
+      totalNumberOfPages = totPages,
+      pageStartAndEnd = pagStartEnd,
+      pagerSeq = pagSeq
+    )
+
+    private def paginationStats26Members: PaginationStatsEvent7 = fakePaginationStats(
+      fake26MappedMembers.slice(0, 24),
+      26,
+      2,
+      (1, 25),
+      1 to 2
+    )
   }
 
-  private def fakePaginationStats(
-                                   slicedMems: Seq[SummaryListRowWithThreeValues],
-                                   totMems: Int,
-                                   totPages: Int,
-                                   pagStartEnd: (Int, Int),
-                                   pagSeq: Seq[Int]
-                                 ): PaginationStatsEvent7 = PaginationStatsEvent7(
-    slicedMembers = slicedMems,
-    totalNumberOfMembers = totMems,
-    totalNumberOfPages = totPages,
-    pageStartAndEnd = pagStartEnd,
-    pagerSeq = pagSeq
-  )
 
-  private def paginationStats26Members(href: String) = fakePaginationStats(
-    fake26MappedMembers(href).slice(0, 24),
-    26,
-    2,
-    (1, 25),
-    1 to 2
-  )
 
-}

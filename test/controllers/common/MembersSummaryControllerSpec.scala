@@ -18,26 +18,25 @@ package controllers.common
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
+import controllers.common.MembersSummaryControllerSpec.{cYAHref, fake26MappedMembers, paginationStats26Members}
 import data.SampleData
 import data.SampleData._
 import forms.common.MembersSummaryFormProvider
 import helpers.DateHelper
-import models.{TaxYear, UserAnswers}
-import models.common.ChooseTaxYear
+import models.UserAnswers
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event2, Event22, Event23, Event3, Event4, Event5, Event6, Event8, Event8A}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, TaxYearPage}
-import pages.common.{ChooseTaxYearPage, MembersDetailsPage, MembersSummaryPage, TotalPensionAmountsPage}
+import pages.EmptyWaypoints
+import pages.common.MembersSummaryPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.HtmlFormat
 import services.EventPaginationService
 import services.EventPaginationService.PaginationStats
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
@@ -54,8 +53,6 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
   private val formProvider = new MembersSummaryFormProvider()
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockEventPaginationService = mock[EventPaginationService]
-
-  private def fake26MappedMembers(href: String, eventType: EventType): Seq[SummaryListRowWithTwoValues] = fakeXMappedMembers(25, href, eventType)
 
   private val mockTaxYear = mock[DateHelper]
   private val validAnswer = LocalDate.of(2022, 5, 12)
@@ -79,41 +76,56 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
   }
 
   "MembersSummary Controller" - {
-        testSuite(formProvider(Event2), Event2, sampleMemberJourneyDataEvent2, SampleData.amountPaid.toString(),
-          controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(0).url, "999.11")
+    behave like testSuite(formProvider(Event2), Event2, sampleMemberJourneyDataEvent2, SampleData.amountPaid.toString(),
+      controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(0).url, "999.11")
 
-        testSuite(formProvider(Event3), Event3, sampleMemberJourneyDataEvent3and4and5(Event3), SampleData.paymentDetailsCommon.amountPaid.toString(),
-          controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(0).url, "54.23")
+    behave like testSuite(formProvider(Event3), Event3, sampleMemberJourneyDataEvent3and4and5(Event3), SampleData.paymentDetailsCommon.amountPaid.setScale(2).toString,
+      controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(0).url, "10.00")
 
-        testSuite(formProvider(Event4), Event4, sampleMemberJourneyDataEvent3and4and5(Event4), SampleData.paymentDetailsCommon.amountPaid.toString(),
-          controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url, "54.23")
+    behave like testSuite(formProvider(Event4), Event4, sampleMemberJourneyDataEvent3and4and5(Event4), SampleData.paymentDetailsCommon.amountPaid.setScale(2).toString(),
+      controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url, "10.00")
 
-        testSuite(formProvider(Event5), Event5, sampleMemberJourneyDataEvent3and4and5(Event5), SampleData.paymentDetailsCommon.amountPaid.toString(),
-          controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(0).url, "54.23")
+    behave like testSuite(formProvider(Event5), Event5, sampleMemberJourneyDataEvent3and4and5(Event5), SampleData.paymentDetailsCommon.amountPaid.setScale(2).toString(),
+      controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(0).url, "10.00")
 
-        testSuite(formProvider(Event6), Event6, sampleMemberJourneyDataEvent6, SampleData.crystallisedDetails.amountCrystallised.toString(),
-          controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(0).url, "857.12")
+    behave like testSuite(formProvider(Event6), Event6, sampleMemberJourneyDataEvent6, SampleData.crystallisedDetails.amountCrystallised.setScale(2).toString(),
+      controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(0).url, "10.00")
 
-        testSuite(formProvider(Event8), Event8, sampleMemberJourneyDataEvent8, SampleData.lumpSumDetails.lumpSumAmount.toString(),
-          controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(0).url, "223.11")
+    behave like testSuite(formProvider(Event8), Event8, sampleMemberJourneyDataEvent8, SampleData.lumpSumDetails.lumpSumAmount.setScale(2).toString(),
+      controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(0).url, "10.00")
 
-        testSuite(formProvider(Event8A), Event8A, sampleMemberJourneyDataEvent8A, SampleData.lumpSumDetails.lumpSumAmount.toString(),
-          controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(0).url, "223.11")
+    behave like testSuite(formProvider(Event8A), Event8A, sampleMemberJourneyDataEvent8A, SampleData.lumpSumDetails.lumpSumAmount.setScale(2).toString(),
+      controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(0).url, "10.00")
 
-        testSuite(formProvider(Event22), Event22, sampleMemberJourneyDataEvent22, SampleData.totalPaymentAmount.toString(),
-          controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url, "999.11")
+    behave like testSuite(formProvider(Event22), Event22, sampleMemberJourneyDataEvent22and23(Event22), SampleData.totalPaymentAmountEvent22and23.setScale(2).toString(),
+      controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url, "10.00")
 
-        testSuite(formProvider(Event23), Event23, sampleMemberJourneyDataEvent23, SampleData.totalPaymentAmountEvent23CurrencyFormat,
-          controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url, "1,234.56")
+    behave like testSuite(formProvider(Event23), Event23, sampleMemberJourneyDataEvent22and23(Event23), SampleData.totalPaymentAmountEvent22and23.setScale(2).toString(),
+      controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url, "10.00")
 
-    behave like testSuiteWithPagination(formProvider(Event3), Event3, cYAHref(Event3, 0), "260.00", SampleData.event345UADataWithPagnination(Event3))
-    behave like testSuiteWithPagination(formProvider(Event4), Event4, cYAHref(Event4, 0), "260.00", SampleData.event345UADataWithPagnination(Event4))
-    behave like testSuiteWithPagination(formProvider(Event5), Event5, cYAHref(Event5, 0), "260.00", SampleData.event345UADataWithPagnination(Event5))
-    behave like testSuiteWithPagination(formProvider(Event6), Event6, cYAHref(Event6, 0), "260.00", SampleData.event6UADataWithPagination)
-    behave like testSuiteWithPagination(formProvider(Event8), Event8, cYAHref(Event8, 0), "260.00", SampleData.event8UADataWithPagination)
-    behave like testSuiteWithPagination(formProvider(Event8A), Event8A, cYAHref(Event8A, 0), "260.00", SampleData.event8aUADataWithPagination)
-    behave like testSuiteWithPagination(formProvider(Event22), Event22, cYAHref(Event22, 0), "260.00", SampleData.event22and23UADataWithPagination(Event22))
-    behave like testSuiteWithPagination(formProvider(Event23), Event23, cYAHref(Event23, 0), "260.00", SampleData.event22and23UADataWithPagination(Event23))
+    behave like testSuiteWithPagination(
+      formProvider(Event3), Event3, cYAHref(Event3, 0), "260.00", SampleData.event345UADataWithPagnination(Event3))
+
+    behave like testSuiteWithPagination(
+      formProvider(Event4), Event4, cYAHref(Event4, 0), "260.00", SampleData.event345UADataWithPagnination(Event4))
+
+    behave like testSuiteWithPagination(
+      formProvider(Event5), Event5, cYAHref(Event5, 0), "260.00", SampleData.event345UADataWithPagnination(Event5))
+
+    behave like testSuiteWithPagination(
+      formProvider(Event6), Event6, cYAHref(Event6, 0), "260.00", SampleData.event6UADataWithPagination)
+
+    behave like testSuiteWithPagination(
+      formProvider(Event8), Event8, cYAHref(Event8, 0), "260.00", SampleData.event8UADataWithPagination)
+
+    behave like testSuiteWithPagination(
+      formProvider(Event8A), Event8A, cYAHref(Event8A, 0), "260.00", SampleData.event8aUADataWithPagination)
+
+    behave like testSuiteWithPagination(
+      formProvider(Event22), Event22, cYAHref(Event22, 0), "260.00", SampleData.event22and23UADataWithPagination(Event22))
+
+    behave like testSuiteWithPagination(
+      formProvider(Event23), Event23, cYAHref(Event23, 0), "260.00", SampleData.event22and23UADataWithPagination(Event23))
   }
 
   private def testSuite(form: Form[Boolean], eventType: EventType, sampleData: UserAnswers, secondValue: String, href: String, totalAmount: String): Unit = {
@@ -165,9 +177,9 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
   }
 
   private def testReturnOkAndCorrectViewWithPagination(eventType: EventType, form: Form[Boolean], href: String, totalAmount: String, sampleData: UserAnswers): Unit = {
-    when(mockEventPaginationService.paginateMappedMembers(any(), any())).thenReturn(paginationStats26Members(href, eventType))
-
     s"must return OK and the correct view with pagination for a GET for Event $eventType" in {
+
+      when(mockEventPaginationService.paginateMappedMembers(any(), any())).thenReturn(paginationStats26Members(href, eventType))
 
       val application = applicationBuilder(userAnswers = Some(sampleData)).build()
 
@@ -240,6 +252,11 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
       }
     }
   }
+}
+
+object MembersSummaryControllerSpec extends SpecBase {
+
+  private def fake26MappedMembers(href: String, eventType: EventType): Seq[SummaryListRowWithTwoValues] = fakeXMappedMembers(25, href, eventType)
 
   private def cYAHref(eventType: EventType, index: Int) = {
       eventType match {
@@ -251,7 +268,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
         case Event8A => controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(index).url
         case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
         case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
-        case _ => "Failed this bit"
+        case _ => "Not a member event"
       }
   }
 
