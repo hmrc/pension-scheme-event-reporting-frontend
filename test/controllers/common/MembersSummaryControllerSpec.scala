@@ -104,6 +104,9 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
       controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url, "10.00")
 
     behave like testSuiteWithPagination(
+      formProvider(Event2), Event2, cYAHref(Event2, 0), "260.00", SampleData.sampleMemberJourneyDataWithPaginationEvent2)
+
+    behave like testSuiteWithPagination(
       formProvider(Event3), Event3, cYAHref(Event3, 0), "260.00", SampleData.event345UADataWithPagnination(Event3))
 
     behave like testSuiteWithPagination(
@@ -169,7 +172,6 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
                 )
               ))
             ))
-
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints, eventType, expectedSeq, totalAmount, "2023")(request, messages(application)).toString
       }
@@ -260,6 +262,7 @@ object MembersSummaryControllerSpec extends SpecBase {
 
   private def cYAHref(eventType: EventType, index: Int) = {
       eventType match {
+        case Event2 => controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(index).url
         case Event3 => controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(index).url
         case Event4 => controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(index).url
         case Event5 => controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(index).url

@@ -113,7 +113,7 @@ object SampleData extends SpecBase {
   val lumpSumDetails = LumpSumDetails(10.00, LocalDate.of(2022, 3, 22))
   val paymentDetailsCommon: CommonPaymentDetails = CommonPaymentDetails(10.00, LocalDate.of(2022, 4, 5))
 
-  val datePaid: LocalDate = LocalDate.of(2022, 5, 19)
+  val datePaid: LocalDate = LocalDate.of(2022, 3, 22)
   val amountPaid: BigDecimal = 999.11
 
   val event7PaymentDate: PaymentDate = PaymentDate(LocalDate.of(2022, 11, 8))
@@ -164,6 +164,14 @@ object SampleData extends SpecBase {
     .setOrException(MembersDetailsPage(Event2, 0, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY), memberDetails)
     .setOrException(AmountPaidPage(0, Event2), amountPaid)
     .setOrException(DatePaidPage(0, Event2), datePaid)
+
+  val sampleMemberJourneyDataWithPaginationEvent2: UserAnswers =
+    (0 to 25).foldLeft(emptyUserAnswersWithTaxYear) { (acc, i) =>
+      acc.setOrException(MembersDetailsPage(Event2, i, Event2MemberPageNumbers.FIRST_PAGE_DECEASED), memberDetails)
+        .setOrException(MembersDetailsPage(Event2, i, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY), memberDetails)
+        .setOrException(AmountPaidPage(i, Event2), BigDecimal(10.00))
+        .setOrException(DatePaidPage(i, Event2), datePaid)
+    }
 
   def sampleMemberJourneyDataEvent3and4and5(eventType: EventType): UserAnswers = UserAnswers()
     .setOrException(TaxYearPage, TaxYear("2022"))
