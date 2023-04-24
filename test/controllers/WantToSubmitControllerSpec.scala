@@ -25,7 +25,7 @@ import org.mockito.Mockito._
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, WantToSubmitPage}
+import pages.{EmptyWaypoints, EventSelectionPage, WantToSubmitPage}
 import play.api.inject.guice.GuiceableModule
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -112,7 +112,7 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
       }
     }
 
-    "must save the answer and redirect to next page on submit (when selecting YES)" in {
+    "must save the answer and redirect to next page on submit (when selecting YES) for a PSA" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
@@ -129,6 +129,25 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
         status(result) mustEqual SEE_OTHER
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
         redirectLocation(result).value mustEqual WantToSubmitPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).url
+      }
+    }
+
+    "must save the answer and redirect to event selection page on submit (when selecting YES) for a PSP" in {
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+
+      val application =
+        applicationBuilderForPSP(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
+
+      running(application) {
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
+        redirectLocation(result).value mustEqual EventSelectionPage.route(waypoints).url
       }
     }
 
