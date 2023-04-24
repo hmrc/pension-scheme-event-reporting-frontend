@@ -1255,3 +1255,10 @@ paymentDetails.date.change.hidden = the date of the payment
 paymentDetails.date.checkYourAnswersLabel = Date of the payment
 
 characterCount = You can enter up to {0} characters
+
+fileUpload.title = Upload your {0} event file
+fileUpload.heading = Upload your {0} event file
+fileupload.upload.inset.text1 = Accepted file type: .csv
+fileupload.upload.inset.text2 = Maximum file size: 2MB
+fileUpload.error.required = No file has been uploaded
+fileUpload.change.hidden = file Upload

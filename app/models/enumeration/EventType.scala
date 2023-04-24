@@ -92,6 +92,13 @@ object EventType extends Enumerable.Implicits {
 
   def getEventType(s: String): Option[EventType] = values.find(_.toString == s)
 
+  def getEventTypeByName(eventType: EventType): Option[String] = {
+    eventType match {
+      case Event22 => Some("annual allowance")
+      case _ => None
+    }
+  }
+
   implicit def queryStringBindable(implicit stringBinder: QueryStringBindable[String]): QueryStringBindable[EventType] =
     new QueryStringBindable[EventType] {
 

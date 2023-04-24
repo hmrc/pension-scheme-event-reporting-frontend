@@ -361,3 +361,6 @@ POST       /new-report/event-13-other-structure                                 
 
 GET         /new-report/event-13-check-your-answers                              controllers.event13.Event13CheckYourAnswersController.onPageLoad
 GET         /new-report/event-13-click                                           controllers.event13.Event13CheckYourAnswersController.onClick
+
+GET        /fileUpload                        controllers.fileUpload.FileUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /fileUpload                        controllers.fileUpload.FileUploadController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
