@@ -33,7 +33,7 @@ class MinimalConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
 
   def getMinimalDetails(idName: String, idValue: String)(
                             implicit hc: HeaderCarrier,
-                            ec: ExecutionContext,
+                            ec: ExecutionContext
                           ): Future[MinimalDetails] =
     minDetails(hc.withExtraHeaders(idName -> idValue))
 
