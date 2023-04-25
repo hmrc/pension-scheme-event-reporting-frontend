@@ -1255,3 +1255,5 @@ paymentDetails.date.change.hidden = the date of the payment
 paymentDetails.date.checkYourAnswersLabel = Date of the payment
 
 characterCount = You can enter up to {0} characters
+
+confirmation.whatNext.send.to.email.id = dummy.email@hmrc.gov.uk

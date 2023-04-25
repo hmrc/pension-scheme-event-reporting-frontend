@@ -49,6 +49,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   def administratorOrPractitionerUrl: String = loadConfig("urls.administratorOrPractitioner")
 
   def youNeedToRegisterUrl: String = loadConfig("urls.youNeedToRegisterPage")
+
   def yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
 
   private val exitSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
@@ -67,4 +68,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   lazy val minimumYear: Int = configuration.get[Int]("minimumYear")
 
   lazy val minimalDetailsUrl: String = s"$pensionsAdministratorUrl${configuration.get[String](path = "urls.minimalDetails")}"
+
+  lazy val emailSendForce: Boolean = configuration.getOptional[Boolean]("email.force").getOrElse(false)
 }
