@@ -17,6 +17,8 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
+import models.enumeration.AdministratorOrPractitioner
+import models.enumeration.AdministratorOrPractitioner.Administrator
 import play.api.Configuration
 import play.api.i18n.Lang
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -69,5 +71,22 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   lazy val minimalDetailsUrl: String = s"$pensionsAdministratorUrl${configuration.get[String](path = "urls.minimalDetails")}"
 
+
+  lazy val emailApiUrl: String = servicesConfig.baseUrl("email")
   lazy val emailSendForce: Boolean = configuration.getOptional[Boolean]("email.force").getOrElse(false)
+
+  def eventReportingEmailCallback(
+                                   schemeAdministratorType: AdministratorOrPractitioner,
+                                   requestId: String,
+                                   encryptedEmail: String,
+                                   encryptedPsaId: String
+                                 ) = s"$eventReportingUrl${
+    configuration.get[String](path = "urls.emailCallback")
+      .format(
+        if (schemeAdministratorType == Administrator) "PSA" else "PSP",
+        requestId,
+        encryptedEmail,
+        encryptedPsaId
+      )
+  }"
 }

@@ -19,13 +19,13 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.enumeration.AdministratorOrPractitioner
-import models.{AdministratorOrPractitioner, JourneyType, SendEmailRequest}
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import viewmodels.SendEmailRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,15 +44,15 @@ class EmailConnector @Inject()(
   private val logger = Logger(classOf[EmailConnector])
 
   private def callBackUrl(
-    schemeAdministratorType: AdministratorOrPractitioner,
-    requestId: String,
-    psaOrPspId: String,
-    email: String
-  ): String = {
+                           schemeAdministratorType: AdministratorOrPractitioner,
+                           requestId: String,
+                           psaOrPspId: String,
+                           email: String
+                         ): String = {
     val encryptedPsaOrPspId = crypto.QueryParameterCrypto.encrypt(PlainText(psaOrPspId)).value
     val encryptedEmail = crypto.QueryParameterCrypto.encrypt(PlainText(email)).value
 
-    appConfig.aftEmailCallback(schemeAdministratorType, journeyType, requestId, encryptedEmail, encryptedPsaOrPspId)
+    appConfig.eventReportingEmailCallback(schemeAdministratorType, requestId, encryptedEmail, encryptedPsaOrPspId)
   }
 
   //scalastyle:off parameter.number
@@ -72,10 +72,10 @@ class EmailConnector @Inject()(
     http.POST[JsValue, HttpResponse](emailServiceUrl, jsonData).map { response =>
       response.status match {
         case ACCEPTED =>
-          logger.debug(s"Email sent successfully for $journeyType")
+          logger.debug(s"Email sent successfully")
           EmailSent
         case status =>
-          logger.warn(s"Sending Email failed for $journeyType with response status $status")
+          logger.warn(s"Sending Email failed with response status $status")
           EmailNotSent
       }
     } recoverWith logExceptions
