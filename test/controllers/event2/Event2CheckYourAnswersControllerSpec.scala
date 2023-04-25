@@ -116,7 +116,7 @@ object Event2CheckYourAnswersControllerSpec {
         ), ""),
       Value(HtmlContent(htmlContent), ""), "",
       Some(Actions("", List(ActionItem(changeLink, Text("Change"),
-        Some(messages("site.change") + " " + messages(hiddenContentChangeLink)), "", Map()))))
+        Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
 
   private def fakeSummaryListRowWithHtmlContentWithHiddenContent(messageKey: String, messageInterpolation: String, htmlContent: String, changeLink: String,
