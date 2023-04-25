@@ -15,17 +15,21 @@
  *@
 
 @import controllers.fileUpload.routes
+@import models.enumeration.EventType
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
+    govukDetails: GovukDetails,
+    govukInsetText: GovukInsetText,
+    govukFileUpload : GovukFileUpload,
     govukErrorSummary: GovukErrorSummary,
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventByName: String, eventType: EventType)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("fileUpload.title"))) {
+@layout(pageTitle = title(form, messages("fileUpload.title", eventByName))) {
 
     @formHelper(action = routes.FileUploadController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
@@ -33,13 +37,40 @@
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
         }
 
-        <h1 class="govuk-heading-xl">@messages("fileUpload.heading")</h1>
+        <h1 class="govuk-heading-xl">@messages("fileUpload.heading", eventByName)</h1>
 
-        <div class="govuk-inset-text">
-            @messages("fileupload.upload.inset.text1")
-            <br>
-            @messages("fileupload.upload.inset.text2")
-        </div>
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    @messages("fileUpload.upload.details.summary")
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                    <p>@messages("fileUpload.upload.details.annualAllowanceEvent22.p1")</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>@messages("fileUpload.upload.details.annualAllowanceEvent22.item1")</li>
+                        <li>@messages("fileUpload.upload.details.annualAllowanceEvent22.item2")</li>
+                        <li>@messages("fileUpload.upload.details.annualAllowanceEvent22.item3")</li>
+                        <li>@messages("fileUpload.upload.details.annualAllowanceEvent22.item4")</li>
+                    </ul>
+            </div>
+        </details>
+
+
+       @govukInsetText(
+           InsetText(
+               content = HtmlContent(
+                   "<p>"+messages("fileupload.upload.inset.text1")+"</br>"+messages("fileupload.upload.inset.text2")+"</p>"
+               )
+           )
+       )
+
+        @govukFileUpload(
+            FileUpload(
+            id = "file-input",
+            name = "file",
+            label = Label(content = messages("fileUpload.upload.label"))
+        ))
 
         @govukButton(
             ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))

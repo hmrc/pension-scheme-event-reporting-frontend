@@ -1262,3 +1262,11 @@ fileupload.upload.inset.text1 = Accepted file type: .csv
 fileupload.upload.inset.text2 = Maximum file size: 2MB
 fileUpload.error.required = No file has been uploaded
 fileUpload.change.hidden = file Upload
+fileUpload.upload.details.summary = What information do I need to include in this file?
+fileUpload.upload.label = Upload a file
+
+fileUpload.upload.details.annualAllowanceEvent22.p1 = To report an annual allowance event you will need the following for each member:
+fileUpload.upload.details.annualAllowanceEvent22.item1 = their name
+fileUpload.upload.details.annualAllowanceEvent22.item2 = their National Insurance number
+fileUpload.upload.details.annualAllowanceEvent22.item3 = the tax year in which the annual allowance was exceeded
+fileUpload.upload.details.annualAllowanceEvent22.item4 = the total of the member's pension input amounts, for all arrangements, under the scheme for the relevant tax year

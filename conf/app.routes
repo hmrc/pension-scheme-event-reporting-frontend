@@ -226,6 +226,8 @@ GET         /select-tax-year                                                    
 POST        /select-tax-year                                                      controllers.TaxYearController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /bulk-what-you-need                                                   controllers.event22.FileUploadWhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/upload                                                    controllers.fileUpload.FileUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+POST        /new-report/upload                                                    controllers.fileUpload.FileUploadController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 # file download
 GET         /event-22-upload-format-instructions                                  controllers.FileDownloadController.instructionsFile
 GET         /event-22-bulk-upload-template                                        controllers.FileDownloadController.templateFile
@@ -361,6 +363,3 @@ POST       /new-report/event-13-other-structure                                 
 
 GET         /new-report/event-13-check-your-answers                              controllers.event13.Event13CheckYourAnswersController.onPageLoad
 GET         /new-report/event-13-click                                           controllers.event13.Event13CheckYourAnswersController.onClick
-
-GET        /fileUpload                        controllers.fileUpload.FileUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /fileUpload                        controllers.fileUpload.FileUploadController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

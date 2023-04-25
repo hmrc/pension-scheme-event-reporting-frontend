@@ -21,6 +21,7 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.fileUpload.FileUploadFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
+import models.enumeration.EventType.getEventTypeByName
 import pages.Waypoints
 import pages.fileUpload.FileUploadPage
 import play.api.i18n.I18nSupport
@@ -40,23 +41,22 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(FileUploadPage)).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints))
+  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(_.get(FileUploadPage(eventType))).fold(form)(form.fill)
+    Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), eventType))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, getEventTypeByName(eventType), eventType))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(FileUploadPage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(FileUploadPage(eventType), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(FileUploadPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(FileUploadPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

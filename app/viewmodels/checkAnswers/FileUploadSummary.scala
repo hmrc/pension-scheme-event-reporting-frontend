@@ -17,6 +17,7 @@
 package viewmodels.checkAnswers
 
 import models.UserAnswers
+import models.enumeration.EventType
 import pages.{CheckAnswersPage, Waypoints}
 import pages.fileUpload.FileUploadPage
 import play.api.i18n.Messages
@@ -28,9 +29,9 @@ import viewmodels.implicits._
 
 object FileUploadSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(FileUploadPage).map {
+    answers.get(FileUploadPage(eventType)).map {
       answers =>
 
         val value = ValueViewModel(
@@ -46,7 +47,7 @@ object FileUploadSummary  {
           key     = "fileUpload.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", FileUploadPage.changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", FileUploadPage(eventType).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("fileUpload.change.hidden"))
           )
         )

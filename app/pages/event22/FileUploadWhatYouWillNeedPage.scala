@@ -18,8 +18,10 @@ package pages.event22
 
 import controllers.event22.routes
 import models.UserAnswers
+import models.enumeration.EventType.Event22
+import pages.fileUpload.FileUploadPage
+import pages.{Page, Waypoints}
 import play.api.mvc.Call
-import pages.{IndexPage, Page, Waypoints}
 
 
 case object FileUploadWhatYouWillNeedPage extends Page {
@@ -28,5 +30,5 @@ case object FileUploadWhatYouWillNeedPage extends Page {
     routes.FileUploadWhatYouWillNeedController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    IndexPage
+    FileUploadPage(Event22)
 }

@@ -92,10 +92,10 @@ object EventType extends Enumerable.Implicits {
 
   def getEventType(s: String): Option[EventType] = values.find(_.toString == s)
 
-  def getEventTypeByName(eventType: EventType): Option[String] = {
+  def getEventTypeByName(eventType: EventType): String = {
     eventType match {
-      case Event22 => Some("annual allowance")
-      case _ => None
+      case Event22 => "annual allowance"
+      case _ => "EventTypeByName needs to be implemented for other events"
     }
   }
 

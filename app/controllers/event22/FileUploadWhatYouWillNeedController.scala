@@ -39,6 +39,6 @@ class FileUploadWhatYouWillNeedController @Inject()(
       val instructionsDownloadLink = controllers.routes.FileDownloadController.instructionsFile
 
       //TODO: The url needs to be updated to take you to the future subsequent page
-      Ok(view(controllers.routes.IndexController.onPageLoad, templateDownloadLink, instructionsDownloadLink))
+      Ok(view(controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints).url, templateDownloadLink, instructionsDownloadLink))
   }
 }

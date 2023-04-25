@@ -17,12 +17,13 @@
 package pages.fileUpload
 
 import controllers.fileUpload.routes
+import models.enumeration.EventType
 import models.fileUpload.FileUpload
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Waypoints, QuestionPage}
+import pages.{QuestionPage, Waypoints}
 
-case object FileUploadPage extends QuestionPage[Set[FileUpload]] {
+case class FileUploadPage(eventType: EventType) extends QuestionPage[Set[FileUpload]] {
 
   override def path: JsPath = JsPath \ toString
 
