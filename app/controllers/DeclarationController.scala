@@ -16,7 +16,7 @@
 
 package controllers
 
-import audit.{AuditService, EventReportingReturnEmailAuditEvent}
+import audit.{AuditService, EventReportingSubmissionEmailAuditEvent}
 import config.FrontendAppConfig
 import connectors.{EmailConnector, EmailStatus, EventReportingConnector, MinimalConnector}
 import controllers.DeclarationController.testDataPsa
@@ -94,7 +94,7 @@ class DeclarationController @Inject()(
 
       emailConnector.sendEmail(schemeAdministratorType, requestId, request.loggedInUser.idName, email, config.fileReturnTemplateId, templateParams)
         .map { emailStatus =>
-          auditService.sendEvent(EventReportingReturnEmailAuditEvent(request.loggedInUser.idName, schemeAdministratorType, email))
+          auditService.sendEvent(EventReportingSubmissionEmailAuditEvent(request.loggedInUser.idName, schemeAdministratorType, email))
           emailStatus
         }
     }

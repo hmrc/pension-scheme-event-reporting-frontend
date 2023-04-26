@@ -18,7 +18,7 @@ package audit
 
 import models.enumeration.AdministratorOrPractitioner
 
-case class EventReportingReturnEmailAuditEvent(
+case class EventReportingSubmissionEmailAuditEvent(
                                                 psaOrPspId: String,
                                                 schemeAdministratorType: AdministratorOrPractitioner,
                                                 emailAddress: String
