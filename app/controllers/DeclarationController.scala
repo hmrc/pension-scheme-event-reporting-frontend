@@ -16,26 +16,25 @@
 
 package controllers
 
+import audit.{AuditService, EventReportingReturnEmailAuditEvent}
 import connectors.{EmailConnector, EmailStatus, EventReportingConnector, MinimalConnector}
+import controllers.DeclarationController.testDataPsa
 import controllers.actions._
+import models.enumeration.AdministratorOrPractitioner
+import models.requests.DataRequest
+import models.{TaxYear, UserAnswers}
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.DateHelper.formatSubmittedDate
 import views.html.DeclarationView
 
+import java.time.{ZoneId, ZonedDateTime}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import models.{TaxYear, UserAnswers}
-import DeclarationController.testDataPsa
-import audit.{AuditService, EventReportingReturnEmailAuditEvent}
-import models.enumeration.AdministratorOrPractitioner
-import models.requests.DataRequest
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.DateHelper.formatSubmittedDate
-
-import java.time.{ZoneId, ZonedDateTime}
 
 class DeclarationController @Inject()(
                                        override val messagesApi: MessagesApi,
@@ -94,10 +93,10 @@ class DeclarationController @Inject()(
 
         emailConnector.sendEmail(schemeAdministratorType, requestId, request.loggedInUser.idName, email, templateParams)
           .map { emailStatus =>
-            auditService.sendEvent(EventReportingReturnEmailAuditEvent(request.loggedInUser.psaIdOrPspId, schemeAdministratorType, email))
+            auditService.sendEvent(EventReportingReturnEmailAuditEvent(request.loggedInUser.idName, schemeAdministratorType, email))
             emailStatus
           }
-      }.getOrElse(None)
+      }.getOrElse(throw new RuntimeException("Email not sent"))
     }
   }
 }

@@ -23,6 +23,9 @@ case class EventReportingReturnEmailAuditEvent(
                                                 schemeAdministratorType: AdministratorOrPractitioner,
                                                 emailAddress: String
                                               ) extends AuditEvent {
+
+  override def auditType: String = "Email"
+
   override def details: Map[String, String] = {
     val psaOrPspIdJson = schemeAdministratorType match {
       case AdministratorOrPractitioner.Administrator =>
