@@ -17,9 +17,7 @@
 package controllers
 
 import base.SpecBase
-import connectors.{EventReportingConnector, UserAnswersCacheConnector}
-import models.UserAnswers
-import org.mockito.ArgumentCaptor
+import connectors.EventReportingConnector
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -30,8 +28,6 @@ import views.html.DeclarationView
 import org.mockito.Mockito._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
-
 import scala.concurrent.Future
 
 class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
@@ -65,7 +61,6 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
     //TODO - update tests and json data for submitting event report/ connector once sufficient data is captured in the FE (separate ticket being raised)
 
     "must redirect to the correct page for method onClick" in {
-
       when(mockERConnector.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(()))
 
       val application =

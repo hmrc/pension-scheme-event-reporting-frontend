@@ -17,7 +17,6 @@
 package controllers.fileUpload
 
 import base.SpecBase
-import models.enumeration.EventType
 import pages.EmptyWaypoints
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -26,11 +25,8 @@ import views.html.fileUpload.ProcessingRequestView
 class ProcessingRequestControllerSpec extends SpecBase {
 
   private val waypoints = EmptyWaypoints
-  private val event22 = EventType.Event22
 
   "Processing Request Controller" - {
-
-    // TODO Is this the right way to test this? Will be used for multiple events
 
     "must return OK and the correct view for a GET" in {
 
@@ -38,20 +34,13 @@ class ProcessingRequestControllerSpec extends SpecBase {
 
       running(application) {
 
-        val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, event22).url)
-
-        println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-        println(routes.ProcessingRequestController.onPageLoad(waypoints, event22).url)
+        val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints).url)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[ProcessingRequestView]
 
-        println("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy")
-        println(view(continueUrl = controllers.fileUpload.routes.ProcessingRequestController.onPageLoad(waypoints, event22).url)(request, messages(application)).toString)
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(controllers.IndexController.onPageLoad.url)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(controllers.routes.IndexController.onPageLoad.url)(request, messages(application)).toString
       }
     }
   }

@@ -17,7 +17,6 @@
 package controllers.fileUpload
 
 import controllers.actions._
-import models.enumeration.EventType
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +32,7 @@ class ProcessingRequestController @Inject()(
                                            view: ProcessingRequestView
                                          ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = identify {
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
     implicit request =>
       Ok(view(continueUrl = controllers.routes.IndexController.onPageLoad.url))
   }

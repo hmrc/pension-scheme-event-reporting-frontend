@@ -1256,5 +1256,6 @@ paymentDetails.date.checkYourAnswersLabel = Date of the payment
 
 characterCount = You can enter up to {0} characters
 
-processingRequest.h1 = We are checking your file
+processingRequest.title = We are checking your file
+processingRequest.heading = We are checking your file
 processingRequest.p1 = Do not close this page or leave the service.
