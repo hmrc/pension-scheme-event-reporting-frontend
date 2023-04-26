@@ -17,11 +17,12 @@
 package pages.fileUpload
 
 import controllers.fileUpload.routes
+import models.UserAnswers
 import models.enumeration.EventType
 import models.fileUpload.FileUpload
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 
 case class FileUploadPage(eventType: EventType) extends QuestionPage[Set[FileUpload]] {
 
@@ -31,4 +32,8 @@ case class FileUploadPage(eventType: EventType) extends QuestionPage[Set[FileUpl
 
   override def route(waypoints: Waypoints): Call =
     routes.FileUploadController.onPageLoad(waypoints)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    FileUploadResultPage(eventType)
+  }
 }

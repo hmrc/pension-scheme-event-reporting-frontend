@@ -17,12 +17,15 @@
 package pages.fileUpload
 
 import controllers.fileUpload.routes
+import models.UserAnswers
+import models.enumeration.EventType
 import models.fileUpload.FileUploadResult
+import models.fileUpload.FileUploadResult.{Option1, Option2}
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Waypoints, QuestionPage}
 
-case object FileUploadResultPage extends QuestionPage[FileUploadResult] {
+case class FileUploadResultPage(eventType: EventType) extends QuestionPage[FileUploadResult] {
 
   override def path: JsPath = JsPath \ toString
 
@@ -30,4 +33,12 @@ case object FileUploadResultPage extends QuestionPage[FileUploadResult] {
 
   override def route(waypoints: Waypoints): Call =
     routes.FileUploadResultController.onPageLoad(waypoints)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    answers.get(this).map {
+      case Option1 => IndexPage
+      case Option2 => FileUploadPage(eventType)
+      case _ => IndexPage
+    }.orRecover
+  }
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import controllers.fileUpload.routes
 @import models.enumeration.EventType
 
 @this(
@@ -31,7 +30,7 @@
 
 @layout(pageTitle = title(form, messages("fileUpload.title", eventByName))) {
 
-    @formHelper(action = submitUrl, Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.fileUpload.routes.FileUploadController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))

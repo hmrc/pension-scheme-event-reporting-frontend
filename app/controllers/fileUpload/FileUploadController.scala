@@ -25,7 +25,7 @@ import models.enumeration.EventType.getEventTypeByName
 import pages.Waypoints
 import pages.fileUpload.FileUploadPage
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadView
 
@@ -44,14 +44,15 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(FileUploadPage(eventType))).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), eventType, Call("GET", "/") ))
+    Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), eventType, controllers.fileUpload.routes.FileUploadResultController.onPageLoad(waypoints)))
   }
 
   def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, getEventTypeByName(eventType), eventType, Call("GET", "/") ))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, getEventTypeByName(eventType), eventType,
+            controllers.fileUpload.routes.FileUploadResultController.onPageLoad(waypoints)))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(FileUploadPage(eventType), value)
