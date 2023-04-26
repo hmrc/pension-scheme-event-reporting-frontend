@@ -167,7 +167,7 @@ object Event6CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "amountCrystallisedAndDate.value.checkYourAnswersLabel",
-      "£857.12",
+      "£10.00",
       "/manage-pension-scheme-event-report/new-report/1/event-6-payment-details?waypoints=event-6-check-answers-1",
       "amountCrystallisedAndDate.value.change.hidden"
     ),

@@ -54,7 +54,7 @@ class MembersSummaryController @Inject()(
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       if (mappedMembers.length > 25) {
-        Redirect(routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, 0))
+        Redirect(routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, eventType, 0))
       } else {
         Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear))
       }
@@ -64,11 +64,12 @@ class MembersSummaryController @Inject()(
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
+      val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, pageNumber)
       if (mappedMembers.length <= 25) {
         Redirect(routes.MembersSummaryController.onPageLoad(waypoints, eventType))
       } else {
-        Ok(newView(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), paginationStats, pageNumber))
+        Ok(newView(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, pageNumber))
       }
     }
 

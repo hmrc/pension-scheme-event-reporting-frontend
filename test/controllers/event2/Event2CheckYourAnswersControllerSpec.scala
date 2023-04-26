@@ -168,7 +168,7 @@ object Event2CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "datePaid.event2.checkYourAnswersLabel",
-      messageInterpolation = "Joe Bloggs", htmlContent = "19 May 2022",
+      messageInterpolation = "Joe Bloggs", htmlContent = "22 March 2022",
       changeLink = "/manage-pension-scheme-event-report/new-report/1/event-2-when-was-payment-made?waypoints=event-2-check-answers-1",
       hiddenContentChangeLink = "datePaid.event2.change.hidden"
     )

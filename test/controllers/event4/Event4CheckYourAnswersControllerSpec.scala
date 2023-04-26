@@ -142,7 +142,7 @@ object Event4CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "paymentDetails.value.checkYourAnswersLabel",
-      "£54.23",
+      "£10.00",
       "/manage-pension-scheme-event-report/new-report/1/event-4-payment-details?waypoints=event-4-check-answers-1",
       "paymentDetails.value.change.hidden"
     ),
