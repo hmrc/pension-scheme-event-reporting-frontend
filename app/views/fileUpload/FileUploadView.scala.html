@@ -27,11 +27,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, eventByName: String, eventType: EventType)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventByName: String, eventType: EventType, submitUrl: Call)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("fileUpload.title", eventByName))) {
 
-    @formHelper(action = routes.FileUploadController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
+    @formHelper(action = submitUrl, Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))

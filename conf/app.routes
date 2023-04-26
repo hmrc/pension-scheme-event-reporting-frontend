@@ -195,9 +195,6 @@ GET         /new-report/:index/event-22-what-need                               
 GET         /new-report/:index/event-22-member-details                            controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, index: Index, memberPageNo: Int = 0)
 POST        /new-report/:index/event-22-member-details                            controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, index: Index, memberPageNo: Int = 0)
 
-GET         /new-report/event-22-upload                                           controllers.fileUpload.FileUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
-POST        /new-report/event-22-upload                                           controllers.fileUpload.FileUploadController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
-
 GET         /new-report/:index/event-1-member-details                             controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1, index: Index, memberPageNo: Int = 0)
 POST        /new-report/:index/event-1-member-details                             controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1, index: Index, memberPageNo: Int = 0)
 
@@ -232,6 +229,14 @@ GET         /bulk-what-you-need                                                 
 # file download
 GET         /event-22-upload-format-instructions                                  controllers.FileDownloadController.instructionsFile
 GET         /event-22-bulk-upload-template                                        controllers.FileDownloadController.templateFile
+
+GET         /new-report/event-22-upload                                           controllers.fileUpload.FileUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+POST        /new-report/event-22-upload                                           controllers.fileUpload.FileUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+
+GET         /new-report/event-22-check                                            controllers.fileUpload.FileUploadResultController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+POST        /new-report/event-22-check                                            controllers.fileUpload.FileUploadResultController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+
+GET         /new-report/event-22-wrong-format                                     controllers.fileUpload.FileRejectedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/:index/event-3-member-details                             controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3, index: Index, memberPageNo: Int = 0)
 POST        /new-report/:index/event-3-member-details                             controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3, index: Index, memberPageNo: Int = 0)

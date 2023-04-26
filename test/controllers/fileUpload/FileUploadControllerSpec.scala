@@ -19,21 +19,20 @@ package controllers.fileUpload
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.fileUpload.FileUploadFormProvider
-import views.html.fileUpload.FileUploadView
-import models.UserAnswers
+import models.enumeration.EventType.{Event22, getEventTypeByName}
 import models.fileUpload.FileUpload
-import pages.EmptyWaypoints
-import pages.fileUpload.FileUploadPage
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito.{reset, times, verify}
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.EmptyWaypoints
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-
-import scala.concurrent.Future
+import views.html.fileUpload.FileUploadView
 
 class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
 
@@ -46,8 +45,6 @@ class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private def getRoute: String = routes.FileUploadController.onPageLoad(waypoints).url
 
-  private def postRoute: String = routes.FileUploadController.onSubmit(waypoints).url
-
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
@@ -57,12 +54,7 @@ class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
     reset(mockUserAnswersCacheConnector)
   }
 
-  private val validAnswer: Set[FileUpload] = Set(
-    FileUpload.Option1,
-    FileUpload.Option2
-  )
-
-  "FileUpload Controller" - {
+  "onPageLoad" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -76,69 +68,27 @@ class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[FileUploadView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
-      }
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = UserAnswers().set(FileUploadPage, validAnswer).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, getRoute)
-
-        val view = application.injector.instanceOf[FileUploadView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), waypoints)(request, messages(application)).toString
-      }
-    }
-
-    "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
-            "value[0]" -> "option1",
-            "value[1]" -> "option2"
-          )
-
-        val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(FileUploadPage, validAnswer).success.value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual FileUploadPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
-      }
-    }
-
-    "must return bad request when invalid data is submitted" in {
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
-
-        val view = application.injector.instanceOf[FileUploadView]
-        val boundForm = form.bind(Map("value" -> "invalid"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        contentAsString(result) mustEqual view(form, waypoints, getEventTypeByName(Event22), Event22, Call("GET", "/"))(request, messages(application)).toString
       }
     }
   }
+//
+//  "showResult" - {
+//
+//    "must save file name to mongo if successful" in {
+//
+//      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+//
+//      running(application) {
+//        val request = FakeRequest(GET, showResultRoute)
+//
+//        val result = route(application, request).value
+//
+//        val view = application.injector.instanceOf[FileUploadView]
+//
+//        status(result) mustEqual SEE_OTHER
+//        verify(mockUserAnswersCacheConnector, times(1)).save(ArgumentMatchers.eq("123456"), ArgumentMatchers.eq(Event22), any())(any(), any())
+//      }
+//    }
+//  }
 }

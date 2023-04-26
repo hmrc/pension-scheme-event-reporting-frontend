@@ -16,17 +16,13 @@
 
 package pages.fileUpload
 
-import models.fileUpload.FileUpload
-import pages.behaviours.PageBehaviours
+import models.enumeration.EventType
+import play.api.libs.json.JsPath
+import queries.{Gettable, Settable}
 
-class FileUploadPageSpec extends PageBehaviours {
+case class UploadedFileName(eventType: EventType) extends Gettable[String] with Settable[String] {
 
-  "FileUploadPage" - {
+  override def path: JsPath = JsPath \ eventType.toString \ toString
 
-    beRetrievable[Set[FileUpload]](FileUploadPage)
-
-    beSettable[Set[FileUpload]](FileUploadPage)
-
-    beRemovable[Set[FileUpload]](FileUploadPage)
-  }
+  override def toString: String = "uploadedFileName"
 }

@@ -17,20 +17,17 @@
 package controllers
 
 import base.SpecBase
-import connectors.{EventReportingConnector, UserAnswersCacheConnector}
-import models.UserAnswers
-import org.mockito.ArgumentCaptor
+import connectors.EventReportingConnector
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.DeclarationView
-import org.mockito.Mockito._
-import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
 
 import scala.concurrent.Future
 
