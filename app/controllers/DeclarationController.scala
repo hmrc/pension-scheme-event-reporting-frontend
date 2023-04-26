@@ -17,6 +17,7 @@
 package controllers
 
 import audit.{AuditService, EventReportingReturnEmailAuditEvent}
+import config.FrontendAppConfig
 import connectors.{EmailConnector, EmailStatus, EventReportingConnector, MinimalConnector}
 import controllers.DeclarationController.testDataPsa
 import controllers.actions._
@@ -46,6 +47,7 @@ class DeclarationController @Inject()(
                                        emailConnector: EmailConnector,
                                        minimalConnector: MinimalConnector,
                                        auditService: AuditService,
+                                       config: FrontendAppConfig,
                                        view: DeclarationView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -78,25 +80,23 @@ class DeclarationController @Inject()(
 
     minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
 
-      minimalDetails.individualDetails.map { individualDetails =>
-        val submittedDate = formatSubmittedDate(ZonedDateTime.now(ZoneId.of("Europe/London")))
-        val sendToEmailId = messages("confirmation.whatNext.send.to.email.id")
-        val schemeAdministratorType = AdministratorOrPractitioner.Administrator
+      val submittedDate = formatSubmittedDate(ZonedDateTime.now(ZoneId.of("Europe/London")))
+      val sendToEmailId = messages("confirmation.whatNext.send.to.email.id")
+      val schemeAdministratorType = AdministratorOrPractitioner.Administrator
 
-        val templateParams = Map(
-          "psaName" -> individualDetails.fullName,
-          "schemeName" -> schemeName,
-          "taxYear" -> taxYear,
-          "dateSubmitted" -> submittedDate,
-          "hmrcEmail" -> sendToEmailId
-        )
+      val templateParams = Map(
+        "psaName" -> minimalDetails.name,
+        "schemeName" -> schemeName,
+        "taxYear" -> taxYear,
+        "dateSubmitted" -> submittedDate,
+        "hmrcEmail" -> sendToEmailId //Todo: remove as not sure if needed
+      )
 
-        emailConnector.sendEmail(schemeAdministratorType, requestId, request.loggedInUser.idName, email, templateParams)
-          .map { emailStatus =>
-            auditService.sendEvent(EventReportingReturnEmailAuditEvent(request.loggedInUser.idName, schemeAdministratorType, email))
-            emailStatus
-          }
-      }.getOrElse(throw new RuntimeException("Email not sent"))
+      emailConnector.sendEmail(schemeAdministratorType, requestId, request.loggedInUser.idName, email, config.fileReturnTemplateId, templateParams)
+        .map { emailStatus =>
+          auditService.sendEvent(EventReportingReturnEmailAuditEvent(request.loggedInUser.idName, schemeAdministratorType, email))
+          emailStatus
+        }
     }
   }
 }

@@ -27,6 +27,8 @@ import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import viewmodels.SendEmailRequest
 
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait EmailStatus
@@ -49,8 +51,8 @@ class EmailConnector @Inject()(
                            psaOrPspId: String,
                            email: String
                          ): String = {
-    val encryptedPsaOrPspId = crypto.QueryParameterCrypto.encrypt(PlainText(psaOrPspId)).value
-    val encryptedEmail = crypto.QueryParameterCrypto.encrypt(PlainText(email)).value
+    val encryptedPsaOrPspId = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaOrPspId)).value, StandardCharsets.UTF_8.toString)
+    val encryptedEmail = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(email)).value, StandardCharsets.UTF_8.toString)
 
     appConfig.eventReportingEmailCallback(schemeAdministratorType, requestId, encryptedEmail, encryptedPsaOrPspId)
   }
@@ -61,11 +63,12 @@ class EmailConnector @Inject()(
                  requestId: String,
                  psaOrPspId: String,
                  emailAddress: String,
+                 templateId: String,
                  templateParams: Map[String, String]
                )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailStatus] = {
     val emailServiceUrl = s"${appConfig.emailApiUrl}/hmrc/email"
 
-    val sendEmailReq = SendEmailRequest(List(emailAddress), templateParams, appConfig.emailSendForce,
+    val sendEmailReq = SendEmailRequest(List(emailAddress), templateId, templateParams, appConfig.emailSendForce,
       callBackUrl(schemeAdministratorType, requestId, psaOrPspId, emailAddress))
     val jsonData = Json.toJson(sendEmailReq)
 

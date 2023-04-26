@@ -18,7 +18,7 @@ package viewmodels
 
 import play.api.libs.json.{Json, OFormat}
 
-case class SendEmailRequest(to: List[String], parameters: Map[String, String], force: Boolean, eventUrl: String)
+case class SendEmailRequest(to: List[String], templateId: String, parameters: Map[String, String], force: Boolean, eventUrl: String)
 
 object SendEmailRequest {
   implicit val format: OFormat[SendEmailRequest] = Json.format[SendEmailRequest]

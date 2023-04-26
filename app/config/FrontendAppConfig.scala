@@ -71,9 +71,9 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   lazy val minimalDetailsUrl: String = s"$pensionsAdministratorUrl${configuration.get[String](path = "urls.minimalDetails")}"
 
-
   lazy val emailApiUrl: String = servicesConfig.baseUrl("email")
   lazy val emailSendForce: Boolean = configuration.getOptional[Boolean]("email.force").getOrElse(false)
+  lazy val fileReturnTemplateId: String = configuration.get[String]("email.fileReturnTemplateId")
 
   def eventReportingEmailCallback(
                                    schemeAdministratorType: AdministratorOrPractitioner,
