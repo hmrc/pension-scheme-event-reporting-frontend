@@ -21,6 +21,7 @@ import connectors.EventReportingConnector
 import forms.EventSummaryFormProvider
 import models.enumeration.EventType
 import models.{TaxYear, UserAnswers}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -59,7 +60,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
 
       val seqOfEvents = Seq(EventType.Event1, EventType.Event2)
 
-      when(mockEventReportSummaryConnector.getEventReportSummary(any(), any())(any(), any())).thenReturn(
+      when(mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"))(any(), any())).thenReturn(
         Future.successful(seqOfEvents)
       )
 

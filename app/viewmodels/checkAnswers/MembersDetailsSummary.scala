@@ -46,7 +46,7 @@ object MembersDetailsSummary {
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", MembersDetailsPage(eventType, index, memberPageNo).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages( s"${detailsType}.change.hidden"))
+              .withVisuallyHiddenText(messages( s"${detailsType}.change.hidden"))
           )
         )
     }
@@ -67,7 +67,7 @@ object MembersDetailsSummary {
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", MembersDetailsPage(eventType, index, memberPageNo).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages(s"${detailsType}.change.nino.hidden"))
+              .withVisuallyHiddenText(messages(s"${detailsType}.change.nino.hidden"))
           )
         )
     }

@@ -52,7 +52,7 @@ class CrystallisedAmountSummarySpec extends AnyFreeSpec with Matchers with Optio
           value = ValueViewModel(HtmlContent(Html(crystallisedAmountHtml))),
           actions = Seq(
             ActionItemViewModel("site.change", CrystallisedAmountPage(index = 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("crystallisedAmount.change.hidden"))
+              .withVisuallyHiddenText(messages("crystallisedAmount.change.hidden"))
           )
         )
       )
