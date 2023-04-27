@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels
+package models
 
 import play.api.libs.json.{Json, OFormat}
 

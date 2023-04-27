@@ -18,6 +18,7 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import models.SendEmailRequest
 import models.enumeration.AdministratorOrPractitioner
 import play.api.Logger
 import play.api.http.Status._
@@ -25,7 +26,6 @@ import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
-import viewmodels.SendEmailRequest
 
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets

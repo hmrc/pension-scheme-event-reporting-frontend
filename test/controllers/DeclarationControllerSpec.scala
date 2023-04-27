@@ -16,8 +16,9 @@
 
 package controllers
 
+import audit.AuditService
 import base.SpecBase
-import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import connectors.{EmailConnector, EventReportingConnector, UserAnswersCacheConnector}
 import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -39,9 +40,12 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
   private val waypoints = EmptyWaypoints
 
   private val mockERConnector = mock[EventReportingConnector]
+  private val mockAuditService = mock[AuditService]
+  private val mockEmailConnector = mock[EmailConnector]
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[EventReportingConnector].toInstance(mockERConnector)
+    bind[EventReportingConnector].toInstance(mockERConnector),
+    bind[EmailConnector].toInstance(mockEmailConnector)
   )
 
   "Declaration Controller" - {
