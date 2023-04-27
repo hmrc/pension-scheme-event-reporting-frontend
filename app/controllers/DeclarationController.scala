@@ -25,7 +25,7 @@ import models.enumeration.AdministratorOrPractitioner
 import models.requests.DataRequest
 import models.{TaxYear, UserAnswers}
 import pages.Waypoints
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -67,29 +67,25 @@ class DeclarationController @Inject()(
 
         //TODO: Replace test user answers above with ua when FE captures sufficient data
         erConnector.submitReport(request.pstr, testUserAnswers).flatMap { _ =>
-          sendEmail(email, taxYear, schemeName).map {
+          sendEmail(minimalDetails.name, email, taxYear, schemeName).map {
             _ => Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
           }
         }
       }
   }
 
-  private def sendEmail(email: String, taxYear: String, schemeName: String)(
-    implicit request: DataRequest[_], hc: HeaderCarrier, messages: Messages): Future[EmailStatus] = {
+  private def sendEmail(psaName: String, email: String, taxYear: String, schemeName: String)(
+    implicit request: DataRequest[_], hc: HeaderCarrier): Future[EmailStatus] = {
     val requestId = hc.requestId.map(_.value).getOrElse(request.headers.get("X-Session-ID").getOrElse(""))
 
-    minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
-
       val submittedDate = formatSubmittedDate(ZonedDateTime.now(ZoneId.of("Europe/London")))
-      val sendToEmailId = messages("confirmation.whatNext.send.to.email.id")
       val schemeAdministratorType = AdministratorOrPractitioner.Administrator
 
       val templateParams = Map(
-        "psaName" -> minimalDetails.name,
+        "psaName" -> psaName,
         "schemeName" -> schemeName,
         "taxYear" -> taxYear,
-        "dateSubmitted" -> submittedDate,
-        "hmrcEmail" -> sendToEmailId //Todo: remove as not sure if needed
+        "dateSubmitted" -> submittedDate
       )
 
       emailConnector.sendEmail(schemeAdministratorType, requestId, request.loggedInUser.idName, email, config.fileReturnTemplateId, templateParams)
@@ -97,7 +93,6 @@ class DeclarationController @Inject()(
           auditService.sendEvent(EventReportingSubmissionEmailAuditEvent(request.loggedInUser.idName, schemeAdministratorType, email))
           emailStatus
         }
-    }
   }
 }
 
