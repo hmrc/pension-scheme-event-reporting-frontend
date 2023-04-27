@@ -53,7 +53,7 @@ class EventSummaryController @Inject()(
   private def summaryListRows(waypoints: Waypoints)(implicit request: DataRequest[AnyContent]): Future[Seq[SummaryListRow]] = {
     request.userAnswers.get(TaxYearPage) match {
       case Some(taxYear) =>
-        val startYear = s"01/01/ + ${taxYear.startYear}"
+        val startYear = s"${taxYear.startYear}-04-06"
         connector.getEventReportSummary(request.pstr, startYear).map { seqOfEventTypes =>
           seqOfEventTypes.map { event =>
             SummaryListRow(
