@@ -16,25 +16,27 @@
 
 package viewmodels.event2.checkAnswers
 
+import forms.mappings.Formatters
 import models.enumeration.EventType.Event2
 import models.{Index, UserAnswers}
 import pages.event2.AmountPaidPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.BeneficiaryDetailsEvent2.getBeneficiaryName
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object AmountPaidSummary  {
+object AmountPaidSummary extends Formatters {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AmountPaidPage(index, Event2)).map {
       answer =>
         SummaryListRowViewModel(
-          key     = messages("amountPaid.event2.checkYourAnswersLabel", getBeneficiaryName(Some(answers), index)),
-          value   = ValueViewModel(answer.toString),
+          key = messages("amountPaid.event2.checkYourAnswersLabel", getBeneficiaryName(Some(answers), index)),
+          value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer)}")),
           actions = Seq(
             ActionItemViewModel("site.change", AmountPaidPage(index, Event2).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("amountPaid.event2.change.hidden", getBeneficiaryName(Some(answers), index)))
