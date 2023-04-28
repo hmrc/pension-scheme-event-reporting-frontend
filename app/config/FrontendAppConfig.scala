@@ -21,6 +21,7 @@ import models.enumeration.AdministratorOrPractitioner
 import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.UploadId
 import models.enumeration.EventType
+import models.enumeration.EventType.toRoute
 import play.api.Configuration
 import play.api.i18n.Lang
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -56,7 +57,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   def yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
 
-  def successEndPointTarget(eventType: EventType, uploadId: UploadId): String = loadConfig("upscan.success-endpoint").format(eventType.toString, uploadId.value)
+  def successEndPointTarget(eventType: EventType, uploadId: UploadId): String = loadConfig("upscan.success-endpoint").format(toRoute(eventType), uploadId.value)
   def failureEndPointTarget(eventType: EventType): String = loadConfig("upscan.failure-endpoint").format(eventType.toString)
 
   lazy val maxUploadFileSize: Int = configuration.getOptional[Int]("upscan.maxUploadFileSizeMb").getOrElse(1)

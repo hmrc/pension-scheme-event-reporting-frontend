@@ -16,7 +16,7 @@
 
 package controllers.fileUpload
 
-import connectors.UserAnswersCacheConnector
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.fileUpload.FileUploadResultFormProvider
 import models.UserAnswers
@@ -36,22 +36,29 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                                           identify: IdentifierAction,
                                           getData: DataRetrievalAction,
                                           userAnswersCacheConnector: UserAnswersCacheConnector,
+                                          eventReportingConnector: EventReportingConnector,
                                           formProvider: FileUploadResultFormProvider,
                                           view: FileUploadResultView
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) async { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(FileUploadResultPage(eventType))).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, getEventTypeByName(eventType)))
+    request.request.queryString.get("uploadId").flatMap(_.headOption) match {
+      case Some(uploadIdReference) =>
+        eventReportingConnector.getFileUploadOutcome(uploadIdReference).map{ g =>
+        Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), g.fileName))
+        }
+      case _ => throw new RuntimeException("UploadId reference does not exist")
+    }
   }
 
   def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, getEventTypeByName(eventType)))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, getEventTypeByName(eventType), None))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(FileUploadResultPage(eventType), value)

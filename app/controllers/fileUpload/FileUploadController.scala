@@ -54,8 +54,6 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
 
 
     upscanInitiateConnector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), eventType).map { uir =>
-      println("\n>>>>INITIATED:" + uir)
-      println("\n>>>>INITIATED TARGET:" + uir.postTarget)
       val preparedForm = request.userAnswers.get(FileUploadPage(eventType)).fold(form)(form.fill)
       Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), eventType, Call("POST", uir.postTarget), uir.formFields))
     }

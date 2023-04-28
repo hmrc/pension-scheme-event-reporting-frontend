@@ -115,6 +115,11 @@ object EventType extends Enumerable.Implicits {
         stringBinder.unbind(key, value.toString)
     }
 
+  def toRoute(eventType: EventType): String = eventType match {
+    case Event22 => "event-22"
+    case _ => throw new RuntimeException(s"Unimplemented event type: $eventType")
+  }
+
   implicit val jsLiteral: JavascriptLiteral[EventType] = (value: EventType) => value.toString
 
   implicit val enumerable: Enumerable[EventType] =

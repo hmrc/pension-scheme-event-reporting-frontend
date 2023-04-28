@@ -31,3 +31,8 @@ case class UploadId(value: String) extends AnyVal
 object UploadId {
   def generate: UploadId = UploadId(UUID.randomUUID().toString)
 }
+
+object FileUploadOutcomeStatus extends Enumeration {
+  type FileUploadOutcomeStatus = Value
+  val IN_PROGRESS, SUCCESS, FAILURE = Value
+}
