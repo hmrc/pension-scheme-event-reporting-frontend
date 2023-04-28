@@ -19,12 +19,14 @@ package controllers
 import connectors.UserAnswersCacheConnector
 import forms.WantToSubmitFormProvider
 import models.UserAnswers
-import pages.{WantToSubmitPage, Waypoints}
+import pages.{EventSelectionPage, WantToSubmitPage, Waypoints}
 import play.api.i18n.I18nSupport
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.WantToSubmitView
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,14 +37,14 @@ class WantToSubmitController @Inject()(
                                         formProvider: WantToSubmitFormProvider,
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                         view: WantToSubmitView
-                                      ) (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()) { implicit request =>
-      val preparedForm = request.userAnswers.flatMap(_.get(WantToSubmitPage)).fold(form)(form.fill)
-      Ok(view(preparedForm, waypoints))
-    }
+    val preparedForm = request.userAnswers.flatMap(_.get(WantToSubmitPage)).fold(form)(form.fill)
+    Ok(view(preparedForm, waypoints))
+  }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
@@ -53,7 +55,12 @@ class WantToSubmitController @Inject()(
           val updatedAnswers = originalUserAnswers.setOrException(WantToSubmitPage, value)
           userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
             if (value) {
-              Redirect(WantToSubmitPage.navigate(waypoints, updatedAnswers, updatedAnswers).route)
+              Redirect(
+                request.loggedInUser.administratorOrPractitioner match {
+                  case Administrator => WantToSubmitPage.navigate(waypoints, updatedAnswers, updatedAnswers).route
+                  case Practitioner => EventSelectionPage.route(waypoints)
+                }
+              )
             } else {
               Redirect(request.returnUrl)
             }

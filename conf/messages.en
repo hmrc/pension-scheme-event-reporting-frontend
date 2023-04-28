@@ -291,8 +291,8 @@ membersDetails.error.lastName.length = The member’s last name must be 35 chara
 membersDetails.error.firstName.invalid = The member’s first name must only include letters, spaces, ampersands, grave accents, apostrophes, hyphens, full stops and carets
 membersDetails.error.lastName.invalid = The member’s last name must only include letters, spaces, ampersands, grave accents, apostrophes, hyphens, full stops and carets
 membersDetails.error.nino.invalid = Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ123456C
-membersDetails.change.hidden = the member’s name
-membersDetails.change.nino.hidden = the member’s national insurance number
+membersDetails.change.hidden = The member’s name
+membersDetails.change.nino.hidden = The member’s national insurance number
 
 deceasedMembersDetails.title = Deceased member’s details
 deceasedMembersDetails.heading = Deceased member’s details
@@ -306,8 +306,8 @@ deceasedMembersDetails.error.lastName.length = The deceased member’s last name
 deceasedMembersDetails.error.firstName.invalid = The deceased member’s first name must only include letters, spaces, ampersands, grave accents, apostrophes, hyphens, full stops and carets
 deceasedMembersDetails.error.lastName.invalid = The deceased member’s last name must only include letters, spaces, ampersands, grave accents, apostrophes, hyphens, full stops and carets
 deceasedMembersDetails.error.nino.invalid = Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ123456C
-deceasedMembersDetails.change.hidden = the deceased member’s name
-deceasedMembersDetails.change.nino.hidden = the deceased member’s national insurance number
+deceasedMembersDetails.change.hidden = The deceased member’s name
+deceasedMembersDetails.change.nino.hidden = The deceased member’s national insurance number
 
 beneficiaryDetails.title = Details of the person who was paid
 beneficiaryDetails.heading = Details of the person who was paid
@@ -323,8 +323,8 @@ beneficiaryDetails.error.lastName.length = The last name of the person who was p
 beneficiaryDetails.error.firstName.invalid = The first name of the person who was paid must only include letters, spaces, ampersands, grave accents, apostrophes, hyphens, full stops and carets
 beneficiaryDetails.error.lastName.invalid = The last name of the person who was paid must only include letters, spaces, ampersands, grave accents, apostrophes, hyphens, full stops and carets
 beneficiaryDetails.error.nino.invalid = Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ123456C
-beneficiaryDetails.change.hidden = the name of the person who was paid
-beneficiaryDetails.change.nino.hidden = the National Insurance number of the person who was paid
+beneficiaryDetails.change.hidden = The name of the person who was paid
+beneficiaryDetails.change.nino.hidden = The National Insurance number of the person who was paid
 
 amountPaid.event2.title = How much was paid?
 amountPaid.event2.heading = How much was paid to {0}?
@@ -346,7 +346,7 @@ datePaid.event2.error.required.two = The date must include {0} and {1}
 datePaid.event2.error.required = The date must include {0}
 datePaid.event2.error.invalid = Enter a real date
 datePaid.event2.error.outside.taxYear = The date must be between 6 April {0} to 5 April {1}
-datePaid.event2.change.hidden = when the payment was made
+datePaid.event2.change.hidden = When the payment was made
 
 membersSummary.event2.title = Event 2: Lump sum death benefit payment events reported in the tax year ending 5 April {0}
 membersSummary.event2.heading = Event 2: Lump sum death benefit payment events reported in the tax year ending 5 April {0}
@@ -401,7 +401,7 @@ enterPostcode.title = What is {0}’s postcode?
 enterPostcode.heading = What is {0}’s postcode?
 enterPostcode.error.required = Enter a postcode
 enterPostcode.error.length = Enter a real postcode
-enterPostcode.change.hidden = the address of the residential property
+enterPostcode.change.hidden = The address of the residential property
 enterPostcode.hint = You can
 enterPostcode.link = enter the address manually
 enterPostcode.error.required = Enter a postcode
@@ -1065,7 +1065,7 @@ typeOfProtection.individualProtection2014 = Individual protection 2014
 typeOfProtection.individualProtection2016 = Individual protection 2016
 typeOfProtection.checkYourAnswersLabel = Protection type
 typeOfProtection.error.required = Select what type of protection is held
-typeOfProtection.change.hidden = the protection type
+typeOfProtection.change.hidden = The protection type
 
 event8.typeOfProtection.title = What type of protection was held for the lump sum?
 event8.typeOfProtection.heading = What type of protection was held for the lump sum?
@@ -1073,12 +1073,12 @@ event8.typeOfProtection.primaryProtection = Primary protection
 event8.typeOfProtection.enhancedProtection = Enhanced protection
 event8.typeOfProtection.checkYourAnswersLabel = Protection type held
 event8.typeOfProtection.error.required = Select the type of protection that was held
-event8.typeOfProtection.change.hidden = the protection type
+event8.typeOfProtection.change.hidden = The protection type
 
 inputProtectionType.title = What is the member’s {0} reference?
 inputProtectionType.heading = What is the member’s {0} reference?
 inputProtectionType.checkYourAnswersLabel = {0} reference
-inputProtectionType.change.hidden = the {0} reference
+inputProtectionType.change.hidden = The {0} reference
 inputProtectionType.error.required = Enter a protection reference
 inputProtectionType.error.length = Enter a protection reference between 8 and 15 characters (it can be a combination of numbers and letters)
 inputProtectionType.error.invalid = The protection reference can only contain letters and numbers
@@ -1086,7 +1086,7 @@ inputProtectionType.error.invalid = The protection reference can only contain le
 typeOfProtectionReference.title = What is the member’s {0} reference?
 typeOfProtectionReference.heading = What is the member’s {0} reference?
 typeOfProtectionReference.checkYourAnswersLabel = Member’s {0} reference
-typeOfProtectionReference.change.hidden = the {0} reference
+typeOfProtectionReference.change.hidden = The {0} reference
 typeOfProtectionReference.error.required = Enter the protection reference
 typeOfProtectionReference.error.length = Enter a protection reference between 8 and 15 characters (it can be a combination of numbers and letters)
 typeOfProtectionReference.error.invalid = The protection reference can only contain letters and numbers
@@ -1101,7 +1101,7 @@ amountCrystallisedAndDate.value.error.noDecimals = The total amount crystallised
 amountCrystallisedAndDate.value.error.amountTooHigh = The total amount crystallised must be £999999999.99 or less
 amountCrystallisedAndDate.value.error.negativeValue = The total amount crystallised must not be a negative amount of money, like -123.45 or -156.00
 amountCrystallisedAndDate.value.error.zeroEntered = The total amount crystallised must be greater than zero
-amountCrystallisedAndDate.value.change.hidden = the total amount crystallised
+amountCrystallisedAndDate.value.change.hidden = The total amount crystallised
 amountCrystallisedAndDate.value.checkYourAnswersLabel = Total amount crystallised
 
 amountCrystallisedAndDate.date.heading = Date of the benefit crystallisation
@@ -1110,19 +1110,19 @@ amountCrystallisedAndDate.date.error.nothingEntered = Enter the date
 amountCrystallisedAndDate.date.error.noDayMonthOrYear = The date must include a day, month and year
 amountCrystallisedAndDate.date.error.outsideDateRanges = Enter a real date
 amountCrystallisedAndDate.date.error.outsideReportedYear = Date must be between {0} and {1}
-amountCrystallisedAndDate.date.change.hidden = the date of the benefit crystallisation
+amountCrystallisedAndDate.date.change.hidden = The date of the benefit crystallisation
 amountCrystallisedAndDate.date.checkYourAnswersLabel = Date of the benefit crystallisation
 
 lumpSumAmount.title = How much lump sum was paid?
 lumpSumAmount.heading = How much lump sum was paid?
 lumpSumAmount.checkYourAnswersLabel = The amount of the lump sum
-lumpSumAmount.change.hidden = the amount of the lump sum that was paid
+lumpSumAmount.change.hidden = The amount of the lump sum that was paid
 lumpSumAmount.value.error.nothingEntered = Enter how much lump sum was paid
 
 crystallisedAmount.title = How much was crystallised?
 crystallisedAmount.heading = How much was crystallised?
 crystallisedAmount.checkYourAnswersLabel = The amount crystallised
-crystallisedAmount.change.hidden = the amount that was crystallised
+crystallisedAmount.change.hidden = The amount that was crystallised
 crystallisedAmount.value.error.nothingEntered = Enter how much was crystallised
 
 amounts.value.error.notANumber = The amount must be an amount of money, like 123.45 or 156.00
@@ -1138,7 +1138,7 @@ paymentDate.date.error.nothingEntered = Enter the date
 paymentDate.date.error.noDayMonthOrYear = The date must include a day, month and year
 paymentDate.date.error.outsideDateRanges = Enter a real date
 paymentDate.date.error.outsideReportedYear = The date must be between 6 April 2006 and {0}
-paymentDate.date.change.hidden = the date of the payment
+paymentDate.date.change.hidden = The date of the payment
 paymentDate.date.checkYourAnswersLabel = The date the payment was made
 
 lumpSumAmountAndDate.title = Lump sum amount and date
@@ -1151,7 +1151,7 @@ lumpSumAmountAndDate.value.error.noDecimals = The lump sum amount must include p
 lumpSumAmountAndDate.value.error.amountTooHigh = The lump sum amount must be £999999999.99 or less
 lumpSumAmountAndDate.value.error.negativeValue = The lump sum amount must not be a negative amount of money, like -123.45 or -156.00
 lumpSumAmountAndDate.value.error.zeroEntered = The lump sum amount must be greater than zero
-lumpSumAmountAndDate.value.change.hidden = the lump sum amount
+lumpSumAmountAndDate.value.change.hidden = The lump sum amount
 lumpSumAmountAndDate.value.checkYourAnswersLabel = Lump sum amount
 
 lumpSumAmountAndDate.date.heading = When was the payment made?
@@ -1160,7 +1160,7 @@ lumpSumAmountAndDate.date.error.nothingEntered = Enter the date
 lumpSumAmountAndDate.date.error.noDayMonthOrYear = The date must include a day, month and year
 lumpSumAmountAndDate.date.error.outsideDateRanges = Enter a real date
 lumpSumAmountAndDate.date.error.outsideReportedYear = Date must be between {0} and {1}
-lumpSumAmountAndDate.date.change.hidden = the date of the lump sum payment
+lumpSumAmountAndDate.date.change.hidden = The date of the lump sum payment
 lumpSumAmountAndDate.date.checkYourAnswersLabel = The date the payment was made
 
 paymentType.title = What is the lump sum payment type?
@@ -1171,7 +1171,7 @@ paymentType.paymentOfASchemeSpecificLumpSum = Payment of a scheme-specific lump 
 paymentType.paymentOfASchemeSpecificLumpSum.hint = The lump sum is more than 7.5% of the lifetime allowance.
 paymentType.checkYourAnswersLabel = Lump sum type
 paymentType.error.required = Select the type of lump sum payment
-paymentType.change.hidden = the payment type
+paymentType.change.hidden = The payment type
 
 schemeStructure.title = What is the new pension scheme structure?
 schemeStructure.heading = What is the new pension scheme structure?
@@ -1255,6 +1255,8 @@ paymentDetails.date.change.hidden = the date of the payment
 paymentDetails.date.checkYourAnswersLabel = Date of the payment
 
 characterCount = You can enter up to {0} characters
+
+confirmation.whatNext.send.to.email.id = pensions.administration@hmrc.gov.uk
 
 fileUpload.title = Upload your {0} event file
 fileUpload.heading = Upload your {0} event file

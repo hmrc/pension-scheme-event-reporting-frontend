@@ -69,6 +69,17 @@ trait SpecBase
         ): _*
       )
 
+  protected def applicationBuilderForPSP(userAnswers: Option[UserAnswers] = None,
+                                   extraModules: Seq[GuiceableModule] = Seq.empty): GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
+      .overrides(
+        extraModules ++ Seq[GuiceableModule](
+          bind[DataRequiredAction].to[DataRequiredActionImpl],
+          bind[IdentifierAction].to[FakeIdentifierAction],
+          bind[DataRetrievalAction].toInstance(new FakeDataRetrievalActionForPSP(userAnswers))
+        ): _*
+      )
+
   protected def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
   protected implicit def messages: Messages = messagesApi.preferred(fakeRequest)

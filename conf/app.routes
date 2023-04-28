@@ -177,6 +177,7 @@ GET         /new-report/:index/event-2-when-was-payment-made                    
 POST        /new-report/:index/event-2-when-was-payment-made                      controllers.event2.DatePaidController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
 GET         /new-report/event-2-summary                                           controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2)
+GET         /new-report/event-2-summary/page/:pageNumber                          controllers.common.MembersSummaryController.onPageLoadWithPageNumber(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, pageNumber: Index)
 POST        /new-report/event-2-summary                                           controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2)
 
 GET         /new-report/:index/event-23-entry-type                                controllers.common.ManualOrUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
@@ -218,6 +219,7 @@ GET         /new-report/event-22-summary/page/:pageNumber                       
 POST        /new-report/event-22-summary                                          controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 
 GET         /new-report/event-23-summary                                          controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
+GET         /new-report/event-23-summary/page/:pageNumber                         controllers.common.MembersSummaryController.onPageLoadWithPageNumber(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, pageNumber: Index)
 POST        /new-report/event-23-summary                                          controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 
 GET         /event-reporting-partials                                             controllers.partials.EventReportingTileController.eventReportPartial()
@@ -254,6 +256,7 @@ GET         /new-report/:index/event-3-check-your-answers                       
 GET         /new-report/event-3-click                                             controllers.event3.Event3CheckYourAnswersController.onClick
 
 GET        /new-report/event-3-summary                                            controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3)
+GET        /new-report/event-3-summary/page/:pageNumber                           controllers.common.MembersSummaryController.onPageLoadWithPageNumber(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3, pageNumber: Index)
 POST       /new-report/event-3-summary                                            controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3)
 
 GET         /new-report/:index/event-6-entry-type                                 controllers.common.ManualOrUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6, index: Index)
@@ -272,6 +275,7 @@ GET         /new-report/:index/event-6-payment-details                          
 POST        /new-report/:index/event-6-payment-details                            controllers.event6.AmountCrystallisedAndDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
 GET         /new-report/event-6-summary                                           controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6)
+GET         /new-report/event-6-summary/page/:pageNumber                          controllers.common.MembersSummaryController.onPageLoadWithPageNumber(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6, pageNumber: Index)
 POST        /new-report/event-6-summary                                           controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6)
 
 GET         /new-report/:index/event-8-member-details                             controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8, index: Index,  memberPageNo: Int = 0)
@@ -287,6 +291,7 @@ GET        /new-report/:index/event-8-lump-sum-details                          
 POST       /new-report/:index/event-8-lump-sum-details                            controllers.event8.LumpSumAmountAndDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8, index: Index)
 
 GET        /new-report/event-8-summary                                            controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8)
+GET        /new-report/event-8-summary/page/:pageNumber                           controllers.common.MembersSummaryController.onPageLoadWithPageNumber(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8, pageNumber: Index)
 POST       /new-report/event-8-summary                                            controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8)
 
 GET         /new-report/:index/event-8a-member-details                            controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8A, index: Index,  memberPageNo: Int = 0)
@@ -308,6 +313,7 @@ GET         /new-report/:index/event-8a-check-your-answers                      
 GET         /new-report/event-8a-click                                            controllers.event8a.Event8ACheckYourAnswersController.onClick
 
 GET        /new-report/event-8a-summary                                           controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8A)
+GET        /new-report/event-8a-summary/page/:pageNumber                          controllers.common.MembersSummaryController.onPageLoadWithPageNumber(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8A, pageNumber: Index)
 POST       /new-report/event-8a-summary                                           controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8A)
 
 GET         /new-report/:index/event-7-member-details                             controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event7, index: Index,  memberPageNo: Int = 0)
@@ -345,9 +351,11 @@ GET         /new-report/:index/event-5-check-your-answers                       
 GET         /new-report/event-5-click                                            controllers.event5.Event5CheckYourAnswersController.onClick
 
 GET        /new-report/event-4-summary                                            controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event4)
+GET        /new-report/event-4-summary/page/:pageNumber                           controllers.common.MembersSummaryController.onPageLoadWithPageNumber(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event4, pageNumber: Index)
 POST       /new-report/event-4-summary                                            controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event4)
 
 GET        /new-report/event-5-summary                                            controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event5)
+GET        /new-report/event-5-summary/page/:pageNumber                           controllers.common.MembersSummaryController.onPageLoadWithPageNumber(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event5, pageNumber: Index)
 POST       /new-report/event-5-summary                                            controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event5)
 
 

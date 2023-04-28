@@ -17,13 +17,20 @@
 package models
 
 import models.enumeration.AdministratorOrPractitioner
+import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
 import play.api.libs.json.{Format, Json}
 
 case class LoggedInUser(
                          externalId: String,
                          administratorOrPractitioner: AdministratorOrPractitioner,
                          psaIdOrPspId: String
-                       )
+                       ) {
+  def idName: String = administratorOrPractitioner match {
+    case Administrator => "psaId"
+    case Practitioner => "pspId"
+    case _ => "Unable to retrieve Id"
+  }
+}
 
 object LoggedInUser {
   implicit val formats: Format[LoggedInUser] = Json.format[LoggedInUser]

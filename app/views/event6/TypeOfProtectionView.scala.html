@@ -35,16 +35,13 @@
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">@messages("typeOfProtection.heading")</h1>
-
-        <p class="govuk-body govuk-!-margin-bottom-7">@messages("typeOfProtection.p1")</p>
-
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("typeOfProtection.heading")).withCssClass("govuk-visually-hidden"),
+                legend = LegendViewModel(messages("typeOfProtection.heading")).asPageHeading(),
                 items  = TypeOfProtection.options
             )
+            .withHint(HintViewModel(messages("typeOfProtection.p1")))
         )
 
         @govukButton(

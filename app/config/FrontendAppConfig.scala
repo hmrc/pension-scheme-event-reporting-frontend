@@ -17,6 +17,8 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
+import models.enumeration.AdministratorOrPractitioner
+import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.UploadId
 import models.enumeration.EventType
 import play.api.Configuration
@@ -51,6 +53,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   def administratorOrPractitionerUrl: String = loadConfig("urls.administratorOrPractitioner")
 
   def youNeedToRegisterUrl: String = loadConfig("urls.youNeedToRegisterPage")
+
   def yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
 
   lazy val upScanCallBack:String   = s"${servicesConfig.baseUrl("pension-scheme-event-reporting")}${configuration.underlying
@@ -77,4 +80,25 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   val timeout: Int = configuration.get[Int]("timeout-dialog.timeout")
   val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
   lazy val minimumYear: Int = configuration.get[Int]("minimumYear")
+
+  lazy val minimalDetailsUrl: String = s"$pensionsAdministratorUrl${configuration.get[String](path = "urls.minimalDetails")}"
+
+  lazy val emailApiUrl: String = servicesConfig.baseUrl("email")
+  lazy val emailSendForce: Boolean = configuration.getOptional[Boolean]("email.force").getOrElse(false)
+  lazy val fileReturnTemplateId: String = configuration.get[String]("email.fileReturnTemplateId")
+
+  def eventReportingEmailCallback(
+                                   schemeAdministratorType: AdministratorOrPractitioner,
+                                   requestId: String,
+                                   encryptedEmail: String,
+                                   encryptedPsaId: String
+                                 ) = s"$eventReportingUrl${
+    configuration.get[String](path = "urls.emailCallback")
+      .format(
+        if (schemeAdministratorType == Administrator) "PSA" else "PSP",
+        requestId,
+        encryptedEmail,
+        encryptedPsaId
+      )
+  }"
 }

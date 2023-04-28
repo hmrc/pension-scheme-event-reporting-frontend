@@ -58,7 +58,7 @@ class PaymentDateSummarySpec extends AnyFreeSpec with Matchers with OptionValues
           value = ValueViewModel(format.format(date)),
           actions = Seq(
             ActionItemViewModel("site.change", PaymentDatePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("paymentDate.date.change.hidden"))
+              .withVisuallyHiddenText(messages("paymentDate.date.change.hidden"))
           )
         )
       )

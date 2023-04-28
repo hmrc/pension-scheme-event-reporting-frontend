@@ -17,6 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
+import models.enumeration.EventType
 import models.requests.DataRequest
 import models.{UpscanFileReference, UpscanInitiateResponse}
 import play.api.libs.json._
