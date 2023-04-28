@@ -17,6 +17,8 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
+import models.UploadId
+import models.enumeration.EventType
 import play.api.Configuration
 import play.api.i18n.Lang
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -50,6 +52,16 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   def youNeedToRegisterUrl: String = loadConfig("urls.youNeedToRegisterPage")
   def yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
+
+  lazy val upScanCallBack:String   = s"${servicesConfig.baseUrl("pension-scheme-event-reporting")}${configuration.underlying
+    .getString("urls.upscan-callback-endpoint")}"
+
+  def successEndPointTarget(eventType: EventType, uploadId: UploadId): String = loadConfig("upscan.success-endpoint").format(eventType.toString, uploadId.value)
+  def failureEndPointTarget(eventType: EventType): String = loadConfig("upscan.failure-endpoint").format(eventType.toString)
+
+  lazy val maxUploadFileSize: Int = configuration.getOptional[Int]("upscan.maxUploadFileSizeMb").getOrElse(1)
+
+  lazy val initiateV2Url:String = servicesConfig.baseUrl("upscan-initiate") + "/upscan/v2/initiate"
 
   private val exitSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
   val exitSurveyUrl: String = s"$exitSurveyBaseUrl/feedback/PODS"

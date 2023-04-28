@@ -16,10 +16,11 @@
 
 package controllers.fileUpload
 
-import connectors.UserAnswersCacheConnector
+import config.FrontendAppConfig
+import connectors.{UpscanInitiateConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.fileUpload.FileUploadFormProvider
-import models.UserAnswers
+import models.{UploadId, UserAnswers}
 import models.enumeration.EventType
 import models.enumeration.EventType.getEventTypeByName
 import pages.Waypoints
@@ -36,30 +37,36 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
+                                       upscanInitiateConnector: UpscanInitiateConnector,
                                        formProvider: FileUploadFormProvider,
+                                       appConfig: FrontendAppConfig,
                                        view: FileUploadView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    val uploadId = UploadId.generate
+    val successRedirectUrl = appConfig.successEndPointTarget(eventType,uploadId)
+    val errorRedirectUrl = appConfig.failureEndPointTarget(eventType)
+    upscanInitiateConnector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), eventType)
     val preparedForm = request.userAnswers.flatMap(_.get(FileUploadPage(eventType))).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), eventType, controllers.fileUpload.routes.FileUploadResultController.onPageLoad(waypoints)))
   }
 
-  def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)).async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, getEventTypeByName(eventType), eventType,
-            controllers.fileUpload.routes.FileUploadResultController.onPageLoad(waypoints)))),
-        value => {
-          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(FileUploadPage(eventType), value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(FileUploadPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
-          }
-        }
-      )
-  }
+//  def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)).async {
+//    implicit request =>
+//      form.bindFromRequest().fold(
+//        formWithErrors =>
+//          Future.successful(BadRequest(view(formWithErrors, waypoints, getEventTypeByName(eventType), eventType,
+//            controllers.fileUpload.routes.FileUploadResultController.onPageLoad(waypoints)))),
+//        value => {
+//          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+//          val updatedAnswers = originalUserAnswers.setOrException(FileUploadPage(eventType), value)
+//          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+//            Redirect(FileUploadPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+//          }
+//        }
+//      )
+//  }
 }
