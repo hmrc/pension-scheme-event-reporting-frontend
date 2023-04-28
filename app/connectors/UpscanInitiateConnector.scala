@@ -76,49 +76,27 @@ class UpscanInitiateConnector @Inject()(httpClient: HttpClient, appConfig: Front
   def initiateV2(redirectOnSuccess: Option[String], redirectOnError: Option[String], eventType: EventType)
                 (implicit request: DataRequest[AnyContent], headerCarrier: HeaderCarrier): Future[UpscanInitiateResponse] = {
 
+    val upscanCallbackURL = s"${appConfig.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/save"
 
     val req = UpscanInitiateRequestV2(
-      callbackUrl = appConfig.upScanCallBack,
+      callbackUrl = upscanCallbackURL,
       successRedirect = redirectOnSuccess,
       errorRedirect = redirectOnError,
       maximumFileSize = Some(appConfig.maxUploadFileSize * (1024 * 1024))
     )
-    initiate(appConfig.initiateV2Url, req, eventType)
+    initiate(appConfig.initiateV2Url, req)
   }
 
-//  private def sendFailureAuditEvent(
-//                                     eventType: EventType,
-//                                     errorMessage: String,
-//                                     startTime: Long)(implicit request: DataRequest[AnyContent]): Unit = {
-//    val pstr = request.pstr
-//    val endTime = System.currentTimeMillis
-//    val duration = endTime - startTime
-//    auditService.sendEvent(
-//      AFTUpscanFileUploadAuditEvent(
-//        psaOrPspId = request.idOrException,
-//        pstr = pstr,
-//        schemeAdministratorType = request.schemeAdministratorType,
-//        eventType = eventType,
-//        outcome = Left(errorMessage),
-//        uploadTimeInMilliSeconds = duration
-//      )
-//    )
-//  }
-
-  private def initiate[T](url: String, initialRequest: T, eventType: EventType)(
+  private def initiate[T](url: String, initialRequest: T)(
     implicit request: DataRequest[AnyContent], headerCarrier: HeaderCarrier, wts: Writes[T]): Future[UpscanInitiateResponse] = {
-    val startTime = System.currentTimeMillis
 
     httpClient.POST[T, PreparedUpload](url, initialRequest, headers.toSeq).map {
-      response => val fileReference = UpscanFileReference(response.reference.reference)
+      response =>
+        val fileReference = UpscanFileReference(response.reference.reference)
         val postTarget = response.uploadRequest.href
         val formFields = response.uploadRequest.fields
         UpscanInitiateResponse(fileReference, postTarget, formFields)
-    } andThen {
-      case Failure(t) =>
-//        sendFailureAuditEvent(eventType, t.getMessage, startTime)
     }
-
   }
 
   def download(downloadUrl: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {

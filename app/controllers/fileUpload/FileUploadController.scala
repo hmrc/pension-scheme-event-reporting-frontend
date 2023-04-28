@@ -26,7 +26,7 @@ import models.enumeration.EventType.getEventTypeByName
 import pages.Waypoints
 import pages.fileUpload.FileUploadPage
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadView
 
@@ -47,13 +47,18 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
   private val form = formProvider()
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)
-    andThen requireData) { implicit request =>
+    andThen requireData).async { implicit request =>
     val uploadId = UploadId.generate
     val successRedirectUrl = appConfig.successEndPointTarget(eventType,uploadId)
     val errorRedirectUrl = appConfig.failureEndPointTarget(eventType)
-    upscanInitiateConnector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), eventType)
-    val preparedForm = request.userAnswers.get(FileUploadPage(eventType)).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), eventType, controllers.fileUpload.routes.FileUploadResultController.onPageLoad(waypoints)))
+
+
+    upscanInitiateConnector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), eventType).map { uir =>
+      println("\n>>>>INITIATED:" + uir)
+      println("\n>>>>INITIATED TARGET:" + uir.postTarget)
+      val preparedForm = request.userAnswers.get(FileUploadPage(eventType)).fold(form)(form.fill)
+      Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), eventType, Call("POST", uir.postTarget), uir.formFields))
+    }
   }
 
 //  def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)).async {

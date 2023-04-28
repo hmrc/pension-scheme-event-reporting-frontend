@@ -26,11 +26,15 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, eventByName: String, eventType: EventType, submitUrl: Call)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventByName: String, eventType: EventType, submitUrl: Call, upscanFields: Map[String, String])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("fileUpload.title", eventByName))) {
 
-    @formHelper(action = controllers.fileUpload.routes.FileUploadController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
+<form action="@submitUrl" method="@submitUrl.method" enctype="multipart/form-data" encoding="multipart/form-data">
+
+    @for((key, value) <- upscanFields){
+        <input type="hidden" name="@key" value="@value">
+    }
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
@@ -74,5 +78,5 @@
         @govukButton(
             ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))
         )
-    }
+
 }
