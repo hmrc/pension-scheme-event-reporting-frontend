@@ -18,7 +18,7 @@ package controllers.fileUpload
 
 import config.FrontendAppConfig
 import connectors.{UpscanInitiateConnector, UserAnswersCacheConnector}
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.fileUpload.FileUploadFormProvider
 import models.{UploadId, UserAnswers}
 import models.enumeration.EventType
@@ -36,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class FileUploadController @Inject()(val controllerComponents: MessagesControllerComponents,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
                                        upscanInitiateConnector: UpscanInitiateConnector,
                                        formProvider: FileUploadFormProvider,
@@ -45,12 +46,13 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
 
   private val form = formProvider()
 
-  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)
+    andThen requireData) { implicit request =>
     val uploadId = UploadId.generate
     val successRedirectUrl = appConfig.successEndPointTarget(eventType,uploadId)
     val errorRedirectUrl = appConfig.failureEndPointTarget(eventType)
     upscanInitiateConnector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), eventType)
-    val preparedForm = request.userAnswers.flatMap(_.get(FileUploadPage(eventType))).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.get(FileUploadPage(eventType)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), eventType, controllers.fileUpload.routes.FileUploadResultController.onPageLoad(waypoints)))
   }
 

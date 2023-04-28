@@ -56,6 +56,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   def yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
 
+  //s"${config.eventReportingUrl}/pension-scheme-event-reporting/event-summary"
   lazy val upScanCallBack:String   = s"${servicesConfig.baseUrl("pension-scheme-event-reporting")}${configuration.underlying
     .getString("urls.upscan-callback-endpoint")}"
 

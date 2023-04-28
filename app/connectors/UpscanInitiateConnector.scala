@@ -67,7 +67,7 @@ object PreparedUpload {
   implicit val format: Reads[PreparedUpload] = Json.reads[PreparedUpload]
 }
 
-class UpscanInitiateConnector @Inject()(httpClient: HttpClient, appConfig: FrontendAppConfig, auditService: AuditService)(implicit ec: ExecutionContext) {
+class UpscanInitiateConnector @Inject()(httpClient: HttpClient, appConfig: FrontendAppConfig)(implicit ec: ExecutionContext) {
 
   private val headers = Map(
     HeaderNames.CONTENT_TYPE -> "application/json"
@@ -86,24 +86,24 @@ class UpscanInitiateConnector @Inject()(httpClient: HttpClient, appConfig: Front
     initiate(appConfig.initiateV2Url, req, eventType)
   }
 
-  private def sendFailureAuditEvent(
-                                     eventType: EventType,
-                                     errorMessage: String,
-                                     startTime: Long)(implicit request: DataRequest[AnyContent]): Unit = {
-    val pstr = request.userAnswers.get(PSTRQuery).getOrElse(s"No PSTR found in Mongo cache.")
-    val endTime = System.currentTimeMillis
-    val duration = endTime - startTime
-    auditService.sendEvent(
-      AFTUpscanFileUploadAuditEvent(
-        psaOrPspId = request.idOrException,
-        pstr = pstr,
-        schemeAdministratorType = request.schemeAdministratorType,
-        eventType = eventType,
-        outcome = Left(errorMessage),
-        uploadTimeInMilliSeconds = duration
-      )
-    )
-  }
+//  private def sendFailureAuditEvent(
+//                                     eventType: EventType,
+//                                     errorMessage: String,
+//                                     startTime: Long)(implicit request: DataRequest[AnyContent]): Unit = {
+//    val pstr = request.pstr
+//    val endTime = System.currentTimeMillis
+//    val duration = endTime - startTime
+//    auditService.sendEvent(
+//      AFTUpscanFileUploadAuditEvent(
+//        psaOrPspId = request.idOrException,
+//        pstr = pstr,
+//        schemeAdministratorType = request.schemeAdministratorType,
+//        eventType = eventType,
+//        outcome = Left(errorMessage),
+//        uploadTimeInMilliSeconds = duration
+//      )
+//    )
+//  }
 
   private def initiate[T](url: String, initialRequest: T, eventType: EventType)(
     implicit request: DataRequest[AnyContent], headerCarrier: HeaderCarrier, wts: Writes[T]): Future[UpscanInitiateResponse] = {
@@ -116,7 +116,7 @@ class UpscanInitiateConnector @Inject()(httpClient: HttpClient, appConfig: Front
         UpscanInitiateResponse(fileReference, postTarget, formFields)
     } andThen {
       case Failure(t) =>
-        sendFailureAuditEvent(eventType, t.getMessage, startTime)
+//        sendFailureAuditEvent(eventType, t.getMessage, startTime)
     }
 
   }
