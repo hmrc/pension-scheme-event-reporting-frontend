@@ -45,7 +45,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) async { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(FileUploadResultPage(eventType))).fold(form)(form.fill)
-    request.request.queryString.get("uploadId").flatMap(_.headOption) match {
+    request.request.queryString.get("key").flatMap(_.headOption) match {
       case Some(uploadIdReference) =>
         eventReportingConnector.getFileUploadOutcome(uploadIdReference).map{ g =>
         Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), g.fileName))
