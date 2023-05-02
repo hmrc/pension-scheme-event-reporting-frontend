@@ -16,6 +16,8 @@
 
 package models
 
+import models.FileUploadOutcomeStatus.FileUploadOutcomeStatus
+
 import java.util.UUID
 
 case class UpscanFileReference(reference: String)
@@ -36,3 +38,6 @@ object FileUploadOutcomeStatus extends Enumeration {
   type FileUploadOutcomeStatus = Value
   val IN_PROGRESS, SUCCESS, FAILURE = Value
 }
+
+case class FileUploadOutcomeResponse(fileName: Option[String], fileUploadStatus: FileUploadOutcomeStatus)
+

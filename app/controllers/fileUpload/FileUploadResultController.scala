@@ -20,8 +20,10 @@ import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.fileUpload.FileUploadResultFormProvider
 import models.FileUploadOutcomeStatus.IN_PROGRESS
+import models.FileUploadOutcomeStatus.SUCCESS
+import models.FileUploadOutcomeStatus.FAILURE
+import models.FileUploadOutcomeResponse
 import models.UserAnswers
-import models.FileUploadOutcomeStatus.FileUploadOutcomeStatus
 import models.enumeration.EventType
 import models.enumeration.EventType.getEventTypeByName
 import pages.Waypoints
@@ -50,7 +52,13 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
     request.request.queryString.get("key").flatMap(_.headOption) match {
       case Some(uploadIdReference) =>
         eventReportingConnector.getFileUploadOutcome(uploadIdReference).map {
-          case FileUploadOutcomeStatus(_, IN_PROGRESS) => Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), g.fileName, g.fileUploadStatus))
+          case r@FileUploadOutcomeResponse(_, IN_PROGRESS) =>
+            Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), None))
+          case r@FileUploadOutcomeResponse(fileName@Some(_), SUCCESS) =>
+            Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), fileName))
+          case r@FileUploadOutcomeResponse(_, FAILURE) =>
+            Redirect(controllers.routes.IndexController.onPageLoad.url)
+          case _ => throw new RuntimeException("UploadId reference does not exist")
         }
       case _ => throw new RuntimeException("UploadId reference does not exist")
     }
