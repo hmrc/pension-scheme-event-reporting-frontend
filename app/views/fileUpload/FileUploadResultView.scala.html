@@ -16,6 +16,7 @@
 
 @import models.fileUpload.FileUploadResult
 @import controllers.fileUpload.routes
+@import models.FileUploadOutcomeStatus.FileUploadOutcomeStatus
 
 @this(
     layout: templates.Layout,
@@ -26,7 +27,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, eventByName: String, fileName: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventByName: String, fileName: Option[String], fileUploadStatus: FileUploadOutcomeStatus)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("fileUploadResult.title", eventByName))) {
 
@@ -42,8 +43,12 @@
 
         <h1 class="govuk-heading-xl">@messages("fileUploadResult.heading", eventByName)</h1>
 
+        @if(fileUploadStatus == FileUploadOutcomeStatus.SUCCESS) {
         @fileName.map{ name =>
           <p>@name</p>
+        }
+        } else {
+            <p>InProgress</p>
         }
 
         @govukInsetText(
