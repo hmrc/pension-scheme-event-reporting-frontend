@@ -23,10 +23,13 @@ import forms.fileUpload.FileUploadFormProvider
 import models.{UploadId, UserAnswers}
 import models.enumeration.EventType
 import models.enumeration.EventType.getEventTypeByName
+import models.requests.DataRequest
 import pages.Waypoints
 import pages.fileUpload.FileUploadPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadView
 
@@ -51,10 +54,18 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
     val uploadId = UploadId.generate
     val successRedirectUrl = appConfig.successEndPointTarget(eventType,uploadId)
     val errorRedirectUrl = appConfig.failureEndPointTarget(eventType)
-
+ //TODO: Add error code check
     upscanInitiateConnector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), eventType).map { uir =>
       val preparedForm = request.userAnswers.get(FileUploadPage(eventType)).fold(form)(form.fill)
-      Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), eventType, Call("post", uir.postTarget), uir.formFields))
+      Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), eventType, Call("post", uir.postTarget), uir.formFields, getErrorCode(request)))
+    }
+  }
+
+  private def getErrorCode(request: DataRequest[AnyContent]): Option[ErrorMessage] = {
+    if (request.queryString.contains("errorCode") && request.queryString("errorCode").nonEmpty) {
+      request.queryString("errorCode").headOption.map(error => ErrorMessage(content = Text(error)))
+    } else {
+      None
     }
   }
 

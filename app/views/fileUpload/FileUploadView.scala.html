@@ -26,7 +26,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, eventByName: String, eventType: EventType, submitUrl: Call, upscanFields: Map[String, String])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventByName: String, eventType: EventType, submitUrl: Call, upscanFields: Map[String, String], errorMessage: Option[ErrorMessage])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("fileUpload.title", eventByName))) {
 
@@ -72,7 +72,8 @@
             FileUpload(
             id = "file-input",
             name = "file",
-            label = Label(content = messages("fileUpload.upload.label"))
+            label = Label(content = messages("fileUpload.upload.label")),
+            errorMessage = errorMessage
         ))
 
         @govukButton(

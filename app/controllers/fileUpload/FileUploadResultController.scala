@@ -52,11 +52,11 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
     request.request.queryString.get("key").flatMap(_.headOption) match {
       case Some(uploadIdReference) =>
         eventReportingConnector.getFileUploadOutcome(uploadIdReference).map {
-          case r@FileUploadOutcomeResponse(_, IN_PROGRESS) =>
+          case FileUploadOutcomeResponse(_, IN_PROGRESS) =>
             Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), None))
-          case r@FileUploadOutcomeResponse(fileName@Some(_), SUCCESS) =>
+          case FileUploadOutcomeResponse(fileName@Some(_), SUCCESS) =>
             Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), fileName))
-          case r@FileUploadOutcomeResponse(_, FAILURE) =>
+          case FileUploadOutcomeResponse(_, FAILURE) =>
             Redirect(controllers.routes.IndexController.onPageLoad.url)
           case _ => throw new RuntimeException("UploadId reference does not exist")
         }
