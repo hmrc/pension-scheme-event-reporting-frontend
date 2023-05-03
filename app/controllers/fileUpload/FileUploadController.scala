@@ -20,21 +20,21 @@ import config.FrontendAppConfig
 import connectors.{UpscanInitiateConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.fileUpload.FileUploadFormProvider
-import models.{UploadId, UserAnswers}
+import models.UploadId
 import models.enumeration.EventType
 import models.enumeration.EventType.getEventTypeByName
 import models.requests.DataRequest
 import pages.Waypoints
 import pages.fileUpload.FileUploadPage
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class FileUploadController @Inject()(val controllerComponents: MessagesControllerComponents,
                                        identify: IdentifierAction,
@@ -61,9 +61,11 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
     }
   }
 
-  private def getErrorCode(request: DataRequest[AnyContent]): Option[ErrorMessage] = {
+  private def getErrorCode(request: DataRequest[AnyContent])(implicit messages: Messages): Option[ErrorMessage] = {
     if (request.queryString.contains("errorCode") && request.queryString("errorCode").nonEmpty) {
-      request.queryString("errorCode").headOption.map(error => ErrorMessage(content = Text(error)))
+      request.queryString("errorCode").headOption.map { error =>
+        ErrorMessage(content = Text(messages("fileUpload.error.rejected." + error, appConfig.maxUploadFileSize)))
+      }
     } else {
       None
     }

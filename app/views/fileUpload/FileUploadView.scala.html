@@ -36,8 +36,8 @@
         <input type="hidden" name="@key" value="@value">
     }
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
+        @errorMessage.map { error =>
+            @govukErrorSummary(FluentErrorSummary(ErrorSummary(errorList = Seq(ErrorLink()))).withDescription(error.content))
         }
 
         <h1 class="govuk-heading-xl">@messages("fileUpload.heading", eventByName)</h1>
