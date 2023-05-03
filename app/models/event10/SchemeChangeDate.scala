@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package pages.event10
+package models.event10
 
-import models.event10.BecomeOrCeaseScheme
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{Format, Json}
 
-class BecomeOrCeaseSchemeSpec extends PageBehaviours {
+import java.time.LocalDate
 
-  "BecomeOrCeaseSchemePage" - {
+case class SchemeChangeDate(schemeChangeDate: LocalDate)
 
-    beRetrievable[BecomeOrCeaseScheme](BecomeOrCeaseSchemePage)
-
-    beSettable[BecomeOrCeaseScheme](BecomeOrCeaseSchemePage)
-
-    beRemovable[BecomeOrCeaseScheme](BecomeOrCeaseSchemePage)
-  }
+object SchemeChangeDate {
+  implicit val format: Format[SchemeChangeDate] = Json.format[SchemeChangeDate]
 }
+

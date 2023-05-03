@@ -16,22 +16,19 @@
 
 package pages.event10
 
+import java.time.LocalDate
 import controllers.event10.routes
-import models.UserAnswers
-import models.event10.BecomeOrCeaseScheme
-import pages.{Page, QuestionPage, Waypoints}
+import models.event10.SchemeChangeDate
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.{QuestionPage, Waypoints}
 
-case object BecomeOrCeaseSchemePage extends QuestionPage[BecomeOrCeaseScheme] {
+case object SchemeChangeDatePage extends QuestionPage[SchemeChangeDate] {
 
   override def path: JsPath = JsPath \ "event10" \ toString
 
-  override def toString: String = "becomeOrCeaseScheme"
+  override def toString: String = "schemeChangeDate"
 
   override def route(waypoints: Waypoints): Call =
-    routes.BecomeOrCeaseSchemeController.onPageLoad(waypoints)
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    SchemeChangeDatePage
+    routes.SchemeChangeDateController.onPageLoad(waypoints)
 }

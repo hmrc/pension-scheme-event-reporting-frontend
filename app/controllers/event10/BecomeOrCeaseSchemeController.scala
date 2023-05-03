@@ -21,6 +21,7 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event10.BecomeOrCeaseSchemeFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
+import models.enumeration.EventType.Event10
 import pages.Waypoints
 import pages.event10.BecomeOrCeaseSchemePage
 import play.api.i18n.I18nSupport
@@ -40,14 +41,13 @@ class BecomeOrCeaseSchemeController @Inject()(val controllerComponents: Messages
                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event1
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(Event10)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(BecomeOrCeaseSchemePage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(Event10)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
@@ -55,7 +55,7 @@ class BecomeOrCeaseSchemeController @Inject()(val controllerComponents: Messages
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(BecomeOrCeaseSchemePage, value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+          userAnswersCacheConnector.save(request.pstr, Event10, updatedAnswers).map { _ =>
             Redirect(BecomeOrCeaseSchemePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }

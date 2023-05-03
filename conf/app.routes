@@ -353,6 +353,9 @@ POST       /new-report/event-5-summary                                          
 GET        /new-report/event-10-what-change-has-taken-place                       controllers.event10.BecomeOrCeaseSchemeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-10-what-change-has-taken-place                       controllers.event10.BecomeOrCeaseSchemeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
+GET        /new-report/event-10-when-scheme-changed                               controllers.event10.SchemeChangeDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-10-when-scheme-changed                               controllers.event10.SchemeChangeDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
 
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.

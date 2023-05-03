@@ -14,19 +14,25 @@
  * limitations under the License.
  */
 
-package pages.event10
+package forms.event10
 
-import models.event10.BecomeOrCeaseScheme
-import pages.behaviours.PageBehaviours
+import java.time.{LocalDate, ZoneOffset}
 
-class BecomeOrCeaseSchemeSpec extends PageBehaviours {
+import forms.behaviours.DateBehaviours
 
-  "BecomeOrCeaseSchemePage" - {
+class SchemeChangeDateFormProviderSpec extends DateBehaviours {
 
-    beRetrievable[BecomeOrCeaseScheme](BecomeOrCeaseSchemePage)
+  private val form = new SchemeChangeDateFormProvider()()
 
-    beSettable[BecomeOrCeaseScheme](BecomeOrCeaseSchemePage)
+  ".value" - {
 
-    beRemovable[BecomeOrCeaseScheme](BecomeOrCeaseSchemePage)
+    val validData = datesBetween(
+      min = LocalDate.of(2000, 1, 1),
+      max = LocalDate.now(ZoneOffset.UTC)
+    )
+
+    behave like dateField(form, "value", validData)
+
+    behave like mandatoryDateField(form, "value", "schemeChangeDate.error.required.all")
   }
 }

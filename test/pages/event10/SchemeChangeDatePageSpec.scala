@@ -16,17 +16,23 @@
 
 package pages.event10
 
-import models.event10.BecomeOrCeaseScheme
+import java.time.LocalDate
+
+import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
 
-class BecomeOrCeaseSchemeSpec extends PageBehaviours {
+class SchemeChangeDatePageSpec extends PageBehaviours {
 
-  "BecomeOrCeaseSchemePage" - {
+  "SchemeChangeDatePage" - {
 
-    beRetrievable[BecomeOrCeaseScheme](BecomeOrCeaseSchemePage)
+    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
+      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
+    }
 
-    beSettable[BecomeOrCeaseScheme](BecomeOrCeaseSchemePage)
+    beRetrievable[LocalDate](SchemeChangeDatePage)
 
-    beRemovable[BecomeOrCeaseScheme](BecomeOrCeaseSchemePage)
+    beSettable[LocalDate](SchemeChangeDatePage)
+
+    beRemovable[LocalDate](SchemeChangeDatePage)
   }
 }

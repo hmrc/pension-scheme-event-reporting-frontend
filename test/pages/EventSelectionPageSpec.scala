@@ -17,11 +17,13 @@
 package pages
 
 import data.SampleData
+import models.EventSelection.{Event10 => EventSelection10}
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event22, Event23, Event4, Event5, Event6, Event7, Event8, Event8A}
+import models.enumeration.EventType.{Event1, Event10, Event22, Event23, Event4, Event5, Event6, Event7, Event8, Event8A}
 import models.{EventSelection, UserAnswers}
 import pages.behaviours.PageBehaviours
 import pages.common.{ManualOrUploadPage, MembersDetailsPage}
+import pages.event10.BecomeOrCeaseSchemePage
 
 
 class EventSelectionPageSpec extends PageBehaviours {
@@ -36,6 +38,15 @@ class EventSelectionPageSpec extends PageBehaviours {
     testGetCorrectPageWithIndexMemberDetails(Event8A, models.EventSelection.Event8A, MembersDetailsPage(Event8A, 2))
     testGetCorrectPageWithIndexManualOrUpload(Event22, models.EventSelection.Event22, ManualOrUploadPage(Event22, 2))
     testGetCorrectPageWithIndexManualOrUpload(Event23, models.EventSelection.Event23, ManualOrUploadPage(Event23, 2))
+    testGetCorrectPageEvent10
+  }
+
+  private def testGetCorrectPageEvent10: Unit = {
+    s"must get the correct page for Event 10" in {
+      val ua = UserAnswers()
+        .setOrException(EventSelectionPage, EventSelection10)
+      EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe BecomeOrCeaseSchemePage.route(EmptyWaypoints)
+    }
   }
 
   private def testGetCorrectPageWithIndexManualOrUpload(eventType: EventType, eventSelection: EventSelection, page: ManualOrUploadPage): Unit = {
