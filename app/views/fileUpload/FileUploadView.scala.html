@@ -73,7 +73,8 @@
             id = "file-input",
             name = "file",
             label = Label(content = messages("fileUpload.upload.label")),
-            errorMessage = errorMessage
+            errorMessage = errorMessage,
+            attributes = Map("accept" -> ".csv,application/csv")
         ))
 
         @govukButton(
