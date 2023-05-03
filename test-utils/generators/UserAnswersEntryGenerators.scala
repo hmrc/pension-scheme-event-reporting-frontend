@@ -33,10 +33,18 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
+  implicit lazy val arbitraryBecomeOrCeaseSchemeUserAnswersEntry: Arbitrary[(pages.event10.BecomeOrCeaseSchemePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page <- arbitrary[pages.event10.BecomeOrCeaseSchemePage.type]
+        value <- arbitrary[models.event10.BecomeOrCeaseScheme].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitrarydatePaidUserAnswersEntry: Arbitrary[(pages.event2.DatePaidPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event2.DatePaidPage]
+        page <- arbitrary[pages.event2.DatePaidPage]
         value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }
@@ -44,7 +52,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
   implicit lazy val arbitraryAmountPaidUserAnswersEntry: Arbitrary[(pages.event2.AmountPaidPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event2.AmountPaidPage]
+        page <- arbitrary[pages.event2.AmountPaidPage]
         value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }
@@ -57,10 +65,10 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-      implicit lazy val arbitraryReasonForBenefitsUserAnswersEntry: Arbitrary[(pages.event3.ReasonForBenefitsPage, JsValue)] =
+  implicit lazy val arbitraryReasonForBenefitsUserAnswersEntry: Arbitrary[(pages.event3.ReasonForBenefitsPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[pages.event3.ReasonForBenefitsPage]
+        page <- arbitrary[pages.event3.ReasonForBenefitsPage]
         value <- arbitrary[models.event3.ReasonForBenefits].map(Json.toJson(_))
       } yield (page, value)
     }
