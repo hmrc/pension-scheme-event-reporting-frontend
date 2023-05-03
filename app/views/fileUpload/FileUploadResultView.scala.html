@@ -44,11 +44,11 @@
         <h1 class="govuk-heading-xl">@messages("fileUploadResult.heading", eventByName)</h1>
 
         @fileName.map{ name =>
-            <p>@name</p>
+            <p class="govuk-body">@name</p>
         }
 
         @if(fileName.isEmpty) {
-            <p>InProgress</p>
+            <p class="govuk-body">@messages("fileUploadResult.status.inProgress")</p>
         }
 
         @govukInsetText(

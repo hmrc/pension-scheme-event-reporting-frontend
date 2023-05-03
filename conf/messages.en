@@ -1280,6 +1280,7 @@ fileUploadResult.No = No, I want to select a different file
 fileUploadResult.checkYourAnswersLabel = fileUploadResult
 fileUploadResult.error.required = Select yes to add this file
 fileUploadResult.change.hidden = FileUploadResult
+fileUploadResult.status.inProgress = In progress
 
 fileUpload.error.rejected.title = Your file is in the wrong format
 fileUpload.error.rejected.heading = Your file is in the wrong format
@@ -1292,3 +1293,5 @@ fileUpload.error.rejected.list.b4 = any other information that is not text
 fileUpload.error.rejected.p2 = Make sure your file is in the .csv format and remove any unnecessary information. Then upload it again, or upload a different file.
 
 fileUpload.error.rejected.ENTITY_TOO_LARGE = The file must be smaller than {0}MB
+fileUpload.error.rejected.InvalidArgument = No file has been uploaded
+

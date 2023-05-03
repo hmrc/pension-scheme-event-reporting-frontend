@@ -26,19 +26,15 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, eventByName: String, eventType: EventType, submitUrl: Call, upscanFields: Map[String, String], errorMessage: Option[ErrorMessage])(implicit request: Request[_], messages: Messages)
+@(waypoints: Waypoints, eventByName: String, eventType: EventType, submitUrl: Call, upscanFields: Map[String, String], errorMessage: Option[ErrorMessage])(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("fileUpload.title", eventByName))) {
+@layout(pageTitle = titleWithErrors(errorMessage, messages("fileUpload.title", eventByName))) {
 
 <form action="@submitUrl" method="@submitUrl.method" enctype="multipart/form-data" encoding="multipart/form-data">
 
     @for((key, value) <- upscanFields){
         <input type="hidden" name="@key" value="@value">
     }
-
-        @errorMessage.map { error =>
-            @govukErrorSummary(FluentErrorSummary(ErrorSummary(errorList = Seq(ErrorLink()))).withDescription(error.content))
-        }
 
         <h1 class="govuk-heading-xl">@messages("fileUpload.heading", eventByName)</h1>
 
