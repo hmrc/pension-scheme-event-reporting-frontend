@@ -36,7 +36,7 @@
 
         @govukDateInput(
             DateViewModel(
-                field  = form("value"),
+                field  = form("schemeChangeDate"),
                 legend = LegendViewModel(messages(s"$becomeOrCeased.schemeChangeDate.heading")).asPageHeading()
             )
             .withHint(HintViewModel(messages("schemeChangeDate.hint")))

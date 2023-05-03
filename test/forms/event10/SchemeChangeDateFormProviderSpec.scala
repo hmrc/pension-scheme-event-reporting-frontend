@@ -16,23 +16,48 @@
 
 package forms.event10
 
-import java.time.{LocalDate, ZoneOffset}
+import base.SpecBase
+import forms.behaviours.{BigDecimalFieldBehaviours, DateBehavioursTrait}
+import play.api.data.FormError
+import utils.DateHelper.formatDateDMY
 
-import forms.behaviours.DateBehaviours
+import java.time.LocalDate
 
-class SchemeChangeDateFormProviderSpec extends DateBehaviours {
+class SchemeChangeDateFormProviderSpec extends SpecBase
+  with BigDecimalFieldBehaviours with DateBehavioursTrait {
 
-  private val form = new SchemeChangeDateFormProvider()()
+  private val stubMin: LocalDate = LocalDate.of(2022, 4, 6)
+  private val stubMax: LocalDate = LocalDate.of(2023, 4, 5)
 
-  ".value" - {
+  private val form = new SchemeChangeDateFormProvider().apply(min = stubMin, max = stubMax)
+  private val schemeChangeDateKey = "schemeChangeDate"
 
-    val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
+  "schemeChangeDate" - {
+
+    behave like mandatoryDateField(
+      form = form,
+      key = schemeChangeDateKey,
+      requiredAllKey = "schemeChangeDate.error.nothingEntered"
     )
 
-    behave like dateField(form, "value", validData)
+    behave like dateFieldYearNot4Digits(
+      form = form,
+      key = schemeChangeDateKey,
+      formError = FormError(schemeChangeDateKey, "schemeChangeDate.error.outsideDateRanges")
+    )
 
-    behave like mandatoryDateField(form, "value", "schemeChangeDate.error.required.all")
+    behave like dateFieldWithMin(
+      form = form,
+      key = schemeChangeDateKey,
+      min = stubMin,
+      formError = FormError(schemeChangeDateKey, messages("schemeChangeDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+    )
+
+    behave like dateFieldWithMax(
+      form = form,
+      key = schemeChangeDateKey,
+      max = stubMax,
+      formError = FormError(schemeChangeDateKey, messages("schemeChangeDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+    )
   }
 }

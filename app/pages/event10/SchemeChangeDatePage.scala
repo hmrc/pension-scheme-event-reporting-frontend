@@ -16,7 +16,6 @@
 
 package pages.event10
 
-import java.time.LocalDate
 import controllers.event10.routes
 import models.event10.SchemeChangeDate
 import play.api.libs.json.JsPath

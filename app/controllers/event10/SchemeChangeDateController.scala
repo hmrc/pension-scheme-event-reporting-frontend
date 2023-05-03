@@ -19,10 +19,9 @@ package controllers.event10
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.event10.SchemeChangeDateFormProvider
-import models.{TaxYear, UserAnswers}
+import models.TaxYear
 import models.enumeration.EventType
-import models.event10.BecomeOrCeaseScheme
-import pages.{TaxYearPage, Waypoints}
+import pages.Waypoints
 import pages.event10.{BecomeOrCeaseSchemePage, SchemeChangeDatePage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -51,8 +50,8 @@ class SchemeChangeDateController @Inject()(val controllerComponents: MessagesCon
     }
 
     val selectedTaxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers).toInt
-    val startDate = LocalDate.of(selectedTaxYear, Month.APRIL, 6)
-    val endDate = LocalDate.of(selectedTaxYear + 1, Month.APRIL, 5)
+    val startDate = LocalDate.of(selectedTaxYear - 1, Month.APRIL, 6)
+    val endDate = LocalDate.of(selectedTaxYear, Month.APRIL, 5)
 
     val preparedForm = request.userAnswers.get(SchemeChangeDatePage) match {
       case Some(value) => formProvider(startDate, endDate).fill(value)
@@ -70,8 +69,8 @@ class SchemeChangeDateController @Inject()(val controllerComponents: MessagesCon
       }
 
       val selectedTaxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers).toInt
-      val startDate = LocalDate.of(selectedTaxYear, Month.APRIL, 6)
-      val endDate = LocalDate.of(selectedTaxYear + 1, Month.APRIL, 5)
+      val startDate = LocalDate.of(selectedTaxYear - 1, Month.APRIL, 6)
+      val endDate = LocalDate.of(selectedTaxYear, Month.APRIL, 5)
 
       formProvider(startDate, endDate).bindFromRequest().fold(
         formWithErrors => {

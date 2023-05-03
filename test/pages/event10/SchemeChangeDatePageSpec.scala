@@ -16,23 +16,24 @@
 
 package pages.event10
 
-import java.time.LocalDate
-
+import models.event10.SchemeChangeDate
 import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
+
+import java.time.LocalDate
 
 class SchemeChangeDatePageSpec extends PageBehaviours {
 
   "SchemeChangeDatePage" - {
 
-    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
-      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
+    implicit lazy val arbitrarySchemeChangeDate: Arbitrary[SchemeChangeDate] = Arbitrary {
+      SchemeChangeDate(LocalDate.of(2023, 5, 3))
     }
 
-    beRetrievable[LocalDate](SchemeChangeDatePage)
+    beRetrievable[SchemeChangeDate](SchemeChangeDatePage)
 
-    beSettable[LocalDate](SchemeChangeDatePage)
+    beSettable[SchemeChangeDate](SchemeChangeDatePage)
 
-    beRemovable[LocalDate](SchemeChangeDatePage)
+    beRemovable[SchemeChangeDate](SchemeChangeDatePage)
   }
 }

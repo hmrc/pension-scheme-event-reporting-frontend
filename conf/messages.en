@@ -1277,6 +1277,6 @@ itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.checkYourAnsw
 schemeChangeDate.error.nothingEntered = Enter the date
 schemeChangeDate.error.noDayMonthOrYear = The date must include a day, month and year
 schemeChangeDate.error.outsideDateRanges = Enter a real date
-schemeChangeDate.error.outsideReportedYear = Date must be between {0} and {1}
+schemeChangeDate.error.outsideReportedYear = The date must be between {0} and {1}
 schemeChangeDate.change.hidden = the date of the payment
 schemeChangeDate.checkYourAnswersLabel = Date of the payment

@@ -19,14 +19,13 @@ package controllers.event10
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event10.SchemeChangeDateFormProvider
-import models.UserAnswers
-import pages.EmptyWaypoints
-import pages.event10.SchemeChangeDatePage
-
+import models.event10.{BecomeOrCeaseScheme, SchemeChangeDate}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
+import pages.event10.{BecomeOrCeaseSchemePage, SchemeChangeDatePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -36,14 +35,18 @@ import views.html.event10.SchemeChangeDateView
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach {
+class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new SchemeChangeDateFormProvider()
-  private val form = formProvider()
+  private val stubMin: LocalDate = LocalDate.of(2022, 4, 6) //06-04-2006
+  private val stubMax: LocalDate = LocalDate.of(2023, 4, 5) //05-04-2023
 
+  private val formProvider = new SchemeChangeDateFormProvider()
+  private val form = formProvider(stubMin, stubMax)
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val becomeAScheme: String = "itBecameAnInvestmentRegulatedPensionScheme"
+  private val ceasedToBecomeAScheme: String = "itHasCeasedToBeAnInvestmentRegulatedPensionScheme"
 
   private def getRoute: String = routes.SchemeChangeDateController.onPageLoad(waypoints).url
 
@@ -53,18 +56,22 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach {
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validAnswer = LocalDate.of(2020, 2, 12)
+  private val validValue = SchemeChangeDate(LocalDate.of(2022, 7, 12))
 
-  override def beforeEach: Unit = {
+  import SchemeChangeDateControllerSpec._
+
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
 
   "SchemeChangeDate Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET (Became a scheme)" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = emptyUserAnswersWithTaxYear.setOrException(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItBecameAnInvestmentRegulatedPensionScheme)
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -74,12 +81,33 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[SchemeChangeDateView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, becomeAScheme)(request, messages(application)).toString
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = UserAnswers().set(SchemeChangeDatePage, validAnswer).success.value
+    "must return OK and the correct view for a GET (Ceased to become a scheme)" in {
+
+      val userAnswers = emptyUserAnswersWithTaxYear.setOrException(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItHasCeasedToBeAnInvestmentRegulatedPensionScheme)
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[SchemeChangeDateView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form, waypoints, ceasedToBecomeAScheme)(request, messages(application)).toString
+      }
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered (Become a scheme)" in {
+
+      val userAnswers = emptyUserAnswersWithTaxYear.setOrException(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItBecameAnInvestmentRegulatedPensionScheme)
+        .set(SchemeChangeDatePage, validValue).success.value
+
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
@@ -90,28 +118,45 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, becomeAScheme)(request, messages(application)).toString
       }
     }
 
-    "must save the answer and redirect to the next page when valid data is submitted" in {
+    "must populate the view correctly on a GET when the question has previously been answered (Ceased to become a scheme)" in {
+
+      val userAnswers = emptyUserAnswersWithTaxYear.setOrException(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItHasCeasedToBeAnInvestmentRegulatedPensionScheme)
+        .set(SchemeChangeDatePage, validValue).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val view = application.injector.instanceOf[SchemeChangeDateView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, ceasedToBecomeAScheme)(request, messages(application)).toString
+      }
+    }
+
+    "must save the answer and redirect to the next page when valid data is submitted (Become a scheme)" in {
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
+      val userAnswers = emptyUserAnswersWithTaxYear.setOrException(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItBecameAnInvestmentRegulatedPensionScheme)
+
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(userAnswers), extraModules)
           .build()
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
-            "value.day" -> "12",
-            "value.month" -> "2",
-            "value.year" -> "2020"
-          )
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(schemeChangeDate(validValue.schemeChangeDate): _*)
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(SchemeChangeDatePage, validAnswer).success.value
+        val updatedAnswers = emptyUserAnswers.set(SchemeChangeDatePage, validValue).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual SchemeChangeDatePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
@@ -119,9 +164,35 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "must return bad request when invalid data is submitted" in {
+    "must save the answer and redirect to the next page when valid data is submitted (Ceased to become a scheme)" in {
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+
+      val userAnswers = emptyUserAnswersWithTaxYear.setOrException(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItHasCeasedToBeAnInvestmentRegulatedPensionScheme)
+
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(userAnswers), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(schemeChangeDate(validValue.schemeChangeDate): _*)
+
+        val result = route(application, request).value
+        val updatedAnswers = emptyUserAnswers.set(SchemeChangeDatePage, validValue).success.value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual SchemeChangeDatePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+      }
+    }
+
+    "must return bad request when invalid data is submitted (Became a scheme)" in {
+
+      val userAnswers = emptyUserAnswersWithTaxYear.setOrException(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItBecameAnInvestmentRegulatedPensionScheme)
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers), extraModules)
           .build()
 
       running(application) {
@@ -134,9 +205,46 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, becomeAScheme)(request, messages(application)).toString
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
+
+    "must return bad request when invalid data is submitted (Ceased to become a scheme)" in {
+
+      val userAnswers = emptyUserAnswersWithTaxYear.setOrException(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItHasCeasedToBeAnInvestmentRegulatedPensionScheme)
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
+
+        val view = application.injector.instanceOf[SchemeChangeDateView]
+        val boundForm = form.bind(Map("value" -> "invalid"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(boundForm, waypoints, ceasedToBecomeAScheme)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
   }
+}
+
+object SchemeChangeDateControllerSpec {
+  private val schemeChangeDateKey = "schemeChangeDate"
+
+  private def schemeChangeDate(
+                                schemeChangeDate: LocalDate
+                              ): Seq[(String, String)] = {
+    val day = Tuple2(schemeChangeDateKey + ".day", s"${schemeChangeDate.getDayOfMonth}")
+    val month = Tuple2(schemeChangeDateKey + ".month", s"${schemeChangeDate.getMonthValue}")
+    val year = Tuple2(schemeChangeDateKey + ".year", s"${schemeChangeDate.getYear}")
+    Seq(day, month, year)
+  }
+
 }

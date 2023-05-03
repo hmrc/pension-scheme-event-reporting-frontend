@@ -20,7 +20,6 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event10.BecomeOrCeaseSchemeFormProvider
 import models.UserAnswers
-import models.enumeration.EventType
 import models.enumeration.EventType.Event10
 import pages.Waypoints
 import pages.event10.BecomeOrCeaseSchemePage

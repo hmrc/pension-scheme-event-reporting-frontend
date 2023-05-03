@@ -21,12 +21,12 @@ import connectors.UserAnswersCacheConnector
 import forms.event10.BecomeOrCeaseSchemeFormProvider
 import models.UserAnswers
 import models.event10.BecomeOrCeaseScheme
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.event10.BecomeOrCeaseSchemePage
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
-import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -35,7 +35,7 @@ import views.html.event10.BecomeOrCeaseSchemeView
 
 import scala.concurrent.Future
 
-class BecomeOrCeaseSchemeControllerSpec extends SpecBase with BeforeAndAfterEach {
+class BecomeOrCeaseSchemeControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
@@ -45,13 +45,14 @@ class BecomeOrCeaseSchemeControllerSpec extends SpecBase with BeforeAndAfterEach
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.BecomeOrCeaseSchemeController.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.BecomeOrCeaseSchemeController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
