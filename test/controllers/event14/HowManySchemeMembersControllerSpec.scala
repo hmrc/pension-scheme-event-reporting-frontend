@@ -40,7 +40,7 @@ class HowManySchemeMembersControllerSpec extends SpecBase with BeforeAndAfterEac
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new HowManySchemeMembersFormProvider()
-  private val form = formProvider()
+  private val form = formProvider(taxYearRange)
 
   private val mockTaxYear = mock[TaxYear]
   private val taxYearRange = "2022 to 2023"

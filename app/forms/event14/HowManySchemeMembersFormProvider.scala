@@ -16,16 +16,17 @@
 
 package forms.event14
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
-import play.api.data.Form
 import models.event14.HowManySchemeMembers
+import play.api.data.Form
+import play.api.i18n.Messages
+
+import javax.inject.Inject
 
 class HowManySchemeMembersFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[HowManySchemeMembers] =
+  def apply(taxYear: String)(implicit messages: Messages): Form[HowManySchemeMembers] =
     Form(
-      "value" -> enumerable[HowManySchemeMembers]("howManySchemeMembers.error.required")
+      "value" -> enumerable[HowManySchemeMembers](messages("howManySchemeMembers.error.required", taxYear))
     )
 }

@@ -40,13 +40,13 @@ class HowManySchemeMembersController @Inject()(val controllerComponents: Message
                                                view: HowManySchemeMembersView
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
   private val eventType = EventType.Event14
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(HowManySchemeMembersPage)).fold(form)(form.fill)
     val taxYearEnd = getSelectedTaxYearAsString(request.userAnswers.get)
-    val taxYearRange = s"${taxYearEnd.toInt-1} to $taxYearEnd"
+    val taxYearRange = s"${taxYearEnd.toInt - 1} to $taxYearEnd"
+    val form = formProvider(taxYearRange)
+    val preparedForm = request.userAnswers.flatMap(_.get(HowManySchemeMembersPage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, taxYearRange))
   }
 
@@ -54,6 +54,7 @@ class HowManySchemeMembersController @Inject()(val controllerComponents: Message
     implicit request =>
       val taxYearEnd = getSelectedTaxYearAsString(request.userAnswers.get)
       val taxYearRange = s"${taxYearEnd.toInt - 1} to $taxYearEnd"
+      val form = formProvider(taxYearRange)
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints, taxYearRange))),

@@ -177,7 +177,7 @@ trait Formatters {
                                                args: Seq[String] = Seq.empty)(implicit ev: Enumerable[A]): Formatter[A] =
     new Formatter[A] {
 
-      private val baseFormatter = stringFormatter(requiredKey, args)
+      private val baseFormatter = stringFormatter(requiredKey.format(args:_*), args)
 
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], A] =
         baseFormatter.bind(key, data).right.flatMap {

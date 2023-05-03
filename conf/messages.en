@@ -1265,5 +1265,5 @@ howManySchemeMembers.optionFour = 12 to 50
 howManySchemeMembers.optionFive = 51 to 10,000
 howManySchemeMembers.optionSix = More than 10,000
 howManySchemeMembers.checkYourAnswersLabel = How many scheme members were there at the end of the tax year
-howManySchemeMembers.error.required = Select how many scheme members were there at the end of the tax year
+howManySchemeMembers.error.required = Select how many scheme members there were at the end of the tax year {0}
 howManySchemeMembers.change.hidden = how many scheme members

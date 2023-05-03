@@ -371,8 +371,8 @@ GET         /new-report/event-13-check-your-answers                             
 GET         /new-report/event-13-click                                           controllers.event13.Event13CheckYourAnswersController.onClick
 
 # Event 14
-GET        /new-report/event-14-new-member-number                                controllers.event14.HowManySchemeMembersController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/event-14-new-member-number                                controllers.event14.HowManySchemeMembersController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/event-14-how-many-scheme-members                          controllers.event14.HowManySchemeMembersController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-14-how-many-scheme-members                          controllers.event14.HowManySchemeMembersController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET        /new-report/event-14-check-your-answers                               controllers.event14.Event14CheckYourAnswersController.onPageLoad()
 GET        /new-report/event-14-click                                            controllers.event14.Event14CheckYourAnswersController.onClick
