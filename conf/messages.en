@@ -1262,7 +1262,7 @@ becomeOrCeaseScheme.itBecameAnInvestmentRegulatedPensionScheme = It became an in
 becomeOrCeaseScheme.itHasCeasedToBeAnInvestmentRegulatedPensionScheme = It has ceased to be an investment regulated pension scheme
 becomeOrCeaseScheme.checkYourAnswersLabel = What change has taken place for this pension scheme?
 becomeOrCeaseScheme.error.required = Select what change has taken place
-becomeOrCeaseScheme.change.hidden = BecomeOrCeaseScheme
+becomeOrCeaseScheme.change.hidden = Whether this pension scheme became or ceased to be investment regulated
 
 itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.title = When did the scheme become an investment regulated pension scheme?
 itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.heading = When did the scheme become an investment regulated pension scheme?
@@ -1278,11 +1278,11 @@ schemeChangeDate.error.nothingEntered = Enter the date
 schemeChangeDate.error.noDayMonthOrYear = The date must include a day, month and year
 schemeChangeDate.error.outsideDateRanges = Enter a real date
 schemeChangeDate.error.outsideReportedYear = The date must be between {0} and {1}
-schemeChangeDate.change.hidden = the date of the payment
+schemeChangeDate.change.hidden = The date that this pension scheme became or ceased to be investment regulated
 schemeChangeDate.checkYourAnswersLabel = Date of the payment
 
 contractsOrPolicies.title = Do all investments consist of either contracts or policies of insurance?
 contractsOrPolicies.heading = Do all investments consist of either contracts or policies of insurance?
 contractsOrPolicies.checkYourAnswersLabel = Do all investments consist of either contracts or policies of insurance?
 contractsOrPolicies.error.required = Select yes if all investments consist of either contracts or policies of insurance
-contractsOrPolicies.change.hidden = ContractsOrPolicies
+contractsOrPolicies.change.hidden = Whether all investments consist of either contracts or policies of insurance

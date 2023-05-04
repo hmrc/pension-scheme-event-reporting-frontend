@@ -19,7 +19,7 @@ package pages.event10
 import controllers.event10.routes
 import models.UserAnswers
 import models.event10.{BecomeOrCeaseScheme, SchemeChangeDate}
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -38,6 +38,6 @@ case object SchemeChangeDatePage extends QuestionPage[SchemeChangeDate] {
       case Some(value) => value.toString
       case _ => throw new RuntimeException("Became or Ceased value unavailable")
     }
-    if (becomeOrCeased == becameRegulatedScheme) ContractsOrPoliciesPage else IndexPage
+    if (becomeOrCeased == becameRegulatedScheme) Event10CheckYourAnswersPage() else ContractsOrPoliciesPage
   }
 }
