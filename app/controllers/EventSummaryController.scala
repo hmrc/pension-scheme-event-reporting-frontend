@@ -22,10 +22,9 @@ import forms.EventSummaryFormProvider
 import models.TaxYear.getSelectedTaxYearAsString
 import models.UserAnswers
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23}
-import pages.{EmptyWaypoints, EventSummaryPage, Waypoints, TaxYearPage}
-import models.enumeration.EventType.{Event18, Event6}
+import models.enumeration.EventType.{Event10, Event18, Event22, Event23, Event6}
 import models.requests.DataRequest
+import pages.{EmptyWaypoints, EventSummaryPage, TaxYearPage, Waypoints}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -97,7 +96,7 @@ class EventSummaryController @Inject()(
         value => {
           val originalUserAnswers = UserAnswers()
           val updatedUserAnswers = originalUserAnswers.setOrException(EventSummaryPage, value)
-          Future.successful(Redirect(EventSummaryPage.navigate(waypoints,originalUserAnswers, updatedUserAnswers).route))
+          Future.successful(Redirect(EventSummaryPage.navigate(waypoints, originalUserAnswers, updatedUserAnswers).route))
         }
       )
   }
@@ -105,6 +104,7 @@ class EventSummaryController @Inject()(
   private def changeLinkForEvent(eventType: EventType): String = {
     eventType match {
       case Event6 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event6).url
+      case Event10 => controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url
       case Event22 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event22).url
       case Event23 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event23).url
       case _ => "#"
