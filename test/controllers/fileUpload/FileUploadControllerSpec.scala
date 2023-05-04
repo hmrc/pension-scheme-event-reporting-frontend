@@ -17,13 +17,11 @@
 package controllers.fileUpload
 
 import base.SpecBase
-import connectors.UserAnswersCacheConnector
-import forms.fileUpload.FileUploadFormProvider
+import connectors.{UpscanInitiateConnector, UserAnswersCacheConnector}
 import models.enumeration.EventType.{Event22, getEventTypeByName}
-import models.fileUpload.FileUpload
-import org.mockito.ArgumentMatchers
+import models.{UpscanFileReference, UpscanInitiateResponse}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify}
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
@@ -34,22 +32,37 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.fileUpload.FileUploadView
 
+import scala.concurrent.Future
+
 class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new FileUploadFormProvider()
-  private val form = formProvider()
+//  private val formProvider = new FileUploadFormProvider()
+//  private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val mockUpscanInitiateConnector = mock[UpscanInitiateConnector]
 
   private def getRoute: String = routes.FileUploadController.onPageLoad(waypoints).url
 
-  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
+  private val formFieldsMap = Map(
+    "testField1" -> "value1",
+    "testField2" -> "value2"
   )
 
-  override def beforeEach: Unit = {
+  private val upscanInitiateResponse = UpscanInitiateResponse(
+    fileReference = UpscanFileReference(""),
+    postTarget = "/postTarget",
+    formFields = formFieldsMap
+  )
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
+    bind[UpscanInitiateConnector].toInstance(mockUpscanInitiateConnector)
+  )
+
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
@@ -58,6 +71,7 @@ class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must return OK and the correct view for a GET" in {
 
+      when(mockUpscanInitiateConnector.initiateV2(any(), any(), any())(any(), any())).thenReturn(Future.successful(upscanInitiateResponse))
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
@@ -68,7 +82,9 @@ class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[FileUploadView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, getEventTypeByName(Event22), Event22, Call("GET", "/"))(request, messages(application)).toString
+        contentAsString(result) mustEqual
+          view(
+            waypoints, getEventTypeByName(Event22), Event22, Call("post", upscanInitiateResponse.postTarget), formFieldsMap, None)(request, messages(application)).toString
       }
     }
   }

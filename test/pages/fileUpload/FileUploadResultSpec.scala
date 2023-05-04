@@ -16,6 +16,7 @@
 
 package pages.fileUpload
 
+import models.enumeration.EventType.Event22
 import models.fileUpload.FileUploadResult
 import pages.behaviours.PageBehaviours
 
@@ -23,10 +24,10 @@ class FileUploadResultSpec extends PageBehaviours {
 
   "FileUploadResultPage" - {
 
-    beRetrievable[FileUploadResult](FileUploadResultPage)
+    beRetrievable[FileUploadResult](FileUploadResultPage(eventType = Event22))
 
-    beSettable[FileUploadResult](FileUploadResultPage)
+    beSettable[FileUploadResult](FileUploadResultPage(eventType = Event22))
 
-    beRemovable[FileUploadResult](FileUploadResultPage)
+    beRemovable[FileUploadResult](FileUploadResultPage(eventType = Event22))
   }
 }

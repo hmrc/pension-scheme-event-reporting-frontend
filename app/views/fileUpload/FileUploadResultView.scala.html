@@ -38,7 +38,7 @@
     @formHelper(action = routes.FileUploadResultController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
         }
 
         <h1 class="govuk-heading-xl">@messages("fileUploadResult.heading", eventByName)</h1>
@@ -68,7 +68,12 @@
         )
 
         @govukButton(
-            ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))
+            Button(
+                attributes = Map("id" -> "submit"),
+                content = Text(messages("site.continue")),
+                disabled = fileName.isEmpty
+            )
         )
+
     }
 }
