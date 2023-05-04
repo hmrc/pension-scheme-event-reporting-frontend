@@ -18,26 +18,23 @@ package pages.event10
 
 import controllers.event10.routes
 import models.UserAnswers
-import models.event10.{BecomeOrCeaseScheme, SchemeChangeDate}
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object SchemeChangeDatePage extends QuestionPage[SchemeChangeDate] {
+case object ContractsOrPoliciesPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "event10" \ toString
 
-  override def toString: String = "schemeChangeDate"
+  override def toString: String = "contractsOrPolicies"
 
   override def route(waypoints: Waypoints): Call =
-    routes.SchemeChangeDateController.onPageLoad(waypoints)
+    routes.ContractsOrPoliciesController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    val becameRegulatedScheme = BecomeOrCeaseScheme.ItBecameAnInvestmentRegulatedPensionScheme.toString
-    val becomeOrCeased = answers.get(BecomeOrCeaseSchemePage) match {
-      case Some(value) => value.toString
-      case _ => throw new RuntimeException("Became or Ceased value unavailable")
-    }
-    if (becomeOrCeased == becameRegulatedScheme) ContractsOrPoliciesPage else IndexPage
+    answers.get(this).map {
+      case true => this
+      case false => this
+    }.orRecover
   }
 }

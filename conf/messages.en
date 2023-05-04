@@ -1280,3 +1280,9 @@ schemeChangeDate.error.outsideDateRanges = Enter a real date
 schemeChangeDate.error.outsideReportedYear = The date must be between {0} and {1}
 schemeChangeDate.change.hidden = the date of the payment
 schemeChangeDate.checkYourAnswersLabel = Date of the payment
+
+contractsOrPolicies.title = Do all investments consist of either contracts or policies of insurance?
+contractsOrPolicies.heading = Do all investments consist of either contracts or policies of insurance?
+contractsOrPolicies.checkYourAnswersLabel = Do all investments consist of either contracts or policies of insurance?
+contractsOrPolicies.error.required = Select yes if all investments consist of either contracts or policies of insurance
+contractsOrPolicies.change.hidden = ContractsOrPolicies
