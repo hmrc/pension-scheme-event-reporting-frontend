@@ -31,6 +31,7 @@ import models.event1.employer.PaymentNature.{LoansExceeding50PercentOfFundValue,
 import models.event1.member.ReasonForTheOverpaymentOrWriteOff.DeathOfMember
 import models.event1.member.RefundOfContributions.WidowOrOrphan
 import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
+import models.event10.{BecomeOrCeaseScheme, SchemeChangeDate}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.ManualAddressPage
@@ -38,11 +39,12 @@ import pages.common.{ChooseTaxYearPage, ManualOrUploadPage, MembersDetailsPage, 
 import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, LoanDetailsPage}
 import pages.event1.member._
+import pages.event10.{BecomeOrCeaseSchemePage, ContractsOrPoliciesPage, Event10CheckYourAnswersPage, SchemeChangeDatePage}
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.{EventWindUpCheckYourAnswersPage, SchemeWindUpDatePage}
 import pages.{DeclarationPage, EventSelectionPage, EventSummaryPage, WantToSubmitPage}
 
-import java.time.LocalDate
+import java.time.{LocalDate, Month}
 
 class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerators {
 
@@ -358,4 +360,63 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         pageMustBe(DeclarationPage)
       )
   }
+
+  "Event 10" - {
+    "testing navigation from 'What change has taken place for this pension scheme?' page to scheme date page (Became a scheme)" in {
+      startingFrom(BecomeOrCeaseSchemePage)
+        .run(
+          submitAnswer(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItBecameAnInvestmentRegulatedPensionScheme),
+          pageMustBe(SchemeChangeDatePage)
+        )
+    }
+
+    "testing navigation from 'What change has taken place for this pension scheme?' page to scheme date page (Ceased to become a scheme)" in {
+      startingFrom(BecomeOrCeaseSchemePage)
+        .run(
+          submitAnswer(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItHasCeasedToBeAnInvestmentRegulatedPensionScheme),
+          pageMustBe(SchemeChangeDatePage)
+        )
+    }
+  }
+
+  "testing navigation from 'When did this scheme cease to be an investment regulated pension scheme?' page to CYA page (Became a scheme)" in {
+    startingFrom(SchemeChangeDatePage)
+      .run(
+        submitAnswer(SchemeChangeDatePage, SchemeChangeDate(LocalDate.of(2022, Month.MAY, 22))),
+        pageMustBe(Event10CheckYourAnswersPage())
+      )
+  }
+
+  "testing navigation from 'When did this scheme cease to be an investment regulated pension scheme?' page to ContractsOrPolicies page (Ceased to become a scheme)" in {
+    startingFrom(SchemeChangeDatePage)
+      .run(
+        submitAnswer(SchemeChangeDatePage, SchemeChangeDate(LocalDate.of(2022, Month.MAY, 22))),
+        pageMustBe(ContractsOrPoliciesPage)
+      )
+  }
+
+  "testing navigation from 'Do all investments consist of either contracts or policies of insurance?' page to CYA page (Ceased to become a scheme: Yes)" in {
+    startingFrom(ContractsOrPoliciesPage)
+      .run(
+        submitAnswer(ContractsOrPoliciesPage, true),
+        pageMustBe(Event10CheckYourAnswersPage())
+      )
+  }
+
+  "testing navigation from 'Do all investments consist of either contracts or policies of insurance?' page to CYA page (Ceased to become a scheme: No)" in {
+    startingFrom(ContractsOrPoliciesPage)
+      .run(
+        submitAnswer(ContractsOrPoliciesPage, false),
+        pageMustBe(Event10CheckYourAnswersPage())
+      )
+  }
+
+  "testing navigation from CYA page to Event Summary page" in {
+    startingFrom(Event10CheckYourAnswersPage())
+      .run(
+        goTo(EventSummaryPage),
+        pageMustBe(EventSummaryPage)
+      )
+  }
+
 }
