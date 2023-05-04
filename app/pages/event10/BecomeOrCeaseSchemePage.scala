@@ -19,9 +19,11 @@ package pages.event10
 import controllers.event10.routes
 import models.UserAnswers
 import models.event10.BecomeOrCeaseScheme
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.{Success, Try}
 
 case object BecomeOrCeaseSchemePage extends QuestionPage[BecomeOrCeaseScheme] {
 
@@ -29,9 +31,27 @@ case object BecomeOrCeaseSchemePage extends QuestionPage[BecomeOrCeaseScheme] {
 
   override def toString: String = "becomeOrCeaseScheme"
 
+  override def cleanupBeforeSettingValue(value: Option[BecomeOrCeaseScheme], userAnswers: UserAnswers): Try[UserAnswers] = {
+    userAnswers.get(BecomeOrCeaseSchemePage) match {
+      case originalOption@Some(_) if originalOption != value =>
+        userAnswers.removeOrException(BecomeOrCeaseSchemePage)
+        userAnswers.remove(ContractsOrPoliciesPage)
+      case _ => Success(userAnswers)
+    }
+  }
+
   override def route(waypoints: Waypoints): Call =
     routes.BecomeOrCeaseSchemeController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     SchemeChangeDatePage
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
+    val originalOptionSelected = originalAnswers.get(BecomeOrCeaseSchemePage)
+    val updatedOptionSelected = updatedAnswers.get(BecomeOrCeaseSchemePage)
+    val answerIsChanged = originalOptionSelected != updatedOptionSelected
+
+    if (answerIsChanged) SchemeChangeDatePage else Event10CheckYourAnswersPage()
+
+  }
 }
