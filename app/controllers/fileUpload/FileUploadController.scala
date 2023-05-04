@@ -45,8 +45,6 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
                                        view: FileUploadView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
-
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)
     andThen requireData).async { implicit request =>
 

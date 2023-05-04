@@ -65,6 +65,7 @@ class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
   override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
+    reset(mockUpscanInitiateConnector)
   }
 
   "onPageLoad" - {
@@ -72,7 +73,7 @@ class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
     "must return OK and the correct view for a GET" in {
 
       when(mockUpscanInitiateConnector.initiateV2(any(), any(), any())(any(), any())).thenReturn(Future.successful(upscanInitiateResponse))
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)

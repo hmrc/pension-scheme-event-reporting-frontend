@@ -30,6 +30,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.fileUpload.FileUploadResultView
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
@@ -59,7 +61,6 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
-
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[FileUploadResultView]
