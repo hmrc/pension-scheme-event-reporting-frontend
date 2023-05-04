@@ -39,7 +39,7 @@ object PaymentDetailsSummary extends Formatters {
           value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer.amountPaid)}")),
           actions = Seq(
             ActionItemViewModel("site.change", PaymentDetailsPage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("paymentDetails.value.change.hidden"))
+              .withVisuallyHiddenText(messages("paymentDetails.value.change.hidden"))
           )
         )
     }
@@ -54,7 +54,7 @@ object PaymentDetailsSummary extends Formatters {
           value = ValueViewModel(dateFormatter.format(answer.eventDate)),
           actions = Seq(
             ActionItemViewModel("site.change", PaymentDetailsPage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("paymentDetails.date.change.hidden"))
+              .withVisuallyHiddenText(messages("paymentDetails.date.change.hidden"))
           )
         )
     }
