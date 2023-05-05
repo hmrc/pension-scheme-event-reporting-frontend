@@ -20,25 +20,26 @@
     layout: templates.SchemeLayout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
+    govukDateInput: GovukDateInput,
     govukButton: GovukButton
 )
 
 @(form: Form[_], waypoints: Waypoints)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("hasSchemeChangedRules.title"))) {
+@layout(pageTitle = title(form, messages("dateOfChange.title"))) {
 
-    @formHelper(action = routes.HasSchemeChangedRulesController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.DateOfChangeController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value.day")))
         }
 
-        @govukRadios(
-            RadiosViewModel.yesNo(
-                field = form("value"),
-                legend = LegendViewModel(messages("hasSchemeChangedRules.heading")).asPageHeading()
+        @govukDateInput(
+            DateViewModel(
+                field  = form("dateOfChange"),
+                legend = LegendViewModel(messages("dateOfChange.heading")).asPageHeading()
             )
+            .withHint(HintViewModel(messages("dateOfChange.hint")))
         )
 
         @govukButton(

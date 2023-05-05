@@ -17,24 +17,17 @@
 package pages.event12
 
 import controllers.event12.routes
-import models.UserAnswers
-import pages.{Page, QuestionPage, Waypoints}
+import models.event12.DateOfChange
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object HasSchemeChangedRulesPage extends QuestionPage[Boolean] {
+case object DateOfChangePage extends QuestionPage[DateOfChange] {
 
   override def path: JsPath = JsPath \ "event12" \ toString
 
-  override def toString: String = "hasSchemeChangedRules"
+  override def toString: String = "dateOfChange"
 
   override def route(waypoints: Waypoints): Call =
-    routes.HasSchemeChangedRulesController.onPageLoad(waypoints)
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(this).map {
-      case true => DateOfChangePage
-      case false => this
-    }.orRecover
-  }
+    routes.DateOfChangeController.onPageLoad(waypoints)
 }

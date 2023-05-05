@@ -1292,3 +1292,14 @@ hasSchemeChangedRules.heading = Has the scheme that was treated as 2 or more sch
 hasSchemeChangedRules.checkYourAnswersLabel = Did scheme treated as 2 or more schemes before 6 April 2006 change its rules?
 hasSchemeChangedRules.error.required = Select if the scheme has changed its rules
 hasSchemeChangedRules.change.hidden = HasSchemeChangedRules
+
+dateOfChange.title = When did this change take effect?
+dateOfChange.heading = When did this change take effect?
+dateOfChange.hint = For example, 27 3 2007
+
+dateOfChange.checkYourAnswersLabel = When the change took place
+dateOfChange.error.nothingEntered = Enter the date
+dateOfChange.error.noDayMonthOrYear = The date must include a day, month and year
+dateOfChange.error.outsideDateRanges = Enter a real date
+dateOfChange.error.outsideReportedYear = The date must be between {0} and {1}
+dateOfChange.change.hidden = The date that the scheme changed its rules
