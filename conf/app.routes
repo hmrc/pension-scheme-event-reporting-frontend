@@ -368,7 +368,7 @@ POST       /new-report/event-12-scheme-treated-as-2-or-more                     
 GET        /new-report/event-12-when-change-took-effect                            controllers.event12.DateOfChangeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-12-when-change-took-effect                            controllers.event12.DateOfChangeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /new-report/event-12-cant-submit                                        controllers.event12.CannotSubmitController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/event-12-cannot-submit                                      controllers.event12.CannotSubmitController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET        /new-report/event-12-check-your-answers                                 controllers.event12.Event12CheckYourAnswersController.onPageLoad
 GET        /new-report/event-12-click                                              controllers.event12.Event12CheckYourAnswersController.onClick
