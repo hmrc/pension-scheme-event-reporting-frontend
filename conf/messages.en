@@ -1255,3 +1255,10 @@ paymentDetails.date.change.hidden = the date of the payment
 paymentDetails.date.checkYourAnswersLabel = Date of the payment
 
 characterCount = You can enter up to {0} characters
+
+whatYouWillNeed.event11.title = What you will need
+whatYouWillNeed.event11.heading = What you will need
+whatYouWillNeed.event11.change.hidden = What you will need
+whatYouWillNeed.event11.p = You will need to tell us the date that a scheme's rules are changed if the change was made to:
+whatYouWillNeed.event11.item1 = entitle any person to require the making of unauthorised payments
+whatYouWillNeed.event11.item2 = allow investments in assets other than contracts or policies of insurance
