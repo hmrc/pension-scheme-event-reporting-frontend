@@ -1303,3 +1303,7 @@ dateOfChange.error.noDayMonthOrYear = The date must include a day, month and yea
 dateOfChange.error.outsideDateRanges = Enter a real date
 dateOfChange.error.outsideReportedYear = The date must be between {0} and {1}
 dateOfChange.change.hidden = The date that the scheme changed its rules
+
+cannotSubmit.title = You cannot submit a report for this event
+cannotSubmit.heading = You cannot submit a report for this event
+cannotSubmit.p1 = You do not meet the criteria to submit a report for this event at this time.

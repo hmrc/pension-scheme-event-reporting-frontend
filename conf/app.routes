@@ -368,6 +368,8 @@ POST       /new-report/event-12-scheme-treated-as-2-or-more                     
 GET        /new-report/event-12-when-change-took-effect                            controllers.event12.DateOfChangeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-12-when-change-took-effect                            controllers.event12.DateOfChangeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
+GET        /new-report/event-12-cant-submit                                        controllers.event12.CannotSubmitController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.
 #
