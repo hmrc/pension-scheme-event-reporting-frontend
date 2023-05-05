@@ -26,10 +26,13 @@ import models.FileUploadOutcomeResponse
 import models.UserAnswers
 import models.enumeration.EventType
 import models.enumeration.EventType.getEventTypeByName
+import models.fileUpload.FileUploadResult
+import models.requests.OptionalDataRequest
 import pages.Waypoints
 import pages.fileUpload.FileUploadResultPage
+import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadResultView
 
@@ -47,15 +50,16 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
 
   private val form = formProvider()
 
-  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) async { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(FileUploadResultPage(eventType))).fold(form)(form.fill)
+  private def renderView(waypoints: Waypoints, eventType: EventType, preparedForm: Form[FileUploadResult], status: Status)
+                        (implicit request: OptionalDataRequest[AnyContent])= {
     request.request.queryString.get("key").flatMap(_.headOption) match {
       case Some(uploadIdReference) =>
+    val submitUrl = Call("POST", routes.FileUploadResultController.onSubmit(waypoints).url + s"?key=$uploadIdReference")
         eventReportingConnector.getFileUploadOutcome(uploadIdReference).map {
           case FileUploadOutcomeResponse(_, IN_PROGRESS) =>
-            Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), None))
+            status(view(preparedForm, waypoints, getEventTypeByName(eventType), None, submitUrl))
           case FileUploadOutcomeResponse(fileName@Some(_), SUCCESS) =>
-            Ok(view(preparedForm, waypoints, getEventTypeByName(eventType), fileName))
+            status(view(preparedForm, waypoints, getEventTypeByName(eventType), fileName, submitUrl))
           case FileUploadOutcomeResponse(_, FAILURE) =>
             Redirect(controllers.fileUpload.routes.FileRejectedController.onPageLoad(waypoints).url)
           case _ => throw new RuntimeException("UploadId reference does not exist")
@@ -63,12 +67,16 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       case _ => Future.successful(BadRequest("Missing Key"))
     }
   }
+  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) async { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(_.get(FileUploadResultPage(eventType))).fold(form)(form.fill)
+    renderView(waypoints, eventType, preparedForm, Ok)
+  }
 
   def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, getEventTypeByName(eventType), None))),
+          renderView(waypoints, eventType, formWithErrors, BadRequest),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(FileUploadResultPage(eventType), value)

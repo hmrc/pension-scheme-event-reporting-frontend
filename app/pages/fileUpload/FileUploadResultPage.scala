@@ -20,7 +20,7 @@ import controllers.fileUpload.routes
 import models.UserAnswers
 import models.enumeration.EventType
 import models.fileUpload.FileUploadResult
-import models.fileUpload.FileUploadResult.{Option1, Option2}
+import models.fileUpload.FileUploadResult.{Yes, No}
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -36,8 +36,8 @@ case class FileUploadResultPage(eventType: EventType) extends QuestionPage[FileU
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
-      case Option1 => ProcessingRequestPage(eventType)
-      case Option2 => FileUploadPage(eventType)
+      case Yes => IndexPage
+      case No => FileUploadPage(eventType)
       case _ => IndexPage
     }.orRecover
   }
