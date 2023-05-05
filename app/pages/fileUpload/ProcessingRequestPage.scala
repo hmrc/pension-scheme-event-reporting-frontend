@@ -25,20 +25,13 @@ import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class FileUploadResultPage(eventType: EventType) extends QuestionPage[FileUploadResult] {
+case class ProcessingRequestPage(eventType: EventType) extends Page {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "fileUploadResult"
+  override def toString: String = "processingRequest"
 
   override def route(waypoints: Waypoints): Call =
-    routes.FileUploadResultController.onPageLoad(waypoints)
+    routes.ProcessingRequestController.onPageLoad(waypoints)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(this).map {
-      case Option1 => ProcessingRequestPage(eventType)
-      case Option2 => FileUploadPage(eventType)
-      case _ => IndexPage
-    }.orRecover
-  }
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = IndexPage
+
 }
