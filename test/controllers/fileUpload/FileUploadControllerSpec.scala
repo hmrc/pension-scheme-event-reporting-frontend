@@ -89,23 +89,4 @@ class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
   }
-//
-//  "showResult" - {
-//
-//    "must save file name to mongo if successful" in {
-//
-//      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-//
-//      running(application) {
-//        val request = FakeRequest(GET, showResultRoute)
-//
-//        val result = route(application, request).value
-//
-//        val view = application.injector.instanceOf[FileUploadView]
-//
-//        status(result) mustEqual SEE_OTHER
-//        verify(mockUserAnswersCacheConnector, times(1)).save(ArgumentMatchers.eq("123456"), ArgumentMatchers.eq(Event22), any())(any(), any())
-//      }
-//    }
-//  }
 }
