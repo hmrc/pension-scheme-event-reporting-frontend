@@ -1229,12 +1229,12 @@ paymentDetails.value.error.noDecimals = The total amount must include pence, lik
 paymentDetails.value.error.amountTooHigh = The total amount must be £999999999.99 or less
 paymentDetails.value.error.negativeValue = The total amount must not be a negative amount of money, like -123.45 or -156.00
 paymentDetails.value.error.zeroEntered = The total amount must be greater than zero
-paymentDetails.value.change.hidden = the total amount
+paymentDetails.value.change.hidden = The total amount
 paymentDetails.value.checkYourAnswersLabel = Total amount paid
 
 event3.paymentDetails.value.heading = Total amount of benefits taken
 event3.paymentDetails.value.checkYourAnswersLabel = Total amount of benefits taken
-event3.paymentDetails.value.change.hidden = the total amount of benefits taken
+event3.paymentDetails.value.change.hidden = The total amount of benefits taken
 event3.paymentDetails.date.heading = Date benefits were taken
 event3.paymentDetails.title = Amount and date
 event3.paymentDetails.heading = Amount and date

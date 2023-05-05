@@ -63,7 +63,7 @@ class PaymentDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
             value = ValueViewModel(HtmlContent(Html(amountPaid))),
             actions = Seq(
               ActionItemViewModel("site.change", PaymentDetailsPage(eventType, index = 0).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("site.change") + " " + messages("paymentDetails.value.change.hidden"))
+                .withVisuallyHiddenText(messages("paymentDetails.value.change.hidden"))
             )
           )
         )
@@ -88,7 +88,7 @@ class PaymentDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
             value = ValueViewModel(format.format(date)),
             actions = Seq(
               ActionItemViewModel("site.change", PaymentDetailsPage(eventType, 0).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("site.change") + " " + messages("paymentDetails.date.change.hidden"))
+                .withVisuallyHiddenText(messages("paymentDetails.date.change.hidden"))
             )
           )
         )
