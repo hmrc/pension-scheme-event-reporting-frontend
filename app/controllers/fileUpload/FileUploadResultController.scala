@@ -60,7 +60,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
             Redirect(controllers.fileUpload.routes.FileRejectedController.onPageLoad(waypoints).url)
           case _ => throw new RuntimeException("UploadId reference does not exist")
         }
-      case _ => throw new RuntimeException("UploadId reference does not exist")
+      case _ => Future.successful(BadRequest("Missing Key"))
     }
   }
 

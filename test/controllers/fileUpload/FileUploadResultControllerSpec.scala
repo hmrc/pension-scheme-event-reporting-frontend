@@ -17,20 +17,26 @@
 package controllers.fileUpload
 
 import base.SpecBase
-import connectors.UserAnswersCacheConnector
+import config.FrontendAppConfig
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import forms.fileUpload.FileUploadResultFormProvider
+import models.FileUploadOutcomeResponse
+import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.EventType.{Event22, getEventTypeByName}
-import org.mockito.Mockito.reset
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.mvc.{Call, Headers}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.fileUpload.FileUploadResultView
+import views.html.fileUpload.{FileRejectedView, FileUploadResultView}
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
@@ -40,33 +46,67 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val mockERConnector = mock[EventReportingConnector]
 
-  private def getRoute: String = routes.FileUploadResultController.onPageLoad(waypoints).url
-  private def postRoute: String = routes.FileUploadResultController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
+    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
+    bind[EventReportingConnector].toInstance(mockERConnector)
   )
+
+  private def getRoute: String = routes.FileUploadResultController.onPageLoad(waypoints).url
+  private def failureGetRoute: String = routes.FileRejectedController.onPageLoad(waypoints).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockUserAnswersCacheConnector)
+    reset(mockERConnector)
   }
 
   "FileUploadResult Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET when a file name is successfully retrieved from mongo cache" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
+      when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
+      .thenReturn(Future.successful(FileUploadOutcomeResponse(Some("testFile"), SUCCESS)))
       running(application) {
-        val request = FakeRequest(GET, getRoute)
+        val request = FakeRequest.apply(method = GET, path = getRoute + "?key=123")
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[FileUploadResultView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, getEventTypeByName(Event22), Some(""))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, getEventTypeByName(Event22), Some("testFile"))(request, messages(application)).toString
+      }
+    }
+
+    "must return OK and the correct view for a GET when a file name retrieval from mongo cache is in progress" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
+      when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
+        .thenReturn(Future.successful(FileUploadOutcomeResponse(None, IN_PROGRESS)))
+      running(application) {
+        val request = FakeRequest.apply(method = GET, path = getRoute + "?key=123")
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[FileUploadResultView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form, waypoints, getEventTypeByName(Event22), None)(request, messages(application)).toString
+      }
+    }
+
+    "must return OK and redirect to the file rejected controller if file name is not retrieved from mongo cache" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
+      when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
+      .thenReturn(Future.successful(FileUploadOutcomeResponse(None, FAILURE)))
+      running(application) {
+        val request = FakeRequest.apply(method = GET, path = getRoute + "?key=123")
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
       }
     }
 //
