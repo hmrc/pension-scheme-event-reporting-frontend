@@ -17,7 +17,8 @@
 package controllers.event23
 
 import base.SpecBase
-import data.SampleData.sampleMemberJourneyDataEvent23
+import data.SampleData.sampleMemberJourneyDataEvent22and23
+import models.enumeration.EventType.Event23
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -63,7 +64,7 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleMemberJourneyDataEvent23),
+        userAnswers = Some(sampleMemberJourneyDataEvent22and23(Event23)),
         extraModules = extraModules
       ).build()
 
@@ -125,7 +126,7 @@ object Event23CheckYourAnswersControllerSpec {
           messages(messageKey)
         ), ""),
       Value(HtmlContent(htmlContent), ""), "",
-      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages("site.change") + " " + messages(hiddenContentChangeLink)), "", Map()))))
+      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
 
   private def expectedMemberSummaryListRowsEvent23(implicit messages: Messages): Seq[SummaryListRow] = Seq(
@@ -149,7 +150,7 @@ object Event23CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithoutChange(
       "totalPensionAmounts.event23.checkYourAnswersLabel",
-      "£1,234.56",
+      "£10.00",
       "/manage-pension-scheme-event-report/new-report/1/event-23-total-input-amount?waypoints=event-23-check-answers-1",
       "totalPensionAmounts.event23.change.hidden"
     )

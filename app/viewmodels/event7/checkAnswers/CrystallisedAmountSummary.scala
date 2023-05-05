@@ -38,7 +38,7 @@ object CrystallisedAmountSummary  {
           value   = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer)}")),
           actions = Seq(
             ActionItemViewModel("site.change", CrystallisedAmountPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("crystallisedAmount.change.hidden"))
+              .withVisuallyHiddenText(messages("crystallisedAmount.change.hidden"))
           )
         )
     }

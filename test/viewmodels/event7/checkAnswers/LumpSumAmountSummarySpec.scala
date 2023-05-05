@@ -52,7 +52,7 @@ class LumpSumAmountSummarySpec extends AnyFreeSpec with Matchers with OptionValu
           value = ValueViewModel(HtmlContent(Html(lumpSumAmountHtml))),
           actions = Seq(
             ActionItemViewModel("site.change", LumpSumAmountPage(index = 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("lumpSumAmount.change.hidden"))
+              .withVisuallyHiddenText(messages("lumpSumAmount.change.hidden"))
           )
         )
       )

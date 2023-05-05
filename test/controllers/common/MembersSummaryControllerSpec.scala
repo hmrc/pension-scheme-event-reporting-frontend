@@ -18,9 +18,11 @@ package controllers.common
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
+import controllers.common.MembersSummaryControllerSpec.{cYAHref, fake26MappedMembers, paginationStats26Members}
 import data.SampleData
 import data.SampleData._
 import forms.common.MembersSummaryFormProvider
+import helpers.DateHelper
 import models.UserAnswers
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event2, Event22, Event23, Event3, Event4, Event5, Event6, Event8, Event8A}
@@ -35,10 +37,13 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.EventPaginationService
+import services.EventPaginationService.PaginationStats
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import viewmodels.{Message, SummaryListRowWithTwoValues}
-import views.html.common.MembersSummaryView
+import views.html.common.{MembersSummaryView, MembersSummaryViewWithPagination}
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
@@ -47,56 +52,96 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
 
   private val formProvider = new MembersSummaryFormProvider()
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val mockEventPaginationService = mock[EventPaginationService]
+
+  private val mockTaxYear = mock[DateHelper]
+  private val validAnswer = LocalDate.of(2022, 5, 12)
 
   private def getRoute(eventType: EventType): String = routes.MembersSummaryController.onPageLoad(waypoints, eventType).url
+
+  private def getRouteWithPagination(eventType: EventType): String = routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, eventType, 0).url
 
   private def postRoute(eventType: EventType): String = routes.MembersSummaryController.onSubmit(waypoints, eventType).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
+    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
+    bind[EventPaginationService].toInstance(mockEventPaginationService),
+    bind[DateHelper].toInstance(mockTaxYear)
   )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockUserAnswersCacheConnector)
+    when(mockTaxYear.now).thenReturn(validAnswer)
   }
 
   "MembersSummary Controller" - {
-    testSuite(formProvider(Event2), Event2, sampleMemberJourneyDataEvent2, SampleData.amountPaid.toString(),
+    behave like testSuite(formProvider(Event2), Event2, sampleMemberJourneyDataEvent2, SampleData.amountPaid.toString(),
       controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(0).url, "999.11")
 
-    testSuite(formProvider(Event3), Event3, sampleMemberJourneyDataEvent3and4and5(Event3), SampleData.paymentDetailsCommon.amountPaid.toString(),
-      controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(0).url, "54.23")
+    behave like testSuite(formProvider(Event3), Event3, sampleMemberJourneyDataEvent3and4and5(Event3), SampleData.paymentDetailsCommon.amountPaid.setScale(2).toString,
+      controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(0).url, "10.00")
 
-    testSuite(formProvider(Event4), Event4, sampleMemberJourneyDataEvent3and4and5(Event4), SampleData.paymentDetailsCommon.amountPaid.toString(),
-      controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url, "54.23")
+    behave like testSuite(formProvider(Event4), Event4, sampleMemberJourneyDataEvent3and4and5(Event4), SampleData.paymentDetailsCommon.amountPaid.setScale(2).toString(),
+      controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url, "10.00")
 
-    testSuite(formProvider(Event5), Event5, sampleMemberJourneyDataEvent3and4and5(Event5), SampleData.paymentDetailsCommon.amountPaid.toString(),
-      controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(0).url, "54.23")
+    behave like testSuite(formProvider(Event5), Event5, sampleMemberJourneyDataEvent3and4and5(Event5), SampleData.paymentDetailsCommon.amountPaid.setScale(2).toString(),
+      controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(0).url, "10.00")
 
-    testSuite(formProvider(Event6), Event6, sampleMemberJourneyDataEvent6, SampleData.crystallisedDetails.amountCrystallised.toString(),
-      controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(0).url, "857.12")
+    behave like testSuite(formProvider(Event6), Event6, sampleMemberJourneyDataEvent6, SampleData.crystallisedDetails.amountCrystallised.setScale(2).toString(),
+      controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(0).url, "10.00")
 
-    testSuite(formProvider(Event8), Event8, sampleMemberJourneyDataEvent8, SampleData.lumpSumDetails.lumpSumAmount.toString(),
-      controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(0).url, "223.11")
+    behave like testSuite(formProvider(Event8), Event8, sampleMemberJourneyDataEvent8, SampleData.lumpSumDetails.lumpSumAmount.setScale(2).toString(),
+      controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(0).url, "10.00")
 
-    testSuite(formProvider(Event8A), Event8A, sampleMemberJourneyDataEvent8A, SampleData.lumpSumDetails.lumpSumAmount.toString(),
-      controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(0).url, "223.11")
+    behave like testSuite(formProvider(Event8A), Event8A, sampleMemberJourneyDataEvent8A, SampleData.lumpSumDetails.lumpSumAmount.setScale(2).toString(),
+      controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(0).url, "10.00")
 
-    testSuite(formProvider(Event22), Event22, sampleMemberJourneyDataEvent22, SampleData.totalPaymentAmount.toString(),
-      controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url, "999.11")
+    behave like testSuite(formProvider(Event22), Event22, sampleMemberJourneyDataEvent22and23(Event22), SampleData.totalPaymentAmountEvent22and23.setScale(2).toString(),
+      controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url, "10.00")
 
-    testSuite(formProvider(Event23), Event23, sampleMemberJourneyDataEvent23, SampleData.totalPaymentAmountEvent23CurrencyFormat,
-      controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url, "1,234.56")
+    behave like testSuite(formProvider(Event23), Event23, sampleMemberJourneyDataEvent22and23(Event23), SampleData.totalPaymentAmountEvent22and23.setScale(2).toString(),
+      controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url, "10.00")
+
+    behave like testSuiteWithPagination(
+      formProvider(Event2), Event2, cYAHref(Event2, 0), "260.00", SampleData.sampleMemberJourneyDataWithPaginationEvent2)
+
+    behave like testSuiteWithPagination(
+      formProvider(Event3), Event3, cYAHref(Event3, 0), "260.00", SampleData.event345UADataWithPagnination(Event3))
+
+    behave like testSuiteWithPagination(
+      formProvider(Event4), Event4, cYAHref(Event4, 0), "260.00", SampleData.event345UADataWithPagnination(Event4))
+
+    behave like testSuiteWithPagination(
+      formProvider(Event5), Event5, cYAHref(Event5, 0), "260.00", SampleData.event345UADataWithPagnination(Event5))
+
+    behave like testSuiteWithPagination(
+      formProvider(Event6), Event6, cYAHref(Event6, 0), "260.00", SampleData.event6UADataWithPagination)
+
+    behave like testSuiteWithPagination(
+      formProvider(Event8), Event8, cYAHref(Event8, 0), "260.00", SampleData.event8UADataWithPagination)
+
+    behave like testSuiteWithPagination(
+      formProvider(Event8A), Event8A, cYAHref(Event8A, 0), "260.00", SampleData.event8aUADataWithPagination)
+
+    behave like testSuiteWithPagination(
+      formProvider(Event22), Event22, cYAHref(Event22, 0), "260.00", SampleData.event22and23UADataWithPagination(Event22))
+
+    behave like testSuiteWithPagination(
+      formProvider(Event23), Event23, cYAHref(Event23, 0), "260.00", SampleData.event22and23UADataWithPagination(Event23))
   }
 
-  private def testSuite(form: Form[Boolean], eventType: EventType, sampleData: UserAnswers, secondValue: String, href: String, arbitraryAmount: String): Unit = {
-    testReturnOkAndCorrectView(eventType, form, sampleData, secondValue, href, arbitraryAmount)
+  private def testSuite(form: Form[Boolean], eventType: EventType, sampleData: UserAnswers, secondValue: String, href: String, totalAmount: String): Unit = {
+    testReturnOkAndCorrectView(eventType, form, sampleData, secondValue, href, totalAmount)
     testSaveAnswerAndRedirectWhenValid(eventType)
     testBadRequestForInvalidDataSubmission(eventType, form)
   }
 
-  private def testReturnOkAndCorrectView(eventType: EventType, form: Form[Boolean], sampleData: UserAnswers, secondValue: String, href: String, arbitraryAmount: String): Unit = {
+  private def testSuiteWithPagination(form: Form[Boolean], eventType: EventType, href: String, totalAmount: String, sampleData: UserAnswers): Unit = {
+    testReturnOkAndCorrectViewWithPagination(eventType, form, href, totalAmount, sampleData)
+  }
+
+  private def testReturnOkAndCorrectView(eventType: EventType, form: Form[Boolean], sampleData: UserAnswers, secondValue: String, href: String, totalAmount: String): Unit = {
     s"must return OK and the correct view for a GET for Event $eventType" in {
 
       val application = applicationBuilder(userAnswers = Some(sampleData)).build()
@@ -127,9 +172,38 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
                 )
               ))
             ))
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form, waypoints, eventType, expectedSeq, totalAmount, "2023")(request, messages(application)).toString
+      }
+    }
+  }
+
+  private def testReturnOkAndCorrectViewWithPagination(eventType: EventType, form: Form[Boolean], href: String, totalAmount: String, sampleData: UserAnswers): Unit = {
+    s"must return OK and the correct view with pagination for a GET for Event $eventType" in {
+
+      when(mockEventPaginationService.paginateMappedMembers(any(), any())).thenReturn(paginationStats26Members(href, eventType))
+
+      val application = applicationBuilder(userAnswers = Some(sampleData)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRouteWithPagination(eventType))
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[MembersSummaryViewWithPagination]
+
+        val expectedPaginationStats = PaginationStats(
+          slicedMembers = fake26MappedMembers(href, eventType),
+          totalNumberOfMembers = 26,
+          totalNumberOfPages = 2,
+          pageStartAndEnd = (1, 25),
+          pagerSeq = Seq(1, 2))
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, eventType, expectedSeq, arbitraryAmount, "2023")(request, messages(application)).toString
+
+        val expectedView = view(form, waypoints, eventType, fake26MappedMembers(href, eventType), totalAmount, "2023", expectedPaginationStats, 0)(request, messages(application)).toString
+
+        contentAsString(result) mustEqual expectedView
       }
     }
   }
@@ -180,4 +254,64 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
       }
     }
   }
+}
+
+object MembersSummaryControllerSpec extends SpecBase {
+
+  private def fake26MappedMembers(href: String, eventType: EventType): Seq[SummaryListRowWithTwoValues] = fakeXMappedMembers(25, href, eventType)
+
+  private def cYAHref(eventType: EventType, index: Int) = {
+      eventType match {
+        case Event2 => controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(index).url
+        case Event3 => controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(index).url
+        case Event4 => controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(index).url
+        case Event5 => controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(index).url
+        case Event6 => controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(index).url
+        case Event8 => controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(index).url
+        case Event8A => controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(index).url
+        case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
+        case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
+        case _ => "Not a member event"
+      }
+  }
+
+  private def fakeXMappedMembers(x: Int, href: String, eventType: EventType): Seq[SummaryListRowWithTwoValues] = for {
+    i <- 1 to x
+  } yield {
+    SummaryListRowWithTwoValues(s"${memberDetails.fullName}", s"${memberDetails.nino}", "10.00",
+      actions = Some(Actions(
+        items = Seq(
+          ActionItem(
+            content = Text(Message("site.view")),
+            href = cYAHref(eventType, i-1)
+          ),
+          ActionItem(
+            content = Text(Message("site.remove")),
+            href = "#"
+          )
+        )
+      )))
+  }
+
+  private def fakePaginationStats(
+                                   slicedMems: Seq[SummaryListRowWithTwoValues],
+                                   totMems: Int,
+                                   totPages: Int,
+                                   pagStartEnd: (Int, Int),
+                                   pagSeq: Seq[Int]
+                                 ): PaginationStats = PaginationStats(
+    slicedMembers = slicedMems,
+    totalNumberOfMembers = totMems,
+    totalNumberOfPages = totPages,
+    pageStartAndEnd = pagStartEnd,
+    pagerSeq = pagSeq
+  )
+
+  private def paginationStats26Members(href: String, eventType: EventType) = fakePaginationStats(
+    fake26MappedMembers(href, eventType).slice(0, 24),
+    26,
+    2,
+    (1, 25),
+    1 to 2
+  )
 }

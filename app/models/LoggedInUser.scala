@@ -28,6 +28,7 @@ case class LoggedInUser(
   def idName: String = administratorOrPractitioner match {
     case Administrator => "psaId"
     case Practitioner => "pspId"
+    case _ => "Unable to retrieve Id"
   }
 }
 

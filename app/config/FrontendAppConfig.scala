@@ -17,6 +17,11 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
+import models.enumeration.AdministratorOrPractitioner
+import models.enumeration.AdministratorOrPractitioner.Administrator
+import models.UploadId
+import models.enumeration.EventType
+import models.enumeration.EventType.toRoute
 import play.api.Configuration
 import play.api.i18n.Lang
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -49,7 +54,15 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   def administratorOrPractitionerUrl: String = loadConfig("urls.administratorOrPractitioner")
 
   def youNeedToRegisterUrl: String = loadConfig("urls.youNeedToRegisterPage")
+
   def yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
+
+  def successEndPointTarget(eventType: EventType): String = loadConfig("upscan.success-endpoint").format(toRoute(eventType))
+  def failureEndPointTarget(eventType: EventType): String = loadConfig("upscan.failure-endpoint").format(toRoute(eventType))
+
+  lazy val maxUploadFileSize: Int = configuration.getOptional[Int]("upscan.maxUploadFileSizeMb").getOrElse(1)
+
+  lazy val initiateV2Url:String = servicesConfig.baseUrl("upscan-initiate") + "/upscan/v2/initiate"
 
   private val exitSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
   val exitSurveyUrl: String = s"$exitSurveyBaseUrl/feedback/PODS"
@@ -67,4 +80,23 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   lazy val minimumYear: Int = configuration.get[Int]("minimumYear")
 
   lazy val minimalDetailsUrl: String = s"$pensionsAdministratorUrl${configuration.get[String](path = "urls.minimalDetails")}"
+
+  lazy val emailApiUrl: String = servicesConfig.baseUrl("email")
+  lazy val emailSendForce: Boolean = configuration.getOptional[Boolean]("email.force").getOrElse(false)
+  lazy val fileReturnTemplateId: String = configuration.get[String]("email.fileReturnTemplateId")
+
+  def eventReportingEmailCallback(
+                                   schemeAdministratorType: AdministratorOrPractitioner,
+                                   requestId: String,
+                                   encryptedEmail: String,
+                                   encryptedPsaId: String
+                                 ) = s"$eventReportingUrl${
+    configuration.get[String](path = "urls.emailCallback")
+      .format(
+        if (schemeAdministratorType == Administrator) "PSA" else "PSP",
+        requestId,
+        encryptedEmail,
+        encryptedPsaId
+      )
+  }"
 }
