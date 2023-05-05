@@ -19,7 +19,6 @@ package controllers.fileUpload
 import config.FrontendAppConfig
 import connectors.{UpscanInitiateConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.fileUpload.FileUploadFormProvider
 import models.enumeration.EventType
 import models.enumeration.EventType.getEventTypeByName
 import models.requests.DataRequest
@@ -40,7 +39,6 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
                                        requireData: DataRequiredAction,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
                                        upscanInitiateConnector: UpscanInitiateConnector,
-                                       formProvider: FileUploadFormProvider,
                                        appConfig: FrontendAppConfig,
                                        view: FileUploadView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {

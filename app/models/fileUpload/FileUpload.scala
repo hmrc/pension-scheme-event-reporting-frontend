@@ -14,37 +14,19 @@
  * limitations under the License.
  */
 
-package models.fileUpload
-
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import viewmodels.govuk.checkbox._
-import models.{Enumerable, WithName}
-
-sealed trait FileUpload
-
-object FileUpload extends Enumerable.Implicits {
-
-  case object Option1 extends WithName("option1") with FileUpload
-  case object Option2 extends WithName("option2") with FileUpload
-
-  val values: Seq[FileUpload] = Seq(
-    Option1,
-    Option2
-  )
-
-  def checkboxItems(implicit messages: Messages): Seq[CheckboxItem] =
-    values.zipWithIndex.map {
-      case (value, index) =>
-        CheckboxItemViewModel(
-          content = Text(messages(s"fileUpload.${value.toString}")),
-          fieldId = "value",
-          index   = index,
-          value   = value.toString
-        )
-    }
-
-  implicit val enumerable: Enumerable[FileUpload] =
-    Enumerable(values.map(v => v.toString -> v): _*)
-}
+//package models.fileUpload
+//
+//import play.api.i18n.Messages
+//import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem
+//import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+//import viewmodels.govuk.checkbox._
+//import models.{Enumerable, WithName}
+//
+//sealed trait FileUpload
+//
+//object FileUpload extends Enumerable.Implicits {
+//
+//  case object Option1 extends WithName("option1") with FileUpload
+//  case object Option2 extends WithName("option2") with FileUpload
+//
+//}
