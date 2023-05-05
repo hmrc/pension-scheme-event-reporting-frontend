@@ -1286,3 +1286,9 @@ contractsOrPolicies.heading = Do all investments consist of either contracts or 
 contractsOrPolicies.checkYourAnswersLabel = Do all investments consist of either contracts or policies of insurance?
 contractsOrPolicies.error.required = Select yes if all investments consist of either contracts or policies of insurance
 contractsOrPolicies.change.hidden = Whether all investments consist of either contracts or policies of insurance
+
+hasSchemeChangedRules.title = Has the scheme that was treated as 2 or more schemes immediately before 6 April 2006 changed its rules?
+hasSchemeChangedRules.heading = Has the scheme that was treated as 2 or more schemes immediately before 6 April 2006 changed its rules?
+hasSchemeChangedRules.checkYourAnswersLabel = Did scheme treated as 2 or more schemes before 6 April 2006 change its rules?
+hasSchemeChangedRules.error.required = Select if the scheme has changed its rules
+hasSchemeChangedRules.change.hidden = HasSchemeChangedRules
