@@ -67,11 +67,12 @@ class Event7MembersSummaryController @Inject()(
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers)
+      val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       val paginationStats = eventPaginationService.paginateMappedMembersThreeValues(mappedMembers, pageNumber)
       if (mappedMembers.length <= 25) {
         Redirect(routes.Event7MembersSummaryController.onPageLoad(waypoints))
       } else {
-        Ok(newView(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers), paginationStats, pageNumber))
+        Ok(newView(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers), selectedTaxYear, paginationStats, pageNumber))
       }
     }
 

@@ -78,7 +78,7 @@ class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         status(result) mustEqual OK
 
         val actual: Seq[SummaryListRow] = captor.getValue.rows
-        val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRowsevent2
+        val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRowsEvent2
 
         actual.size mustBe expected.size
 
@@ -115,8 +115,7 @@ object Event2CheckYourAnswersControllerSpec {
           messages(messageKey)
         ), ""),
       Value(HtmlContent(htmlContent), ""), "",
-      Some(Actions("", List(ActionItem(changeLink, Text("Change"),
-        Some(messages("site.change") + " " + messages(hiddenContentChangeLink)), "", Map()))))
+      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
 
   private def fakeSummaryListRowWithHtmlContentWithHiddenContent(messageKey: String, messageInterpolation: String, htmlContent: String, changeLink: String,
@@ -131,7 +130,7 @@ object Event2CheckYourAnswersControllerSpec {
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink, hiddenContentInterpolation)), "", Map()))))
     )
 
-  private def expectedMemberSummaryListRowsevent2(implicit messages: Messages): Seq[SummaryListRow] = Seq(
+  private def expectedMemberSummaryListRowsEvent2(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "deceasedMembersDetails.checkYourAnswersLabel",
       "Joe Bloggs",
@@ -161,14 +160,15 @@ object Event2CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "amountPaid.event2.checkYourAnswersLabel",
       "Joe Bloggs",
-      "999.11",
+      "£999.11",
       "/manage-pension-scheme-event-report/new-report/1/event-2-how-much-was-paid?waypoints=event-2-check-answers-1",
       "amountPaid.event2.change.hidden",
       "Joe Bloggs"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "datePaid.event2.checkYourAnswersLabel",
-      messageInterpolation = "Joe Bloggs", htmlContent = "19 May 2022",
+      messageInterpolation = "Joe Bloggs",
+      htmlContent = "22 March 2022",
       changeLink = "/manage-pension-scheme-event-report/new-report/1/event-2-when-was-payment-made?waypoints=event-2-check-answers-1",
       hiddenContentChangeLink = "datePaid.event2.change.hidden"
     )

@@ -112,7 +112,7 @@ object Event6CheckYourAnswersControllerSpec {
           messages(messageKey)
         ), ""),
       Value(HtmlContent(htmlContent), ""), "",
-      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages("site.change") + " " + messages(hiddenContentChangeLink)), "", Map()))))
+      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
 
   private def fakeSummaryListRowWithTextWithHiddenContent(messageKey: String, text: String, changeLink: String, hiddenContentChangeLink: String)
@@ -123,7 +123,7 @@ object Event6CheckYourAnswersControllerSpec {
           messages(messageKey)
         ), ""),
       Value(Text(text), ""), "",
-      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages("site.change") + " " + messages(hiddenContentChangeLink)), "", Map()))))
+      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
 
   private def fakeSummaryListRowWithHtmlContentWithHiddenContentWithTwoMsgKeys(messageKeyOne: String, messageKeyTwo: String, htmlContent: String,
@@ -136,7 +136,7 @@ object Event6CheckYourAnswersControllerSpec {
         ), ""),
       Value(Text(htmlContent), ""), "",
       Some(Actions("", List(ActionItem(changeLink, Text("Change"),
-        Some(messages("site.change") + " " + messages(hiddenContentChangeLink, messages(messageKeyTwo).toLowerCase)), "", Map()))))
+        Some(messages(hiddenContentChangeLink, messages(messageKeyTwo).toLowerCase)), "", Map()))))
     )
 
   private def expectedMemberSummaryListRowsEvent6(implicit messages: Messages): Seq[SummaryListRow] = Seq(
@@ -167,7 +167,7 @@ object Event6CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "amountCrystallisedAndDate.value.checkYourAnswersLabel",
-      "£857.12",
+      "£10.00",
       "/manage-pension-scheme-event-report/new-report/1/event-6-payment-details?waypoints=event-6-check-answers-1",
       "amountCrystallisedAndDate.value.change.hidden"
     ),

@@ -113,7 +113,7 @@ object Event5CheckYourAnswersControllerSpec {
           messages(messageKey)
         ), ""),
       Value(HtmlContent(htmlContent), ""), "",
-      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages("site.change") + " " + messages(hiddenContentChangeLink)), "", Map()))))
+      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
 
   private def fakeSummaryListRowWithTextWithHiddenContent(messageKey: String, text: String, changeLink: String, hiddenContentChangeLink: String)
@@ -124,7 +124,7 @@ object Event5CheckYourAnswersControllerSpec {
           messages(messageKey)
         ), ""),
       Value(Text(text), ""), "",
-      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages("site.change") + " " + messages(hiddenContentChangeLink)), "", Map()))))
+      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
 
   private def expectedMemberSummaryListRowsEvent5(implicit messages: Messages): Seq[SummaryListRow] = Seq(
@@ -142,7 +142,7 @@ object Event5CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "paymentDetails.value.checkYourAnswersLabel",
-      "£54.23",
+      "£10.00",
       "/manage-pension-scheme-event-report/new-report/1/event-5-payment-details?waypoints=event-5-check-answers-1",
       "paymentDetails.value.change.hidden"
     ),

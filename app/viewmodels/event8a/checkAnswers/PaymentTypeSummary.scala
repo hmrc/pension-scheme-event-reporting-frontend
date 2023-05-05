@@ -45,7 +45,7 @@ object PaymentTypeSummary {
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", PaymentTypePage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("paymentType.change.hidden"))
+              .withVisuallyHiddenText(messages("paymentType.change.hidden"))
           )
         )
     }

@@ -54,7 +54,7 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", MembersDetailsPage(Event1, 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("membersDetails.change.hidden"))
+              .withVisuallyHiddenText(messages("membersDetails.change.hidden"))
           )
         )
       )
@@ -76,7 +76,7 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", MembersDetailsPage(Event1, 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("membersDetails.change.nino.hidden"))
+              .withVisuallyHiddenText(messages("membersDetails.change.nino.hidden"))
           )
         )
       )

@@ -16,26 +16,38 @@
 
 package controllers
 
-import connectors.EventReportingConnector
+import audit.{AuditService, EventReportingSubmissionEmailAuditEvent}
+import config.FrontendAppConfig
+import connectors.{EmailConnector, EmailStatus, EventReportingConnector, MinimalConnector}
+import controllers.DeclarationController.testDataPsa
 import controllers.actions._
+import models.enumeration.AdministratorOrPractitioner
+import models.requests.DataRequest
+import models.{TaxYear, UserAnswers}
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.DateHelper.formatSubmittedDate
 import views.html.DeclarationView
 
+import java.time.{ZoneId, ZonedDateTime}
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
-import models.UserAnswers
-import DeclarationController.testDataPsa
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
                                        erConnector: EventReportingConnector,
                                        val controllerComponents: MessagesControllerComponents,
+                                       emailConnector: EmailConnector,
+                                       minimalConnector: MinimalConnector,
+                                       auditService: AuditService,
+                                       config: FrontendAppConfig,
                                        view: DeclarationView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -44,17 +56,43 @@ class DeclarationController @Inject()(
       Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
   }
 
-  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
+  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
-      val testUserAnswers: UserAnswers = UserAnswers(testDataPsa(request.pstr))
 
-      request.userAnswers match {
+      minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
+        val testUserAnswers: UserAnswers = UserAnswers(testDataPsa(request.pstr))
+        val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
+        val email = minimalDetails.email
+        val schemeName = request.schemeName
+
         //TODO: Replace test user answers above with ua when FE captures sufficient data
-        case Some(_) => erConnector.submitReport(request.pstr, testUserAnswers).map {
-          _ => Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
+        erConnector.submitReport(request.pstr, testUserAnswers).flatMap { _ =>
+          sendEmail(minimalDetails.name, email, taxYear, schemeName).map {
+            _ => Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
+          }
         }
-        case None => throw new RuntimeException("No user answers found in DeclarationController - required for report submit")
       }
+  }
+
+  private def sendEmail(psaName: String, email: String, taxYear: String, schemeName: String)(
+    implicit request: DataRequest[_], hc: HeaderCarrier): Future[EmailStatus] = {
+    val requestId = hc.requestId.map(_.value).getOrElse(request.headers.get("X-Session-ID").getOrElse(""))
+
+      val submittedDate = formatSubmittedDate(ZonedDateTime.now(ZoneId.of("Europe/London")))
+      val schemeAdministratorType = AdministratorOrPractitioner.Administrator
+
+      val templateParams = Map(
+        "psaName" -> psaName,
+        "schemeName" -> schemeName,
+        "taxYear" -> taxYear,
+        "dateSubmitted" -> submittedDate
+      )
+
+      emailConnector.sendEmail(schemeAdministratorType, requestId, request.loggedInUser.idName, email, config.fileReturnTemplateId, templateParams)
+        .map { emailStatus =>
+          auditService.sendEvent(EventReportingSubmissionEmailAuditEvent(request.loggedInUser.idName, schemeAdministratorType, email))
+          emailStatus
+        }
   }
 }
 
@@ -63,7 +101,7 @@ object DeclarationController {
   /**
    * The frontend and backend changes for report submission are complete, however the correct data is not captured in the frontend yet
    * Please see the To Do comments below for more info
-   **/
+   * */
 
   private def testDataPsa(pstr: String): JsObject = {
     Json.obj(

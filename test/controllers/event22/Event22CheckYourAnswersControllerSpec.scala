@@ -17,7 +17,8 @@
 package controllers.event22
 
 import base.SpecBase
-import data.SampleData.sampleMemberJourneyDataEvent22
+import data.SampleData.sampleMemberJourneyDataEvent22and23
+import models.enumeration.EventType.Event22
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -62,7 +63,7 @@ class Event22CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleMemberJourneyDataEvent22),
+        userAnswers = Some(sampleMemberJourneyDataEvent22and23(Event22)),
         extraModules = extraModules
       ).build()
 
@@ -113,7 +114,7 @@ object Event22CheckYourAnswersControllerSpec {
           messages(messageKey)
         ), ""),
       Value(HtmlContent(htmlContent), ""), "",
-      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages("site.change") + " " + messages(hiddenContentChangeLink)), "", Map()))))
+      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
 
   private def fakeSummaryListRowWithHtmlContentWithHiddenContent(messageKey: String, htmlContent: String, changeLink: String, hiddenContentChangeLink: String)
@@ -143,13 +144,13 @@ object Event22CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "chooseTaxYear.event22.checkYourAnswersLabel",
-      "2018 to 2019",
+      "2015 to 2016",
       "/manage-pension-scheme-event-report/new-report/1/event-22-tax-year?waypoints=event-22-check-answers-1",
       "chooseTaxYear.event22.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "totalPensionAmounts.event22.checkYourAnswersLabel",
-      "£999.11",
+      "£10.00",
       "/manage-pension-scheme-event-report/new-report/1/event-22-total-input-amount?waypoints=event-22-check-answers-1",
       "totalPensionAmounts.event22.change.hidden"
     )

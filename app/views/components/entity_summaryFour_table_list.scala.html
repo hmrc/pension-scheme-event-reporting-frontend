@@ -41,8 +41,7 @@
                         @actions.items.map { item =>
                             <li class="govuk-summary-list__actions-list-item">
                                 <a class="govuk-link" href="@item.href">
-                                    <span aria-hidden="true">@item.content.asHtml</span>
-                                    <span class="govuk-visually-hidden">@item.content.asHtml @summaryListRow.key.content.asHtml</span>
+                                    @item.content.asHtml <span class="govuk-visually-hidden">@summaryListRow.key.content.asHtml</span>
                                 </a>
                             </li>
                         }

@@ -53,7 +53,7 @@ class InputProtectionTypeSummarySpec extends AnyFreeSpec with Matchers with Opti
           value = value,
           actions = Seq(
             ActionItemViewModel("site.change", InputProtectionTypePage(Event6, 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("inputProtectionType.change.hidden",
+              .withVisuallyHiddenText(messages("inputProtectionType.change.hidden",
                 messages(s"typeOfProtection.${typeOfProtection.toString}").toLowerCase()))
           )
         )

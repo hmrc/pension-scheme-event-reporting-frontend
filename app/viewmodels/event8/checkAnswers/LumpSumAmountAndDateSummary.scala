@@ -39,7 +39,7 @@ object LumpSumAmountAndDateSummary extends Formatters {
           value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer.lumpSumAmount)}")),
           actions = Seq(
             ActionItemViewModel("site.change", LumpSumAmountAndDatePage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("lumpSumAmountAndDate.value.change.hidden"))
+              .withVisuallyHiddenText(messages("lumpSumAmountAndDate.value.change.hidden"))
           )
         )
     }
@@ -54,7 +54,7 @@ object LumpSumAmountAndDateSummary extends Formatters {
           value = ValueViewModel(dateFormatter.format(answer.lumpSumDate)),
           actions = Seq(
             ActionItemViewModel("site.change", LumpSumAmountAndDatePage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("lumpSumAmountAndDate.date.change.hidden"))
+              .withVisuallyHiddenText(messages("lumpSumAmountAndDate.date.change.hidden"))
           )
         )
     }

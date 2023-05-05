@@ -18,7 +18,8 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import models.{ToggleDetails, UserAnswers}
+import models.{FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
+import models.FileUploadOutcomeStatus.FileUploadOutcomeStatus
 import models.enumeration.EventType
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
@@ -35,6 +36,7 @@ class EventReportingConnector @Inject()(
   private def eventRepSummaryUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/event-summary"
   private def eventCompileUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/compile"
   private def eventSubmitUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event-declaration-report"
+  private def getFileUploadResponseUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/get"
 
   private def eventReportingToggleUrl(toggleName:String) = s"${config.eventReportingUrl}/admin/get-toggle/$toggleName"
 
@@ -120,6 +122,25 @@ class EventReportingConnector @Inject()(
         case None => ToggleDetails(toggleName, None, isEnabled = false)
         case Some(a) => a
       }
+    }
+  }
+
+
+
+  def getFileUploadOutcome(reference: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[FileUploadOutcomeResponse] = {
+    val headerCarrier: HeaderCarrier = hc.withExtraHeaders("reference" -> reference)
+    http.GET[HttpResponse](getFileUploadResponseUrl)(implicitly, headerCarrier, implicitly).map{ response =>
+      response.status match {
+        case OK =>
+          ((response.json \ "fileStatus").asOpt[String], (response.json \ "uploadDetails" \ "fileName").asOpt[String]) match {
+            case (Some("READY"),file@Some(_)) => FileUploadOutcomeResponse(file, FileUploadOutcomeStatus.SUCCESS)
+            case _ => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.FAILURE)
+          }
+        case NOT_FOUND => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.IN_PROGRESS)
+        case _ =>
+          throw new HttpException(response.body, response.status)
+      }
+
     }
   }
 }

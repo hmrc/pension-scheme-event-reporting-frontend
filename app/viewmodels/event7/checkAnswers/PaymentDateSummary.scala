@@ -37,7 +37,7 @@ object PaymentDateSummary extends Formatters {
           value = ValueViewModel(dateFormatter.format(answer.date)),
           actions = Seq(
             ActionItemViewModel("site.change", PaymentDatePage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("site.change") + " " + messages("paymentDate.date.change.hidden"))
+              .withVisuallyHiddenText(messages("paymentDate.date.change.hidden"))
           )
         )
     }
