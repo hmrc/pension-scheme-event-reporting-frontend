@@ -23,12 +23,11 @@ import models.{UpscanFileReference, UpscanInitiateResponse}
 import play.api.libs.json._
 import play.api.mvc.AnyContent
 import play.mvc.Http.HeaderNames
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Failure
 
 sealed trait UpscanInitiateRequest
 
@@ -73,7 +72,7 @@ class UpscanInitiateConnector @Inject()(httpClient: HttpClient, appConfig: Front
     HeaderNames.CONTENT_TYPE -> "application/json"
   )
 
-  def initiateV2(redirectOnSuccess: Option[String], redirectOnError: Option[String])
+  def initiateV2(redirectOnSuccess: Option[String], redirectOnError: Option[String], eventType: EventType)
                 (implicit request: DataRequest[AnyContent], headerCarrier: HeaderCarrier): Future[UpscanInitiateResponse] = {
 
     val upscanCallbackURL = s"${appConfig.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/save"
