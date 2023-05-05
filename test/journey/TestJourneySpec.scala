@@ -360,14 +360,4 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         pageMustBe(DeclarationPage)
       )
   }
-
- // File Upload
-
-//  "testing navigation from the FileUploadResult page to the ProcessingRequest page when yes is selected" in {
-//    startingFrom(FileUploadResultPage)
-//      .run(
-//        submitAnswer(WantToSubmitPage, true),
-//        pageMustBe(ProcessingRequestPage)
-//      )
-//  }
 }
