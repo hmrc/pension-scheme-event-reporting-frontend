@@ -25,11 +25,11 @@ sealed trait FileUploadResult
 
 object FileUploadResult extends Enumerable.Implicits {
 
-  case object Option1 extends WithName("Yes") with FileUploadResult
-  case object Option2 extends WithName("No") with FileUploadResult
+  case object Yes extends WithName("Yes") with FileUploadResult
+  case object No extends WithName("No") with FileUploadResult
 
   val values: Seq[FileUploadResult] = Seq(
-    Option1, Option2
+    Yes, No
   )
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
