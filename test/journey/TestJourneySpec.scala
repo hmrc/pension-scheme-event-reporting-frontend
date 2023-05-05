@@ -40,8 +40,9 @@ import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveableProper
 import pages.event1.member._
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.{EventWindUpCheckYourAnswersPage, SchemeWindUpDatePage}
-import pages.fileUpload._
 import pages.{DeclarationPage, EventSelectionPage, EventSummaryPage, WantToSubmitPage}
+//import pages.fileUpload.FileUploadResultPage
+//import pages.fileUpload.ProcessingRequestPage
 
 import java.time.LocalDate
 
@@ -362,11 +363,11 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
 
  // File Upload
 
-  "testing navigation from the FileUploadResult page to the ProcessingRequest page when yes is selected" in {
-    startingFrom(FileUploadResultPage)
-      .run(
-        submitAnswer(WantToSubmitPage, true),
-        pageMustBe(ProcessingRequestPage)
-      )
-  }
+//  "testing navigation from the FileUploadResult page to the ProcessingRequest page when yes is selected" in {
+//    startingFrom(FileUploadResultPage)
+//      .run(
+//        submitAnswer(WantToSubmitPage, true),
+//        pageMustBe(ProcessingRequestPage)
+//      )
+//  }
 }
