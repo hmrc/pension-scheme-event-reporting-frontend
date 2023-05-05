@@ -19,8 +19,7 @@ package pages.fileUpload
 import controllers.fileUpload.routes
 import models.UserAnswers
 import models.enumeration.EventType
-import models.fileUpload.FileUploadResult
-import models.fileUpload.FileUploadResult.{Option1, Option2}
+import models.fileUpload.FileUploadResult.{Yes, No}
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
