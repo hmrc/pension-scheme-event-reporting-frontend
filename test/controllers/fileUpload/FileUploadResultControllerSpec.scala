@@ -17,7 +17,6 @@
 package controllers.fileUpload
 
 import base.SpecBase
-import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import forms.fileUpload.FileUploadResultFormProvider
 import models.FileUploadOutcomeResponse
@@ -31,10 +30,9 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.mvc.{Call, Headers}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.fileUpload.{FileRejectedView, FileUploadResultView}
+import views.html.fileUpload.FileUploadResultView
 
 import scala.concurrent.Future
 
@@ -101,12 +99,22 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
-      .thenReturn(Future.successful(FileUploadOutcomeResponse(None, FAILURE)))
+        .thenReturn(Future.successful(FileUploadOutcomeResponse(None, FAILURE)))
       running(application) {
         val request = FakeRequest.apply(method = GET, path = getRoute + "?key=123")
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
+      }
+    }
+    "must return BadRequest and redirect to the file rejected controller if upload id is not found in request" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
+      running(application) {
+        val request = FakeRequest.apply(method = GET, path = getRoute)
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
       }
     }
 //
