@@ -22,11 +22,21 @@ import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.{Success, Try}
+
 case object HasSchemeChangedRulesPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "event12" \ toString
 
   override def toString: String = "hasSchemeChangedRules"
+
+  override def cleanupBeforeSettingValue(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    userAnswers.get(HasSchemeChangedRulesPage) match {
+      case originalOption@Some(_) if originalOption != value =>
+        userAnswers.remove(DateOfChangePage)
+      case _ => Success(userAnswers)
+    }
+  }
 
   override def route(waypoints: Waypoints): Call =
     routes.HasSchemeChangedRulesController.onPageLoad(waypoints)
