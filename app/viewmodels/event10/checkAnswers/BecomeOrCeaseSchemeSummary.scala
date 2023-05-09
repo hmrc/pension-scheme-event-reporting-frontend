@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event10.checkAnswers
 
 import models.UserAnswers
 import pages.event10.BecomeOrCeaseSchemePage

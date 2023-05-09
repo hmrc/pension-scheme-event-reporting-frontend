@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event10.checkAnswers
 
 import forms.mappings.Formatters
 import models.UserAnswers
-import pages.event10.SchemeChangeDatePage
+import models.event10.BecomeOrCeaseScheme
+import pages.event10.{BecomeOrCeaseSchemePage, SchemeChangeDatePage}
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -31,12 +32,22 @@ object SchemeChangeDateSummary extends Formatters {
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SchemeChangeDatePage).map {
       answer =>
+
+        val becameRegulatedScheme = BecomeOrCeaseScheme.ItBecameAnInvestmentRegulatedPensionScheme.toString
+        val becomeOrCeased = answers.get(BecomeOrCeaseSchemePage) match {
+          case Some(value) => value.toString
+          case _ => throw new RuntimeException("Became or Ceased value unavailable")
+        }
+
+        val dateCYALabel = if (becomeOrCeased == becameRegulatedScheme) "became.schemeChangeDate.checkYourAnswersLabel" else "ceased.schemeChangeDate.checkYourAnswersLabel"
+        val dateCYAHiddenLabel = if (becomeOrCeased == becameRegulatedScheme) "became.schemeChangeDate.change.hidden" else "ceased.schemeChangeDate.change.hidden"
+
         SummaryListRowViewModel(
-          key = "schemeChangeDate.checkYourAnswersLabel",
+          key = dateCYALabel,
           value = ValueViewModel(dateFormatter.format(answer.schemeChangeDate)),
           actions = Seq(
             ActionItemViewModel("site.change", SchemeChangeDatePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("schemeChangeDate.change.hidden"))
+              .withVisuallyHiddenText(messages(dateCYAHiddenLabel))
           )
         )
     }

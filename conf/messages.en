@@ -1278,8 +1278,12 @@ schemeChangeDate.error.nothingEntered = Enter the date
 schemeChangeDate.error.noDayMonthOrYear = The date must include a day, month and year
 schemeChangeDate.error.outsideDateRanges = Enter a real date
 schemeChangeDate.error.outsideReportedYear = The date must be between {0} and {1}
-schemeChangeDate.change.hidden = The date that this pension scheme became or ceased to be investment regulated
-schemeChangeDate.checkYourAnswersLabel = Date of the payment
+
+became.schemeChangeDate.change.hidden = The date for when the pension scheme became investment regulated
+ceased.schemeChangeDate.change.hidden = The date for when the pension scheme ceased to be investment regulated
+
+became.schemeChangeDate.checkYourAnswersLabel = When pension scheme became investment regulated
+ceased.schemeChangeDate.checkYourAnswersLabel = When pension scheme ceased to be investment regulated
 
 contractsOrPolicies.title = Do all investments consist of either contracts or policies of insurance?
 contractsOrPolicies.heading = Do all investments consist of either contracts or policies of insurance?
