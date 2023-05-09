@@ -18,9 +18,8 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import models.{FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
-import models.FileUploadOutcomeStatus.FileUploadOutcomeStatus
 import models.enumeration.EventType
+import models.{FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -124,8 +123,6 @@ class EventReportingConnector @Inject()(
       }
     }
   }
-
-
 
   def getFileUploadOutcome(reference: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[FileUploadOutcomeResponse] = {
     val headerCarrier: HeaderCarrier = hc.withExtraHeaders("reference" -> reference)

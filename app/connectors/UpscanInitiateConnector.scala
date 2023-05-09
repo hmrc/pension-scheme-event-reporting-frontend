@@ -17,7 +17,6 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.enumeration.EventType
 import models.requests.DataRequest
 import models.{UpscanFileReference, UpscanInitiateResponse}
 import play.api.libs.json._
@@ -72,7 +71,7 @@ class UpscanInitiateConnector @Inject()(httpClient: HttpClient, appConfig: Front
     HeaderNames.CONTENT_TYPE -> "application/json"
   )
 
-  def initiateV2(redirectOnSuccess: Option[String], redirectOnError: Option[String], eventType: EventType)
+  def initiateV2(redirectOnSuccess: Option[String], redirectOnError: Option[String])
                 (implicit request: DataRequest[AnyContent], headerCarrier: HeaderCarrier): Future[UpscanInitiateResponse] = {
 
     val upscanCallbackURL = s"${appConfig.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/save"
