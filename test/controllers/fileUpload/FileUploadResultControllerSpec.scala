@@ -144,29 +144,23 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-//    "must return bad request when invalid data is submitted" in {
-//
-//      val application =
-//        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-//          .build()
-//
-//      when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
-//        .thenReturn(Future.successful(FileUploadOutcomeResponse(Some("testFile"), SUCCESS)))
-//
-//      running(application) {
-//        val request =
-//          FakeRequest.apply(method = POST, path = postRoute + "?key=123").withFormUrlEncodedBody(("value", "invalid"))
-//
-//        val view = application.injector.instanceOf[FileUploadResultView]
-//        val boundForm = form.bind(Map("value" -> "invalid"))
-//
-//        val result = route(application, request).value
-//
-//        status(result) mustEqual BAD_REQUEST
-//        contentAsString(result) mustEqual
-//          view(boundForm, waypoints, getEventTypeByName(Event22), None, Call("POST", postRoute + "?key=123"))(request, messages(application)).toString
-//        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
-//      }
-//    }
+    "must return bad request when invalid data is submitted" in {
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest.apply(method = POST, path = postRoute).withFormUrlEncodedBody(("value", "invalid"))
+
+        val view = application.injector.instanceOf[FileUploadResultView]
+        val boundForm = form.bind(Map("value" -> "invalid"))
+
+        val result = route(application, request).value
+        status(result) mustEqual BAD_REQUEST
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
   }
 }

@@ -40,21 +40,21 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class FileUploadResultController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                          identify: IdentifierAction,
-                                          getData: DataRetrievalAction,
-                                          userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          eventReportingConnector: EventReportingConnector,
-                                          formProvider: FileUploadResultFormProvider,
-                                          view: FileUploadResultView
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                           identify: IdentifierAction,
+                                           getData: DataRetrievalAction,
+                                           userAnswersCacheConnector: UserAnswersCacheConnector,
+                                           eventReportingConnector: EventReportingConnector,
+                                           formProvider: FileUploadResultFormProvider,
+                                           view: FileUploadResultView
+                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
   private def renderView(waypoints: Waypoints, eventType: EventType, preparedForm: Form[FileUploadResult], status: Status)
-                        (implicit request: OptionalDataRequest[AnyContent])= {
+                        (implicit request: OptionalDataRequest[AnyContent]) = {
     request.request.queryString.get("key").flatMap(_.headOption) match {
       case Some(uploadIdReference) =>
-    val submitUrl = Call("POST", routes.FileUploadResultController.onSubmit(waypoints).url + s"?key=$uploadIdReference")
+        val submitUrl = Call("POST", routes.FileUploadResultController.onSubmit(waypoints).url + s"?key=$uploadIdReference")
         eventReportingConnector.getFileUploadOutcome(uploadIdReference).map {
           case FileUploadOutcomeResponse(_, IN_PROGRESS) =>
             status(view(preparedForm, waypoints, getEventTypeByName(eventType), None, submitUrl))
@@ -67,6 +67,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       case _ => Future.successful(BadRequest("Missing Key"))
     }
   }
+
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) async { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(FileUploadResultPage(eventType))).fold(form)(form.fill)
     renderView(waypoints, eventType, preparedForm, Ok)
