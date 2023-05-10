@@ -34,7 +34,7 @@ class CannotSubmitController @Inject()(
                                         view: CannotSubmitView
                                       ) extends FrontendBaseController with I18nSupport {
 
-  private val eventType = EventType.Event1
+  private val eventType = EventType.Event12
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) {
     implicit request =>
