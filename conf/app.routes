@@ -387,3 +387,6 @@ GET         /new-report/event-13-click                                          
 
 
 
+
+GET        /investmentsInAssetsRuleChangeDate                  controllers.event11.InvestmentsInAssetsRuleChangeDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /investmentsInAssetsRuleChangeDate                  controllers.event11.InvestmentsInAssetsRuleChangeDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

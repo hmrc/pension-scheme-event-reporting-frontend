@@ -1284,3 +1284,13 @@ hasSchemeChangedRulesInvestmentsInAssets.heading = Has the scheme changed its ru
 hasSchemeChangedRulesInvestmentsInAssets.checkYourAnswersLabel = Has the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
 hasSchemeChangedRulesInvestmentsInAssets.error.required = Select yes if the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
 hasSchemeChangedRulesInvestmentsInAssets.change.hidden = Has the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
+
+investmentsInAssetsRuleChangeDate.title = When did this investment in assets rule change take effect?
+investmentsInAssetsRuleChangeDate.heading = When did this investment in assets rule change take effect?
+investmentsInAssetsRuleChangeDate.hint = For example, 12 11 2007
+investmentsInAssetsRuleChangeDate.checkYourAnswersLabel = When did this investment in assets rule change take effect?
+investmentsInAssetsRuleChangeDate.error.required.all = Enter the date
+investmentsInAssetsRuleChangeDate.error.required.two = The date must include {0} and {1}
+investmentsInAssetsRuleChangeDate.error.required = The date must include a {0}
+investmentsInAssetsRuleChangeDate.error.invalid = Enter a real date
+investmentsInAssetsRuleChangeDate.change.hidden = When did this investment in assets rule change take effect?

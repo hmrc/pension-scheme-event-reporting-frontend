@@ -5,6 +5,7 @@ import play.api.data.FormError
 
 class HasSchemeChangedRulesInvestmentsInAssetsFormProviderSpec extends BooleanFieldBehaviours {
 
+  //LDS ignore
   private val requiredKey = "hasSchemeChangedRulesInvestmentsInAssets.error.required"
   private val invalidKey = "error.boolean"
 

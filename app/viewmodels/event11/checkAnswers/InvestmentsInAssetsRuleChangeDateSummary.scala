@@ -16,30 +16,30 @@
 
 package viewmodels.checkAnswers
 
+import java.time.format.DateTimeFormatter
 import models.UserAnswers
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event11.HasSchemeChangedRulesInvestmentsInAssetsPage
+import pages.event11.InvestmentsInAssetsRuleChangeDatePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object HasSchemeChangedRulesInvestmentsInAssetsSummary  {
+object InvestmentsInAssetsRuleChangeDateSummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(HasSchemeChangedRulesInvestmentsInAssetsPage).map {
+    answers.get(InvestmentsInAssetsRuleChangeDatePage).map {
       answer =>
 
-        val value = if (answer) "site.yes" else "site.no"
+        val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
         SummaryListRowViewModel(
-          //LDS ignore
-          key     = "hasSchemeChangedRulesInvestmentsInAssets.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
+          key     = "investmentsInAssetsRuleChangeDate.checkYourAnswersLabel",
+          value   = ValueViewModel(answer.format(dateFormatter)),
           actions = Seq(
-            ActionItemViewModel("site.change", HasSchemeChangedRulesInvestmentsInAssetsPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("hasSchemeChangedRulesInvestmentsInAssets.change.hidden"))
+            ActionItemViewModel("site.change", InvestmentsInAssetsRuleChangeDatePage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("investmentsInAssetsRuleChangeDate.change.hidden"))
           )
         )
     }
