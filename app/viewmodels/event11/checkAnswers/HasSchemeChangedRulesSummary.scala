@@ -18,11 +18,13 @@ package viewmodels.checkAnswers
 
 import models.UserAnswers
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event11.HasSchemeChangedRulesPage
+import pages.event11.{HasSchemeChangedRulesPage, UnAuthPaymentsRuleChangeDatePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+
+import java.time.format.DateTimeFormatter
 
 object HasSchemeChangedRulesSummary  {
 
@@ -31,7 +33,12 @@ object HasSchemeChangedRulesSummary  {
     answers.get(HasSchemeChangedRulesPage).map {
       answer =>
 
-        val value = if (answer) "site.yes" else "site.no"
+        val value = if (answer) {
+          // TODO: fix so date on new line.
+          s"Yes \n\n\n\n\n\n\n\n\n\n ${answers.get(UnAuthPaymentsRuleChangeDatePage).get.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}"
+        } else {
+          "The scheme has not changed its rules to allow any person to make unauthorised payment"
+        }
 
         SummaryListRowViewModel(
           key     = "hasSchemeChangedRules.checkYourAnswersLabel",

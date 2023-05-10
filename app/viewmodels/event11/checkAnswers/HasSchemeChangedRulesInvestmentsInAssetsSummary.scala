@@ -18,11 +18,13 @@ package viewmodels.checkAnswers
 
 import models.UserAnswers
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event11.HasSchemeChangedRulesInvestmentsInAssetsPage
+import pages.event11.{HasSchemeChangedRulesInvestmentsInAssetsPage, InvestmentsInAssetsRuleChangeDatePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+
+import java.time.format.DateTimeFormatter
 
 object HasSchemeChangedRulesInvestmentsInAssetsSummary  {
 
@@ -31,7 +33,12 @@ object HasSchemeChangedRulesInvestmentsInAssetsSummary  {
     answers.get(HasSchemeChangedRulesInvestmentsInAssetsPage).map {
       answer =>
 
-        val value = if (answer) "site.yes" else "site.no"
+        val value = if (answer) {
+          // TODO: fix so date on new line.
+          s"Yes \n\n\n\n\n\n\n\n\n\n ${answers.get(InvestmentsInAssetsRuleChangeDatePage).get.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}"
+        } else {
+          "The scheme has not changed its rules to allow investments in assets other than contracts or policies of insurance"
+        }
 
         SummaryListRowViewModel(
           //LDS ignore

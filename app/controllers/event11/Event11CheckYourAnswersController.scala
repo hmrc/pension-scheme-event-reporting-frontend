@@ -21,7 +21,7 @@ import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.enumeration.EventType.{Event11, Event13}
 import models.requests.DataRequest
-import pages.event11.Event11CheckYourAnswersPage
+import pages.event11.{Event11CheckYourAnswersPage, HasSchemeChangedRulesPage}
 import pages.event13.Event13CheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -64,10 +64,8 @@ class Event11CheckYourAnswersController @Inject()(
   private def buildEvent11CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     Seq(
-      HasSchemeChangedRulesSummary.row(request.userAnswers, waypoints, sourcePage),
-      UnAuthPaymentsRuleChangeDateSummary.row(request.userAnswers, waypoints, sourcePage),
-      HasSchemeChangedRulesInvestmentsInAssetsSummary.row(request.userAnswers, waypoints, sourcePage),
-      InvestmentsInAssetsRuleChangeDateSummary.row(request.userAnswers, waypoints, sourcePage)
+      HasSchemeChangedRulesSummary.row(request.userAnswers, waypoints, sourcePage) ++
+      HasSchemeChangedRulesInvestmentsInAssetsSummary.row(request.userAnswers, waypoints, sourcePage)
     ).flatten
   }
 }
