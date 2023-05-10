@@ -22,9 +22,7 @@ import forms.EventSummaryFormProvider
 import models.TaxYear.getSelectedTaxYearAsString
 import models.UserAnswers
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23}
 import pages.{EmptyWaypoints, EventSummaryPage, Waypoints, TaxYearPage}
-import models.enumeration.EventType.{Event18, Event6}
 import models.requests.DataRequest
 import play.api.Logger
 import play.api.i18n.I18nSupport
@@ -62,15 +60,15 @@ class EventSummaryController @Inject()(
               ),
               actions = Some(Actions(
                 items = Seq(
-                  ActionItem(
+                  changeLinkForEvent(event).map { link =>  ActionItem(
                     content = Text(Message("site.change")),
-                    href = changeLinkForEvent(event)
-                  ),
-                  ActionItem(
+                    href = link
+                  )},
+                  Some(ActionItem(
                     content = Text(Message("site.remove")),
                     href = removeLinkForEvent(event)
-                  )
-                )
+                  ))
+                ).flatten
               ))
             )
           }
@@ -102,18 +100,27 @@ class EventSummaryController @Inject()(
       )
   }
 
-  private def changeLinkForEvent(eventType: EventType): String = {
+  private def changeLinkForEvent(eventType: EventType): Option[String] = {
+    println(eventType)
     eventType match {
-      case Event6 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event6).url
-      case Event22 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event22).url
-      case Event23 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event23).url
-      case _ => "#"
+      //case EventType.Event1 => ???
+      case EventType.Event2 | EventType.Event3 |
+           EventType.Event4 | EventType.Event5 |
+           EventType.Event6 | EventType.Event8 |
+           EventType.Event8A | EventType.Event22 |
+           EventType.Event23 => Some(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, eventType).url)
+      case EventType.Event7 => Some(controllers.event7.routes.Event7MembersSummaryController.onPageLoad(EmptyWaypoints).url)
+      case EventType.Event13 => Some(controllers.event13.routes.Event13CheckYourAnswersController.onPageLoad.url)
+      case EventType.Event18 => None
+      case _ =>
+        logger.error(s"Missing event type $eventType")
+        None
     }
   }
 
   private def removeLinkForEvent(eventType: EventType): String = {
     eventType match {
-      case Event18 => controllers.event18.routes.RemoveEvent18Controller.onPageLoad(EmptyWaypoints).url
+      case EventType.Event18 => controllers.event18.routes.RemoveEvent18Controller.onPageLoad(EmptyWaypoints).url
       case _ => "#"
     }
   }
