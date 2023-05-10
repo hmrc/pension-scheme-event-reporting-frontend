@@ -27,7 +27,7 @@ case object HowManySchemeMembersPage extends QuestionPage[HowManySchemeMembers] 
 
   override def path: JsPath = JsPath \ "event14" \ toString
 
-  override def toString: String = "howManySchemeMembers"
+  override def toString: String = "schemeMembers"
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this) match {
