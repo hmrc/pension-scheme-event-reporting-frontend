@@ -91,7 +91,6 @@ lazy val root = (project in file("."))
 
 lazy val testSettings: Seq[Def.Setting[_]] = Seq(
   fork := true,
-  parallelExecution := true,
   unmanagedSourceDirectories += baseDirectory.value / "test-utils"
 )
 
