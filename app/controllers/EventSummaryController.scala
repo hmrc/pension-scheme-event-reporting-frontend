@@ -50,7 +50,7 @@ class EventSummaryController @Inject()(
   private val form = formProvider()
   private val logger = Logger(classOf[EventSummaryController])
 
-  private def summaryListRows(waypoints: Waypoints)(implicit request: DataRequest[AnyContent]): Future[Seq[SummaryListRow]] = {
+  private def summaryListRows(implicit request: DataRequest[AnyContent]): Future[Seq[SummaryListRow]] = {
     request.userAnswers.get(TaxYearPage) match {
       case Some(taxYear) =>
         val startYear = s"${taxYear.startYear}-04-06"
@@ -83,7 +83,7 @@ class EventSummaryController @Inject()(
   }
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
-    summaryListRows(waypoints).map { rows =>
+    summaryListRows.map { rows =>
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       Ok(view(form, waypoints, rows, selectedTaxYear))
     }
@@ -93,7 +93,7 @@ class EventSummaryController @Inject()(
     implicit request =>
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       form.bindFromRequest().fold(
-        formWithErrors => summaryListRows(waypoints).map(rows => BadRequest(view(formWithErrors, waypoints, rows, selectedTaxYear))),
+        formWithErrors => summaryListRows.map(rows => BadRequest(view(formWithErrors, waypoints, rows, selectedTaxYear))),
         value => {
           val originalUserAnswers = UserAnswers()
           val updatedUserAnswers = originalUserAnswers.setOrException(EventSummaryPage, value)
