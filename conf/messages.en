@@ -1268,3 +1268,13 @@ hasSchemeChangedRules.heading = Has the scheme changed its rules to allow any pe
 hasSchemeChangedRules.checkYourAnswersLabel = Has the scheme changed its rules to allow any person to make unauthorised payments?
 hasSchemeChangedRules.error.required = Select yes if the scheme changed its rules to allow any person to make unauthorised payments
 hasSchemeChangedRules.change.hidden = Has the scheme changed its rules to allow any person to make unauthorised payments?
+
+unAuthPaymentsRuleChangeDate.title = When did this unauthorised payments rule change take effect?
+unAuthPaymentsRuleChangeDate.heading = When did this unauthorised payments rule change take effect?
+unAuthPaymentsRuleChangeDate.hint = For example, 12 11 2007
+unAuthPaymentsRuleChangeDate.checkYourAnswersLabel = When did this unauthorised payments rule change take effect?
+unAuthPaymentsRuleChangeDate.error.required.all = Enter the date
+unAuthPaymentsRuleChangeDate.error.required.two = The date must include {0} and {1}
+unAuthPaymentsRuleChangeDate.error.required = The date must include a {0}
+unAuthPaymentsRuleChangeDate.error.invalid = Enter a real date
+unAuthPaymentsRuleChangeDate.change.hidden = When did this unauthorised payments rule change take effect?

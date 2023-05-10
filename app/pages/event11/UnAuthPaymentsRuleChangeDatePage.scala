@@ -16,25 +16,19 @@
 
 package pages.event11
 
+import java.time.LocalDate
+
 import controllers.event11.routes
-import models.UserAnswers
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{Waypoints, QuestionPage}
 
-case object HasSchemeChangedRulesPage extends QuestionPage[Boolean] {
+case object UnAuthPaymentsRuleChangeDatePage extends QuestionPage[LocalDate] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "hasSchemeChangedRules"
+  override def toString: String = "unAuthPaymentsRuleChangeDate"
 
   override def route(waypoints: Waypoints): Call =
-    routes.HasSchemeChangedRulesController.onPageLoad(waypoints)
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(this).map {
-      case true  => UnAuthPaymentsRuleChangeDatePage
-      case false => IndexPage
-    }.orRecover
-  }
+    routes.UnAuthPaymentsRuleChangeDateController.onPageLoad(waypoints)
 }

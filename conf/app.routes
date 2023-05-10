@@ -356,6 +356,10 @@ GET        /new-report/event-11-what-you-will-need                        contro
 GET        /new-report/event-11-entitle-any-person                        controllers.event11.HasSchemeChangedRulesController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-11-entitle-any-person                        controllers.event11.HasSchemeChangedRulesController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
+GET        /new-report/event-11-entitle-any-person-date                  controllers.event11.UnAuthPaymentsRuleChangeDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-11-entitle-any-person-date                  controllers.event11.UnAuthPaymentsRuleChangeDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.
 #
@@ -374,6 +378,7 @@ POST       /new-report/event-13-other-structure                                 
 
 GET         /new-report/event-13-check-your-answers                              controllers.event13.Event13CheckYourAnswersController.onPageLoad
 GET         /new-report/event-13-click                                           controllers.event13.Event13CheckYourAnswersController.onClick
+
 
 
 
