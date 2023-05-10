@@ -27,10 +27,10 @@ object HowManySchemeMembers extends Enumerable.Implicits {
 
   case object OptionOne extends WithName("0") with HowManySchemeMembers
   case object OptionTwo extends WithName("1") with HowManySchemeMembers
-  case object OptionThree extends WithName("2to11") with HowManySchemeMembers
-  case object OptionFour extends WithName("12to50") with HowManySchemeMembers
-  case object OptionFive extends WithName("51to10000") with HowManySchemeMembers
-  case object OptionSix extends WithName("moreThan10000") with HowManySchemeMembers
+  case object OptionThree extends WithName("2 to 11") with HowManySchemeMembers
+  case object OptionFour extends WithName("12 to 50") with HowManySchemeMembers
+  case object OptionFive extends WithName("51 to 10,000") with HowManySchemeMembers
+  case object OptionSix extends WithName("more than 10,000") with HowManySchemeMembers
 
   val values: Seq[HowManySchemeMembers] = Seq(
     OptionOne, OptionTwo, OptionThree, OptionFour, OptionFive, OptionSix
@@ -39,7 +39,7 @@ object HowManySchemeMembers extends Enumerable.Implicits {
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
       RadioItem(
-        content = Text(messages(s"howManySchemeMembers.${value.toString}")),
+        content = Text(messages(s"howManySchemeMembers.${value.toString.replaceAll("[, ]", "")}")),
         value   = Some(value.toString),
         id      = Some(s"value_$index")
       )

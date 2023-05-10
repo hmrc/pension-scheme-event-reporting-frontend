@@ -35,7 +35,7 @@ object HowManySchemeMembersSummary  {
 
         val value = ValueViewModel(
           HtmlContent(
-            HtmlFormat.escape(messages(s"howManySchemeMembers.$answer"))
+            HtmlFormat.escape(messages(s"howManySchemeMembers.${answer.toString.replaceAll("[, ]", "")}"))
           )
         )
 
