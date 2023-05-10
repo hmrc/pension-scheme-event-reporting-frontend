@@ -28,7 +28,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.{ChangeDateSummary, SchemeStructureDescriptionSummary}
+import viewmodels.checkAnswers.{ChangeDateSummary, HasSchemeChangedRulesInvestmentsInAssetsSummary, HasSchemeChangedRulesSummary, InvestmentsInAssetsRuleChangeDateSummary, SchemeStructureDescriptionSummary, UnAuthPaymentsRuleChangeDateSummary}
 import viewmodels.event13.checkAnswers.SchemeStructureSummary
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
@@ -64,9 +64,10 @@ class Event11CheckYourAnswersController @Inject()(
   private def buildEvent11CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     Seq(
-      SchemeStructureSummary.row(request.userAnswers, waypoints, sourcePage),
-      SchemeStructureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage),
-      ChangeDateSummary.row(request.userAnswers, waypoints, sourcePage)
+      HasSchemeChangedRulesSummary.row(request.userAnswers, waypoints, sourcePage),
+      UnAuthPaymentsRuleChangeDateSummary.row(request.userAnswers, waypoints, sourcePage),
+      HasSchemeChangedRulesInvestmentsInAssetsSummary.row(request.userAnswers, waypoints, sourcePage),
+      InvestmentsInAssetsRuleChangeDateSummary.row(request.userAnswers, waypoints, sourcePage)
     ).flatten
   }
 }
