@@ -36,7 +36,7 @@ object SchemeChangeDateSummary extends Formatters {
         val becameRegulatedScheme = BecomeOrCeaseScheme.ItBecameAnInvestmentRegulatedPensionScheme.toString
         val becomeOrCeased = answers.get(BecomeOrCeaseSchemePage) match {
           case Some(value) => value.toString
-          case _ => throw new RuntimeException("Became or Ceased value unavailable")
+          case _ => "This has not been completed. Select ‘Change’ to update"
         }
 
         val dateCYALabel = if (becomeOrCeased == becameRegulatedScheme) "became.schemeChangeDate.checkYourAnswersLabel" else "ceased.schemeChangeDate.checkYourAnswersLabel"
