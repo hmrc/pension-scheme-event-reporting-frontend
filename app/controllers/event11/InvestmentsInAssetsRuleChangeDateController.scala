@@ -22,7 +22,7 @@ import forms.event11.InvestmentsInAssetsRuleChangeDateFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
-import pages.event11.InvestmentsInAssetsRuleChangeDatePage
+import pages.event11.{Event11CheckYourAnswersPage, InvestmentsInAssetsRuleChangeDatePage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -40,7 +40,7 @@ class InvestmentsInAssetsRuleChangeDateController @Inject()(val controllerCompon
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event1
+  private val eventType = EventType.Event11
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(InvestmentsInAssetsRuleChangeDatePage)).fold(form)(form.fill)
@@ -56,7 +56,7 @@ class InvestmentsInAssetsRuleChangeDateController @Inject()(val controllerCompon
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(InvestmentsInAssetsRuleChangeDatePage, value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(InvestmentsInAssetsRuleChangeDatePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(Event11CheckYourAnswersPage().route(waypoints).url)
           }
         }
       )

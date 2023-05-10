@@ -22,7 +22,7 @@ import forms.event11.UnAuthPaymentsRuleChangeDateFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
-import pages.event11.UnAuthPaymentsRuleChangeDatePage
+import pages.event11.{HasSchemeChangedRulesInvestmentsInAssetsPage, UnAuthPaymentsRuleChangeDatePage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -56,7 +56,7 @@ class UnAuthPaymentsRuleChangeDateController @Inject()(val controllerComponents:
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(UnAuthPaymentsRuleChangeDatePage, value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(UnAuthPaymentsRuleChangeDatePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(HasSchemeChangedRulesInvestmentsInAssetsPage.route(waypoints).url) // UnAuthPaymentsRuleChangeDatePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route
           }
         }
       )

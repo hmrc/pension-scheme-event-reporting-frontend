@@ -39,6 +39,6 @@ class WhatYouWillNeedController @Inject()(val controllerComponents: MessagesCont
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) {
     implicit request =>
-      Ok(view(controllers.event11.routes.HasSchemeChangedRulesController.onPageLoad(waypoints).url)) //.IndexController.onPageLoad.url))
+      Ok(view(controllers.event11.routes.HasSchemeChangedRulesController.onPageLoad(waypoints).url))
   }
 }

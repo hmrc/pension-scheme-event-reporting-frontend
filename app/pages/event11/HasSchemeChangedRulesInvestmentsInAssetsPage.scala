@@ -34,7 +34,7 @@ case object HasSchemeChangedRulesInvestmentsInAssetsPage extends QuestionPage[Bo
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
       case true  => InvestmentsInAssetsRuleChangeDatePage
-      case false => IndexPage
+      case false => Event11CheckYourAnswersPage()
     }.orRecover
   }
 }
