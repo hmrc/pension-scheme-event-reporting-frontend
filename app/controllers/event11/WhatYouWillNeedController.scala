@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event11.WhatYouWillNeedView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class WhatYouWillNeedController @Inject()(val controllerComponents: MessagesControllerComponents,
                                          identify: IdentifierAction,
@@ -39,6 +39,6 @@ class WhatYouWillNeedController @Inject()(val controllerComponents: MessagesCont
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) {
     implicit request =>
-      Ok(view(controllers.routes.IndexController.onPageLoad.url))
+      Ok(view(controllers.event11.routes.HasSchemeChangedRulesController.onPageLoad(waypoints).url)) //.IndexController.onPageLoad.url))
   }
 }

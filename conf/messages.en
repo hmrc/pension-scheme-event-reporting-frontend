@@ -1262,3 +1262,9 @@ whatYouWillNeed.event11.change.hidden = What you will need
 whatYouWillNeed.event11.p = You will need to tell us the date that a scheme's rules are changed if the change was made to:
 whatYouWillNeed.event11.item1 = entitle any person to require the making of unauthorised payments
 whatYouWillNeed.event11.item2 = allow investments in assets other than contracts or policies of insurance
+
+hasSchemeChangedRules.title = Has the scheme changed its rules to allow any person to make unauthorised payments?
+hasSchemeChangedRules.heading = Has the scheme changed its rules to allow any person to make unauthorised payments?
+hasSchemeChangedRules.checkYourAnswersLabel = Has the scheme changed its rules to allow any person to make unauthorised payments?
+hasSchemeChangedRules.error.required = Select yes if the scheme changed its rules to allow any person to make unauthorised payments
+hasSchemeChangedRules.change.hidden = Has the scheme changed its rules to allow any person to make unauthorised payments?
