@@ -25,12 +25,12 @@ sealed trait HowManySchemeMembers
 
 object HowManySchemeMembers extends Enumerable.Implicits {
 
-  case object OptionOne extends WithName("optionOne") with HowManySchemeMembers
-  case object OptionTwo extends WithName("optionTwo") with HowManySchemeMembers
-  case object OptionThree extends WithName("optionThree") with HowManySchemeMembers
-  case object OptionFour extends WithName("optionFour") with HowManySchemeMembers
-  case object OptionFive extends WithName("optionFive") with HowManySchemeMembers
-  case object OptionSix extends WithName("optionSix") with HowManySchemeMembers
+  case object OptionOne extends WithName("0") with HowManySchemeMembers
+  case object OptionTwo extends WithName("1") with HowManySchemeMembers
+  case object OptionThree extends WithName("2to11") with HowManySchemeMembers
+  case object OptionFour extends WithName("12to50") with HowManySchemeMembers
+  case object OptionFive extends WithName("51to10000") with HowManySchemeMembers
+  case object OptionSix extends WithName("moreThan10000") with HowManySchemeMembers
 
   val values: Seq[HowManySchemeMembers] = Seq(
     OptionOne, OptionTwo, OptionThree, OptionFour, OptionFive, OptionSix
