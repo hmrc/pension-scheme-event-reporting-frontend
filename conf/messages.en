@@ -1278,3 +1278,9 @@ unAuthPaymentsRuleChangeDate.error.required.two = The date must include {0} and 
 unAuthPaymentsRuleChangeDate.error.required = The date must include a {0}
 unAuthPaymentsRuleChangeDate.error.invalid = Enter a real date
 unAuthPaymentsRuleChangeDate.change.hidden = When did this unauthorised payments rule change take effect?
+
+hasSchemeChangedRulesInvestmentsInAssets.title = Has the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
+hasSchemeChangedRulesInvestmentsInAssets.heading = Has the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
+hasSchemeChangedRulesInvestmentsInAssets.checkYourAnswersLabel = Has the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
+hasSchemeChangedRulesInvestmentsInAssets.error.required = Select yes if the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
+hasSchemeChangedRulesInvestmentsInAssets.change.hidden = Has the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
