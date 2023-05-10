@@ -24,9 +24,9 @@ import pages.{IndexPage, Page, QuestionPage, Waypoints}
 
 case object HasSchemeChangedRulesPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "event11" \ toString
 
-  override def toString: String = "hasSchemeChangedRules"
+  override def toString: String = "hasSchemeChangedRulesUnAuthPayments"
 
   override def route(waypoints: Waypoints): Call =
     routes.HasSchemeChangedRulesController.onPageLoad(waypoints)

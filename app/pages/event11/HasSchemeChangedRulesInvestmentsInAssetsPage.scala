@@ -24,7 +24,7 @@ import pages.{IndexPage, Page, QuestionPage, Waypoints}
 
 case object HasSchemeChangedRulesInvestmentsInAssetsPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "event11" \ toString
 
   override def toString: String = "hasSchemeChangedRulesInvestmentsInAssets"
 

@@ -24,7 +24,7 @@ import pages.{Page, QuestionPage, Waypoints}
 
 case object UnAuthPaymentsRuleChangeDatePage extends QuestionPage[LocalDate] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "event11" \ toString
 
   override def toString: String = "unAuthPaymentsRuleChangeDate"
 
