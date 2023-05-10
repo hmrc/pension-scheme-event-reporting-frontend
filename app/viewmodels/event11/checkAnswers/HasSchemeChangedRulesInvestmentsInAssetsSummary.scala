@@ -20,6 +20,7 @@ import models.UserAnswers
 import pages.{CheckAnswersPage, Waypoints}
 import pages.event11.{HasSchemeChangedRulesInvestmentsInAssetsPage, InvestmentsInAssetsRuleChangeDatePage}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -34,8 +35,8 @@ object HasSchemeChangedRulesInvestmentsInAssetsSummary  {
       answer =>
 
         val value = if (answer) {
-          // TODO: fix so date on new line.
-          s"Yes \n\n\n\n\n\n\n\n\n\n ${answers.get(InvestmentsInAssetsRuleChangeDatePage).get.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}"
+          <span class="govuk-!-display-block">Yes</span> + // This ensures content wraps on CYA page.
+            s"${answers.get(InvestmentsInAssetsRuleChangeDatePage).get.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}"
         } else {
           "The scheme has not changed its rules to allow investments in assets other than contracts or policies of insurance"
         }
@@ -43,7 +44,7 @@ object HasSchemeChangedRulesInvestmentsInAssetsSummary  {
         SummaryListRowViewModel(
           //LDS ignore
           key     = "hasSchemeChangedRulesInvestmentsInAssets.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
+          value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
             ActionItemViewModel("site.change", HasSchemeChangedRulesInvestmentsInAssetsPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("hasSchemeChangedRulesInvestmentsInAssets.change.hidden"))

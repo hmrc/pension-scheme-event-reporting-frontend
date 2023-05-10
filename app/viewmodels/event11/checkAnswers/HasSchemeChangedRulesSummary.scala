@@ -20,6 +20,7 @@ import models.UserAnswers
 import pages.{CheckAnswersPage, Waypoints}
 import pages.event11.{HasSchemeChangedRulesPage, UnAuthPaymentsRuleChangeDatePage}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, HtmlContent}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -33,16 +34,16 @@ object HasSchemeChangedRulesSummary  {
     answers.get(HasSchemeChangedRulesPage).map {
       answer =>
 
-        val value = if (answer) {
-          // TODO: fix so date on new line.
-          s"Yes \n\n\n\n\n\n\n\n\n\n ${answers.get(UnAuthPaymentsRuleChangeDatePage).get.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}"
+        val value: String = if (answer) {
+          <span class="govuk-!-display-block">Yes</span> + // This ensures content wraps on CYA page.
+            s"${answers.get(UnAuthPaymentsRuleChangeDatePage).get.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}"
         } else {
           "The scheme has not changed its rules to allow any person to make unauthorised payment"
         }
 
         SummaryListRowViewModel(
           key     = "hasSchemeChangedRules.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
+          value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
             ActionItemViewModel("site.change", HasSchemeChangedRulesPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("hasSchemeChangedRules.change.hidden"))
