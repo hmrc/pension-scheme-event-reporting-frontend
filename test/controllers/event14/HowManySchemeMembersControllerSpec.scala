@@ -27,6 +27,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{EmptyWaypoints, TaxYearPage}
 import pages.event14.HowManySchemeMembersPage
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -40,7 +41,7 @@ class HowManySchemeMembersControllerSpec extends SpecBase with BeforeAndAfterEac
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new HowManySchemeMembersFormProvider()
-  private val form = formProvider(taxYearRange)
+  private val form = formProvider(messages("howManySchemeMembers.error.required", taxYearRange))
 
   private val mockTaxYear = mock[TaxYear]
   private val taxYearRange = "2022 to 2023"

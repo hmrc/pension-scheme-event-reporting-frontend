@@ -23,13 +23,12 @@ import play.api.data.FormError
   class HowManySchemeMembersFormProviderSpec extends OptionFieldBehaviours {
 
     //TODO implement implicit messages
-  private val taxYear = "2020 to 2021"
-  private def form = new HowManySchemeMembersFormProvider().apply(taxYear)(???)
+  private val requiredKey = "howManySchemeMembers.error.required"
+  private def form = new HowManySchemeMembersFormProvider().apply(requiredKey)
 
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "howManySchemeMembers.error.required"
 
     behave like optionsField[HowManySchemeMembers](
       form,
@@ -41,7 +40,7 @@ import play.api.data.FormError
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, taxYear)
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
 }

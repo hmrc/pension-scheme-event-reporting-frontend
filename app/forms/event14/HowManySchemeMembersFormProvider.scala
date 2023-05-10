@@ -25,8 +25,8 @@ import javax.inject.Inject
 
 class HowManySchemeMembersFormProvider @Inject() extends Mappings {
 
-  def apply(taxYear: String)(implicit messages: Messages): Form[HowManySchemeMembers] =
+  def apply(errorKey: String): Form[HowManySchemeMembers] =
     Form(
-      "value" -> enumerable[HowManySchemeMembers](messages("howManySchemeMembers.error.required", taxYear))
+      "value" -> enumerable[HowManySchemeMembers](errorKey)
     )
 }

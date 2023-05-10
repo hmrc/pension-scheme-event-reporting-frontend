@@ -22,9 +22,11 @@ import forms.event14.HowManySchemeMembersFormProvider
 import models.TaxYear.getSelectedTaxYearAsString
 import models.UserAnswers
 import models.enumeration.EventType
+import models.event14.HowManySchemeMembers
 import pages.Waypoints
 import pages.event14.HowManySchemeMembersPage
-import play.api.i18n.I18nSupport
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event14.HowManySchemeMembersView
@@ -45,7 +47,8 @@ class HowManySchemeMembersController @Inject()(val controllerComponents: Message
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val taxYearEnd = getSelectedTaxYearAsString(request.userAnswers.get)
     val taxYearRange = s"${taxYearEnd.toInt - 1} to $taxYearEnd"
-    val form = formProvider(taxYearRange)
+    def form(implicit messages: Messages): Form[HowManySchemeMembers] =
+      formProvider(messages("howManySchemeMembers.error.required", taxYearRange))
     val preparedForm = request.userAnswers.flatMap(_.get(HowManySchemeMembersPage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, taxYearRange))
   }
@@ -54,7 +57,8 @@ class HowManySchemeMembersController @Inject()(val controllerComponents: Message
     implicit request =>
       val taxYearEnd = getSelectedTaxYearAsString(request.userAnswers.get)
       val taxYearRange = s"${taxYearEnd.toInt - 1} to $taxYearEnd"
-      val form = formProvider(taxYearRange)
+      def form(implicit messages: Messages): Form[HowManySchemeMembers] =
+        formProvider(messages("howManySchemeMembers.error.required", taxYearRange))
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints, taxYearRange))),
