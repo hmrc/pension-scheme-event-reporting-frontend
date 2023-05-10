@@ -30,7 +30,7 @@ object HowManySchemeMembers extends Enumerable.Implicits {
   case object OptionThree extends WithName("2 to 11") with HowManySchemeMembers
   case object OptionFour extends WithName("12 to 50") with HowManySchemeMembers
   case object OptionFive extends WithName("51 to 10,000") with HowManySchemeMembers
-  case object OptionSix extends WithName("more than 10,000") with HowManySchemeMembers
+  case object OptionSix extends WithName("more Than 10,000") with HowManySchemeMembers
 
   val values: Seq[HowManySchemeMembers] = Seq(
     OptionOne, OptionTwo, OptionThree, OptionFour, OptionFive, OptionSix

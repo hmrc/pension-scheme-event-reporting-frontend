@@ -19,15 +19,14 @@ package controllers.event14
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event14.HowManySchemeMembersFormProvider
-import models.{TaxYear, UserAnswers}
 import models.event14.HowManySchemeMembers
+import models.{TaxYear, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{EmptyWaypoints, TaxYearPage}
 import pages.event14.HowManySchemeMembersPage
-import play.api.i18n.Messages
+import pages.{EmptyWaypoints, TaxYearPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -40,11 +39,10 @@ class HowManySchemeMembersControllerSpec extends SpecBase with BeforeAndAfterEac
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new HowManySchemeMembersFormProvider()
-  private val form = formProvider(messages("howManySchemeMembers.error.required", taxYearRange))
-
   private val mockTaxYear = mock[TaxYear]
   private val taxYearRange = "2022 to 2023"
+  private val formProvider = new HowManySchemeMembersFormProvider()
+  private val form = formProvider(messages("howManySchemeMembers.error.required", taxYearRange))
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
