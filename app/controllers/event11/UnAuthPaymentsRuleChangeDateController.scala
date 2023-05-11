@@ -56,10 +56,9 @@ class UnAuthPaymentsRuleChangeDateController @Inject()(val controllerComponents:
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(UnAuthPaymentsRuleChangeDatePage, value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(HasSchemeChangedRulesInvestmentsInAssetsPage.route(waypoints).url) // UnAuthPaymentsRuleChangeDatePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route
+            Redirect(UnAuthPaymentsRuleChangeDatePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )
   }
-
 }
