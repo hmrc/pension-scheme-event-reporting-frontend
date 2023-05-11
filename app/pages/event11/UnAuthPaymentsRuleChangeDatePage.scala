@@ -18,9 +18,11 @@ package pages.event11
 
 import java.time.LocalDate
 import controllers.event11.routes
+import models.UserAnswers
+import models.enumeration.EventType.Event11
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoint, Waypoints}
 
 case object UnAuthPaymentsRuleChangeDatePage extends QuestionPage[LocalDate] {
 
@@ -34,4 +36,7 @@ case object UnAuthPaymentsRuleChangeDatePage extends QuestionPage[LocalDate] {
    def nextPageNormalMode(waypoints: Waypoints): Page = {
     HasSchemeChangedRulesInvestmentsInAssetsPage
   }
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
+    Event11CheckYourAnswersPage()
 }

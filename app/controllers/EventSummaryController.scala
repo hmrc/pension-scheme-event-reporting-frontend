@@ -22,9 +22,8 @@ import forms.EventSummaryFormProvider
 import models.TaxYear.getSelectedTaxYearAsString
 import models.UserAnswers
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23}
-import pages.{EmptyWaypoints, EventSummaryPage, Waypoints, TaxYearPage}
-import models.enumeration.EventType.{Event18, Event6}
+import models.enumeration.EventType.{Event11, Event18, Event22, Event23, Event6}
+import pages.{EmptyWaypoints, EventSummaryPage, TaxYearPage, Waypoints}
 import models.requests.DataRequest
 import play.api.Logger
 import play.api.i18n.I18nSupport
@@ -105,6 +104,7 @@ class EventSummaryController @Inject()(
   private def changeLinkForEvent(eventType: EventType): String = {
     eventType match {
       case Event6 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event6).url
+      case Event11 => controllers.event11.routes.Event11CheckYourAnswersController.onPageLoad.url
       case Event22 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event22).url
       case Event23 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event23).url
       case _ => "#"

@@ -20,7 +20,7 @@ import controllers.event11.routes
 import models.UserAnswers
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 
 case object HasSchemeChangedRulesPage extends QuestionPage[Boolean] {
 
@@ -37,4 +37,10 @@ case object HasSchemeChangedRulesPage extends QuestionPage[Boolean] {
       case false => HasSchemeChangedRulesInvestmentsInAssetsPage
     }.orRecover
   }
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
+    updatedAnswers.get(this) match {
+      case Some(true) => UnAuthPaymentsRuleChangeDatePage
+      case Some(false) => Event11CheckYourAnswersPage()
+    }
 }
