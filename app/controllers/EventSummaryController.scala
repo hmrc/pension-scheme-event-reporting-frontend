@@ -101,7 +101,6 @@ class EventSummaryController @Inject()(
   }
 
   private def changeLinkForEvent(eventType: EventType): Option[String] = {
-    println(eventType)
     eventType match {
       case EventType.Event1 => Some(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(EmptyWaypoints).url)
       case EventType.Event2 | EventType.Event3 |
