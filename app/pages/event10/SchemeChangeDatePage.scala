@@ -19,7 +19,7 @@ package pages.event10
 import controllers.event10.routes
 import models.UserAnswers
 import models.event10.{BecomeOrCeaseScheme, SchemeChangeDate}
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{JourneyRecoveryPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -34,10 +34,11 @@ case object SchemeChangeDatePage extends QuestionPage[SchemeChangeDate] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     val becameRegulatedScheme = BecomeOrCeaseScheme.ItBecameAnInvestmentRegulatedPensionScheme.toString
-    val becomeOrCeased = answers.get(BecomeOrCeaseSchemePage) match {
-      case Some(value) => value.toString
-      case _ => throw new RuntimeException("Became or Ceased value unavailable")
+    answers.get(BecomeOrCeaseSchemePage) match {
+      case Some(value) =>
+        val becomeOrCeased = value.toString
+        if (becomeOrCeased == becameRegulatedScheme) Event10CheckYourAnswersPage() else ContractsOrPoliciesPage
+      case _ => JourneyRecoveryPage
     }
-    if (becomeOrCeased == becameRegulatedScheme) Event10CheckYourAnswersPage() else ContractsOrPoliciesPage
   }
 }

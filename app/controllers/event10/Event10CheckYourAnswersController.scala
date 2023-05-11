@@ -27,7 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.{BecomeOrCeaseSchemeSummary, ContractsOrPoliciesSummary, SchemeChangeDateSummary}
+import viewmodels.event10.checkAnswers.{BecomeOrCeaseSchemeSummary, ContractsOrPoliciesSummary, SchemeChangeDateSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 

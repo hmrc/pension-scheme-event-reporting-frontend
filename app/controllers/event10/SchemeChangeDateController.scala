@@ -21,8 +21,8 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import forms.event10.SchemeChangeDateFormProvider
 import models.TaxYear
 import models.enumeration.EventType
-import pages.Waypoints
 import pages.event10.{BecomeOrCeaseSchemePage, SchemeChangeDatePage}
+import pages.{JourneyRecoveryPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -44,46 +44,43 @@ class SchemeChangeDateController @Inject()(val controllerComponents: MessagesCon
   private val eventType = EventType.Event10
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
-    val becomeOrCeased = request.userAnswers.get(BecomeOrCeaseSchemePage) match {
-      case Some(value) => value.toString
-      case _ => throw new RuntimeException("Became or Ceased value unavailable")
+    request.userAnswers.get(BecomeOrCeaseSchemePage) match {
+      case Some(value) =>
+        val selectedTaxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers).toInt
+        val startDate = LocalDate.of(selectedTaxYear - 1, Month.APRIL, 6)
+        val endDate = LocalDate.of(selectedTaxYear, Month.APRIL, 5)
+
+        val preparedForm = request.userAnswers.get(SchemeChangeDatePage) match {
+          case Some(value) => formProvider(startDate, endDate).fill(value)
+          case None => formProvider(startDate, endDate)
+        }
+        Ok(view(preparedForm, waypoints, value.toString))
+      case _ => Redirect(JourneyRecoveryPage.route(waypoints))
     }
-
-    val selectedTaxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers).toInt
-    val startDate = LocalDate.of(selectedTaxYear - 1, Month.APRIL, 6)
-    val endDate = LocalDate.of(selectedTaxYear, Month.APRIL, 5)
-
-    val preparedForm = request.userAnswers.get(SchemeChangeDatePage) match {
-      case Some(value) => formProvider(startDate, endDate).fill(value)
-      case None => formProvider(startDate, endDate)
-    }
-
-    Ok(view(preparedForm, waypoints, becomeOrCeased))
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
-      val becomeOrCeased = request.userAnswers.get(BecomeOrCeaseSchemePage) match {
-        case Some(value) => value.toString
-        case _ => throw new RuntimeException("Became or Ceased value unavailable")
+      request.userAnswers.get(BecomeOrCeaseSchemePage) match {
+        case Some(value) =>
+          val selectedTaxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers).toInt
+          val startDate = LocalDate.of(selectedTaxYear - 1, Month.APRIL, 6)
+          val endDate = LocalDate.of(selectedTaxYear, Month.APRIL, 5)
+
+          formProvider(startDate, endDate).bindFromRequest().fold(
+            formWithErrors => {
+              Future.successful(BadRequest(view(formWithErrors, waypoints, value.toString)))
+            },
+            value => {
+              val originalUserAnswers = request.userAnswers
+              val updatedAnswers = originalUserAnswers.setOrException(SchemeChangeDatePage, value)
+              userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+                Redirect(SchemeChangeDatePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+              }
+            }
+          )
+        case _ => Future.successful(Redirect(JourneyRecoveryPage.route(waypoints)))
       }
-
-      val selectedTaxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers).toInt
-      val startDate = LocalDate.of(selectedTaxYear - 1, Month.APRIL, 6)
-      val endDate = LocalDate.of(selectedTaxYear, Month.APRIL, 5)
-
-      formProvider(startDate, endDate).bindFromRequest().fold(
-        formWithErrors => {
-          Future.successful(BadRequest(view(formWithErrors, waypoints, becomeOrCeased)))
-        },
-        value => {
-          val originalUserAnswers = request.userAnswers
-          val updatedAnswers = originalUserAnswers.setOrException(SchemeChangeDatePage, value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(SchemeChangeDatePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
-          }
-        }
-      )
   }
 
 }
