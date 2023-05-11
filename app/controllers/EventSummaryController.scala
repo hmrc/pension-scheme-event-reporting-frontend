@@ -95,7 +95,7 @@ class EventSummaryController @Inject()(
         value => {
           val originalUserAnswers = UserAnswers()
           val updatedUserAnswers = originalUserAnswers.setOrException(EventSummaryPage, value)
-          Future.successful(Redirect(EventSummaryPage.navigate(waypoints,originalUserAnswers, updatedUserAnswers).route))
+          Future.successful(Redirect(EventSummaryPage.navigate(waypoints, originalUserAnswers, updatedUserAnswers).route))
         }
       )
   }
@@ -109,6 +109,7 @@ class EventSummaryController @Inject()(
            EventType.Event8A | EventType.Event22 |
            EventType.Event23 => Some(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, eventType).url)
       case EventType.Event7 => Some(controllers.event7.routes.Event7MembersSummaryController.onPageLoad(EmptyWaypoints).url)
+      case EventType.Event10 => Some(controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
       case EventType.Event13 => Some(controllers.event13.routes.Event13CheckYourAnswersController.onPageLoad.url)
       case EventType.Event18 => None
       case EventType.WindUp => Some(controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onPageLoad.url)
