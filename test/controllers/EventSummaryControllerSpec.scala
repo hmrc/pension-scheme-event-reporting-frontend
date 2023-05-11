@@ -58,7 +58,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
 
       val ua = emptyUserAnswers.setOrException(EventSummaryPage, true).setOrException(TaxYearPage, TaxYear("2022"))
 
-      val seqOfEvents = Seq(EventType.Event1, EventType.Event2)
+      val seqOfEvents = Seq(EventType.Event1, EventType.Event18)
 
       when(mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"))(any(), any())).thenReturn(
         Future.successful(seqOfEvents)
@@ -76,8 +76,8 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
         val formProvider = new EventSummaryFormProvider()
         val form = formProvider()
 
-        val mappedEvents = seqOfEvents.map { event =>
-          val eventMessageKey = Message(s"eventSummary.event${event.toString}")
+        val mappedEvents = Seq({
+          val eventMessageKey = Message(s"eventSummary.event1")
           SummaryListRow(
             key = Key(
               content = Text(eventMessageKey),
@@ -87,7 +87,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
               items = Seq(
                 ActionItem(
                   content = Text(Message("site.change")),
-                  href = "#"
+                  href = event1.routes.UnauthPaymentSummaryController.onPageLoad(EmptyWaypoints).url
                 ),
                 ActionItem(
                   content = Text(Message("site.remove")),
@@ -96,7 +96,23 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
               )
             ))
           )
-        }
+        }, {
+          val eventMessageKey = Message(s"eventSummary.event18")
+          SummaryListRow(
+            key = Key(
+              content = Text(eventMessageKey),
+              classes = "govuk-!-width-full"
+            ),
+            actions = Some(Actions(
+              items = Seq(
+                ActionItem(
+                  content = Text(Message("site.remove")),
+                  href = event18.routes.RemoveEvent18Controller.onPageLoad(EmptyWaypoints).url
+                )
+              )
+            ))
+          )
+        })
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints, mappedEvents, "2023")(request, messages(application)).toString

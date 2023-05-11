@@ -120,11 +120,11 @@ eventSelection.event8.hint = Pension commencement lump sum with primary/enhanced
 eventSelection.event8a = Event 8A
 eventSelection.event8a.hint = Stand-alone lump sums
 eventSelection.event10 = Event 10
-eventSelection.event10.hint = Investment-regulated pension scheme
+eventSelection.event10.hint = The scheme becomes or ceases to be an investment regulated pension scheme
 eventSelection.event11 = Event 11
 eventSelection.event11.hint = Changes in scheme rules
 eventSelection.event12 = Event 12
-eventSelection.event12.hint = Changes to rules of a scheme treated as more than one scheme before 6 April 2006
+eventSelection.event12.hint = Changes to rules of a scheme treated as more than 1 scheme before 6 April 2006
 eventSelection.event13 = Event 13
 eventSelection.event13.hint = Change in legal structure of scheme
 eventSelection.event14 = Event 14
@@ -155,7 +155,7 @@ eventSummary.event5 = Event 5: Cessation of ill-health pension
 eventSummary.event6 = Event 6: Benefit crystallisation events with reduced or eliminated liability
 eventSummary.event7 = Event 7: Pension commencement lump sum without primary/enhanced protection
 eventSummary.event8 = Event 8: Pension commencement lump sum with primary/enhanced protection
-eventSummary.event8a = Event 8a: Standalone lump sums
+eventSummary.event8A = Event 8a: Standalone lump sums
 eventSummary.event10 = Event 10: Investment-regulated pension scheme
 eventSummary.event11 = Event 11: Changes in scheme rules
 eventSummary.event12 = Event 12: Changes to rules of a scheme treated as more than one scheme before 6 April 2006
@@ -164,7 +164,7 @@ eventSummary.event14 = Event 14: Change in number of members
 eventSummary.event18 = Event 18: Scheme chargeable payment
 eventSummary.event19 = Event 19: Country or territory of establishment
 eventSummary.event20 = Event 20: Occupational pension scheme
-eventSummary.event20a = Event 20a: Master Trust scheme
+eventSummary.event20A = Event 20a: Master Trust scheme
 eventSummary.event22 = Event 22: Annual allowance
 eventSummary.event23 = Event 23: Dual annual allowance
 eventSummary.event24 = Event 24: Public service pension remedy
@@ -1294,3 +1294,59 @@ investmentsInAssetsRuleChangeDate.error.required.two = The date must include {0}
 investmentsInAssetsRuleChangeDate.error.required = The date must include a {0}
 investmentsInAssetsRuleChangeDate.error.invalid = Enter a real date
 investmentsInAssetsRuleChangeDate.change.hidden = When did this investment in assets rule change take effect?
+
+becomeOrCeaseScheme.title = What change has taken place for this pension scheme?
+becomeOrCeaseScheme.heading = What change has taken place for this pension scheme?
+becomeOrCeaseScheme.itBecameAnInvestmentRegulatedPensionScheme = It became an investment regulated pension scheme
+becomeOrCeaseScheme.itHasCeasedToBeAnInvestmentRegulatedPensionScheme = It has ceased to be an investment regulated pension scheme
+becomeOrCeaseScheme.checkYourAnswersLabel = What change has taken place for this pension scheme?
+becomeOrCeaseScheme.error.required = Select what change has taken place
+becomeOrCeaseScheme.change.hidden = Whether this pension scheme became or ceased to be investment regulated
+
+itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.title = When did the scheme become an investment regulated pension scheme?
+itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.heading = When did the scheme become an investment regulated pension scheme?
+itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.title = When did this scheme cease to be an investment regulated pension scheme?
+itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.heading = When did this scheme cease to be an investment regulated pension scheme?
+
+schemeChangeDate.hint = For example, 27 3 2007
+
+itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.checkYourAnswersLabel = When pension scheme became investment regulated
+itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.checkYourAnswersLabel = When pension scheme ceased to be investment regulated
+
+schemeChangeDate.error.nothingEntered = Enter the date
+schemeChangeDate.error.noDayMonthOrYear = The date must include a day, month and year
+schemeChangeDate.error.outsideDateRanges = Enter a real date
+schemeChangeDate.error.outsideReportedYear = The date must be between {0} and {1}
+
+became.schemeChangeDate.change.hidden = The date for when the pension scheme became investment regulated
+ceased.schemeChangeDate.change.hidden = The date for when the pension scheme ceased to be investment regulated
+
+became.schemeChangeDate.checkYourAnswersLabel = When pension scheme became investment regulated
+ceased.schemeChangeDate.checkYourAnswersLabel = When pension scheme ceased to be investment regulated
+
+contractsOrPolicies.title = Do all investments consist of either contracts or policies of insurance?
+contractsOrPolicies.heading = Do all investments consist of either contracts or policies of insurance?
+contractsOrPolicies.checkYourAnswersLabel = Do all investments consist of either contracts or policies of insurance?
+contractsOrPolicies.error.required = Select yes if all investments consist of either contracts or policies of insurance
+contractsOrPolicies.change.hidden = Whether all investments consist of either contracts or policies of insurance
+
+hasSchemeChangedRules.title = Has the scheme that was treated as 2 or more schemes immediately before 6 April 2006 changed its rules?
+hasSchemeChangedRules.heading = Has the scheme that was treated as 2 or more schemes immediately before 6 April 2006 changed its rules?
+hasSchemeChangedRules.checkYourAnswersLabel = Did scheme treated as 2 or more schemes before 6 April 2006 change its rules?
+hasSchemeChangedRules.error.required = Select if the scheme has changed its rules
+hasSchemeChangedRules.change.hidden = Whether scheme treated as 2 or more schemes before 6 April 2006 changed its rules
+
+dateOfChange.title = When did this change take effect?
+dateOfChange.heading = When did this change take effect?
+dateOfChange.hint = For example, 27 3 2007
+
+dateOfChange.checkYourAnswersLabel = When the rule change took place
+dateOfChange.error.nothingEntered = Enter the date
+dateOfChange.error.noDayMonthOrYear = The date must include a day, month and year
+dateOfChange.error.outsideDateRanges = Enter a real date
+dateOfChange.error.outsideReportedYear = The date must be between {0} and {1}
+dateOfChange.change.hidden = The date for when the scheme changed its rules
+
+cannotSubmit.title = You cannot submit a report for this event
+cannotSubmit.heading = You cannot submit a report for this event
+cannotSubmit.p1 = You do not meet the criteria to submit a report for this event at this time.
