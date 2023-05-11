@@ -19,6 +19,7 @@ package pages
 import models.Mode
 import pages.event1.Event1CheckYourAnswersPage
 import pages.event10.Event10CheckYourAnswersPage
+import pages.event12.Event12CheckYourAnswersPage
 import pages.event13.Event13CheckYourAnswersPage
 import pages.event2.Event2CheckYourAnswersPage
 import pages.event22.Event22CheckYourAnswersPage
@@ -67,6 +68,7 @@ object Waypoint {
       .orElse(Event8CheckYourAnswersPage.waypointFromString(s))
       .orElse(Event8ACheckYourAnswersPage.waypointFromString(s))
       .orElse(Event10CheckYourAnswersPage.waypointFromString(s))
+      .orElse(Event12CheckYourAnswersPage.waypointFromString(s))
       .orElse(Event13CheckYourAnswersPage.waypointFromString(s))
       .orElse(Event22CheckYourAnswersPage.waypointFromString(s))
       .orElse(Event23CheckYourAnswersPage.waypointFromString(s))
