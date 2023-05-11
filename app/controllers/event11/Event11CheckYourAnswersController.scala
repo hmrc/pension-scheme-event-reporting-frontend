@@ -19,17 +19,15 @@ package controllers.event11
 import com.google.inject.Inject
 import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.enumeration.EventType.{Event11, Event13}
+import models.enumeration.EventType.Event11
 import models.requests.DataRequest
-import pages.event11.{Event11CheckYourAnswersPage, HasSchemeChangedRulesPage}
-import pages.event13.Event13CheckYourAnswersPage
+import pages.event11.Event11CheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.{ChangeDateSummary, HasSchemeChangedRulesInvestmentsInAssetsSummary, HasSchemeChangedRulesSummary, InvestmentsInAssetsRuleChangeDateSummary, SchemeStructureDescriptionSummary, UnAuthPaymentsRuleChangeDateSummary}
-import viewmodels.event13.checkAnswers.SchemeStructureSummary
+import viewmodels.event11.checkAnswers.{HasSchemeChangedRulesInvestmentsInAssetsSummary, HasSchemeChangedRulesSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -54,11 +52,17 @@ class Event11CheckYourAnswersController @Inject()(
     }
 
   def onClick: Action[AnyContent] =
-    (identify andThen getData(Event11) andThen requireData) { implicit request => // TODO: reimplement async when compile is added in backend: `...().async`
+    (identify andThen getData(Event11) andThen requireData) { implicit request =>
+      /*
+      TODO: reimplement async when compile is added in backend: `...().async`
+      TODO: BE transform is out of scope for 8342. -NJ
+      */
+
       //      connector.compileEvent(request.pstr, Event11).map {
       //        _ =>
+
       Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
-      //}
+      // }
     }
 
   private def buildEvent11CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
