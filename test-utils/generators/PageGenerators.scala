@@ -40,7 +40,7 @@ trait PageGenerators {
   implicit lazy val arbitraryUnAuthPaymentsRuleChangeDatePage: Arbitrary[event11.UnAuthPaymentsRuleChangeDatePage.type] =
     Arbitrary(event11.UnAuthPaymentsRuleChangeDatePage)
 
-  implicit lazy val arbitraryHasSchemeChangedRulesPage: Arbitrary[event11.HasSchemeChangedRulesPage.type] =
+  implicit lazy val arbitraryHasSchemeChangedRulesPageEvent11: Arbitrary[event11.HasSchemeChangedRulesPage.type] =
     Arbitrary(event11.HasSchemeChangedRulesPage)
 
   implicit lazy val arbitraryDateOfChangePage: Arbitrary[event12.DateOfChangePage.type] =

@@ -21,12 +21,11 @@ import connectors.UserAnswersCacheConnector
 import forms.event11.InvestmentsInAssetsRuleChangeDateFormProvider
 import models.UserAnswers
 import pages.EmptyWaypoints
-import pages.event11.InvestmentsInAssetsRuleChangeDatePage
-
+import pages.event11.{Event11CheckYourAnswersPage, InvestmentsInAssetsRuleChangeDatePage}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito.{never, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -114,7 +113,7 @@ class InvestmentsInAssetsRuleChangeDateControllerSpec extends SpecBase with Befo
         val updatedAnswers = emptyUserAnswers.set(InvestmentsInAssetsRuleChangeDatePage, validAnswer).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual InvestmentsInAssetsRuleChangeDatePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual Event11CheckYourAnswersPage().route(waypoints).toString
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }

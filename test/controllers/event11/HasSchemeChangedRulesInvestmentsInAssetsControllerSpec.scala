@@ -17,13 +17,13 @@
 package controllers.event11
 
 import base.SpecBase
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito.{never, reset, times, verify, when}
 import connectors.UserAnswersCacheConnector
 import forms.event11.HasSchemeChangedRulesInvestmentsInAssetsFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
 import pages.event11.HasSchemeChangedRulesInvestmentsInAssetsPage
 import play.api.inject.bind

@@ -22,11 +22,10 @@ import forms.event11.UnAuthPaymentsRuleChangeDateFormProvider
 import models.UserAnswers
 import pages.EmptyWaypoints
 import pages.event11.UnAuthPaymentsRuleChangeDatePage
-
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito.{never, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest

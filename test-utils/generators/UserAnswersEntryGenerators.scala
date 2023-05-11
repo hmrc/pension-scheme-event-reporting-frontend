@@ -49,7 +49,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryHasSchemeChangedRulesInvestmentsInAssetsUserAnswersEntry: Arbitrary[(pages.event11.HasSchemeChangedRulesInvestmentsInAssetsPage.type, JsValue)] =
+  implicit lazy val arbitraryHasSchemeChangedRulesInvestmentsInAssetsUserAnswersEntryEvent11: Arbitrary[(pages.event11.HasSchemeChangedRulesInvestmentsInAssetsPage.type, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[pages.event11.HasSchemeChangedRulesInvestmentsInAssetsPage.type]
@@ -89,7 +89,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryHasSchemeChangedRulesUserAnswersEntry: Arbitrary[(pages.event11.HasSchemeChangedRulesPage.type, JsValue)] =
+  implicit lazy val arbitraryHasSchemeChangedRulesUserAnswersEntryEvent11: Arbitrary[(pages.event11.HasSchemeChangedRulesPage.type, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[pages.event11.HasSchemeChangedRulesPage.type]

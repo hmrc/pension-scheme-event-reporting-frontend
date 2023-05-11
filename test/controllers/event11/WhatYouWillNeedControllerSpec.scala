@@ -17,45 +17,14 @@
 package controllers.event11
 
 import base.SpecBase
-import connectors.UserAnswersCacheConnector
-import forms.event11.WhatYouWillNeedFormProvider
-import models.UserAnswers
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
-import org.scalatest.BeforeAndAfterEach
 import pages.EmptyWaypoints
-import pages.event11.WhatYouWillNeedPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.event11.WhatYouWillNeedView
 
-import scala.concurrent.Future
-
-class WhatYouWillNeedControllerSpec extends SpecBase with BeforeAndAfterEach {
+class WhatYouWillNeedControllerSpec extends SpecBase {
 
   private val waypoints = EmptyWaypoints
-
-  private val formProvider = new WhatYouWillNeedFormProvider()
-  private val form = formProvider()
-
-  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-
-  private def getRoute: String = routes.WhatYouWillNeedController.onPageLoad(waypoints).url
-  private def postRoute: String = routes.WhatYouWillNeedController.onSubmit(waypoints).url
-
-  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
-  )
-
-  private val validValue = "abc"
-
-  override def beforeEach: Unit = {
-    super.beforeEach
-    reset(mockUserAnswersCacheConnector)
-  }
 
   "WhatYouWillNeed Controller" - {
 
@@ -64,73 +33,16 @@ class WhatYouWillNeedControllerSpec extends SpecBase with BeforeAndAfterEach {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, getRoute)
+
+        val request = FakeRequest(GET, routes.WhatYouWillNeedController.onPageLoad(waypoints).url)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[WhatYouWillNeedView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
-      }
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = UserAnswers().set(WhatYouWillNeedPage, validValue).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, getRoute)
-
-        val view = application.injector.instanceOf[WhatYouWillNeedView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints)(request, messages(application)).toString
-      }
-    }
-
-    "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
-
-        val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(WhatYouWillNeedPage, validValue).success.value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual WhatYouWillNeedPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
-      }
-    }
-
-    "must return bad request when invalid data is submitted" in {
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
-
-        val view = application.injector.instanceOf[WhatYouWillNeedView]
-        val boundForm = form.bind(Map("value" -> ""))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        contentAsString(result) mustEqual
+          view(controllers.event11.routes.HasSchemeChangedRulesController.onPageLoad(waypoints).url)(request, messages(application)).toString
       }
     }
   }
