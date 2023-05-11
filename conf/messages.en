@@ -120,7 +120,7 @@ eventSelection.event8.hint = Pension commencement lump sum with primary/enhanced
 eventSelection.event8a = Event 8A
 eventSelection.event8a.hint = Stand-alone lump sums
 eventSelection.event10 = Event 10
-eventSelection.event10.hint = Investment-regulated pension scheme
+eventSelection.event10.hint = The scheme becomes or ceases to be an investment regulated pension scheme
 eventSelection.event11 = Event 11
 eventSelection.event11.hint = Changes in scheme rules
 eventSelection.event12 = Event 12
@@ -1255,3 +1255,38 @@ paymentDetails.date.change.hidden = the date of the payment
 paymentDetails.date.checkYourAnswersLabel = Date of the payment
 
 characterCount = You can enter up to {0} characters
+
+becomeOrCeaseScheme.title = What change has taken place for this pension scheme?
+becomeOrCeaseScheme.heading = What change has taken place for this pension scheme?
+becomeOrCeaseScheme.itBecameAnInvestmentRegulatedPensionScheme = It became an investment regulated pension scheme
+becomeOrCeaseScheme.itHasCeasedToBeAnInvestmentRegulatedPensionScheme = It has ceased to be an investment regulated pension scheme
+becomeOrCeaseScheme.checkYourAnswersLabel = What change has taken place for this pension scheme?
+becomeOrCeaseScheme.error.required = Select what change has taken place
+becomeOrCeaseScheme.change.hidden = Whether this pension scheme became or ceased to be investment regulated
+
+itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.title = When did the scheme become an investment regulated pension scheme?
+itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.heading = When did the scheme become an investment regulated pension scheme?
+itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.title = When did this scheme cease to be an investment regulated pension scheme?
+itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.heading = When did this scheme cease to be an investment regulated pension scheme?
+
+schemeChangeDate.hint = For example, 27 3 2007
+
+itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.checkYourAnswersLabel = When pension scheme became investment regulated
+itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.checkYourAnswersLabel = When pension scheme ceased to be investment regulated
+
+schemeChangeDate.error.nothingEntered = Enter the date
+schemeChangeDate.error.noDayMonthOrYear = The date must include a day, month and year
+schemeChangeDate.error.outsideDateRanges = Enter a real date
+schemeChangeDate.error.outsideReportedYear = The date must be between {0} and {1}
+
+became.schemeChangeDate.change.hidden = The date for when the pension scheme became investment regulated
+ceased.schemeChangeDate.change.hidden = The date for when the pension scheme ceased to be investment regulated
+
+became.schemeChangeDate.checkYourAnswersLabel = When pension scheme became investment regulated
+ceased.schemeChangeDate.checkYourAnswersLabel = When pension scheme ceased to be investment regulated
+
+contractsOrPolicies.title = Do all investments consist of either contracts or policies of insurance?
+contractsOrPolicies.heading = Do all investments consist of either contracts or policies of insurance?
+contractsOrPolicies.checkYourAnswersLabel = Do all investments consist of either contracts or policies of insurance?
+contractsOrPolicies.error.required = Select yes if all investments consist of either contracts or policies of insurance
+contractsOrPolicies.change.hidden = Whether all investments consist of either contracts or policies of insurance

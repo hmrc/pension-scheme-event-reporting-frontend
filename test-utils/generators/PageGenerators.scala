@@ -31,6 +31,15 @@ import pages.{event13, _}
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryContractsOrPoliciesPage: Arbitrary[event10.ContractsOrPoliciesPage.type] =
+    Arbitrary(event10.ContractsOrPoliciesPage)
+
+  implicit lazy val arbitrarySchemeChangeDatePage: Arbitrary[event10.SchemeChangeDatePage.type] =
+    Arbitrary(event10.SchemeChangeDatePage)
+
+  implicit lazy val arbitraryBecomeOrCeaseSchemePage: Arbitrary[event10.BecomeOrCeaseSchemePage.type] =
+    Arbitrary(event10.BecomeOrCeaseSchemePage)
+
   implicit lazy val arbitrarydatePaidPage: Arbitrary[event2.DatePaidPage] =
     Arbitrary(event2.DatePaidPage(Index(0), Event2))
 
