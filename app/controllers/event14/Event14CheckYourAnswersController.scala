@@ -52,13 +52,12 @@ class Event14CheckYourAnswersController @Inject()(
     }
 
   def onClick: Action[AnyContent] =
-    (identify andThen getData(Event14) andThen requireData) /* .async */ { implicit request =>
-      /*TODO uncomment once compile event complete for event14*/
+    (identify andThen getData(Event14) andThen requireData).async  { implicit request =>
       val waypoints = EmptyWaypoints
-//      connector.compileEvent(request.pstr, Event14).map {
-//        _ =>
+      connector.compileEvent(request.pstr, Event14).map {
+        _ =>
         Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
-//      }
+      }
     }
 
   private def buildEvent14CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
