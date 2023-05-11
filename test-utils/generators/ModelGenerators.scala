@@ -33,11 +33,6 @@ trait ModelGenerators {
       Gen.oneOf(fileUpload.FileUploadResult.values.toSeq)
     }
 
-  implicit lazy val arbitraryFileUpload: Arbitrary[fileUpload.FileUpload] =
-    Arbitrary {
-      Gen.oneOf(fileUpload.FileUpload.values)
-    }
-
   implicit lazy val arbitraryReasonForBenefits: Arbitrary[event3.ReasonForBenefits] =
     Arbitrary {
       Gen.oneOf(event3.ReasonForBenefits.values.toSeq)

@@ -19,7 +19,6 @@ package controllers.fileUpload
 import config.FrontendAppConfig
 import connectors.{UpscanInitiateConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.fileUpload.FileUploadFormProvider
 import models.enumeration.EventType
 import models.enumeration.EventType.getEventTypeByName
 import models.requests.DataRequest
@@ -40,7 +39,6 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
                                        requireData: DataRequiredAction,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
                                        upscanInitiateConnector: UpscanInitiateConnector,
-                                       formProvider: FileUploadFormProvider,
                                        appConfig: FrontendAppConfig,
                                        view: FileUploadView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -50,7 +48,7 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
 
     val successRedirectUrl = appConfig.successEndPointTarget(eventType)
     val errorRedirectUrl = appConfig.failureEndPointTarget(eventType)
-    upscanInitiateConnector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), eventType: EventType).map { uir =>
+    upscanInitiateConnector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl)).map { uir =>
       Ok(view(waypoints, getEventTypeByName(eventType), eventType, Call("post", uir.postTarget), uir.formFields, getErrorCode(request)))
     }
   }
