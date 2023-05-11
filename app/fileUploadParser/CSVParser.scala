@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package fileUploadParsers
+package fileUploadParser
 
 import com.univocity.parsers.csv.{CsvParser, CsvParserSettings}
 
 import java.io._
 import scala.jdk.CollectionConverters.ListHasAsScala
 
-object CsvLineSplitter {
+object CSVParser {
 
   def split(content: String): Seq[Array[String]] = {
     val settings = new CsvParserSettings()
