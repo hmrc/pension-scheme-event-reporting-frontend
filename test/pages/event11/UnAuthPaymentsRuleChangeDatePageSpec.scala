@@ -16,8 +16,9 @@
 
 package pages.event11
 
-import java.time.LocalDate
+import models.event11.Event11Date
 
+import java.time.LocalDate
 import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
 
@@ -25,14 +26,16 @@ class UnAuthPaymentsRuleChangeDatePageSpec extends PageBehaviours {
 
   "UnAuthPaymentsRuleChangeDatePage" - {
 
-    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
-      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
+    implicit lazy val arbitraryEvent11Date: Arbitrary[Event11Date] = Arbitrary {
+      for {
+        date <- datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
+      } yield Event11Date(date)
     }
 
-    beRetrievable[LocalDate](UnAuthPaymentsRuleChangeDatePage)
+    beRetrievable[Event11Date](UnAuthPaymentsRuleChangeDatePage)
 
-    beSettable[LocalDate](UnAuthPaymentsRuleChangeDatePage)
+    beSettable[Event11Date](UnAuthPaymentsRuleChangeDatePage)
 
-    beRemovable[LocalDate](UnAuthPaymentsRuleChangeDatePage)
+    beRemovable[Event11Date](UnAuthPaymentsRuleChangeDatePage)
   }
 }

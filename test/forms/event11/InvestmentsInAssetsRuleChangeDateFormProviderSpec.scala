@@ -16,23 +16,48 @@
 
 package forms.event11
 
+import base.SpecBase
+
 import java.time.{LocalDate, ZoneOffset}
+import forms.behaviours.{BigDecimalFieldBehaviours, DateBehavioursTrait}
+import play.api.data.FormError
+import utils.DateHelper.formatDateDMY
 
-import forms.behaviours.DateBehaviours
+class InvestmentsInAssetsRuleChangeDateFormProviderSpec extends SpecBase
+  with BigDecimalFieldBehaviours with DateBehavioursTrait {
 
-class InvestmentsInAssetsRuleChangeDateFormProviderSpec extends DateBehaviours {
+  private val stubMin: LocalDate = LocalDate.of(2022, 4, 6)
+  private val stubMax: LocalDate = LocalDate.of(2023, 4, 5)
 
-  private val form = new InvestmentsInAssetsRuleChangeDateFormProvider()()
+  private val form = new InvestmentsInAssetsRuleChangeDateFormProvider()(stubMin, stubMax)
+  private val dateKey = "value"
 
   ".value" - {
 
-    val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
+    behave like mandatoryDateField(
+      form = form,
+      key = dateKey,
+      requiredAllKey = "investmentsInAssetsRuleChangeDate.error.required.all"
     )
 
-    behave like dateField(form, "value", validData)
+    behave like dateFieldYearNot4Digits(
+      form = form,
+      key = dateKey,
+      formError = FormError(dateKey, "investmentsInAssetsRuleChangeDate.error.outsideDateRanges")
+    )
 
-    behave like mandatoryDateField(form, "value", "investmentsInAssetsRuleChangeDate.error.required.all")
+    behave like dateFieldWithMin(
+      form = form,
+      key = dateKey,
+      min = stubMin,
+      formError = FormError(dateKey, messages("investmentsInAssetsRuleChangeDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+    )
+
+    behave like dateFieldWithMax(
+      form = form,
+      key = dateKey,
+      max = stubMax,
+      formError = FormError(dateKey, messages("investmentsInAssetsRuleChangeDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+    )
   }
 }

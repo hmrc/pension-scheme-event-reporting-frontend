@@ -21,7 +21,7 @@ import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.enumeration.EventType.Event11
 import models.requests.DataRequest
-import pages.event11.Event11CheckYourAnswersPage
+import pages.event11.{Event11CheckYourAnswersPage, HasSchemeChangedRulesInvestmentsInAssetsPage, HasSchemeChangedRulesPage}
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -61,7 +61,13 @@ class Event11CheckYourAnswersController @Inject()(
       //      connector.compileEvent(request.pstr, Event11).map {
       //        _ =>
 
-      Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
+      // If answered "No" twice, you cannot submit this event.
+      val maybeNo1 = request.userAnswers.get(HasSchemeChangedRulesPage).getOrElse(false)
+      val maybeNo2 = request.userAnswers.get(HasSchemeChangedRulesInvestmentsInAssetsPage).getOrElse(false)
+      (maybeNo1, maybeNo2) match {
+        case (false, false) => Redirect(controllers.event11.routes.Event11CannotSubmitController.onPageLoad(EmptyWaypoints).url)
+        case _ => Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
+      }
       // }
     }
 

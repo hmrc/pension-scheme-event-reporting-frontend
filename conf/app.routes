@@ -390,6 +390,8 @@ POST       /new-report/event-11-allow-investments-in-assets-date                
 GET         /new-report/event-11-check-your-answers                              controllers.event11.Event11CheckYourAnswersController.onPageLoad
 GET         /new-report/event-11-click                                           controllers.event11.Event11CheckYourAnswersController.onClick
 
+GET        /new-report/event-11-cannot-submit                                      controllers.event11.Event11CannotSubmitController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.
 #

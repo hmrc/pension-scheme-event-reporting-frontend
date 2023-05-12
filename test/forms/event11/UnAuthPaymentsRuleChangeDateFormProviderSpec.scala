@@ -16,23 +16,48 @@
 
 package forms.event11
 
-import java.time.{LocalDate, ZoneOffset}
+import base.SpecBase
 
-import forms.behaviours.DateBehaviours
+import java.time.LocalDate
+import forms.behaviours.{BigDecimalFieldBehaviours, DateBehavioursTrait}
+import play.api.data.FormError
+import utils.DateHelper.formatDateDMY
 
-class UnAuthPaymentsRuleChangeDateFormProviderSpec extends DateBehaviours {
+class UnAuthPaymentsRuleChangeDateFormProviderSpec extends SpecBase
+  with BigDecimalFieldBehaviours with DateBehavioursTrait {
 
-  private val form = new UnAuthPaymentsRuleChangeDateFormProvider()()
+  private val stubMin: LocalDate = LocalDate.of(2022, 4, 6)
+  private val stubMax: LocalDate = LocalDate.of(2023, 4, 5)
+
+  private val form = new UnAuthPaymentsRuleChangeDateFormProvider()(stubMin, stubMax)
+  private val dateKey = "value"
 
   ".value" - {
 
-    val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
+    behave like mandatoryDateField(
+      form = form,
+      key = dateKey,
+      requiredAllKey = "unAuthPaymentsRuleChangeDate.error.required.all"
     )
 
-    behave like dateField(form, "value", validData)
+    behave like dateFieldYearNot4Digits(
+      form = form,
+      key = dateKey,
+      formError = FormError(dateKey, "unAuthPaymentsRuleChangeDate.error.outsideDateRanges")
+    )
 
-    behave like mandatoryDateField(form, "value", "unAuthPaymentsRuleChangeDate.error.required.all")
+    behave like dateFieldWithMin(
+      form = form,
+      key = dateKey,
+      min = stubMin,
+      formError = FormError(dateKey, messages("unAuthPaymentsRuleChangeDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+    )
+
+    behave like dateFieldWithMax(
+      form = form,
+      key = dateKey,
+      max = stubMax,
+      formError = FormError(dateKey, messages("unAuthPaymentsRuleChangeDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+    )
   }
 }
