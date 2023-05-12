@@ -59,12 +59,14 @@ class DeclarationController @Inject()(
       }
   }
 
-  private def declarationData(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser): JsObject = {
+  private def declarationData(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser) = {
+
     val psaOrPsp = loggedInUser.administratorOrPractitioner match {
       case AdministratorOrPractitioner.Administrator => "PSA"
       case AdministratorOrPractitioner.Practitioner => "PSP"
       case _ => throw new RuntimeException("Unknown user type")
     }
+
     val common = Json.obj(
       "erDetails" -> Json.obj(
         "pSTR" -> pstr,
@@ -78,8 +80,7 @@ class DeclarationController @Inject()(
         "submittedBy" -> psaOrPsp,
         //PSA or PSP ID
         "submittedID" -> loggedInUser.psaIdOrPspId
-      ),
-
+      )
     )
 
     val declarationDetails = loggedInUser.administratorOrPractitioner match {
