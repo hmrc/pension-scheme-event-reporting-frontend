@@ -27,8 +27,9 @@ import views.html.DeclarationView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
-import models.UserAnswers
+import models.{LoggedInUser, TaxYear, UserAnswers}
 import DeclarationController.testDataPsa
+import models.enumeration.AdministratorOrPractitioner
 
 class DeclarationController @Inject()(
                                        override val messagesApi: MessagesApi,
@@ -47,6 +48,8 @@ class DeclarationController @Inject()(
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
       val testUserAnswers: UserAnswers = UserAnswers(testDataPsa(request.pstr))
+      println("---------------------")
+      Json.prettyPrint(request.userAnswers.get.data)
 
       request.userAnswers match {
         //TODO: Replace test user answers above with ua when FE captures sufficient data
@@ -65,28 +68,39 @@ object DeclarationController {
    * Please see the To Do comments below for more info
    **/
 
-  private def testDataPsa(pstr: String): JsObject = {
-    Json.obj(
+  private def declarationData(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser): JsObject = {
+    val psaOrPsp = loggedInUser.administratorOrPractitioner match {
+      case AdministratorOrPractitioner.Administrator => "PSA"
+      case AdministratorOrPractitioner.Practitioner => "PSP"
+      case _ => throw new RuntimeException("Unknown user type")
+    }
+    val common = Json.obj(
       "declarationDetails" -> Json.obj(
         "erDetails" -> Json.obj(
           "pSTR" -> pstr,
-          //TODO: Report start date = tax year start date
-          "reportStartDate" -> "2020-04-06",
-          //TODO: Report end date = tax year end date
-          "reportEndDate" -> "2021-04-05"
+          //Report start date = tax year start date
+          "reportStartDate" -> s"${taxYear.startYear}-04-06",
+          //Report end date = tax year end date
+          "reportEndDate" -> s"${taxYear.endYear}-04-05"
         ),
         "erDeclarationDetails" -> Json.obj(
-          //TODO: Get PSA ID or PSP ID here from user answers
-          "submittedBy" -> "PSA",
-          //TODO: Get PSA or PSP ID from user answers
-          "submittedID" -> "A2345678"
+          //PSA or PSP access
+          "submittedBy" -> psaOrPsp,
+          //PSA or PSP ID
+          "submittedID" -> loggedInUser.psaIdOrPspId
         ),
-        "psaDeclaration" -> Json.obj(
+
+      )
+    )
+
+    loggedInUser.administratorOrPractitioner match {
+      case AdministratorOrPractitioner.Administrator =>
+        common + ("psaDeclaration" -> Json.obj(
           //TODO: Relates to wantToSubmit and Declaration
           "psaDeclaration1" -> "Selected",
           "psaDeclaration2" -> "Selected"
-        )
-      )
-    )
+        ))
+      case AdministratorOrPractitioner.Practitioner => ??? //TODO: Implement declaration submission by PSA
+    }
   }
 }
