@@ -28,13 +28,13 @@ import views.html.DeclarationView
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import models.{LoggedInUser, TaxYear, UserAnswers}
-import DeclarationController.testDataPsa
 import models.enumeration.AdministratorOrPractitioner
 
 class DeclarationController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
                                        erConnector: EventReportingConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: DeclarationView
@@ -45,28 +45,19 @@ class DeclarationController @Inject()(
       Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
   }
 
-  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
+  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
-      val testUserAnswers: UserAnswers = UserAnswers(testDataPsa(request.pstr))
-      println("---------------------")
-      Json.prettyPrint(request.userAnswers.get.data)
+      val data: UserAnswers = UserAnswers(
+        declarationData(
+          request.pstr,
+          TaxYear.getSelectedTaxYear(request.userAnswers),
+          request.loggedInUser)
+      )
 
-      request.userAnswers match {
-        //TODO: Replace test user answers above with ua when FE captures sufficient data
-        case Some(_) => erConnector.submitReport(request.pstr, testUserAnswers).map {
-          _ => Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
-        }
-        case None => throw new RuntimeException("No user answers found in DeclarationController - required for report submit")
+      erConnector.submitReport(request.pstr, data).map { _ =>
+        Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
       }
   }
-}
-
-object DeclarationController {
-
-  /**
-   * The frontend and backend changes for report submission are complete, however the correct data is not captured in the frontend yet
-   * Please see the To Do comments below for more info
-   **/
 
   private def declarationData(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser): JsObject = {
     val psaOrPsp = loggedInUser.administratorOrPractitioner match {
@@ -75,32 +66,34 @@ object DeclarationController {
       case _ => throw new RuntimeException("Unknown user type")
     }
     val common = Json.obj(
-      "declarationDetails" -> Json.obj(
-        "erDetails" -> Json.obj(
-          "pSTR" -> pstr,
-          //Report start date = tax year start date
-          "reportStartDate" -> s"${taxYear.startYear}-04-06",
-          //Report end date = tax year end date
-          "reportEndDate" -> s"${taxYear.endYear}-04-05"
-        ),
-        "erDeclarationDetails" -> Json.obj(
-          //PSA or PSP access
-          "submittedBy" -> psaOrPsp,
-          //PSA or PSP ID
-          "submittedID" -> loggedInUser.psaIdOrPspId
-        ),
+      "erDetails" -> Json.obj(
+        "pSTR" -> pstr,
+        //Report start date = tax year start date
+        "reportStartDate" -> s"${taxYear.startYear}-04-06",
+        //Report end date = tax year end date
+        "reportEndDate" -> s"${taxYear.endYear}-04-05"
+      ),
+      "erDeclarationDetails" -> Json.obj(
+        //PSA or PSP access
+        "submittedBy" -> psaOrPsp,
+        //PSA or PSP ID
+        "submittedID" -> loggedInUser.psaIdOrPspId
+      ),
 
-      )
     )
 
-    loggedInUser.administratorOrPractitioner match {
+    val declarationDetails = loggedInUser.administratorOrPractitioner match {
       case AdministratorOrPractitioner.Administrator =>
         common + ("psaDeclaration" -> Json.obj(
-          //TODO: Relates to wantToSubmit and Declaration
+          //Both of those are always selected. Users can't access the page otherwise.
           "psaDeclaration1" -> "Selected",
           "psaDeclaration2" -> "Selected"
         ))
-      case AdministratorOrPractitioner.Practitioner => ??? //TODO: Implement declaration submission by PSA
+      case AdministratorOrPractitioner.Practitioner => ??? //TODO: Implement declaration submission by PSP
     }
+
+    Json.obj(
+      "declarationDetails" -> declarationDetails
+    )
   }
 }
