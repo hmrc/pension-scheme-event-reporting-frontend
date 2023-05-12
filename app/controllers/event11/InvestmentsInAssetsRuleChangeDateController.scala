@@ -17,9 +17,9 @@
 package controllers.event11
 
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.event11.InvestmentsInAssetsRuleChangeDateFormProvider
-import models.UserAnswers
+import models.{TaxYear, UserAnswers}
 import models.enumeration.EventType
 import pages.Waypoints
 import pages.event11.{Event11CheckYourAnswersPage, InvestmentsInAssetsRuleChangeDatePage}
@@ -28,32 +28,45 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event11.InvestmentsInAssetsRuleChangeDateView
 
+import java.time.{LocalDate, Month}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class InvestmentsInAssetsRuleChangeDateController @Inject()(val controllerComponents: MessagesControllerComponents,
                                     identify: IdentifierAction,
                                     getData: DataRetrievalAction,
+                                    requireData: DataRequiredAction,
                                     userAnswersCacheConnector: UserAnswersCacheConnector,
                                     formProvider: InvestmentsInAssetsRuleChangeDateFormProvider,
                                     view: InvestmentsInAssetsRuleChangeDateView
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
   private val eventType = EventType.Event11
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(InvestmentsInAssetsRuleChangeDatePage)).fold(form)(form.fill)
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
+
+    val selectedTaxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers).toInt
+    val startDate = LocalDate.of(selectedTaxYear - 1, Month.APRIL, 6)
+    val endDate = LocalDate.of(selectedTaxYear, Month.APRIL, 5)
+
+    val preparedForm = request.userAnswers.get(InvestmentsInAssetsRuleChangeDatePage) match {
+      case Some(value) => formProvider(startDate, endDate).fill(value)
+      case None => formProvider(startDate, endDate)
+    }
     Ok(view(preparedForm, waypoints))
+
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
+      val selectedTaxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers).toInt
+      val startDate = LocalDate.of(selectedTaxYear - 1, Month.APRIL, 6)
+      val endDate = LocalDate.of(selectedTaxYear, Month.APRIL, 5)
+      formProvider(startDate, endDate).bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
-          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+          val originalUserAnswers = request.userAnswers
           val updatedAnswers = originalUserAnswers.setOrException(InvestmentsInAssetsRuleChangeDatePage, value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(Event11CheckYourAnswersPage().route(waypoints).url)

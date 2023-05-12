@@ -16,13 +16,13 @@
 
 package pages.event11
 
-import java.time.LocalDate
 import controllers.event11.routes
+import models.event11.Event11Date
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import pages.{Page, QuestionPage, Waypoints}
 
-case object InvestmentsInAssetsRuleChangeDatePage extends QuestionPage[LocalDate] {
+case object InvestmentsInAssetsRuleChangeDatePage extends QuestionPage[Event11Date] {
 
   override def path: JsPath = JsPath \ "event11" \ toString
 

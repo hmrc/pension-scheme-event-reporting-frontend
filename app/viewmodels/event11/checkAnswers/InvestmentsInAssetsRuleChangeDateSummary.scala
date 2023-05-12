@@ -36,7 +36,7 @@ object InvestmentsInAssetsRuleChangeDateSummary  {
 
         SummaryListRowViewModel(
           key     = "investmentsInAssetsRuleChangeDate.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.format(dateFormatter)),
+          value   = ValueViewModel(answer.formatEvent11Date),
           actions = Seq(
             ActionItemViewModel("site.change", InvestmentsInAssetsRuleChangeDatePage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("investmentsInAssetsRuleChangeDate.change.hidden"))

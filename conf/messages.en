@@ -1295,6 +1295,8 @@ investmentsInAssetsRuleChangeDate.error.required.all = Enter the date
 investmentsInAssetsRuleChangeDate.error.required.two = The date must include {0} and {1}
 investmentsInAssetsRuleChangeDate.error.required = The date must include a {0}
 investmentsInAssetsRuleChangeDate.error.invalid = Enter a real date
+investmentsInAssetsRuleChangeDate.error.outsideDateRanges = Enter a real date
+investmentsInAssetsRuleChangeDate.error.outsideReportedYear = The date must be between {0} and {1}
 investmentsInAssetsRuleChangeDate.change.hidden = When did this investment in assets rule change take effect?
 
 becomeOrCeaseScheme.title = What change has taken place for this pension scheme?
