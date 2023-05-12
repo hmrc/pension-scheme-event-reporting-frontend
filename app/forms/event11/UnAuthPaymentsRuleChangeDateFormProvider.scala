@@ -17,20 +17,30 @@
 package forms.event11
 
 import java.time.LocalDate
-
 import forms.mappings.Mappings
+import models.event11.Event11Date
+
 import javax.inject.Inject
 import play.api.data.Form
+import play.api.data.Forms.mapping
+import play.api.i18n.Messages
+import utils.DateHelper.formatDateDMY
 
 class UnAuthPaymentsRuleChangeDateFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[LocalDate] =
+  def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[Event11Date] =
     Form(
-      "value" -> localDate(
-        invalidKey                    = "unAuthPaymentsRuleChangeDate.error.invalid",
+      mapping("value" -> localDate(
+        invalidKey = "unAuthPaymentsRuleChangeDate.error.invalid",
         threeDateComponentsMissingKey = "unAuthPaymentsRuleChangeDate.error.required.all",
-        twoDateComponentsMissingKey   = "unAuthPaymentsRuleChangeDate.error.required.two",
-        oneDateComponentMissingKey    = "unAuthPaymentsRuleChangeDate.error.required"
+        twoDateComponentsMissingKey = "unAuthPaymentsRuleChangeDate.error.required.two",
+        oneDateComponentMissingKey = "unAuthPaymentsRuleChangeDate.error.required"
+      ).verifying(
+        yearHas4Digits("unAuthPaymentsRuleChangeDate.error.outsideDateRanges"),
+        minDate(min, messages("unAuthPaymentsRuleChangeDate.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
+        maxDate(max, messages("unAuthPaymentsRuleChangeDate.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
       )
+      )
+      (Event11Date.apply)(Event11Date.unapply)
     )
 }

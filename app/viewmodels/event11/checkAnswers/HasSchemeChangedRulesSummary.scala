@@ -25,8 +25,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-import java.time.format.DateTimeFormatter
-
 object HasSchemeChangedRulesSummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
@@ -36,13 +34,13 @@ object HasSchemeChangedRulesSummary  {
 
         val value: String = if (answer) {
           <span class="govuk-!-display-block">Yes</span> + // This ensures content wraps on CYA page.
-            s"${answers.get(UnAuthPaymentsRuleChangeDatePage).get.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}"
+            s"${answers.get(UnAuthPaymentsRuleChangeDatePage).get.formatEvent11Date}"
         } else {
           "The scheme has not changed its rules to allow any person to make unauthorised payment"
         }
 
         SummaryListRowViewModel(
-          key     = "hasSchemeChangedRules.checkYourAnswersLabel",
+          key     = "hasSchemeChangedRules.event11.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
             ActionItemViewModel("site.change", HasSchemeChangedRulesPage.changeLink(waypoints, sourcePage).url)

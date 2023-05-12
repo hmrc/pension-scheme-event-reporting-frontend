@@ -32,11 +32,9 @@ object UnAuthPaymentsRuleChangeDateSummary  {
     answers.get(UnAuthPaymentsRuleChangeDatePage).map {
       answer =>
 
-        val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-
         SummaryListRowViewModel(
           key     = "unAuthPaymentsRuleChangeDate.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.format(dateFormatter)),
+          value   = ValueViewModel(answer.formatEvent11Date),
           actions = Seq(
             ActionItemViewModel("site.change", UnAuthPaymentsRuleChangeDatePage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("unAuthPaymentsRuleChangeDate.change.hidden"))

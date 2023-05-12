@@ -26,7 +26,7 @@
 
 @(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("hasSchemeChangedRules.title"))) {
+@layout(pageTitle = title(form, messages("hasSchemeChangedRules.event11.title"))) {
 
     @formHelper(action = routes.HasSchemeChangedRulesController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
@@ -37,7 +37,7 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("hasSchemeChangedRules.heading")).asPageHeading()
+                legend = LegendViewModel(messages("hasSchemeChangedRules.event11.heading")).asPageHeading()
             )
         )
 
