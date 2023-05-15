@@ -54,7 +54,7 @@ class HowManySchemeMembersControllerSpec extends SpecBase with BeforeAndAfterEac
     bind[TaxYear].toInstance(mockTaxYear)
   )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }

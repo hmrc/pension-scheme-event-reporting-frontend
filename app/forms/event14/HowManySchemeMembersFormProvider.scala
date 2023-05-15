@@ -19,7 +19,6 @@ package forms.event14
 import forms.mappings.Mappings
 import models.event14.HowManySchemeMembers
 import play.api.data.Form
-import play.api.i18n.Messages
 
 import javax.inject.Inject
 

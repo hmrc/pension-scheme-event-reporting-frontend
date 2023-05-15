@@ -18,14 +18,14 @@
 @import controllers.event14.routes
 
 @this(
-    layout: templates.Layout,
+    layout: templates.SchemeLayout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, taxYear: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, taxYear: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("howManySchemeMembers.title", taxYear))) {
 
