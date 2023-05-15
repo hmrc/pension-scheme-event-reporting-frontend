@@ -1354,3 +1354,4 @@ dateOfChange.change.hidden = The date for when the scheme changed its rules
 cannotSubmit.title = You cannot submit a report for this event
 cannotSubmit.heading = You cannot submit a report for this event
 cannotSubmit.p1 = You do not meet the criteria to submit a report for this event at this time.
+

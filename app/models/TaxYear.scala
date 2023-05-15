@@ -60,11 +60,15 @@ object TaxYear extends Enumerable.Implicits {
     (currentTaxYearCalculated - (numberOfYearsToShow - 1) to currentTaxYearCalculated).map(year => TaxYear(year.toString))
   }
 
-  def getSelectedTaxYearAsString(userAnswers: UserAnswers): String = {
+  def getSelectedTaxYear(userAnswers: UserAnswers): TaxYear = {
     userAnswers.get(TaxYearPage) match {
-      case Some(taxYear) => s"${Integer.parseInt(taxYear.endYear.stripPrefix("TaxYear(").stripSuffix(")").trim)}"
+      case Some(taxYear) => taxYear
       case _ => throw new RuntimeException("Tax year unavailable")
     }
+  }
+  def getSelectedTaxYearAsString(userAnswers: UserAnswers): String = {
+    val taxYear = getSelectedTaxYear(userAnswers)
+    s"${Integer.parseInt(taxYear.endYear.stripPrefix("TaxYear(").stripSuffix(")").trim)}"
   }
 
   implicit val enumerable: Enumerable[TaxYear] =
