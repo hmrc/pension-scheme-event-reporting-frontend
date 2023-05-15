@@ -19,14 +19,13 @@ package controllers
 import audit.{AuditService, EventReportingSubmissionEmailAuditEvent}
 import config.FrontendAppConfig
 import connectors.{EmailConnector, EmailStatus, EventReportingConnector, MinimalConnector}
-import controllers.DeclarationController.testDataPsa
 import controllers.actions._
 import models.enumeration.AdministratorOrPractitioner
 import models.requests.DataRequest
-import models.{TaxYear, UserAnswers}
+import models.{LoggedInUser, TaxYear, UserAnswers}
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -35,9 +34,6 @@ import views.html.DeclarationView
 
 import java.time.{ZoneId, ZonedDateTime}
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
-import models.{LoggedInUser, TaxYear, UserAnswers}
-import models.enumeration.AdministratorOrPractitioner
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationController @Inject()(
@@ -68,12 +64,14 @@ class DeclarationController @Inject()(
           request.loggedInUser)
       )
 
-      def emailFuture = minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
-        val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
-        val email = minimalDetails.email
-        val schemeName = request.schemeName
-        sendEmail(minimalDetails.name, email, taxYear, schemeName)
-      }
+      def emailFuture = minimalConnector.getMinimalDetails(
+        request.loggedInUser.idName,
+        request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
+          val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
+          val email = minimalDetails.email
+          val schemeName = request.schemeName
+          sendEmail(minimalDetails.name, email, taxYear, schemeName)
+        }
 
       erConnector.submitReport(request.pstr, data).flatMap { _ =>
         emailFuture.map { _ =>
@@ -81,27 +79,36 @@ class DeclarationController @Inject()(
         }
       }
   }
-}
 
-private def sendEmail(psaName: String, email: String, taxYear: String, schemeName: String)(
-  implicit request: DataRequest[_], hc: HeaderCarrier): Future[EmailStatus] = {
-  val requestId = hc.requestId.map(_.value).getOrElse(request.headers.get("X-Session-ID").getOrElse(""))
+  private def sendEmail(psaName: String, email: String, taxYear: String, schemeName: String)(
+    implicit request: DataRequest[_], hc: HeaderCarrier): Future[EmailStatus] = {
+    val requestId = hc.requestId.map(_.value).getOrElse(request.headers.get("X-Session-ID").getOrElse(""))
 
-  val submittedDate = formatSubmittedDate(ZonedDateTime.now(ZoneId.of("Europe/London")))
-  val schemeAdministratorType = AdministratorOrPractitioner.Administrator
+    val submittedDate = formatSubmittedDate(ZonedDateTime.now(ZoneId.of("Europe/London")))
+    val schemeAdministratorType = AdministratorOrPractitioner.Administrator
 
-  val templateParams = Map(
-    "psaName" -> psaName,
-    "schemeName" -> schemeName,
-    "taxYear" -> taxYear,
-    "dateSubmitted" -> submittedDate
-  )
+    val templateParams = Map(
+      "psaName" -> psaName,
+      "schemeName" -> schemeName,
+      "taxYear" -> taxYear,
+      "dateSubmitted" -> submittedDate
+    )
 
-  emailConnector.sendEmail(schemeAdministratorType, requestId, request.loggedInUser.idName, email, config.fileReturnTemplateId, templateParams)
-    .map { emailStatus =>
-      auditService.sendEvent(EventReportingSubmissionEmailAuditEvent(request.loggedInUser.idName, schemeAdministratorType, email))
-      emailStatus
-    }
+    emailConnector.sendEmail(schemeAdministratorType,
+      requestId,
+      request.loggedInUser.idName,
+      email,
+      config.fileReturnTemplateId,
+      templateParams).map { emailStatus =>
+        auditService.sendEvent(
+          EventReportingSubmissionEmailAuditEvent(
+            request.loggedInUser.idName,
+            schemeAdministratorType,
+            email
+          )
+        )
+        emailStatus
+      }
   }
 
   private def declarationData(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser) = {
