@@ -22,9 +22,7 @@ import forms.EventSummaryFormProvider
 import models.TaxYear.getSelectedTaxYearAsString
 import models.UserAnswers
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23}
 import pages.{EmptyWaypoints, EventSummaryPage, Waypoints, TaxYearPage}
-import models.enumeration.EventType.{Event18, Event6}
 import models.requests.DataRequest
 import play.api.Logger
 import play.api.i18n.I18nSupport
@@ -50,7 +48,7 @@ class EventSummaryController @Inject()(
   private val form = formProvider()
   private val logger = Logger(classOf[EventSummaryController])
 
-  private def summaryListRows(waypoints: Waypoints)(implicit request: DataRequest[AnyContent]): Future[Seq[SummaryListRow]] = {
+  private def summaryListRows(implicit request: DataRequest[AnyContent]): Future[Seq[SummaryListRow]] = {
     request.userAnswers.get(TaxYearPage) match {
       case Some(taxYear) =>
         val startYear = s"${taxYear.startYear}-04-06"
@@ -62,15 +60,15 @@ class EventSummaryController @Inject()(
               ),
               actions = Some(Actions(
                 items = Seq(
-                  ActionItem(
+                  changeLinkForEvent(event).map { link =>  ActionItem(
                     content = Text(Message("site.change")),
-                    href = changeLinkForEvent(event)
-                  ),
-                  ActionItem(
+                    href = link
+                  )},
+                  Some(ActionItem(
                     content = Text(Message("site.remove")),
                     href = removeLinkForEvent(event)
-                  )
-                )
+                  ))
+                ).flatten
               ))
             )
           }
@@ -83,7 +81,7 @@ class EventSummaryController @Inject()(
   }
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
-    summaryListRows(waypoints).map { rows =>
+    summaryListRows.map { rows =>
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       Ok(view(form, waypoints, rows, selectedTaxYear))
     }
@@ -93,27 +91,38 @@ class EventSummaryController @Inject()(
     implicit request =>
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       form.bindFromRequest().fold(
-        formWithErrors => summaryListRows(waypoints).map(rows => BadRequest(view(formWithErrors, waypoints, rows, selectedTaxYear))),
+        formWithErrors => summaryListRows.map(rows => BadRequest(view(formWithErrors, waypoints, rows, selectedTaxYear))),
         value => {
           val originalUserAnswers = UserAnswers()
           val updatedUserAnswers = originalUserAnswers.setOrException(EventSummaryPage, value)
-          Future.successful(Redirect(EventSummaryPage.navigate(waypoints,originalUserAnswers, updatedUserAnswers).route))
+          Future.successful(Redirect(EventSummaryPage.navigate(waypoints, originalUserAnswers, updatedUserAnswers).route))
         }
       )
   }
 
-  private def changeLinkForEvent(eventType: EventType): String = {
+  private def changeLinkForEvent(eventType: EventType): Option[String] = {
     eventType match {
-      case Event6 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event6).url
-      case Event22 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event22).url
-      case Event23 => controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event23).url
-      case _ => "#"
+      case EventType.Event1 => Some(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(EmptyWaypoints).url)
+      case EventType.Event2 | EventType.Event3 |
+           EventType.Event4 | EventType.Event5 |
+           EventType.Event6 | EventType.Event8 |
+           EventType.Event8A | EventType.Event22 |
+           EventType.Event23 => Some(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, eventType).url)
+      case EventType.Event7 => Some(controllers.event7.routes.Event7MembersSummaryController.onPageLoad(EmptyWaypoints).url)
+      case EventType.Event10 => Some(controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
+      case EventType.Event12 => Some(controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
+      case EventType.Event13 => Some(controllers.event13.routes.Event13CheckYourAnswersController.onPageLoad.url)
+      case EventType.Event18 => None
+      case EventType.WindUp => Some(controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onPageLoad.url)
+      case _ =>
+        logger.error(s"Missing event type $eventType")
+        None
     }
   }
 
   private def removeLinkForEvent(eventType: EventType): String = {
     eventType match {
-      case Event18 => controllers.event18.routes.RemoveEvent18Controller.onPageLoad(EmptyWaypoints).url
+      case EventType.Event18 => controllers.event18.routes.RemoveEvent18Controller.onPageLoad(EmptyWaypoints).url
       case _ => "#"
     }
   }

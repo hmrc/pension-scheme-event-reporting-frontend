@@ -35,6 +35,9 @@ import views.html.DeclarationView
 
 import java.time.{ZoneId, ZonedDateTime}
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
+import models.{LoggedInUser, TaxYear, UserAnswers}
+import models.enumeration.AdministratorOrPractitioner
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationController @Inject()(
@@ -58,73 +61,85 @@ class DeclarationController @Inject()(
 
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
+      val data: UserAnswers = UserAnswers(
+        declarationData(
+          request.pstr,
+          TaxYear.getSelectedTaxYear(request.userAnswers),
+          request.loggedInUser)
+      )
 
-      minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
-        val testUserAnswers: UserAnswers = UserAnswers(testDataPsa(request.pstr))
+      def emailFuture = minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
         val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
         val email = minimalDetails.email
         val schemeName = request.schemeName
+        sendEmail(minimalDetails.name, email, taxYear, schemeName)
+      }
 
-        //TODO: Replace test user answers above with ua when FE captures sufficient data
-        erConnector.submitReport(request.pstr, testUserAnswers).flatMap { _ =>
-          sendEmail(minimalDetails.name, email, taxYear, schemeName).map {
-            _ => Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
-          }
+      erConnector.submitReport(request.pstr, data).flatMap { _ =>
+        emailFuture.map { _ =>
+          Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
         }
       }
   }
-
-  private def sendEmail(psaName: String, email: String, taxYear: String, schemeName: String)(
-    implicit request: DataRequest[_], hc: HeaderCarrier): Future[EmailStatus] = {
-    val requestId = hc.requestId.map(_.value).getOrElse(request.headers.get("X-Session-ID").getOrElse(""))
-
-      val submittedDate = formatSubmittedDate(ZonedDateTime.now(ZoneId.of("Europe/London")))
-      val schemeAdministratorType = AdministratorOrPractitioner.Administrator
-
-      val templateParams = Map(
-        "psaName" -> psaName,
-        "schemeName" -> schemeName,
-        "taxYear" -> taxYear,
-        "dateSubmitted" -> submittedDate
-      )
-
-      emailConnector.sendEmail(schemeAdministratorType, requestId, request.loggedInUser.idName, email, config.fileReturnTemplateId, templateParams)
-        .map { emailStatus =>
-          auditService.sendEvent(EventReportingSubmissionEmailAuditEvent(request.loggedInUser.idName, schemeAdministratorType, email))
-          emailStatus
-        }
-  }
 }
 
-object DeclarationController {
+private def sendEmail(psaName: String, email: String, taxYear: String, schemeName: String)(
+  implicit request: DataRequest[_], hc: HeaderCarrier): Future[EmailStatus] = {
+  val requestId = hc.requestId.map(_.value).getOrElse(request.headers.get("X-Session-ID").getOrElse(""))
 
-  /**
-   * The frontend and backend changes for report submission are complete, however the correct data is not captured in the frontend yet
-   * Please see the To Do comments below for more info
-   * */
+  val submittedDate = formatSubmittedDate(ZonedDateTime.now(ZoneId.of("Europe/London")))
+  val schemeAdministratorType = AdministratorOrPractitioner.Administrator
 
-  private def testDataPsa(pstr: String): JsObject = {
-    Json.obj(
-      "declarationDetails" -> Json.obj(
-        "erDetails" -> Json.obj(
-          "pSTR" -> pstr,
-          //TODO: Report start date = tax year start date
-          "reportStartDate" -> "2020-04-06",
-          //TODO: Report end date = tax year end date
-          "reportEndDate" -> "2021-04-05"
-        ),
-        "erDeclarationDetails" -> Json.obj(
-          //TODO: Get PSA ID or PSP ID here from user answers
-          "submittedBy" -> "PSA",
-          //TODO: Get PSA or PSP ID from user answers
-          "submittedID" -> "A2345678"
-        ),
-        "psaDeclaration" -> Json.obj(
-          //TODO: Relates to wantToSubmit and Declaration
+  val templateParams = Map(
+    "psaName" -> psaName,
+    "schemeName" -> schemeName,
+    "taxYear" -> taxYear,
+    "dateSubmitted" -> submittedDate
+  )
+
+  emailConnector.sendEmail(schemeAdministratorType, requestId, request.loggedInUser.idName, email, config.fileReturnTemplateId, templateParams)
+    .map { emailStatus =>
+      auditService.sendEvent(EventReportingSubmissionEmailAuditEvent(request.loggedInUser.idName, schemeAdministratorType, email))
+      emailStatus
+    }
+  }
+
+  private def declarationData(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser) = {
+
+    val psaOrPsp = loggedInUser.administratorOrPractitioner match {
+      case AdministratorOrPractitioner.Administrator => "PSA"
+      case AdministratorOrPractitioner.Practitioner => "PSP"
+      case _ => throw new RuntimeException("Unknown user type")
+    }
+
+    val common = Json.obj(
+      "erDetails" -> Json.obj(
+        "pSTR" -> pstr,
+        //Report start date = tax year start date
+        "reportStartDate" -> s"${taxYear.startYear}-04-06",
+        //Report end date = tax year end date
+        "reportEndDate" -> s"${taxYear.endYear}-04-05"
+      ),
+      "erDeclarationDetails" -> Json.obj(
+        //PSA or PSP access
+        "submittedBy" -> psaOrPsp,
+        //PSA or PSP ID
+        "submittedID" -> loggedInUser.psaIdOrPspId
+      )
+    )
+
+    val declarationDetails = loggedInUser.administratorOrPractitioner match {
+      case AdministratorOrPractitioner.Administrator =>
+        common + ("psaDeclaration" -> Json.obj(
+          //Both of those are always selected. Users can't access the page otherwise.
           "psaDeclaration1" -> "Selected",
           "psaDeclaration2" -> "Selected"
-        )
-      )
+        ))
+      case AdministratorOrPractitioner.Practitioner => ??? //TODO: Implement declaration submission by PSP
+    }
+
+    Json.obj(
+      "declarationDetails" -> declarationDetails
     )
   }
 }
