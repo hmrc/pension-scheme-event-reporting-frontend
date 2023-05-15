@@ -19,6 +19,7 @@ package controllers.event11
 import com.google.inject.Inject
 import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import models.UserAnswers
 import models.enumeration.EventType.Event11
 import models.requests.DataRequest
 import pages.event11.{Event11CheckYourAnswersPage, HasSchemeChangedRulesInvestmentsInAssetsPage, HasSchemeChangedRulesPage}
@@ -27,7 +28,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.event11.checkAnswers.{HasSchemeChangedRulesInvestmentsInAssetsSummary, HasSchemeChangedRulesSummary}
+import viewmodels.event11.checkAnswers.{HasSchemeChangedRulesInvestmentsInAssetsSummary, HasSchemeChangedRulesSummary, InvestmentsInAssetsRuleChangeDateSummary, UnAuthPaymentsRuleChangeDateSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -48,7 +49,7 @@ class Event11CheckYourAnswersController @Inject()(
       val thisPage = Event11CheckYourAnswersPage()
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event11.routes.Event11CheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent11CYARows(waypoints, thisPage)), continueUrl))
+      Ok(view(SummaryListViewModel(rows = buildEvent11CYARows(waypoints, thisPage, request.userAnswers)), continueUrl))
     }
 
   def onClick: Action[AnyContent] =
@@ -67,11 +68,21 @@ class Event11CheckYourAnswersController @Inject()(
       }
     }
 
-  private def buildEvent11CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  private def buildEvent11CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, answers: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+    
+    val optRowUnauthPayments = if (answers.get(HasSchemeChangedRulesPage).getOrElse(false)) {
+      UnAuthPaymentsRuleChangeDateSummary.row(request.userAnswers, waypoints, sourcePage)
+    } else Nil
+    val optRowInvestmentsInAssets = if (answers.get(HasSchemeChangedRulesInvestmentsInAssetsPage).getOrElse(false)) {
+      UnAuthPaymentsRuleChangeDateSummary.row(request.userAnswers, waypoints, sourcePage)
+    } else Nil
+
     Seq(
       HasSchemeChangedRulesSummary.row(request.userAnswers, waypoints, sourcePage) ++
-        HasSchemeChangedRulesInvestmentsInAssetsSummary.row(request.userAnswers, waypoints, sourcePage)
+        optRowUnauthPayments ++
+        HasSchemeChangedRulesInvestmentsInAssetsSummary.row(request.userAnswers, waypoints, sourcePage) ++
+        optRowInvestmentsInAssets
     ).flatten
   }
 }

@@ -35,8 +35,7 @@ object HasSchemeChangedRulesInvestmentsInAssetsSummary  {
       answer =>
 
         val value = if (answer) {
-          <span class="govuk-!-display-block">Yes</span> + // This ensures content wraps on CYA page.
-            s"${answers.get(InvestmentsInAssetsRuleChangeDatePage).get.formatEvent11Date}"
+          "Yes"
         } else {
           "The scheme has not changed its rules to allow investments in assets other than contracts or policies of insurance"
         }

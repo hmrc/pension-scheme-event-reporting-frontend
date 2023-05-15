@@ -1265,14 +1265,14 @@ whatYouWillNeed.event11.item2 = allow investments in assets other than contracts
 
 hasSchemeChangedRules.event11.title = Has the scheme changed its rules to allow any person to make unauthorised payments?
 hasSchemeChangedRules.event11.heading = Has the scheme changed its rules to allow any person to make unauthorised payments?
-hasSchemeChangedRules.event11.checkYourAnswersLabel = Has the scheme changed its rules to allow any person to make unauthorised payments and when did this take place?
+hasSchemeChangedRules.event11.checkYourAnswersLabel = Has scheme changed its rules to allow any person to make unauthorised payments?
 hasSchemeChangedRules.event11.error.required = Select yes if the scheme changed its rules to allow any person to make unauthorised payments
 hasSchemeChangedRules.event11.change.hidden = Has the scheme changed its rules to allow any person to make unauthorised payments?
 
 unAuthPaymentsRuleChangeDate.title = When did this unauthorised payments rule change take effect?
 unAuthPaymentsRuleChangeDate.heading = When did this unauthorised payments rule change take effect?
 unAuthPaymentsRuleChangeDate.hint = For example, 12 11 2007
-unAuthPaymentsRuleChangeDate.checkYourAnswersLabel = When did this unauthorised payments rule change take effect?
+unAuthPaymentsRuleChangeDate.checkYourAnswersLabel = When the unauthorised payments rule change took place
 unAuthPaymentsRuleChangeDate.error.required.all = Enter the date
 unAuthPaymentsRuleChangeDate.error.required.two = The date must include {0} and {1}
 unAuthPaymentsRuleChangeDate.error.required = The date must include a {0}
@@ -1283,14 +1283,14 @@ unAuthPaymentsRuleChangeDate.change.hidden = When did this unauthorised payments
 
 hasSchemeChangedRulesInvestmentsInAssets.title = Has the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
 hasSchemeChangedRulesInvestmentsInAssets.heading = Has the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
-hasSchemeChangedRulesInvestmentsInAssets.checkYourAnswersLabel = Has the scheme changed its rules to allow investments in assets other than contracts or policies of insurance and when did this take place?
+hasSchemeChangedRulesInvestmentsInAssets.checkYourAnswersLabel = Has scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
 hasSchemeChangedRulesInvestmentsInAssets.error.required = Select yes if the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
 hasSchemeChangedRulesInvestmentsInAssets.change.hidden = Has the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
 
 investmentsInAssetsRuleChangeDate.title = When did this investment in assets rule change take effect?
 investmentsInAssetsRuleChangeDate.heading = When did this investment in assets rule change take effect?
 investmentsInAssetsRuleChangeDate.hint = For example, 12 11 2007
-investmentsInAssetsRuleChangeDate.checkYourAnswersLabel = When did this investment in assets rule change take effect?
+investmentsInAssetsRuleChangeDate.checkYourAnswersLabel = When the scheme changed its rules to allow investments in assets
 investmentsInAssetsRuleChangeDate.error.required.all = Enter the date
 investmentsInAssetsRuleChangeDate.error.required.two = The date must include {0} and {1}
 investmentsInAssetsRuleChangeDate.error.required = The date must include a {0}

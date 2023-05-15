@@ -31,7 +31,6 @@ object UnAuthPaymentsRuleChangeDateSummary  {
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(UnAuthPaymentsRuleChangeDatePage).map {
       answer =>
-
         SummaryListRowViewModel(
           key     = "unAuthPaymentsRuleChangeDate.checkYourAnswersLabel",
           value   = ValueViewModel(answer.formatEvent11Date),

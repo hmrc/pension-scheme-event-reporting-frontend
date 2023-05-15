@@ -31,9 +31,6 @@ object InvestmentsInAssetsRuleChangeDateSummary  {
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(InvestmentsInAssetsRuleChangeDatePage).map {
       answer =>
-
-        val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-
         SummaryListRowViewModel(
           key     = "investmentsInAssetsRuleChangeDate.checkYourAnswersLabel",
           value   = ValueViewModel(answer.formatEvent11Date),
