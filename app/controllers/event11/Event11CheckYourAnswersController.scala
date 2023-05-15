@@ -31,7 +31,7 @@ import viewmodels.event11.checkAnswers.{HasSchemeChangedRulesInvestmentsInAssets
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class Event11CheckYourAnswersController @Inject()(
                                                    override val messagesApi: MessagesApi,
@@ -52,30 +52,26 @@ class Event11CheckYourAnswersController @Inject()(
     }
 
   def onClick: Action[AnyContent] =
-    (identify andThen getData(Event11) andThen requireData) { implicit request =>
-      /*
-      TODO: reimplement async when compile is added in backend: `...().async`
-      TODO: BE transform is out of scope for 8342. -NJ
-      */
-
-      //      connector.compileEvent(request.pstr, Event11).map {
-      //        _ =>
-
+    (identify andThen getData(Event11) andThen requireData).async { implicit request =>
       // If answered "No" twice, you cannot submit this event.
       val maybeNo1 = request.userAnswers.get(HasSchemeChangedRulesPage).getOrElse(false)
       val maybeNo2 = request.userAnswers.get(HasSchemeChangedRulesInvestmentsInAssetsPage).getOrElse(false)
       (maybeNo1, maybeNo2) match {
-        case (false, false) => Redirect(controllers.event11.routes.Event11CannotSubmitController.onPageLoad(EmptyWaypoints).url)
-        case _ => Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
+        case (false, false) =>
+          Future.successful(Redirect(controllers.event11.routes.Event11CannotSubmitController.onPageLoad(EmptyWaypoints).url))
+        case _ =>
+          connector.compileEvent(request.pstr, Event11).map {
+            _ =>
+              Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
+          }
       }
-      // }
     }
 
   private def buildEvent11CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     Seq(
       HasSchemeChangedRulesSummary.row(request.userAnswers, waypoints, sourcePage) ++
-      HasSchemeChangedRulesInvestmentsInAssetsSummary.row(request.userAnswers, waypoints, sourcePage)
+        HasSchemeChangedRulesInvestmentsInAssetsSummary.row(request.userAnswers, waypoints, sourcePage)
     ).flatten
   }
 }
