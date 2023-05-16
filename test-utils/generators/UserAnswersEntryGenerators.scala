@@ -33,10 +33,26 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
+  implicit lazy val arbitraryInvestmentsInAssetsRuleChangeDateUserAnswersEntry: Arbitrary[(pages.event11.InvestmentsInAssetsRuleChangeDatePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[pages.event11.InvestmentsInAssetsRuleChangeDatePage.type]
+        value <- arbitrary[Int].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitraryDateOfChangeUserAnswersEntry: Arbitrary[(pages.event12.DateOfChangePage.type, JsValue)] =
     Arbitrary {
       for {
         page <- arbitrary[pages.event12.DateOfChangePage.type]
+        value <- arbitrary[Int].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryHasSchemeChangedRulesInvestmentsInAssetsUserAnswersEntryEvent11: Arbitrary[(pages.event11.HasSchemeChangedRulesInvestmentsInAssetsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[pages.event11.HasSchemeChangedRulesInvestmentsInAssetsPage.type]
         value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }
@@ -46,6 +62,14 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       for {
         page <- arbitrary[pages.event12.HasSchemeChangedRulesPage.type]
         value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryUnAuthPaymentsRuleChangeDateUserAnswersEntry: Arbitrary[(pages.event11.UnAuthPaymentsRuleChangeDatePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[pages.event11.UnAuthPaymentsRuleChangeDatePage.type]
+        value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }
 
@@ -65,6 +89,14 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
+  implicit lazy val arbitraryHasSchemeChangedRulesUserAnswersEntryEvent11: Arbitrary[(pages.event11.HasSchemeChangedRulesPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[pages.event11.HasSchemeChangedRulesPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+  
   implicit lazy val arbitraryBecomeOrCeaseSchemeUserAnswersEntry: Arbitrary[(pages.event10.BecomeOrCeaseSchemePage.type, JsValue)] =
     Arbitrary {
       for {

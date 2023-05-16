@@ -35,6 +35,7 @@ object EventType extends Enumerable.Implicits {
       case EventSelection.Event8 => Some(EventType.Event8)
       case EventSelection.Event8A => Some(EventType.Event8A)
       case EventSelection.Event10 => Some(EventType.Event10)
+      case EventSelection.Event11 => Some(EventType.Event11)
       case EventSelection.Event12 => Some(EventType.Event12)
       case EventSelection.Event13 => Some(EventType.Event13)
       case EventSelection.Event18 => Some(EventType.Event18)
