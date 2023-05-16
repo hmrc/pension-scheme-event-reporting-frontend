@@ -40,7 +40,7 @@ case object HasSchemeChangedRulesInvestmentsInAssetsPage extends QuestionPage[Bo
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
     updatedAnswers.get(this) match {
-      case Some(true) => UnAuthPaymentsRuleChangeDatePage
+      case Some(true) => InvestmentsInAssetsRuleChangeDatePage
       case Some(false) => Event11CheckYourAnswersPage()
     }
 }
