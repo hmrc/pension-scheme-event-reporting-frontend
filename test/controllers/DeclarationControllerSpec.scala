@@ -66,7 +66,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       when(mockERConnector.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(()))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
 
       running(application) {

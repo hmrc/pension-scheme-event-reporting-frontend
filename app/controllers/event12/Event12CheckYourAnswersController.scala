@@ -52,11 +52,11 @@ class Event12CheckYourAnswersController @Inject()(
     }
 
   def onClick: Action[AnyContent] =
-    (identify andThen getData(Event12) andThen requireData) { implicit request => // TODO: reimplement async when compile is added in backend: `...().async`
-      //connector.compileEvent(request.pstr, Event12).map {
-      //_ =>
-      Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
-      //}
+    (identify andThen getData(Event12) andThen requireData).async { implicit request =>
+      connector.compileEvent(request.pstr, Event12).map {
+        _ =>
+          Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
+      }
     }
 
   private def buildEvent12CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
