@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter
 
 case class Event11Date(date: LocalDate) {
   def formatEvent11Date: String = {
-    date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+    date.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))
   }
 }
 
