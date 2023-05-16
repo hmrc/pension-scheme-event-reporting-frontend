@@ -18,9 +18,9 @@ package pages.event11
 
 import controllers.event11.routes
 import models.UserAnswers
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{IndexPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 
 case object HasSchemeChangedRulesInvestmentsInAssetsPage extends QuestionPage[Boolean] {
 

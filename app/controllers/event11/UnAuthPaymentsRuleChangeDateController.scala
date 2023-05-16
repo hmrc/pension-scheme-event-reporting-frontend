@@ -19,7 +19,7 @@ package controllers.event11
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.event11.UnAuthPaymentsRuleChangeDateFormProvider
-import models.{TaxYear, UserAnswers}
+import models.TaxYear
 import models.enumeration.EventType
 import pages.Waypoints
 import pages.event11.UnAuthPaymentsRuleChangeDatePage

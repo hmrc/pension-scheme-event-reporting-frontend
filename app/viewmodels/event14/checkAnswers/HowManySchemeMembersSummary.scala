@@ -14,28 +14,40 @@
  * limitations under the License.
  */
 
-package viewmodels.event11.checkAnswers
+package viewmodels.checkAnswers
 
+import models.TaxYear.getSelectedTaxYearAsString
 import models.UserAnswers
-import pages.event11.InvestmentsInAssetsRuleChangeDatePage
+import pages.event14.HowManySchemeMembersPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object InvestmentsInAssetsRuleChangeDateSummary  {
+object HowManySchemeMembersSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(InvestmentsInAssetsRuleChangeDatePage).map {
+    answers.get(HowManySchemeMembersPage).map {
       answer =>
+        val taxYearEnd = getSelectedTaxYearAsString(answers)
+        val taxYearRange = s"${taxYearEnd.toInt - 1} to $taxYearEnd"
+
+        val value = ValueViewModel(
+          HtmlContent(
+            HtmlFormat.escape(messages(s"howManySchemeMembers.${answer.toString.replaceAll("[, ]", "")}"))
+          )
+        )
+
         SummaryListRowViewModel(
-          key     = "investmentsInAssetsRuleChangeDate.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.formatEvent11Date),
+          key = messages("howManySchemeMembers.checkYourAnswersLabel", taxYearRange),
+          value = value,
           actions = Seq(
-            ActionItemViewModel("site.change", InvestmentsInAssetsRuleChangeDatePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("investmentsInAssetsRuleChangeDate.change.hidden"))
+            ActionItemViewModel("site.change", HowManySchemeMembersPage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("howManySchemeMembers.change.hidden"))
           )
         )
     }

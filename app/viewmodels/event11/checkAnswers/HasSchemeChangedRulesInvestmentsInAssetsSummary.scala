@@ -17,15 +17,13 @@
 package viewmodels.event11.checkAnswers
 
 import models.UserAnswers
+import pages.event11.HasSchemeChangedRulesInvestmentsInAssetsPage
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event11.{HasSchemeChangedRulesInvestmentsInAssetsPage, InvestmentsInAssetsRuleChangeDatePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
-
-import java.time.format.DateTimeFormatter
 
 object HasSchemeChangedRulesInvestmentsInAssetsSummary  {
 

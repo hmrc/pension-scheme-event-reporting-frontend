@@ -58,6 +58,9 @@ trait PageGenerators {
   implicit lazy val arbitraryBecomeOrCeaseSchemePage: Arbitrary[event10.BecomeOrCeaseSchemePage.type] =
     Arbitrary(event10.BecomeOrCeaseSchemePage)
 
+  implicit lazy val arbitraryHowManySchemeMembersPage: Arbitrary[event14.HowManySchemeMembersPage.type] =
+    Arbitrary(event14.HowManySchemeMembersPage)
+
   implicit lazy val arbitrarydatePaidPage: Arbitrary[event2.DatePaidPage] =
     Arbitrary(event2.DatePaidPage(Index(0), Event2))
 

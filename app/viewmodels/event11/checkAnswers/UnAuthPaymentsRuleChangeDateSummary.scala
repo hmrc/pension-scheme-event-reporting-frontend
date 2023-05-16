@@ -16,10 +16,9 @@
 
 package viewmodels.event11.checkAnswers
 
-import java.time.format.DateTimeFormatter
 import models.UserAnswers
-import pages.{CheckAnswersPage, Waypoints}
 import pages.event11.UnAuthPaymentsRuleChangeDatePage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._

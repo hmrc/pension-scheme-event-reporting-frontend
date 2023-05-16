@@ -22,6 +22,7 @@ import pages.event10.Event10CheckYourAnswersPage
 import pages.event11.Event11CheckYourAnswersPage
 import pages.event12.Event12CheckYourAnswersPage
 import pages.event13.Event13CheckYourAnswersPage
+import pages.event14.Event14CheckYourAnswersPage
 import pages.event2.Event2CheckYourAnswersPage
 import pages.event22.Event22CheckYourAnswersPage
 import pages.event23.Event23CheckYourAnswersPage
@@ -51,6 +52,7 @@ object Waypoint {
   private val fragments: Map[String, Waypoint] =
     Map(
       Event11CheckYourAnswersPage().urlFragment -> Event11CheckYourAnswersPage().waypoint,
+      Event14CheckYourAnswersPage.urlFragment -> Event14CheckYourAnswersPage.waypoint,
       EventWindUpCheckYourAnswersPage.urlFragment -> EventWindUpCheckYourAnswersPage.waypoint
     )
 

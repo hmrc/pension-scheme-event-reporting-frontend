@@ -22,7 +22,6 @@ import forms.EventSummaryFormProvider
 import models.TaxYear.getSelectedTaxYearAsString
 import models.UserAnswers
 import models.enumeration.EventType
-import pages.{EmptyWaypoints, EventSummaryPage, Waypoints, TaxYearPage}
 import models.requests.DataRequest
 import pages.{EmptyWaypoints, EventSummaryPage, TaxYearPage, Waypoints}
 import play.api.Logger
@@ -114,6 +113,7 @@ class EventSummaryController @Inject()(
       case EventType.Event11 => Some(controllers.event11.routes.Event11CheckYourAnswersController.onPageLoad.url)
       case EventType.Event12 => Some(controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
       case EventType.Event13 => Some(controllers.event13.routes.Event13CheckYourAnswersController.onPageLoad.url)
+      case EventType.Event14 => Some(controllers.event14.routes.Event14CheckYourAnswersController.onPageLoad().url)
       case EventType.Event18 => None
       case EventType.WindUp => Some(controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onPageLoad.url)
       case _ =>

@@ -373,7 +373,7 @@ GET        /new-report/event-12-cannot-submit                                   
 GET        /new-report/event-12-check-your-answers                                 controllers.event12.Event12CheckYourAnswersController.onPageLoad
 GET        /new-report/event-12-click                                              controllers.event12.Event12CheckYourAnswersController.onClick
 
-GET        /new-report/event-11-what-you-will-need                        controllers.event11.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/event-11-what-you-will-need                                 controllers.event11.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET        /new-report/event-11-rule-change-to-allow-unauthorised-payments                        controllers.event11.HasSchemeChangedRulesController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-11-rule-change-to-allow-unauthorised-payments                        controllers.event11.HasSchemeChangedRulesController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
@@ -410,3 +410,10 @@ POST       /new-report/event-13-other-structure                                 
 
 GET         /new-report/event-13-check-your-answers                              controllers.event13.Event13CheckYourAnswersController.onPageLoad
 GET         /new-report/event-13-click                                           controllers.event13.Event13CheckYourAnswersController.onClick
+
+# Event 14
+GET        /new-report/event-14-how-many-scheme-members                          controllers.event14.HowManySchemeMembersController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-14-how-many-scheme-members                          controllers.event14.HowManySchemeMembersController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-14-check-your-answers                               controllers.event14.Event14CheckYourAnswersController.onPageLoad()
+GET        /new-report/event-14-click                                            controllers.event14.Event14CheckYourAnswersController.onClick
