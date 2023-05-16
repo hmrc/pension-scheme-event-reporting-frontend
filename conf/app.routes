@@ -373,7 +373,7 @@ GET        /new-report/event-12-cannot-submit                                   
 GET        /new-report/event-12-check-your-answers                                 controllers.event12.Event12CheckYourAnswersController.onPageLoad
 GET        /new-report/event-12-click                                              controllers.event12.Event12CheckYourAnswersController.onClick
 
-GET        /new-report/event-11-what-you-will-need                        controllers.event11.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/event-11-what-you-will-need                                 controllers.event11.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET        /new-report/event-11-rule-change-to-allow-unauthorised-payments                        controllers.event11.HasSchemeChangedRulesController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-11-rule-change-to-allow-unauthorised-payments                        controllers.event11.HasSchemeChangedRulesController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

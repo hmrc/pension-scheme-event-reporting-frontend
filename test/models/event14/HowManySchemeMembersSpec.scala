@@ -24,18 +24,18 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class HowManySchemeMebersSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class HowManySchemeMembersSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "HowManySchemeMebers" - {
+  "HowManySchemeMembers" - {
 
     "must deserialise valid values" in {
 
       val gen = Gen.oneOf(HowManySchemeMembers.values.toSeq)
 
       forAll(gen) {
-        howManySchemeMebers =>
+        howManySchemeMembers =>
 
-          JsString(howManySchemeMebers.toString).validate[HowManySchemeMembers].asOpt.value mustEqual howManySchemeMebers
+          JsString(howManySchemeMembers.toString).validate[HowManySchemeMembers].asOpt.value mustEqual howManySchemeMembers
       }
     }
 
@@ -55,9 +55,9 @@ class HowManySchemeMebersSpec extends AnyFreeSpec with Matchers with ScalaCheckP
       val gen = Gen.oneOf(HowManySchemeMembers.values.toSeq)
 
       forAll(gen) {
-        howManySchemeMebers =>
+        howManySchemeMembers =>
 
-          Json.toJson(howManySchemeMebers) mustEqual JsString(howManySchemeMebers.toString)
+          Json.toJson(howManySchemeMembers) mustEqual JsString(howManySchemeMembers.toString)
       }
     }
   }
