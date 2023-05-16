@@ -31,10 +31,8 @@ class MinimalConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
 
   import MinimalConnector._
 
-  def getMinimalDetails(idName: String, idValue: String)(
-                            implicit hc: HeaderCarrier,
-                            ec: ExecutionContext
-                          ): Future[MinimalDetails] =
+  def getMinimalDetails(idName: String, idValue: String)
+                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalDetails] =
     minDetails(hc.withExtraHeaders(idName -> idValue))
 
   private def minDetails(hcWithId: HeaderCarrier)
@@ -68,7 +66,13 @@ object MinimalConnector {
                              individualDetails: Option[IndividualDetails],
                              rlsFlag: Boolean,
                              deceasedFlag: Boolean
-                           )
+                           ) {
+    def name: String = (organisationName, individualDetails) match {
+      case (Some(orgName), None) => orgName
+      case (None, Some(indivName)) => indivName.fullName
+      case _ => throw new RuntimeException("Cannot find name")
+    }
+  }
 
   object MinimalDetails {
     implicit val format: Format[MinimalDetails] = Json.format[MinimalDetails]

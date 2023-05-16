@@ -16,8 +16,12 @@
 
 package controllers
 
+import audit.AuditService
 import base.SpecBase
-import connectors.EventReportingConnector
+import connectors.MinimalConnector.MinimalDetails
+import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector}
+import models.enumeration.AdministratorOrPractitioner.Administrator
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -36,10 +40,23 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
   private val waypoints = EmptyWaypoints
 
   private val mockERConnector = mock[EventReportingConnector]
+  private val mockAuditService = mock[AuditService]
+  private val mockEmailConnector = mock[EmailConnector]
+  private val mockMinimalConnector = mock[MinimalConnector]
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[EventReportingConnector].toInstance(mockERConnector)
+    bind[EventReportingConnector].toInstance(mockERConnector),
+    bind[EmailConnector].toInstance(mockEmailConnector),
+    bind[AuditService].toInstance(mockAuditService),
+    bind[MinimalConnector].toInstance(mockMinimalConnector)
   )
+
+  override protected def beforeEach(): Unit = {
+    reset(mockERConnector)
+    reset(mockAuditService)
+    reset(mockEmailConnector)
+    reset(mockMinimalConnector)
+  }
 
   "Declaration Controller" - {
 
@@ -63,7 +80,21 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
 
     "must redirect to the correct page for method onClick" in {
 
+      val testEmail = "test@test.com"
+      val templateId = "pods_event_report_submitted"
+      val organisationName = "Test company ltd"
+      val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
+
       when(mockERConnector.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(()))
+      doNothing().when(mockAuditService).sendEvent(any())(any(), any())
+      when(mockEmailConnector.sendEmail(
+        schemeAdministratorType = ArgumentMatchers.eq(Administrator),
+        requestId = any(), psaOrPspId = any(),
+        emailAddress = ArgumentMatchers.eq(testEmail),
+        templateId = ArgumentMatchers.eq(templateId),
+        templateParams = any())(any(), any()))
+        .thenReturn(Future.successful(EmailSent))
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
