@@ -75,7 +75,7 @@ class Event11CheckYourAnswersController @Inject()(
       UnAuthPaymentsRuleChangeDateSummary.row(request.userAnswers, waypoints, sourcePage)
     } else Nil
     val optRowInvestmentsInAssets = if (answers.get(HasSchemeChangedRulesInvestmentsInAssetsPage).getOrElse(false)) {
-      UnAuthPaymentsRuleChangeDateSummary.row(request.userAnswers, waypoints, sourcePage)
+      InvestmentsInAssetsRuleChangeDateSummary.row(request.userAnswers, waypoints, sourcePage)
     } else Nil
 
     Seq(
