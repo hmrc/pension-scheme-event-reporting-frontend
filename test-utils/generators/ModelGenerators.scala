@@ -33,7 +33,7 @@ trait ModelGenerators {
       Gen.oneOf(event10.BecomeOrCeaseScheme.values.toSeq)
     }
 
-  implicit lazy val arbitraryHowManySchemeMebers: Arbitrary[event14.HowManySchemeMembers] =
+  implicit lazy val arbitraryHowManySchemeMembers: Arbitrary[event14.HowManySchemeMembers] =
     Arbitrary {
       Gen.oneOf(event14.HowManySchemeMembers.values.toSeq)
     }
