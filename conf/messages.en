@@ -1256,6 +1256,49 @@ paymentDetails.date.checkYourAnswersLabel = Date of the payment
 
 characterCount = You can enter up to {0} characters
 
+whatYouWillNeed.event11.title = What you will need
+whatYouWillNeed.event11.heading = What you will need
+whatYouWillNeed.event11.change.hidden = What you will need
+whatYouWillNeed.event11.p = You will need to tell us the date that a scheme's rules are changed if the change was made to:
+whatYouWillNeed.event11.item1 = entitle any person to require the making of unauthorised payments
+whatYouWillNeed.event11.item2 = allow investments in assets other than contracts or policies of insurance
+
+hasSchemeChangedRules.event11.title = Has the scheme changed its rules to allow any person to make unauthorised payments?
+hasSchemeChangedRules.event11.heading = Has the scheme changed its rules to allow any person to make unauthorised payments?
+hasSchemeChangedRules.event11.checkYourAnswersLabel = Has scheme changed its rules to allow any person to make unauthorised payments?
+hasSchemeChangedRules.event11.error.required = Select yes if the scheme changed its rules to allow any person to make unauthorised payments
+hasSchemeChangedRules.event11.change.hidden = Has the scheme changed its rules to allow any person to make unauthorised payments?
+
+unAuthPaymentsRuleChangeDate.title = When did this unauthorised payments rule change take effect?
+unAuthPaymentsRuleChangeDate.heading = When did this unauthorised payments rule change take effect?
+unAuthPaymentsRuleChangeDate.hint = For example, 12 11 2007
+unAuthPaymentsRuleChangeDate.checkYourAnswersLabel = When the unauthorised payments rule change took place
+unAuthPaymentsRuleChangeDate.error.required.all = Enter the date
+unAuthPaymentsRuleChangeDate.error.required.two = The date must include {0} and {1}
+unAuthPaymentsRuleChangeDate.error.required = The date must include a {0}
+unAuthPaymentsRuleChangeDate.error.invalid = Enter a real date
+unAuthPaymentsRuleChangeDate.error.outsideDateRanges = Enter a real date
+unAuthPaymentsRuleChangeDate.error.outsideReportedYear = The date must be between {0} and {1}
+unAuthPaymentsRuleChangeDate.change.hidden = When did this unauthorised payments rule change take effect?
+
+hasSchemeChangedRulesInvestmentsInAssets.title = Has the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
+hasSchemeChangedRulesInvestmentsInAssets.heading = Has the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
+hasSchemeChangedRulesInvestmentsInAssets.checkYourAnswersLabel = Has scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
+hasSchemeChangedRulesInvestmentsInAssets.error.required = Select yes if the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
+hasSchemeChangedRulesInvestmentsInAssets.change.hidden = Has the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
+
+investmentsInAssetsRuleChangeDate.title = When did this investment in assets rule change take effect?
+investmentsInAssetsRuleChangeDate.heading = When did this investment in assets rule change take effect?
+investmentsInAssetsRuleChangeDate.hint = For example, 12 11 2007
+investmentsInAssetsRuleChangeDate.checkYourAnswersLabel = When the scheme changed its rules to allow investments in assets
+investmentsInAssetsRuleChangeDate.error.required.all = Enter the date
+investmentsInAssetsRuleChangeDate.error.required.two = The date must include {0} and {1}
+investmentsInAssetsRuleChangeDate.error.required = The date must include a {0}
+investmentsInAssetsRuleChangeDate.error.invalid = Enter a real date
+investmentsInAssetsRuleChangeDate.error.outsideDateRanges = Enter a real date
+investmentsInAssetsRuleChangeDate.error.outsideReportedYear = The date must be between {0} and {1}
+investmentsInAssetsRuleChangeDate.change.hidden = When did this investment in assets rule change take effect?
+
 becomeOrCeaseScheme.title = What change has taken place for this pension scheme?
 becomeOrCeaseScheme.heading = What change has taken place for this pension scheme?
 becomeOrCeaseScheme.itBecameAnInvestmentRegulatedPensionScheme = It became an investment regulated pension scheme
@@ -1323,3 +1366,5 @@ howManySchemeMembers.Morethan10000 = More than 10,000
 howManySchemeMembers.checkYourAnswersLabel = Number of scheme members at end of tax year {0}
 howManySchemeMembers.error.required = Select how many scheme members there were at the end of the tax year {0}
 howManySchemeMembers.change.hidden = how many scheme members
+
+

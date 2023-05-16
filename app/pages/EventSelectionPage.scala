@@ -22,6 +22,7 @@ import models.enumeration.EventType._
 import models.{EventSelection, UserAnswers}
 import pages.common.{ManualOrUploadPage, MembersDetailsPage, MembersOrEmployersPage, MembersPage}
 import pages.event10.BecomeOrCeaseSchemePage
+import pages.event11.WhatYouWillNeedPage
 import pages.event12.HasSchemeChangedRulesPage
 import pages.event13.SchemeStructurePage
 import pages.event14.HowManySchemeMembersPage
@@ -54,6 +55,7 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
       case Some(Event8) => MembersDetailsPage(Event8, answers.countAll(MembersPage(Event8)))
       case Some(Event8A) => MembersDetailsPage(Event8A, answers.countAll(MembersPage(Event8A)))
       case Some(Event10) => BecomeOrCeaseSchemePage
+      case Some(Event11) => WhatYouWillNeedPage
       case Some(Event12) => HasSchemeChangedRulesPage
       case Some(Event13) => SchemeStructurePage
       case Some(Event14) => HowManySchemeMembersPage

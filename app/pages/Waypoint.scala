@@ -19,6 +19,7 @@ package pages
 import models.Mode
 import pages.event1.Event1CheckYourAnswersPage
 import pages.event10.Event10CheckYourAnswersPage
+import pages.event11.Event11CheckYourAnswersPage
 import pages.event12.Event12CheckYourAnswersPage
 import pages.event13.Event13CheckYourAnswersPage
 import pages.event14.Event14CheckYourAnswersPage
@@ -50,8 +51,9 @@ object Waypoint {
 
   private val fragments: Map[String, Waypoint] =
     Map(
-      EventWindUpCheckYourAnswersPage.urlFragment -> EventWindUpCheckYourAnswersPage.waypoint,
-      Event14CheckYourAnswersPage.urlFragment -> Event14CheckYourAnswersPage.waypoint
+      Event11CheckYourAnswersPage().urlFragment -> Event11CheckYourAnswersPage().waypoint,
+      Event14CheckYourAnswersPage.urlFragment -> Event14CheckYourAnswersPage.waypoint,
+      EventWindUpCheckYourAnswersPage.urlFragment -> EventWindUpCheckYourAnswersPage.waypoint
     )
 
   /*
