@@ -25,7 +25,7 @@ import play.api.mvc.Call
 
 case object SchemeStructurePage extends QuestionPage[SchemeStructure] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "event13" \ toString
 
   override def toString: String = "schemeStructure"
 
