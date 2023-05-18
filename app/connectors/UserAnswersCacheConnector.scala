@@ -125,6 +125,26 @@ class UserAnswersCacheConnector @Inject()(
     case _: NotFoundException =>
       Future.successful(HttpResponse(NOT_FOUND, "Not found"))
   }
+
+  def drop(pstr: String)
+          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+
+    val headers: Seq[(String, String)] = Seq(
+      "Content-Type" -> "application/json",
+      "pstr" -> pstr
+    )
+
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.DELETE[HttpResponse](url)(implicitly, hc, implicitly)
+      .map { response =>
+        response.status match {
+          case OK => ()
+          case _ =>
+            throw new HttpException(response.body, response.status)
+        }
+      }
+  }
 }
 
 
