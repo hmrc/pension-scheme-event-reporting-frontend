@@ -126,8 +126,8 @@ class UserAnswersCacheConnector @Inject()(
       Future.successful(HttpResponse(NOT_FOUND, "Not found"))
   }
 
-  def drop(pstr: String)
-          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+  def removeAll(pstr: String)
+               (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
