@@ -24,6 +24,7 @@ import models.fileUpload.FileUploadResult.{Yes, No}
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import controllers.fileUpload.ValidationController
 
 case class FileUploadResultPage(eventType: EventType) extends QuestionPage[FileUploadResult] {
 
@@ -36,7 +37,7 @@ case class FileUploadResultPage(eventType: EventType) extends QuestionPage[FileU
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
-      case Yes => ProcessingRequestPage(eventType)
+      case Yes => controllers.fileUpload.routes.ValidationController()
       case No => FileUploadPage(eventType)
       case _ => IndexPage
     }.orRecover

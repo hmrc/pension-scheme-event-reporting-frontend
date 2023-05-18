@@ -16,6 +16,31 @@
 
 package fileUploadParser
 
-class CSVParserSpec {
+import base.SpecBase
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.matchers.must.Matchers
+import org.scalatestplus.mockito.MockitoSugar
 
+class CSVParserSpec extends SpecBase with Matchers with MockitoSugar with BeforeAndAfterEach {
+
+  "CSV Parser must" - {
+    "parse where the string is empty" in {
+      CSVParser.split("") mustBe Seq()
+    }
+
+    "parse for a simple string of elements without quotes with multiple rows in the CSV with no quotes" in {
+      val validCSVContent: String =
+        s"""Joe,Bloggs,AB123456C
+Jane,Blaggs,ZZ123456C"""
+
+      val actual: Seq[Seq[String]] = CSVParser.split(validCSVContent).map(_ .toSeq)
+      val expected: Seq[Seq[String]] = Seq(Seq("Joe", "Bloggs", "AB123456C"), Seq("Jane", "Blaggs", "ZZ123456C"))
+
+      actual mustBe expected
+    }
+
+    "parse where there are double quotes in string i.e. remove the extra quotes" in {
+      CSVParser.split(""""Joe","Bloggs","AB123456C"""").flatten mustBe Seq("Joe", "Bloggs", "AB123456C")
+    }
+  }
 }
