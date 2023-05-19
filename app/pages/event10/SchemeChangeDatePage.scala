@@ -37,7 +37,7 @@ case object SchemeChangeDatePage extends QuestionPage[SchemeChangeDate] {
     answers.get(BecomeOrCeaseSchemePage) match {
       case Some(value) =>
         val becomeOrCeased = value.toString
-        if (becomeOrCeased == becameRegulatedScheme) Event10CheckYourAnswersPage() else ContractsOrPoliciesPage
+        if (becomeOrCeased == becameRegulatedScheme) ContractsOrPoliciesPage  else Event10CheckYourAnswersPage()
       case _ => JourneyRecoveryPage
     }
   }
