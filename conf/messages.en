@@ -1181,7 +1181,7 @@ schemeStructure.corporate = A body corporate
 schemeStructure.other = Other
 schemeStructure.checkYourAnswersLabel = Scheme structure
 schemeStructure.error.required = Select the new pension scheme structure
-schemeStructure.change.hidden = SchemeStructure
+schemeStructure.change.hidden = Scheme structure
 
 event13.changeDate.title = When was the change made?
 event13.changeDate.heading = When was the change made?
@@ -1191,7 +1191,7 @@ event13.changeDate.error.required.all = Enter the date when the change was made
 event13.changeDate.error.required.two = The date must include {0} and {1}
 event13.changeDate.error.required = The date must include {0}
 event13.changeDate.error.invalid = Enter a real date
-event13.changeDate.change.hidden = When was the change made?
+event13.changeDate.change.hidden = The date the change was made
 event13.changeDate.error.outside.taxYear = Date must be between 6 April {0} and 5 April {1}
 
 event13.schemeStructureDescription.title = Give a brief description of the pension scheme structure
@@ -1208,7 +1208,7 @@ reasonForBenefits.event3.protectedPensionAge = Protected pension age
 reasonForBenefits.event3.other = Other
 reasonForBenefits.event3.checkYourAnswersLabel = Reason for the benefits being taken
 reasonForBenefits.event3.error.required = Select the reason for the benefits being taken
-reasonForBenefits.event3.change.hidden = the reason for the benefits being taken
+reasonForBenefits.event3.change.hidden = The reason for the benefits being taken
 
 earlyBenefitsBriefDescription.heading = Give a brief description of why the benefits were taken early
 earlyBenefitsBriefDescription.title = Brief description of why the benefits were taken early
@@ -1229,7 +1229,7 @@ paymentDetails.value.error.noDecimals = The total amount must include pence, lik
 paymentDetails.value.error.amountTooHigh = The total amount must be £999999999.99 or less
 paymentDetails.value.error.negativeValue = The total amount must not be a negative amount of money, like -123.45 or -156.00
 paymentDetails.value.error.zeroEntered = The total amount must be greater than zero
-paymentDetails.value.change.hidden = The total amount
+paymentDetails.value.change.hidden = The total amount paid
 paymentDetails.value.checkYourAnswersLabel = Total amount paid
 
 event3.paymentDetails.value.heading = Total amount of benefits taken
@@ -1251,7 +1251,7 @@ paymentDetails.date.error.nothingEntered = Enter the date
 paymentDetails.date.error.noDayMonthOrYear = The date must include a day, month and year
 paymentDetails.date.error.outsideDateRanges = Enter a real date
 paymentDetails.date.error.outsideReportedYear = Date must be between {0} and {1}
-paymentDetails.date.change.hidden = the date of the payment
+paymentDetails.date.change.hidden = The date of the payment
 paymentDetails.date.checkYourAnswersLabel = Date of the payment
 
 characterCount = You can enter up to {0} characters
