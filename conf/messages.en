@@ -120,11 +120,11 @@ eventSelection.event8.hint = Pension commencement lump sum with primary/enhanced
 eventSelection.event8a = Event 8A
 eventSelection.event8a.hint = Stand-alone lump sums
 eventSelection.event10 = Event 10
-eventSelection.event10.hint = Investment-regulated pension scheme
+eventSelection.event10.hint = The scheme becomes or ceases to be an investment regulated pension scheme
 eventSelection.event11 = Event 11
 eventSelection.event11.hint = Changes in scheme rules
 eventSelection.event12 = Event 12
-eventSelection.event12.hint = Changes to rules of a scheme treated as more than one scheme before 6 April 2006
+eventSelection.event12.hint = Changes to rules of a scheme treated as more than 1 scheme before 6 April 2006
 eventSelection.event13 = Event 13
 eventSelection.event13.hint = Change in legal structure of scheme
 eventSelection.event14 = Event 14
@@ -155,7 +155,7 @@ eventSummary.event5 = Event 5: Cessation of ill-health pension
 eventSummary.event6 = Event 6: Benefit crystallisation events with reduced or eliminated liability
 eventSummary.event7 = Event 7: Pension commencement lump sum without primary/enhanced protection
 eventSummary.event8 = Event 8: Pension commencement lump sum with primary/enhanced protection
-eventSummary.event8a = Event 8a: Standalone lump sums
+eventSummary.event8A = Event 8a: Standalone lump sums
 eventSummary.event10 = Event 10: Investment-regulated pension scheme
 eventSummary.event11 = Event 11: Changes in scheme rules
 eventSummary.event12 = Event 12: Changes to rules of a scheme treated as more than one scheme before 6 April 2006
@@ -164,7 +164,7 @@ eventSummary.event14 = Event 14: Change in number of members
 eventSummary.event18 = Event 18: Scheme chargeable payment
 eventSummary.event19 = Event 19: Country or territory of establishment
 eventSummary.event20 = Event 20: Occupational pension scheme
-eventSummary.event20a = Event 20a: Master Trust scheme
+eventSummary.event20A = Event 20a: Master Trust scheme
 eventSummary.event22 = Event 22: Annual allowance
 eventSummary.event23 = Event 23: Dual annual allowance
 eventSummary.event24 = Event 24: Public service pension remedy
@@ -1181,7 +1181,7 @@ schemeStructure.corporate = A body corporate
 schemeStructure.other = Other
 schemeStructure.checkYourAnswersLabel = Scheme structure
 schemeStructure.error.required = Select the new pension scheme structure
-schemeStructure.change.hidden = SchemeStructure
+schemeStructure.change.hidden = Scheme structure
 
 event13.changeDate.title = When was the change made?
 event13.changeDate.heading = When was the change made?
@@ -1191,7 +1191,7 @@ event13.changeDate.error.required.all = Enter the date when the change was made
 event13.changeDate.error.required.two = The date must include {0} and {1}
 event13.changeDate.error.required = The date must include {0}
 event13.changeDate.error.invalid = Enter a real date
-event13.changeDate.change.hidden = When was the change made?
+event13.changeDate.change.hidden = The date the change was made
 event13.changeDate.error.outside.taxYear = Date must be between 6 April {0} and 5 April {1}
 
 event13.schemeStructureDescription.title = Give a brief description of the pension scheme structure
@@ -1208,7 +1208,7 @@ reasonForBenefits.event3.protectedPensionAge = Protected pension age
 reasonForBenefits.event3.other = Other
 reasonForBenefits.event3.checkYourAnswersLabel = Reason for the benefits being taken
 reasonForBenefits.event3.error.required = Select the reason for the benefits being taken
-reasonForBenefits.event3.change.hidden = the reason for the benefits being taken
+reasonForBenefits.event3.change.hidden = The reason for the benefits being taken
 
 earlyBenefitsBriefDescription.heading = Give a brief description of why the benefits were taken early
 earlyBenefitsBriefDescription.title = Brief description of why the benefits were taken early
@@ -1229,7 +1229,7 @@ paymentDetails.value.error.noDecimals = The total amount must include pence, lik
 paymentDetails.value.error.amountTooHigh = The total amount must be £999999999.99 or less
 paymentDetails.value.error.negativeValue = The total amount must not be a negative amount of money, like -123.45 or -156.00
 paymentDetails.value.error.zeroEntered = The total amount must be greater than zero
-paymentDetails.value.change.hidden = The total amount
+paymentDetails.value.change.hidden = The total amount paid
 paymentDetails.value.checkYourAnswersLabel = Total amount paid
 
 event3.paymentDetails.value.heading = Total amount of benefits taken
@@ -1251,10 +1251,123 @@ paymentDetails.date.error.nothingEntered = Enter the date
 paymentDetails.date.error.noDayMonthOrYear = The date must include a day, month and year
 paymentDetails.date.error.outsideDateRanges = Enter a real date
 paymentDetails.date.error.outsideReportedYear = Date must be between {0} and {1}
-paymentDetails.date.change.hidden = the date of the payment
+paymentDetails.date.change.hidden = The date of the payment
 paymentDetails.date.checkYourAnswersLabel = Date of the payment
 
 characterCount = You can enter up to {0} characters
+
+whatYouWillNeed.event11.title = What you will need
+whatYouWillNeed.event11.heading = What you will need
+whatYouWillNeed.event11.change.hidden = What you will need
+whatYouWillNeed.event11.p = You will need to tell us the date that a scheme's rules are changed if the change was made to:
+whatYouWillNeed.event11.item1 = entitle any person to require the making of unauthorised payments
+whatYouWillNeed.event11.item2 = allow investments in assets other than contracts or policies of insurance
+
+hasSchemeChangedRules.event11.title = Has the scheme changed its rules to allow any person to make unauthorised payments?
+hasSchemeChangedRules.event11.heading = Has the scheme changed its rules to allow any person to make unauthorised payments?
+hasSchemeChangedRules.event11.checkYourAnswersLabel = Has scheme changed its rules to allow any person to make unauthorised payments?
+hasSchemeChangedRules.event11.error.required = Select yes if the scheme changed its rules to allow any person to make unauthorised payments
+hasSchemeChangedRules.event11.change.hidden = Has the scheme changed its rules to allow any person to make unauthorised payments?
+
+unAuthPaymentsRuleChangeDate.title = When did this unauthorised payments rule change take effect?
+unAuthPaymentsRuleChangeDate.heading = When did this unauthorised payments rule change take effect?
+unAuthPaymentsRuleChangeDate.hint = For example, 12 11 2007
+unAuthPaymentsRuleChangeDate.checkYourAnswersLabel = When the unauthorised payments rule change took place
+unAuthPaymentsRuleChangeDate.error.required.all = Enter the date
+unAuthPaymentsRuleChangeDate.error.required.two = The date must include {0} and {1}
+unAuthPaymentsRuleChangeDate.error.required = The date must include a {0}
+unAuthPaymentsRuleChangeDate.error.invalid = Enter a real date
+unAuthPaymentsRuleChangeDate.error.outsideDateRanges = Enter a real date
+unAuthPaymentsRuleChangeDate.error.outsideReportedYear = The date must be between {0} and {1}
+unAuthPaymentsRuleChangeDate.change.hidden = When did this unauthorised payments rule change take effect?
+
+hasSchemeChangedRulesInvestmentsInAssets.title = Has the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
+hasSchemeChangedRulesInvestmentsInAssets.heading = Has the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
+hasSchemeChangedRulesInvestmentsInAssets.checkYourAnswersLabel = Has scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
+hasSchemeChangedRulesInvestmentsInAssets.error.required = Select yes if the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
+hasSchemeChangedRulesInvestmentsInAssets.change.hidden = Has the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
+
+investmentsInAssetsRuleChangeDate.title = When did this investment in assets rule change take effect?
+investmentsInAssetsRuleChangeDate.heading = When did this investment in assets rule change take effect?
+investmentsInAssetsRuleChangeDate.hint = For example, 12 11 2007
+investmentsInAssetsRuleChangeDate.checkYourAnswersLabel = When the scheme changed its rules to allow investments in assets
+investmentsInAssetsRuleChangeDate.error.required.all = Enter the date
+investmentsInAssetsRuleChangeDate.error.required.two = The date must include {0} and {1}
+investmentsInAssetsRuleChangeDate.error.required = The date must include a {0}
+investmentsInAssetsRuleChangeDate.error.invalid = Enter a real date
+investmentsInAssetsRuleChangeDate.error.outsideDateRanges = Enter a real date
+investmentsInAssetsRuleChangeDate.error.outsideReportedYear = The date must be between {0} and {1}
+investmentsInAssetsRuleChangeDate.change.hidden = When did this investment in assets rule change take effect?
+
+becomeOrCeaseScheme.title = What change has taken place for this pension scheme?
+becomeOrCeaseScheme.heading = What change has taken place for this pension scheme?
+becomeOrCeaseScheme.itBecameAnInvestmentRegulatedPensionScheme = It became an investment regulated pension scheme
+becomeOrCeaseScheme.itHasCeasedToBeAnInvestmentRegulatedPensionScheme = It has ceased to be an investment regulated pension scheme
+becomeOrCeaseScheme.checkYourAnswersLabel = What change has taken place for this pension scheme?
+becomeOrCeaseScheme.error.required = Select what change has taken place
+becomeOrCeaseScheme.change.hidden = Whether this pension scheme became or ceased to be investment regulated
+
+itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.title = When did the scheme become an investment regulated pension scheme?
+itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.heading = When did the scheme become an investment regulated pension scheme?
+itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.title = When did this scheme cease to be an investment regulated pension scheme?
+itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.heading = When did this scheme cease to be an investment regulated pension scheme?
+
+schemeChangeDate.hint = For example, 27 3 2007
+
+itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.checkYourAnswersLabel = When pension scheme became investment regulated
+itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.checkYourAnswersLabel = When pension scheme ceased to be investment regulated
+
+schemeChangeDate.error.nothingEntered = Enter the date
+schemeChangeDate.error.noDayMonthOrYear = The date must include a day, month and year
+schemeChangeDate.error.outsideDateRanges = Enter a real date
+schemeChangeDate.error.outsideReportedYear = The date must be between {0} and {1}
+
+became.schemeChangeDate.change.hidden = The date for when the pension scheme became investment regulated
+ceased.schemeChangeDate.change.hidden = The date for when the pension scheme ceased to be investment regulated
+
+became.schemeChangeDate.checkYourAnswersLabel = When pension scheme became investment regulated
+ceased.schemeChangeDate.checkYourAnswersLabel = When pension scheme ceased to be investment regulated
+
+contractsOrPolicies.title = Do all investments consist of either contracts or policies of insurance?
+contractsOrPolicies.heading = Do all investments consist of either contracts or policies of insurance?
+contractsOrPolicies.checkYourAnswersLabel = Do all investments consist of either contracts or policies of insurance?
+contractsOrPolicies.error.required = Select yes if all investments consist of either contracts or policies of insurance
+contractsOrPolicies.change.hidden = Whether all investments consist of either contracts or policies of insurance
+
+hasSchemeChangedRules.title = Has the scheme that was treated as 2 or more schemes immediately before 6 April 2006 changed its rules?
+hasSchemeChangedRules.heading = Has the scheme that was treated as 2 or more schemes immediately before 6 April 2006 changed its rules?
+hasSchemeChangedRules.checkYourAnswersLabel = Did scheme treated as 2 or more schemes before 6 April 2006 change its rules?
+hasSchemeChangedRules.error.required = Select if the scheme has changed its rules
+hasSchemeChangedRules.change.hidden = Whether scheme treated as 2 or more schemes before 6 April 2006 changed its rules
+
+dateOfChange.title = When did this change take effect?
+dateOfChange.heading = When did this change take effect?
+dateOfChange.hint = For example, 27 3 2007
+
+dateOfChange.checkYourAnswersLabel = When the rule change took place
+dateOfChange.error.nothingEntered = Enter the date
+dateOfChange.error.noDayMonthOrYear = The date must include a day, month and year
+dateOfChange.error.outsideDateRanges = Enter a real date
+dateOfChange.error.outsideReportedYear = The date must be between {0} and {1}
+dateOfChange.change.hidden = The date for when the scheme changed its rules
+
+cannotSubmit.title = You cannot submit a report for this event
+cannotSubmit.heading = You cannot submit a report for this event
+cannotSubmit.p1 = You do not meet the criteria to submit a report for this event at this time.
+
+howManySchemeMembers.title = How many scheme members were there at the end of the tax year {0}?
+howManySchemeMembers.heading = How many scheme members were there at the end of the tax year {0}?
+howManySchemeMembers.0 = 0
+howManySchemeMembers.1 = 1
+howManySchemeMembers.2to11 = 2 to 11
+howManySchemeMembers.12to50 = 12 to 50
+howManySchemeMembers.51to10000 = 51 to 10,000
+howManySchemeMembers.Morethan10000 = More than 10,000
+howManySchemeMembers.checkYourAnswersLabel = Number of scheme members at end of tax year {0}
+howManySchemeMembers.error.required = Select how many scheme members there were at the end of the tax year {0}
+howManySchemeMembers.change.hidden = how many scheme members
+
+
 
 confirmation.whatNext.send.to.email.id = pensions.administration@hmrc.gov.uk
 

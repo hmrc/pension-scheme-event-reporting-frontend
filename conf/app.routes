@@ -357,6 +357,47 @@ GET        /new-report/event-5-summary                                          
 GET        /new-report/event-5-summary/page/:pageNumber                           controllers.common.MembersSummaryController.onPageLoadWithPageNumber(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event5, pageNumber: Index)
 POST       /new-report/event-5-summary                                            controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event5)
 
+GET        /new-report/event-10-become-or-ceased                                  controllers.event10.BecomeOrCeaseSchemeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-10-become-or-ceased                                  controllers.event10.BecomeOrCeaseSchemeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-10-when-scheme-changed                               controllers.event10.SchemeChangeDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-10-when-scheme-changed                               controllers.event10.SchemeChangeDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-10-are-investments-contracts-or-policies-of-insurance                        controllers.event10.ContractsOrPoliciesController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-10-are-investments-contracts-or-policies-of-insurance                        controllers.event10.ContractsOrPoliciesController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-10-check-your-answers                              controllers.event10.Event10CheckYourAnswersController.onPageLoad
+GET         /new-report/event-10-click                                           controllers.event10.Event10CheckYourAnswersController.onClick
+
+GET        /new-report/event-12-scheme-treated-as-2-or-more                        controllers.event12.HasSchemeChangedRulesController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-12-scheme-treated-as-2-or-more                        controllers.event12.HasSchemeChangedRulesController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-12-when-change-took-effect                            controllers.event12.DateOfChangeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-12-when-change-took-effect                            controllers.event12.DateOfChangeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-12-cannot-submit                                      controllers.event12.CannotSubmitController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-12-check-your-answers                                 controllers.event12.Event12CheckYourAnswersController.onPageLoad
+GET        /new-report/event-12-click                                              controllers.event12.Event12CheckYourAnswersController.onClick
+
+GET        /new-report/event-11-what-you-will-need                                 controllers.event11.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-11-rule-change-to-allow-unauthorised-payments                        controllers.event11.HasSchemeChangedRulesController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-11-rule-change-to-allow-unauthorised-payments                        controllers.event11.HasSchemeChangedRulesController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-11-when-unauthorised-payments-rule-change-took-effect                  controllers.event11.UnAuthPaymentsRuleChangeDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-11-when-unauthorised-payments-rule-change-took-effect                  controllers.event11.UnAuthPaymentsRuleChangeDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-11-rule-change-to-allow-investments-in-assets                        controllers.event11.HasSchemeChangedRulesInvestmentsInAssetsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-11-rule-change-to-allow-investments-in-assets                        controllers.event11.HasSchemeChangedRulesInvestmentsInAssetsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-11-when-investment-in-assets-rule-change-took-effect                  controllers.event11.InvestmentsInAssetsRuleChangeDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-11-when-investment-in-assets-rule-change-took-effect                  controllers.event11.InvestmentsInAssetsRuleChangeDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-11-check-your-answers                              controllers.event11.Event11CheckYourAnswersController.onPageLoad
+GET         /new-report/event-11-click                                           controllers.event11.Event11CheckYourAnswersController.onClick
+
+GET        /new-report/event-11-cannot-submit                                      controllers.event11.Event11CannotSubmitController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
 #
 # Below are some temporary dummy routes. We must leave these in here until we have at least two routes associated with each method call, otherwise we will get compile errors.
@@ -376,3 +417,10 @@ POST       /new-report/event-13-other-structure                                 
 
 GET         /new-report/event-13-check-your-answers                              controllers.event13.Event13CheckYourAnswersController.onPageLoad
 GET         /new-report/event-13-click                                           controllers.event13.Event13CheckYourAnswersController.onClick
+
+# Event 14
+GET        /new-report/event-14-how-many-scheme-members                          controllers.event14.HowManySchemeMembersController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-14-how-many-scheme-members                          controllers.event14.HowManySchemeMembersController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-14-check-your-answers                               controllers.event14.Event14CheckYourAnswersController.onPageLoad()
+GET        /new-report/event-14-click                                            controllers.event14.Event14CheckYourAnswersController.onClick

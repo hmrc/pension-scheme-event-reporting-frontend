@@ -31,6 +31,36 @@ import pages.{event13, _}
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryInvestmentsInAssetsRuleChangeDatePage: Arbitrary[event11.InvestmentsInAssetsRuleChangeDatePage.type] =
+    Arbitrary(event11.InvestmentsInAssetsRuleChangeDatePage)
+
+  implicit lazy val arbitraryHasSchemeChangedRulesInvestmentsInAssetsPage: Arbitrary[event11.HasSchemeChangedRulesInvestmentsInAssetsPage.type] =
+    Arbitrary(event11.HasSchemeChangedRulesInvestmentsInAssetsPage)
+
+  implicit lazy val arbitraryUnAuthPaymentsRuleChangeDatePage: Arbitrary[event11.UnAuthPaymentsRuleChangeDatePage.type] =
+    Arbitrary(event11.UnAuthPaymentsRuleChangeDatePage)
+
+  implicit lazy val arbitraryHasSchemeChangedRulesPageEvent11: Arbitrary[event11.HasSchemeChangedRulesPage.type] =
+    Arbitrary(event11.HasSchemeChangedRulesPage)
+
+  implicit lazy val arbitraryDateOfChangePage: Arbitrary[event12.DateOfChangePage.type] =
+    Arbitrary(event12.DateOfChangePage)
+
+  implicit lazy val arbitraryHasSchemeChangedRulesPage: Arbitrary[event12.HasSchemeChangedRulesPage.type] =
+    Arbitrary(event12.HasSchemeChangedRulesPage)
+
+  implicit lazy val arbitraryContractsOrPoliciesPage: Arbitrary[event10.ContractsOrPoliciesPage.type] =
+    Arbitrary(event10.ContractsOrPoliciesPage)
+
+  implicit lazy val arbitrarySchemeChangeDatePage: Arbitrary[event10.SchemeChangeDatePage.type] =
+    Arbitrary(event10.SchemeChangeDatePage)
+
+  implicit lazy val arbitraryBecomeOrCeaseSchemePage: Arbitrary[event10.BecomeOrCeaseSchemePage.type] =
+    Arbitrary(event10.BecomeOrCeaseSchemePage)
+
+  implicit lazy val arbitraryHowManySchemeMembersPage: Arbitrary[event14.HowManySchemeMembersPage.type] =
+    Arbitrary(event14.HowManySchemeMembersPage)
+
   implicit lazy val arbitraryFileUploadResultPage: Arbitrary[fileUpload.FileUploadResultPage.type] =
     Arbitrary(fileUpload.FileUploadResultPage)
 
