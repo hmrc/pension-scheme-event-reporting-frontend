@@ -138,4 +138,20 @@ class UserAnswersCacheConnectorSpec
       }
     }
   }
+
+  "removeAll" must {
+    "return successfully when passed pstr and the backend has returned OK and a correct response" in {
+      server.stubFor(
+        delete(urlEqualTo(userAnswersCacheUrl))
+          .withHeader("pstr", equalTo(pstr))
+          .willReturn(
+            ok()
+          )
+      )
+
+      connector.removeAll(pstr) map {
+        _ mustBe()
+      }
+    }
+  }
 }
