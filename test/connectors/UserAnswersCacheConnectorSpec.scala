@@ -153,5 +153,20 @@ class UserAnswersCacheConnectorSpec
         _ mustBe()
       }
     }
+
+    "return BadRequestException when the backend has returned bad request response" in {
+      server.stubFor(
+        delete(urlEqualTo(userAnswersCacheUrl))
+          .withHeader("pstr", equalTo(pstr))
+          .willReturn(
+            badRequest
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      recoverToSucceededIf[HttpException] {
+        connector.removeAll(pstr)
+      }
+    }
   }
 }
