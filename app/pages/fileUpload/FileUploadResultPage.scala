@@ -36,7 +36,7 @@ case class FileUploadResultPage(eventType: EventType) extends QuestionPage[FileU
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
-      case Yes => ProcessingRequestPage(eventType)
+      case Yes => ValidationController(eventType)
       case No => FileUploadPage(eventType)
       case _ => IndexPage
     }.orRecover
