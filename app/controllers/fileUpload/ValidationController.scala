@@ -22,10 +22,10 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.IndexView
-
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import fileUploadParser.CSVParser
+import pages.Waypoints
 import play.api.mvc.Request
 
 import scala.concurrent.Future
@@ -38,7 +38,8 @@ class ValidationController @Inject()(
                                  view: IndexView
                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = identify { implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify { implicit request =>
+    getUpscanFileAndParse
     Ok(view())
   }
 
