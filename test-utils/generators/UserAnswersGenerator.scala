@@ -33,6 +33,10 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] = {
+    arbitrary[(event11.InvestmentsInAssetsRuleChangeDatePage.type, JsValue)] ::
+    arbitrary[(event11.HasSchemeChangedRulesInvestmentsInAssetsPage.type, JsValue)] ::
+    arbitrary[(event11.UnAuthPaymentsRuleChangeDatePage.type, JsValue)] ::
+    arbitrary[(event11.HasSchemeChangedRulesPage.type, JsValue)] ::
     arbitrary[(event2.DatePaidPage, JsValue)] ::
     arbitrary[(event2.AmountPaidPage, JsValue)] ::
     arbitrary[(EarlyBenefitsBriefDescriptionPage, JsValue)] ::
@@ -42,6 +46,12 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(SchemeStructurePage.type, JsValue)] ::
     arbitrary[(TaxYearPage.type, JsValue)] ::
     arbitrary[(event18.RemoveEvent18Page.type, JsValue)] ::
+    arbitrary[(event14.HowManySchemeMembersPage.type, JsValue)] ::
+    arbitrary[(event12.DateOfChangePage.type, JsValue)] ::
+      arbitrary[(event12.HasSchemeChangedRulesPage.type, JsValue)] ::
+      arbitrary[(event10.ContractsOrPoliciesPage.type, JsValue)] ::
+      arbitrary[(event10.SchemeChangeDatePage.type, JsValue)] ::
+      arbitrary[(event10.BecomeOrCeaseSchemePage.type, JsValue)] ::
       arbitrary[(event1.PaymentValueAndDatePage, JsValue)] ::
       arbitrary[(event1.member.ErrorDescriptionPage, JsValue)] ::
       arbitrary[(BenefitsPaidEarlyPage, JsValue)] ::

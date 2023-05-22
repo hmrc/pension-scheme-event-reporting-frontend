@@ -14,41 +14,31 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event10.checkAnswers
 
 import models.UserAnswers
-import models.enumeration.EventType
+import pages.event10.ContractsOrPoliciesPage
 import pages.{CheckAnswersPage, Waypoints}
-import pages.fileUpload.FileUploadPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object FileUploadSummary  {
+object ContractsOrPoliciesSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(FileUploadPage(eventType)).map {
-      answers =>
+    answers.get(ContractsOrPoliciesPage).map {
+      answer =>
 
-        val value = ValueViewModel(
-          HtmlContent(
-            answers.map {
-              answer => HtmlFormat.escape(messages(s"fileUpload.$answer")).toString
-            }
-            .mkString(",<br>")
-          )
-        )
+        val value = if (answer) "site.yes" else "site.no"
 
         SummaryListRowViewModel(
-          key     = "fileUpload.checkYourAnswersLabel",
-          value   = value,
+          key = "contractsOrPolicies.checkYourAnswersLabel",
+          value = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", FileUploadPage(eventType).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("fileUpload.change.hidden"))
+            ActionItemViewModel("site.change", ContractsOrPoliciesPage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("contractsOrPolicies.change.hidden"))
           )
         )
     }

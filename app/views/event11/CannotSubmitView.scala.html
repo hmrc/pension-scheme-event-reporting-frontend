@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package upscan.callback
+@this(
+        layout: templates.SchemeLayout,
+        govukButton: GovukButton
+)
 
-import javax.inject.{Inject, Singleton}
+@(continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@Singleton
-class UploadCallbackController @Inject()(
-                                        ) {
+@layout(pageTitle = titleNoForm(messages("cannotSubmit.title"))) {
 
+    <h1 class="govuk-heading-l">@messages("cannotSubmit.heading")</h1>
+    <p class="govuk-body">@messages("cannotSubmit.p1")</p>
+    <a href=@continueUrl class="govuk-button">@messages("site.continue")</a>
 }

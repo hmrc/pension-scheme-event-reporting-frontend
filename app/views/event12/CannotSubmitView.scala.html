@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-//package models.fileUpload
-//
-//import play.api.i18n.Messages
-//import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem
-//import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-//import viewmodels.govuk.checkbox._
-//import models.{Enumerable, WithName}
-//
-//sealed trait FileUpload
-//
-//object FileUpload extends Enumerable.Implicits {
-//
-//  case object Option1 extends WithName("option1") with FileUpload
-//  case object Option2 extends WithName("option2") with FileUpload
-//
-//}
+@this(
+        layout: templates.SchemeLayout,
+        govukButton: GovukButton
+)
+
+@(continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+
+@layout(pageTitle = titleNoForm(messages("cannotSubmit.title"))) {
+
+    <h1 class="govuk-heading-l">@messages("cannotSubmit.heading")</h1>
+    <p class="govuk-body">@messages("cannotSubmit.p1")</p>
+    <a href=@continueUrl class="govuk-button">@messages("site.continue")</a>
+}

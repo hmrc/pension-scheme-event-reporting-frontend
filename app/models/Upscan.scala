@@ -52,33 +52,6 @@ object FileUploadOutcomeStatus extends Enumerable.Implicits {
 
   private val values: List[FileUploadOutcomeStatus] = List(IN_PROGRESS, SUCCESS, FAILURE)
 
-//  def getEventType(s: String): Option[EventType] = values.find(_.toString == s)
-//
-//  def getEventTypeByName(eventType: EventType): String = {
-//    eventType match {
-//      case Event22 => "annual allowance"
-//      case _ => "EventTypeByName needs to be implemented for other events"
-//    }
-//  }
-
-//  implicit def queryStringBindable(implicit stringBinder: QueryStringBindable[String]): QueryStringBindable[EventType] =
-//    new QueryStringBindable[EventType] {
-//
-//      override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, EventType]] = {
-//        params.get(key).map {
-//          data =>
-//            EventType.getEventType(data.head)
-//              .map(Right(_))
-//              .getOrElse(Left(s"Unable to bind parameter ${data.head} as EventType"))
-//        }
-//      }
-//
-//      override def unbind(key: String, value: EventType): String =
-//        stringBinder.unbind(key, value.toString)
-//    }
-
-//  implicit val jsLiteral: JavascriptLiteral[EventType] = (value: EventType) => value.toString
-
   implicit val enumerable: Enumerable[FileUploadOutcomeStatus] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }
