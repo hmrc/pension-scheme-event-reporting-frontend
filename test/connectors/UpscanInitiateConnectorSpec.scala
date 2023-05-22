@@ -76,7 +76,7 @@ class UpscanInitiateConnectorSpec
          |        }
          |    }
          |}""".stripMargin
-    "save the data in the collection" in {
+    "initiate upscan" in {
       server.stubFor(
         post(urlEqualTo(url))
           .willReturn(
