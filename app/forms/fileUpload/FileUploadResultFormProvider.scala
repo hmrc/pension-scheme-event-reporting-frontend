@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package pages.event22
+package forms.fileUpload
 
-import controllers.event22.routes
-import models.UserAnswers
-import models.enumeration.EventType.Event22
-import pages.fileUpload.FileUploadPage
-import pages.{Page, Waypoints}
-import play.api.mvc.Call
+import javax.inject.Inject
 
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.fileUpload.FileUploadResult
 
-case object FileUploadWhatYouWillNeedPage extends Page {
+class FileUploadResultFormProvider @Inject() extends Mappings {
 
-  override def route(waypoints: Waypoints): Call =
-    routes.FileUploadWhatYouWillNeedController.onPageLoad(waypoints)
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    FileUploadPage(Event22)
+  def apply(): Form[FileUploadResult] =
+    Form(
+      "value" -> enumerable[FileUploadResult]("fileUploadResult.error.required")
+    )
 }

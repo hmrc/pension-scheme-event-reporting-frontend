@@ -17,7 +17,7 @@
 package controllers.event10
 
 import base.SpecBase
-import data.SampleData.{sampleTwoMemberJourneyData10BecameAScheme, sampleTwoMemberJourneyData10CeasedToBecomeAScheme}
+import data.SampleData.{sampleJourneyData10BecameAScheme, sampleJourneyData10CeasedToBecomeAScheme}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -62,7 +62,7 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleTwoMemberJourneyData10BecameAScheme),
+        userAnswers = Some(sampleJourneyData10BecameAScheme),
         extraModules = extraModules
       ).build()
 
@@ -93,7 +93,7 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleTwoMemberJourneyData10CeasedToBecomeAScheme),
+        userAnswers = Some(sampleJourneyData10CeasedToBecomeAScheme),
         extraModules = extraModules
       ).build()
 
@@ -168,6 +168,12 @@ object Event10CheckYourAnswersControllerSpec {
       "22 March 2022",
       "/manage-pension-scheme-event-report/new-report/event-10-when-scheme-changed?waypoints=event-10-check-answers",
       "became.schemeChangeDate.change.hidden"
+    ),
+    fakeSummaryListRowWithTextWithHiddenContent(
+      "contractsOrPolicies.checkYourAnswersLabel",
+      "Yes",
+      "/manage-pension-scheme-event-report/new-report/event-10-are-investments-contracts-or-policies-of-insurance?waypoints=event-10-check-answers",
+      "contractsOrPolicies.change.hidden"
     )
   )
 
@@ -183,12 +189,6 @@ object Event10CheckYourAnswersControllerSpec {
       "22 March 2022",
       "/manage-pension-scheme-event-report/new-report/event-10-when-scheme-changed?waypoints=event-10-check-answers",
       "ceased.schemeChangeDate.change.hidden"
-    ),
-    fakeSummaryListRowWithTextWithHiddenContent(
-      "contractsOrPolicies.checkYourAnswersLabel",
-      "Yes",
-      "/manage-pension-scheme-event-report/new-report/event-10-are-investments-contracts-or-policies-of-insurance?waypoints=event-10-check-answers",
-      "contractsOrPolicies.change.hidden"
     )
   )
 }

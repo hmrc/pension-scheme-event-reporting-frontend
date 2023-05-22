@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package pages.event22
+package pages.fileUpload
 
-import controllers.event22.routes
-import models.UserAnswers
-import models.enumeration.EventType.Event22
-import pages.fileUpload.FileUploadPage
-import pages.{Page, Waypoints}
-import play.api.mvc.Call
+import models.enumeration.EventType
+import play.api.libs.json.JsPath
+import queries.{Gettable, Settable}
 
+case class UploadedFileName(eventType: EventType) extends Gettable[String] with Settable[String] {
 
-case object FileUploadWhatYouWillNeedPage extends Page {
+  override def path: JsPath = JsPath \ eventType.toString \ toString
 
-  override def route(waypoints: Waypoints): Call =
-    routes.FileUploadWhatYouWillNeedController.onPageLoad(waypoints)
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    FileUploadPage(Event22)
+  override def toString: String = "uploadedFileName"
 }

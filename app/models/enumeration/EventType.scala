@@ -96,6 +96,13 @@ object EventType extends Enumerable.Implicits {
 
   def getEventType(s: String): Option[EventType] = values.find(_.toString == s)
 
+  def getEventTypeByName(eventType: EventType): String = {
+    eventType match {
+      case Event22 => "annual allowance"
+      case _ => "EventTypeByName needs to be implemented for other events"
+    }
+  }
+
   implicit def queryStringBindable(implicit stringBinder: QueryStringBindable[String]): QueryStringBindable[EventType] =
     new QueryStringBindable[EventType] {
 
@@ -111,6 +118,11 @@ object EventType extends Enumerable.Implicits {
       override def unbind(key: String, value: EventType): String =
         stringBinder.unbind(key, value.toString)
     }
+
+  def toRoute(eventType: EventType): String = eventType match {
+    case Event22 => "event-22"
+    case _ => throw new RuntimeException(s"Unimplemented event type: $eventType")
+  }
 
   implicit val jsLiteral: JavascriptLiteral[EventType] = (value: EventType) => value.toString
 

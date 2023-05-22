@@ -386,30 +386,30 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
           pageMustBe(SchemeChangeDatePage)
         )
     }
-    "testing navigation from 'When did this scheme cease to be an investment regulated pension scheme?' page to CYA page (Became a scheme)" in {
+    "testing navigation from 'When did the scheme become an investment regulated pension scheme?' page to ContractsOrPolicies page (Become a scheme)" in {
       startingFrom(BecomeOrCeaseSchemePage)
         .run(
           submitAnswer(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItBecameAnInvestmentRegulatedPensionScheme),
           submitAnswer(SchemeChangeDatePage, SchemeChangeDate(LocalDate.of(2022, Month.MAY, 22))),
-          pageMustBe(Event10CheckYourAnswersPage())
+          pageMustBe(ContractsOrPoliciesPage)
         )
     }
-    "testing navigation from 'When did this scheme cease to be an investment regulated pension scheme?' page to ContractsOrPolicies page (Ceased to become a scheme)" in {
+    "testing navigation from 'When did this scheme cease to be an investment regulated pension scheme?' page to CYA page (Ceased to become a scheme)" in {
       startingFrom(BecomeOrCeaseSchemePage)
         .run(
           submitAnswer(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItHasCeasedToBeAnInvestmentRegulatedPensionScheme),
           submitAnswer(SchemeChangeDatePage, SchemeChangeDate(LocalDate.of(2022, Month.MAY, 22))),
-          pageMustBe(ContractsOrPoliciesPage)
+          pageMustBe(Event10CheckYourAnswersPage())
         )
     }
-    "testing navigation from 'Do all investments consist of either contracts or policies of insurance?' page to CYA page (Ceased to become a scheme: Yes)" in {
+    "testing navigation from 'Do all investments consist of either contracts or policies of insurance?' page to CYA page (Become a scheme: Yes)" in {
       startingFrom(ContractsOrPoliciesPage)
         .run(
           submitAnswer(ContractsOrPoliciesPage, true),
           pageMustBe(Event10CheckYourAnswersPage())
         )
     }
-    "testing navigation from 'Do all investments consist of either contracts or policies of insurance?' page to CYA page (Ceased to become a scheme: No)" in {
+    "testing navigation from 'Do all investments consist of either contracts or policies of insurance?' page to CYA page (Become a scheme: No)" in {
       startingFrom(ContractsOrPoliciesPage)
         .run(
           submitAnswer(ContractsOrPoliciesPage, false),

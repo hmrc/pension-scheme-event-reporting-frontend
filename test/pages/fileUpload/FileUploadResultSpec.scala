@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package pages.event22
+package pages.fileUpload
 
-import controllers.event22.routes
-import models.UserAnswers
 import models.enumeration.EventType.Event22
-import pages.fileUpload.FileUploadPage
-import pages.{Page, Waypoints}
-import play.api.mvc.Call
+import models.fileUpload.FileUploadResult
+import pages.behaviours.PageBehaviours
 
+class FileUploadResultSpec extends PageBehaviours {
 
-case object FileUploadWhatYouWillNeedPage extends Page {
+  "FileUploadResultPage" - {
 
-  override def route(waypoints: Waypoints): Call =
-    routes.FileUploadWhatYouWillNeedController.onPageLoad(waypoints)
+    beRetrievable[FileUploadResult](FileUploadResultPage(eventType = Event22))
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    FileUploadPage(Event22)
+    beSettable[FileUploadResult](FileUploadResultPage(eventType = Event22))
+
+    beRemovable[FileUploadResult](FileUploadResultPage(eventType = Event22))
+  }
 }

@@ -275,16 +275,16 @@ object SampleData extends SpecBase {
       .setOrException(ChooseTaxYearPage(eventType, 1), taxYear)
       .setOrException(TotalPensionAmountsPage(eventType, 1), totalPaymentAmountEvent22and23)
 
-  def sampleTwoMemberJourneyData10BecameAScheme: UserAnswers =
+  def sampleJourneyData10BecameAScheme: UserAnswers =
     UserAnswers()
       .setOrException(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItBecameAnInvestmentRegulatedPensionScheme)
       .setOrException(SchemeChangeDatePage, SchemeChangeDate(LocalDate.of(2022, 3, 22)))
+      .setOrException(ContractsOrPoliciesPage, true)
 
-  def sampleTwoMemberJourneyData10CeasedToBecomeAScheme: UserAnswers =
+  def sampleJourneyData10CeasedToBecomeAScheme: UserAnswers =
     UserAnswers()
       .setOrException(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItHasCeasedToBeAnInvestmentRegulatedPensionScheme)
       .setOrException(SchemeChangeDatePage, SchemeChangeDate(LocalDate.of(2022, 3, 22)))
-      .setOrException(ContractsOrPoliciesPage, true)
 
   def sampleEvent12JourneyData: UserAnswers =
     emptyUserAnswersWithTaxYear

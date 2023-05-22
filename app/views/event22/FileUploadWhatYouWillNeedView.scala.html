@@ -19,7 +19,7 @@
         govukButton: GovukButton
 )
 
-@(continueUrl: Call, templateDownloadLink: Call, instructionsDownloadLink: Call)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(continueUrl: String, templateDownloadLink: Call, instructionsDownloadLink: Call)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("fileUploadWhatYouWillNeed.event22.title"))) {
 
@@ -46,6 +46,6 @@
     <p class="govuk-inset-text">@messages("fileUploadWhatYouWillNeed.event22.inset")</p>
 
     @govukButton(
-        ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))
+        ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit")).asLink(continueUrl)
     )
 }

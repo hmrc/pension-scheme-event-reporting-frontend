@@ -1370,3 +1370,41 @@ howManySchemeMembers.change.hidden = how many scheme members
 
 
 confirmation.whatNext.send.to.email.id = pensions.administration@hmrc.gov.uk
+
+fileUpload.title = Upload your {0} event file
+fileUpload.heading = Upload your {0} event file
+fileupload.upload.inset.text1 = Accepted file type: .csv
+fileupload.upload.inset.text2 = Maximum file size: 2MB
+fileUpload.error.required = No file has been uploaded
+fileUpload.change.hidden = file Upload
+fileUpload.upload.details.summary = What information do I need to include in this file?
+fileUpload.upload.label = Upload a file
+
+fileUpload.upload.details.annualAllowanceEvent22.p1 = To report an annual allowance event you will need the following for each member:
+fileUpload.upload.details.annualAllowanceEvent22.item1 = their name
+fileUpload.upload.details.annualAllowanceEvent22.item2 = their National Insurance number
+fileUpload.upload.details.annualAllowanceEvent22.item3 = the tax year in which the annual allowance was exceeded
+fileUpload.upload.details.annualAllowanceEvent22.item4 = the total of the member's pension input amounts, for all arrangements, under the scheme for the relevant tax year
+fileUploadResult.title = Check your {0} event file
+fileUploadResult.heading = Check your {0} event file
+fileUpload.upload.result.h1 = Is this file correct?
+fileUploadResult.Yes = Yes, add this charge to the event
+fileUploadResult.No = No, I want to select a different file
+fileUploadResult.checkYourAnswersLabel = fileUploadResult
+fileUploadResult.error.required = Select yes to add this file
+fileUploadResult.change.hidden = FileUploadResult
+fileUploadResult.status.inProgress = In progress
+
+fileUpload.error.rejected.title = Your file is in the wrong format
+fileUpload.error.rejected.heading = Your file is in the wrong format
+fileUpload.error.rejected.p1 = Your file is in a format other than .csv or contains information that the service cannot access. This may include:
+fileUpload.error.rejected.p2 = Make sure your file is in the .csv format and remove any unnecessary information. Then upload it again, or upload a different file.
+fileUpload.error.rejected.list.b1 = images
+fileUpload.error.rejected.list.b2 = videos
+fileUpload.error.rejected.list.b3 = music or other audio files
+fileUpload.error.rejected.list.b4 = any other information that is not text
+fileUpload.error.rejected.p2 = Make sure your file is in the .csv format and remove any unnecessary information. Then upload it again, or upload a different file.
+
+fileUpload.error.rejected.ENTITY_TOO_LARGE = The file must be smaller than {0}MB
+fileUpload.error.rejected.InvalidArgument = No file has been uploaded
+

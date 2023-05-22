@@ -14,31 +14,25 @@
  * limitations under the License.
  */
 
-package pages.event10
+package pages.fileUpload
 
-import controllers.event10.routes
+import controllers.fileUpload.routes
 import models.UserAnswers
-import models.event10.{BecomeOrCeaseScheme, SchemeChangeDate}
-import pages.{JourneyRecoveryPage, Page, QuestionPage, Waypoints}
+import models.enumeration.EventType
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object SchemeChangeDatePage extends QuestionPage[SchemeChangeDate] {
+case class FileUploadPage(eventType: EventType) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ "event10" \ toString
+  override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "schemeChangeDate"
+  override def toString: String = "fileUpload"
 
   override def route(waypoints: Waypoints): Call =
-    routes.SchemeChangeDateController.onPageLoad(waypoints)
+    routes.FileUploadController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    val becameRegulatedScheme = BecomeOrCeaseScheme.ItBecameAnInvestmentRegulatedPensionScheme.toString
-    answers.get(BecomeOrCeaseSchemePage) match {
-      case Some(value) =>
-        val becomeOrCeased = value.toString
-        if (becomeOrCeased == becameRegulatedScheme) ContractsOrPoliciesPage  else Event10CheckYourAnswersPage()
-      case _ => JourneyRecoveryPage
-    }
+    FileUploadResultPage(eventType)
   }
 }

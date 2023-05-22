@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-package controllers.event22
+package controllers.fileUpload
 
 import controllers.actions._
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event22.FileUploadWhatYouWillNeedView
+import views.html.fileUpload.FileRejectedView
 
 import javax.inject.Inject
 
-class FileUploadWhatYouWillNeedController @Inject()(
+class FileRejectedController @Inject()(
                                                      override val messagesApi: MessagesApi,
                                                      identify: IdentifierAction,
                                                      val controllerComponents: MessagesControllerComponents,
-                                                     view: FileUploadWhatYouWillNeedView
+                                                     view: FileRejectedView
                                                    ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
     implicit request =>
-
-      val templateDownloadLink = controllers.routes.FileDownloadController.templateFile
-      val instructionsDownloadLink = controllers.routes.FileDownloadController.instructionsFile
-      Ok(view(controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints).url, templateDownloadLink, instructionsDownloadLink))
+      Ok(view(waypoints, controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints)))
   }
 }
