@@ -84,7 +84,14 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(FileUploadResultPage(eventType), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            getUpscanFileAndParse
+            getUpscanFileAndParse.map { parsedCSVFile =>
+              //TODO - For loop is temporary code to allow parsing to be tested in the console
+              for (value <- parsedCSVFile) {
+                val formattedString: String = value.mkString(",")
+                println(s"\n\n\n\n Formatted string: $formattedString")
+              }
+              parsedCSVFile
+            }
             Redirect(FileUploadResultPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
@@ -92,28 +99,28 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
   }
 
   private def getUpscanFileAndParse(implicit request: Request[AnyContent]): Future[Seq[Array[String]]] = {
-    val y = request.queryString.get("key").flatMap { x =>
-      x.headOption
+    request.queryString.get("key")
+    val referenceOpt: Option[String] = request.queryString.get("key").flatMap { values =>
+      values.headOption
     }
 
-    y match {
-      case Some(key) =>
-        eventReportingConnector.getFileUploadOutcome(key).flatMap { x =>
-          x.downloadUrl match {
-            case Some(downloadUrl) =>
+    referenceOpt match {
+      case Some(reference) => {
+        eventReportingConnector.getFileUploadOutcome(reference).flatMap { fileUploadOutcomeResponse =>
+          fileUploadOutcomeResponse.downloadUrl match {
+            case Some(downloadUrl) => {
               upscanInitiateConnector.download(downloadUrl).map { httpResponse =>
                 httpResponse.status match {
                   case OK => CSVParser.split(httpResponse.body)
-                  case _ => throw new RuntimeException("")
+                  case _ => throw new RuntimeException("Unhandled response from upscan in FileUploadResultController")
                 }
               }
-            case None => throw new RuntimeException("")
+            }
+            case None => throw new RuntimeException("No download url in FileUploadResultController")
           }
         }
-      case _ => throw new RuntimeException("")
+      }
+      case _ => throw new RuntimeException("No reference number in FileUploadResultController")
     }
   }
 }
-
-//throw upscanInitiateConnector.UpscanInitiateError(RuntimeException)
-
