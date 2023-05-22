@@ -29,6 +29,8 @@ import models.event1.employer.PaymentNature.TangibleMoveableProperty
 import models.event1.employer.{CompanyDetails, LoanDetails}
 import models.event1.member.SchemeDetails
 import models.event1.{PaymentDetails => Event1PaymentDetails}
+import models.event10.{BecomeOrCeaseScheme, SchemeChangeDate}
+import models.event12.DateOfChange
 import models.event6.{CrystallisedDetails, TypeOfProtection => Event6TypeOfProtection}
 import models.event7.PaymentDate
 import models.event8.{LumpSumDetails, TypeOfProtection => Event8TypeOfProtection}
@@ -40,6 +42,8 @@ import pages.common._
 import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
+import pages.event10.{BecomeOrCeaseSchemePage, ContractsOrPoliciesPage, SchemeChangeDatePage}
+import pages.event12.{DateOfChangePage, HasSchemeChangedRulesPage}
 import pages.event2.{AmountPaidPage, DatePaidPage}
 import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage => Event6TypeOfProtectionPage}
 import pages.event7.{CrystallisedAmountPage, LumpSumAmountPage, PaymentDatePage}
@@ -271,5 +275,19 @@ object SampleData extends SpecBase {
       .setOrException(ChooseTaxYearPage(eventType, 1), taxYear)
       .setOrException(TotalPensionAmountsPage(eventType, 1), totalPaymentAmountEvent22and23)
 
+  def sampleJourneyData10BecameAScheme: UserAnswers =
+    UserAnswers()
+      .setOrException(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItBecameAnInvestmentRegulatedPensionScheme)
+      .setOrException(SchemeChangeDatePage, SchemeChangeDate(LocalDate.of(2022, 3, 22)))
+      .setOrException(ContractsOrPoliciesPage, true)
 
+  def sampleJourneyData10CeasedToBecomeAScheme: UserAnswers =
+    UserAnswers()
+      .setOrException(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItHasCeasedToBeAnInvestmentRegulatedPensionScheme)
+      .setOrException(SchemeChangeDatePage, SchemeChangeDate(LocalDate.of(2022, 3, 22)))
+
+  def sampleEvent12JourneyData: UserAnswers =
+    emptyUserAnswersWithTaxYear
+      .setOrException(HasSchemeChangedRulesPage, true)
+      .setOrException(DateOfChangePage, DateOfChange(LocalDate.of(2022, 3, 22)))
 }

@@ -33,6 +33,16 @@ trait ModelGenerators {
       Gen.oneOf(fileUpload.FileUploadResult.values.toSeq)
     }
 
+  implicit lazy val arbitraryBecomeOrCeaseScheme: Arbitrary[event10.BecomeOrCeaseScheme] =
+    Arbitrary {
+      Gen.oneOf(event10.BecomeOrCeaseScheme.values.toSeq)
+    }
+
+  implicit lazy val arbitraryHowManySchemeMembers: Arbitrary[event14.HowManySchemeMembers] =
+    Arbitrary {
+      Gen.oneOf(event14.HowManySchemeMembers.values.toSeq)
+    }
+
   implicit lazy val arbitraryReasonForBenefits: Arbitrary[event3.ReasonForBenefits] =
     Arbitrary {
       Gen.oneOf(event3.ReasonForBenefits.values.toSeq)
