@@ -38,9 +38,6 @@ class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-//  private val formProvider = new FileUploadFormProvider()
-//  private val form = formProvider()
-
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockUpscanInitiateConnector = mock[UpscanInitiateConnector]
 
