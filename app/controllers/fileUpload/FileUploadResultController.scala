@@ -33,7 +33,7 @@ import pages.Waypoints
 import pages.fileUpload.FileUploadResultPage
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadResultView
 
@@ -58,11 +58,11 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       case Some(uploadIdReference) =>
         val submitUrl = Call("POST", routes.FileUploadResultController.onSubmit(waypoints).url + s"?key=$uploadIdReference")
         eventReportingConnector.getFileUploadOutcome(uploadIdReference).map {
-          case FileUploadOutcomeResponse(_, IN_PROGRESS) =>
+          case FileUploadOutcomeResponse(_, IN_PROGRESS, _) =>
             status(view(preparedForm, waypoints, getEventTypeByName(eventType), None, submitUrl))
-          case FileUploadOutcomeResponse(fileName@Some(_), SUCCESS) =>
+          case FileUploadOutcomeResponse(fileName@Some(_), SUCCESS, _) =>
             status(view(preparedForm, waypoints, getEventTypeByName(eventType), fileName, submitUrl))
-          case FileUploadOutcomeResponse(_, FAILURE) =>
+          case FileUploadOutcomeResponse(_, FAILURE, _) =>
             Redirect(controllers.fileUpload.routes.FileRejectedController.onPageLoad(waypoints).url)
           case _ => throw new RuntimeException("UploadId reference does not exist")
         }
@@ -84,20 +84,36 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(FileUploadResultPage(eventType), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-//            getUpscanFileAndParse
+            getUpscanFileAndParse
             Redirect(FileUploadResultPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )
   }
 
-//  private def getUpscanFileAndParse: Seq[Array[String]]  = {
-//    request.request.queryString.get("key").flatMap(_.headOption) match {
-//      case Some(uploadIdReference) => upscanInitiateConnector.download(uploadIdReference).map { file =>
-//        CSVParser.split(file)
-//      }
-//      case _ => throw upscanInitiateConnector.UpscanInitiateError(RuntimeException)
-//    }
-//  }
+  private def getUpscanFileAndParse(implicit request: Request[AnyContent]): Future[Seq[Array[String]]] = {
+    val y = request.queryString.get("key").flatMap { x =>
+      x.headOption
+    }
 
+    y match {
+      case Some(key) =>
+        eventReportingConnector.getFileUploadOutcome(key).flatMap { x =>
+          x.downloadUrl match {
+            case Some(downloadUrl) =>
+              upscanInitiateConnector.download(downloadUrl).map { httpResponse =>
+                httpResponse.status match {
+                  case OK => CSVParser.split(httpResponse.body)
+                  case _ => throw new RuntimeException("")
+                }
+              }
+            case None => throw new RuntimeException("")
+          }
+        }
+      case _ => throw new RuntimeException("")
+    }
+  }
 }
+
+//throw upscanInitiateConnector.UpscanInitiateError(RuntimeException)
+
