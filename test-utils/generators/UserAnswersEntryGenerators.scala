@@ -96,7 +96,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }
-  
+
   implicit lazy val arbitraryBecomeOrCeaseSchemeUserAnswersEntry: Arbitrary[(pages.event10.BecomeOrCeaseSchemePage.type, JsValue)] =
     Arbitrary {
       for {
@@ -110,6 +110,14 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       for {
         page  <- arbitrary[pages.event14.HowManySchemeMembersPage.type]
         value <- arbitrary[models.event14.HowManySchemeMembers].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryFileUploadResultUserAnswersEntry: Arbitrary[(pages.fileUpload.FileUploadResultPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[pages.fileUpload.FileUploadResultPage.type]
+        value <- arbitrary[models.fileUpload.FileUploadResult].map(Json.toJson(_))
       } yield (page, value)
     }
 

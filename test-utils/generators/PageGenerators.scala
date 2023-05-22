@@ -61,6 +61,9 @@ trait PageGenerators {
   implicit lazy val arbitraryHowManySchemeMembersPage: Arbitrary[event14.HowManySchemeMembersPage.type] =
     Arbitrary(event14.HowManySchemeMembersPage)
 
+  implicit lazy val arbitraryFileUploadResultPage: Arbitrary[fileUpload.FileUploadResultPage.type] =
+    Arbitrary(fileUpload.FileUploadResultPage)
+
   implicit lazy val arbitrarydatePaidPage: Arbitrary[event2.DatePaidPage] =
     Arbitrary(event2.DatePaidPage(Index(0), Event2))
 

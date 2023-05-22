@@ -17,10 +17,12 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
+import models.FileUploadOutcomeResponse
+import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.{Enumerable, EventType}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http._
 import utils.WireMockHelper
 
@@ -33,6 +35,7 @@ class EventReportingConnectorSpec
   private val pstr = "87219363YN"
   private val eventType: EventType = EventType.Event1
   private val eventType2: EventType = EventType.Event2
+  private val referenceStub: String = "123"
 
   private val validResponse = Seq(
     eventType, eventType2
@@ -51,6 +54,18 @@ class EventReportingConnectorSpec
   private lazy val connector: EventReportingConnector = injector.instanceOf[EventReportingConnector]
   private val eventReportSummaryCacheUrl = s"/pension-scheme-event-reporting/event-summary"
   private val eventReportCompileUrl = s"/pension-scheme-event-reporting/compile"
+  private val getFileUploadResponseUrl = "/pension-scheme-event-reporting/file-upload-response/get"
+
+  private val failureOutcome = FileUploadOutcomeResponse(fileName = None, FAILURE)
+  private val failureOutcomeJson = Json.obj("fileStatus" -> "ERROR")
+  private val successOutcome = FileUploadOutcomeResponse(fileName = Some("test"), SUCCESS)
+  private val successOutcomeJson = Json.obj(
+    "fileStatus" -> "READY",
+    "uploadDetails" -> Json.obj(
+      "fileName" -> "test"
+    )
+  )
+  private val inProgressOutcome = FileUploadOutcomeResponse(fileName = None, IN_PROGRESS)
 
   "getEventReportSummary" must {
     "return successfully when the backend has returned OK and a correct response" in {
@@ -121,5 +136,54 @@ class EventReportingConnectorSpec
         connector.compileEvent(pstr, eventType)
       }
     }
+  }
+
+  "getFileUploadOutcome" must {
+
+      "return data if data is present in the collection" in {
+        server.stubFor(
+          get(urlEqualTo(getFileUploadResponseUrl))
+            .willReturn(
+              ok
+                .withBody(successOutcomeJson.toString)
+                .withHeader("reference", "123")
+            )
+        )
+
+        connector.getFileUploadOutcome(referenceStub) map {
+          result =>
+            result mustEqual successOutcome
+        }
+      }
+
+    "return no data and a failure if data is not found in collection" in {
+        server.stubFor(
+          get(urlEqualTo(getFileUploadResponseUrl))
+            .willReturn(
+              ok
+                .withBody(failureOutcomeJson.toString)
+                .withHeader("reference", "123")
+            )
+        )
+
+        connector.getFileUploadOutcome(referenceStub) map {
+          result =>
+            result mustEqual failureOutcome
+        }
+      }
+
+      "return return not found if data hasn't been returned" in {
+        server.stubFor(
+          get(urlEqualTo(getFileUploadResponseUrl))
+            .willReturn(
+              notFound()
+            )
+        )
+
+        connector.getFileUploadOutcome(referenceStub) map {
+          result =>
+            result mustEqual inProgressOutcome
+        }
+      }
   }
 }
