@@ -16,8 +16,9 @@
 
 package controllers.fileUpload
 
-import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import connectors.{EventReportingConnector, UpscanInitiateConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import fileUploadParser.CSVParser
 import forms.fileUpload.FileUploadResultFormProvider
 import models.FileUploadOutcomeStatus.IN_PROGRESS
 import models.FileUploadOutcomeStatus.SUCCESS
@@ -44,6 +45,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                                            getData: DataRetrievalAction,
                                            userAnswersCacheConnector: UserAnswersCacheConnector,
                                            eventReportingConnector: EventReportingConnector,
+                                           upscanInitiateConnector: UpscanInitiateConnector,
                                            formProvider: FileUploadResultFormProvider,
                                            view: FileUploadResultView
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -82,10 +84,20 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(FileUploadResultPage(eventType), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+//            getUpscanFileAndParse
             Redirect(FileUploadResultPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )
   }
+
+//  private def getUpscanFileAndParse: Seq[Array[String]]  = {
+//    request.request.queryString.get("key").flatMap(_.headOption) match {
+//      case Some(uploadIdReference) => upscanInitiateConnector.download(uploadIdReference).map { file =>
+//        CSVParser.split(file)
+//      }
+//      case _ => throw upscanInitiateConnector.UpscanInitiateError(RuntimeException)
+//    }
+//  }
 
 }
