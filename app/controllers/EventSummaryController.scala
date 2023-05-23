@@ -82,16 +82,18 @@ class EventSummaryController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
     summaryListRows.map { rows =>
+      val companyName = request.schemeName
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
-      Ok(view(form, waypoints, rows, selectedTaxYear))
+      Ok(view(form, waypoints, rows, selectedTaxYear, companyName))
     }
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
+      val companyName = request.schemeName
       form.bindFromRequest().fold(
-        formWithErrors => summaryListRows.map(rows => BadRequest(view(formWithErrors, waypoints, rows, selectedTaxYear))),
+        formWithErrors => summaryListRows.map(rows => BadRequest(view(formWithErrors, waypoints, rows, selectedTaxYear, companyName))),
         value => {
           val originalUserAnswers = UserAnswers()
           val updatedUserAnswers = originalUserAnswers.setOrException(EventSummaryPage, value)

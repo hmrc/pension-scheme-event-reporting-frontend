@@ -22,7 +22,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, events: Seq[SummaryListRow], selectedTaxYear: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, events: Seq[SummaryListRow], selectedTaxYear: String, companyName: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("eventSummary.title", selectedTaxYear))) {
 
@@ -32,7 +32,7 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <span class="govuk-caption-xl">Company pension scheme ABC</span>
+        <span class="govuk-caption-xl">@companyName</span>
 
         <h1 class="govuk-heading-xl">@messages("eventSummary.heading", selectedTaxYear)</h1>
 
