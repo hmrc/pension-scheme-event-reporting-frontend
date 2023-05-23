@@ -54,7 +54,12 @@ class BenefitsPaidEarlyController @Inject()(val controllerComponents: MessagesCo
           Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(BenefitsPaidEarlyPage(index), value)
+
+          val updatedAnswers = if (value.nonEmpty) {
+            originalUserAnswers.setOrException(BenefitsPaidEarlyPage(index), value)
+          } else {
+            originalUserAnswers.removeOrException(BenefitsPaidEarlyPage(index))
+          }
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(BenefitsPaidEarlyPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
