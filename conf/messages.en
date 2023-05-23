@@ -1408,3 +1408,6 @@ fileUpload.error.rejected.p2 = Make sure your file is in the .csv format and rem
 fileUpload.error.rejected.ENTITY_TOO_LARGE = The file must be smaller than {0}MB
 fileUpload.error.rejected.InvalidArgument = No file has been uploaded
 
+fileUpload.processingRequest.title = We are checking your file
+fileUpload.processingRequest.heading = We are checking your file
+fileUpload.processingRequest.p1 = Do not close this page or leave the service.
