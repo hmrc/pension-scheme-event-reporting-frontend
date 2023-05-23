@@ -18,7 +18,7 @@ package controllers.auth
 
 import base.SpecBase
 import config.FrontendAppConfig
-import connectors.SessionDataCacheConnector
+import connectors.{SessionDataCacheConnector, UserAnswersCacheConnector}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -38,20 +38,25 @@ class AuthControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterE
   // TODO: Amend once auth sorted
 
   private val mockSessionDataCacheConnector = mock[SessionDataCacheConnector]
+  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    inject.bind[SessionDataCacheConnector].toInstance(mockSessionDataCacheConnector)
+    inject.bind[SessionDataCacheConnector].toInstance(mockSessionDataCacheConnector),
+    inject.bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
   override def beforeEach(): Unit = {
     reset(mockSessionDataCacheConnector)
+    reset(mockUserAnswersCacheConnector)
     when(mockSessionDataCacheConnector.removeAll(any())(any(), any()))
+      .thenReturn(Future.successful(Ok("")))
+    when(mockUserAnswersCacheConnector.removeAll(any())(any(), any()))
       .thenReturn(Future.successful(Ok("")))
   }
 
   "signOut" - {
 
-    "must redirect to the continue URL and clear down session cache" in {
+    "must redirect to the continue URL and clear down session cache and UA cache" in {
       val application =
         applicationBuilder(None, extraModules)
           .build()
@@ -67,12 +72,13 @@ class AuthControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterE
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expectedRedirectUrl
         verify(mockSessionDataCacheConnector, times(1)).removeAll(any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
       }
     }
   }
 
   "signOutNoSurvey" - {
-    "must redirect to sign out, specifying SignedOut as the continue URL and clear down session cache" in {
+    "must redirect to sign out, specifying SignedOut as the continue URL and clear down session cache and UA cache" in {
       val application =
         applicationBuilder(None, extraModules)
           .build()
@@ -90,6 +96,7 @@ class AuthControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterE
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expectedRedirectUrl
         verify(mockSessionDataCacheConnector, times(1)).removeAll(any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
       }
     }
   }
