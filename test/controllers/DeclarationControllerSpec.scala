@@ -19,7 +19,7 @@ package controllers
 import audit.AuditService
 import base.SpecBase
 import connectors.MinimalConnector.MinimalDetails
-import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector}
+import connectors.{EmailConnector, EventReportingConnector, EmailSent, MinimalConnector}
 import models.enumeration.AdministratorOrPractitioner.Administrator
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any

@@ -14,30 +14,26 @@
  * limitations under the License.
  */
 
-package controllers.event1
+package controllers.fileUpload
 
 import controllers.actions._
-import models.enumeration.EventType
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event1.UnauthPaymentAndSanctionChargesView
+import views.html.fileUpload.ProcessingRequestView
 
 import javax.inject.Inject
 
-class UnauthPaymentAndSanctionChargesController @Inject()(
+class ProcessingRequestController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            identify: IdentifierAction,
-                                           getData: DataRetrievalAction,
                                            val controllerComponents: MessagesControllerComponents,
-                                           view: UnauthPaymentAndSanctionChargesView
+                                           view: ProcessingRequestView
                                          ) extends FrontendBaseController with I18nSupport {
 
-  private val eventType = EventType.Event1
-
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) {
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
     implicit request =>
-      Ok(view(continueUrl = controllers.routes.EventSummaryController.onPageLoad().url))
+      Ok(view(continueUrl = controllers.routes.IndexController.onPageLoad.url))
   }
 }
