@@ -70,7 +70,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
-      .thenReturn(Future.successful(FileUploadOutcomeResponse(Some("testFile"), SUCCESS)))
+      .thenReturn(Future.successful(FileUploadOutcomeResponse(Some("testFile"), SUCCESS, Some("downloadUrl"))))
       running(application) {
         val request = FakeRequest.apply(method = GET, path = getRoute + "?key=123")
         val result = route(application, request).value
@@ -87,7 +87,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
-        .thenReturn(Future.successful(FileUploadOutcomeResponse(None, IN_PROGRESS)))
+        .thenReturn(Future.successful(FileUploadOutcomeResponse(None, IN_PROGRESS, None)))
       running(application) {
         val request = FakeRequest.apply(method = GET, path = getRoute + "?key=123")
         val result = route(application, request).value
@@ -104,7 +104,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
-        .thenReturn(Future.successful(FileUploadOutcomeResponse(None, FAILURE)))
+        .thenReturn(Future.successful(FileUploadOutcomeResponse(None, FAILURE, None)))
       running(application) {
         val request = FakeRequest.apply(method = GET, path = getRoute + "?key=123")
         val result = route(application, request).value

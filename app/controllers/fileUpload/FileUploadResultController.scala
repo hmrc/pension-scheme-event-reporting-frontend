@@ -83,16 +83,13 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(FileUploadResultPage(eventType), value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            getUpscanFileAndParse.map { parsedCSVFile =>
-              //TODO - For loop is temporary code to allow parsing to be tested in the console
-              for (value <- parsedCSVFile) {
-                val formattedString: String = value.mkString(",")
-                println(s"\n\n\n\n Formatted string: $formattedString")
-              }
-              parsedCSVFile
+          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).flatMap { _ =>
+            val parsingResult = if (value == FileUploadResult.Yes) {
+              asyncFormatParsedFile
+            } else {
+              Future.successful(())
             }
-            Redirect(FileUploadResultPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            parsingResult.map(_ => Redirect(FileUploadResultPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route))
           }
         }
       )
@@ -121,6 +118,17 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
         }
       }
       case _ => throw new RuntimeException("No reference number in FileUploadResultController")
+    }
+  }
+
+  private def asyncFormatParsedFile(implicit request: Request[AnyContent]) = {
+    getUpscanFileAndParse.map { parsedCSVFile =>
+      //TODO - The for loop is temporary code to allow parsing to be printed in the console for testing
+      //write outcome to DB here
+      for (value <- parsedCSVFile) {
+        val formattedString: String = value.mkString(",")
+        println(s"\n\n\n\n Formatted string: $formattedString")
+      }
     }
   }
 }
