@@ -16,7 +16,6 @@
 
 package controllers.event11
 
-import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import models.enumeration.EventType
 import pages.Waypoints
@@ -26,14 +25,12 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event11.WhatYouWillNeedView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class WhatYouWillNeedController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         userAnswersCacheConnector: UserAnswersCacheConnector,
-                                         view: WhatYouWillNeedView
-                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                          identify: IdentifierAction,
+                                          getData: DataRetrievalAction,
+                                          view: WhatYouWillNeedView
+                                         ) extends FrontendBaseController with I18nSupport {
 
   private val eventType = EventType.Event11
 

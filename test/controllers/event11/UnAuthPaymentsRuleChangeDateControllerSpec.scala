@@ -57,7 +57,7 @@ class UnAuthPaymentsRuleChangeDateControllerSpec extends SpecBase with BeforeAnd
 
   private val validAnswer = Event11Date(LocalDate.of(2022, 7, 12))
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }

@@ -50,7 +50,7 @@ class HasSchemeChangedRulesControllerSpec extends SpecBase with BeforeAndAfterEa
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }

@@ -17,15 +17,15 @@
 package viewmodels.event11.checkAnswers
 
 import models.UserAnswers
+import pages.event11.HasSchemeChangedRulesPage
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event11.{HasSchemeChangedRulesPage, UnAuthPaymentsRuleChangeDatePage}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, HtmlContent}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object HasSchemeChangedRulesSummary  {
+object HasSchemeChangedRulesSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
@@ -39,8 +39,8 @@ object HasSchemeChangedRulesSummary  {
         }
 
         SummaryListRowViewModel(
-          key     = "hasSchemeChangedRules.event11.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
+          key = "hasSchemeChangedRules.event11.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(value)),
           actions = Seq(
             ActionItemViewModel("site.change", HasSchemeChangedRulesPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("hasSchemeChangedRules.change.hidden"))
