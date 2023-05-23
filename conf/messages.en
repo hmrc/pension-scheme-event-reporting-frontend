@@ -1405,7 +1405,7 @@ fileUpload.error.rejected.list.b3 = music or other audio files
 fileUpload.error.rejected.list.b4 = any other information that is not text
 fileUpload.error.rejected.p2 = Make sure your file is in the .csv format and remove any unnecessary information. Then upload it again, or upload a different file.
 
-fileUpload.error.rejected.ENTITY_TOO_LARGE = The file must be smaller than {0}MB
+fileUpload.error.rejected.EntityTooLarge = The file must be smaller than {0}MB
 fileUpload.error.rejected.InvalidArgument = No file has been uploaded
 
 fileUpload.processingRequest.title = We are checking your file
