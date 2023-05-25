@@ -24,7 +24,7 @@ import pages.{Page, QuestionPage, Waypoints}
 
 case object SchemeStructureDescriptionPage extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "event13" \ toString
 
   override def toString: String = "schemeStructureDescription"
 

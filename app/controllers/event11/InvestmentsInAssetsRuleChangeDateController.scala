@@ -19,7 +19,7 @@ package controllers.event11
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.event11.InvestmentsInAssetsRuleChangeDateFormProvider
-import models.{TaxYear, UserAnswers}
+import models.TaxYear
 import models.enumeration.EventType
 import pages.Waypoints
 import pages.event11.{Event11CheckYourAnswersPage, InvestmentsInAssetsRuleChangeDatePage}
@@ -33,13 +33,13 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class InvestmentsInAssetsRuleChangeDateController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                    identify: IdentifierAction,
-                                    getData: DataRetrievalAction,
-                                    requireData: DataRequiredAction,
-                                    userAnswersCacheConnector: UserAnswersCacheConnector,
-                                    formProvider: InvestmentsInAssetsRuleChangeDateFormProvider,
-                                    view: InvestmentsInAssetsRuleChangeDateView
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                            identify: IdentifierAction,
+                                                            getData: DataRetrievalAction,
+                                                            requireData: DataRequiredAction,
+                                                            userAnswersCacheConnector: UserAnswersCacheConnector,
+                                                            formProvider: InvestmentsInAssetsRuleChangeDateFormProvider,
+                                                            view: InvestmentsInAssetsRuleChangeDateView
+                                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val eventType = EventType.Event11
 

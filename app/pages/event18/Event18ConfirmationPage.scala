@@ -24,7 +24,7 @@ import play.api.mvc.Call
 
 case object Event18ConfirmationPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "event18" \ toString
 
   override def toString: String = "event18Confirmation"
 
