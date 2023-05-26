@@ -22,6 +22,8 @@ import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.{Success, Try}
+
 case object HasSchemeChangedRulesInvestmentsInAssetsPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "event11" \ toString
@@ -31,6 +33,14 @@ case object HasSchemeChangedRulesInvestmentsInAssetsPage extends QuestionPage[Bo
   override def route(waypoints: Waypoints): Call =
     routes.HasSchemeChangedRulesInvestmentsInAssetsController.onPageLoad(waypoints)
 
+  override def cleanupBeforeSettingValue(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    userAnswers.get(HasSchemeChangedRulesInvestmentsInAssetsPage) match {
+      case originalOption@Some(_) if originalOption != value =>
+        userAnswers.remove(InvestmentsInAssetsRuleChangeDatePage)
+      case _ => Success(userAnswers)
+    }
+  }
+
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
       case true => InvestmentsInAssetsRuleChangeDatePage
@@ -38,9 +48,14 @@ case object HasSchemeChangedRulesInvestmentsInAssetsPage extends QuestionPage[Bo
     }.orRecover
   }
 
-  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
-    updatedAnswers.get(this) match {
-      case Some(true) => InvestmentsInAssetsRuleChangeDatePage
-      case Some(false) => Event11CheckYourAnswersPage()
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
+    val originalOptionSelected = originalAnswers.get(HasSchemeChangedRulesInvestmentsInAssetsPage)
+    val updatedOptionSelected = updatedAnswers.get(HasSchemeChangedRulesInvestmentsInAssetsPage)
+    val answerIsChanged = originalOptionSelected != updatedOptionSelected
+
+    (updatedAnswers.get(this), answerIsChanged) match {
+      case (Some(true), true) => InvestmentsInAssetsRuleChangeDatePage
+      case _ => Event11CheckYourAnswersPage()
     }
+  }
 }
