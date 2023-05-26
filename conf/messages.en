@@ -1208,13 +1208,13 @@ reasonForBenefits.event3.protectedPensionAge = Protected pension age
 reasonForBenefits.event3.other = Other
 reasonForBenefits.event3.checkYourAnswersLabel = Reason for the benefits being taken
 reasonForBenefits.event3.error.required = Select the reason for the benefits being taken
-reasonForBenefits.event3.change.hidden = The reason for the benefits being taken
+reasonForBenefits.event3.change.hidden = The reason why the benefits were taken
 
 earlyBenefitsBriefDescription.heading = Give a brief description of why the benefits were taken early
 earlyBenefitsBriefDescription.title = Brief description of why the benefits were taken early
 earlyBenefitsBriefDescription.checkYourAnswersLabel = Give a brief description of why the benefits were taken early
 earlyBenefitsBriefDescription.error.length = The description must be 150 characters or fewer
-earlyBenefitsBriefDescription.change.hidden = Give a brief description of why the benefits were taken early
+earlyBenefitsBriefDescription.change.hidden = The description for why the benefits were taken early
 
 event4.paymentDetails.title = Amount paid and date
 event4.paymentDetails.heading = Amount paid and date
