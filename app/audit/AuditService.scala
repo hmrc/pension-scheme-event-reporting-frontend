@@ -55,7 +55,6 @@ class AuditService @Inject()(
         detail = details
       )
     )
-
     result.onComplete {
       case Success(_) => logger.debug(s"[AuditService][sendEvent] successfully sent ${event.auditType}")
       case Failure(e) => logger.error(s"[AuditService][sendEvent] failed to send event ${event.auditType}", e)

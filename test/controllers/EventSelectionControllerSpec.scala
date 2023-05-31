@@ -16,13 +16,16 @@
 
 package controllers
 
+import audit.{AuditService, StartNewERAuditEvent}
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.EventSelectionFormProvider
 import models.{EventSelection, TaxYear}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{doNothing, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.concurrent.Eventually.eventually
 import org.scalatestplus.mockito.MockitoSugar
 import pages.{EmptyWaypoints, EventSelectionPage, TaxYearPage}
 import play.api.inject
@@ -40,13 +43,19 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
   private def postRoute: String = routes.EventSelectionController.onSubmit(waypoints).url
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val mockAuditService = mock[AuditService]
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    inject.bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
+    inject.bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
+    inject.bind[AuditService].toInstance(mockAuditService)
   )
+
+  private val psaId = "psaId"
+  private val pstr = "87219363YN"
 
   override protected def beforeEach(): Unit = {
     reset(mockUserAnswersCacheConnector)
+    reset(mockAuditService)
   }
 
   "GET" - {
@@ -71,13 +80,14 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
   }
 
   "POST" - {
-    "must redirect to next page on submit (when selecting an option)" in {
+    "must redirect to next page on submit (when selecting an option) and send audit event" in {
       val ua = emptyUserAnswersWithTaxYear
       val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
       running(application) {
 
         when(mockUserAnswersCacheConnector.get(any(), any())(any(), any()))
           .thenReturn(Future.successful(None))
+        doNothing().when(mockAuditService).sendEvent(any())(any(), any())
 
         val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "event1"))
 
@@ -88,6 +98,11 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual EventSelectionPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).url
+
+        eventually {
+          val expectedAuditEvent = StartNewERAuditEvent(psaId, pstr)
+          verify(mockAuditService, times(1)).sendEvent(ArgumentMatchers.eq(expectedAuditEvent))(any(), any())
+        }
       }
     }
   }
