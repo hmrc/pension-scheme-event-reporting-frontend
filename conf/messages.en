@@ -1439,3 +1439,9 @@ ceasedDate.error.required.two = The date must include {0} and {1}
 ceasedDate.error.required = The date must include {0}
 ceasedDate.error.invalid = Enter a real date
 ceasedDate.change.hidden = When did the scheme cease to be occupational?
+
+whatYouWillNeed.event20.title = What you will need
+whatYouWillNeed.event20.heading = What you will need
+whatYouWillNeed.event20.p = Awaiting a content update for this page:
+whatYouWillNeed.event20.item1 = if you want to change these list items
+whatYouWillNeed.event20.item2 = search for whatYouWillNeed.event20 in messages.en
