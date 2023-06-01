@@ -1411,3 +1411,7 @@ fileUpload.error.rejected.InvalidArgument = No file has been uploaded
 fileUpload.processingRequest.title = We are checking your file
 fileUpload.processingRequest.heading = We are checking your file
 fileUpload.processingRequest.p1 = Do not close this page or leave the service.
+
+event19.countryOrTerritory.title = Which country or territory has this scheme been relocated to?
+event19.countryOrTerritory.h1 = In which country or territory is the scheme now established?
+
