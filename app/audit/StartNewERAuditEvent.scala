@@ -24,7 +24,7 @@ case class StartNewERAuditEvent(
 
   override def details: Map[String, String] = {
     Map(
-      "psaIdentifier" -> psaIdentifier,
+      "pspOrPsaId" -> psaIdentifier,
       "pstr" -> pstr
     )
   }
