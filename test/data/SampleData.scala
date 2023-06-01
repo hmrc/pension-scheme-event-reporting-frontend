@@ -31,6 +31,8 @@ import models.event1.member.SchemeDetails
 import models.event1.{PaymentDetails => Event1PaymentDetails}
 import models.event10.{BecomeOrCeaseScheme, SchemeChangeDate}
 import models.event12.DateOfChange
+import models.event20.Event20Date
+import models.event20.WhatChange.BecameOccupationalScheme
 import models.event6.{CrystallisedDetails, TypeOfProtection => Event6TypeOfProtection}
 import models.event7.PaymentDate
 import models.event8.{LumpSumDetails, TypeOfProtection => Event8TypeOfProtection}
@@ -45,6 +47,7 @@ import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage
 import pages.event10.{BecomeOrCeaseSchemePage, ContractsOrPoliciesPage, SchemeChangeDatePage}
 import pages.event12.{DateOfChangePage, HasSchemeChangedRulesPage}
 import pages.event2.{AmountPaidPage, DatePaidPage}
+import pages.event20.{BecameDatePage, WhatChangePage}
 import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage => Event6TypeOfProtectionPage}
 import pages.event7.{CrystallisedAmountPage, LumpSumAmountPage, PaymentDatePage}
 import pages.event8.{LumpSumAmountAndDatePage, TypeOfProtectionReferencePage, TypeOfProtectionPage => Event8TypeOfProtectionPage}
@@ -290,4 +293,9 @@ object SampleData extends SpecBase {
     emptyUserAnswersWithTaxYear
       .setOrException(HasSchemeChangedRulesPage, true)
       .setOrException(DateOfChangePage, DateOfChange(LocalDate.of(2022, 3, 22)))
+
+  def sampleEvent20JourneyData: UserAnswers =
+    emptyUserAnswersWithTaxYear
+      .setOrException(WhatChangePage, BecameOccupationalScheme)
+      .setOrException(BecameDatePage, Event20Date(LocalDate.of(2022, 3, 22)))
 }

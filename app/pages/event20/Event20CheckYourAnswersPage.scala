@@ -16,23 +16,27 @@
 
 package pages.event20
 
-import controllers.event20.routes
-import models.UserAnswers
-import models.event20.Event20Date
-import play.api.libs.json.JsPath
+import models.enumeration.EventType.Event20
+import pages.{CheckAnswersPage, Waypoint, Waypoints}
 import play.api.mvc.Call
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
 
-case object BecameDatePage extends QuestionPage[Event20Date] {
+case class Event20CheckYourAnswersPage() extends CheckAnswersPage {
+  override val urlFragment: String =
+    s"event-${Event20.toString}-check-answers"
 
-  override def path: JsPath = JsPath \ "event20" \ toString
+  override def route(waypoints: Waypoints): Call = {
+    controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad
+  }
 
-  override def toString: String = "becameDate"
+  override def toString: String = "CheckYourAnswersPage"
+}
 
-  override def route(waypoints: Waypoints): Call =
-    routes.BecameDateController.onPageLoad(waypoints)
+object Event20CheckYourAnswersPage {
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    Event20CheckYourAnswersPage()
+  def waypointFromString(s: String): Option[Waypoint] = {
+    s match {
+      case "event-20-check-answers" => Some(Event20CheckYourAnswersPage().waypoint)
+      case _ => None
+    }
   }
 }

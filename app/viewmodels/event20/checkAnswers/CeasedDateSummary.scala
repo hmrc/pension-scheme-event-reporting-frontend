@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event20.checkAnswers
 
 import java.time.format.DateTimeFormatter
 import models.UserAnswers

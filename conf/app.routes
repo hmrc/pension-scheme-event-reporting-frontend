@@ -440,3 +440,6 @@ POST       /new-report/event-20-when-scheme-became-occupational                 
 
 GET        /new-report/event-20-when-scheme-ceased-to-be-occupational                  controllers.event20.CeasedDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-20-when-scheme-ceased-to-be-occupational                  controllers.event20.CeasedDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-20-check-your-answers                              controllers.event20.Event20CheckYourAnswersController.onPageLoad
+GET         /new-report/event-20-click                                           controllers.event20.Event20CheckYourAnswersController.onClick

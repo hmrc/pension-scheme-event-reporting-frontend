@@ -34,6 +34,6 @@ case object CeasedDatePage extends QuestionPage[Event20Date] {
     routes.CeasedDateController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    IndexPage
+    Event20CheckYourAnswersPage()
   }
 }
