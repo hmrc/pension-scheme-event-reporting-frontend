@@ -1429,3 +1429,13 @@ becameDate.error.required.two = The date must include {0} and {1}
 becameDate.error.required = The date must include {0}
 becameDate.error.invalid = Enter a real date
 becameDate.change.hidden = When did the scheme become an occupational pension scheme?
+
+ceasedDate.title = When did the scheme cease to be occupational?
+ceasedDate.heading = When did the scheme cease to be occupational?
+ceasedDate.hint = For example, 12 11 2007
+ceasedDate.checkYourAnswersLabel = When did the scheme cease to be occupational?
+ceasedDate.error.required.all = Enter the date
+ceasedDate.error.required.two = The date must include {0} and {1}
+ceasedDate.error.required = The date must include {0}
+ceasedDate.error.invalid = Enter a real date
+ceasedDate.change.hidden = When did the scheme cease to be occupational?

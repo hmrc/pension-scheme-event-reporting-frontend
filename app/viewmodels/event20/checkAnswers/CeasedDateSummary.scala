@@ -19,25 +19,25 @@ package viewmodels.checkAnswers
 import java.time.format.DateTimeFormatter
 import models.UserAnswers
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event20.BecameDatePage
+import pages.event20.CeasedDatePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object BecameDateSummary  {
+object CeasedDateSummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(BecameDatePage).map {
+    answers.get(CeasedDatePage).map {
       answer =>
 
         SummaryListRowViewModel(
-          key     = "becameDate.checkYourAnswersLabel",
+          key     = "ceasedDate.checkYourAnswersLabel",
           value   = ValueViewModel(answer.formatEvent20Date),
           actions = Seq(
-            ActionItemViewModel("site.change", BecameDatePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("becameDate.change.hidden"))
+            ActionItemViewModel("site.change", CeasedDatePage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("ceasedDate.change.hidden"))
           )
         )
     }

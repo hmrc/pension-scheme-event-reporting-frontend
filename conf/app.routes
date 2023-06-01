@@ -434,3 +434,6 @@ POST       /new-report/event-20-occupational-pension-scheme                     
 
 GET        /new-report/event-20-when-scheme-became-occupational                 controllers.event20.BecameDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-20-when-scheme-became-occupational                 controllers.event20.BecameDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-20-when-scheme-ceased-to-be-occupational                  controllers.event20.CeasedDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-20-when-scheme-ceased-to-be-occupational                  controllers.event20.CeasedDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
