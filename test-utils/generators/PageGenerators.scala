@@ -31,6 +31,9 @@ import pages.{event13, _}
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryWhatChangePage: Arbitrary[event20.WhatChangePage.type] =
+    Arbitrary(event20.WhatChangePage)
+
   implicit lazy val arbitraryFileUploadResultPage: Arbitrary[fileUpload.FileUploadResultPage.type] =
     Arbitrary(fileUpload.FileUploadResultPage)
 

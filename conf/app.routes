@@ -427,3 +427,7 @@ POST       /new-report/event-14-how-many-scheme-members                         
 
 GET        /new-report/event-14-check-your-answers                               controllers.event14.Event14CheckYourAnswersController.onPageLoad()
 GET        /new-report/event-14-click                                            controllers.event14.Event14CheckYourAnswersController.onClick
+
+# Event 20
+GET        /new-report/event-20-become-or-ceased                        controllers.event20.WhatChangeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-20-become-or-ceased                        controllers.event20.WhatChangeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

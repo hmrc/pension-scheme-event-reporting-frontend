@@ -1411,3 +1411,11 @@ fileUpload.error.rejected.InvalidArgument = No file has been uploaded
 fileUpload.processingRequest.title = We are checking your file
 fileUpload.processingRequest.heading = We are checking your file
 fileUpload.processingRequest.p1 = Do not close this page or leave the service.
+
+whatChange.title = What change has taken place for this pension scheme?
+whatChange.heading = What change has taken place for this pension scheme?
+whatChange.becameOccupationalScheme = It became an occupational pension scheme
+whatChange.ceasedOccupationalScheme = It has ceased to be an occupational scheme
+whatChange.checkYourAnswersLabel = What change has taken place for this pension scheme?
+whatChange.error.required = Select the change has taken place for this pension scheme
+whatChange.change.hidden = What change has taken place for this pension scheme?

@@ -27,6 +27,7 @@ import pages.event12.HasSchemeChangedRulesPage
 import pages.event13.SchemeStructurePage
 import pages.event14.HowManySchemeMembersPage
 import pages.event18.Event18ConfirmationPage
+import pages.event20.WhatChangePage
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -60,6 +61,7 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
       case Some(Event13) => SchemeStructurePage
       case Some(Event14) => HowManySchemeMembersPage
       case Some(Event18) => Event18ConfirmationPage
+      case Some(Event20) => WhatChangePage
       case Some(Event22) => ManualOrUploadPage(Event22, answers.countAll(MembersPage(Event22)))
       case Some(Event23) => ManualOrUploadPage(Event23, answers.countAll(MembersPage(Event23)))
       case Some(WindUp) => SchemeWindUpDatePage
