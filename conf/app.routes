@@ -429,5 +429,8 @@ GET        /new-report/event-14-check-your-answers                              
 GET        /new-report/event-14-click                                            controllers.event14.Event14CheckYourAnswersController.onClick
 
 # Event 20
-GET        /new-report/event-20-become-or-ceased                        controllers.event20.WhatChangeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/event-20-become-or-ceased                        controllers.event20.WhatChangeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/event-20-occupational-pension-scheme                        controllers.event20.WhatChangeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-20-occupational-pension-scheme                        controllers.event20.WhatChangeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-20-when-scheme-became-occupational                 controllers.event20.BecameDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-20-when-scheme-became-occupational                 controllers.event20.BecameDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

@@ -18,35 +18,21 @@ package pages.event20
 
 import controllers.event20.routes
 import models.UserAnswers
-import models.event20.WhatChange
-import models.event20.WhatChange.BecameOccupationalScheme
+import models.event20.Event20Date
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{EventSelectionPage, IndexPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 
-import scala.util.{Success, Try}
-
-case object WhatChangePage extends QuestionPage[WhatChange] {
+case object BecameDatePage extends QuestionPage[Event20Date] {
 
   override def path: JsPath = JsPath \ "event20" \ toString
 
-  override def toString: String = "whatChange"
+  override def toString: String = "becameDate"
 
   override def route(waypoints: Waypoints): Call =
-    routes.WhatChangeController.onPageLoad(waypoints)
-
-  override def cleanupBeforeSettingValue(value: Option[WhatChange], userAnswers: UserAnswers): Try[UserAnswers] = {
-    userAnswers.get(this) match {
-      case originalOption@Some(_) if originalOption != value =>
-        userAnswers.remove(this)
-      case _ => Success(userAnswers)
-    }
-  }
+    routes.BecameDateController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(this).map {
-      case BecameOccupationalScheme => BecameDatePage
-      case _ => IndexPage
-    }.orRecover
+    IndexPage
   }
 }

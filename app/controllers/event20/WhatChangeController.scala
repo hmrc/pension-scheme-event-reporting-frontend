@@ -21,6 +21,7 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event20.WhatChangeFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
+import models.enumeration.EventType.Event20
 import pages.Waypoints
 import pages.event20.WhatChangePage
 import play.api.i18n.I18nSupport
@@ -40,14 +41,13 @@ class WhatChangeController @Inject()(val controllerComponents: MessagesControlle
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event20
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(Event20)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(WhatChangePage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(Event20)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
@@ -55,7 +55,7 @@ class WhatChangeController @Inject()(val controllerComponents: MessagesControlle
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(WhatChangePage, value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+          userAnswersCacheConnector.save(request.pstr, Event20, updatedAnswers).map { _ =>
             Redirect(WhatChangePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
