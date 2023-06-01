@@ -63,8 +63,8 @@ class AuditServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with 
       inside(templateCaptor.getValue) {
         case DataEvent(auditSource, auditType, _, _, detail, _, _, _) =>
           auditSource mustBe config.appName
-          auditType mustBe "eventReportingStartNew"
-          detail mustBe Map("psaIdentifier" -> "test-psa", "pstr" -> "test-pstr")
+          auditType mustBe "EventReportingStart"
+          detail mustBe Map("psaOrPspId" -> "test-psa", "pstr" -> "test-pstr")
       }
       app.stop()
     }
