@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package forms.event19
+package pages.event19
 
-import forms.mappings.AddressMapping
-import play.api.data.Form
-import utils.CountryOptions
+import java.time.LocalDate
 
-import javax.inject.Inject
+import controllers.event19.routes
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
+import pages.{Waypoints, QuestionPage}
 
-class CountryOrTerritoryFormProvider @Inject()(countryOptions: CountryOptions) extends AddressMapping {
+case object DateChangeMadePage extends QuestionPage[LocalDate] {
 
-  def apply(): Form[String] = Form(
-      "country" ->
-        countryMapping(countryOptions, "event19.countryOrTerritory.error.required", "event19.countryOrTerritory.error.invalid")
-  )
+  override def path: JsPath = JsPath \  "event19" \ toString
+
+  override def toString: String = "dateChangeMade"
+
+  override def route(waypoints: Waypoints): Call =
+    routes.DateChangeMadeController.onPageLoad(waypoints)
 }

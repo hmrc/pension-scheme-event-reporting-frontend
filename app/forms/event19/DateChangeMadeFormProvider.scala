@@ -16,16 +16,21 @@
 
 package forms.event19
 
-import forms.mappings.AddressMapping
-import play.api.data.Form
-import utils.CountryOptions
+import java.time.LocalDate
 
+import forms.mappings.Mappings
 import javax.inject.Inject
+import play.api.data.Form
 
-class CountryOrTerritoryFormProvider @Inject()(countryOptions: CountryOptions) extends AddressMapping {
+class DateChangeMadeFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] = Form(
-      "country" ->
-        countryMapping(countryOptions, "event19.countryOrTerritory.error.required", "event19.countryOrTerritory.error.invalid")
-  )
+  def apply(): Form[LocalDate] =
+    Form(
+      "value" -> localDate(
+        invalidKey                    = "dateChangeMade.error.invalid",
+        threeDateComponentsMissingKey = "dateChangeMade.error.required.all",
+        twoDateComponentsMissingKey   = "dateChangeMade.error.required.two",
+        oneDateComponentMissingKey    = "dateChangeMade.error.required"
+      )
+    )
 }

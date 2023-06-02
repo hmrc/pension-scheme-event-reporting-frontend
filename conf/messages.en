@@ -1414,4 +1414,16 @@ fileUpload.processingRequest.p1 = Do not close this page or leave the service.
 
 event19.countryOrTerritory.title = Which country or territory has this scheme been relocated to?
 event19.countryOrTerritory.h1 = In which country or territory is the scheme now established?
+event19.countryOrTerritory.error.required = Please select an option
+event19.countryOrTerritory.error.invalid = Invalid country
 
+
+dateChangeMade.title = DateChangeMade
+dateChangeMade.heading = DateChangeMade
+dateChangeMade.hint = For example, 12 11 2007
+dateChangeMade.checkYourAnswersLabel = DateChangeMade
+dateChangeMade.error.required.all = Enter the dateChangeMade
+dateChangeMade.error.required.two = The dateChangeMade must include {0} and {1}
+dateChangeMade.error.required = The dateChangeMade must include {0}
+dateChangeMade.error.invalid = Enter a real DateChangeMade
+dateChangeMade.change.hidden = DateChangeMade

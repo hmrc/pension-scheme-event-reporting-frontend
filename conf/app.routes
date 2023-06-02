@@ -430,3 +430,6 @@ GET        /new-report/event-14-click                                           
 
 GET        /new-report/event-19-which-country-or-territory                       controllers.event19.CountryOrTerritoryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-19-which-country-or-territory                       controllers.event19.CountryOrTerritoryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-19-when-country-or-territory-change-took-place      controllers.event19.DateChangeMadeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-19-when-country-or-territory-change-took-place      controllers.event19.DateChangeMadeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

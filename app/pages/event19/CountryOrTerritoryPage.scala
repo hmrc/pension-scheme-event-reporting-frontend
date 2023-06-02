@@ -29,7 +29,7 @@ case object CountryOrTerritoryPage extends QuestionPage[String] {
   override def toString: String = "CountryOrTerritory"
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    EventSummaryPage
+    DateChangeMadePage
 
 
   override def route(waypoints: Waypoints): Call =

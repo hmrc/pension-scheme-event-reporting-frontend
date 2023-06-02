@@ -15,6 +15,7 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import utils.InputOption
 
 @this(
     layout: templates.SchemeLayout,
@@ -41,16 +42,13 @@
             @govukSelect(Select(
                 id = "country",
                 name = "country",
-                classes = "govuk-!-width-two-thirds country",
+                classes = "govuk-!-width-two-thirds",
                 items = Seq(SelectItem(value = Some(""))) ++
                 options.map(valueOption =>
                     SelectItem(
                         value = Some(valueOption.value),
                         text = valueOption.label
                     )
-                ),
-                label = Label(
-                    content = Text(messages("address.country"))
                 )
             ).withFormField(form("country")))
         </div>
