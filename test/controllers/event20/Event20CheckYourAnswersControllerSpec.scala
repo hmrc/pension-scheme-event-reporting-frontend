@@ -55,7 +55,7 @@ class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
     }
 
     "must return OK and the correct summary list row items for a GET" in {
-      
+
       val mockView = mock[CheckYourAnswersView]
       val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
         inject.bind[CheckYourAnswersView].toInstance(mockView)

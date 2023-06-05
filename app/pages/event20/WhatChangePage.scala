@@ -49,4 +49,15 @@ case object WhatChangePage extends QuestionPage[WhatChange] {
       case CeasedOccupationalScheme => CeasedDatePage
     }.orRecover
   }
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
+    val originalOptionSelected = originalAnswers.get(this)
+    val updatedOptionSelected = updatedAnswers.get(this)
+    val answerIsChanged = originalOptionSelected != updatedOptionSelected
+    (answerIsChanged, updatedOptionSelected) match {
+      case (true, Some(BecameOccupationalScheme)) => BecameDatePage
+      case (true, Some(CeasedOccupationalScheme)) => CeasedDatePage
+      case _ => Event20CheckYourAnswersPage()
+    }
+  }
 }
