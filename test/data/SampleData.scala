@@ -297,5 +297,5 @@ object SampleData extends SpecBase {
   def sampleEvent20JourneyData: UserAnswers =
     emptyUserAnswersWithTaxYear
       .setOrException(WhatChangePage, BecameOccupationalScheme)
-      .setOrException(BecameDatePage, Event20Date(LocalDate.of(2022, 3, 22)))
+      .setOrException(BecameDatePage, Event20Date(LocalDate.of(2023, 12, 12)))
 }

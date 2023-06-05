@@ -18,7 +18,7 @@ package controllers.event20
 
 import base.SpecBase
 import controllers.event20.Event20CheckYourAnswersControllerSpec.expectedSummaryListRowsEvent20
-import data.SampleData.{sampleEvent12JourneyData, sampleEvent20JourneyData}
+import data.SampleData.sampleEvent20JourneyData
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -103,8 +103,20 @@ class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 }
 
 object Event20CheckYourAnswersControllerSpec {
+  private def fakeSummaryListRowWithTextWithHiddenContent(messageKey: String, text: String, changeLink: String, hiddenContentChangeLink: String)
+                                                         (implicit messages: Messages): SummaryListRow = {
+    SummaryListRow(
+      Key(
+        Text(
+          messages(messageKey)
+        ), ""),
+      Value(Text(text), ""), "",
+      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
+    )
+  }
+
   private def fakeSummaryListRowWithHtmlWithHiddenContent(messageKey: String, text: String, changeLink: String, hiddenContentChangeLink: String)
-                                                         (implicit messages: Messages): SummaryListRow =
+                                                         (implicit messages: Messages): SummaryListRow = {
     SummaryListRow(
       Key(
         Text(
@@ -113,6 +125,7 @@ object Event20CheckYourAnswersControllerSpec {
       Value(HtmlContent(text), ""), "",
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
+  }
 
   private def expectedSummaryListRowsEvent20(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlWithHiddenContent(
@@ -121,11 +134,11 @@ object Event20CheckYourAnswersControllerSpec {
       "/manage-pension-scheme-event-report/new-report/event-20-occupational-pension-scheme?waypoints=event-20-check-answers",
       "whatChange.change.hidden"
     ),
-    fakeSummaryListRowWithHtmlWithHiddenContent(
+    fakeSummaryListRowWithTextWithHiddenContent(
       "becameDate.checkYourAnswersLabel",
       "12 December 2023",
       "/manage-pension-scheme-event-report/new-report/event-20-when-scheme-became-occupational?waypoints=event-20-check-answers",
-      "dateOfChange.change.hidden"
+      "becameDate.change.hidden"
     )
   )
 }
