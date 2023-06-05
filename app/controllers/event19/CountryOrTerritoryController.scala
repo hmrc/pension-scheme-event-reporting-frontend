@@ -77,7 +77,7 @@ class CountryOrTerritoryController @Inject()(val controllerComponents: MessagesC
           value => {
             val originalUserAnswers = request.userAnswers
             val updatedAnswers = originalUserAnswers.setOrException(page, value)
-            userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
+            userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
               Redirect(page.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
             }
           }
