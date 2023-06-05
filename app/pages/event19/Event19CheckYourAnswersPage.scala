@@ -20,7 +20,7 @@ import models.enumeration.EventType.Event19
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.mvc.Call
 
-case class Event19CheckYourAnswersPage() extends CheckAnswersPage {
+case object Event19CheckYourAnswersPage extends CheckAnswersPage {
   override val urlFragment: String =
     s"event-${Event19.toString}-check-answers"
 

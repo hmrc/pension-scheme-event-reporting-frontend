@@ -18,7 +18,7 @@ package pages.event19
 
 import controllers.event19.routes
 import models.UserAnswers
-import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,10 +28,9 @@ case object CountryOrTerritoryPage extends QuestionPage[String] {
 
   override def toString: String = "CountryOrTerritory"
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    DateChangeMadePage
-
-
   override def route(waypoints: Waypoints): Call =
     routes.CountryOrTerritoryController.onPageLoad(waypoints)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    DateChangeMadePage
 }

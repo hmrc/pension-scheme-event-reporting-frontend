@@ -1417,7 +1417,7 @@ event19.countryOrTerritory.h1 = In which country or territory is the scheme now 
 event19.countryOrTerritory.error.required = Please select an option
 event19.countryOrTerritory.error.invalid = Invalid country
 event19.countryOrTerritory.change.hidden = In which country or territory is the scheme now established?
-event19.countryOrTerritory.change.checkYourAnswersLabel = In which country or territory is the scheme now established?
+event19.countryOrTerritory.change.checkYourAnswersLabel = Country or territory
 
 event19.dateChangeMade.title = When did the territory change take place for this scheme?
 event19.dateChangeMade.heading = When did the territory change take place for this scheme?

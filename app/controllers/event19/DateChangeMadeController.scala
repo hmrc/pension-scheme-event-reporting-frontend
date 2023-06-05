@@ -40,7 +40,7 @@ class DateChangeMadeController @Inject()(val controllerComponents: MessagesContr
                                     view: DateChangeMadeView
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val eventType = EventType.Event1
+  private val eventType = EventType.Event19
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val form = formProvider(getTaxYear(request.userAnswers))

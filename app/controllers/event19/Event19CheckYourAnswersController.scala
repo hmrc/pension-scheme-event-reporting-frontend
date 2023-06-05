@@ -45,7 +45,8 @@ class Event19CheckYourAnswersController @Inject()(
 
   def onPageLoad: Action[AnyContent] =
     (identify andThen getData(Event19) andThen requireData) { implicit request =>
-      val thisPage = Event19CheckYourAnswersPage()
+      println("\n\n\n\nREQUEST: " + request.userAnswers.data)
+      val thisPage = Event19CheckYourAnswersPage
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event19.routes.Event19CheckYourAnswersController.onClick.url
       Ok(view(SummaryListViewModel(rows = buildEvent19CYARows(waypoints, thisPage)), continueUrl))
