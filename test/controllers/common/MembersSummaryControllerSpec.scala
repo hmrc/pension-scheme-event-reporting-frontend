@@ -18,7 +18,7 @@ package controllers.common
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import controllers.common.MembersSummaryControllerSpec.{cYAHref, fake26MappedMembers, paginationStats26Members}
+import controllers.common.MembersSummaryControllerSpec.{fake26MappedMembers, paginationStats26Members}
 import data.SampleData
 import data.SampleData._
 import forms.common.MembersSummaryFormProvider

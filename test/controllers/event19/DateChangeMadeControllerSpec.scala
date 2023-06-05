@@ -19,14 +19,12 @@ package controllers.event19
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event19.DateChangeMadeFormProvider
-import models.UserAnswers
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.event19.DateChangeMadePage
-
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
-import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -36,12 +34,12 @@ import views.html.event19.DateChangeMadeView
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class DateChangeMadeControllerSpec extends SpecBase with BeforeAndAfterEach {
+class DateChangeMadeControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new DateChangeMadeFormProvider()
-  private val form = formProvider()
+  private val form = formProvider(2022)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
@@ -64,7 +62,7 @@ class DateChangeMadeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -79,7 +77,7 @@ class DateChangeMadeControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = UserAnswers().set(DateChangeMadePage, validAnswer).success.value
+      val userAnswers = emptyUserAnswersWithTaxYear.set(DateChangeMadePage, validAnswer).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
@@ -99,7 +97,7 @@ class DateChangeMadeControllerSpec extends SpecBase with BeforeAndAfterEach {
         .thenReturn(Future.successful(()))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
 
       running(application) {
@@ -107,11 +105,11 @@ class DateChangeMadeControllerSpec extends SpecBase with BeforeAndAfterEach {
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(
             "value.day" -> "12",
             "value.month" -> "2",
-            "value.year" -> "2020"
+            "value.year" -> "2023"
           )
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(DateChangeMadePage, validAnswer).success.value
+        val updatedAnswers = emptyUserAnswersWithTaxYear.set(DateChangeMadePage, validAnswer).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual DateChangeMadePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
@@ -121,7 +119,7 @@ class DateChangeMadeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must return bad request when invalid data is submitted" in {
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
 
       running(application) {
