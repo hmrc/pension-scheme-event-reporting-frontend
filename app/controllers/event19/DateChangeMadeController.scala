@@ -19,6 +19,7 @@ package controllers.event19
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event19.DateChangeMadeFormProvider
+import helpers.DateHelper.getTaxYear
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
@@ -39,16 +40,17 @@ class DateChangeMadeController @Inject()(val controllerComponents: MessagesContr
                                     view: DateChangeMadeView
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
+    val form = formProvider(getTaxYear(request.userAnswers))
     val preparedForm = request.userAnswers.flatMap(_.get(DateChangeMadePage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
+      val form = formProvider(getTaxYear(request.userAnswers))
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints))),

@@ -26,7 +26,7 @@
 
 @(form: Form[_], waypoints: Waypoints)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("dateChangeMade.title"))) {
+@layout(pageTitle = title(form, messages("event19.dateChangeMade.title"))) {
 
     @formHelper(action = routes.DateChangeMadeController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
@@ -37,9 +37,9 @@
         @govukDateInput(
             DateViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("dateChangeMade.heading")).asPageHeading()
+                legend = LegendViewModel(messages("event19.dateChangeMade.heading")).asPageHeading()
             )
-            .withHint(HintViewModel(messages("dateChangeMade.hint")))
+            .withHint(HintViewModel(messages("event19.dateChangeMade.hint")))
         )
 
         @govukButton(

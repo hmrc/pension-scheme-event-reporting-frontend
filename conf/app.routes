@@ -425,6 +425,7 @@ GET         /new-report/event-13-click                                          
 GET        /new-report/event-14-how-many-scheme-members                          controllers.event14.HowManySchemeMembersController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-14-how-many-scheme-members                          controllers.event14.HowManySchemeMembersController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
+# Event 19
 GET        /new-report/event-14-check-your-answers                               controllers.event14.Event14CheckYourAnswersController.onPageLoad()
 GET        /new-report/event-14-click                                            controllers.event14.Event14CheckYourAnswersController.onClick
 
@@ -433,3 +434,6 @@ POST       /new-report/event-19-which-country-or-territory                      
 
 GET        /new-report/event-19-when-country-or-territory-change-took-place      controllers.event19.DateChangeMadeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/event-19-when-country-or-territory-change-took-place      controllers.event19.DateChangeMadeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-19-check-your-answers                              controllers.event19.Event19CheckYourAnswersController.onPageLoad
+GET         /new-report/event-19-click                                           controllers.event19.Event19CheckYourAnswersController.onClick

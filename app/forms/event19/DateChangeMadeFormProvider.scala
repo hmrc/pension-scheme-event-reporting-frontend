@@ -24,13 +24,16 @@ import play.api.data.Form
 
 class DateChangeMadeFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[LocalDate] =
+  def apply(taxYear: Int): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidKey                    = "dateChangeMade.error.invalid",
-        threeDateComponentsMissingKey = "dateChangeMade.error.required.all",
-        twoDateComponentsMissingKey   = "dateChangeMade.error.required.two",
-        oneDateComponentMissingKey    = "dateChangeMade.error.required"
+        invalidKey                    = "event19.dateChangeMade.error.invalid",
+        threeDateComponentsMissingKey = "event19.dateChangeMade.error.required.all",
+        twoDateComponentsMissingKey   = "event19.dateChangeMade.error.required.two",
+        oneDateComponentMissingKey    = "event19.dateChangeMade.error.required"
+      ).verifying(
+        minDate(LocalDate.of(taxYear, 4,6), "event19.dateChangeMade.error.outside.taxYear", taxYear.toString, (taxYear + 1).toString),
+        maxDate(LocalDate.of(taxYear + 1, 4,5), "event19.dateChangeMade.error.outside.taxYear", taxYear.toString, (taxYear + 1).toString)
       )
     )
 }

@@ -16,30 +16,27 @@
 
 package viewmodels.event19.checkAnswers
 
-import java.time.format.DateTimeFormatter
 import models.UserAnswers
+import pages.event19.CountryOrTerritoryPage
 import pages.{CheckAnswersPage, Waypoints}
-import pages.event19.DateChangeMadePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object DateChangeMadeSummary  {
+object CountryOrTerritorySummary  {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DateChangeMadePage).map {
+    answers.get(CountryOrTerritoryPage).map {
       answer =>
 
-        val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-
         SummaryListRowViewModel(
-          key     = "event19.dateChangeMade.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.format(dateFormatter)),
+          key     = "event19.countryOrTerritory.change.checkYourAnswersLabel",
+          value   = ValueViewModel(answer),
           actions = Seq(
-            ActionItemViewModel("site.change", DateChangeMadePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("event19.dateChangeMade.change.hidden"))
+            ActionItemViewModel("site.change", CountryOrTerritoryPage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("event19.countryOrTerritory.change.hidden"))
           )
         )
     }

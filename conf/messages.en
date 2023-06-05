@@ -1416,14 +1416,16 @@ event19.countryOrTerritory.title = Which country or territory has this scheme be
 event19.countryOrTerritory.h1 = In which country or territory is the scheme now established?
 event19.countryOrTerritory.error.required = Please select an option
 event19.countryOrTerritory.error.invalid = Invalid country
+event19.countryOrTerritory.change.hidden = In which country or territory is the scheme now established?
+event19.countryOrTerritory.change.checkYourAnswersLabel = In which country or territory is the scheme now established?
 
-
-dateChangeMade.title = DateChangeMade
-dateChangeMade.heading = DateChangeMade
-dateChangeMade.hint = For example, 12 11 2007
-dateChangeMade.checkYourAnswersLabel = DateChangeMade
-dateChangeMade.error.required.all = Enter the dateChangeMade
-dateChangeMade.error.required.two = The dateChangeMade must include {0} and {1}
-dateChangeMade.error.required = The dateChangeMade must include {0}
-dateChangeMade.error.invalid = Enter a real DateChangeMade
-dateChangeMade.change.hidden = DateChangeMade
+event19.dateChangeMade.title = When did the territory change take place for this scheme?
+event19.dateChangeMade.heading = When did the territory change take place for this scheme?
+event19.dateChangeMade.hint = For example, 12 11 2007
+event19.dateChangeMade.checkYourAnswersLabel = When did the territory change take place for this scheme?
+event19.dateChangeMade.error.required.all = Enter the date the change was made
+event19.dateChangeMade.error.required.two = The dateChangeMade must include {0} and {1}
+event19.dateChangeMade.error.required = The dateChangeMade must include {0}
+event19.dateChangeMade.error.outside.taxYear = Date must be between 6 April {0} and 5 April {1}
+event19.dateChangeMade.error.invalid = Enter a real date
+event19.dateChangeMade.change.hidden = When did the territory change take place for this scheme?
