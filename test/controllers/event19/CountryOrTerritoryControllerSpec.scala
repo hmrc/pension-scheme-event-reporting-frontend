@@ -19,24 +19,18 @@ package controllers.event19
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import data.SampleData._
-import forms.address.ManualAddressFormProvider
 import forms.event19.CountryOrTerritoryFormProvider
-import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
-import pages.address.{ChooseAddressPage, ManualAddressPage}
-import pages.event1.employer.CompanyDetailsPage
-import pages.event19.{CountryOrTerritoryPage, DateChangeMadePage}
-import play.api.i18n.Messages
+import pages.event19.CountryOrTerritoryPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.CountryOptions
-import views.html.address.ManualAddressView
 import views.html.event19.CountryOrTerritoryView
 
 import scala.concurrent.Future
@@ -64,7 +58,7 @@ class CountryOrTerritoryControllerSpec extends SpecBase with BeforeAndAfterEach 
     reset(mockUserAnswersCacheConnector)
   }
 
-  "ManualAddress Controller" - {
+  "CountryOrTerritory Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -116,7 +110,7 @@ class CountryOrTerritoryControllerSpec extends SpecBase with BeforeAndAfterEach 
         val updatedAnswers = emptyUserAnswers.set(CountryOrTerritoryPage, seqAddresses.head.country).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual CountryOrTerritoryPage.navigate(waypoints, emptyUserAnswers, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual CountryOrTerritoryPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
