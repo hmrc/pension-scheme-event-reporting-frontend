@@ -36,7 +36,7 @@ class EventReportingSubmissionEmailAuditEventSpec extends AnyFlatSpec with Match
       "psaId" -> "A2500001"
     )
 
-    event.auditType shouldBe "Email"
+    event.auditType shouldBe "EventReportingEmailEvent"
     event.details shouldBe expected
   }
 }

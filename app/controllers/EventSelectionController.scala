@@ -16,8 +16,9 @@
 
 package controllers
 
+import audit.{AuditService, StartNewERAuditEvent}
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import controllers.actions.IdentifierAction
 import forms.EventSelectionFormProvider
 import models.UserAnswers
 import models.enumeration.EventType
@@ -32,10 +33,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EventSelectionController @Inject()(val controllerComponents: MessagesControllerComponents,
                                          identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
                                          formProvider: EventSelectionFormProvider,
                                          view: EventSelectionView,
-                                         userAnswersCacheConnector: UserAnswersCacheConnector
+                                         userAnswersCacheConnector: UserAnswersCacheConnector,
+                                         auditService: AuditService
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
@@ -52,13 +53,15 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
         value => {
           EventType.fromEventSelection(value) match {
             case Some(eventType) =>
-              userAnswersCacheConnector.get(request.pstr, eventType).map {
-                case Some(ua) =>
-                  val answers = ua.setOrException(EventSelectionPage, value)
-                  Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
-                case None =>
-                  val answers = UserAnswers().setOrException(EventSelectionPage, value)
-                  Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
+              val futureUA = userAnswersCacheConnector.get(request.pstr, eventType).map {
+                case Some(ua) => ua
+                case None => UserAnswers()
+              }
+
+              futureUA.map { ua =>
+                val answers = ua.setOrException(EventSelectionPage, value)
+                auditService.sendEvent(StartNewERAuditEvent(request.loggedInUser.psaIdOrPspId, request.pstr))
+                Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
               }
             case _ => Future.successful(Ok(view(form, waypoints)))
           }
