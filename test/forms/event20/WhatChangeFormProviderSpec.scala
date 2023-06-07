@@ -14,25 +14,32 @@
  * limitations under the License.
  */
 
-package forms.event19
+package forms.event20
 
-import forms.behaviours.DateBehaviours
+import forms.behaviours.OptionFieldBehaviours
+import models.event20.WhatChange
+import play.api.data.FormError
 
-import java.time.LocalDate
+class WhatChangeFormProviderSpec extends OptionFieldBehaviours {
 
-class DateChangeMadeFormProviderSpec extends DateBehaviours {
-
-  private val form = new DateChangeMadeFormProvider()(2022)
+  private val form = new WhatChangeFormProvider()()
 
   ".value" - {
 
-    val validData = datesBetween(
-      min = LocalDate.of(2022, 4, 6),
-      max = LocalDate.of(2023, 4, 5)
+    val fieldName = "value"
+    val requiredKey = "whatChange.error.required"
+
+    behave like optionsField[WhatChange](
+      form,
+      fieldName,
+      validValues  = WhatChange.values,
+      invalidError = FormError(fieldName, "error.invalid")
     )
 
-    behave like dateField(form, "value", validData)
-
-    behave like mandatoryDateField(form, "value", "event19.dateChangeMade.error.required.all")
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }

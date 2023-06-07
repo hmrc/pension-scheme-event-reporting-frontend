@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package forms.event19
+package models.event20
 
-import forms.behaviours.DateBehaviours
+import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
-class DateChangeMadeFormProviderSpec extends DateBehaviours {
-
-  private val form = new DateChangeMadeFormProvider()(2022)
-
-  ".value" - {
-
-    val validData = datesBetween(
-      min = LocalDate.of(2022, 4, 6),
-      max = LocalDate.of(2023, 4, 5)
-    )
-
-    behave like dateField(form, "value", validData)
-
-    behave like mandatoryDateField(form, "value", "event19.dateChangeMade.error.required.all")
+case class Event20Date(date: LocalDate) {
+  def formatEvent20Date: String = {
+    date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
   }
 }
+
+object Event20Date {
+  implicit val format: Format[Event20Date] = Json.format[Event20Date]
+}
+
+
+

@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-package forms.event19
-
-import forms.behaviours.DateBehaviours
+package pages.event20
 
 import java.time.LocalDate
+import controllers.event20.routes
+import models.UserAnswers
+import models.event20.Event20Date
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
+import pages.{IndexPage, Page, QuestionPage, Waypoints}
 
-class DateChangeMadeFormProviderSpec extends DateBehaviours {
+case object CeasedDatePage extends QuestionPage[Event20Date] {
 
-  private val form = new DateChangeMadeFormProvider()(2022)
+  override def path: JsPath = JsPath \ "event20" \ toString
 
-  ".value" - {
+  override def toString: String = "ceasedDate"
 
-    val validData = datesBetween(
-      min = LocalDate.of(2022, 4, 6),
-      max = LocalDate.of(2023, 4, 5)
-    )
+  override def route(waypoints: Waypoints): Call =
+    routes.CeasedDateController.onPageLoad(waypoints)
 
-    behave like dateField(form, "value", validData)
-
-    behave like mandatoryDateField(form, "value", "event19.dateChangeMade.error.required.all")
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    Event20CheckYourAnswersPage()
   }
 }

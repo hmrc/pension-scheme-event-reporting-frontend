@@ -439,3 +439,19 @@ POST       /new-report/event-19-when-country-or-territory-change-took-place     
 
 GET         /new-report/event-19-check-your-answers                              controllers.event19.Event19CheckYourAnswersController.onPageLoad
 GET         /new-report/event-19-click                                           controllers.event19.Event19CheckYourAnswersController.onClick
+
+# Event 20
+
+GET        /new-report/event-20-what-you-will-need                        controllers.event20.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-20-occupational-pension-scheme                        controllers.event20.WhatChangeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-20-occupational-pension-scheme                        controllers.event20.WhatChangeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-20-when-scheme-became-occupational                 controllers.event20.BecameDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-20-when-scheme-became-occupational                 controllers.event20.BecameDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-20-when-scheme-ceased-to-be-occupational                  controllers.event20.CeasedDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-20-when-scheme-ceased-to-be-occupational                  controllers.event20.CeasedDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-20-check-your-answers                              controllers.event20.Event20CheckYourAnswersController.onPageLoad
+GET         /new-report/event-20-click                                           controllers.event20.Event20CheckYourAnswersController.onClick

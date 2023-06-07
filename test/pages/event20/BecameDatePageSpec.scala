@@ -14,25 +14,28 @@
  * limitations under the License.
  */
 
-package forms.event19
+package pages.event20
 
-import forms.behaviours.DateBehaviours
+import models.event20.Event20Date
 
 import java.time.LocalDate
+import org.scalacheck.Arbitrary
+import pages.behaviours.PageBehaviours
 
-class DateChangeMadeFormProviderSpec extends DateBehaviours {
+class BecameDatePageSpec extends PageBehaviours {
 
-  private val form = new DateChangeMadeFormProvider()(2022)
+  "BecameDatePage" - {
 
-  ".value" - {
+    implicit lazy val arbitraryEvent20Date: Arbitrary[Event20Date] = Arbitrary {
+      for {
+        date <- datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
+      } yield Event20Date(date)
+    }
 
-    val validData = datesBetween(
-      min = LocalDate.of(2022, 4, 6),
-      max = LocalDate.of(2023, 4, 5)
-    )
+    beRetrievable[Event20Date](BecameDatePage)
 
-    behave like dateField(form, "value", validData)
+    beSettable[Event20Date](BecameDatePage)
 
-    behave like mandatoryDateField(form, "value", "event19.dateChangeMade.error.required.all")
+    beRemovable[Event20Date](BecameDatePage)
   }
 }

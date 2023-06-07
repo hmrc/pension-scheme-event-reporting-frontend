@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-package forms.event19
+package forms.event20
 
-import forms.behaviours.DateBehaviours
+import javax.inject.Inject
 
-import java.time.LocalDate
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.event20.WhatChange
 
-class DateChangeMadeFormProviderSpec extends DateBehaviours {
+class WhatChangeFormProvider @Inject() extends Mappings {
 
-  private val form = new DateChangeMadeFormProvider()(2022)
-
-  ".value" - {
-
-    val validData = datesBetween(
-      min = LocalDate.of(2022, 4, 6),
-      max = LocalDate.of(2023, 4, 5)
+  def apply(): Form[WhatChange] =
+    Form(
+      "value" -> enumerable[WhatChange]("whatChange.error.required")
     )
-
-    behave like dateField(form, "value", validData)
-
-    behave like mandatoryDateField(form, "value", "event19.dateChangeMade.error.required.all")
-  }
 }

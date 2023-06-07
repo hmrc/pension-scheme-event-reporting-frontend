@@ -25,6 +25,7 @@ import pages.event13.Event13CheckYourAnswersPage
 import pages.event14.Event14CheckYourAnswersPage
 import pages.event19.Event19CheckYourAnswersPage
 import pages.event2.Event2CheckYourAnswersPage
+import pages.event20.Event20CheckYourAnswersPage
 import pages.event22.Event22CheckYourAnswersPage
 import pages.event23.Event23CheckYourAnswersPage
 import pages.event3.Event3CheckYourAnswersPage
@@ -55,6 +56,7 @@ object Waypoint {
       Event11CheckYourAnswersPage().urlFragment -> Event11CheckYourAnswersPage().waypoint,
       Event14CheckYourAnswersPage.urlFragment -> Event14CheckYourAnswersPage.waypoint,
       Event19CheckYourAnswersPage.urlFragment -> Event19CheckYourAnswersPage.waypoint,
+      Event20CheckYourAnswersPage().urlFragment -> Event20CheckYourAnswersPage().waypoint,
       EventWindUpCheckYourAnswersPage.urlFragment -> EventWindUpCheckYourAnswersPage.waypoint
     )
 

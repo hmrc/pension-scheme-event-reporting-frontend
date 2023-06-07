@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package pages.event11
+package pages.event20
 
-import models.enumeration.EventType.Event11
+import models.enumeration.EventType.Event20
 import pages.{CheckAnswersPage, Waypoint, Waypoints}
 import play.api.mvc.Call
 
-case class Event11CheckYourAnswersPage() extends CheckAnswersPage {
+case class Event20CheckYourAnswersPage() extends CheckAnswersPage {
   override val urlFragment: String =
-    s"event-${Event11.toString}-check-answers"
+    s"event-${Event20.toString}-check-answers"
 
   override def route(waypoints: Waypoints): Call = {
-    controllers.event11.routes.Event11CheckYourAnswersController.onPageLoad
+    controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad
   }
 
   override def toString: String = "CheckYourAnswersPage"
 }
 
-object Event11CheckYourAnswersPage {
+object Event20CheckYourAnswersPage {
 
   def waypointFromString(s: String): Option[Waypoint] = {
     s match {
-      case "event-11-check-answers" => Some(Event11CheckYourAnswersPage().waypoint)
+      case "event-20-check-answers" => Some(Event20CheckYourAnswersPage().waypoint)
       case _ => None
     }
   }

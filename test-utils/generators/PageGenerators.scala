@@ -34,6 +34,18 @@ trait PageGenerators {
   implicit lazy val arbitraryDateChangeMadePage: Arbitrary[event19.DateChangeMadePage.type] =
     Arbitrary(event19.DateChangeMadePage)
 
+  implicit lazy val arbitraryDateWhatYouWillNeedPage: Arbitrary[event19.WhatYouWillNeedPage.type] =
+    Arbitrary(event19.WhatYouWillNeedPage)
+
+  implicit lazy val arbitraryCeasedDatePage: Arbitrary[event20.CeasedDatePage.type] =
+    Arbitrary(event20.CeasedDatePage)
+
+  implicit lazy val arbitraryBecameDatePage: Arbitrary[event20.BecameDatePage.type] =
+    Arbitrary(event20.BecameDatePage)
+
+  implicit lazy val arbitraryWhatChangePage: Arbitrary[event20.WhatChangePage.type] =
+    Arbitrary(event20.WhatChangePage)
+
   implicit lazy val arbitraryFileUploadResultPage: Arbitrary[fileUpload.FileUploadResultPage.type] =
     Arbitrary(fileUpload.FileUploadResultPage)
 

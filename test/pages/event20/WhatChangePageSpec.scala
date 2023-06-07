@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package forms.event19
+package pages.event20
 
-import forms.behaviours.DateBehaviours
+import models.event20.WhatChange
+import pages.behaviours.PageBehaviours
 
-import java.time.LocalDate
+class WhatChangeSpec extends PageBehaviours {
 
-class DateChangeMadeFormProviderSpec extends DateBehaviours {
+  "WhatChangePage" - {
 
-  private val form = new DateChangeMadeFormProvider()(2022)
+    beRetrievable[WhatChange](WhatChangePage)
 
-  ".value" - {
+    beSettable[WhatChange](WhatChangePage)
 
-    val validData = datesBetween(
-      min = LocalDate.of(2022, 4, 6),
-      max = LocalDate.of(2023, 4, 5)
-    )
-
-    behave like dateField(form, "value", validData)
-
-    behave like mandatoryDateField(form, "value", "event19.dateChangeMade.error.required.all")
+    beRemovable[WhatChange](WhatChangePage)
   }
 }
