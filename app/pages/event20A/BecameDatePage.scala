@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package pages.event20
+package pages.event20A
 
 import controllers.event20.routes
 import models.UserAnswers
-import models.event20.Event20Date
+import models.event20A.Event20ADate
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object CeasedDatePage extends QuestionPage[Event20Date] {
+case object BecameDatePage extends QuestionPage[Event20ADate] {
 
-  override def path: JsPath = JsPath \ "event20" \ toString
+  override def path: JsPath = JsPath \ "event20A" \ toString
 
-  override def toString: String = "ceasedDate"
+  override def toString: String = "becameDate"
 
   override def route(waypoints: Waypoints): Call =
-    routes.CeasedDateController.onPageLoad(waypoints)
+    routes.BecameDateController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    Event20CheckYourAnswersPage()
+    Event20ACheckYourAnswersPage()
   }
 }

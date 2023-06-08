@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package pages.event20
+package pages.event20A
 
-import controllers.event20.routes
+import controllers.event20A.routes
 import models.UserAnswers
-import models.event20.WhatChange
-import models.event20.WhatChange.{BecameOccupationalScheme, CeasedOccupationalScheme}
+import models.event20A.WhatChange
+import models.event20A.WhatChange.{BecameMasterTrust, CeasedMasterTrust}
 import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -28,7 +28,7 @@ import scala.util.{Success, Try}
 
 case object WhatChangePage extends QuestionPage[WhatChange] {
 
-  override def path: JsPath = JsPath \ "event20" \ toString
+  override def path: JsPath = JsPath \ "event20A" \ toString
 
   override def toString: String = "whatChange"
 
@@ -45,8 +45,8 @@ case object WhatChangePage extends QuestionPage[WhatChange] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
-      case BecameOccupationalScheme => BecameDatePage
-      case CeasedOccupationalScheme => CeasedDatePage
+      case BecameMasterTrust => BecameDatePage
+      case CeasedMasterTrust => CeasedDatePage
     }.orRecover
   }
 
@@ -55,9 +55,9 @@ case object WhatChangePage extends QuestionPage[WhatChange] {
     val updatedOptionSelected = updatedAnswers.get(this)
     val answerIsChanged = originalOptionSelected != updatedOptionSelected
     (answerIsChanged, updatedOptionSelected) match {
-      case (true, Some(BecameOccupationalScheme)) => BecameDatePage
-      case (true, Some(CeasedOccupationalScheme)) => CeasedDatePage
-      case _ => Event20CheckYourAnswersPage()
+      case (true, Some(BecameMasterTrust)) => BecameDatePage
+      case (true, Some(CeasedMasterTrust)) => CeasedDatePage
+      case _ => Event20ACheckYourAnswersPage()
     }
   }
 }

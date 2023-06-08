@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-package pages.event20
+package pages.event20A
 
-import controllers.event20.routes
-import models.UserAnswers
-import models.event20.Event20Date
-import pages.{Page, QuestionPage, Waypoints}
-import play.api.libs.json.JsPath
+import models.enumeration.EventType.Event20A
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.mvc.Call
 
-case object CeasedDatePage extends QuestionPage[Event20Date] {
+case class Event20ACheckYourAnswersPage() extends CheckAnswersPage {
+  override val urlFragment: String =
+    s"event-${Event20A.toString}-check-answers"
 
-  override def path: JsPath = JsPath \ "event20" \ toString
-
-  override def toString: String = "ceasedDate"
-
-  override def route(waypoints: Waypoints): Call =
-    routes.CeasedDateController.onPageLoad(waypoints)
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    Event20CheckYourAnswersPage()
+  override def route(waypoints: Waypoints): Call = {
+    controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad
   }
+
+  override def toString: String = "CheckYourAnswersPage"
 }
+
+

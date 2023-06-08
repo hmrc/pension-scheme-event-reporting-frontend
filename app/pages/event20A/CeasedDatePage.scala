@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package pages.event20
+package pages.event20A
 
-import controllers.event20.routes
+import controllers.event20A.routes
 import models.UserAnswers
-import models.event20.Event20Date
+import models.event20A.Event20ADate
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object CeasedDatePage extends QuestionPage[Event20Date] {
+case object CeasedDatePage extends QuestionPage[Event20ADate] {
 
-  override def path: JsPath = JsPath \ "event20" \ toString
+  override def path: JsPath = JsPath \ "event20A" \ toString
 
   override def toString: String = "ceasedDate"
 
@@ -33,6 +33,6 @@ case object CeasedDatePage extends QuestionPage[Event20Date] {
     routes.CeasedDateController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    Event20CheckYourAnswersPage()
+    Event20ACheckYourAnswersPage()
   }
 }

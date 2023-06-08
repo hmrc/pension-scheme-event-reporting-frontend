@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package viewmodels.event20.checkAnswers
+package viewmodels.event20A.checkAnswers
 
 import models.UserAnswers
-import pages.event20.BecameDatePage
+import pages.event20A.BecameDatePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -33,7 +33,7 @@ object BecameDateSummary  {
 
         SummaryListRowViewModel(
           key     = "becameDate.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.formatEvent20Date),
+          value   = ValueViewModel(answer.formatEvent20ADate),
           actions = Seq(
             ActionItemViewModel("site.change", BecameDatePage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("becameDate.change.hidden"))

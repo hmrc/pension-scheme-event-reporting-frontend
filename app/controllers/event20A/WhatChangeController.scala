@@ -14,39 +14,39 @@
  * limitations under the License.
  */
 
-package controllers.event20
+package controllers.event20A
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.event20.WhatChangeFormProvider
+import forms.event20A.WhatChangeFormProvider
 import models.UserAnswers
-import models.enumeration.EventType.Event20
+import models.enumeration.EventType.Event20A
 import pages.Waypoints
-import pages.event20.WhatChangePage
+import pages.event20A.WhatChangePage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event20.WhatChangeView
+import views.html.event20A.WhatChangeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class WhatChangeController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                          identify: IdentifierAction,
-                                          getData: DataRetrievalAction,
-                                          userAnswersCacheConnector: UserAnswersCacheConnector,
-                                          formProvider: WhatChangeFormProvider,
-                                          view: WhatChangeView
+                                     identify: IdentifierAction,
+                                     getData: DataRetrievalAction,
+                                     userAnswersCacheConnector: UserAnswersCacheConnector,
+                                     formProvider: WhatChangeFormProvider,
+                                     view: WhatChangeView
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(Event20)) { implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(Event20A)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(WhatChangePage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(Event20)).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(Event20A)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
@@ -54,7 +54,7 @@ class WhatChangeController @Inject()(val controllerComponents: MessagesControlle
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(WhatChangePage, value)
-          userAnswersCacheConnector.save(request.pstr, Event20, updatedAnswers).map { _ =>
+          userAnswersCacheConnector.save(request.pstr, Event20A, updatedAnswers).map { _ =>
             Redirect(WhatChangePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
