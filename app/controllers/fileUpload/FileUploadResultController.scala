@@ -27,12 +27,14 @@ import models.FileUploadOutcomeResponse
 import models.UserAnswers
 import models.enumeration.EventType
 import models.enumeration.EventType.getEventTypeByName
-import models.fileUpload.FileUploadResult
+import models.fileUpload.ParsingAndValidationOutcomeStatus.Success
+import models.fileUpload.{FileUploadResult, ParsingAndValidationOutcome, ParsingAndValidationOutcomeStatus}
 import models.requests.OptionalDataRequest
 import pages.Waypoints
 import pages.fileUpload.FileUploadResultPage
 import play.api.data.Form
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadResultView
@@ -85,7 +87,8 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
           val updatedAnswers = originalUserAnswers.setOrException(FileUploadResultPage(eventType), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).flatMap { _ =>
             val parsingResult = if (value == FileUploadResult.Yes) {
-              asyncFormatParsedFile
+              val abc: Future[Unit] = asyncFormatParsedFile
+              abc.map(_ => ParsingAndValidationOutcome(status = Success))
             } else {
               Future.successful(())
             }
