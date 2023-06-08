@@ -123,7 +123,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
 
   private def asyncFormatParsedFile(implicit request: Request[AnyContent]) = {
     getUpscanFileAndParse.map { parsedCSVFile =>
-      //TODO - The for loop is temporary code to allow parsing to be printed in the console for testing
+      //TODO - This method is temporary code to allow parsing to be printed in the console for testing
       //write outcome to DB here
       for (value <- parsedCSVFile) {
         val formattedString: String = value.mkString(",")
