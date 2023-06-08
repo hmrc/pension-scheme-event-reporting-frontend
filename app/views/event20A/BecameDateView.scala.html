@@ -26,7 +26,7 @@
 
 @(form: Form[_], waypoints: Waypoints)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("becameDate.title"))) {
+@layout(pageTitle = title(form, messages("becameDateMasterTrust.title"))) {
 
     @formHelper(action = routes.BecameDateController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
@@ -36,10 +36,10 @@
 
         @govukDateInput(
             DateViewModel(
-                field  = form("becameDate"),
-                legend = LegendViewModel(messages("becameDate.heading")).asPageHeading()
+                field  = form("becameDateMasterTrust"),
+                legend = LegendViewModel(messages("becameDateMasterTrust.heading")).asPageHeading()
             )
-            .withHint(HintViewModel(messages("becameDate.hint")))
+            .withHint(HintViewModel(messages("becameDateMasterTrust.hint")))
         )
 
         @govukButton(

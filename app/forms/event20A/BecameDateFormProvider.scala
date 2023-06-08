@@ -30,16 +30,16 @@ class BecameDateFormProvider @Inject() extends Mappings {
 
   def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[Event20ADate] =
     Form(
-      mapping("becameDate" ->
+      mapping("becameDateMasterTrust" ->
         localDate(
-          oneDateComponentMissingKey = "schemeChangeDate.error.noDayMonthOrYear",
-          twoDateComponentsMissingKey = "schemeChangeDate.error.noDayMonthOrYear",
-          invalidKey = "schemeChangeDate.error.outsideDateRanges",
-          threeDateComponentsMissingKey = "schemeChangeDate.error.nothingEntered"
+          oneDateComponentMissingKey = "schemeChangeDate.event20A.error.noDayMonthOrYear",
+          twoDateComponentsMissingKey = "schemeChangeDate.event20A.error.noDayMonthOrYear",
+          invalidKey = "schemeChangeDate.event20A.error.outsideDateRanges",
+          threeDateComponentsMissingKey = "schemeChangeDate.event20A.error.nothingEntered"
         ).verifying(
-          yearHas4Digits("schemeChangeDate.error.outsideDateRanges"),
-          minDate(min, messages("schemeChangeDate.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
-          maxDate(max, messages("schemeChangeDate.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
+          yearHas4Digits("schemeChangeDate.event20A.error.outsideDateRanges"),
+          minDate(min, messages("schemeChangeDate.event20A.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
+          maxDate(max, messages("schemeChangeDate.event20A.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
         )
       )
       (Event20ADate.apply)(Event20ADate.unapply)
