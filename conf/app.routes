@@ -448,14 +448,14 @@ GET         /new-report/event-20-click                                          
 
 GET         /new-report/event-20A-what-you-will-need                           controllers.event20A.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET         /new-report/event-20A-occupational-pension-scheme                  controllers.event20A.WhatChangeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /new-report/event-20A-occupational-pension-scheme                  controllers.event20A.WhatChangeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-20-Master-Trust                                  controllers.event20A.WhatChangeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-20-Master-Trust                                  controllers.event20A.WhatChangeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET         /new-report/event-20A-when-scheme-became-occupational              controllers.event20A.BecameDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /new-report/event-20A-when-scheme-became-occupational              controllers.event20A.BecameDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-20a-when-scheme-became-Master-Trust              controllers.event20A.BecameDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-20a-when-scheme-became-Master-Trust              controllers.event20A.BecameDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET         /new-report/event-20A-when-scheme-ceased-to-be-occupational        controllers.event20A.CeasedDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /new-report/event-20A-when-scheme-ceased-to-be-occupational        controllers.event20A.CeasedDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-20a-when-scheme-ceased-to-be-Master-Trust        controllers.event20A.CeasedDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-20a-when-scheme-ceased-to-be-Master-Trust        controllers.event20A.CeasedDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-20A-check-your-answers                           controllers.event20A.Event20ACheckYourAnswersController.onPageLoad
 GET         /new-report/event-20A-click                                        controllers.event20A.Event20ACheckYourAnswersController.onClick

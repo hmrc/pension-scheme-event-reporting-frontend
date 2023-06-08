@@ -17,7 +17,7 @@
 package viewmodels.event20A.checkAnswers
 
 import models.UserAnswers
-import pages.event20.CeasedDatePage
+import pages.event20A.CeasedDatePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -32,11 +32,11 @@ object CeasedDateSummary  {
       answer =>
 
         SummaryListRowViewModel(
-          key     = "ceasedDate.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.formatEvent20Date),
+          key     = "ceasedDateMasterTrust.checkYourAnswersLabel",
+          value   = ValueViewModel(answer.formatEvent20ADate),
           actions = Seq(
             ActionItemViewModel("site.change", CeasedDatePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("ceasedDate.change.hidden"))
+              .withVisuallyHiddenText(messages("ceasedDateMasterTrust.change.hidden"))
           )
         )
     }

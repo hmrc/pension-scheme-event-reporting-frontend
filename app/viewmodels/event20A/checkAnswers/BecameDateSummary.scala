@@ -32,11 +32,11 @@ object BecameDateSummary  {
       answer =>
 
         SummaryListRowViewModel(
-          key     = "becameDate.checkYourAnswersLabel",
+          key     = "becameDateMasterTrust.checkYourAnswersLabel",
           value   = ValueViewModel(answer.formatEvent20ADate),
           actions = Seq(
             ActionItemViewModel("site.change", BecameDatePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("becameDate.change.hidden"))
+              .withVisuallyHiddenText(messages("becameDateMasterTrust.change.hidden"))
           )
         )
     }

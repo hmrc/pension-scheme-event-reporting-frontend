@@ -16,7 +16,7 @@
 
 package pages.event20A
 
-import controllers.event20.routes
+import controllers.event20A.routes
 import models.UserAnswers
 import models.event20A.Event20ADate
 import pages.{Page, QuestionPage, Waypoints}

@@ -17,7 +17,7 @@
 package viewmodels.event20A.checkAnswers
 
 import models.UserAnswers
-import pages.event20.WhatChangePage
+import pages.event20A.WhatChangePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
