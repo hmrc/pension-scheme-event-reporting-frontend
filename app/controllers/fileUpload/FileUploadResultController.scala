@@ -16,7 +16,7 @@
 
 package controllers.fileUpload
 
-import connectors.{EventReportingConnector, UpscanInitiateConnector, UserAnswersCacheConnector}
+import connectors.{EventReportingConnector, ParsingAndValidationOutcomeCacheConnector, UpscanInitiateConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import fileUploadParser.CSVParser
 import forms.fileUpload.FileUploadResultFormProvider
@@ -27,14 +27,14 @@ import models.FileUploadOutcomeResponse
 import models.UserAnswers
 import models.enumeration.EventType
 import models.enumeration.EventType.getEventTypeByName
-import models.fileUpload.ParsingAndValidationOutcomeStatus.Success
-import models.fileUpload.{FileUploadResult, ParsingAndValidationOutcome, ParsingAndValidationOutcomeStatus}
+import models.fileUpload.ParsingAndValidationOutcomeStatus._
+import models.fileUpload.{FileUploadResult, ParsingAndValidationOutcome}
 import models.requests.OptionalDataRequest
 import pages.Waypoints
 import pages.fileUpload.FileUploadResultPage
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.libs.json.Json
+import play.api.i18n.Lang.logger
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadResultView
@@ -49,6 +49,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                                            eventReportingConnector: EventReportingConnector,
                                            upscanInitiateConnector: UpscanInitiateConnector,
                                            formProvider: FileUploadResultFormProvider,
+                                           parsingAndValidationOutcomeCacheConnector: ParsingAndValidationOutcomeCacheConnector,
                                            view: FileUploadResultView
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -87,8 +88,9 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
           val updatedAnswers = originalUserAnswers.setOrException(FileUploadResultPage(eventType), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).flatMap { _ =>
             val parsingResult = if (value == FileUploadResult.Yes) {
-              val abc: Future[Unit] = asyncFormatParsedFile
-              abc.map(_ => ParsingAndValidationOutcome(status = Success))
+              parsingAndValidationOutcomeCacheConnector.deleteOutcome.map { _ =>
+                getUpscanFileAndParse.flatten
+              }
             } else {
               Future.successful(())
             }
@@ -98,40 +100,42 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       )
   }
 
-  private def getUpscanFileAndParse(implicit request: Request[AnyContent]): Future[Seq[Array[String]]] = {
+  private def getUpscanFileAndParse(implicit request: Request[AnyContent]): Future[Future[ParsingAndValidationOutcome]] = {
     request.queryString.get("key")
     val referenceOpt: Option[String] = request.queryString.get("key").flatMap { values =>
       values.headOption
     }
 
     referenceOpt match {
-      case Some(reference) => {
+      case Some(reference) =>
         eventReportingConnector.getFileUploadOutcome(reference).flatMap { fileUploadOutcomeResponse =>
           fileUploadOutcomeResponse.downloadUrl match {
-            case Some(downloadUrl) => {
+            case Some(downloadUrl) =>
               upscanInitiateConnector.download(downloadUrl).map { httpResponse =>
                 httpResponse.status match {
-                  case OK => CSVParser.split(httpResponse.body)
+                  case OK => {
+                    CSVParser.split(httpResponse.body).foreach { row =>
+                      //TODO - This for loop is temporary code to allow parsing to be printed in the console for testing
+                      //TODO - To be removed at a later stage
+                      val formattedRow: String = row.mkString(",")
+                      println(s"\n Formatted row: $formattedRow")
+                    }
+                    parsingAndValidationOutcomeCacheConnector.setOutcome(outcome = ParsingAndValidationOutcome(status = Success))
+                    Future.successful(ParsingAndValidationOutcome(Success))
+                  } recoverWith {
+                    case e: Throwable =>
+                      logger.error("Error during parsing and validation", e)
+                      parsingAndValidationOutcomeCacheConnector.setOutcome(outcome = ParsingAndValidationOutcome(status = GeneralError))
+                      Future.successful(ParsingAndValidationOutcome(GeneralError))
+                  }
                   case _ => throw new RuntimeException("Unhandled response from upscan in FileUploadResultController")
                 }
               }
-            }
             case None => throw new RuntimeException("No download url in FileUploadResultController")
           }
         }
-      }
       case _ => throw new RuntimeException("No reference number in FileUploadResultController")
     }
   }
-
-  private def asyncFormatParsedFile(implicit request: Request[AnyContent]) = {
-    getUpscanFileAndParse.map { parsedCSVFile =>
-      //TODO - This method is temporary code to allow parsing to be printed in the console for testing
-      //write outcome to DB here
-      for (value <- parsedCSVFile) {
-        val formattedString: String = value.mkString(",")
-        println(s"\n\n\n\n Formatted string: $formattedString")
-      }
-    }
-  }
 }
+
