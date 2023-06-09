@@ -17,9 +17,7 @@
 package forms.event20A
 
 import forms.mappings.Mappings
-import models.event20A.Event20ADate
 import play.api.data.Form
-import play.api.data.Forms.mapping
 import play.api.i18n.Messages
 import utils.DateHelper.formatDateDMY
 
@@ -28,9 +26,9 @@ import javax.inject.Inject
 
 class BecameDateFormProvider @Inject() extends Mappings {
 
-  def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[Event20ADate] =
+  def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[LocalDate] =
     Form(
-      mapping("becameDateMasterTrust" ->
+      "becameDateMasterTrust" ->
         localDate(
           oneDateComponentMissingKey = "schemeChangeDate.event20A.error.noDayMonthOrYear",
           twoDateComponentsMissingKey = "schemeChangeDate.event20A.error.noDayMonthOrYear",
@@ -41,7 +39,5 @@ class BecameDateFormProvider @Inject() extends Mappings {
           minDate(min, messages("schemeChangeDate.event20A.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
           maxDate(max, messages("schemeChangeDate.event20A.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
         )
-      )
-      (Event20ADate.apply)(Event20ADate.unapply)
     )
 }

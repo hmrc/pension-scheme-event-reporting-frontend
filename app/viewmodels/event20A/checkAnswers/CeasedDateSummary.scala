@@ -16,6 +16,7 @@
 
 package viewmodels.event20A.checkAnswers
 
+import helpers.DateHelper.dateFormatter
 import models.UserAnswers
 import pages.event20A.CeasedDatePage
 import pages.{CheckAnswersPage, Waypoints}
@@ -33,7 +34,7 @@ object CeasedDateSummary  {
 
         SummaryListRowViewModel(
           key     = "ceasedDateMasterTrust.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.formatEvent20ADate),
+          value   = ValueViewModel(answer.format(dateFormatter)),
           actions = Seq(
             ActionItemViewModel("site.change", CeasedDatePage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("ceasedDateMasterTrust.change.hidden"))

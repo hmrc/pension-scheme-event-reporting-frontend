@@ -18,16 +18,16 @@ package pages.event20A
 
 import controllers.event20A.routes
 import models.UserAnswers
-import models.event20A.Event20ADate
+import java.time.LocalDate
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object BecameDatePage extends QuestionPage[Event20ADate] {
+case object BecameDatePage extends QuestionPage[LocalDate] {
 
   override def path: JsPath = JsPath \ "event20A" \ toString
 
-  override def toString: String = "becameDate"
+  override def toString: String = "startDate"
 
   override def route(waypoints: Waypoints): Call =
     routes.BecameDateController.onPageLoad(waypoints)
