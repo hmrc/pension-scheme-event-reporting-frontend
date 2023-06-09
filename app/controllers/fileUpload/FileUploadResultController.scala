@@ -100,7 +100,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       )
   }
 
-  private def getUpscanFileAndParse(implicit request: Request[AnyContent]): Future[Future[ParsingAndValidationOutcome]] = {
+  private def getUpscanFileAndParse(implicit request: Request[AnyContent]) = {
     request.queryString.get("key")
     val referenceOpt: Option[String] = request.queryString.get("key").flatMap { values =>
       values.headOption
@@ -109,6 +109,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
     referenceOpt match {
       case Some(reference) =>
         eventReportingConnector.getFileUploadOutcome(reference).flatMap { fileUploadOutcomeResponse =>
+          val fileName = fileUploadOutcomeResponse.fileName
           fileUploadOutcomeResponse.downloadUrl match {
             case Some(downloadUrl) =>
               upscanInitiateConnector.download(downloadUrl).map { httpResponse =>
@@ -120,12 +121,12 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                       val formattedRow: String = row.mkString(",")
                       println(s"\n Formatted row: $formattedRow")
                     }
-                    parsingAndValidationOutcomeCacheConnector.setOutcome(outcome = ParsingAndValidationOutcome(status = Success))
+                    parsingAndValidationOutcomeCacheConnector.setOutcome(outcome = ParsingAndValidationOutcome(status = Success, fileName = fileName))
                     Future.successful(ParsingAndValidationOutcome(Success))
                   } recoverWith {
                     case e: Throwable =>
                       logger.error("Error during parsing and validation", e)
-                      parsingAndValidationOutcomeCacheConnector.setOutcome(outcome = ParsingAndValidationOutcome(status = GeneralError))
+                      parsingAndValidationOutcomeCacheConnector.setOutcome(outcome = ParsingAndValidationOutcome(status = GeneralError, fileName = fileName))
                       Future.successful(ParsingAndValidationOutcome(GeneralError))
                   }
                   case _ => throw new RuntimeException("Unhandled response from upscan in FileUploadResultController")
