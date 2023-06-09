@@ -39,7 +39,7 @@ class AuthController @Inject()(
     implicit request =>
       sessionDataCacheConnector.removeAll(request.loggedInUser.externalId).flatMap { _ =>
         userAnswersCacheConnector.removeAll(request.pstr)
-        Future.successful(Redirect(config.exitSurveyUrl))
+        Future.successful(Redirect(config.signOutUrl))
       }
   }
 
