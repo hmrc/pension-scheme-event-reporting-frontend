@@ -1464,7 +1464,6 @@ event19.dateChangeMade.error.outside.taxYear = Date must be between 6 April {0} 
 event19.dateChangeMade.error.invalid = Enter a real date
 event19.dateChangeMade.change.hidden = When did the territory change take place for this scheme?
 
-whatYouWillNeed.event19.p = text
-whatYouWillNeed.event19.item1 = Needs
-whatYouWillNeed.event19.item2 = changing
-
+whatYouWillNeed.event19.p = You will need to tell us the date that a scheme changed its country or territory of establishment
+whatYouWillNeed.event19.item1 = Awaiting a content update for this page:
+whatYouWillNeed.event19.item2 = search for whatYouWillNeed.event19 in messages.en to change
