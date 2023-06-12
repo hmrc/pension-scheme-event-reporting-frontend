@@ -18,8 +18,9 @@ package controllers.partials
 
 import config.FrontendAppConfig
 import connectors.EventReportingConnector
-import controllers.actions.IdentifierAction
-import models.ToggleDetails
+import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import models.{TaxYear, ToggleDetails}
+import pages.TaxYearPage
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
@@ -33,6 +34,7 @@ import scala.concurrent.ExecutionContext
 class EventReportingTileController @Inject()(
                                               identify: IdentifierAction,
                                               view: EventReportingTileView,
+                                              getData: DataRetrievalAction,
                                               val controllerComponents: MessagesControllerComponents,
                                               appConfig: FrontendAppConfig,
                                               eventReportingConnector: EventReportingConnector
@@ -41,25 +43,46 @@ class EventReportingTileController @Inject()(
     with I18nSupport {
 
   def eventReportPartial(): Action[AnyContent] = {
-    identify.async { implicit request =>
+    (identify andThen getData()).async { implicit request =>
+      val taxYearRangeAsSeqString = request.userAnswers.flatMap(_.get(TaxYearPage)) match {
+        case Some(taxYear: TaxYear) => taxYear.rangeAsSeqString
+        case _ => Seq.empty
+      }
+
+      val maybeCardSubHeading: Seq[String] => Seq[CardSubHeading] = (seqOfString: Seq[String]) => {
+        if (seqOfString.length == 2) {
+          Seq(
+            CardSubHeading(
+              subHeading = Messages("eventReportingTile.subHeading", seqOfString.head, seqOfString.tail.head),
+              subHeadingClasses = "card-sub-heading",
+              subHeadingParams =
+                Seq(
+                  CardSubHeadingParam(
+                    subHeadingParam = Messages("eventReportingTile.subHeading.param"),
+                    subHeadingParamClasses = "font-small bold"
+                  )
+                )
+            )
+          )
+        } else {
+          Seq(CardSubHeading(subHeading = "", subHeadingClasses = ""))
+        }
+      }
+
       eventReportingConnector.getFeatureToggle("event-reporting").map {
         case ToggleDetails(_, _, true) =>
-          val card = Seq(CardViewModel(
-            id = "aft-overview",
-            heading = Messages("eventReportingTile.heading"),
-            subHeadings = Seq(CardSubHeading(subHeading = Messages("eventReportingTile.subHeading", "2022", "2023"),
-              subHeadingClasses = "card-sub-heading",
-              subHeadingParams = Seq(CardSubHeadingParam(
-                subHeadingParam = Messages("eventReportingTile.subHeading.param"),
-                subHeadingParamClasses = "font-small bold")
-              ))),
-            links = Seq(Link("erLoginLink", appConfig.erLoginUrl, Text(Messages("eventReportingTile.link.item2"))))
-          ))
-
+          val card =
+            Seq(
+              CardViewModel(
+                id = "aft-overview",
+                heading = Messages("eventReportingTile.heading"),
+                subHeadings = maybeCardSubHeading(taxYearRangeAsSeqString),
+                links = Seq(Link("erLoginLink", appConfig.erLoginUrl, Text(Messages("eventReportingTile.link.item2"))))
+              )
+            )
           Ok(view(card))
         case _ => Ok("")
       }
-
     }
   }
 }
