@@ -16,9 +16,8 @@
 
 package controllers.event18
 
-import connectors.UserAnswersCacheConnector
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import models.UserAnswers
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.enumeration.EventType
 import pages.Waypoints
 import pages.event18.Event18ConfirmationPage
@@ -33,6 +32,8 @@ import scala.concurrent.ExecutionContext
 class Event18ConfirmationController @Inject()(val controllerComponents: MessagesControllerComponents,
                                               identify: IdentifierAction,
                                               getData: DataRetrievalAction,
+                                              requireData: DataRequiredAction,
+                                              connector: EventReportingConnector,
                                               userAnswersCacheConnector: UserAnswersCacheConnector,
                                               view: Event18ConfirmationView
                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -43,12 +44,15 @@ class Event18ConfirmationController @Inject()(val controllerComponents: Messages
     Ok(view(routes.Event18ConfirmationController.onClick(waypoints).url, waypoints))
   }
 
-  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
-      val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+      val originalUserAnswers = request.userAnswers
       val updatedAnswers = originalUserAnswers.setOrException(Event18ConfirmationPage, true)
-      userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-        Redirect(Event18ConfirmationPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+      userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).flatMap { _ =>
+        connector.compileEvent(request.pstr, eventType).map {
+          _ =>
+            Redirect(Event18ConfirmationPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+        }
       }
   }
 

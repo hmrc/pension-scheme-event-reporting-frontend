@@ -20,11 +20,11 @@ case class StartNewERAuditEvent(
                                psaIdentifier: String,
                                pstr: String
                              ) extends AuditEvent {
-  override def auditType: String = "eventReportingStartNew"
+  override def auditType: String = "EventReportingStart"
 
   override def details: Map[String, String] = {
     Map(
-      "psaIdentifier" -> psaIdentifier,
+      "psaOrPspId" -> psaIdentifier,
       "pstr" -> pstr
     )
   }

@@ -138,4 +138,35 @@ class UserAnswersCacheConnectorSpec
       }
     }
   }
+
+  "removeAll" must {
+    "return successfully when passed pstr and the backend has returned OK and a correct response" in {
+      server.stubFor(
+        delete(urlEqualTo(userAnswersCacheUrl))
+          .withHeader("pstr", equalTo(pstr))
+          .willReturn(
+            ok()
+          )
+      )
+
+      connector.removeAll(pstr) map {
+        _ mustBe()
+      }
+    }
+
+    "return BadRequestException when the backend has returned bad request response" in {
+      server.stubFor(
+        delete(urlEqualTo(userAnswersCacheUrl))
+          .withHeader("pstr", equalTo(pstr))
+          .willReturn(
+            badRequest
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      recoverToSucceededIf[HttpException] {
+        connector.removeAll(pstr)
+      }
+    }
+  }
 }

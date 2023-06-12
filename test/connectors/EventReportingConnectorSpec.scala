@@ -120,7 +120,9 @@ class EventReportingConnectorSpec
             noContent
           )
       )
-      connector.compileEvent(pstr, eventType).map{ _ mustBe ()}
+      connector.compileEvent(pstr, eventType).map {
+        _ mustBe()
+      }
     }
 
     "return BadRequestException when the backend has returned bad request response" in {
@@ -140,50 +142,50 @@ class EventReportingConnectorSpec
 
   "getFileUploadOutcome" must {
 
-      "return data if data is present in the collection" in {
-        server.stubFor(
-          get(urlEqualTo(getFileUploadResponseUrl))
-            .willReturn(
-              ok
-                .withBody(successOutcomeJson.toString)
-                .withHeader("reference", "123")
-            )
-        )
+    "return data if data is present in the collection" in {
+      server.stubFor(
+        get(urlEqualTo(getFileUploadResponseUrl))
+          .willReturn(
+            ok
+              .withBody(successOutcomeJson.toString)
+              .withHeader("reference", "123")
+          )
+      )
 
-        connector.getFileUploadOutcome(referenceStub) map {
-          result =>
-            result mustEqual successOutcome
-        }
+      connector.getFileUploadOutcome(referenceStub) map {
+        result =>
+          result mustEqual successOutcome
       }
+    }
 
     "return no data and a failure if data is not found in collection" in {
-        server.stubFor(
-          get(urlEqualTo(getFileUploadResponseUrl))
-            .willReturn(
-              ok
-                .withBody(failureOutcomeJson.toString)
-                .withHeader("reference", "123")
-            )
-        )
+      server.stubFor(
+        get(urlEqualTo(getFileUploadResponseUrl))
+          .willReturn(
+            ok
+              .withBody(failureOutcomeJson.toString)
+              .withHeader("reference", "123")
+          )
+      )
 
-        connector.getFileUploadOutcome(referenceStub) map {
-          result =>
-            result mustEqual failureOutcome
-        }
+      connector.getFileUploadOutcome(referenceStub) map {
+        result =>
+          result mustEqual failureOutcome
       }
+    }
 
-      "return return not found if data hasn't been returned" in {
-        server.stubFor(
-          get(urlEqualTo(getFileUploadResponseUrl))
-            .willReturn(
-              notFound()
-            )
-        )
+    "return return not found if data hasn't been returned" in {
+      server.stubFor(
+        get(urlEqualTo(getFileUploadResponseUrl))
+          .willReturn(
+            notFound()
+          )
+      )
 
-        connector.getFileUploadOutcome(referenceStub) map {
-          result =>
-            result mustEqual inProgressOutcome
-        }
+      connector.getFileUploadOutcome(referenceStub) map {
+        result =>
+          result mustEqual inProgressOutcome
       }
+    }
   }
 }

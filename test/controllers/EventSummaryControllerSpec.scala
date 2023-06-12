@@ -56,7 +56,9 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
 
     "must return OK and the correct view for a GET" in {
 
-      val ua = emptyUserAnswers.setOrException(EventSummaryPage, true).setOrException(TaxYearPage, TaxYear("2022"))
+      val ua = emptyUserAnswers
+        .setOrException(EventSummaryPage, true)
+        .setOrException(TaxYearPage, TaxYear("2022"))
 
       val seqOfEvents = Seq(EventType.Event1, EventType.Event18)
 
@@ -70,7 +72,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
 
       running(application) {
         val request = FakeRequest(GET, routes.EventSummaryController.onPageLoad().url)
-
+        val schemeName = request.schemeName
         val result = route(application, request).value
 
         val formProvider = new EventSummaryFormProvider()
@@ -115,7 +117,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
         })
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, mappedEvents, "2023")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, mappedEvents, "2023", schemeName)(request, messages(application)).toString
       }
     }
 

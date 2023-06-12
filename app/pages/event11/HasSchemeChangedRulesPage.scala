@@ -18,9 +18,11 @@ package pages.event11
 
 import controllers.event11.routes
 import models.UserAnswers
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+
+import scala.util.{Success, Try}
 
 case object HasSchemeChangedRulesPage extends QuestionPage[Boolean] {
 
@@ -31,16 +33,30 @@ case object HasSchemeChangedRulesPage extends QuestionPage[Boolean] {
   override def route(waypoints: Waypoints): Call =
     routes.HasSchemeChangedRulesController.onPageLoad(waypoints)
 
+  override def cleanupBeforeSettingValue(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    userAnswers.get(HasSchemeChangedRulesPage) match {
+      case originalOption@Some(_) if originalOption != value =>
+        userAnswers.remove(UnAuthPaymentsRuleChangeDatePage)
+      case _ => Success(userAnswers)
+    }
+  }
+
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
-      case true  => UnAuthPaymentsRuleChangeDatePage
+      case true => UnAuthPaymentsRuleChangeDatePage
       case false => HasSchemeChangedRulesInvestmentsInAssetsPage
     }.orRecover
   }
 
-  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
-    updatedAnswers.get(this) match {
-      case Some(true) => UnAuthPaymentsRuleChangeDatePage
-      case Some(false) => Event11CheckYourAnswersPage()
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
+
+    val originalOptionSelected = originalAnswers.get(HasSchemeChangedRulesPage)
+    val updatedOptionSelected = updatedAnswers.get(HasSchemeChangedRulesPage)
+    val answerIsChanged = originalOptionSelected != updatedOptionSelected
+
+    (updatedAnswers.get(this), answerIsChanged) match {
+      case (Some(true), true) => UnAuthPaymentsRuleChangeDatePage
+      case _ => Event11CheckYourAnswersPage()
     }
+  }
 }

@@ -25,7 +25,7 @@ import models.enumeration.EventType.{Event22, getEventTypeByName}
 import models.fileUpload.FileUploadResult
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, reset, times, verify, when}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
@@ -56,6 +56,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
   )
 
   private def getRoute: String = routes.FileUploadResultController.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.FileUploadResultController.onSubmit(waypoints).url
 
   override def beforeEach(): Unit = {
@@ -153,9 +154,6 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
       running(application) {
         val request =
           FakeRequest.apply(method = POST, path = postRoute).withFormUrlEncodedBody(("value", "invalid"))
-
-        val view = application.injector.instanceOf[FileUploadResultView]
-        val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value
         status(result) mustEqual BAD_REQUEST

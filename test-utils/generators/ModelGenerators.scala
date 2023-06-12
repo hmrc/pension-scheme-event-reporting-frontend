@@ -28,6 +28,11 @@ import scala.math.BigDecimal.RoundingMode
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryWhatChange: Arbitrary[event20.WhatChange] =
+    Arbitrary {
+      Gen.oneOf(event20.WhatChange.values.toSeq)
+    }
+
   implicit lazy val arbitraryFileUploadResult: Arbitrary[fileUpload.FileUploadResult] =
     Arbitrary {
       Gen.oneOf(fileUpload.FileUploadResult.values.toSeq)

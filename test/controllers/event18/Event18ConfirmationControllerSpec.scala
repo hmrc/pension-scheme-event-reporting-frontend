@@ -17,11 +17,12 @@
 package controllers.event18
 
 import base.SpecBase
-import connectors.UserAnswersCacheConnector
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.UserAnswers
-import org.mockito.ArgumentCaptor
+import models.enumeration.EventType.Event18
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
@@ -39,18 +40,21 @@ class Event18ConfirmationControllerSpec extends SpecBase with BeforeAndAfterEach
   private val waypoints = EmptyWaypoints
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val mockEventReportingConnector = mock[EventReportingConnector]
 
   private def getRoute: String = routes.Event18ConfirmationController.onPageLoad(waypoints).url
 
   private def getRouteOnClick: String = routes.Event18ConfirmationController.onClick(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
+    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
+    bind[EventReportingConnector].toInstance(mockEventReportingConnector)
   )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockUserAnswersCacheConnector)
+    reset(mockEventReportingConnector)
   }
 
   private val validAnswer: Boolean = true
@@ -79,6 +83,8 @@ class Event18ConfirmationControllerSpec extends SpecBase with BeforeAndAfterEach
     "must always save the answer 'true' and redirect to the next page" in {
       val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any()))
+        .thenReturn(Future.successful(()))
+      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq("87219363YN"), ArgumentMatchers.eq(Event18))(any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =

@@ -31,7 +31,7 @@ case class Event11CheckYourAnswersPage() extends CheckAnswersPage {
   override def toString: String = "CheckYourAnswersPage"
 }
 
-object Event10CheckYourAnswersPage {
+object Event11CheckYourAnswersPage {
 
   def waypointFromString(s: String): Option[Waypoint] = {
     s match {

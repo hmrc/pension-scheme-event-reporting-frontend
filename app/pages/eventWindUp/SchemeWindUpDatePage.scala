@@ -26,7 +26,7 @@ import java.time.LocalDate
 
 case object SchemeWindUpDatePage extends QuestionPage[LocalDate] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "eventWindUp" \ toString
 
   override def toString: String = "schemeWindUpDate"
 
