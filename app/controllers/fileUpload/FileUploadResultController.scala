@@ -87,14 +87,14 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(FileUploadResultPage(eventType), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).flatMap { _ =>
-            val parsingResult = if (value == FileUploadResult.Yes) {
+            if (value == FileUploadResult.Yes) {
               parsingAndValidationOutcomeCacheConnector.deleteOutcome.map { _ =>
-                getUpscanFileAndParse.flatten
+                getUpscanFileAndParse
               }
             } else {
               Future.successful(())
             }
-            parsingResult.map(_ => Redirect(FileUploadResultPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route))
+            Future.successful(Redirect(FileUploadResultPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route))
           }
         }
       )
@@ -112,7 +112,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
           val fileName = fileUploadOutcomeResponse.fileName
           fileUploadOutcomeResponse.downloadUrl match {
             case Some(downloadUrl) =>
-              upscanInitiateConnector.download(downloadUrl).map { httpResponse =>
+              upscanInitiateConnector.download(downloadUrl).flatMap { httpResponse =>
                 httpResponse.status match {
                   case OK => {
                     CSVParser.split(httpResponse.body).foreach { row =>
