@@ -28,7 +28,7 @@ object ParsingAndValidationOutcomeStatus extends Enumerable.Implicits {
 
   val values: Seq[ParsingAndValidationOutcomeStatus] = Seq(
     Success,
-    GeneralError,
+    GeneralError
   )
 
   implicit val enumerable: Enumerable[ParsingAndValidationOutcomeStatus] =
