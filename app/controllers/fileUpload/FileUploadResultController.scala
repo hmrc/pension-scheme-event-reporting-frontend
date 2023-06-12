@@ -89,7 +89,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).flatMap { _ =>
             if (value == FileUploadResult.Yes) {
               parsingAndValidationOutcomeCacheConnector.deleteOutcome.map { _ =>
-                getUpscanFileAndParse
+                asyncGetUpscanFileAndParse
               }
             } else {
               Future.successful(())
@@ -100,7 +100,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       )
   }
 
-  private def getUpscanFileAndParse(implicit request: Request[AnyContent]) = {
+  private def asyncGetUpscanFileAndParse(implicit request: Request[AnyContent]): Unit = {
     request.queryString.get("key")
     val referenceOpt: Option[String] = request.queryString.get("key").flatMap { values =>
       values.headOption
@@ -122,12 +122,10 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                       println(s"\n Formatted row: $formattedRow")
                     }
                     parsingAndValidationOutcomeCacheConnector.setOutcome(outcome = ParsingAndValidationOutcome(status = Success, fileName = fileName))
-                    Future.successful(ParsingAndValidationOutcome(Success))
                   } recoverWith {
                     case e: Throwable =>
                       logger.error("Error during parsing and validation", e)
                       parsingAndValidationOutcomeCacheConnector.setOutcome(outcome = ParsingAndValidationOutcome(status = GeneralError, fileName = fileName))
-                      Future.successful(ParsingAndValidationOutcome(GeneralError))
                   }
                   case _ => throw new RuntimeException("Unhandled response from upscan in FileUploadResultController")
                 }
