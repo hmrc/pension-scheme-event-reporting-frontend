@@ -17,8 +17,7 @@
 package controllers.event20A
 
 import base.SpecBase
-import controllers.event20A.Event20ACheckYourAnswersControllerSpec.expectedSummaryListRowsEvent20A
-import data.SampleData.sampleEvent20AJourneyData
+import data.SampleData.{sampleEvent20ABecameJourneyData, sampleEvent20ACeasedJourneyData}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -34,6 +33,8 @@ import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
 class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
+
+  import Event20ACheckYourAnswersControllerSpec._
 
   "Check Your Answers Controller for Event 20A" - {
 
@@ -54,7 +55,7 @@ class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFl
       }
     }
 
-    "must return OK and the correct summary list row items for a GET" in {
+    "must return OK and the correct summary list row items for a GET (Became Master Trust)" in {
 
       val mockView = mock[CheckYourAnswersView]
       val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -62,7 +63,7 @@ class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFl
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleEvent20AJourneyData),
+        userAnswers = Some(sampleEvent20ABecameJourneyData),
         extraModules = extraModules
       ).build()
 
@@ -76,7 +77,43 @@ class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFl
         status(result) mustEqual OK
 
         val actual: Seq[SummaryListRow] = captor.getValue.rows
-        val expected: Seq[Aliases.SummaryListRow] = expectedSummaryListRowsEvent20A
+        val expected: Seq[Aliases.SummaryListRow] = expectedSummaryListRowsEvent20ABecame
+
+        actual.size mustBe expected.size
+
+        actual.zipWithIndex.map { case (a, i) =>
+          a mustBe expected(i)
+        }
+      }
+    }
+
+    "must return OK and the correct summary list row items for a GET (Ceased to become Master Trust)" in {
+
+      val mockView = mock[CheckYourAnswersView]
+      val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+        inject.bind[CheckYourAnswersView].toInstance(mockView)
+      )
+
+      val application = applicationBuilder(
+        userAnswers = Some(sampleEvent20ACeasedJourneyData),
+        extraModules = extraModules
+      ).build()
+
+      val captor: ArgumentCaptor[SummaryList] =
+        ArgumentCaptor.forClass(classOf[SummaryList])
+
+      running(application) {
+        when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
+        val request = FakeRequest(GET, controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad.url)
+        val result = route(application, request).value
+        status(result) mustEqual OK
+
+        val actual: Seq[SummaryListRow] = captor.getValue.rows
+        println("\n\n\n\nACTUAL " + actual)
+
+        val expected: Seq[Aliases.SummaryListRow] = expectedSummaryListRowsEvent20ACeased
+        println("\n\n\n\nEXPECTED " + expected)
+
 
         actual.size mustBe expected.size
 
@@ -127,7 +164,7 @@ object Event20ACheckYourAnswersControllerSpec {
     )
   }
 
-  private def expectedSummaryListRowsEvent20A(implicit messages: Messages): Seq[SummaryListRow] = Seq(
+  private def expectedSummaryListRowsEvent20ABecame(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlWithHiddenContent(
       "whatChange.checkYourAnswersLabel",
       "It became a Master Trust",
@@ -139,6 +176,21 @@ object Event20ACheckYourAnswersControllerSpec {
       "12 December 2023",
       "/manage-pension-scheme-event-report/new-report/event-20A-when-scheme-became-Master-Trust?waypoints=event-20A-check-answers",
       "becameDateMasterTrust.change.hidden"
+    )
+  )
+
+  private def expectedSummaryListRowsEvent20ACeased(implicit messages: Messages): Seq[SummaryListRow] = Seq(
+    fakeSummaryListRowWithHtmlWithHiddenContent(
+      "whatChange.checkYourAnswersLabel",
+      "It has ceased to be a Master Trust",
+      "/manage-pension-scheme-event-report/new-report/event-20A-Master-Trust?waypoints=event-20A-check-answers",
+      "whatChange.change.hidden"
+    ),
+    fakeSummaryListRowWithTextWithHiddenContent(
+      "ceasedDateMasterTrust.checkYourAnswersLabel",
+      "12 December 2023",
+      "/manage-pension-scheme-event-report/new-report/event-20A-when-scheme-ceased-to-be-Master-Trust?waypoints=event-20A-check-answers",
+      "ceasedDateMasterTrust.change.hidden"
     )
   )
 }
