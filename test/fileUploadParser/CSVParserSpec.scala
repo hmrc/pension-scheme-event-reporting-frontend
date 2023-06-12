@@ -42,5 +42,82 @@ Jane,Blaggs,ZZ123456C"""
     "parse where there are double quotes in string i.e. remove the extra quotes" in {
       CSVParser.split(""""Joe","Bloggs","AB123456C"""").flatten mustBe Seq("Joe", "Bloggs", "AB123456C")
     }
+
+    "work where there are no double quotes in string" in {
+      CSVParser.split("a,b,c").flatten mustBe Seq("a", "b", "c")
+    }
+
+    "work for double quotes containing comma at start of list" in {
+      CSVParser.split(""""a,b",c,d""").flatten mustBe Seq(
+        """a,b""",
+        "c",
+        "d"
+      )
+    }
+
+    "work for double quotes containing comma in middle of list" in {
+      CSVParser.split("""a,"b,c",d""").flatten mustBe Seq(
+        "a",
+        """b,c""",
+        "d"
+      )
+    }
+
+    "work for double quotes containing comma at end of list" in {
+      CSVParser.split("""a,b,"c,d"""").flatten mustBe Seq(
+        "a",
+        "b",
+        """c,d"""
+      )
+    }
+
+    "work for double quotes containing no comma in middle of list" in {
+      CSVParser.split("""a,"b and c",d""").flatten mustBe Seq(
+        "a",
+        """b and c""",
+        "d"
+      )
+    }
+
+    "leave double quotes containing no comma in middle of list when not first and last characters" in {
+      CSVParser.split("""a,b"c"d,e""").flatten mustBe Seq(
+        "a",
+        """b"c"d""",
+        "e"
+      )
+    }
+
+    "leave double quotes containing a comma in middle of list when not first and last characters" in {
+      CSVParser.split("a,\"bc,xd\",e").flatten mustBe Seq(
+        "a",
+        """bc,xd""",
+        "e"
+      )
+    }
+
+    "work for double quotes containing comma at end of list but quotes not ended" in {
+      CSVParser.split("""a,b,"c,d""").flatten mustBe Seq(
+        "a",
+        "b",
+        """c,d"""
+      )
+    }
+
+    "work for double quotes containing comma at end of list but ending with a comma" in {
+      CSVParser.split("""a,b,"c,d",""").flatten mustBe Seq(
+        "a",
+        "b",
+        """c,d""",
+        ""
+      )
+    }
+
+    "strip trailing and leading spaces" in {
+      CSVParser.split(""" a , "b and c"  ,   d   """).flatten mustBe Seq(
+        "a",
+        "b and c",
+        "d"
+      )
+    }
   }
 }
