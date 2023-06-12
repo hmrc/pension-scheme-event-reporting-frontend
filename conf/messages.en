@@ -1442,9 +1442,7 @@ ceasedDate.change.hidden = When did the scheme cease to be occupational?
 
 whatYouWillNeed.event20.title = What you will need
 whatYouWillNeed.event20.heading = What you will need
-whatYouWillNeed.event20.p = You will need to tell us the date that a scheme changed to:
-whatYouWillNeed.event20.item1 = become an occupational pension scheme
-whatYouWillNeed.event20.item2 = ceased to be an occupational pension scheme
+whatYouWillNeed.event20.p = For this event, you will need to tell us the date that the scheme either became or ceased to be an occupational pension.
 
 event19.countryOrTerritory.title = Which country or territory has this scheme been relocated to?
 event19.countryOrTerritory.heading = In which country or territory is the scheme now established?
@@ -1464,6 +1462,6 @@ event19.dateChangeMade.error.outside.taxYear = Date must be between 6 April {0} 
 event19.dateChangeMade.error.invalid = Enter a real date
 event19.dateChangeMade.change.hidden = When did the territory change take place for this scheme?
 
-whatYouWillNeed.event19.p = You will need to tell us the date that a scheme changed its country or territory of establishment
-whatYouWillNeed.event19.item1 = Awaiting a content update for this page:
-whatYouWillNeed.event19.item2 = search for whatYouWillNeed.event19 in messages.en to change
+whatYouWillNeed.event19.p = To record a change country or territory of establishment for the scheme you will need to tell us the:
+whatYouWillNeed.event19.item1 = new country or territory
+whatYouWillNeed.event19.item2 = date that the change took place
