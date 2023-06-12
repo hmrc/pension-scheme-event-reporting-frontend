@@ -61,6 +61,7 @@ class EventReportingConnectorSpec
   private val successOutcome = FileUploadOutcomeResponse(fileName = Some("test"), SUCCESS, Some("downloadUrl"))
   private val successOutcomeJson = Json.obj(
     "fileStatus" -> "READY",
+    "downloadUrl" -> "downloadUrl",
     "uploadDetails" -> Json.obj(
       "fileName" -> "test"
     )
