@@ -33,6 +33,7 @@ import models.event10.{BecomeOrCeaseScheme, SchemeChangeDate}
 import models.event12.DateOfChange
 import models.event20.Event20Date
 import models.event20.WhatChange.BecameOccupationalScheme
+import models.event20A.WhatChange.BecameMasterTrust
 import models.event6.{CrystallisedDetails, TypeOfProtection => Event6TypeOfProtection}
 import models.event7.PaymentDate
 import models.event8.{LumpSumDetails, TypeOfProtection => Event8TypeOfProtection}
@@ -296,6 +297,11 @@ object SampleData extends SpecBase {
 
   def sampleEvent20JourneyData: UserAnswers =
     emptyUserAnswersWithTaxYear
-      .setOrException(WhatChangePage, BecameOccupationalScheme)
-      .setOrException(BecameDatePage, Event20Date(LocalDate.of(2023, 12, 12)))
+      .setOrException(pages.event20.WhatChangePage, BecameOccupationalScheme)
+      .setOrException(pages.event20.BecameDatePage, Event20Date(LocalDate.of(2023, 12, 12)))
+
+  def sampleEvent20AJourneyData: UserAnswers =
+    emptyUserAnswersWithTaxYear
+      .setOrException(pages.event20A.WhatChangePage, BecameMasterTrust)
+      .setOrException(pages.event20A.BecameDatePage, LocalDate.of(2023, 12, 12))
 }
