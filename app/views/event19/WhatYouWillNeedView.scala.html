@@ -23,9 +23,14 @@
 
     @layout(pageTitle = titleNoForm(messages("whatYouWillNeed.title"))) {
 
-        <h1 class="govuk-heading-xl">@messages("whatYouWillNeed.event11.heading")</h1>
+        <h1 class="govuk-heading-xl">@messages("whatYouWillNeed.heading")</h1>
 
-        <p class="govuk-body">@messages("whatYouWillNeed.event20.p")</p>
+        <p class="govuk-body">@messages("whatYouWillNeed.event19.p")</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("whatYouWillNeed.event19.item1")</li>
+            <li>@messages("whatYouWillNeed.event19.item2")</li>
+        </ul>
 
         @govukButton(
             ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit")).asLink(continueUrl)

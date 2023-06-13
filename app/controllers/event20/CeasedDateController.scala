@@ -19,10 +19,10 @@ package controllers.event20
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.event20.CeasedDateFormProvider
-import models.{TaxYear, UserAnswers}
+import models.TaxYear
 import models.enumeration.EventType
+import pages.event20.{CeasedDatePage, WhatChangePage}
 import pages.{JourneyRecoveryPage, Waypoints}
-import pages.event20.{BecameDatePage, CeasedDatePage, WhatChangePage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController

@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package pages.event20
+package pages.event19
 
-import controllers.event20.routes
+import controllers.event19.routes
 import models.UserAnswers
-import models.event20.Event20Date
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object BecameDatePage extends QuestionPage[Event20Date] {
+case object CountryOrTerritoryPage extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ "event20" \ toString
+  override def path: JsPath = JsPath \ "event19" \ toString
 
-  override def toString: String = "becameDate"
+  override def toString: String = "CountryOrTerritory"
 
   override def route(waypoints: Waypoints): Call =
-    routes.BecameDateController.onPageLoad(waypoints)
+    routes.CountryOrTerritoryController.onPageLoad(waypoints)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    Event20CheckYourAnswersPage()
-  }
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    DateChangeMadePage
 }

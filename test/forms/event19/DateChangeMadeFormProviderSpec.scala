@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-        layout: templates.SchemeLayout,
-        govukButton: GovukButton
-)
+package forms.event19
 
-@(continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+import forms.behaviours.DateBehaviours
 
-    @layout(pageTitle = titleNoForm(messages("whatYouWillNeed.title"))) {
+import java.time.LocalDate
 
-        <h1 class="govuk-heading-xl">@messages("whatYouWillNeed.event11.heading")</h1>
+class DateChangeMadeFormProviderSpec extends DateBehaviours {
 
-        <p class="govuk-body">@messages("whatYouWillNeed.event20.p")</p>
+  private val form = new DateChangeMadeFormProvider()(2022)
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit")).asLink(continueUrl)
-        )
+  ".value" - {
 
-    }
+    val validData = datesBetween(
+      min = LocalDate.of(2022, 4, 6),
+      max = LocalDate.of(2023, 4, 5)
+    )
+
+    behave like dateField(form, "value", validData)
+
+    behave like mandatoryDateField(form, "value", "event19.dateChangeMade.error.required.all")
+  }
+}

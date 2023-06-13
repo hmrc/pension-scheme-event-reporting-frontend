@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package pages.event20
+package pages.event19
 
-import controllers.event20.routes
+import java.time.LocalDate
+import controllers.event19.routes
 import models.UserAnswers
-import models.event20.Event20Date
-import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.{Page, QuestionPage, Waypoints}
 
-case object BecameDatePage extends QuestionPage[Event20Date] {
+case object DateChangeMadePage extends QuestionPage[LocalDate] {
 
-  override def path: JsPath = JsPath \ "event20" \ toString
+  override def path: JsPath = JsPath \  "event19" \ toString
 
-  override def toString: String = "becameDate"
+  override def toString: String = "dateChangeMade"
 
   override def route(waypoints: Waypoints): Call =
-    routes.BecameDateController.onPageLoad(waypoints)
+    routes.DateChangeMadeController.onPageLoad(waypoints)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    Event20CheckYourAnswersPage()
-  }
+  override def nextPageNormalMode(waypoints: Waypoints, originalAnswers: UserAnswers): Page = Event19CheckYourAnswersPage
 }

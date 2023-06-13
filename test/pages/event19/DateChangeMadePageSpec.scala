@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-        layout: templates.SchemeLayout,
-        govukButton: GovukButton
-)
+package pages.event19
 
-@(continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+import java.time.LocalDate
 
-    @layout(pageTitle = titleNoForm(messages("whatYouWillNeed.title"))) {
+import org.scalacheck.Arbitrary
+import pages.behaviours.PageBehaviours
 
-        <h1 class="govuk-heading-xl">@messages("whatYouWillNeed.event11.heading")</h1>
+class DateChangeMadePageSpec extends PageBehaviours {
 
-        <p class="govuk-body">@messages("whatYouWillNeed.event20.p")</p>
+  "DateChangeMadePage" - {
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit")).asLink(continueUrl)
-        )
-
+    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
+      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
     }
+
+    beRetrievable[LocalDate](DateChangeMadePage)
+
+    beSettable[LocalDate](DateChangeMadePage)
+
+    beRemovable[LocalDate](DateChangeMadePage)
+  }
+}

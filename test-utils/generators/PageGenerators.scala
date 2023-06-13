@@ -31,6 +31,12 @@ import pages.{event13, _}
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryDateChangeMadePage: Arbitrary[event19.DateChangeMadePage.type] =
+    Arbitrary(event19.DateChangeMadePage)
+
+  implicit lazy val arbitraryDateWhatYouWillNeedPage: Arbitrary[event19.WhatYouWillNeedPage.type] =
+    Arbitrary(event19.WhatYouWillNeedPage)
+
   implicit lazy val arbitraryCeasedDatePage: Arbitrary[event20.CeasedDatePage.type] =
     Arbitrary(event20.CeasedDatePage)
 

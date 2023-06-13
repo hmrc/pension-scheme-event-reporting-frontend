@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-        layout: templates.SchemeLayout,
-        govukButton: GovukButton
-)
+package pages.event19
 
-@(continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+import models.enumeration.EventType.Event19
+import pages.{CheckAnswersPage, Waypoints}
+import play.api.mvc.Call
 
-    @layout(pageTitle = titleNoForm(messages("whatYouWillNeed.title"))) {
+case object Event19CheckYourAnswersPage extends CheckAnswersPage {
+  override val urlFragment: String =
+    s"event-${Event19.toString}-check-answers"
 
-        <h1 class="govuk-heading-xl">@messages("whatYouWillNeed.event11.heading")</h1>
+  override def route(waypoints: Waypoints): Call = {
+    controllers.event19.routes.Event19CheckYourAnswersController.onPageLoad
+  }
 
-        <p class="govuk-body">@messages("whatYouWillNeed.event20.p")</p>
+  override def toString: String = "CheckYourAnswersPage"
+}
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit")).asLink(continueUrl)
-        )
-
-    }

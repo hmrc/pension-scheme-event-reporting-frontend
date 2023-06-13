@@ -119,7 +119,6 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                       //TODO - This for loop is temporary code to allow parsing to be printed in the console for testing
                       //TODO - To be removed at a later stage
                       val formattedRow: String = row.mkString(",")
-                      println(s"\n Formatted row: $formattedRow")
                     }
                     parsingAndValidationOutcomeCacheConnector.setOutcome(outcome = ParsingAndValidationOutcome(status = Success, fileName = fileName))
                   } recoverWith {

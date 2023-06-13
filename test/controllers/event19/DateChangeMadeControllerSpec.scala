@@ -14,68 +14,62 @@
  * limitations under the License.
  */
 
-package controllers.event20
+package controllers.event19
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import controllers.event20.BecameDateControllerSpec.becameDate
-import forms.event20.BecameDateFormProvider
-import models.event20.{Event20Date, WhatChange}
+import forms.event19.DateChangeMadeFormProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
-import pages.event20.{BecameDatePage, WhatChangePage}
+import pages.event19.DateChangeMadePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event20.BecameDateView
+import views.html.event19.DateChangeMadeView
 
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class BecameDateControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
+class DateChangeMadeControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new BecameDateFormProvider()
-  private val stubMin: LocalDate = LocalDate.of(2022, 4, 6)
-  private val stubMax: LocalDate = LocalDate.of(2023, 4, 5)
-  private val form = formProvider(stubMin, stubMax)
+  private val formProvider = new DateChangeMadeFormProvider()
+  private val form = formProvider(2022)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.BecameDateController.onPageLoad(waypoints).url
+  private def getRoute: String = routes.DateChangeMadeController.onPageLoad(waypoints).url
 
-  private def postRoute: String = routes.BecameDateController.onSubmit(waypoints).url
+  private def postRoute: String = routes.DateChangeMadeController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validAnswer = Event20Date(LocalDate.of(2022, 7, 12))
+  private val validAnswer = LocalDate.of(2020, 2, 12)
 
-  override def beforeEach(): Unit = {
+  override def beforeEach: Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
 
-  "BecameDate Controller" - {
+  "DateChangeMade Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val userAnswers = emptyUserAnswersWithTaxYear.setOrException(WhatChangePage, WhatChange.BecameOccupationalScheme)
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[BecameDateView]
+        val view = application.injector.instanceOf[DateChangeMadeView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
@@ -83,15 +77,13 @@ class BecameDateControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = emptyUserAnswersWithTaxYear.setOrException(WhatChangePage, WhatChange.BecameOccupationalScheme)
-        .set(BecameDatePage, validAnswer).success.value
-
+      val userAnswers = emptyUserAnswersWithTaxYear.set(DateChangeMadePage, validAnswer).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[BecameDateView]
+        val view = application.injector.instanceOf[DateChangeMadeView]
 
         val result = route(application, request).value
 
@@ -104,39 +96,38 @@ class BecameDateControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
-      val userAnswers = emptyUserAnswersWithTaxYear.setOrException(WhatChangePage, WhatChange.BecameOccupationalScheme)
-
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(becameDate(validAnswer.date): _*)
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
+            "value.day" -> "12",
+            "value.month" -> "2",
+            "value.year" -> "2023"
+          )
 
         val result = route(application, request).value
-        val updatedAnswers = userAnswers.set(BecameDatePage, validAnswer).success.value
+        val updatedAnswers = emptyUserAnswersWithTaxYear.set(DateChangeMadePage, validAnswer).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual BecameDatePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual DateChangeMadePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
     "must return bad request when invalid data is submitted" in {
-
-      val userAnswers = emptyUserAnswersWithTaxYear.setOrException(WhatChangePage, WhatChange.BecameOccupationalScheme)
-
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("becameDate", "invalid"))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[BecameDateView]
-        val boundForm = form.bind(Map("becameDate" -> "invalid"))
+        val view = application.injector.instanceOf[DateChangeMadeView]
+        val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value
 
@@ -146,18 +137,4 @@ class BecameDateControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
       }
     }
   }
-}
-
-object BecameDateControllerSpec {
-  private val becameDateKey = "becameDate"
-
-  private def becameDate(
-                                becameDate: LocalDate
-                              ): Seq[(String, String)] = {
-    val day = Tuple2(becameDateKey + ".day", s"${becameDate.getDayOfMonth}")
-    val month = Tuple2(becameDateKey + ".month", s"${becameDate.getMonthValue}")
-    val year = Tuple2(becameDateKey + ".year", s"${becameDate.getYear}")
-    Seq(day, month, year)
-  }
-
 }

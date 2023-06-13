@@ -20,7 +20,6 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import controllers.event20.CeasedDateControllerSpec.ceasedDate
 import forms.event20.CeasedDateFormProvider
-import models.UserAnswers
 import models.event20.{Event20Date, WhatChange}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
