@@ -129,11 +129,14 @@ class EventReportingConnector @Inject()(
     http.GET[HttpResponse](getFileUploadResponseUrl)(implicitly, headerCarrier, implicitly).map{ response =>
       response.status match {
         case OK =>
-          ((response.json \ "fileStatus").asOpt[String], (response.json \ "uploadDetails" \ "fileName").asOpt[String]) match {
-            case (Some("READY"),file@Some(_)) => FileUploadOutcomeResponse(file, FileUploadOutcomeStatus.SUCCESS)
-            case _ => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.FAILURE)
+          ((response.json \ "fileStatus").asOpt[String],
+            (response.json \ "uploadDetails" \ "fileName").asOpt[String],
+            (response.json \ "downloadUrl").asOpt[String]) match {
+            case (Some("READY"),file@Some(_), downloadUrl@Some(_)) =>
+              FileUploadOutcomeResponse(file, FileUploadOutcomeStatus.SUCCESS, downloadUrl)
+            case _ => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.FAILURE, None)
           }
-        case NOT_FOUND => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.IN_PROGRESS)
+        case NOT_FOUND => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.IN_PROGRESS, None)
         case _ =>
           throw new HttpException(response.body, response.status)
       }

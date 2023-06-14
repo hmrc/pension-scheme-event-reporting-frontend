@@ -76,6 +76,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   lazy val minimumYear: Int = configuration.get[Int]("minimumYear")
 
   lazy val minimalDetailsUrl: String = s"$pensionsAdministratorUrl${configuration.get[String](path = "urls.minimalDetails")}"
+  lazy val parsingAndValidationUrl: String = s"$eventReportingUrl${configuration.get[String](path = "urls.parsingAndValidation")}"
 
   lazy val emailApiUrl: String = servicesConfig.baseUrl("email")
   lazy val emailSendForce: Boolean = configuration.getOptional[Boolean]("email.force").getOrElse(false)

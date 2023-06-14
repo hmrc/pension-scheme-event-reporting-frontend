@@ -33,6 +33,7 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] = {
+    arbitrary[(event19.DateChangeMadePage.type, JsValue)] ::
     arbitrary[(event20.CeasedDatePage.type, JsValue)] ::
     arbitrary[(event20.BecameDatePage.type, JsValue)] ::
     arbitrary[(event20.WhatChangePage.type, JsValue)] ::

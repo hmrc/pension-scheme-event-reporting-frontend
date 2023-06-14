@@ -46,6 +46,7 @@ import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveableProper
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
 import pages.event10.{BecomeOrCeaseSchemePage, ContractsOrPoliciesPage, SchemeChangeDatePage}
 import pages.event12.{DateOfChangePage, HasSchemeChangedRulesPage}
+import pages.event19.{CountryOrTerritoryPage, DateChangeMadePage}
 import pages.event2.{AmountPaidPage, DatePaidPage}
 import pages.event20.{BecameDatePage, WhatChangePage}
 import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage => Event6TypeOfProtectionPage}
@@ -293,6 +294,11 @@ object SampleData extends SpecBase {
     emptyUserAnswersWithTaxYear
       .setOrException(HasSchemeChangedRulesPage, true)
       .setOrException(DateOfChangePage, DateOfChange(LocalDate.of(2022, 3, 22)))
+
+  def sampleJourneyData19CountryOrTerritory: UserAnswers =
+    UserAnswers()
+      .setOrException(CountryOrTerritoryPage, seqAddresses.head.country)
+      .setOrException(DateChangeMadePage, LocalDate.of(2022, 3, 22))
 
   def sampleEvent20JourneyData: UserAnswers =
     emptyUserAnswersWithTaxYear
