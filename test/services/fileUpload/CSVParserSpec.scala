@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fileUploadParser
+package services.fileUpload
 
 import base.SpecBase
 import org.scalatest.BeforeAndAfterEach

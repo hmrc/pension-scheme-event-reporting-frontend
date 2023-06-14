@@ -18,7 +18,6 @@ package controllers.fileUpload
 
 import connectors.{EventReportingConnector, ParsingAndValidationOutcomeCacheConnector, UpscanInitiateConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import fileUploadParser.CSVParser
 import forms.fileUpload.FileUploadResultFormProvider
 import models.FileUploadOutcomeStatus.IN_PROGRESS
 import models.FileUploadOutcomeStatus.SUCCESS
@@ -36,6 +35,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.i18n.Lang.logger
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Request}
+import services.fileUpload.CSVParser
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadResultView
 
