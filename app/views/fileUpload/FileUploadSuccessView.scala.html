@@ -15,15 +15,22 @@
  *@
 
 @this(
-        layout: templates.Layout,
+        layout: templates.SchemeLayout,
         govukButton: GovukButton
 )
 
-@(continueUrl: String, fileName: String)(implicit request: Request[_], messages: Messages)
+@(continueUrl: String, fileName: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("fileUploadSuccess.title"))) {
 
     <h1 class="govuk-heading-xl">@messages("fileUploadSuccess.heading")</h1>
     <p class="govuk-body">@messages("fileUploadSuccess.p", fileName)</p>
-    <a href=@continueUrl class="govuk-button">@messages("site.continue")</a>
+
+@govukButton(
+            Button(
+                href = Some(continueUrl),
+                attributes = Map("id" -> "submit"),
+                content = Text(messages("site.continue"))
+            )
+        )
 }
