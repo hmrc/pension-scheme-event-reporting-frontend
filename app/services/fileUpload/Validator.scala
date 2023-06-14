@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package fileUploadParsers
+package services.fileUpload
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
-import fileUploadParsers.ParserErrorMessages.HeaderInvalidOrFileIsEmpty
+import ParserErrorMessages.HeaderInvalidOrFileIsEmpty
 import models.UserAnswers
 import models.enumeration.EventType
 import org.apache.commons.lang3.StringUtils.EMPTY

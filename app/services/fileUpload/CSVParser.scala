@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fileUploadParser
+package services.fileUpload
 
 import com.univocity.parsers.csv.{CsvParser, CsvParserSettings}
 
