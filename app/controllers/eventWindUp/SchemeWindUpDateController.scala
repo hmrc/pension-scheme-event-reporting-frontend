@@ -20,7 +20,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.eventWindUp.SchemeWindUpDateFormProvider
 import helpers.DateHelper
-import helpers.DateHelper.getTaxYear
+import helpers.DateHelper.getTaxYearFromOption
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
@@ -45,14 +45,14 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
   private val eventType = EventType.WindUp
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    def form = formProvider(getTaxYear(request.userAnswers))
+    def form = formProvider(getTaxYearFromOption(request.userAnswers))
     val preparedForm = request.userAnswers.flatMap(_.get(SchemeWindUpDatePage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
-      def form = formProvider(getTaxYear(request.userAnswers))
+      def form = formProvider(getTaxYearFromOption(request.userAnswers))
       form.bindFromRequest().fold(
         formWithErrors => {
           Future.successful(BadRequest(view(formWithErrors, waypoints)))},

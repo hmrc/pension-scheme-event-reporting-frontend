@@ -43,8 +43,12 @@ object DateHelper {
     }
   }
 
-  def getTaxYear(userAnswers: Option[UserAnswers]): Int = {
-    userAnswers.flatMap(_.get(TaxYearPage)) match {
+  def getTaxYearFromOption(userAnswers: Option[UserAnswers]): Int = {
+    userAnswers.map(y => getTaxYear(y)).getOrElse(throw new RuntimeException("Tax year not entered"))
+  }
+
+  def getTaxYear(userAnswers: UserAnswers): Int = {
+    userAnswers.get(TaxYearPage) match {
       case Some(year) => Try(year.startYear.toInt) match {
         case Success(value) => value
         case Failure(exception) => throw new RuntimeException("Tax year is not a number", exception)
@@ -52,5 +56,6 @@ object DateHelper {
       case _ => throw new RuntimeException("Tax year not entered")
     }
   }
+
 }
 
