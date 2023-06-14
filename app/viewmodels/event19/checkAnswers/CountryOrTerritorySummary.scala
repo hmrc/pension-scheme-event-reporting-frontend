@@ -21,19 +21,29 @@ import pages.event19.CountryOrTerritoryPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.{CountryOptions, InputOption}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object CountryOrTerritorySummary  {
+import javax.inject.{Inject, Singleton}
+import scala.annotation.tailrec
+
+@Singleton
+class CountryOrTerritorySummary @Inject()(val countryOptions: CountryOptions) {
+  
+  val fullNameOfChosenCountry: String => String = (countryCode: String) => {
+    countryOptions.options.collectFirst {
+      case country if country.value == countryCode => country.label
+    }.getOrElse(countryCode)
+  }
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(CountryOrTerritoryPage).map {
       answer =>
-
         SummaryListRowViewModel(
           key     = "event19.countryOrTerritory.change.checkYourAnswersLabel",
-          value   = ValueViewModel(answer),
+          value   = ValueViewModel(fullNameOfChosenCountry(answer)),
           actions = Seq(
             ActionItemViewModel("site.change", CountryOrTerritoryPage.changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("event19.countryOrTerritory.change.hidden"))
