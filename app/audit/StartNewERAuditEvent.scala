@@ -17,12 +17,13 @@
 package audit
 
 import models.TaxYear
+import models.enumeration.EventType
 
 case class StartNewERAuditEvent(
                                psaIdentifier: String,
                                pstr: String,
                                taxYear: TaxYear,
-                               eventNumber: Int
+                               eventNumber: EventType
                              ) extends AuditEvent {
   override def auditType: String = "EventReportingStart"
 
@@ -30,8 +31,8 @@ case class StartNewERAuditEvent(
     Map(
       "psaOrPspId" -> psaIdentifier,
       "pstr" -> pstr,
-      "taxYear" -> taxYear,
-      "eventNumber" -> eventNumber
+      "taxYear" -> taxYear.startYear,
+      "eventNumber" -> eventNumber.toString
     )
   }
 }
