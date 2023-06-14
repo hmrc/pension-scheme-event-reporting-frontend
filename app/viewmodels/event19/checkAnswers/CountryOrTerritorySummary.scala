@@ -21,16 +21,15 @@ import pages.event19.CountryOrTerritoryPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.{CountryOptions, InputOption}
+import utils.CountryOptions
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 import javax.inject.{Inject, Singleton}
-import scala.annotation.tailrec
 
 @Singleton
 class CountryOrTerritorySummary @Inject()(val countryOptions: CountryOptions) {
-  
+
   val fullNameOfChosenCountry: String => String = (countryCode: String) => {
     countryOptions.options.collectFirst {
       case country if country.value == countryCode => country.label
