@@ -20,6 +20,7 @@ import audit.{AuditService, StartNewERAuditEvent}
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.EventSelectionFormProvider
+import models.enumeration.EventType
 import models.{EventSelection, TaxYear}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -52,6 +53,7 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
 
   private val psaId = "psaId"
   private val pstr = "87219363YN"
+  private val eventType = EventType.Event22
 
   override protected def beforeEach(): Unit = {
     reset(mockUserAnswersCacheConnector)
@@ -100,7 +102,7 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
         redirectLocation(result).value mustEqual EventSelectionPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).url
 
         eventually {
-          val expectedAuditEvent = StartNewERAuditEvent(psaId, pstr)
+          val expectedAuditEvent = StartNewERAuditEvent(psaId, pstr, ??? , eventType)
           verify(mockAuditService, times(1)).sendEvent(ArgumentMatchers.eq(expectedAuditEvent))(any(), any())
         }
       }
