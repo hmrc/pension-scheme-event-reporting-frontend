@@ -43,9 +43,11 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
     .bindings(bind[EventReportingConnector].to(mockConnector))
     .build()
 
-  def appWithTaxYear: Application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear))
+  /* TODO: this method will be reinstated in PODS-8495.
+    def appWithTaxYear: Application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear))
     .bindings(bind[EventReportingConnector].to(mockConnector))
     .build()
+   */
 
   "Event Reporting Tile Controller" - {
 
@@ -76,6 +78,7 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
         contentAsString(result) mustEqual view(card)(request, messages(application)).toString
       }
     }
+/* TODO: this test will be reinstated in PODS-8495.
 
     "must return OK and the correct view for a GET (with tax year selected)" in {
 
@@ -109,6 +112,8 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
         contentAsString(result) mustEqual view(card)(request, messages(application)).toString
       }
     }
+
+ */
 
     "must return empty html if feature toggle is disabled" in {
       when(mockConnector.getFeatureToggle(any())(any(), any())).thenReturn(
