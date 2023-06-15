@@ -18,20 +18,18 @@ package controllers.fileUpload
 
 import base.SpecBase
 import connectors.ParsingAndValidationOutcomeCacheConnector
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import views.html.fileUpload.ValidationErrorsAllView
-import controllers.fileUpload.routes._
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.EmptyWaypoints
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import services.fileUpload.ParserValidationError
+import views.html.fileUpload.ValidationErrorsAllView
 
 class ValidationErrorsAllControllerSpec extends SpecBase {
 
-  private val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(EmptyWaypoints).url
-  private val fileDownloadInstructionLink = controllers.routes.FileDownloadController.instructionsFile.url
+  private val returnUrl = "/manage-pension-scheme-event-report/new-report/event-22-upload"
+  private val fileDownloadInstructionLink = "/manage-pension-scheme-event-report/event-22-upload-format-instructions"
   private val mockParsingAndValidationOutcomeCacheConnector = mock[ParsingAndValidationOutcomeCacheConnector]
   private val dummyErrors: Seq[ParserValidationError] = Seq(
     ParserValidationError(6, 1, "Enter the member's first name", "Column name"),

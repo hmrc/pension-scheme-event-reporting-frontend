@@ -1481,5 +1481,4 @@ fileupload.invalid.item2 = Error
 
 return.to.fileupload = Return to file upload
 
-validationErrorsSummary.title = validationErrorsSummary
-validationErrorsSummary.heading = validationErrorsSummary
+fileUpload.generic.total.error.part1 = Your file has {0} errors. At least one:

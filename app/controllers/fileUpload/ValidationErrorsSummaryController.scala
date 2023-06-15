@@ -21,27 +21,43 @@ import models.enumeration.EventType
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.fileUpload.ParserValidationError
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.ValidationErrorsSummaryView
 
 import javax.inject.Inject
+import scala.concurrent.Future
 
 class ValidationErrorsSummaryController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           identify: IdentifierAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: ValidationErrorsSummaryView
-                                         ) extends FrontendBaseController with I18nSupport {
+                                                   override val messagesApi: MessagesApi,
+                                                   identify: IdentifierAction,
+                                                   getData: DataRetrievalAction,
+                                                   val controllerComponents: MessagesControllerComponents,
+                                                   view: ValidationErrorsSummaryView
+                                                 ) extends FrontendBaseController with I18nSupport {
 
   private val eventType = EventType.Event22
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) {
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints).url
       val fileDownloadInstructionLink = controllers.routes.FileDownloadController.instructionsFile.url
+      val dummyErrors: Seq[ParserValidationError] = Seq(
+        ParserValidationError(6, 1, "Enter the member's first name", "Column name"),
+        ParserValidationError(5, 2, "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C, or D, like QQ123456C", "Column name"),
+        ParserValidationError(4, 3, "The charge amount must be an amount of money, like 123 or 123.45", "Column name"),
+        ParserValidationError(3, 4, "Enter the date you received the notice to pay the charge", "Column name"),
+        ParserValidationError(2, 5, "Select yes if the payment type is mandatory", "Column name"),
+        ParserValidationError(1, 6, "Enter the tax year to which the annual allowance charge relates", "Column name")
+      )
+      Future.successful(Ok(view(returnUrl, fileDownloadInstructionLink, dummyErrors)))
 
-      Ok(view())
+    //      parsingAndValidationOutcomeCacheConnector.getOutcome.map {
+    //        case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, errorsJson, _)) =>
+    //          Ok(view(returnUrl, fileDownloadInstructionLink, errorsJson))
+    //        case _ =>
+    //          NotFound
+    //      }
+
   }
 }
