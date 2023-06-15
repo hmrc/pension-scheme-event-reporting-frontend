@@ -47,7 +47,8 @@ class UserAnswersCacheConnector @Inject()(
           "Content-Type" -> "application/json",
           "pstr" -> pstr,
           "eventType" -> eventType.toString,
-          "year" -> year
+          "year" -> year,
+          "version" -> "1"
         )
       case None => throw new RuntimeException("No tax year available")
     }
@@ -95,7 +96,8 @@ class UserAnswersCacheConnector @Inject()(
           "Content-Type" -> "application/json",
           "pstr" -> pstr,
           "eventType" -> eventType.toString,
-          "startYear" -> year.startYear
+          "year" -> year.startYear,
+          "version" -> "1"
         )
 
         val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
@@ -122,7 +124,7 @@ class UserAnswersCacheConnector @Inject()(
 
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.POST[JsValue, HttpResponse](url, userAnswers.data)(implicitly, implicitly, hc, implicitly)
+    http.POST[JsValue, HttpResponse](url, userAnswers.noEventTypeData)(implicitly, implicitly, hc, implicitly)
       .map { response =>
         response.status match {
           case OK => ()
