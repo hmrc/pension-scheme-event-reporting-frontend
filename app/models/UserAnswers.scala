@@ -136,5 +136,4 @@ final case class UserAnswers(
       case _ => throw new RuntimeException("No tax year available")
     }
   }
-
 }

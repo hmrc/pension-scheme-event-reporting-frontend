@@ -22,6 +22,7 @@ import data.SampleData._
 import models.common.ManualOrUpload.Manual
 import models.common.MembersSummary
 import models.common.MembersSummary.readsMemberValue
+import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event22}
 import models.event1.MembersOrEmployersSummary.readsMemberOrEmployerValue
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
@@ -37,7 +38,7 @@ import java.time.LocalDate
 
 class UserAnswersSpec extends SpecBase with Matchers {
 
-private val userAnswersDataTaxYear = UserAnswers().setOrException(TaxYearPage, TaxYear("2020")).data
+  private val userAnswersDataTaxYear = UserAnswers().setOrException(TaxYearPage, TaxYear("2020")).data
 
   "getAll" - {
     "must return the list of members or employers" in {
@@ -150,7 +151,7 @@ private val userAnswersDataTaxYear = UserAnswers().setOrException(TaxYearPage, T
     }
 
     "must return value when in non event type data" in {
-       UserAnswers(noEventTypeData = userAnswersDataTaxYear).get(TaxYearPage) mustBe Some(TaxYear("2020"))
+      UserAnswers(noEventTypeData = userAnswersDataTaxYear).get(TaxYearPage) mustBe Some(TaxYear("2020"))
     }
 
     "must return value when in event type data" in {
@@ -212,6 +213,20 @@ private val userAnswersDataTaxYear = UserAnswers().setOrException(TaxYearPage, T
       ua.get(TaxYearPage) mustBe None
       ua.data.fields.size mustBe 0
       ua.noEventTypeData.fields.size mustBe 0
+    }
+  }
+
+  "eventDataIdentifier" - {
+    "must return the correct event data identifier if year present in non event type data" in {
+      val ua = UserAnswers().set(TaxYearPage, TaxYear("2020"), nonEventTypeData = true).get
+      ua.eventDataIdentifier(EventType.Event1) mustBe EventDataIdentifier(EventType.Event1, "2020", "1")
+    }
+
+    "must throw an exception if year not present in non event type data" in {
+      val ua = UserAnswers().set(TaxYearPage, TaxYear("2020")).get
+      a[RuntimeException] mustBe thrownBy {
+        ua.eventDataIdentifier(EventType.Event1)
+      }
     }
   }
 
