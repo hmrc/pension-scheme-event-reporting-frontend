@@ -20,6 +20,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import models.{EventDataIdentifier, FileUploadOutcomeResponse}
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.{Enumerable, EventType}
+import models.{FileUploadOutcomeResponse, UserAnswers}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import play.api.libs.json.Json
@@ -36,6 +37,7 @@ class EventReportingConnectorSpec
   private val eventType: EventType = EventType.Event1
   private val eventType2: EventType = EventType.Event2
   private val referenceStub: String = "123"
+  private val userAnswers = UserAnswers()
 
   private val validResponse = Seq(
     eventType, eventType2
@@ -52,8 +54,9 @@ class EventReportingConnectorSpec
   override protected def portConfigKey: String = "microservice.services.pension-scheme-event-reporting.port"
 
   private lazy val connector: EventReportingConnector = injector.instanceOf[EventReportingConnector]
-  private val eventReportSummaryCacheUrl = s"/pension-scheme-event-reporting/event-summary"
-  private val eventReportCompileUrl = s"/pension-scheme-event-reporting/compile"
+  private val eventReportSummaryCacheUrl = "/pension-scheme-event-reporting/event-summary"
+  private val eventReportCompileUrl = "/pension-scheme-event-reporting/compile"
+  private val eventReportSubmitUrl = "/pension-scheme-event-reporting/submit-event-declaration-report"
   private val getFileUploadResponseUrl = "/pension-scheme-event-reporting/file-upload-response/get"
 
   private val failureOutcome = FileUploadOutcomeResponse(fileName = None, FAILURE, None)
@@ -137,6 +140,34 @@ class EventReportingConnectorSpec
 
       recoverToSucceededIf[HttpException] {
         connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1"))
+      }
+    }
+  }
+
+  "submitReport" must {
+    "return unit for successful post" in {
+      server.stubFor(
+        post(urlEqualTo(eventReportSubmitUrl))
+          .willReturn(
+            noContent
+          )
+      )
+      connector.submitReport(pstr, userAnswers).map {
+        _ mustBe()
+      }
+    }
+
+    "return BadRequestException when the backend has returned bad request response" in {
+      server.stubFor(
+        post(urlEqualTo(eventReportSubmitUrl))
+          .willReturn(
+            badRequest
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      recoverToSucceededIf[HttpException] {
+        connector.submitReport(pstr, userAnswers)
       }
     }
   }
