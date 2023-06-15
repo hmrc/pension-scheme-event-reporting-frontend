@@ -14,58 +14,57 @@
  * limitations under the License.
  *@
 
+@import services.fileUpload.ParserValidationError
+
 @this(
         layout: templates.SchemeLayout,
-        govukButton: GovukButton
+        govukButton: GovukButton,
+        govukTable : GovukTable
 )
 
-@(returnToFileUploadURL: String, fileDownloadInstructionsLink: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(returnToFileUploadURL: String, fileDownloadInstructionsLink: String, dummyErrors: Seq[ParserValidationError])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("fileupload.invalid.title"))) {
 
  <h1 class="govuk-heading-xl">@messages("fileupload.invalid.heading")</h1>
- <p class="govuk-body">@messages("fileupload.invalid.p1")
- <a href="@fileDownloadInstructionsLink" class="govuk-link">@messages("fileupload.invalid.download.instructions.link")</a>
-  @messages("fileupload.invalid.subheading.p2")
- </p>
- <h2 class="govuk-heading-m">
-  @messages("fileupload.invalid.h1")
- </h2>
 
-<table class="govuk-table">
-    <thead class="govuk-table__head">
-    <tr class="govuk-table__row">
-        <th scope="col" class="govuk-table__header" data-gtm-vis-recent-on-screen-8267218_2200="34" data-gtm-vis-first-on-screen-8267218_2200="34" data-gtm-vis-total-visible-time-8267218_2200="100" data-gtm-vis-has-fired-8267218_2200="1">Cell</th>
-        <th scope="col" class="govuk-table__header" data-gtm-vis-has-fired-8267218_2200="1">Error</th>
-    </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header govuk-!-font-weight-regular" data-gtm-vis-has-fired-8267218_2200="1">A2</th>
-        <td class="govuk-table__cell">Enter the member’s first name</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header govuk-!-font-weight-regular" data-gtm-vis-has-fired-8267218_2200="1">C2</th>
-        <td class="govuk-table__cell">Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ123456C</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header govuk-!-font-weight-regular" data-gtm-vis-has-fired-8267218_2200="1">E2</th>
-        <td class="govuk-table__cell">The charge amount must be an amount of money, like 123 or 123.45</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header govuk-!-font-weight-regular" data-gtm-vis-has-fired-8267218_2200="1">F2</th>
-        <td class="govuk-table__cell">Enter the date you received notice to pay the charge</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header govuk-!-font-weight-regular" data-gtm-vis-has-fired-8267218_2200="1">G2</th>
-        <td class="govuk-table__cell">Select yes if the payment type is mandatory</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header govuk-!-font-weight-regular" data-gtm-vis-has-fired-8267218_2200="1">D2</th>
-        <td class="govuk-table__cell">Enter the tax year to which the annual allowance charge relates</td>
-    </tr>
-    </tbody>
-</table>
+ <p class="govuk-body">@messages("fileupload.invalid.p1")
+     <a href="@fileDownloadInstructionsLink" class="govuk-link">@messages("fileupload.invalid.download.instructions.link")</a>
+     @messages("fileupload.invalid.subheading.p2")
+ </p>
+
+@govukTable(
+    Table(
+        rows =
+            for(element <- dummyErrors) yield {
+            Seq(
+                TableRow(
+                    content = Text(element.row.toString + element.col.toString),
+                    classes = "govuk-!-font-weight-regular"
+                ),
+                TableRow(
+                    content = Text(element.error),
+                    classes = "govuk-!-font-weight-regular",
+                )
+            )
+        },
+        head =
+            Some(
+                Seq(
+                    HeadCell(
+                        content = Text(messages("fileupload.invalid.item1"))
+                    ),
+                    HeadCell(
+                        content = Text(messages("fileupload.invalid.item2"))
+                    )
+                )
+            ),
+            caption = Some(messages("fileupload.invalid.h1")),
+            captionClasses = "govuk-table__caption--m",
+            firstCellIsHeader = true
+    )
+)
+
 @govukButton(
             Button(
                 href = Some(returnToFileUploadURL),

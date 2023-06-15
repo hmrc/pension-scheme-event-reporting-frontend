@@ -1476,7 +1476,7 @@ fileupload.invalid.p1 = Correct the following errors and upload it again, or upl
 fileupload.invalid.download.instructions.link = Download the instructions for the format of your files
 fileupload.invalid.subheading.p2 = for more information.
 fileupload.invalid.h1 = Problems with your file
-fileupload.invalid.item1= Cell
+fileupload.invalid.item1 = Cell
 fileupload.invalid.item2 = Error
 
 return.to.fileupload = Return to file upload
