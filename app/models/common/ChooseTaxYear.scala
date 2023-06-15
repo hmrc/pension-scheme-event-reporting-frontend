@@ -22,9 +22,7 @@ import models.enumeration.EventType.{Event22, Event23}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import utils.DateHelper
 
-import java.time.{LocalDate, Month}
 import scala.language.implicitConversions
 
 case class ChooseTaxYear(startYear: String) {

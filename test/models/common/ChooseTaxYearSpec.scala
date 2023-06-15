@@ -22,18 +22,12 @@ import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json.{JsError, JsString, Json, Reads, Writes}
-import utils.DateHelper
-
-import java.time.LocalDate
+import play.api.libs.json._
 
 class ChooseTaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
   private val writesTaxYear: Writes[ChooseTaxYear]= ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
   private val rdsTaxYear: Reads[ChooseTaxYear] = ChooseTaxYear.reads(ChooseTaxYear.enumerable(2021))
-
-  private def genYear: Gen[Int] =
-    Gen.oneOf(Seq(2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028))
 
   "ChooseTaxYear" - {
 
@@ -72,24 +66,10 @@ class ChooseTaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
   }
 
   "values" - {
-    "yield seq of tax year start years for all years up to BUT NOT INCLUDING current calendar year " +
-      "where current calendar date is set to 5th April (end of old tax year) of a random year" in {
-      forAll(genYear -> "valid years") { year =>
-        DateHelper.setDate(Some(LocalDate.of(year, 4, 5)))
-        val expectedResult =
-          (2013 until year).reverse.map(yr => ChooseTaxYear(yr.toString))
+    "yield seq of tax year start years for all years up to 2021 (the hardcoded tax year chosen from the outset" +
+      "for this test)" in {
+        val expectedResult = (2013 to 2021).reverse.map(yr => ChooseTaxYear(yr.toString))
         ChooseTaxYear.values(2021) mustBe expectedResult
-      }
-    }
-
-    "yield tax year start years for all years up to AND INCLUDING current calendar year " +
-      "where current calendar date is set to 6th April (start of new tax year) of a random year" in {
-      forAll(genYear -> "valid years") { year =>
-        DateHelper.setDate(Some(LocalDate.of(year, 4, 6)))
-        val expectedResult =
-          (2013 to year).reverse.map(yr => ChooseTaxYear(yr.toString))
-        ChooseTaxYear.values(2021) mustBe expectedResult
-      }
     }
   }
 }
