@@ -22,12 +22,15 @@ import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json.{JsError, JsString, Json}
+import play.api.libs.json.{JsError, JsString, Json, Reads, Writes}
 import utils.DateHelper
 
 import java.time.LocalDate
 
 class ChooseTaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+
+  private val writesTaxYear: Writes[ChooseTaxYear]= ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
+  private val rdsTaxYear: Reads[ChooseTaxYear] = ChooseTaxYear.reads(ChooseTaxYear.enumerable(2021))
 
   private def genYear: Gen[Int] =
     Gen.oneOf(Seq(2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028))
@@ -36,34 +39,34 @@ class ChooseTaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(ChooseTaxYear.values.toSeq)
+      val gen = Gen.oneOf(ChooseTaxYear.values(2021).toSeq)
 
       forAll(gen) {
         chooseTaxYear =>
 
-          JsString(chooseTaxYear.toString).validate[ChooseTaxYear].asOpt.value mustEqual chooseTaxYear
+          JsString(chooseTaxYear.toString).validate[ChooseTaxYear](rdsTaxYear).asOpt.value mustEqual chooseTaxYear
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!ChooseTaxYear.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!ChooseTaxYear.values(2021).map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
 
-          JsString(invalidValue).validate[ChooseTaxYear] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[ChooseTaxYear](rdsTaxYear) mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(ChooseTaxYear.values.toSeq)
+      val gen = Gen.oneOf(ChooseTaxYear.values(2021).toSeq)
 
       forAll(gen) {
         chooseTaxYear =>
 
-          Json.toJson(chooseTaxYear) mustEqual JsString(chooseTaxYear.toString)
+          Json.toJson(chooseTaxYear)(writesTaxYear) mustEqual JsString(chooseTaxYear.toString)
       }
     }
   }
@@ -75,7 +78,7 @@ class ChooseTaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
         DateHelper.setDate(Some(LocalDate.of(year, 4, 5)))
         val expectedResult =
           (2013 until year).reverse.map(yr => ChooseTaxYear(yr.toString))
-        ChooseTaxYear.values mustBe expectedResult
+        ChooseTaxYear.values(2021) mustBe expectedResult
       }
     }
 
@@ -85,7 +88,7 @@ class ChooseTaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
         DateHelper.setDate(Some(LocalDate.of(year, 4, 6)))
         val expectedResult =
           (2013 to year).reverse.map(yr => ChooseTaxYear(yr.toString))
-        ChooseTaxYear.values mustBe expectedResult
+        ChooseTaxYear.values(2021) mustBe expectedResult
       }
     }
   }

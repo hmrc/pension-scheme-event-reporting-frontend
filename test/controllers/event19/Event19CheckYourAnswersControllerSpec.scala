@@ -18,7 +18,7 @@ package controllers.event19
 
 import base.SpecBase
 import controllers.event19.Event19CheckYourAnswersControllerSpec.expectedMemberSummaryListRowsEvent19
-import data.SampleData.{sampleJourneyData10BecameAScheme, sampleJourneyData10CeasedToBecomeAScheme, sampleJourneyData19CountryOrTerritory}
+import data.SampleData.sampleJourneyData19CountryOrTerritory
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

@@ -53,6 +53,7 @@ import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, Typ
 import pages.event7.{CrystallisedAmountPage, LumpSumAmountPage, PaymentDatePage}
 import pages.event8.{LumpSumAmountAndDatePage, TypeOfProtectionReferencePage, TypeOfProtectionPage => Event8TypeOfProtectionPage}
 import pages.event8a.PaymentTypePage
+import play.api.libs.json.{Reads, Writes}
 import utils.{CountryOptions, Event2MemberPageNumbers, InputOption}
 
 import java.time.LocalDate
@@ -115,6 +116,8 @@ object SampleData extends SpecBase {
 
   val memberDetails: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567V")
   val memberDetails2: MembersDetails = MembersDetails("Steven", "Bloggs", "AA123456C")
+
+  private val writesTaxYear: Writes[ChooseTaxYear]= ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
 
   val paymentDetails: Event1PaymentDetails = Event1PaymentDetails(1000.00, LocalDate.of(2022, 11, 8))
   val crystallisedDetails: CrystallisedDetails = CrystallisedDetails(10.00, LocalDate.of(2022, 11, 8))
@@ -259,24 +262,24 @@ object SampleData extends SpecBase {
   def sampleMemberJourneyDataEvent22and23(eventType: EventType): UserAnswers = UserAnswers()
     .setOrException(TaxYearPage, TaxYear("2022"))
     .setOrException(MembersDetailsPage(eventType, 0), memberDetails)
-    .setOrException(ChooseTaxYearPage(eventType, 0), ChooseTaxYear("2015"))
+    .setOrException(ChooseTaxYearPage(eventType, 0), ChooseTaxYear("2015"))(writesTaxYear)
     .setOrException(TotalPensionAmountsPage(eventType, 0), BigDecimal(10.00))
 
 
   def event22and23UADataWithPagination(eventType: EventType) =
     (0 to 25).foldLeft(emptyUserAnswersWithTaxYear) { (acc, i) =>
       acc.setOrException(MembersDetailsPage(eventType, i), memberDetails)
-        .setOrException(ChooseTaxYearPage(eventType, i), ChooseTaxYear("2015"))
+        .setOrException(ChooseTaxYearPage(eventType, i), ChooseTaxYear("2015"))(writesTaxYear)
         .setOrException(TotalPensionAmountsPage(eventType, i), BigDecimal(10.00))
     }
 
   def sampleTwoMemberJourneyDataEvent22and23(eventType: EventType): UserAnswers =
     UserAnswers()
       .setOrException(MembersDetailsPage(eventType, 0), memberDetails)
-      .setOrException(ChooseTaxYearPage(eventType, 0), taxYear)
+      .setOrException(ChooseTaxYearPage(eventType, 0), taxYear)(writesTaxYear)
       .setOrException(TotalPensionAmountsPage(eventType, 0), totalPaymentAmountEvent22and23)
       .setOrException(MembersDetailsPage(eventType, 1), memberDetails2)
-      .setOrException(ChooseTaxYearPage(eventType, 1), taxYear)
+      .setOrException(ChooseTaxYearPage(eventType, 1), taxYear)(writesTaxYear)
       .setOrException(TotalPensionAmountsPage(eventType, 1), totalPaymentAmountEvent22and23)
 
   def sampleJourneyData10BecameAScheme: UserAnswers =

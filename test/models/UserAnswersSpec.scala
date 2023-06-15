@@ -20,7 +20,7 @@ import base.SpecBase
 import data.SampleData
 import data.SampleData._
 import models.common.ManualOrUpload.Manual
-import models.common.MembersSummary
+import models.common.{ChooseTaxYear, MembersSummary}
 import models.common.MembersSummary.readsMemberValue
 import models.enumeration.EventType.{Event1, Event22}
 import models.event1.MembersOrEmployersSummary.readsMemberOrEmployerValue
@@ -30,11 +30,13 @@ import org.scalatest.matchers.must.Matchers
 import pages.common.{ChooseTaxYearPage, ManualOrUploadPage, MembersDetailsPage, MembersOrEmployersPage, MembersPage}
 import pages.event1.employer.CompanyDetailsPage
 import pages.event1.{PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
+import play.api.libs.json.Writes
 
 import java.time.LocalDate
 
 class UserAnswersSpec extends SpecBase with Matchers {
 
+  private val writesTaxYear: Writes[ChooseTaxYear]= ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
 
 
   "getAll" - {
@@ -111,7 +113,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
 
       "must return the list of members where member value and member details missing" in {
         val userAnswersWithOneMember: UserAnswers = UserAnswers()
-          .setOrException(ChooseTaxYearPage(Event22, 0), taxYear)
+          .setOrException(ChooseTaxYearPage(Event22, 0), taxYear)(writesTaxYear)
 
         userAnswersWithOneMember.getAll(MembersPage(Event22))(MembersSummary.readsMember(Event22)) mustBe
           Seq(MembersSummary("Not entered", BigDecimal(0.00), "Not entered"))
