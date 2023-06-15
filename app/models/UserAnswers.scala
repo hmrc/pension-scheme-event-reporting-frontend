@@ -16,7 +16,8 @@
 
 package models
 
-import pages.QuestionPage
+import models.enumeration.EventType
+import pages.{QuestionPage, TaxYearPage}
 import play.api.libs.json._
 import queries.{Derivable, Gettable, Query, Settable}
 
@@ -128,4 +129,12 @@ final case class UserAnswers(
       .map(_.value.map(jsValue => readsBigDecimal.reads(jsValue).asOpt.getOrElse(zeroValue)).sum)
       .getOrElse(zeroValue)
   }
+
+  def eventDataIdentifier(eventType: EventType): EventDataIdentifier = {
+    (noEventTypeData \ TaxYearPage.toString).asOpt[String] match {
+      case Some(year) => EventDataIdentifier(eventType, year, "1")
+      case _ => throw new RuntimeException("No tax year available")
+    }
+  }
+
 }

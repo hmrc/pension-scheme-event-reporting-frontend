@@ -19,7 +19,7 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.enumeration.EventType
-import models.{FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
+import models.{EventDataIdentifier, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -68,12 +68,14 @@ class EventReportingConnector @Inject()(
       Future.successful(HttpResponse(NOT_FOUND, "Not found"))
   }
 
-  def compileEvent(pstr: String, eventType: EventType)
+  def compileEvent(pstr: String, edi: EventDataIdentifier)
                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
-      "eventType" -> eventType.toString
+      "eventType" -> edi.eventType.toString,
+      "year" -> edi.year,
+      "version" -> edi.version
     )
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 

@@ -17,7 +17,7 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.FileUploadOutcomeResponse
+import models.{EventDataIdentifier, FileUploadOutcomeResponse}
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.{Enumerable, EventType}
 import org.scalatest.matchers.must.Matchers
@@ -121,7 +121,7 @@ class EventReportingConnectorSpec
             noContent
           )
       )
-      connector.compileEvent(pstr, eventType).map {
+      connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1")).map {
         _ mustBe()
       }
     }
@@ -136,7 +136,7 @@ class EventReportingConnectorSpec
       )
 
       recoverToSucceededIf[HttpException] {
-        connector.compileEvent(pstr, eventType)
+        connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1"))
       }
     }
   }

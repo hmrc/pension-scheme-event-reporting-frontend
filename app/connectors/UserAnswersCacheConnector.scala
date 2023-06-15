@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.UserAnswers
 import models.enumeration.EventType
+import pages.TaxYearPage
 import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -34,22 +35,29 @@ class UserAnswersCacheConnector @Inject()(
 
   private def url = s"${config.eventReportingUrl}/pension-scheme-event-reporting/user-answers"
 
-  private def noEventHeaders(pstr:String)= Seq(
+  private def noEventHeaders(pstr: String) = Seq(
     "Content-Type" -> "application/json",
     "pstr" -> pstr
   )
 
-  private def eventHeaders(pstr: String, eventType: EventType) = Seq(
-    "Content-Type" -> "application/json",
-    "pstr" -> pstr,
-    "eventType" -> eventType.toString
-  )
+  private def eventHeaders(pstr: String, eventType: EventType, noEventJson: Option[JsObject]): Seq[(String, String)] = {
+    noEventJson.flatMap{ json => (json \ TaxYearPage.toString).asOpt[String]} match {
+      case Some(year) =>
+        Seq(
+          "Content-Type" -> "application/json",
+          "pstr" -> pstr,
+          "eventType" -> eventType.toString,
+          "year" -> year
+        )
+      case None => throw new RuntimeException("No tax year available")
+    }
+  }
 
   def get(pstr: String, eventType: EventType)
          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
     for {
-      eventData <- getJson(eventHeaders(pstr, eventType))
       noEventData <- getJson(noEventHeaders(pstr))
+      eventData <- getJson(eventHeaders(pstr, eventType, noEventData))
     } yield {
       (eventData, noEventData) match {
         case (Some(a), Some(b)) => Some(UserAnswers(data = a, noEventTypeData = b))
@@ -76,28 +84,32 @@ class UserAnswersCacheConnector @Inject()(
   }
 
   def get(pstr: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
-    getJson(noEventHeaders(pstr)).map(_.map( d => UserAnswers(noEventTypeData = d)))
+    getJson(noEventHeaders(pstr)).map(_.map(d => UserAnswers(noEventTypeData = d)))
   }
 
   def save(pstr: String, eventType: EventType, userAnswers: UserAnswers)
           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+    userAnswers.get(TaxYearPage) match {
+      case Some(year) =>
+        val headers: Seq[(String, String)] = Seq(
+          "Content-Type" -> "application/json",
+          "pstr" -> pstr,
+          "eventType" -> eventType.toString,
+          "startYear" -> year.startYear
+        )
 
-    val headers: Seq[(String, String)] = Seq(
-      "Content-Type" -> "application/json",
-      "pstr" -> pstr,
-      "eventType" -> eventType.toString
-    )
+        val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-
-    http.POST[JsValue, HttpResponse](url, userAnswers.data)(implicitly, implicitly, hc, implicitly)
-      .map { response =>
-        response.status match {
-          case OK => ()
-          case _ =>
-            throw new HttpException(response.body, response.status)
-        }
-      }
+        http.POST[JsValue, HttpResponse](url, userAnswers.data)(implicitly, implicitly, hc, implicitly)
+          .map { response =>
+            response.status match {
+              case OK => ()
+              case _ =>
+                throw new HttpException(response.body, response.status)
+            }
+          }
+      case None => throw new RuntimeException("No tax year available")
+    }
   }
 
   def save(pstr: String, userAnswers: UserAnswers)
