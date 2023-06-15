@@ -117,6 +117,7 @@ class EventSummaryController @Inject()(
       case EventType.Event13 => Some(controllers.event13.routes.Event13CheckYourAnswersController.onPageLoad.url)
       case EventType.Event14 => Some(controllers.event14.routes.Event14CheckYourAnswersController.onPageLoad().url)
       case EventType.Event18 => None
+      case EventType.Event19 => Some(controllers.event19.routes.Event19CheckYourAnswersController.onPageLoad.url)
       case EventType.Event20 => Some(controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
       case EventType.WindUp => Some(controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onPageLoad.url)
       case _ =>
