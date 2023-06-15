@@ -51,13 +51,12 @@ class UserAnswersCacheConnector @Inject()(
       eventData <- getJson(eventHeaders(pstr, eventType))
       noEventData <- getJson(noEventHeaders(pstr))
     } yield {
-      val json = (eventData, noEventData) match {
-        case (Some(a), Some(b)) => Some(a.deepMerge(b))
-        case (None, Some(b)) => Some(b)
-        case (Some(a), None) => Some(a)
+      (eventData, noEventData) match {
+        case (Some(a), Some(b)) => Some(UserAnswers(data = a, noEventTypeData = b))
+        case (None, Some(b)) => Some(UserAnswers(noEventTypeData = b))
+        case (Some(a), None) => Some(UserAnswers(data = a))
         case (None, None) => None
       }
-      json.map(UserAnswers)
     }
   }
 
@@ -77,7 +76,7 @@ class UserAnswersCacheConnector @Inject()(
   }
 
   def get(pstr: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
-    getJson(noEventHeaders(pstr)).map(_.map(UserAnswers))
+    getJson(noEventHeaders(pstr)).map(_.map( d => UserAnswers(noEventTypeData = d)))
   }
 
   def save(pstr: String, eventType: EventType, userAnswers: UserAnswers)

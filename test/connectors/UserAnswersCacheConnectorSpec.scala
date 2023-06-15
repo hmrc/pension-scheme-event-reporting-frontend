@@ -59,7 +59,7 @@ class UserAnswersCacheConnectorSpec
       )
 
       connector.get(pstr, eventType) map {
-        _ mustBe Some(UserAnswers(validResponse))
+        _ mustBe Some(UserAnswers(validResponse, validResponse))
       }
     }
 
