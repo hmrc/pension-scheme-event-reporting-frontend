@@ -31,7 +31,7 @@ case class StartNewERAuditEvent(
     Map(
       "psaOrPspId" -> psaIdentifier,
       "pstr" -> pstr,
-      "taxYear" -> taxYear.startYear,
+      "taxYear" -> s"${taxYear.startYear} to ${taxYear.endYear}",
       "eventNumber" -> eventNumber.toString
     )
   }

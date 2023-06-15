@@ -70,7 +70,7 @@ class AuditServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with 
           auditType mustBe "EventReportingStart"
           detail mustBe Map("psaOrPspId" -> "test-psa",
                             "pstr" -> "test-pstr",
-                            "taxYear" -> "2022",
+                            "taxYear" -> "2022 to 2023",
                             "eventNumber" -> "22")
       }
       app.stop()
