@@ -40,7 +40,8 @@ class Event19CheckYourAnswersController @Inject()(
                                                    requireData: DataRequiredAction,
                                                    connector: EventReportingConnector,
                                                    val controllerComponents: MessagesControllerComponents,
-                                                   view: CheckYourAnswersView
+                                                   view: CheckYourAnswersView,
+                                                   countryOrTerritorySummary: CountryOrTerritorySummary
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
@@ -62,7 +63,7 @@ class Event19CheckYourAnswersController @Inject()(
   private def buildEvent19CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     Seq(
-      CountryOrTerritorySummary.row(request.userAnswers, waypoints, sourcePage),
+      countryOrTerritorySummary.row(request.userAnswers, waypoints, sourcePage),
       DateChangeMadeSummary.row(request.userAnswers, waypoints, sourcePage)
     ).flatten
   }

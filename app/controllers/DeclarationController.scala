@@ -109,34 +109,29 @@ class DeclarationController @Inject()(
       case _ => throw new RuntimeException("Unknown user type")
     }
 
-    val common = Json.obj(
-      "erDetails" -> Json.obj(
-        "pSTR" -> pstr,
-        //Report start date = tax year start date
-        "reportStartDate" -> s"${taxYear.startYear}-04-06",
-        //Report end date = tax year end date
-        "reportEndDate" -> s"${taxYear.endYear}-04-05"
-      ),
-      "erDeclarationDetails" -> Json.obj(
-        //PSA or PSP access
-        "submittedBy" -> psaOrPsp,
-        //PSA or PSP ID
-        "submittedID" -> loggedInUser.psaIdOrPspId
-      )
-    )
-
     val declarationDetails = loggedInUser.administratorOrPractitioner match {
       case AdministratorOrPractitioner.Administrator =>
-        common + ("psaDeclaration" -> Json.obj(
+        Json.obj(
           //Both of those are always selected. Users can't access the page otherwise.
           "psaDeclaration1" -> "Selected",
           "psaDeclaration2" -> "Selected"
-        ))
-      case AdministratorOrPractitioner.Practitioner => ??? //TODO: Implement declaration submission by PSP
+        )
+      case AdministratorOrPractitioner.Practitioner =>
+        Json.obj(
+          //Both of those are always selected. Users can't access the page otherwise.
+          "authorisedPSAID" -> ???, //TODO: Implement declaration submission by PSP
+          "pspDeclaration1" -> "Selected",
+          "pspDeclaration2" -> "Selected"
+        )
     }
 
     Json.obj(
-      "declarationDetails" -> declarationDetails
-    )
+      "pstr" -> pstr,
+      "reportStartDate" -> s"${taxYear.startYear}-04-06",
+      "reportEndDate" -> s"${taxYear.endYear}-04-05",
+      "submittedBy" -> psaOrPsp,
+      "submittedID" -> loggedInUser.psaIdOrPspId
+    ) ++ declarationDetails
+
   }
 }
