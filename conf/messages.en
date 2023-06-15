@@ -1480,3 +1480,6 @@ fileupload.invalid.item1 = Cell
 fileupload.invalid.item2 = Error
 
 return.to.fileupload = Return to file upload
+
+validationErrorsSummary.title = validationErrorsSummary
+validationErrorsSummary.heading = validationErrorsSummary
