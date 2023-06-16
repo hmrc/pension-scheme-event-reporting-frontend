@@ -36,10 +36,7 @@ class DataRetrievalImpl(eventType: EventType,
   private val logger = Logger(classOf[DataRetrievalImpl])
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
-
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-
-
     val result = for {
       data <- userAnswersCacheConnector.get(request.pstr, eventType)
     } yield {

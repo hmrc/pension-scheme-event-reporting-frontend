@@ -17,6 +17,7 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
+import models.{EventDataIdentifier, FileUploadOutcomeResponse}
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.{Enumerable, EventType}
 import models.{FileUploadOutcomeResponse, UserAnswers}
@@ -123,7 +124,7 @@ class EventReportingConnectorSpec
             noContent
           )
       )
-      connector.compileEvent(pstr, eventType).map {
+      connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1")).map {
         _ mustBe()
       }
     }
@@ -138,7 +139,7 @@ class EventReportingConnectorSpec
       )
 
       recoverToSucceededIf[HttpException] {
-        connector.compileEvent(pstr, eventType)
+        connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1"))
       }
     }
   }
