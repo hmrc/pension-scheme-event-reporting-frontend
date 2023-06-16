@@ -23,11 +23,12 @@ import services.fileUpload.ParserValidationError
 case class ParsingAndValidationOutcome(
                                         status: ParsingAndValidationOutcomeStatus,
                                         json: JsObject = Json.obj(),
+                                        lessThanTen: Seq[ParserValidationError],
                                         fileName: Option[String] = None
                                       )
 
 object ParsingAndValidationOutcome {
-  implicit val format: OFormat[ParsingAndValidationOutcome] = Json.format[ParsingAndValidationOutcome]
+ // implicit val format: OFormat[ParsingAndValidationOutcome] = Json.format[ParsingAndValidationOutcome]
 
   private val readsDetails: Reads[ParserValidationError] = (
     (JsPath \ "json" \ "row").read[Int] and
@@ -42,23 +43,24 @@ object ParsingAndValidationOutcome {
       columnName
     )
   )
-  private def readsTest(status: ParsingAndValidationOutcomeStatus): Reads[Option[JsArray]] = {
+
+  private def readsTest(status: ParsingAndValidationOutcomeStatus): Reads[Option[Seq[ParserValidationError]]] = {
     status match {
-      case ParsingAndValidationOutcomeStatus.Success =>
-        Reads.pure[Option[JsArray]](None)
       case ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10 =>
-        JsPath.readNullable[JsArray](__.read(Reads.seq(readsDetails)))
-      case ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10 =>
-        JsPath.readNullable[JsArray](__.read(Reads.seq(readsDetails)))
-      case ParsingAndValidationOutcomeStatus.GeneralError =>
-        Reads.pure[Option[JsArray]](None)
+        JsPath.readNullable[Seq[ParserValidationError]](__.read(Reads.seq(readsDetails)))
+      case _ =>
+        Reads.pure[Option[Seq[ParserValidationError]]](None)
     }
   }
 
   implicit val reads: Reads[ParsingAndValidationOutcome] = {
-   (JsPath \ "status").read[ParsingAndValidationOutcomeStatus].flatMap { status =>
-      (JsPath \ "errors").read[Option[JsArray]](readsTest(status))
+    (JsPath \ "status").read[ParsingAndValidationOutcomeStatus].flatMap { status =>
+     (JsPath \ "errors").read[Option[Seq[ParserValidationError]]](readsTest(status)).map{ errors =>
+       ParsingAndValidationOutcome(
+         status = status,
+         lessThanTen = errors.toSeq.flatten
+       )
+     }
     }
-
   }
 }
