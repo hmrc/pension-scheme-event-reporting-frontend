@@ -16,14 +16,49 @@
 
 package models.fileUpload
 
-import play.api.libs.json.{JsObject, Json, OFormat}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json.{JsArray, JsObject, JsPath, Json, OFormat, Reads, __}
+import services.fileUpload.ParserValidationError
 
 case class ParsingAndValidationOutcome(
-                              status: ParsingAndValidationOutcomeStatus,
-                              json: JsObject = Json.obj(),
-                              fileName: Option[String] = None
-                            )
+                                        status: ParsingAndValidationOutcomeStatus,
+                                        json: JsObject = Json.obj(),
+                                        fileName: Option[String] = None
+                                      )
 
 object ParsingAndValidationOutcome {
   implicit val format: OFormat[ParsingAndValidationOutcome] = Json.format[ParsingAndValidationOutcome]
+
+  private val readsDetails: Reads[ParserValidationError] = (
+    (JsPath \ "json" \ "row").read[Int] and
+      (JsPath \ "json" \ "col").read[Int] and
+      (JsPath \ "json" \ "error").read[String] and
+      (JsPath \ "json" \ "columnName").read[String]
+    )((row, col, error, columnName) =>
+    ParserValidationError(
+      row,
+      col,
+      error,
+      columnName
+    )
+  )
+  private def readsTest(status: ParsingAndValidationOutcomeStatus): Reads[Option[JsArray]] = {
+    status match {
+      case ParsingAndValidationOutcomeStatus.Success =>
+        Reads.pure[Option[JsArray]](None)
+      case ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10 =>
+        JsPath.readNullable[JsArray](__.read(Reads.seq(readsDetails)))
+      case ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10 =>
+        JsPath.readNullable[JsArray](__.read(Reads.seq(readsDetails)))
+      case ParsingAndValidationOutcomeStatus.GeneralError =>
+        Reads.pure[Option[JsArray]](None)
+    }
+  }
+
+  implicit val reads: Reads[ParsingAndValidationOutcome] = {
+   (JsPath \ "status").read[ParsingAndValidationOutcomeStatus].flatMap { status =>
+      (JsPath \ "errors").read[Option[JsArray]](readsTest(status))
+    }
+
+  }
 }
