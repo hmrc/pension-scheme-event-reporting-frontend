@@ -19,7 +19,6 @@ package services.fileUpload
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
-import ParserErrorMessages.HeaderInvalidOrFileIsEmpty
 import models.UserAnswers
 import models.enumeration.EventType
 import org.apache.commons.lang3.StringUtils.EMPTY
@@ -27,6 +26,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json._
 import queries.Gettable
+import services.fileUpload.ParserErrorMessages.HeaderInvalidOrFileIsEmpty
 
 import java.time.LocalDate
 
@@ -89,21 +89,21 @@ trait Parser {
     } else {
       ""
     }
-    
+
 
   def parse(startDate: LocalDate, rows: Seq[Array[String]], userAnswers: UserAnswers)
            (implicit messages: Messages): Validated[Seq[ParserValidationError], UserAnswers] = {
     Invalid(Seq(FileLevelParserValidationErrorTypeHeaderInvalidOrFileEmpty))
-//    rows.headOption match {
-//      case Some(row) if row.mkString(",").equalsIgnoreCase(validHeader) =>
-//        rows.size match {
-//          case n if n >= 2 => parseDataRows(startDate, rows)
-//            .map(_.foldLeft(userAnswers)((acc, ci) => acc.setOrException(ci.jsPath, ci.value)))
-//          case _ => Invalid(Seq(FileLevelParserValidationErrorTypeHeaderInvalidOrFileEmpty))
-//        }
-//      case _ =>
-//        Invalid(Seq(FileLevelParserValidationErrorTypeHeaderInvalidOrFileEmpty))
-//    }
+    //    rows.headOption match {
+    //      case Some(row) if row.mkString(",").equalsIgnoreCase(validHeader) =>
+    //        rows.size match {
+    //          case n if n >= 2 => parseDataRows(startDate, rows)
+    //            .map(_.foldLeft(userAnswers)((acc, ci) => acc.setOrException(ci.jsPath, ci.value)))
+    //          case _ => Invalid(Seq(FileLevelParserValidationErrorTypeHeaderInvalidOrFileEmpty))
+    //        }
+    //      case _ =>
+    //        Invalid(Seq(FileLevelParserValidationErrorTypeHeaderInvalidOrFileEmpty))
+    //    }
   }
 
   private def parseDataRows(startDate: LocalDate, rows: Seq[Array[String]])
@@ -118,21 +118,21 @@ trait Parser {
                                index: Int,
                                columns: Seq[String])(implicit messages: Messages): Result
 
-//  protected def memberDetailsValidation(index: Int, columns: Seq[String],
-//                                        memberDetailsForm: Form[MemberDetails]): Validated[Seq[ParserValidationError], MemberDetails] = {
-//    val fields = Seq(
-//      Field(MemberDetailsFieldNames.firstName, fieldValue(columns, fieldNoFirstName), MemberDetailsFieldNames.firstName, 0),
-//      Field(MemberDetailsFieldNames.lastName, fieldValue(columns, fieldNoLastName), MemberDetailsFieldNames.lastName, 1),
-//      Field(MemberDetailsFieldNames.nino, fieldValue(columns, fieldNoNino), MemberDetailsFieldNames.nino, 2)
-//    )
-//    val toMap = Field.seqToMap(fields)
-//
-//    val bind = memberDetailsForm.bind(toMap)
-//    bind.fold(
-//      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-//      value => Valid(value)
-//    )
-//  }
+  //  protected def memberDetailsValidation(index: Int, columns: Seq[String],
+  //                                        memberDetailsForm: Form[MemberDetails]): Validated[Seq[ParserValidationError], MemberDetails] = {
+  //    val fields = Seq(
+  //      Field(MemberDetailsFieldNames.firstName, fieldValue(columns, fieldNoFirstName), MemberDetailsFieldNames.firstName, 0),
+  //      Field(MemberDetailsFieldNames.lastName, fieldValue(columns, fieldNoLastName), MemberDetailsFieldNames.lastName, 1),
+  //      Field(MemberDetailsFieldNames.nino, fieldValue(columns, fieldNoNino), MemberDetailsFieldNames.nino, 2)
+  //    )
+  //    val toMap = Field.seqToMap(fields)
+  //
+  //    val bind = memberDetailsForm.bind(toMap)
+  //    bind.fold(
+  //      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+  //      value => Valid(value)
+  //    )
+  //  }
 
   protected final def errorsFromForm[A](formWithErrors: Form[A], fields: Seq[Field], index: Int): Seq[ParserValidationError] = {
     for {
@@ -140,7 +140,7 @@ trait Parser {
       field <- fields.find(_.getFormValidationFullFieldName == formError.key)
     }
     yield {
-      ParserValidationError(index, field.columnNo, formError.message, field.columnName, formError.args)
+      ParserValidationError(index, field.columnNo, formError.message, field.columnName)
     }
   }
 
@@ -183,7 +183,11 @@ trait Parser {
     }
 }
 
-case class ParserValidationError(row: Int, col: Int, error: String, columnName: String = EMPTY, args: Seq[Any] = Nil)
+case class ParserValidationError(row: Int, col: Int, error: String, columnName: String = EMPTY)
+
+object ParserValidationError {
+  implicit val format: OFormat[ParserValidationError] = Json.format[ParserValidationError]
+}
 
 protected case class CommitItem(jsPath: JsPath, value: JsValue)
 

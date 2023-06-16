@@ -17,24 +17,24 @@
 package models.fileUpload
 
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json.{JsArray, JsObject, JsPath, Json, OFormat, Reads, __}
+import play.api.libs.json._
 import services.fileUpload.ParserValidationError
 
 case class ParsingAndValidationOutcome(
                                         status: ParsingAndValidationOutcomeStatus,
                                         json: JsObject = Json.obj(),
-                                        lessThanTen: Seq[ParserValidationError],
+                                        lessThanTen: Seq[ParserValidationError] = Nil,
                                         fileName: Option[String] = None
                                       )
 
 object ParsingAndValidationOutcome {
- // implicit val format: OFormat[ParsingAndValidationOutcome] = Json.format[ParsingAndValidationOutcome]
+  implicit val format: OFormat[ParsingAndValidationOutcome] = Json.format[ParsingAndValidationOutcome]
 
-  private val readsDetails: Reads[ParserValidationError] = (
-    (JsPath \ "json" \ "row").read[Int] and
-      (JsPath \ "json" \ "col").read[Int] and
-      (JsPath \ "json" \ "error").read[String] and
-      (JsPath \ "json" \ "columnName").read[String]
+  private val readsErrorDetails: Reads[ParserValidationError] = (
+    (JsPath \ "row").read[Int] and
+      (JsPath \ "col").read[Int] and
+      (JsPath \ "error").read[String] and
+      (JsPath \ "columnName").read[String]
     )((row, col, error, columnName) =>
     ParserValidationError(
       row,
@@ -44,10 +44,10 @@ object ParsingAndValidationOutcome {
     )
   )
 
-  private def readsTest(status: ParsingAndValidationOutcomeStatus): Reads[Option[Seq[ParserValidationError]]] = {
+  private def readsError(status: ParsingAndValidationOutcomeStatus): Reads[Option[Seq[ParserValidationError]]] = {
     status match {
       case ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10 =>
-        JsPath.readNullable[Seq[ParserValidationError]](__.read(Reads.seq(readsDetails)))
+        JsPath.readNullable[Seq[ParserValidationError]](__.read(Reads.seq(readsErrorDetails)))
       case _ =>
         Reads.pure[Option[Seq[ParserValidationError]]](None)
     }
@@ -55,12 +55,12 @@ object ParsingAndValidationOutcome {
 
   implicit val reads: Reads[ParsingAndValidationOutcome] = {
     (JsPath \ "status").read[ParsingAndValidationOutcomeStatus].flatMap { status =>
-     (JsPath \ "errors").read[Option[Seq[ParserValidationError]]](readsTest(status)).map{ errors =>
-       ParsingAndValidationOutcome(
-         status = status,
-         lessThanTen = errors.toSeq.flatten
-       )
-     }
+      (JsPath \ "errors").read[Option[Seq[ParserValidationError]]](readsError(status)).map { errors =>
+        ParsingAndValidationOutcome(
+          status = status,
+          lessThanTen = errors.toSeq.flatten
+        )
+      }
     }
   }
 }
