@@ -19,13 +19,14 @@ package controllers
 import connectors.EventReportingConnector
 import controllers.actions._
 import models.enumeration.AdministratorOrPractitioner
+import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
 import models.{LoggedInUser, TaxYear, UserAnswers}
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.DeclarationView
+import views.html.{DeclarationView, DeclarationViewPSP}
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -37,12 +38,17 @@ class DeclarationController @Inject()(
                                        requireData: DataRequiredAction,
                                        erConnector: EventReportingConnector,
                                        val controllerComponents: MessagesControllerComponents,
-                                       view: DeclarationView
+                                       view: DeclarationView,
+                                       view2: DeclarationViewPSP
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
     implicit request =>
-      Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
+      request.loggedInUser.administratorOrPractitioner match {
+        case Administrator => Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
+        case Practitioner => Ok(view2(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
+        case _ => throw new RuntimeException("Unknown user type")
+      }
   }
 
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {

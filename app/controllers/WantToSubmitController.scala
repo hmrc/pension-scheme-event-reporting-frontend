@@ -58,7 +58,7 @@ class WantToSubmitController @Inject()(
               Redirect(
                 request.loggedInUser.administratorOrPractitioner match {
                   case Administrator => WantToSubmitPage.navigate(waypoints, updatedAnswers, updatedAnswers).route
-                  case Practitioner => EventSelectionPage.route(waypoints)
+                  case Practitioner => WantToSubmitPage.navigate(waypoints, updatedAnswers, updatedAnswers).route
                 }
               )
             } else {
