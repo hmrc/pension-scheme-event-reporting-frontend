@@ -18,7 +18,7 @@ package controllers.event6
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import controllers.event6.AmountCrystallisedAndDateController.startOfCrystallisationDate
+import controllers.event6.AmountCrystallisedAndDateController.startDateOfCurrentTaxYear
 import forms.event6.AmountCrystallisedAndDateFormProvider
 import models.enumeration.EventType
 import models.event6.CrystallisedDetails
@@ -43,28 +43,25 @@ class AmountCrystallisedAndDateController @Inject()(val controllerComponents: Me
                                                     view: AmountCrystallisedAndDateView
                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def form(startDate: LocalDate)(implicit messages: Messages): Form[CrystallisedDetails] = {
-    val endDate = Quarters.getQuarter(startDate).endDate
-    formProvider(
-      startDate,
-      endDate
-    )
-  }
-
   private val eventType = EventType.Event6
 
+  private def form(startDateOfCurrentTaxYear: LocalDate)(implicit messages: Messages): Form[CrystallisedDetails] = {
+    val endDate = Quarters.getQuarter(startDateOfCurrentTaxYear).endDate
+    formProvider(endDate)
+  }
+
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val startDate = startOfCrystallisationDate(request.userAnswers.flatMap(_.get(TaxYearPage)))
+    val startDate = startDateOfCurrentTaxYear(request.userAnswers.flatMap(_.get(TaxYearPage)))
 
     val preparedForm = request.userAnswers.flatMap(_.get(AmountCrystallisedAndDatePage(eventType, index))) match {
-      case Some(value) => form(startDate = startDate).fill(value)
-      case None => form(startDate)
+      case Some(value) => form(startDateOfCurrentTaxYear = startDate).fill(value)
+      case None        => form(startDate)
     }
     Ok(view(preparedForm, waypoints, index))
   }
 
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
-    val startDate = startOfCrystallisationDate(request.userAnswers.flatMap(_.get(TaxYearPage)))
+    val startDate = startDateOfCurrentTaxYear(request.userAnswers.flatMap(_.get(TaxYearPage)))
     form(startDate).bindFromRequest().fold(
       formWithErrors => {
         Future.successful(BadRequest(view(formWithErrors, waypoints, index)))
@@ -81,10 +78,8 @@ class AmountCrystallisedAndDateController @Inject()(val controllerComponents: Me
 }
 
 object AmountCrystallisedAndDateController {
-  def startOfCrystallisationDate(optTaxYear: Option[TaxYear]): LocalDate = optTaxYear match {
-    case Some(value) =>
-      val taxYear = value.startYear
-      LocalDate.of(Integer.parseInt(taxYear), Month.APRIL, 6)
-    case _ => LocalDate.now()
+  def startDateOfCurrentTaxYear(optTaxYear: Option[TaxYear]): LocalDate = optTaxYear match {
+    case Some(value) => LocalDate.of(Integer.parseInt(value.startYear), Month.APRIL, 6)
+    case _           => LocalDate.now()
   }
 }
