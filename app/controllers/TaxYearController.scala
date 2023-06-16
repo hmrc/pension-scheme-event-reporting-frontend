@@ -51,7 +51,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
           Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(TaxYearPage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(TaxYearPage, value, nonEventTypeData = true)
           userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
             Redirect(TaxYearPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }

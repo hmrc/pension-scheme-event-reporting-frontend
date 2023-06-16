@@ -55,7 +55,7 @@ class EventWindUpCheckYourAnswersController @Inject()(
   def onClick: Action[AnyContent] =
     (identify andThen getData(WindUp) andThen requireData).async { implicit request =>
       val waypoints = EmptyWaypoints
-      connector.compileEvent(request.pstr, WindUp).map {
+      connector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(WindUp)).map {
         _ =>
           Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
       }
