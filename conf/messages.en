@@ -1477,3 +1477,10 @@ schemeChangeDate.event20A.error.outsideReportedYear = The date must be between {
 
 whatChange.becameMasterTrust = It became a Master Trust
 whatChange.ceasedMasterTrust = It has ceased to be a Master Trust
+
+event20APsaDeclaration.title = Declaration
+event20APsaDeclaration.heading = Declaration
+event20APsaDeclaration.p = I, {0} declare that:
+event20APsaDeclaration.item1 = to the best of my knowledge and belief, the information given in this tax return is correct and complete
+event20APsaDeclaration.item2 = I understand that if I have made a false statement in this tax return, I may be liable to a penalty, and that false statements may also lead to prosecution
+
