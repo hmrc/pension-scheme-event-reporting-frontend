@@ -116,7 +116,7 @@ class Event8ACheckYourAnswersController @Inject()(
 
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event8A) andThen requireData).async { implicit request =>
-      connector.compileEvent(request.pstr, Event8A).map {
+      connector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(Event8A)).map {
         _ =>
           Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event8A).url)
       }

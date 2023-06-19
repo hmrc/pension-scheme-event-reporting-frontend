@@ -21,12 +21,12 @@ import connectors.UserAnswersCacheConnector
 import controllers.event11.InvestmentsInAssetsRuleChangeDateControllerSpec.event11Date
 import forms.event11.InvestmentsInAssetsRuleChangeDateFormProvider
 import models.event11.Event11Date
-import pages.EmptyWaypoints
-import pages.event11.{Event11CheckYourAnswersPage, InvestmentsInAssetsRuleChangeDatePage}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, reset, times, verify, when}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.EmptyWaypoints
+import pages.event11.{Event11CheckYourAnswersPage, InvestmentsInAssetsRuleChangeDatePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest

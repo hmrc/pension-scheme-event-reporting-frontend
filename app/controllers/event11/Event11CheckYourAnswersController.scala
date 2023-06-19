@@ -61,7 +61,7 @@ class Event11CheckYourAnswersController @Inject()(
         case (false, false) =>
           Future.successful(Redirect(controllers.event11.routes.Event11CannotSubmitController.onPageLoad(EmptyWaypoints).url))
         case _ =>
-          connector.compileEvent(request.pstr, Event11).map {
+          connector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(Event11)).map {
             _ =>
               Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
           }

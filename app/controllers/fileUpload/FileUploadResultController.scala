@@ -18,7 +18,6 @@ package controllers.fileUpload
 
 import connectors.{EventReportingConnector, ParsingAndValidationOutcomeCacheConnector, UpscanInitiateConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import fileUploadParser.CSVParser
 import forms.fileUpload.FileUploadResultFormProvider
 import models.FileUploadOutcomeStatus.IN_PROGRESS
 import models.FileUploadOutcomeStatus.SUCCESS
@@ -36,6 +35,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.i18n.Lang.logger
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Request}
+import services.fileUpload.CSVParser
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadResultView
 
@@ -119,7 +119,6 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                       //TODO - This for loop is temporary code to allow parsing to be printed in the console for testing
                       //TODO - To be removed at a later stage
                       val formattedRow: String = row.mkString(",")
-                      println(s"\n Formatted row: $formattedRow")
                     }
                     parsingAndValidationOutcomeCacheConnector.setOutcome(outcome = ParsingAndValidationOutcome(status = Success, fileName = fileName))
                   } recoverWith {

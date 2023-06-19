@@ -20,9 +20,9 @@ import controllers.event20.routes
 import models.UserAnswers
 import models.event20.WhatChange
 import models.event20.WhatChange.{BecameOccupationalScheme, CeasedOccupationalScheme}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 
 import scala.util.{Success, Try}
 

@@ -16,19 +16,25 @@
 
 package controllers
 
-import connectors.EventReportingConnector
+import audit.{AuditService, EventReportingSubmissionEmailAuditEvent}
+import config.FrontendAppConfig
+import connectors.{EmailConnector, EmailStatus, EventReportingConnector, MinimalConnector}
 import controllers.actions._
 import models.enumeration.AdministratorOrPractitioner
+import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.DateHelper.formatSubmittedDate
 import views.html.DeclarationView
 
+import java.time.{ZoneId, ZonedDateTime}
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationController @Inject()(
                                        override val messagesApi: MessagesApi,
@@ -37,6 +43,10 @@ class DeclarationController @Inject()(
                                        requireData: DataRequiredAction,
                                        erConnector: EventReportingConnector,
                                        val controllerComponents: MessagesControllerComponents,
+                                       emailConnector: EmailConnector,
+                                       minimalConnector: MinimalConnector,
+                                       auditService: AuditService,
+                                       config: FrontendAppConfig,
                                        view: DeclarationView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -54,52 +64,53 @@ class DeclarationController @Inject()(
           request.loggedInUser)
       )
 
-      //      def emailFuture = minimalConnector.getMinimalDetails(
-      //        request.loggedInUser.idName,
-      //        request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
-      //          val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
-      //          val email = minimalDetails.email
-      //          val schemeName = request.schemeName
-      //          sendEmail(minimalDetails.name, email, taxYear, schemeName)
-      //        }
+      def emailFuture = minimalConnector.getMinimalDetails(
+        request.loggedInUser.idName,
+        request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
+        val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
+        val email = minimalDetails.email
+        val schemeName = request.schemeName
+        sendEmail(minimalDetails.name, email, taxYear, schemeName)
+      }
 
-      erConnector.submitReport(request.pstr, data).map { _ =>
-        //emailFuture.map { _ =>
-        Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
-        //}
+      erConnector.submitReport(request.pstr, data).flatMap { _ =>
+        emailFuture.map { _ =>
+          Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
+        }
       }
   }
 
-  //  private def sendEmail(psaName: String, email: String, taxYear: String, schemeName: String)(
-  //    implicit request: DataRequest[_], hc: HeaderCarrier): Future[EmailStatus] = {
-  //    val requestId = hc.requestId.map(_.value).getOrElse(request.headers.get("X-Session-ID").getOrElse(""))
-  //
-  //    val submittedDate = formatSubmittedDate(ZonedDateTime.now(ZoneId.of("Europe/London")))
-  //    val schemeAdministratorType = AdministratorOrPractitioner.Administrator
-  //
-  //    val templateParams = Map(
-  //      "psaName" -> psaName,
-  //      "schemeName" -> schemeName,
-  //      "taxYear" -> taxYear,
-  //      "dateSubmitted" -> submittedDate
-  //    )
-  //
-  //    emailConnector.sendEmail(schemeAdministratorType,
-  //      requestId,
-  //      request.loggedInUser.idName,
-  //      email,
-  //      config.fileReturnTemplateId,
-  //      templateParams).map { emailStatus =>
-  //        auditService.sendEvent(
-  //          EventReportingSubmissionEmailAuditEvent(
-  //            request.loggedInUser.idName,
-  //            schemeAdministratorType,
-  //            email
-  //          )
-  //        )
-  //        emailStatus
-  //      }
-  //  }
+  private def sendEmail(psaName: String, email: String, taxYear: String, schemeName: String)(
+    implicit request: DataRequest[_], hc: HeaderCarrier): Future[EmailStatus] = {
+    val requestId = hc.requestId.map(_.value).getOrElse(request.headers.get("X-Session-ID").getOrElse(""))
+
+    val submittedDate = formatSubmittedDate(ZonedDateTime.now(ZoneId.of("Europe/London")))
+    val schemeAdministratorType = AdministratorOrPractitioner.Administrator
+
+    val templateParams = Map(
+      "psaName" -> psaName,
+      "schemeName" -> schemeName,
+      "taxYear" -> taxYear,
+      "dateSubmitted" -> submittedDate
+    )
+
+    emailConnector.sendEmail(schemeAdministratorType,
+      requestId,
+      request.loggedInUser.idName,
+      email,
+      config.fileReturnTemplateId,
+      templateParams).map { emailStatus =>
+      auditService.sendEvent(
+        EventReportingSubmissionEmailAuditEvent(
+          request.loggedInUser.idName,
+          schemeAdministratorType,
+          email
+        )
+      )
+      emailStatus
+    }
+  }
+
 
   private def declarationData(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser) = {
 
@@ -109,34 +120,29 @@ class DeclarationController @Inject()(
       case _ => throw new RuntimeException("Unknown user type")
     }
 
-    val common = Json.obj(
-      "erDetails" -> Json.obj(
-        "pSTR" -> pstr,
-        //Report start date = tax year start date
-        "reportStartDate" -> s"${taxYear.startYear}-04-06",
-        //Report end date = tax year end date
-        "reportEndDate" -> s"${taxYear.endYear}-04-05"
-      ),
-      "erDeclarationDetails" -> Json.obj(
-        //PSA or PSP access
-        "submittedBy" -> psaOrPsp,
-        //PSA or PSP ID
-        "submittedID" -> loggedInUser.psaIdOrPspId
-      )
-    )
-
     val declarationDetails = loggedInUser.administratorOrPractitioner match {
       case AdministratorOrPractitioner.Administrator =>
-        common + ("psaDeclaration" -> Json.obj(
+        Json.obj(
           //Both of those are always selected. Users can't access the page otherwise.
           "psaDeclaration1" -> "Selected",
           "psaDeclaration2" -> "Selected"
-        ))
-      case AdministratorOrPractitioner.Practitioner => ??? //TODO: Implement declaration submission by PSP
+        )
+      case AdministratorOrPractitioner.Practitioner =>
+        Json.obj(
+          //Both of those are always selected. Users can't access the page otherwise.
+          "authorisedPSAID" -> ???, //TODO: Implement declaration submission by PSP
+          "pspDeclaration1" -> "Selected",
+          "pspDeclaration2" -> "Selected"
+        )
     }
 
     Json.obj(
-      "declarationDetails" -> declarationDetails
-    )
+      "pstr" -> pstr,
+      "reportStartDate" -> s"${taxYear.startYear}-04-06",
+      "reportEndDate" -> s"${taxYear.endYear}-04-05",
+      "submittedBy" -> psaOrPsp,
+      "submittedID" -> loggedInUser.psaIdOrPspId
+    ) ++ declarationDetails
+
   }
 }
