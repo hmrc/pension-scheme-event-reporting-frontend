@@ -16,24 +16,50 @@
 
 package controllers.fileUpload
 
+import connectors.ParsingAndValidationOutcomeCacheConnector
 import controllers.actions._
+import models.fileUpload.ParsingAndValidationOutcome
+import models.fileUpload.ParsingAndValidationOutcomeStatus.{GeneralError, Success, ValidationErrorsLessThan10, ValidationErrorsMoreThanOrEqual10}
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.ProcessingRequestView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class ProcessingRequestController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           identify: IdentifierAction,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: ProcessingRequestView
-                                         ) extends FrontendBaseController with I18nSupport {
+                                             override val messagesApi: MessagesApi,
+                                             identify: IdentifierAction,
+                                             val controllerComponents: MessagesControllerComponents,
+                                             view: ProcessingRequestView,
+                                             parsingAndValidationOutcomeCacheConnector: ParsingAndValidationOutcomeCacheConnector
+                                           )(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier)
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
+  extends FrontendBaseController with I18nSupport {
+
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify.async {
     implicit request =>
-      Ok(view(continueUrl = controllers.routes.IndexController.onPageLoad.url))
+
+      //Call the getOutcome
+
+      parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap { optionOutcome =>
+
+        optionOutcome match {
+          case Some(ParsingAndValidationOutcome(Success, _, _, _, _)) =>
+            Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints)))
+          case Some(ParsingAndValidationOutcome(GeneralError, _, _, _, _)) =>
+            Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints)))
+          case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _, _, _)) =>
+            Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints)))
+          case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _, _, _)) =>
+            Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints)))
+          case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
+        }
+      }
+      //Manually write in Mongo/setOutcome
+
   }
 }

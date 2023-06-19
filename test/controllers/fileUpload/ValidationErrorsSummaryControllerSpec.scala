@@ -31,7 +31,7 @@ class ValidationErrorsSummaryControllerSpec extends SpecBase {
   private val returnUrl = "/manage-pension-scheme-event-report/new-report/event-22-upload"
   private val fileDownloadInstructionLink = "/manage-pension-scheme-event-report/event-22-upload-format-instructions"
   private val mockParsingAndValidationOutcomeCacheConnector = mock[ParsingAndValidationOutcomeCacheConnector]
-  private val dummyErrors: Seq[ParserValidationError] = Seq(
+  private val dummyErrors: Seq[ParserValidationError] = Seq( //todo: Change this to a sequence of string
     ParserValidationError(6, 1, "Enter the member's first name", "Column name"),
     ParserValidationError(5, 2, "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C, or D, like QQ123456C", "Column name"),
     ParserValidationError(4, 3, "The charge amount must be an amount of money, like 123 or 123.45", "Column name"),

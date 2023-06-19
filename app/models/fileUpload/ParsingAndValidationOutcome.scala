@@ -64,40 +64,37 @@ object ParsingAndValidationOutcome {
   }
 
   implicit val reads: Reads[ParsingAndValidationOutcome] = {
-    (JsPath \ "status").read[ParsingAndValidationOutcomeStatus].flatMap { status =>
-
-      status match {
-        case ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10 =>
-          (JsPath \ "errors").read[Option[Seq[ParserValidationError]]](readsErrorsLessThan10(status)).map { errors =>
-            ParsingAndValidationOutcome(
-              status = status,
-              lessThanTen = errors.toSeq.flatten
-            )
-          }
-        case ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10 =>
-          (JsPath \ "errors").read[Option[Seq[String]]](readsErrorsMoreThan10(status)).map { errors =>
-            ParsingAndValidationOutcome(
-              status = status,
-              moreThanTen = errors.toSeq.flatten
-            )
-          }
-        case ParsingAndValidationOutcomeStatus.Success =>
-          (JsPath \ "errors").read[Option[Seq[ParserValidationError]]](readsErrorsLessThan10(status)).map { errors =>
-            ParsingAndValidationOutcome(
-              status = status,
-              lessThanTen = errors.toSeq.flatten
-            )
-          }
-        case ParsingAndValidationOutcomeStatus.GeneralError =>
-          (JsPath \ "errors").read[Option[Seq[ParserValidationError]]](readsErrorsLessThan10(status)).map { errors =>
-            ParsingAndValidationOutcome(
-              status = status,
-              lessThanTen = errors.toSeq.flatten
-            )
-          }
-        case _ =>
-          throw new RuntimeException("Error")
-      }
+    (JsPath \ "status").read[ParsingAndValidationOutcomeStatus].flatMap {
+      case status@ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10 =>
+        (JsPath \ "errors").read[Option[Seq[ParserValidationError]]](readsErrorsLessThan10(status)).map { errors =>
+          ParsingAndValidationOutcome(
+            status = status,
+            lessThanTen = errors.toSeq.flatten
+          )
+        }
+      case status@ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10 =>
+        (JsPath \ "errors").read[Option[Seq[String]]](readsErrorsMoreThan10(status)).map { errors =>
+          ParsingAndValidationOutcome(
+            status = status,
+            moreThanTen = errors.toSeq.flatten
+          )
+        }
+      case status@ParsingAndValidationOutcomeStatus.Success =>
+        (JsPath \ "errors").read[Option[Seq[ParserValidationError]]](readsErrorsLessThan10(status)).map { errors =>
+          ParsingAndValidationOutcome(
+            status = status,
+            lessThanTen = errors.toSeq.flatten
+          )
+        }
+      case status@ParsingAndValidationOutcomeStatus.GeneralError =>
+        (JsPath \ "errors").read[Option[Seq[ParserValidationError]]](readsErrorsLessThan10(status)).map { errors =>
+          ParsingAndValidationOutcome(
+            status = status,
+            lessThanTen = errors.toSeq.flatten
+          )
+        }
+      case _ =>
+        throw new RuntimeException("Error")
     }
   }
 }
