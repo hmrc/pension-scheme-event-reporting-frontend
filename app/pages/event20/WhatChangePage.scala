@@ -22,7 +22,7 @@ import models.event20.WhatChange
 import models.event20.WhatChange.{BecameOccupationalScheme, CeasedOccupationalScheme}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{EventSelectionPage, IndexPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 
 import scala.util.{Success, Try}
 

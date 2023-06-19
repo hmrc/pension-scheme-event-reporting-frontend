@@ -20,7 +20,6 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import controllers.event11.InvestmentsInAssetsRuleChangeDateControllerSpec.event11Date
 import forms.event11.InvestmentsInAssetsRuleChangeDateFormProvider
-import models.UserAnswers
 import models.event11.Event11Date
 import pages.EmptyWaypoints
 import pages.event11.{Event11CheckYourAnswersPage, InvestmentsInAssetsRuleChangeDatePage}

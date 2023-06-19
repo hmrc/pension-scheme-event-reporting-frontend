@@ -21,7 +21,7 @@ import models.UserAnswers
 import models.event20.Event20Date
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 
 case object BecameDatePage extends QuestionPage[Event20Date] {
 

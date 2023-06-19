@@ -27,7 +27,6 @@ import pages.event12.HasSchemeChangedRulesPage
 import pages.event13.SchemeStructurePage
 import pages.event14.HowManySchemeMembersPage
 import pages.event18.Event18ConfirmationPage
-import pages.event20.WhatChangePage
 import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

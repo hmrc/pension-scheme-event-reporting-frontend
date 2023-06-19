@@ -33,7 +33,7 @@ import viewmodels.event20.checkAnswers._
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class Event20CheckYourAnswersController @Inject()(
                                                    override val messagesApi: MessagesApi,
