@@ -89,6 +89,11 @@ final case class UserAnswers(
     }
   }
 
+  def setOrException(path: JsPath, value: JsValue): UserAnswers = set(path, value) match {
+    case Success(ua) => ua
+    case Failure(ex) => throw ex
+  }
+
   def remove[A](page: Settable[A], nonEventTypeData: Boolean = false): Try[UserAnswers] = {
     def dataToUpdate(ua: UserAnswers): JsObject = if (nonEventTypeData) ua.noEventTypeData else ua.data
     val updatedData = dataToUpdate(this).removeObject(page.path) match {
