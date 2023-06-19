@@ -45,7 +45,7 @@ class EventReportingTileController @Inject()(
   def eventReportPartial(): Action[AnyContent] = {
     identify.async { implicit request => // (identify andThen getData()).async, PODS-8495
 
-      val hello = eventReportingConnector.getVersions(request.pstr, "ER20A", "2021-08-01")
+      val hello = eventReportingConnector.getVersions(request.pstr, "ER", "2020-04-01")
 
       hello.onComplete(println(_))
 
