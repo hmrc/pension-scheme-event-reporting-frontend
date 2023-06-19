@@ -34,6 +34,9 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import play.api.libs.json.Json
 import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
+import utils.DateHelper
+
+import java.time.LocalDate
 
 class Event22ValidatorSpec extends SpecBase with Matchers with MockitoSugar with BeforeAndAfterEach {
   //scalastyle:off magic.number
@@ -78,16 +81,18 @@ class Event22ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
       ))
     }
 
-    "return validation errors when present" in {
+    "return validation errors when present, including tax year in future" in {
+      DateHelper.setDate(Some(LocalDate.of(2023, 2, 10)))
       val csvFile = CSVParser.split(
         s"""$header
-,Bloggs,AA234567D,2020,12.20
+,Bloggs,AA234567D,2024,12.20
 Steven,,xyz,,"""
       )
 
       val result = validator.parse(csvFile, UserAnswers())
       result mustBe Invalid(Seq(
         ValidationError(1, 0, "membersDetails.error.firstName.required", "firstName"),
+        ValidationError(1, 3, "chooseTaxYear.event22.error.notFuture", "taxYear"),
         ValidationError(2, 1, "membersDetails.error.lastName.required", "lastName"),
         ValidationError(2, 2, "membersDetails.error.nino.invalid", "nino"),
         ValidationError(2, 3, "chooseTaxYear.event22.error.required", "taxYear"),

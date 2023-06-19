@@ -26,6 +26,7 @@ class ChooseTaxYearFormProvider @Inject() extends Mappings {
 
   def apply(eventType: EventType): Form[ChooseTaxYear] =
     Form(
-      "value" -> enumerable[ChooseTaxYear](s"chooseTaxYear.event${eventType.toString}.error.required")
+      "value" -> enumerable[ChooseTaxYear](requiredKey = s"chooseTaxYear.event${eventType.toString}.error.required",
+        invalidKey = "chooseTaxYear.event22.error.notFuture")
     )
 }

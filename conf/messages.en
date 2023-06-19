@@ -1007,6 +1007,7 @@ chooseTaxYear.event22.heading = In which tax year was the annual allowance excee
 chooseTaxYear.event22.checkYourAnswersLabel = In which tax year was the annual allowance exceeded
 chooseTaxYear.event22.error.required = Select the tax year in which the annual allowance was exceeded
 chooseTaxYear.event22.change.hidden = Select the tax year in which the annual allowance was exceeded
+chooseTaxYear.event22.error.notFuture = The tax year must be {0} or earlier. It cannot be a tax year in the future
 
 totalPensionAmounts.event22.title = What is the total of the member’s pension input amounts for all arrangements under the scheme for the tax year
 totalPensionAmounts.event22.heading = What is the total of the member’s pension input amounts for all arrangements under the scheme for the tax year
