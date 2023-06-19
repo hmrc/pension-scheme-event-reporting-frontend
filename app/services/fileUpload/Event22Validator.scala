@@ -77,8 +77,7 @@ class Event22Validator @Inject()(
     )
   }
 
-  override protected def validateFields(startDate: LocalDate,
-                                        index: Int,
+  override protected def validateFields(index: Int,
                                         columns: Seq[String])(implicit messages: Messages): Result = {
     val a = resultFromFormValidationResult[MembersDetails](
       memberDetailsValidation(index, columns, membersDetailsFormProvider(Event22, index)),

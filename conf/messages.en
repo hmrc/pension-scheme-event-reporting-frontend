@@ -1465,3 +1465,10 @@ event19.dateChangeMade.change.hidden = When did the territory change take place 
 whatYouWillNeed.event19.p = To record a change country or territory of establishment for the scheme you will need to tell us the:
 whatYouWillNeed.event19.item1 = new country or territory
 whatYouWillNeed.event19.item2 = date that the change took place
+
+fileUpload.memberDetails.generic.error.firstName = member’s first name is missing or in the wrong format
+fileUpload.memberDetails.generic.error.lastName = member’s last name is missing or in the wrong format
+fileUpload.memberDetails.generic.error.nino = member’s National Insurance number is missing or in the wrong format
+
+fileUpload.taxYear.generic.error = Tax year bla bla
+fileUpload.totalAmounts.generic.error = total amounts bla bla

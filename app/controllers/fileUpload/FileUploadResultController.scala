@@ -16,26 +16,27 @@
 
 package controllers.fileUpload
 
+import cats.data.Validated.{Invalid, Valid}
 import connectors.{EventReportingConnector, ParsingAndValidationOutcomeCacheConnector, UpscanInitiateConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.fileUpload.FileUploadResultFormProvider
-import models.FileUploadOutcomeStatus.IN_PROGRESS
-import models.FileUploadOutcomeStatus.SUCCESS
-import models.FileUploadOutcomeStatus.FAILURE
-import models.FileUploadOutcomeResponse
-import models.UserAnswers
+import helpers.fileUpload.FileUploadGenericErrorReporter
+import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.EventType
 import models.enumeration.EventType.getEventTypeByName
 import models.fileUpload.ParsingAndValidationOutcomeStatus._
 import models.fileUpload.{FileUploadResult, ParsingAndValidationOutcome}
 import models.requests.OptionalDataRequest
+import models.{FileUploadOutcomeResponse, UserAnswers}
 import pages.Waypoints
 import pages.fileUpload.FileUploadResultPage
 import play.api.data.Form
-import play.api.i18n.I18nSupport
 import play.api.i18n.Lang.logger
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Request}
-import services.fileUpload.CSVParser
+import play.api.i18n.{I18nSupport, Messages}
+import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import services.fileUpload.Validator.FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty
+import services.fileUpload.{CSVParser, Event22Validator, ValidationError}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadResultView
 
@@ -50,10 +51,13 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                                            upscanInitiateConnector: UpscanInitiateConnector,
                                            formProvider: FileUploadResultFormProvider,
                                            parsingAndValidationOutcomeCacheConnector: ParsingAndValidationOutcomeCacheConnector,
-                                           view: FileUploadResultView
+                                           view: FileUploadResultView,
+                                           event22Validator: Event22Validator
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
+
+  private val maximumNumberOfError = 10
 
   private def renderView(waypoints: Waypoints, eventType: EventType, preparedForm: Form[FileUploadResult], status: Status)
                         (implicit request: OptionalDataRequest[AnyContent]) = {
@@ -89,7 +93,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).flatMap { _ =>
             if (value == FileUploadResult.Yes) {
               parsingAndValidationOutcomeCacheConnector.deleteOutcome.map { _ =>
-                asyncGetUpscanFileAndParse
+                asyncGetUpscanFileAndParse(eventType)
               }
             } else {
               Future.successful(())
@@ -100,9 +104,9 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       )
   }
 
-  private def asyncGetUpscanFileAndParse(implicit request: Request[AnyContent]): Unit = {
+  private def asyncGetUpscanFileAndParse(eventType: EventType)(implicit request: OptionalDataRequest[AnyContent]): Unit = {
     request.queryString.get("key")
-    val referenceOpt: Option[String] = request.queryString.get("key").flatMap { values =>
+    val referenceOpt: Option[String] = request.request.queryString.get("key").flatMap { values =>
       values.headOption
     }
 
@@ -115,12 +119,16 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
               upscanInitiateConnector.download(downloadUrl).flatMap { httpResponse =>
                 httpResponse.status match {
                   case OK => {
-                    CSVParser.split(httpResponse.body).foreach { row =>
-                      //TODO - This for loop is temporary code to allow parsing to be printed in the console for testing
-                      //TODO - To be removed at a later stage
-                      val formattedRow: String = row.mkString(",")
+                    val parsedCSV = CSVParser.split(httpResponse.body)
+                    val futureOutcome = event22Validator.parse(parsedCSV, request.userAnswers.getOrElse(UserAnswers())) match {
+                      case Invalid(errors) => Future.successful(processInvalid(eventType, errors))
+                      case Valid(updatedUA) =>
+                        eventReportingConnector.compileEvent(request.pstr, updatedUA.eventDataIdentifier(eventType))
+                          .map(_ => ParsingAndValidationOutcome(Success))
                     }
-                    parsingAndValidationOutcomeCacheConnector.setOutcome(outcome = ParsingAndValidationOutcome(status = Success, fileName = fileName))
+                    futureOutcome.map { outcome =>
+                      parsingAndValidationOutcomeCacheConnector.setOutcome(outcome)
+                    }
                   } recoverWith {
                     case e: Throwable =>
                       logger.error("Error during parsing and validation", e)
@@ -135,5 +143,42 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       case _ => throw new RuntimeException("No reference number in FileUploadResultController")
     }
   }
+
+
+  private def processInvalid(eventType: EventType,
+                             errors: Seq[ValidationError])(implicit messages: Messages): ParsingAndValidationOutcome = {
+    errors match {
+      case Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty) =>
+        ParsingAndValidationOutcome(status = GeneralError)
+      case _ =>
+        if (errors.size <= maximumNumberOfError) {
+          val cellErrors: Seq[JsObject] = errorJson(errors, messages)
+          ParsingAndValidationOutcome(
+            status = ValidationErrorsLessThan10,
+            json = Json.obj("errors" -> cellErrors)
+          )
+        } else {
+          ParsingAndValidationOutcome(
+            status = ValidationErrorsMoreThanOrEqual10,
+            json = Json.obj(
+              "errors" -> FileUploadGenericErrorReporter.generateGenericErrorReport(errors, eventType),
+              "totalError" -> errors.size
+            )
+          )
+        }
+    }
+  }
+
+  private def errorJson(errors: Seq[ValidationError], messages: Messages): Seq[JsObject] = {
+    val cellErrors = errors.map { e =>
+      val cell = String.valueOf(('A' + e.col).toChar) + (e.row + 1)
+      Json.obj(
+        "cell" -> cell,
+        "error" -> messages(e.error, e.args: _*)
+      )
+    }
+    cellErrors
+  }
+
 }
 

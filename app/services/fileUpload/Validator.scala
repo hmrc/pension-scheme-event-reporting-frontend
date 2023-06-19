@@ -19,7 +19,6 @@ package services.fileUpload
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
-import ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
 import models.UserAnswers
 import models.common.MembersDetails
 import models.enumeration.EventType
@@ -29,8 +28,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json._
 import queries.Gettable
-
-import java.time.LocalDate
+import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
 
 object ValidatorErrorMessages {
   val HeaderInvalidOrFileIsEmpty = "Header invalid or File is empty"
@@ -93,13 +91,13 @@ trait Validator {
     }
     
 
-  def parse(startDate: LocalDate, rows: Seq[Array[String]], userAnswers: UserAnswers)
+  def parse(rows: Seq[Array[String]], userAnswers: UserAnswers)
            (implicit messages: Messages): Validated[Seq[ValidationError], UserAnswers] = {
     Invalid(Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty))
     rows.headOption match {
       case Some(row) if row.mkString(",").equalsIgnoreCase(validHeader) =>
         rows.size match {
-          case n if n >= 2 => parseDataRows(startDate, rows)
+          case n if n >= 2 => parseDataRows(rows)
             .map(_.foldLeft(userAnswers)((acc, ci) => acc.setOrException(ci.jsPath, ci.value)))
           case _ => Invalid(Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty))
         }
@@ -108,16 +106,15 @@ trait Validator {
     }
   }
 
-  private def parseDataRows(startDate: LocalDate, rows: Seq[Array[String]])
+  private def parseDataRows(rows: Seq[Array[String]])
                            (implicit messages: Messages): Result = {
     rows.zipWithIndex.foldLeft[Result](Valid(Nil)) {
       case (acc, Tuple2(_, 0)) => acc
-      case (acc, Tuple2(row, index)) => Seq(acc, validateFields(startDate, index, row.toIndexedSeq)).combineAll
+      case (acc, Tuple2(row, index)) => Seq(acc, validateFields(index, row.toIndexedSeq)).combineAll
     }
   }
 
-  protected def validateFields(startDate: LocalDate,
-                               index: Int,
+  protected def validateFields(index: Int,
                                columns: Seq[String])(implicit messages: Messages): Result
 
   protected def memberDetailsValidation(index: Int, columns: Seq[String],
