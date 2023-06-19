@@ -43,9 +43,6 @@ class Event22Validator @Inject()(
 
   override protected def validHeader: String = config.validEvent22Header
 
-  private val fieldNoFirstName = 1
-  private val fieldNoLastName = 2
-  private val fieldNoNino = 3
   private val fieldNoTaxYear = 4
   private val fieldNoTotalAmounts = 5
 

@@ -65,6 +65,8 @@ object SampleData extends SpecBase {
 
   def countryOptions: CountryOptions = new CountryOptions(options)
 
+
+
   val seqAddresses: Seq[Address] = Seq[Address](
     Address(
       addressLine1 = "addr11",
@@ -111,6 +113,8 @@ object SampleData extends SpecBase {
       countryOpt = Some("GB")
     )
   )
+
+  val startDate: LocalDate = LocalDate.of(2022, 11, 8)
   val companyDetails: CompanyDetails = CompanyDetails("Company Name", "12345678")
 
   val memberDetails: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567V")
