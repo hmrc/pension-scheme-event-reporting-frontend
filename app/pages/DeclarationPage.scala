@@ -22,5 +22,5 @@ import play.api.mvc.Call
 case object DeclarationPage extends Page {
 
   override def route(waypoints: Waypoints): Call =
-    routes.DeclarationController.onPageLoad(waypoints)
+    routes.DeclarationController.onPageLoadAdministrator(waypoints)
 }

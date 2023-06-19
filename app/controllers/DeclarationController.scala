@@ -26,7 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.{DeclarationView, DeclarationViewPSP}
+import views.html.{DeclarationPspView, DeclarationView}
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -39,15 +39,22 @@ class DeclarationController @Inject()(
                                        erConnector: EventReportingConnector,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: DeclarationView,
-                                       view2: DeclarationViewPSP
+                                       view2: DeclarationPspView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
+  def onPageLoadAdministrator(waypoints: Waypoints): Action[AnyContent] = identify {
+    implicit request =>
+    request.loggedInUser.administratorOrPractitioner match {
+      case Administrator => Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
+      case _ => Ok(view2(continueUrl = controllers.routes.DeclarationController.onPageLoadPractitioner(waypoints).url))
+    }
+  }
+
+  def onPageLoadPractitioner(waypoints: Waypoints): Action[AnyContent] = identify {
     implicit request =>
       request.loggedInUser.administratorOrPractitioner match {
-        case Administrator => Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
-        case Practitioner => Ok(view2(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
-        case _ => throw new RuntimeException("Unknown user type")
+        case Practitioner => Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
+        case _ => Ok(view2(continueUrl = controllers.routes.DeclarationController.onPageLoadAdministrator(waypoints).url))
       }
   }
 
