@@ -19,6 +19,8 @@ package controllers.fileUpload
 import connectors.ParsingAndValidationOutcomeCacheConnector
 import controllers.actions._
 import models.enumeration.EventType
+import models.fileUpload.ParsingAndValidationOutcome
+import models.fileUpload.ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -45,21 +47,27 @@ class ValidationErrorsAllController @Inject()(
       val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints).url
       val fileDownloadInstructionLink = controllers.routes.FileDownloadController.instructionsFile.url
 
-      val dummyErrors: Seq[ValidationError] = Seq(
-        ValidationError(6, 1, "Enter the member's first name", "Column name"),
-        ValidationError(5, 2, "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C, or D, like QQ123456C", "Column name"),
-        ValidationError(4, 3, "The charge amount must be an amount of money, like 123 or 123.45", "Column name"),
-        ValidationError(3, 4, "Enter the date you received the notice to pay the charge", "Column name"),
-        ValidationError(2, 5, "Select yes if the payment type is mandatory", "Column name"),
-        ValidationError(1, 6, "Enter the tax year to which the annual allowance charge relates", "Column name")
-      )
-      Future.successful(Ok(view(returnUrl, fileDownloadInstructionLink, dummyErrors)))
+//      val dummyErrors: Seq[ValidationError] = Seq(
+//        ValidationError(6, 1, "Enter the member's first name", "Column name"),
+//        ValidationError(5, 2, "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C, or D, like QQ123456C", "Column name"),
+//        ValidationError(4, 3, "The charge amount must be an amount of money, like 123 or 123.45", "Column name"),
+//        ValidationError(3, 4, "Enter the date you received the notice to pay the charge", "Column name"),
+//        ValidationError(2, 5, "Select yes if the payment type is mandatory", "Column name"),
+//        ValidationError(1, 6, "Enter the tax year to which the annual allowance charge relates", "Column name")
+//      )
+//      Future.successful(Ok(view(returnUrl, fileDownloadInstructionLink, dummyErrors)))
 
-    //      parsingAndValidationOutcomeCacheConnector.getOutcome.map {
-    //        case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, errorsJson, _)) =>
-    //          Ok(view(returnUrl, fileDownloadInstructionLink, errorsJson))
-    //        case _ =>
-    //          NotFound
-    //      }
+          parsingAndValidationOutcomeCacheConnector.getOutcome.map { x =>
+
+            println("\n<>>>" + x)
+
+            x match {
+              case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, errorsJson, _, _)) =>
+
+                Ok(view(returnUrl, fileDownloadInstructionLink, errorsJson))
+              case _ =>
+                NotFound
+            }
+          }
   }
 }
