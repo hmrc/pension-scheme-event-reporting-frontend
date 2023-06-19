@@ -53,7 +53,7 @@ import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, Typ
 import pages.event7.{CrystallisedAmountPage, LumpSumAmountPage, PaymentDatePage}
 import pages.event8.{LumpSumAmountAndDatePage, TypeOfProtectionReferencePage, TypeOfProtectionPage => Event8TypeOfProtectionPage}
 import pages.event8a.PaymentTypePage
-import play.api.libs.json.{Reads, Writes}
+import play.api.libs.json.Writes
 import utils.{CountryOptions, Event2MemberPageNumbers, InputOption}
 
 import java.time.LocalDate

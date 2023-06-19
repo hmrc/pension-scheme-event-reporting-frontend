@@ -33,7 +33,7 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours {
       behave like optionsField[ChooseTaxYear](
         form,
         fieldName,
-        validValues = ChooseTaxYear.valuesForEventType(Event23, 2021),
+        validValues = ChooseTaxYear.valuesForYearRange(2021),
         invalidError = FormError(fieldName, "error.invalid")
       )
 
@@ -52,7 +52,7 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours {
       behave like optionsField[ChooseTaxYear](
         form,
         fieldName,
-        validValues = ChooseTaxYear.valuesForEventType(Event22, 2021),
+        validValues = ChooseTaxYear.valuesForYearRange(2021),
         invalidError = FormError(fieldName, "error.invalid")
       )
 

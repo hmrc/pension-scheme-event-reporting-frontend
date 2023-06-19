@@ -17,7 +17,6 @@
 package models.common
 
 import models.Enumerable
-import models.enumeration.EventType
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
@@ -34,7 +33,7 @@ object ChooseTaxYear extends Enumerable.Implicits {
 
   def values(taxYearMax: Int): Seq[ChooseTaxYear] = valuesForYearRange(taxYearMax)
 
-  private def valuesForYearRange(taxYearMax: Int): Seq[ChooseTaxYear] = {
+  def valuesForYearRange(taxYearMax: Int): Seq[ChooseTaxYear] = {
     (minYear to taxYearMax).reverse.map(year => ChooseTaxYear(year.toString))
   }
 
