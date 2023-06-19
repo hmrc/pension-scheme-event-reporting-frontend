@@ -31,7 +31,7 @@ class FileUploadSuccessControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
       val continueUrl = controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event22).url
-      val fileName = "Dummy file name.csv"
+      val fileName = "Dummy filename.csv"
 
       running(application) {
 
