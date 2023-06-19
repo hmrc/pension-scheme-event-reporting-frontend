@@ -53,7 +53,7 @@ trait SpecBase
   implicit def fakeRequestToRequiredDataRequest[A](fakeRequest: FakeRequest[A]): OptionalDataRequest[A] =
     RequiredDataRequest.optionalDataRequest(fakeRequest)
 
-  def emptyUserAnswers = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+  def emptyUserAnswers: UserAnswers = UserAnswers()
   def emptyUserAnswersWithTaxYear: UserAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022")).get
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())

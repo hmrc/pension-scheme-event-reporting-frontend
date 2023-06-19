@@ -117,7 +117,7 @@ object SampleData extends SpecBase {
   val startDate: LocalDate = LocalDate.of(2022, 11, 8)
   val companyDetails: CompanyDetails = CompanyDetails("Company Name", "12345678")
 
-  val memberDetails: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567V")
+  val memberDetails: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567D")
   val memberDetails2: MembersDetails = MembersDetails("Steven", "Bloggs", "AA123456C")
 
   val paymentDetails: Event1PaymentDetails = Event1PaymentDetails(1000.00, LocalDate.of(2022, 11, 8))

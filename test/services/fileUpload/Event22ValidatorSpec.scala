@@ -17,7 +17,7 @@
 package services.fileUpload
 
 import base.SpecBase
-import cats.data.Validated.Valid
+import cats.data.Validated.{Invalid, Valid}
 import config.FrontendAppConfig
 import data.SampleData
 import data.SampleData.startDate
@@ -33,6 +33,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import play.api.libs.json.Json
+import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
 
 class Event22ValidatorSpec extends SpecBase with Matchers with MockitoSugar with BeforeAndAfterEach {
   //scalastyle:off magic.number
@@ -43,19 +44,13 @@ class Event22ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
     Mockito.reset(mockFrontendAppConfig)
     when(mockFrontendAppConfig.validEvent22Header).thenReturn(header)
   }
-  
-  /*
-  private val membersDetailsFormProvider = new MembersDetailsFormProvider
-  private val chooseTaxYearFormProvider = new ChooseTaxYearFormProvider
-  private val totalPensionAmountsFormProvider = new TotalPensionAmountsFormProvider
-   */
 
   "Event 22 validator" - {
     "return items in user answers when there are no validation errors" in {
       val validCSVFile = CSVParser.split(
         s"""$header
-                            Joe,Bloggs,AA234567V,06/04/2020,12.20
-                            Steven,Bloggs,AA123456C,06/04/2022,13.20"""
+                            Joe,Bloggs,AA234567D,2020,12.20
+                            Steven,Bloggs,AA123456C,2022,13.20"""
       )
       val result = validator.parse(startDate, validCSVFile, UserAnswers())
       result mustBe Valid(UserAnswers()
@@ -68,87 +63,38 @@ class Event22ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
       )
     }
 
-//    "return validation error for incorrect header" in {
-//      val GivingIncorrectHeader = CsvLineSplitter.split("""test""")
-//      val result = validator.parse(startDate, GivingIncorrectHeader, UserAnswers())
-//      result mustBe Invalid(Seq(
-//        ValidatorValidationError(0, 0, HeaderInvalidOrFileIsEmpty)
-//      ))
-//    }
-//
-//    "return validation error for empty file" in {
-//      val result = validator.parse(startDate, Nil, UserAnswers())
-//      result mustBe Invalid(Seq(
-//        ValidatorValidationError(0, 0, HeaderInvalidOrFileIsEmpty)
-//      ))
-//    }
-//
-//    "return validation errors for member details when present" in {
-//      val GivingInvalidMemberDetails = CsvLineSplitter.split(
-//        s"""$header
-//                            ,last,AB123456C,01/04/2000,123123,01/04/2020,1.00,2.00
-//                            Joe,,123456C,01/04/2000,123123,01/04/2020,1.00,2.00"""
-//      )
-//
-//      val result = validator.parse(startDate, GivingInvalidMemberDetails, UserAnswers())
-//      result mustBe Invalid(Seq(
-//        ValidatorValidationError(1, 0, "memberDetails.error.firstName.required", "firstName"),
-//        ValidatorValidationError(2, 1, "memberDetails.error.lastName.required", "lastName"),
-//        ValidatorValidationError(2, 2, "memberDetails.error.nino.invalid", "nino")
-//      ))
-//    }
-//
-//    "return validation errors for charge details when present, including missing year and missing month" in {
-//      val GivingInvalidChargeDetails = CsvLineSplitter.split(
-//        s"""$header
-//                                first,last,AB123456C,01,123123,01/04,1.00,2.00
-//                                Joe,Bloggs,AB123456C,01/04,123123,01,1.00,2.00"""
-//      )
-//
-//      val result = validator.parse(startDate, GivingInvalidChargeDetails, UserAnswers())
-//      result mustBe Invalid(Seq(
-//        ValidatorValidationError(1, 3, "dob.error.incomplete", "dob", Seq("month", "year")),
-//        ValidatorValidationError(1, 5, "chargeG.chargeDetails.qropsTransferDate.error.required.two", "qropsTransferDate", Seq("year")),
-//        ValidatorValidationError(2, 3, "dob.error.incomplete", "dob", Seq("year")),
-//        ValidatorValidationError(2, 5, "chargeG.chargeDetails.qropsTransferDate.error.required.two", "qropsTransferDate", Seq("month", "year"))
-//      ))
-//    }
-//
-//    "return validation errors for member details AND charge details AND charge amounts when all present" in {
-//      val GivingInvalidMemberDetailsAndChargeDetails = CsvLineSplitter.split(
-//        s"""$header
-//                            ,last,AB123456C,01,123123,01/04,A,2.00
-//                            Joe,,123456C,01/04,123123,01,1.00,B"""
-//      )
-//
-//      val result = validator.parse(startDate, GivingInvalidMemberDetailsAndChargeDetails, UserAnswers())
-//      result mustBe Invalid(Seq(
-//        ValidatorValidationError(1, 0, "memberDetails.error.firstName.required", "firstName"),
-//        ValidatorValidationError(1, 3, "dob.error.incomplete", "dob", Seq("month", "year")),
-//        ValidatorValidationError(1, 5, "chargeG.chargeDetails.qropsTransferDate.error.required.two", "qropsTransferDate", Seq("year")),
-//        ValidatorValidationError(1, 6, "The amount transferred into the QROPS for last must be an amount of money, like 123 or 123.45", "amountTransferred"),
-//        ValidatorValidationError(2, 1, "memberDetails.error.lastName.required", "lastName"),
-//        ValidatorValidationError(2, 3, "dob.error.incomplete", "dob", Seq("year")),
-//        ValidatorValidationError(2, 2, "memberDetails.error.nino.invalid", "nino"),
-//        ValidatorValidationError(2, 5, "chargeG.chargeDetails.qropsTransferDate.error.required.two", "qropsTransferDate", Seq("month", "year")),
-//        ValidatorValidationError(2, 7, "amountTaxDue.error.invalid", "amountTaxDue")
-//      ))
-//    }
-//
-//    "return validation errors for charge amounts when present" in {
-//
-//      val GivingInvalidChargeAmounts = CsvLineSplitter.split(
-//        s"""$header
-//                            first,last,AB123456C,01/04/2000,123123,01/04/2020,,2.00
-//                            Joe,Bloggs,AB123456C,01/04/2000,123123,01/04/2020,1.00,A"""
-//      )
-//
-//      val result = validator.parse(startDate, GivingInvalidChargeAmounts, UserAnswers())
-//      result mustBe Invalid(Seq(
-//        ValidatorValidationError(1, 6, "Enter the amount transferred into the QROPS for first last", "amountTransferred"),
-//        ValidatorValidationError(2, 7, "amountTaxDue.error.invalid", "amountTaxDue")
-//      ))
-//    }
+    "return validation error for incorrect header" in {
+      val csvFile = CSVParser.split("""test""")
+      val result = validator.parse(startDate, csvFile, UserAnswers())
+      result mustBe Invalid(Seq(
+        ValidationError(0, 0, HeaderInvalidOrFileIsEmpty)
+      ))
+    }
+
+    "return validation error for empty file" in {
+      val result = validator.parse(startDate, Nil, UserAnswers())
+      result mustBe Invalid(Seq(
+        ValidationError(0, 0, HeaderInvalidOrFileIsEmpty)
+      ))
+    }
+
+    "return validation errors when present" in {
+      val csvFile = CSVParser.split(
+        s"""$header
+,Bloggs,AA234567D,2020,12.20
+Steven,,xyz,,"""
+      )
+
+      val result = validator.parse(startDate, csvFile, UserAnswers())
+      result mustBe Invalid(Seq(
+        ValidationError(1, 0, "membersDetails.error.firstName.required", "firstName"),
+        ValidationError(2, 1, "membersDetails.error.lastName.required", "lastName"),
+        ValidationError(2, 2, "membersDetails.error.nino.invalid", "nino"),
+        ValidationError(2, 3, "chooseTaxYear.event22.error.required", "taxYear"),
+        ValidationError(2, 4, "totalPensionAmounts.value.error.nothingEntered", "totalAmounts")
+      ))
+    }
+
   }
 
 }

@@ -17,6 +17,8 @@
 package models.fileUpload
 object FileUploadHeaders {
 
+  val valueFormField = "value"
+
   object MemberDetailsFieldNames {
     val firstName = "firstName"
     val lastName = "lastName"
@@ -26,6 +28,6 @@ object FileUploadHeaders {
 
    object Event22FieldNames {
     val taxYear: String = "taxYear"
-    val totalAmounts: String = "amountTaxDue"
+    val totalAmounts: String = "totalAmounts"
   }
 }

@@ -26,6 +26,7 @@ import models.common.{ChooseTaxYear, MembersDetails}
 import models.enumeration.EventType
 import models.enumeration.EventType.Event22
 import models.fileUpload.FileUploadHeaders.Event22FieldNames.{taxYear, totalAmounts}
+import models.fileUpload.FileUploadHeaders.valueFormField
 import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -43,28 +44,29 @@ class Event22Validator @Inject()(
 
   override protected def validHeader: String = config.validEvent22Header
 
-  private val fieldNoTaxYear = 4
-  private val fieldNoTotalAmounts = 5
+  private val fieldNoTaxYear = 3
+  private val fieldNoTotalAmounts = 4
 
   private def taxYearValidation(index: Int,
                                 chargeFields: Seq[String])(implicit messages: Messages): Validated[Seq[ValidationError], ChooseTaxYear] = {
-
     val fields = Seq(
-      Field(taxYear, chargeFields(fieldNoTaxYear), taxYear, fieldNoTaxYear)
+      Field(valueFormField, chargeFields(fieldNoTaxYear), taxYear, fieldNoTaxYear)
     )
     val form: Form[ChooseTaxYear] = chooseTaxYearFormProvider(eventType = Event22)
     form.bind(
       Field.seqToMap(fields)
     ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
+      formWithErrors =>
+        Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value =>
+        Valid(value)
     )
   }
 
   private def totalAmountsValidation(index: Int,
                                       chargeFields: Seq[String])(implicit messages: Messages): Validated[Seq[ValidationError], BigDecimal] = {
     val fields = Seq(
-      Field(totalAmounts, chargeFields(fieldNoTotalAmounts), totalAmounts, fieldNoTotalAmounts)
+      Field(valueFormField, chargeFields(fieldNoTotalAmounts), totalAmounts, fieldNoTotalAmounts)
     )
     val form: Form[BigDecimal] = totalPensionAmountsFormProvider()
     form.bind(
