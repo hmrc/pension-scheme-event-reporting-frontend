@@ -50,7 +50,7 @@ class Event20ACheckYourAnswersController @Inject()(
       val thisPage = Event20ACheckYourAnswersPage()
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event20A.routes.Event20ACheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent20CYARows(waypoints, thisPage, request.userAnswers)), continueUrl))
+      Ok(view(SummaryListViewModel(rows = buildEvent20ACYARows(waypoints, thisPage, request.userAnswers)), continueUrl))
     }
 
   def onClick: Action[AnyContent] =
@@ -61,7 +61,7 @@ class Event20ACheckYourAnswersController @Inject()(
           }
     }
 
-  private def buildEvent20CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, answers: UserAnswers)
+  private def buildEvent20ACYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, answers: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
 
     val dateRow = answers.get(WhatChangePage) match {
