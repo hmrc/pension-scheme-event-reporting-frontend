@@ -17,7 +17,7 @@
 package models.fileUpload
 
 import base.SpecBase
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 
 class ParsingAndValidationOutcomeSpec extends SpecBase {
 
@@ -70,6 +70,24 @@ class ParsingAndValidationOutcomeSpec extends SpecBase {
 
       result.status mustBe ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10
       result.lessThanTen.size mustBe 1
+    }
+
+    "must map correctly to ParsingAndValidationOutcome when status is ValidationErrorsLessMoreThanOrEqual10" in {
+
+      val ValidationErrorsMoreThanOrEqual10 = Json.obj(
+        "status" -> "ValidationErrorsMoreThanOrEqualTo10",
+        "errors" -> Json.arr(
+          JsString("Error1"),
+          JsString("Error2"),
+          JsString("Error3")
+        )
+      )
+
+      val result = ValidationErrorsMoreThanOrEqual10.as[ParsingAndValidationOutcome](ParsingAndValidationOutcome.reads)
+
+      result.status mustBe ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10
+      result.lessThanTen.size mustBe 0
+      result.moreThanTen.size mustBe 3
     }
   }
 }
