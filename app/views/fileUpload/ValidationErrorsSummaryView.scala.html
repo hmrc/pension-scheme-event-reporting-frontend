@@ -21,7 +21,7 @@
         govukButton: GovukButton
 )
 
-@(returnToFileUploadURL: String, fileDownloadInstructionsLink: String, dummyErrors: Seq[ParserValidationError])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(returnToFileUploadURL: String, fileDownloadInstructionsLink: String, dummyErrors: Seq[String])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("fileupload.invalid.title"))) {
 
@@ -38,7 +38,7 @@
 
     <ul class="govuk-list govuk-list--bullet">
         @for(element <- dummyErrors){
-            <li>@messages(element.error)</li>
+            <li>@messages(element)</li>
         }
     </ul>
 
