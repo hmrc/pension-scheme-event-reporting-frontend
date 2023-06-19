@@ -50,15 +50,15 @@ class ProcessingRequestController @Inject()(
           case Some(ParsingAndValidationOutcome(Success, _, _, _, _)) =>
             Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints)))
           case Some(ParsingAndValidationOutcome(GeneralError, _, _, _, _)) =>
-            Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints)))
+            Future.successful(Redirect(controllers.fileUpload.routes.ProblemWithServiceController.onPageLoad(waypoints)))
           case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _, _, _)) =>
-            Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints)))
+            Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsAllController.onPageLoad(waypoints)))
           case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _, _, _)) =>
-            Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints)))
+            Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsSummaryController.onPageLoad(waypoints)))
           case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
         }
       }
-        Future.successful(Ok(view(controllers.routes.IndexController.onPageLoad.url)))
+    //Future.successful(Ok(view(controllers.routes.IndexController.onPageLoad.url)))
     //Manually write in Mongo/setOutcome
 
   }

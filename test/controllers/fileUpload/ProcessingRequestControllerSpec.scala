@@ -80,5 +80,56 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
       redirectLocation(result).value mustEqual routes.FileUploadSuccessController.onPageLoad(waypoints).url
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
     }
+
+    "return OK and the correct view for a GET when outcome is GeneralError" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
+
+      val testFile = "test-file.csv"
+      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
+        .thenReturn(Future.successful(Some(ParsingAndValidationOutcome(status = ParsingAndValidationOutcomeStatus.GeneralError, fileName = Some(testFile)))))
+
+      val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints).url)
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.ProblemWithServiceController.onPageLoad(waypoints).url
+      verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
+    }
+
+    "return OK and the correct view for a GET when outcome is ValidationErrorsLessThan10" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
+
+      val testFile = "test-file.csv"
+      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
+        .thenReturn(Future.successful(Some(ParsingAndValidationOutcome(status = ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10, fileName = Some(testFile)))))
+
+      val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints).url)
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.ValidationErrorsAllController.onPageLoad(waypoints).url
+      verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
+    }
+
+    "return OK and the correct view for a GET when outcome is ValidationErrorsMoreThanOrEqualTo10" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
+
+      val testFile = "test-file.csv"
+      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
+        .thenReturn(Future.successful(Some(ParsingAndValidationOutcome(status = ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10, fileName = Some(testFile)))))
+
+      val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints).url)
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.ValidationErrorsSummaryController.onPageLoad(waypoints).url
+      verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
+    }
   }
 }
