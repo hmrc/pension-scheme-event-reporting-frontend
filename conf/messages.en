@@ -1485,4 +1485,5 @@ fileUpload.generic.total.error.part1 = Your file has {0} errors. At least one:
 
 problemWithService.title = Sorry, there was a problem with the service
 problemWithService.heading = Sorry, there was a problem with the service
+problemWithService.p = We could not process your file upload
 problemWithService.link = Try uploading your file again.
