@@ -45,6 +45,12 @@ class EventReportingTileController @Inject()(
   def eventReportPartial(): Action[AnyContent] = {
     identify.async { implicit request => // (identify andThen getData()).async, PODS-8495
 
+      val hello = eventReportingConnector.getVersions(request.pstr, "ER", "2021-04-01")
+
+      hello.onComplete(println(_))
+
+
+
       /* TODO: this will be amended or adjusted in PODS-8495
       val taxYearRangeAsSeqString = request.userAnswers.flatMap(_.get(TaxYearPage)) match {
         case Some(taxYear: TaxYear) => taxYear.rangeAsSeqString

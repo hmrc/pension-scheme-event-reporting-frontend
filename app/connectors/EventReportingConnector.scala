@@ -36,8 +36,9 @@ class EventReportingConnector @Inject()(
   private def eventCompileUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/compile"
   private def eventSubmitUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event-declaration-report"
   private def getFileUploadResponseUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/get"
-
   private def eventReportingToggleUrl(toggleName:String) = s"${config.eventReportingUrl}/admin/get-toggle/$toggleName"
+  private def eventVersionsUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/versions"
+
 
   def getEventReportSummary(pstr: String, reportStartDate: String)
                            (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventType]] = {
@@ -144,6 +145,27 @@ class EventReportingConnector @Inject()(
       }
 
     }
+  }
+
+  def getVersions(pstr: String, reportType: String, startDate: String)
+                           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[String] = {
+
+    val headers: Seq[(String, String)] = Seq(
+      "Content-Type" -> "application/json",
+      "pstr" -> pstr,
+      "reportType" -> reportType,
+      "startDate" -> startDate
+    )
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.GET[HttpResponse](eventVersionsUrl)(implicitly, hc, implicitly)
+      .map { response =>
+        response.status match {
+          case OK => response.body
+          case _ =>
+            throw new HttpException(response.body, response.status)
+        }
+      }
   }
 }
 
