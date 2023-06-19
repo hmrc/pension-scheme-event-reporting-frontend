@@ -55,7 +55,7 @@ class Event22ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
                             Joe,Bloggs,AA234567D,2020,12.20
                             Steven,Bloggs,AA123456C,2022,13.20"""
       )
-      val result = validator.parse(validCSVFile, UserAnswers())
+      val result = validator.validate(validCSVFile, UserAnswers())
       result mustBe Valid(UserAnswers()
         .setOrException(MembersDetailsPage(Event22, 0).path, Json.toJson(SampleData.memberDetails))
         .setOrException(ChooseTaxYearPage(Event22, 0).path, Json.toJson(ChooseTaxYear("2020")))
@@ -68,14 +68,14 @@ class Event22ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
 
     "return validation error for incorrect header" in {
       val csvFile = CSVParser.split("""test""")
-      val result = validator.parse(csvFile, UserAnswers())
+      val result = validator.validate(csvFile, UserAnswers())
       result mustBe Invalid(Seq(
         ValidationError(0, 0, HeaderInvalidOrFileIsEmpty)
       ))
     }
 
     "return validation error for empty file" in {
-      val result = validator.parse(Nil, UserAnswers())
+      val result = validator.validate(Nil, UserAnswers())
       result mustBe Invalid(Seq(
         ValidationError(0, 0, HeaderInvalidOrFileIsEmpty)
       ))
@@ -89,7 +89,7 @@ class Event22ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
 Steven,,xyz,,"""
       )
 
-      val result = validator.parse(csvFile, UserAnswers())
+      val result = validator.validate(csvFile, UserAnswers())
       result mustBe Invalid(Seq(
         ValidationError(1, 0, "membersDetails.error.firstName.required", "firstName"),
         ValidationError(1, 3, "chooseTaxYear.event22.error.notFuture", "taxYear"),

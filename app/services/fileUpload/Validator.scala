@@ -49,39 +49,9 @@ trait Validator {
   protected val fieldNoLastName = 1
   protected val fieldNoNino = 2
 
-  protected final val YearLength = 4
-
   protected def validHeader: String
 
   // scalastyle:off parameter.number
-  protected def validateField[A](
-                                  index: Int,
-                                  columns: Seq[String],
-                                  page: Int => Gettable[_],
-                                  formFieldName: String,
-                                  columnName: String,
-                                  fieldNo: Int,
-                                  formProvider: => Form[A],
-                                  convertValue: String => String = identity
-                                )(implicit writes: Writes[A]): Result = {
-    def bindForm(index: Int, columns: Seq[String],
-                 fieldName: String, fieldNo: Int)
-    : Validated[Seq[ValidationError], A] = {
-      val form: Form[A] = formProvider
-      val fields = Seq(Field(fieldName, convertValue(fieldValue(columns, fieldNo)), columnName, fieldNo))
-      val toMap = Field.seqToMap(fields)
-      val bind = form.bind(toMap)
-      bind.fold(
-        formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-        value => Valid(value)
-      )
-    }
-
-    resultFromFormValidationResult[A](
-      bindForm(index, columns, formFieldName, fieldNo),
-      createCommitItem(index, page)
-    )
-  }
 
   protected def fieldValue(columns: Seq[String], fieldNo: Int): String =
     if (columns.isDefinedAt(fieldNo)) {
@@ -89,15 +59,15 @@ trait Validator {
     } else {
       ""
     }
-    
 
-  def parse(rows: Seq[Array[String]], userAnswers: UserAnswers)
-           (implicit messages: Messages): Validated[Seq[ValidationError], UserAnswers] = {
+
+  def validate(rows: Seq[Array[String]], userAnswers: UserAnswers)
+              (implicit messages: Messages): Validated[Seq[ValidationError], UserAnswers] = {
     Invalid(Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty))
     rows.headOption match {
       case Some(row) if row.mkString(",").equalsIgnoreCase(validHeader) =>
         rows.size match {
-          case n if n >= 2 => parseDataRows(rows)
+          case n if n >= 2 => validateDataRows(rows)
             .map(_.foldLeft(userAnswers)((acc, ci) => acc.setOrException(ci.jsPath, ci.value)))
           case _ => Invalid(Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty))
         }
@@ -106,8 +76,8 @@ trait Validator {
     }
   }
 
-  private def parseDataRows(rows: Seq[Array[String]])
-                           (implicit messages: Messages): Result = {
+  private def validateDataRows(rows: Seq[Array[String]])
+                              (implicit messages: Messages): Result = {
     rows.zipWithIndex.foldLeft[Result](Valid(Nil)) {
       case (acc, Tuple2(_, 0)) => acc
       case (acc, Tuple2(row, index)) => Seq(acc, validateFields(index, row.toIndexedSeq)).combineAll
@@ -162,8 +132,6 @@ trait Validator {
       case None => default
       case Some(a) => a
     }
-
-  protected final val minChargeValueAllowed = BigDecimal("0.01")
 
   protected final def splitDayMonthYear(date: String): ParsedDate = {
     date.split("/").toSeq match {

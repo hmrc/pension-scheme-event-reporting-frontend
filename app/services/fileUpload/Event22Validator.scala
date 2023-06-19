@@ -32,8 +32,6 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import services.fileUpload.Validator.Result
 
-import java.time.LocalDate
-
 class Event22Validator @Inject()(
                                   membersDetailsFormProvider: MembersDetailsFormProvider,
                                   chooseTaxYearFormProvider: ChooseTaxYearFormProvider,
@@ -48,7 +46,7 @@ class Event22Validator @Inject()(
   private val fieldNoTotalAmounts = 4
 
   private def taxYearValidation(index: Int,
-                                chargeFields: Seq[String])(implicit messages: Messages): Validated[Seq[ValidationError], ChooseTaxYear] = {
+                                chargeFields: Seq[String]): Validated[Seq[ValidationError], ChooseTaxYear] = {
     val fields = Seq(
       Field(valueFormField, chargeFields(fieldNoTaxYear), taxYear, fieldNoTaxYear)
     )
@@ -64,7 +62,7 @@ class Event22Validator @Inject()(
   }
 
   private def totalAmountsValidation(index: Int,
-                                      chargeFields: Seq[String])(implicit messages: Messages): Validated[Seq[ValidationError], BigDecimal] = {
+                                      chargeFields: Seq[String]): Validated[Seq[ValidationError], BigDecimal] = {
     val fields = Seq(
       Field(valueFormField, chargeFields(fieldNoTotalAmounts), totalAmounts, fieldNoTotalAmounts)
     )
