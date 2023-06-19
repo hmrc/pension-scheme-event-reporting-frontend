@@ -109,7 +109,7 @@ trait Validator {
       field <- fields.find(_.getFormValidationFullFieldName == formError.key)
     }
     yield {
-      ValidationError(index, field.columnNo, formError.message, field.columnName, formError.args)
+      ValidationError(index, field.columnNo, formError.message, field.columnName)
     }
   }
 
@@ -150,7 +150,11 @@ trait Validator {
     }
 }
 
-case class ValidationError(row: Int, col: Int, error: String, columnName: String = EMPTY, args: Seq[Any] = Nil)
+case class ValidationError(row: Int, col: Int, error: String, columnName: String = EMPTY)
+
+object ValidationError {
+  implicit val format: OFormat[ValidationError] = Json.format[ValidationError]
+}
 
 protected case class CommitItem(jsPath: JsPath, value: JsValue)
 
