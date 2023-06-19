@@ -23,7 +23,6 @@ import models.fileUpload.ParsingAndValidationOutcomeStatus.{GeneralError, Succes
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.ProcessingRequestView
 
@@ -36,7 +35,7 @@ class ProcessingRequestController @Inject()(
                                              val controllerComponents: MessagesControllerComponents,
                                              view: ProcessingRequestView,
                                              parsingAndValidationOutcomeCacheConnector: ParsingAndValidationOutcomeCacheConnector
-                                           )(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier)
+                                           )(implicit ec: ExecutionContext)
 
   extends FrontendBaseController with I18nSupport {
 
@@ -59,7 +58,8 @@ class ProcessingRequestController @Inject()(
           case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
         }
       }
-      //Manually write in Mongo/setOutcome
+        Future.successful(Ok(view(controllers.routes.IndexController.onPageLoad.url)))
+    //Manually write in Mongo/setOutcome
 
   }
 }
