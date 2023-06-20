@@ -21,9 +21,9 @@ import connectors.UserAnswersCacheConnector
 import forms.event20A.Event20APspDeclarationFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito.{never, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
 import pages.event20A.Event20APspDeclarationPage
 import play.api.inject.bind
@@ -40,7 +40,10 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
   private val formProvider = new Event20APspDeclarationFormProvider()
   private val form = formProvider()
-
+  val schemeName = "Big Scheme"
+  val pstr = "PSTR1234"
+  val taxYear = "2021"
+  val practitionerName = "John Smith"
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.Event20APspDeclarationController.onPageLoad(waypoints).url
@@ -71,7 +74,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
         val view = application.injector.instanceOf[Event20APspDeclarationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(schemeName, pstr, taxYear, practitionerName, form, waypoints)(request, messages(application)).toString
       }
     }
 
@@ -89,7 +92,8 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(
+          schemeName, pstr, taxYear, practitionerName, form.fill(validValue), waypoints)(request, messages(application)).toString
       }
     }
 
@@ -129,7 +133,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(schemeName, pstr, taxYear, practitionerName, boundForm, waypoints)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

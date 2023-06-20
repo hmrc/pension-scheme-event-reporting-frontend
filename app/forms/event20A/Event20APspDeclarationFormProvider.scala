@@ -26,6 +26,12 @@ class Event20APspDeclarationFormProvider @Inject() extends Mappings {
   def apply(): Form[String] =
     Form(
       "value" -> text("event20A.pspDeclaration.error.required")
-        .verifying(maxLength(100, "event20A.pspDeclaration.error.length"))
+        .verifying(
+          firstError(
+            minLength(8, "event20A.pspDeclaration.error.length"),
+            maxLength(8, "event20A.pspDeclaration.error.length"),
+            regexp(psaIdRegex, "event20A.pspDeclaration.error.invalid")
+          )
+        )
     )
 }
