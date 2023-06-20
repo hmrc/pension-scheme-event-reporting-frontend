@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.UserAnswers
+import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
 import models.enumeration.EventType.Event20A
 import models.event20A.WhatChange.{BecameMasterTrust, CeasedMasterTrust}
 import models.requests.DataRequest
@@ -49,7 +50,10 @@ class Event20ACheckYourAnswersController @Inject()(
     (identify andThen getData(Event20A) andThen requireData) { implicit request =>
       val thisPage = Event20ACheckYourAnswersPage()
       val waypoints = EmptyWaypoints
-      val continueUrl = controllers.event20A.routes.Event20APsaDeclarationController.onPageLoad(waypoints).url
+      val continueUrl = request.loggedInUser.administratorOrPractitioner match {
+        case Administrator => controllers.event20A.routes.Event20APsaDeclarationController.onPageLoad(waypoints).url
+        case Practitioner => controllers.event20A.routes.Event20APspDeclarationController.onPageLoad(waypoints).url
+      }
       Ok(view(SummaryListViewModel(rows = buildEvent20ACYARows(waypoints, thisPage, request.userAnswers)), continueUrl))
     }
 

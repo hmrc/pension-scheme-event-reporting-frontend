@@ -461,3 +461,6 @@ GET         /new-report/event-20A-check-your-answers                           c
 #GET         /new-report/event-20A-click                                        controllers.event20A.Event20ACheckYourAnswersController.onClick
 
 GET        /event20APsaDeclaration                  controllers.event20A.Event20APsaDeclarationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /event20APspDeclaration                        controllers.event20A.Event20APspDeclarationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /event20APspDeclaration                        controllers.event20A.Event20APspDeclarationController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
