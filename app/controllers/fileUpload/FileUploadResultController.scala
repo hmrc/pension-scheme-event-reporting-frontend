@@ -33,7 +33,7 @@ import pages.fileUpload.FileUploadResultPage
 import play.api.data.Form
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, Messages}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsArray, Json}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.fileUpload.Validator.FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty
 import services.fileUpload.{CSVParser, Event22Validator, ValidationError}
@@ -151,24 +151,23 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       case Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty) =>
         ParsingAndValidationOutcome(status = GeneralError)
       case _ =>
-        /*
-        private def errorJson(errors: Seq[ValidationError], messages: Messages): Seq[JsObject] = {
+
+        def errorJson(errors: Seq[ValidationError]): JsArray = {
           val cellErrors = errors.map { e =>
             val cell = String.valueOf(('A' + e.col).toChar) + (e.row + 1)
             Json.obj(
               "cell" -> cell,
-              "error" -> messages(e.error)
-              //        "error" -> messages(e.error, e.args: _*)
+              "error" -> messages(e.error, e.args: _*)
             )
           }
-          cellErrors
+          Json.arr(cellErrors)
         }
-         */
+
         if (errors.size <= maximumNumberOfError) {
           ParsingAndValidationOutcome(
             status = ValidationErrorsLessThan10,
             json = Json.obj(
-              "errors" -> Json.toJson(errors)
+              "errors" -> errorJson(errors)
             )
           )
         } else {

@@ -40,7 +40,7 @@
             for(element <- dummyErrors) yield {
             Seq(
                 TableRow(
-                    content = Text(element.row.toString + element.col.toString),
+                    content = Text(element.cell.toString),
                     classes = "govuk-!-font-weight-regular"
                 ),
                 TableRow(

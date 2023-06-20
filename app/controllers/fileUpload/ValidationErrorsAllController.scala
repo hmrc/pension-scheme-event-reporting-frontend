@@ -23,6 +23,7 @@ import models.fileUpload.ParsingAndValidationOutcome
 import models.fileUpload.ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.ValidationErrorForRendering
@@ -41,8 +42,6 @@ class ValidationErrorsAllController @Inject()(
                                              )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val eventType = EventType.Event22
-
-  private def generateAllErrors(parsingAndValidationOutcome: ParsingAndValidationOutcome): Seq[ValidationErrorForRendering] = Nil
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
