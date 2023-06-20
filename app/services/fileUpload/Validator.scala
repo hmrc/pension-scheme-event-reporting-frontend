@@ -152,23 +152,6 @@ trait Validator {
 
 case class ValidationError(row: Int, col: Int, error: String, columnName: String = EMPTY, args: Seq[Any] = Nil)
 
-object ValidationError {
-  //implicit val format: OFormat[ValidationError] = Json.format[ValidationError]
-
-  //implicit val Writes: OWrites[Seq[ValidationError]] = Json.writes[Seq[ValidationError]]
-
-//    implicit val writes: Writes[Seq[ValidationError]] = {
-//      Writes(value =>
-//        Json.obj(
-//          "row" -> value.row,
-//          "col" -> value.col,
-//          "error" -> value.error,
-//          "columnName" -> value.columnName
-//        )
-//      )
-//    }
-}
-
 protected case class CommitItem(jsPath: JsPath, value: JsValue)
 
 protected case class Field(formValidationFieldName: String,

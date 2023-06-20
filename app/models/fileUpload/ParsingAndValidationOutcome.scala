@@ -16,9 +16,7 @@
 
 package models.fileUpload
 
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
-import services.fileUpload.ValidationError
 
 case class ParsingAndValidationOutcome(
                                         status: ParsingAndValidationOutcomeStatus,
@@ -29,72 +27,4 @@ case class ParsingAndValidationOutcome(
 
 object ParsingAndValidationOutcome {
   implicit val format: OFormat[ParsingAndValidationOutcome] = Json.format[ParsingAndValidationOutcome]
-
-
-  private val readsErrorDetails: Reads[ValidationError] = (
-    (JsPath \ "row").read[Int] and
-      (JsPath \ "col").read[Int] and
-      (JsPath \ "error").read[String] and
-      (JsPath \ "columnName").read[String]
-    )((row, col, error, columnName) =>
-    ValidationError(
-      row,
-      col,
-      error,
-      columnName
-    )
-  )
-
-  private def readsErrorsLessThan10(status: ParsingAndValidationOutcomeStatus): Reads[Option[Seq[ValidationError]]] = {
-    status match {
-      case ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10 =>
-        JsPath.readNullable[Seq[ValidationError]](__.read(Reads.seq(readsErrorDetails)))
-      case _ =>
-        Reads.pure[Option[Seq[ValidationError]]](None)
-    }
-  }
-
-  private def readsErrorsMoreThan10(status: ParsingAndValidationOutcomeStatus): Reads[Option[Seq[String]]] = {
-    status match {
-      case ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10 =>
-        JsPath.readNullable[Seq[String]](__.read(Reads.seq[String]))
-      case _ =>
-        Reads.pure[Option[Seq[String]]](None)
-    }
-  }
-
-  //  implicit val reads: Reads[ParsingAndValidationOutcome] = {
-  //    (JsPath \ "status").read[ParsingAndValidationOutcomeStatus].flatMap {
-  //      case status@ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10 =>
-  //        (JsPath \ "errors").read[Option[Seq[ValidationError]]](readsErrorsLessThan10(status)).map { errors =>
-  //          ParsingAndValidationOutcome(
-  //            status = status,
-  //            lessThanTen = errors.toSeq.flatten
-  //          )
-  //        }
-  //      case status@ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10 =>
-  //        (JsPath \ "errors").read[Option[Seq[String]]](readsErrorsMoreThan10(status)).map { errors =>
-  //          ParsingAndValidationOutcome(
-  //            status = status,
-  //            moreThanTen = errors.toSeq.flatten
-  //          )
-  //        }
-  //      case status@ParsingAndValidationOutcomeStatus.Success =>
-  //        (JsPath \ "errors").read[Option[Seq[ValidationError]]](readsErrorsLessThan10(status)).map { errors =>
-  //          ParsingAndValidationOutcome(
-  //            status = status,
-  //            lessThanTen = errors.toSeq.flatten
-  //          )
-  //        }
-  //      case status@ParsingAndValidationOutcomeStatus.GeneralError =>
-  //        (JsPath \ "errors").read[Option[Seq[ValidationError]]](readsErrorsLessThan10(status)).map { errors =>
-  //          ParsingAndValidationOutcome(
-  //            status = status,
-  //            lessThanTen = errors.toSeq.flatten
-  //          )
-  //        }
-  //      case _ =>
-  //        throw new RuntimeException("Error")
-  //    }
-  //  }
 }

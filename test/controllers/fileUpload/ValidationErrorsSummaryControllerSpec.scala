@@ -27,7 +27,7 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.fileUpload.ValidationErrorsSummaryView
@@ -41,6 +41,17 @@ class ValidationErrorsSummaryControllerSpec extends SpecBase {
   private val mockParsingAndValidationOutcomeCacheConnector = mock[ParsingAndValidationOutcomeCacheConnector]
   private val dummyErrors: Seq[String] = Seq("Error1", "Error2", "Error3")
 
+  private val expectedOutcome = ParsingAndValidationOutcome(
+    status = ValidationErrorsMoreThanOrEqual10,
+    json = Json.obj(
+      "errors" -> Json.arr(
+        JsString("Error1"),
+        JsString("Error2"),
+        JsString("Error3")
+      )
+    )
+  )
+
   val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[ParsingAndValidationOutcomeCacheConnector].toInstance(mockParsingAndValidationOutcomeCacheConnector)
   )
@@ -49,14 +60,7 @@ class ValidationErrorsSummaryControllerSpec extends SpecBase {
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
-        .thenReturn(Future.successful(Some(ParsingAndValidationOutcome(
-          status = ValidationErrorsMoreThanOrEqual10,
-          json = Json.obj(),
-          lessThanTen = Nil,
-          moreThanTen = dummyErrors,
-          fileName = Some("Dummy filename.csv"))))
-        )
+      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any())).thenReturn(Future.successful(Some(expectedOutcome)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
