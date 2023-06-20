@@ -168,16 +168,4 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
         }
     }
   }
-
-  private def errorJson(errors: Seq[ValidationError], messages: Messages): Seq[JsObject] = {
-    val cellErrors = errors.map { e =>
-      val cell = String.valueOf(('A' + e.col).toChar) + (e.row + 1)
-      Json.obj(
-        "cell" -> cell,
-        "error" -> messages(e.error)
-        //        "error" -> messages(e.error, e.args: _*)
-      )
-    }
-    cellErrors
-  }
 }

@@ -43,6 +43,18 @@ class ValidationErrorsAllController @Inject()(
 
   private val eventType = EventType.Event22
 
+  private def errorJson(errors: Seq[ValidationError], messages: Messages): Seq[JsObject] = {
+    val cellErrors = errors.map { e =>
+      val cell = String.valueOf(('A' + e.col).toChar) + (e.row + 1)
+      Json.obj(
+        "cell" -> cell,
+        "error" -> messages(e.error)
+        //        "error" -> messages(e.error, e.args: _*)
+      )
+    }
+    cellErrors
+  }
+
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints).url
