@@ -18,12 +18,19 @@ package controllers.fileUpload
 
 import base.SpecBase
 import connectors.ParsingAndValidationOutcomeCacheConnector
+import models.fileUpload.ParsingAndValidationOutcome
+import models.fileUpload.ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.fileUpload.ValidationErrorsSummaryView
+
+import scala.concurrent.Future
 
 class ValidationErrorsSummaryControllerSpec extends SpecBase {
 
@@ -40,7 +47,16 @@ class ValidationErrorsSummaryControllerSpec extends SpecBase {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
+        .thenReturn(Future.successful(Some(ParsingAndValidationOutcome(
+          status = ValidationErrorsMoreThanOrEqual10,
+          json = Json.obj(),
+          lessThanTen = Nil,
+          moreThanTen = dummyErrors,
+          fileName = Some("Dummy filename.csv"))))
+        )
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
       running(application) {
 

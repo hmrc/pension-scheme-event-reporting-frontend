@@ -16,8 +16,11 @@
 
 package controllers.fileUpload
 
+import connectors.ParsingAndValidationOutcomeCacheConnector
 import controllers.actions._
 import models.enumeration.EventType
+import models.fileUpload.ParsingAndValidationOutcome
+import models.fileUpload.ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -25,15 +28,16 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.ValidationErrorsSummaryView
 
 import javax.inject.Inject
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
 class ValidationErrorsSummaryController @Inject()(
                                                    override val messagesApi: MessagesApi,
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
                                                    val controllerComponents: MessagesControllerComponents,
+                                                   parsingAndValidationOutcomeCacheConnector: ParsingAndValidationOutcomeCacheConnector,
                                                    view: ValidationErrorsSummaryView
-                                                 ) extends FrontendBaseController with I18nSupport {
+                                                 )(implicit Ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val eventType = EventType.Event22
 
@@ -41,16 +45,12 @@ class ValidationErrorsSummaryController @Inject()(
     implicit request =>
       val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints).url
       val fileDownloadInstructionLink = controllers.routes.FileDownloadController.instructionsFile.url
-      val dummyErrors: Seq[String] = Seq("Error1", "Error2", "Error3")
 
-      Future.successful(Ok(view(returnUrl, fileDownloadInstructionLink, dummyErrors)))
-
-    //      parsingAndValidationOutcomeCacheConnector.getOutcome.map {
-    //        case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, errorsJson, _)) =>
-    //          Ok(view(returnUrl, fileDownloadInstructionLink, errorsJson))
-    //        case _ =>
-    //          NotFound
-    //      }
-
+      parsingAndValidationOutcomeCacheConnector.getOutcome.map {
+        case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _, errors, _)) =>
+          Ok(view(returnUrl, fileDownloadInstructionLink, errors))
+        case _ =>
+          NotFound
+      }
   }
 }
