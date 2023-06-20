@@ -14,25 +14,7 @@
  * limitations under the License.
  */
 
-package audit
+package models
 
-import models.TaxYear
 import models.enumeration.EventType
-
-case class StartNewERAuditEvent(
-                               psaIdentifier: String,
-                               pstr: String,
-                               taxYear: TaxYear,
-                               eventNumber: EventType
-                             ) extends AuditEvent {
-  override def auditType: String = "EventReportingStart"
-
-  override def details: Map[String, String] = {
-    Map(
-      "psaOrPspId" -> psaIdentifier,
-      "pstr" -> pstr,
-      "taxYear" -> s"${taxYear.startYear} to ${taxYear.endYear}",
-      "eventNumber" -> eventNumber.toString
-    )
-  }
-}
+case class EventDataIdentifier(eventType: EventType, year: String, version: String)

@@ -117,7 +117,7 @@ object Event19CheckYourAnswersControllerSpec {
   private def expectedMemberSummaryListRowsEvent19(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithTextWithHiddenContent(
       "event19.countryOrTerritory.change.checkYourAnswersLabel",
-      "GB",
+      "United Kingdom",
       "/manage-pension-scheme-event-report/new-report/event-19-which-country-or-territory?waypoints=event-19-check-answers",
       "event19.countryOrTerritory.change.hidden"
     ),

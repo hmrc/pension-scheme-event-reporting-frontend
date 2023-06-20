@@ -21,6 +21,7 @@ import models.UserAnswers
 import models.enumeration.EventType
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
+import pages.TaxYearPage
 import play.api.libs.json.Json
 import uk.gov.hmrc.http._
 import utils.WireMockHelper
@@ -42,7 +43,8 @@ class UserAnswersCacheConnectorSpec
 
   private val validResponse =
     Json.obj(
-      "test" -> "test"
+      "test" -> "test",
+      TaxYearPage.toString -> "2020"
     )
 
   private val userAnswers = UserAnswers(validResponse)
@@ -59,11 +61,11 @@ class UserAnswersCacheConnectorSpec
       )
 
       connector.get(pstr, eventType) map {
-        _ mustBe Some(UserAnswers(validResponse))
+        _ mustBe Some(UserAnswers(validResponse, validResponse))
       }
     }
 
-    "return successfully when the backend has returned NOT FOUND and a correct response" in {
+    "throw runtime exception when the backend has returned NOT FOUND for both event and non event data" in {
       server.stubFor(
         get(urlEqualTo(userAnswersCacheUrl))
           .willReturn(
@@ -72,8 +74,8 @@ class UserAnswersCacheConnectorSpec
           )
       )
 
-      connector.get(pstr, eventType) map {
-        _ mustBe None
+      recoverToSucceededIf[RuntimeException] {
+        connector.get(pstr, eventType)
       }
     }
 

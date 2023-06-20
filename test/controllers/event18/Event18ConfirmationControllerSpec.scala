@@ -18,14 +18,14 @@ package controllers.event18
 
 import base.SpecBase
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
-import models.UserAnswers
+import models.{EventDataIdentifier, TaxYear, UserAnswers}
 import models.enumeration.EventType.Event18
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints, TaxYearPage}
 import pages.event18.Event18ConfirmationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -84,11 +84,14 @@ class Event18ConfirmationControllerSpec extends SpecBase with BeforeAndAfterEach
       val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq("87219363YN"), ArgumentMatchers.eq(Event18))(any(), any()))
+      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq("87219363YN"),
+        ArgumentMatchers.eq(EventDataIdentifier(Event18, "2020", "1")))(any(), any()))
         .thenReturn(Future.successful(()))
 
+      val ua = emptyUserAnswers.setOrException(TaxYearPage, TaxYear("2020"), nonEventTypeData = true)
+
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(ua), extraModules)
           .build()
       running(application) {
         val request = FakeRequest(GET, getRouteOnClick)

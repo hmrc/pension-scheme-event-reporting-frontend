@@ -49,7 +49,7 @@ class Event18ConfirmationController @Inject()(val controllerComponents: Messages
       val originalUserAnswers = request.userAnswers
       val updatedAnswers = originalUserAnswers.setOrException(Event18ConfirmationPage, true)
       userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).flatMap { _ =>
-        connector.compileEvent(request.pstr, eventType).map {
+        connector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(eventType)).map {
           _ =>
             Redirect(Event18ConfirmationPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
         }

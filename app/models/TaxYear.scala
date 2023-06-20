@@ -27,6 +27,8 @@ import java.time.LocalDate
 
 case class TaxYear(startYear: String) {
   def endYear: String = (startYear.toInt + 1).toString
+
+  def rangeAsSeqString: Seq[String] = Seq(startYear, endYear)
 }
 
 object TaxYear extends Enumerable.Implicits {
