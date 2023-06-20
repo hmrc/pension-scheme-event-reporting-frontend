@@ -161,11 +161,9 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                 "columnName" -> e.columnName
               )
             }
-
-            val x = cellErrors.map(x => Json.toJsFieldJsValueWrapper(x))
-            Json.arr(x :_*)
-
+            Json.arr(cellErrors.map(x => Json.toJsFieldJsValueWrapper(x)): _*)
           }
+
           ParsingAndValidationOutcome(
             status = ValidationErrorsLessThan10,
             json = Json.obj(
@@ -176,7 +174,8 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
           ParsingAndValidationOutcome(
             status = ValidationErrorsMoreThanOrEqual10,
             json = Json.obj(
-              "errors" -> FileUploadGenericErrorReporter.generateGenericErrorReport(errors, eventType)
+              "errors" -> FileUploadGenericErrorReporter.generateGenericErrorReport(errors, eventType),
+              "totalErrors" -> errors.size
             )
           )
         }

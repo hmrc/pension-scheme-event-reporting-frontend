@@ -21,7 +21,7 @@
         govukButton: GovukButton
 )
 
-@(returnToFileUploadURL: String, fileDownloadInstructionsLink: String, dummyErrors: Seq[String])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(returnToFileUploadURL: String, fileDownloadInstructionsLink: String, dummyErrors: Seq[String], totalNumOfErrors: Int)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("fileupload.invalid.title"))) {
 
@@ -34,7 +34,7 @@
 
     <h2 class="govuk-heading-m">@messages("fileupload.invalid.h1")</h2>
 
-    <p class="govuk-body">@messages("fileUpload.generic.total.error.part1", dummyErrors.length)</p>
+    <p class="govuk-body">@messages("fileUpload.generic.total.error.part1", totalNumOfErrors)</p>
 
     <ul class="govuk-list govuk-list--bullet">
         @for(element <- dummyErrors){

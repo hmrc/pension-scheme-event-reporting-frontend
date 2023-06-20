@@ -42,12 +42,20 @@ class ValidationErrorsSummaryController @Inject()(
 
   private val eventType = EventType.Event22
 
-  private def generateAllErrors(parsingAndValidationOutcome: ParsingAndValidationOutcome): Seq[String] = {
-    val reads = (JsPath \ "errors").read[Seq[String]](JsPath.read[Seq[String]](__.read(Reads.seq[String])))
-    reads.reads(parsingAndValidationOutcome.json) match {
+  private def generateAllErrors(parsingAndValidationOutcome: ParsingAndValidationOutcome): (Seq[String], Int) = {
+    val numOfErrorsReads = (JsPath \ "totalErrors").read[Int]
+    val readsErrors = (JsPath \ "errors").read[Seq[String]](JsPath.read[Seq[String]](__.read(Reads.seq[String])))
+
+    val numberOfErrors = numOfErrorsReads.reads(parsingAndValidationOutcome.json) match {
+      case JsSuccess(total, _) => total
+      case JsError(errors) => throw JsResultException(errors)
+    }
+
+    val errors = readsErrors.reads(parsingAndValidationOutcome.json) match {
       case JsSuccess(value, _) => value
       case JsError(errors) => throw JsResultException(errors)
     }
+    (errors, numberOfErrors)
   }
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
@@ -57,7 +65,8 @@ class ValidationErrorsSummaryController @Inject()(
 
       parsingAndValidationOutcomeCacheConnector.getOutcome.map {
         case Some(outcome@ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _)) =>
-          Ok(view(returnUrl, fileDownloadInstructionLink, generateAllErrors(outcome)))
+          val (errors, totalNumOfErrors) = generateAllErrors(outcome)
+          Ok(view(returnUrl, fileDownloadInstructionLink, errors, totalNumOfErrors))
         case _ => NotFound
       }
   }

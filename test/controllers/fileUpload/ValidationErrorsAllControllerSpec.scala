@@ -21,7 +21,8 @@ import connectors.ParsingAndValidationOutcomeCacheConnector
 import models.fileUpload.ParsingAndValidationOutcome
 import models.fileUpload.ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -33,11 +34,12 @@ import views.html.fileUpload.ValidationErrorsAllView
 
 import scala.concurrent.Future
 
-class ValidationErrorsAllControllerSpec extends SpecBase {
+class ValidationErrorsAllControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val returnUrl = "/manage-pension-scheme-event-report/new-report/event-22-upload"
   private val fileDownloadInstructionLink = "/manage-pension-scheme-event-report/event-22-upload-format-instructions"
   private val mockParsingAndValidationOutcomeCacheConnector = mock[ParsingAndValidationOutcomeCacheConnector]
+
   private val expectedOutcome = ParsingAndValidationOutcome(
     status = ValidationErrorsLessThan10,
     json = Json.obj(
@@ -56,10 +58,14 @@ class ValidationErrorsAllControllerSpec extends SpecBase {
     )
   )
 
-
   val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[ParsingAndValidationOutcomeCacheConnector].toInstance(mockParsingAndValidationOutcomeCacheConnector)
   )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockParsingAndValidationOutcomeCacheConnector)
+  }
 
   "ValidationErrorsAll Controller" - {
 

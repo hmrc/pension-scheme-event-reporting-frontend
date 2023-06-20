@@ -1,5 +1,3 @@
-
-
 /*
  * Copyright 2023 HM Revenue & Customs
  *
@@ -23,7 +21,8 @@ import connectors.ParsingAndValidationOutcomeCacheConnector
 import models.fileUpload.ParsingAndValidationOutcome
 import models.fileUpload.ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -34,7 +33,7 @@ import views.html.fileUpload.ValidationErrorsSummaryView
 
 import scala.concurrent.Future
 
-class ValidationErrorsSummaryControllerSpec extends SpecBase {
+class ValidationErrorsSummaryControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val returnUrl = "/manage-pension-scheme-event-report/new-report/event-22-upload"
   private val fileDownloadInstructionLink = "/manage-pension-scheme-event-report/event-22-upload-format-instructions"
@@ -48,13 +47,19 @@ class ValidationErrorsSummaryControllerSpec extends SpecBase {
         JsString("Error1"),
         JsString("Error2"),
         JsString("Error3")
-      )
+      ),
+      "totalErrors" -> 3
     )
   )
 
   val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[ParsingAndValidationOutcomeCacheConnector].toInstance(mockParsingAndValidationOutcomeCacheConnector)
   )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockParsingAndValidationOutcomeCacheConnector)
+  }
 
   "ValidationErrorsSummary Controller" - {
 
@@ -73,7 +78,7 @@ class ValidationErrorsSummaryControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[ValidationErrorsSummaryView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(returnUrl, fileDownloadInstructionLink, dummyErrors)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(returnUrl, fileDownloadInstructionLink, dummyErrors, 3)(request, messages(application)).toString
       }
     }
   }
