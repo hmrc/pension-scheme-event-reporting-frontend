@@ -45,6 +45,21 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   val betaFeedbackUnauthenticatedUrl: String = getConfigString("contact-frontend.beta-feedback-url.unauthenticated")
 
   lazy val erLoginUrl: String = configuration.get[String](path = "urls.partials.erLoginLink")
+
+  // TODO: add below to app-config-base:
+
+  //  partials {
+  //    erLoginLink = "/manage-pension-scheme-event-report/select-tax-year",
+  //    erCompiledLink = "/manage-pension-scheme-event-report/?????",
+  //    erSubmittedLink = "/manage-pension-scheme-event-report/?????",
+  //  }
+
+  // TODO: these are temporary only for local testing
+  lazy val erCompiledUrl: String = "http://localhost:8216/manage-pension-scheme-event-report/view-event-report-in-progress"
+  // lazy val erCompiledUrl: String = configuration.get[String](path = "urls.partials.erCompiledLink")
+  lazy val erSubmittedUrl: String = "http://localhost:8216/manage-pension-scheme-event-report/view-or-change-past-event-reports"
+  // lazy val erSubmittedUrl: String = configuration.get[String](path = "urls.partials.erSubmittedLink")
+
   val loginUrl: String = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String = loadConfig("urls.signOut")

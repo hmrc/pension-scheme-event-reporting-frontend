@@ -21,7 +21,7 @@ import config.FrontendAppConfig
 import models.enumeration.EventType
 import models.{EventDataIdentifier, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
 import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsArray, JsString, JsValue, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
 
@@ -38,6 +38,7 @@ class EventReportingConnector @Inject()(
   private def getFileUploadResponseUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/get"
   private def eventReportingToggleUrl(toggleName:String) = s"${config.eventReportingUrl}/admin/get-toggle/$toggleName"
   private def eventVersionsUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/versions"
+  private def eventOverviewUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/overview"
 
 
   def getEventReportSummary(pstr: String, reportStartDate: String)
@@ -162,6 +163,28 @@ class EventReportingConnector @Inject()(
       .map { response =>
         response.status match {
           case OK => response.body
+          case _ =>
+            throw new HttpException(response.body, response.status)
+        }
+      }
+  }
+
+  def getOverview(pstr: String, reportType: String, startDate: String, endDate: String)
+                 (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[JsArray] = {
+
+    val headers: Seq[(String, String)] = Seq(
+      "Content-Type" -> "application/json",
+      "pstr" -> pstr,
+      "reportType" -> reportType,
+      "startDate" -> startDate,
+      "endDate" -> endDate
+    )
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.GET[HttpResponse](eventOverviewUrl)(implicitly, hc, implicitly)
+      .map { response =>
+        response.status match {
+          case OK => Json.arr(Json.parse(response.body))// Json.parse(response.body)
           case _ =>
             throw new HttpException(response.body, response.status)
         }

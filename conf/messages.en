@@ -95,9 +95,9 @@ confirmation.li3 = print this page
 eventReportingTile.heading = Event Reporting
 eventReportingTile.subHeading = Event report {0} to {1}:
 eventReportingTile.subHeading.param = in progress
-eventReportingTile.link.item1 = View event report in progress
-eventReportingTile.link.item2 = Start a new event report
-eventReportingTile.link.item3 = View or change past event reports
+eventReportingTile.link.compiled = View event report in progress
+eventReportingTile.link.aft-overview = Start a new event report
+eventReportingTile.link.submitted = View or change past event reports
 
 eventSelection.title = Which event are you adding to the event report?
 eventSelection.heading = Which event are you adding to the event report?

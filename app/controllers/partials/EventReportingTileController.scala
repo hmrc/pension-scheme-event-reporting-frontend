@@ -22,15 +22,19 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import models.{TaxYear, ToggleDetails}
 import pages.TaxYearPage
 import play.api.i18n.{I18nSupport, Messages}
+import play.api.libs.json.{JsArray, JsBoolean, JsString, JsValue, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.partials._
 import views.html.partials.EventReportingTileView
 
+import java.time.LocalDate
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.{Duration, DurationInt}
+import scala.concurrent.{Await, ExecutionContext, Future}
 
+//noinspection ScalaStyle
 class EventReportingTileController @Inject()(
                                               identify: IdentifierAction,
                                               view: EventReportingTileView,
@@ -41,29 +45,51 @@ class EventReportingTileController @Inject()(
                                             )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
+  import EventReportingTileController._
+
 
   def eventReportPartial(): Action[AnyContent] = {
-    identify.async { implicit request => // (identify andThen getData()).async, PODS-8495
+    identify.async { implicit request =>
 
-      val hello = eventReportingConnector.getVersions(request.pstr, "ER", "2020-04-01")
+      val futureArray: Future[JsArray] = eventReportingConnector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString)
+      val result: JsArray = Await.result(futureArray, 20.seconds) // typical timeout, testing purposes
 
-      hello.onComplete(println(_))
+      val mapResult = result.value.flatMap { value =>
+        Seq(
+          "anyStartDates" -> (value \\ "periodStartDate"), // if compiled and available, use in subheading
+          "anyEndDates" -> (value \\ "periodEndDate"), // if compiled and available, use in subheading
+          "anySubmittedVersions" -> (value \\ "submittedVersionAvailable"), // if any trues, link to old submissions
+          "anyCompiledVersions" -> (value \\ "compiledVersionAvailable") // if any trues, link to in progress
+        )
+      }.toMap
 
+      val loginLink = Seq(Link("erLoginLink", appConfig.erLoginUrl, Text(Messages("eventReportingTile.link.new"))))
 
+      val maybeCompiledVersions = mapResult("anyCompiledVersions").collectFirst { x =>
+        JsBoolean(x.toString.toBoolean) == JsBoolean(true)
+      }.getOrElse(false)
 
-      /* TODO: this will be amended or adjusted in PODS-8495
-      val taxYearRangeAsSeqString = request.userAnswers.flatMap(_.get(TaxYearPage)) match {
-        case Some(taxYear: TaxYear) => taxYear.rangeAsSeqString
-        case _ => Seq.empty
-      }
-       */
+      val maybeSubmittedVersions = mapResult("anySubmittedVersions").collectFirst { x =>
+        JsBoolean(x.toString.toBoolean) == JsBoolean(true)
+      }.getOrElse(false)
 
-      /* TODO: this will be amended or adjusted in PODS-8495
-      val maybeCardSubHeading: Seq[String] => Seq[CardSubHeading] = (seqOfString: Seq[String]) => {
-        if (seqOfString.length == 2) {
+      val maybeCompiledLink: Seq[Link] = if (maybeCompiledVersions) { // maybeCompiledVersions
+        Seq(Link("erCompiledLink", appConfig.erCompiledUrl, Text("eventReportingTile.link.compiled")))
+      } else Nil
+
+      val maybeSubmittedLink: Seq[Link] = if (maybeSubmittedVersions) { // maybeSubmittedVersions
+        Seq(Link("erSubmittedLink", appConfig.erSubmittedUrl, Text("eventReportingTile.link.submitted")))
+      } else Nil
+
+      // TODO: implement below link in future - out of scope for PODS-8495.
+      // View event reports in progress
+      // Link(...)
+
+      val maybeCardSubHeading: Seq[CardSubHeading] = {
+        if (maybeCompiledVersions) {
           Seq(
             CardSubHeading(
-              subHeading = Messages("eventReportingTile.subHeading", seqOfString.head, seqOfString.tail.head),
+              subHeading = Messages("eventReportingTile.subHeading", mapResult("anyStartDates").head, mapResult("anyEndDates").head), // TODO: fix strings
               subHeadingClasses = "card-sub-heading",
               subHeadingParams =
                 Seq(
@@ -78,7 +104,6 @@ class EventReportingTileController @Inject()(
           Seq(CardSubHeading(subHeading = "", subHeadingClasses = ""))
         }
       }
-       */
 
       eventReportingConnector.getFeatureToggle("event-reporting").map {
         case ToggleDetails(_, _, true) =>
@@ -87,8 +112,20 @@ class EventReportingTileController @Inject()(
               CardViewModel(
                 id = "aft-overview",
                 heading = Messages("eventReportingTile.heading"),
-                subHeadings = Seq(CardSubHeading(subHeading = "", subHeadingClasses = "")), // maybeCardSubHeading(taxYearRangeAsSeqString), PODS-8495
-                links = Seq(Link("erLoginLink", appConfig.erLoginUrl, Text(Messages("eventReportingTile.link.item2"))))
+                subHeadings = maybeCardSubHeading,
+                links = loginLink
+              ),
+                CardViewModel(
+                id = "compiled",
+                heading = "",
+                subHeadings = Seq(CardSubHeading(subHeading = "", subHeadingClasses = "")),
+                links = maybeCompiledLink
+              ),
+              CardViewModel(
+                id = "submitted",
+                heading = "",
+                subHeadings = Seq(CardSubHeading(subHeading = "", subHeadingClasses = "")),
+                links = maybeSubmittedLink
               )
             )
           Ok(view(card))
@@ -96,4 +133,9 @@ class EventReportingTileController @Inject()(
       }
     }
   }
+}
+
+object EventReportingTileController {
+  val minStartDateAsString = "2000-04-06"                               // TODO: confirm min start date
+  val maxEndDateAsString = s"${LocalDate.now().getYear + 1}-04-05"      // TODO: confirm max start date
 }

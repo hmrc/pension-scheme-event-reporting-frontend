@@ -44,20 +44,14 @@
     <div class="card-action">
         @d.map { card =>
             <ul class="govuk-list">
-                @* TODO: Implement
-                <li>
-                    <a id=erContinueInProgressLink" class="govuk-link">@messages("eventReportingTile.link.item1")</a>
-                </li>
-                *@
+                @if(card.links.isEmpty) {
 
+                } else {
                 <li>
-                    <a id="erLoginLink" class="govuk-link" href=@card.links.map(_.url)>@messages("eventReportingTile.link.item2")</a>
+                    <br>
+                    <a id=@card.id class="govuk-link" href=@card.links.map(_.url)>@messages("eventReportingTile.link." + card.id)</a>
                 </li>
-                @* TODO: Implement
-                <li>
-                    <a id="erAmendLink" class="govuk-link">@messages("eventReportingTile.link.item3")</a>
-                </li>
-                *@
+                }
             </ul>
         }
     </div>
