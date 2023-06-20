@@ -22,15 +22,14 @@ import models.enumeration.EventType
 import models.fileUpload.ParsingAndValidationOutcome
 import models.fileUpload.ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10
 import pages.Waypoints
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.fileUpload.ValidationError
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.ValidationErrorForRendering
 import views.html.fileUpload.ValidationErrorsAllView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class ValidationErrorsAllController @Inject()(
                                                override val messagesApi: MessagesApi,
@@ -43,44 +42,16 @@ class ValidationErrorsAllController @Inject()(
 
   private val eventType = EventType.Event22
 
-  private def errorJson(errors: Seq[ValidationError], messages: Messages): Seq[JsObject] = {
-    val cellErrors = errors.map { e =>
-      val cell = String.valueOf(('A' + e.col).toChar) + (e.row + 1)
-      Json.obj(
-        "cell" -> cell,
-        "error" -> messages(e.error)
-        //        "error" -> messages(e.error, e.args: _*)
-      )
-    }
-    cellErrors
-  }
+  private def generateAllErrors(parsingAndValidationOutcome: ParsingAndValidationOutcome): Seq[ValidationErrorForRendering] = Nil
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints).url
       val fileDownloadInstructionLink = controllers.routes.FileDownloadController.instructionsFile.url
-
-//      val dummyErrors: Seq[ValidationError] = Seq(
-//        ValidationError(6, 1, "Enter the member's first name", "Column name"),
-//        ValidationError(5, 2, "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C, or D, like QQ123456C", "Column name"),
-//        ValidationError(4, 3, "The charge amount must be an amount of money, like 123 or 123.45", "Column name"),
-//        ValidationError(3, 4, "Enter the date you received the notice to pay the charge", "Column name"),
-//        ValidationError(2, 5, "Select yes if the payment type is mandatory", "Column name"),
-//        ValidationError(1, 6, "Enter the tax year to which the annual allowance charge relates", "Column name")
-//      )
-//      Future.successful(Ok(view(returnUrl, fileDownloadInstructionLink, dummyErrors)))
-
-          parsingAndValidationOutcomeCacheConnector.getOutcome.map { x =>
-
-            println("\n<>>>" + x)
-
-            x match {
-              case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, errorsJson, _, _)) =>
-
-                Ok(view(returnUrl, fileDownloadInstructionLink, errorsJson))
-              case _ =>
-                NotFound
-            }
-          }
+      parsingAndValidationOutcomeCacheConnector.getOutcome.map {
+        case Some(outcome@ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _)) =>
+          Ok(view(returnUrl, fileDownloadInstructionLink, generateAllErrors(outcome)))
+        case _ => NotFound
+      }
   }
 }

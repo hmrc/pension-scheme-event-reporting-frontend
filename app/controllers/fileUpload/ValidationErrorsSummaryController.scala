@@ -41,16 +41,17 @@ class ValidationErrorsSummaryController @Inject()(
 
   private val eventType = EventType.Event22
 
+  private def generateAllErrors(parsingAndValidationOutcome: ParsingAndValidationOutcome): Seq[String] = Nil
+
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints).url
       val fileDownloadInstructionLink = controllers.routes.FileDownloadController.instructionsFile.url
 
       parsingAndValidationOutcomeCacheConnector.getOutcome.map {
-        case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _, errors, _)) =>
-          Ok(view(returnUrl, fileDownloadInstructionLink, errors))
-        case _ =>
-          NotFound
+        case Some(outcome@ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _)) =>
+          Ok(view(returnUrl, fileDownloadInstructionLink, generateAllErrors(outcome)))
+        case _ => NotFound
       }
   }
 }

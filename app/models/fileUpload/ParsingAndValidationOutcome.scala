@@ -61,17 +61,6 @@ object ParsingAndValidationOutcome {
         Reads.pure[Option[Seq[String]]](None)
     }
   }
-//
-//  implicit val writes: Writes[ParsingAndValidationOutcome] =
-//    Writes(value =>
-//      Json.obj(
-//        "status" -> value.status,
-//        "errors" ->
-//      )
-//
-//    )
-
-
 
 //  implicit val reads: Reads[ParsingAndValidationOutcome] = {
 //    (JsPath \ "status").read[ParsingAndValidationOutcomeStatus].flatMap {

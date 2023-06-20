@@ -34,7 +34,7 @@ class ParsingAndValidationOutcomeSpec extends SpecBase {
       val result = successfulOutcome.as[ParsingAndValidationOutcome](ParsingAndValidationOutcome.reads)
 
       result.status mustBe ParsingAndValidationOutcomeStatus.Success
-      result.lessThanTen.size mustBe 0
+      result.json.fields.size mustBe 0
     }
 
     "must map correctly to ParsingAndValidationOutcome when status is GeneralError" in {
@@ -48,7 +48,7 @@ class ParsingAndValidationOutcomeSpec extends SpecBase {
       val result = GeneralErrorOutcome.as[ParsingAndValidationOutcome](ParsingAndValidationOutcome.reads)
 
       result.status mustBe ParsingAndValidationOutcomeStatus.GeneralError
-      result.lessThanTen.size mustBe 0
+      result.json.fields.size mustBe 0
     }
 
     "must map correctly to ParsingAndValidationOutcome when status is ValidationErrorsLess10" in {

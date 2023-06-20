@@ -41,19 +41,19 @@ class ProcessingRequestController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify.async {
     implicit request =>
-
-      parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap {
-        case Some(ParsingAndValidationOutcome(Success, _, _, _, _)) =>
-          Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints)))
-        case Some(ParsingAndValidationOutcome(GeneralError, _, _, _, _)) =>
-          Future.successful(Redirect(controllers.fileUpload.routes.ProblemWithServiceController.onPageLoad(waypoints)))
-        case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _, _, _)) =>
-          Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsAllController.onPageLoad(waypoints)))
-        case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _, _, _)) =>
-          Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsSummaryController.onPageLoad(waypoints)))
-        case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
-        case _ =>
-          Future.successful(Ok(view(controllers.routes.IndexController.onPageLoad.url)))
-      }
+      Future.successful(Ok(view(controllers.routes.IndexController.onPageLoad.url)))
+//      parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap {
+//        case Some(ParsingAndValidationOutcome(Success, _, _, _, _)) =>
+//          Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints)))
+//        case Some(ParsingAndValidationOutcome(GeneralError, _, _, _, _)) =>
+//          Future.successful(Redirect(controllers.fileUpload.routes.ProblemWithServiceController.onPageLoad(waypoints)))
+//        case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _, _, _)) =>
+//          Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsAllController.onPageLoad(waypoints)))
+//        case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _, _, _)) =>
+//          Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsSummaryController.onPageLoad(waypoints)))
+//        case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
+//        case _ =>
+//          Future.successful(Ok(view(controllers.routes.IndexController.onPageLoad.url)))
+//      }
   }
 }

@@ -15,6 +15,7 @@
  *@
 
 @import services.fileUpload.ValidationError
+@import viewmodels.ValidationErrorForRendering
 
 @this(
         layout: templates.SchemeLayout,
@@ -22,7 +23,7 @@
         govukTable : GovukTable
 )
 
-@(returnToFileUploadURL: String, fileDownloadInstructionsLink: String, dummyErrors: Seq[ValidationError])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(returnToFileUploadURL: String, fileDownloadInstructionsLink: String, dummyErrors: Seq[ValidationErrorForRendering])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("fileupload.invalid.title"))) {
 
