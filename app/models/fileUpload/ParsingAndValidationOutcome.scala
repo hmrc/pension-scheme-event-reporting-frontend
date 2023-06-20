@@ -23,8 +23,6 @@ import services.fileUpload.ValidationError
 case class ParsingAndValidationOutcome(
                                         status: ParsingAndValidationOutcomeStatus,
                                         json: JsObject = Json.obj(),
-                                        lessThanTen: Seq[ValidationError] = Nil,
-                                        moreThanTen: Seq[String] = Nil,
                                         fileName: Option[String] = None
                                       )
 
@@ -75,38 +73,38 @@ object ParsingAndValidationOutcome {
 
 
 
-  implicit val reads: Reads[ParsingAndValidationOutcome] = {
-    (JsPath \ "status").read[ParsingAndValidationOutcomeStatus].flatMap {
-      case status@ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10 =>
-        (JsPath \ "errors").read[Option[Seq[ValidationError]]](readsErrorsLessThan10(status)).map { errors =>
-          ParsingAndValidationOutcome(
-            status = status,
-            lessThanTen = errors.toSeq.flatten
-          )
-        }
-      case status@ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10 =>
-        (JsPath \ "errors").read[Option[Seq[String]]](readsErrorsMoreThan10(status)).map { errors =>
-          ParsingAndValidationOutcome(
-            status = status,
-            moreThanTen = errors.toSeq.flatten
-          )
-        }
-      case status@ParsingAndValidationOutcomeStatus.Success =>
-        (JsPath \ "errors").read[Option[Seq[ValidationError]]](readsErrorsLessThan10(status)).map { errors =>
-          ParsingAndValidationOutcome(
-            status = status,
-            lessThanTen = errors.toSeq.flatten
-          )
-        }
-      case status@ParsingAndValidationOutcomeStatus.GeneralError =>
-        (JsPath \ "errors").read[Option[Seq[ValidationError]]](readsErrorsLessThan10(status)).map { errors =>
-          ParsingAndValidationOutcome(
-            status = status,
-            lessThanTen = errors.toSeq.flatten
-          )
-        }
-      case _ =>
-        throw new RuntimeException("Error")
-    }
-  }
+//  implicit val reads: Reads[ParsingAndValidationOutcome] = {
+//    (JsPath \ "status").read[ParsingAndValidationOutcomeStatus].flatMap {
+//      case status@ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10 =>
+//        (JsPath \ "errors").read[Option[Seq[ValidationError]]](readsErrorsLessThan10(status)).map { errors =>
+//          ParsingAndValidationOutcome(
+//            status = status,
+//            lessThanTen = errors.toSeq.flatten
+//          )
+//        }
+//      case status@ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10 =>
+//        (JsPath \ "errors").read[Option[Seq[String]]](readsErrorsMoreThan10(status)).map { errors =>
+//          ParsingAndValidationOutcome(
+//            status = status,
+//            moreThanTen = errors.toSeq.flatten
+//          )
+//        }
+//      case status@ParsingAndValidationOutcomeStatus.Success =>
+//        (JsPath \ "errors").read[Option[Seq[ValidationError]]](readsErrorsLessThan10(status)).map { errors =>
+//          ParsingAndValidationOutcome(
+//            status = status,
+//            lessThanTen = errors.toSeq.flatten
+//          )
+//        }
+//      case status@ParsingAndValidationOutcomeStatus.GeneralError =>
+//        (JsPath \ "errors").read[Option[Seq[ValidationError]]](readsErrorsLessThan10(status)).map { errors =>
+//          ParsingAndValidationOutcome(
+//            status = status,
+//            lessThanTen = errors.toSeq.flatten
+//          )
+//        }
+//      case _ =>
+//        throw new RuntimeException("Error")
+//    }
+//  }
 }

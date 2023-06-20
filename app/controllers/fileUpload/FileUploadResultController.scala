@@ -154,16 +154,12 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
         if (errors.size <= maximumNumberOfError) {
           ParsingAndValidationOutcome(
             status = ValidationErrorsLessThan10,
-            json = Json.obj(),
-            moreThanTen = Nil,
-            lessThanTen = errors
+            json = Json.toJson(errors)
           )
         } else {
           ParsingAndValidationOutcome(
             status = ValidationErrorsMoreThanOrEqual10,
-            json = Json.obj(),
-            moreThanTen = FileUploadGenericErrorReporter.generateGenericErrorReport(errors, eventType),
-            lessThanTen = Nil
+            json = Json.toJsObject(FileUploadGenericErrorReporter.generateGenericErrorReport(errors, eventType)),
           )
         }
     }

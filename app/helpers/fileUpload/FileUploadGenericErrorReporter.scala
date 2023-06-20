@@ -19,8 +19,11 @@ package helpers.fileUpload
 import models.enumeration.EventType
 import services.fileUpload.ValidationError
 import models.fileUpload.FileUploadHeaders._
+import play.api.libs.json.{Json, OWrites}
 
 object FileUploadGenericErrorReporter {
+
+  implicit val Writes: OWrites[FileUploadGenericErrorReporter.ErrorReport] = Json.writes[FileUploadGenericErrorReporter.ErrorReport]
 
   import models.fileUpload.FileUploadHeaders.MemberDetailsFieldNames._
   case class ColumnAndError(columnName: String, errorDescription: String)
