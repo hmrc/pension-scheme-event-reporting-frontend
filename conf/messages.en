@@ -1478,20 +1478,19 @@ schemeChangeDate.event20A.error.outsideReportedYear = The date must be between {
 whatChange.becameMasterTrust = It became a Master Trust
 whatChange.ceasedMasterTrust = It has ceased to be a Master Trust
 
-event20APsaDeclaration.title = Declaration
-event20APsaDeclaration.heading = Declaration
-event20APsaDeclaration.p = I, {0} declare that:
-event20APsaDeclaration.item1 = to the best of my knowledge and belief, the information given in this tax return is correct and complete
-event20APsaDeclaration.item2 = I understand that if I have made a false statement in this tax return, I may be liable to a penalty, and that false statements may also lead to prosecution
+event20A.psaDeclaration.title = Declaration
+event20A.psaDeclaration.heading = Declaration
+event20A.psaDeclaration.p = I, {0} declare that:
+event20A.psaDeclaration.item1 = to the best of my knowledge and belief, the information given in this tax return is correct and complete
+event20A.psaDeclaration.item2 = I understand that if I have made a false statement in this tax return, I may be liable to a penalty, and that false statements may also lead to prosecution
 
 
-event20APspDeclaration.title = event20APspDeclaration
-event20APspDeclaration.heading = event20APspDeclaration
-event20APspDeclaration.input = ID of authorising scheme administrator:
-event20APspDeclaration.checkYourAnswersLabel = event20APspDeclaration
-event20APspDeclaration.error.required = Enter event20APspDeclaration
-event20APspDeclaration.error.length = Event20APspDeclaration must be 100 characters or less
-event20APspDeclaration.change.hidden = Event20APspDeclaration
-event20APsaDeclaration.p = I, {0} declare that the:
-event20APsaDeclaration.item1 =  content of this report has been approved by the scheme administrator
-event20APsaDeclaration.item2 = scheme administrator named below has authorised me to submit this report
+event20A.pspDeclaration.title = Declaration
+event20A.pspDeclaration.heading = Declaration
+event20A.pspDeclaration.input = ID of authorising scheme administrator:
+event20A.pspDeclaration.error.required = Enter event20APspDeclaration
+event20A.pspDeclaration.error.length = Event20APspDeclaration must be 100 characters or less
+event20A.pspDeclaration.change.hidden = Declaration
+event20A.psaDeclaration.p = I, {0} declare that the:
+event20A.psaDeclaration.item1 =  content of this report has been approved by the scheme administrator
+event20A.psaDeclaration.item2 = scheme administrator named below has authorised me to submit this report

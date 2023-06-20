@@ -24,9 +24,9 @@
 
 @(schemeName: String, pstr: String, taxYear: String, adminName: String, continueUrl: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("event20APsaDeclaration.title"))) {
+@layout(pageTitle = titleNoForm(messages("event20A.psaDeclaration.title"))) {
 
-    <h1 class="govuk-heading-l">@messages("event20APsaDeclaration.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("event20A.psaDeclaration.heading")</h1>
 
     @govukTable(Table(
         rows = Seq(
@@ -57,10 +57,10 @@
         ),
         firstCellIsHeader = true
     ))
-        <p class="govuk-body">@messages("event20APsaDeclaration.p", adminName)</p>
+        <p class="govuk-body">@messages("event20A.psaDeclaration.p", adminName)</p>
         <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("event20APsaDeclaration.item1")</li>
-            <li>@messages("event20APsaDeclaration.item2")</li>
+            <li>@messages("event20A.psaDeclaration.item1")</li>
+            <li>@messages("event20A.psaDeclaration.item2")</li>
         </ul>
 
     @govukButton(
