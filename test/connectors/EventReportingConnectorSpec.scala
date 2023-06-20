@@ -20,7 +20,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import models.{EventDataIdentifier, FileUploadOutcomeResponse}
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.{Enumerable, EventType}
-import models.{FileUploadOutcomeResponse, UserAnswers}
+import models.UserAnswers
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import play.api.libs.json.Json

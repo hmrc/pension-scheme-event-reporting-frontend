@@ -20,7 +20,6 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event20.WhatChangeFormProvider
 import models.UserAnswers
-import models.enumeration.EventType
 import models.enumeration.EventType.Event20
 import pages.Waypoints
 import pages.event20.WhatChangePage

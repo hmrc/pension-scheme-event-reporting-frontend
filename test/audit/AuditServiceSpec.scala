@@ -17,6 +17,8 @@
 package audit
 
 import config.FrontendAppConfig
+import models.TaxYear
+import models.enumeration.EventType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
@@ -45,12 +47,14 @@ class AuditServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with 
     .build()
 
   private val auditService = app.injector.instanceOf[AuditService]
+  private val taxYear = TaxYear(startYear = "2022")
+  private val eventType = EventType.Event22
 
   private def config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
   "AuditService" must {
     "send audit event" in {
-      val aftAuditEvent = StartNewERAuditEvent("test-psa", "test-pstr")
+      val aftAuditEvent = StartNewERAuditEvent("test-psa", "test-pstr", taxYear, eventType)
       val templateCaptor = ArgumentCaptor.forClass(classOf[DataEvent])
 
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
@@ -64,7 +68,10 @@ class AuditServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with 
         case DataEvent(auditSource, auditType, _, _, detail, _, _, _) =>
           auditSource mustBe config.appName
           auditType mustBe "EventReportingStart"
-          detail mustBe Map("psaOrPspId" -> "test-psa", "pstr" -> "test-pstr")
+          detail mustBe Map("psaOrPspId" -> "test-psa",
+                            "pstr" -> "test-pstr",
+                            "taxYear" -> "2022 to 2023",
+                            "eventNumber" -> "22")
       }
       app.stop()
     }

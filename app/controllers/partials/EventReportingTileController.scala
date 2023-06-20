@@ -18,9 +18,8 @@ package controllers.partials
 
 import config.FrontendAppConfig
 import connectors.EventReportingConnector
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import models.{TaxYear, ToggleDetails}
-import pages.TaxYearPage
+import controllers.actions.IdentifierAction
+import models.ToggleDetails
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
