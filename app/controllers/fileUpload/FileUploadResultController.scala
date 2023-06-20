@@ -33,7 +33,7 @@ import pages.fileUpload.FileUploadResultPage
 import play.api.data.Form
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, Messages}
-import play.api.libs.json.{JsArray, Json}
+import play.api.libs.json.{JsArray, JsObject, Json}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.fileUpload.Validator.FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty
 import services.fileUpload.{CSVParser, Event22Validator, ValidationError}
@@ -153,7 +153,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       case _ =>
         if (errors.size <= maximumNumberOfError) {
           def errorJson(errors: Seq[ValidationError]): JsArray = {
-            val cellErrors = errors.map { e =>
+            val cellErrors: Seq[JsObject] = errors.map { e =>
               val cell = String.valueOf(('A' + e.col).toChar) + (e.row + 1)
               Json.obj(
                 "cell" -> cell,
@@ -161,7 +161,10 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                 "columnName" -> e.columnName
               )
             }
-            Json.arr(cellErrors)
+
+            val x = cellErrors.map(x => Json.toJsFieldJsValueWrapper(x))
+            Json.arr(x :_*)
+
           }
           ParsingAndValidationOutcome(
             status = ValidationErrorsLessThan10,
