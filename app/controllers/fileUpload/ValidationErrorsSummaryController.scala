@@ -23,6 +23,7 @@ import models.fileUpload.ParsingAndValidationOutcome
 import models.fileUpload.ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.ValidationErrorsSummaryView
@@ -41,7 +42,13 @@ class ValidationErrorsSummaryController @Inject()(
 
   private val eventType = EventType.Event22
 
-  private def generateAllErrors(parsingAndValidationOutcome: ParsingAndValidationOutcome): Seq[String] = Nil
+  private def generateAllErrors(parsingAndValidationOutcome: ParsingAndValidationOutcome): Seq[String] = {
+    val reads = (JsPath \ "errors").read[Seq[String]](JsPath.read[Seq[String]](__.read(Reads.seq[String])))
+    reads.reads(parsingAndValidationOutcome.json) match {
+      case JsSuccess(value, _) => value
+      case JsError(errors) => throw JsResultException(errors)
+    }
+  }
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>

@@ -151,19 +151,18 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       case Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty) =>
         ParsingAndValidationOutcome(status = GeneralError)
       case _ =>
-
-        def errorJson(errors: Seq[ValidationError]): JsArray = {
-          val cellErrors = errors.map { e =>
-            val cell = String.valueOf(('A' + e.col).toChar) + (e.row + 1)
-            Json.obj(
-              "cell" -> cell,
-              "error" -> messages(e.error, e.args: _*)
-            )
-          }
-          Json.arr(cellErrors)
-        }
-
         if (errors.size <= maximumNumberOfError) {
+          def errorJson(errors: Seq[ValidationError]): JsArray = {
+            val cellErrors = errors.map { e =>
+              val cell = String.valueOf(('A' + e.col).toChar) + (e.row + 1)
+              Json.obj(
+                "cell" -> cell,
+                "error" -> messages(e.error, e.args: _*),
+                "columnName" -> e.columnName
+              )
+            }
+            Json.arr(cellErrors)
+          }
           ParsingAndValidationOutcome(
             status = ValidationErrorsLessThan10,
             json = Json.obj(

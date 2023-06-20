@@ -14,80 +14,86 @@
  * limitations under the License.
  */
 
-//package models.fileUpload
-//
-//import base.SpecBase
-//import play.api.libs.json.{JsString, Json}
-//
-//class ParsingAndValidationOutcomeSpec extends SpecBase {
-//
-//  "ParsingAndValidationOutcome" - {
-//
-//    "must map correctly to ParsingAndValidationOutcome when status is Successful" in {
-//
-//      val successfulOutcome =
-//        Json.obj(
-//          "status" -> "Success",
-//          "errors" -> Json.arr()
-//        )
-//
-//      val result = successfulOutcome.as[ParsingAndValidationOutcome](ParsingAndValidationOutcome.reads)
-//
-//      result.status mustBe ParsingAndValidationOutcomeStatus.Success
-//      result.json.fields.size mustBe 0
-//    }
-//
-//    "must map correctly to ParsingAndValidationOutcome when status is GeneralError" in {
-//
-//      val GeneralErrorOutcome =
-//        Json.obj(
-//          "status" -> "GeneralError",
-//          "errors" -> Json.arr()
-//        )
-//
-//      val result = GeneralErrorOutcome.as[ParsingAndValidationOutcome](ParsingAndValidationOutcome.reads)
-//
-//      result.status mustBe ParsingAndValidationOutcomeStatus.GeneralError
-//      result.json.fields.size mustBe 0
-//    }
-//
-//    "must map correctly to ParsingAndValidationOutcome when status is ValidationErrorsLess10" in {
-//
-//      val ValidationErrorsLess10 =
-//        Json.obj(
-//          "status" -> "ValidationErrorsLess10",
-//          "errors" -> Json.arr(
-//            Json.obj(
-//              "row" -> 1,
-//              "col" -> 2,
-//              "error" -> "Enter the member's first name",
-//              "columnName" -> "Test name"
-//            )
-//          )
-//        )
-//
-//      val result = ValidationErrorsLess10.as[ParsingAndValidationOutcome](ParsingAndValidationOutcome.reads)
-//
-//      result.status mustBe ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10
-//      result.lessThanTen.size mustBe 1
-//    }
-//
-//    "must map correctly to ParsingAndValidationOutcome when status is ValidationErrorsLessMoreThanOrEqual10" in {
-//
-//      val ValidationErrorsMoreThanOrEqual10 = Json.obj(
-//        "status" -> "ValidationErrorsMoreThanOrEqualTo10",
-//        "errors" -> Json.arr(
-//          JsString("Error1"),
-//          JsString("Error2"),
-//          JsString("Error3")
-//        )
-//      )
-//
-//      val result = ValidationErrorsMoreThanOrEqual10.as[ParsingAndValidationOutcome](ParsingAndValidationOutcome.reads)
-//
-//      result.status mustBe ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10
-//      result.lessThanTen.size mustBe 0
-//      result.moreThanTen.size mustBe 3
-//    }
-//  }
-//}
+package models.fileUpload
+
+import base.SpecBase
+import models.fileUpload.ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10
+import org.apache.commons.lang3.StringUtils.EMPTY
+import play.api.libs.json.{JsString, Json}
+import viewmodels.ValidationErrorForRendering
+
+class ParsingAndValidationOutcomeSpec extends SpecBase {
+
+  "ParsingAndValidationOutcome" - {
+
+    //    "must map correctly to ParsingAndValidationOutcome when status is Successful" in {
+    //
+    //      val successfulOutcome =
+    //        Json.obj(
+    //          "status" -> "Success",
+    //          "errors" -> Json.arr()
+    //        )
+    //
+    //      val result = successfulOutcome.as[ParsingAndValidationOutcome](ParsingAndValidationOutcome.reads)
+    //
+    //      result.status mustBe ParsingAndValidationOutcomeStatus.Success
+    //      result.json.fields.size mustBe 0
+    //    }
+    //
+    //    "must map correctly to ParsingAndValidationOutcome when status is GeneralError" in {
+    //
+    //      val GeneralErrorOutcome =
+    //        Json.obj(
+    //          "status" -> "GeneralError",
+    //          "errors" -> Json.arr()
+    //        )
+    //
+    //      val result = GeneralErrorOutcome.as[ParsingAndValidationOutcome](ParsingAndValidationOutcome.reads)
+    //
+    //      result.status mustBe ParsingAndValidationOutcomeStatus.GeneralError
+    //      result.json.fields.size mustBe 0
+    //    }
+    //
+    //    "must map correctly to ParsingAndValidationOutcome when status is ValidationErrorsLess10" in {
+    //
+    //      val ValidationErrorsLess10 =
+    //        Json.obj(
+    //          "status" -> "ValidationErrorsLess10",
+    //          "errors" -> Json.arr(
+    //            Json.obj(
+    //              "row" -> 1,
+    //              "col" -> 2,
+    //              "error" -> "Enter the member's first name",
+    //              "columnName" -> "Test name"
+    //            )
+    //          )
+    //        )
+    //
+    //      val result = ValidationErrorsLess10.as[ParsingAndValidationOutcome](ParsingAndValidationOutcome.reads)
+    //
+    //      result.status mustBe ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10
+    //      result.lessThanTen.size mustBe 1
+    //    }
+    //
+    //    "must map correctly to ParsingAndValidationOutcome when status is ValidationErrorsLessMoreThanOrEqual10" in {
+    //
+    //      val ValidationErrorsMoreThanOrEqual10 = Json.obj(
+    //        "status" -> "ValidationErrorsMoreThanOrEqualTo10",
+    //        "errors" -> Json.arr(
+    //          JsString("Error1"),
+    //          JsString("Error2"),
+    //          JsString("Error3")
+    //        )
+    //      )
+    //
+    //      val result = ValidationErrorsMoreThanOrEqual10.as[ParsingAndValidationOutcome](ParsingAndValidationOutcome.reads)
+    //
+    //      result.status mustBe ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10
+    //      result.lessThanTen.size mustBe 0
+    //      result.moreThanTen.size mustBe 3
+    //    }
+
+
+
+  }
+}

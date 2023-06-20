@@ -23,7 +23,7 @@ import models.fileUpload.ParsingAndValidationOutcome
 import models.fileUpload.ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json, JsonValidationError}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.ValidationErrorForRendering
@@ -49,7 +49,10 @@ class ValidationErrorsAllController @Inject()(
       val fileDownloadInstructionLink = controllers.routes.FileDownloadController.instructionsFile.url
       parsingAndValidationOutcomeCacheConnector.getOutcome.map {
         case Some(outcome@ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _)) =>
-          Ok(view(returnUrl, fileDownloadInstructionLink, generateAllErrors(outcome)))
+           outcome.json.validate[Seq[ValidationErrorForRendering]] match {
+            case JsSuccess(value, _) => Ok(view(returnUrl, fileDownloadInstructionLink, value))
+            case JsError(errors) => throw JsResultException(errors)
+          }
         case _ => NotFound
       }
   }

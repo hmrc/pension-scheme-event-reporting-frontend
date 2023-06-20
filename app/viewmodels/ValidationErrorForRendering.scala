@@ -17,4 +17,22 @@
 package viewmodels
 
 import org.apache.commons.lang3.StringUtils.EMPTY
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json.{JsPath, Reads}
 case class ValidationErrorForRendering(cell: String, error: String, columnName: String = EMPTY)
+
+object ValidationErrorForRendering {
+  private val readsErrorDetails: Reads[ValidationErrorForRendering] = (
+    (JsPath \ "cell").read[String] and
+      (JsPath \ "error").read[String] and
+      (JsPath \ "columnName").read[String]
+    )((cell, error, columnName) =>
+    ValidationErrorForRendering(
+      cell,
+      error,
+      columnName
+    )
+  )
+
+  implicit val reads: Reads[Seq[ValidationErrorForRendering]] = (JsPath \ "errors").read[Seq[ValidationErrorForRendering]](Reads.seq(readsErrorDetails))
+}
