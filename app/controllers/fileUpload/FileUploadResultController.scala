@@ -152,18 +152,18 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
         ParsingAndValidationOutcome(status = GeneralError)
       case _ =>
         if (errors.size <= maximumNumberOfError) {
-          val cellErrors: Seq[JsObject] = errorJson(errors, messages)
           ParsingAndValidationOutcome(
             status = ValidationErrorsLessThan10,
-            json = Json.obj("errors" -> cellErrors)
+            json = Json.obj(),
+            moreThanTen = Nil,
+            lessThanTen = errors
           )
         } else {
           ParsingAndValidationOutcome(
             status = ValidationErrorsMoreThanOrEqual10,
-            json = Json.obj(
-              "errors" -> FileUploadGenericErrorReporter.generateGenericErrorReport(errors, eventType),
-              "totalError" -> errors.size
-            )
+            json = Json.obj(),
+            moreThanTen = FileUploadGenericErrorReporter.generateGenericErrorReport(errors, eventType),
+            lessThanTen = Nil
           )
         }
     }
@@ -175,11 +175,9 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       Json.obj(
         "cell" -> cell,
         "error" -> messages(e.error)
-//        "error" -> messages(e.error, e.args: _*)
+        //        "error" -> messages(e.error, e.args: _*)
       )
     }
     cellErrors
   }
-
 }
-

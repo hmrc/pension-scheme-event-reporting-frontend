@@ -44,6 +44,7 @@ class ParsingAndValidationOutcomeCacheConnector @Inject()(config: FrontendAppCon
       .map { response =>
         response.status match {
           case OK =>
+    println("\n>>>RESP=" + response.json)
             response.json.asOpt[ParsingAndValidationOutcome]
           case _ => None
         }

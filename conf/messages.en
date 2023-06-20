@@ -1494,3 +1494,5 @@ problemWithService.title = Sorry, there was a problem with the service
 problemWithService.heading = Sorry, there was a problem with the service
 problemWithService.p = We could not process your file upload
 problemWithService.link = Try uploading your file again.
+
+chooseTaxYear.event22.error.notFuture = The tax year must be (0) or earlier. It cannot be a tax year in the future.
