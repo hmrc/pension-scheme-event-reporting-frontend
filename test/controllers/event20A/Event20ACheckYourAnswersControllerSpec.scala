@@ -109,11 +109,8 @@ class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFl
         status(result) mustEqual OK
 
         val actual: Seq[SummaryListRow] = captor.getValue.rows
-        println("\n\n\n\nACTUAL " + actual)
 
         val expected: Seq[Aliases.SummaryListRow] = expectedSummaryListRowsEvent20ACeased
-        println("\n\n\n\nEXPECTED " + expected)
-
 
         actual.size mustBe expected.size
 

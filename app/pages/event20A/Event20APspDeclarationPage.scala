@@ -23,7 +23,7 @@ import pages.{Waypoints, QuestionPage}
 
 case object Event20APspDeclarationPage extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "event20A" \ toString
 
   override def toString: String = "event20APspDeclaration"
 

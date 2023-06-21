@@ -17,10 +17,15 @@
 package pages.event20A
 
 import play.api.mvc.Call
-import pages.{Waypoints, Page}
+import pages.{Page, Waypoints}
 import controllers.event20A.routes
+import play.api.libs.json.JsPath
 
 case object Event20APsaDeclarationPage extends Page {
+
+  def path: JsPath = JsPath \ "event20A" \ toString
+
+  override def toString: String = "event20APsaDeclaration"
 
   override def route(waypoints: Waypoints): Call =
     routes.Event20APsaDeclarationController.onPageLoad(waypoints)
