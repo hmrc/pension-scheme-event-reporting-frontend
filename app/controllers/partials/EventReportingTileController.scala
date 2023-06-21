@@ -55,8 +55,7 @@ class EventReportingTileController @Inject()(
 
       val result: Seq[EROverview] = Await.result(futureArray, 20.seconds) // typical timeout, testing purposes
 
-      // TODO: if this seq > 1, you want to display seq.length in progress rather than the year range
-      val anyStartAndEndDates = result.map { value => (value.periodStartDate, value.periodEndDate) }
+
 
       val anySubmittedReports = result.map { value => value.versionDetails match {
         case Some(EROverviewVersion(_, submittedVersionAvailable, _)) => submittedVersionAvailable
@@ -69,6 +68,9 @@ class EventReportingTileController @Inject()(
         case None => false
         }
       }
+
+      // TODO: if this seq > 1, you want to display s"${seq.length} in progress" rather than the year range
+      val anyStartAndEndDates = result.map { value => (value.periodStartDate, value.periodEndDate) }
 
       val maybeCompiledVersions = anyCompiledReports.collectFirst(x => x).getOrElse(false)
       val maybeSubmittedVersions = anySubmittedReports.collectFirst(x => x).getOrElse(false)
@@ -83,7 +85,7 @@ class EventReportingTileController @Inject()(
         Seq(Link("erSubmittedLink", appConfig.erSubmittedUrl, Text("eventReportingTile.link.submitted")))
       } else Nil
 
-      // TODO: implement below link in future - out of scope for PODS-8495.
+      // TODO: implement below link in future - in PODS-8491.
       // View event reports in progress
       // Link(...)
 
@@ -91,6 +93,7 @@ class EventReportingTileController @Inject()(
         if (maybeCompiledVersions) {
           Seq(
             CardSubHeading(
+              // TODO: if multiple compile in progress, display s"${seq.length} in progress", PODS-8491
               subHeading = Messages("eventReportingTile.subHeading", anyStartAndEndDates.head._1, anyStartAndEndDates.head._2),
               subHeadingClasses = "card-sub-heading",
               subHeadingParams =
