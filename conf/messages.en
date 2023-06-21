@@ -1198,7 +1198,8 @@ event13.schemeStructureDescription.title = Give a brief description of the pensi
 event13.schemeStructureDescription.heading = Give a brief description of the pension scheme structure
 event13.schemeStructureDescription.hint = You can enter up to 150 characters
 event13.schemeStructureDescription.checkYourAnswersLabel = Description of the scheme structure
-event13.schemeStructureDescription.error.length = You can enter up to 150 characters
+event13.schemeStructureDescription.error.required = Enter description of the pension scheme structure
+event13.schemeStructureDescription.error.length = The scheme structure description must be 150 characters or less
 event13.schemeStructureDescription.change.hidden = Give a brief description of the pension scheme structure
 
 reasonForBenefits.event3.title = Reason for the benefits being taken

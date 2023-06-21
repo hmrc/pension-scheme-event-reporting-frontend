@@ -23,9 +23,9 @@ import play.api.data.Form
 
 class SchemeStructureDescriptionFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Option[String]] =
+  def apply(): Form[String] =
     Form(
-      "value" -> optionalText()
-        .verifying(maxLength(150, "schemeStructureDescription.error.length"))
+      "value" -> text(errorKey = "event13.schemeStructureDescription.error.required")
+        .verifying(maxLength(150, errorKey = "event13.schemeStructureDescription.error.length"))
   )
 }
