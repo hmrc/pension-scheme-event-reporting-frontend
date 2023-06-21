@@ -17,21 +17,50 @@
 package controllers.fileUpload
 
 import base.SpecBase
-import models.enumeration.EventType.Event22
-import pages.EmptyWaypoints
+import connectors.ParsingAndValidationOutcomeCacheConnector
+import models.fileUpload.ParsingAndValidationOutcome
+import models.fileUpload.ParsingAndValidationOutcomeStatus.Success
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar.mock
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.fileUpload.FileUploadSuccessView
 
-class FileUploadSuccessControllerSpec extends SpecBase {
+import scala.concurrent.Future
+
+class FileUploadSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
+
+  private val continueUrl = "/manage-pension-scheme-event-report/new-report/event-22-summary"
+  private val mockParsingAndValidationOutcomeCacheConnector = mock[ParsingAndValidationOutcomeCacheConnector]
+
+  private val expectedOutcome = ParsingAndValidationOutcome(
+    status = Success,
+    json = Json.obj(),
+    fileName = Some("filename.csv")
+  )
+
+  val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[ParsingAndValidationOutcomeCacheConnector].toInstance(mockParsingAndValidationOutcomeCacheConnector)
+  )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockParsingAndValidationOutcomeCacheConnector)
+  }
 
   "FileUploadSuccess Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
-      val continueUrl = controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event22).url
-      val fileName = "Dummy filename.csv"
+      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
+        .thenReturn(Future.successful(Some(expectedOutcome)))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
       running(application) {
 
@@ -40,6 +69,8 @@ class FileUploadSuccessControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[FileUploadSuccessView]
+
+        val fileName = expectedOutcome.fileName.getOrElse("Your file")
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(continueUrl, fileName)(request, messages(application)).toString

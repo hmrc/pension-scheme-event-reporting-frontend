@@ -16,8 +16,11 @@
 
 package controllers.fileUpload
 
+import connectors.ParsingAndValidationOutcomeCacheConnector
 import controllers.actions._
 import models.enumeration.EventType
+import models.fileUpload.ParsingAndValidationOutcome
+import models.fileUpload.ParsingAndValidationOutcomeStatus.Success
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -25,6 +28,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadSuccessView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class FileUploadSuccessController @Inject()(
                                              override val messagesApi: MessagesApi,
@@ -32,15 +36,19 @@ class FileUploadSuccessController @Inject()(
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              val controllerComponents: MessagesControllerComponents,
+                                             parsingAndValidationOutcomeCacheConnector: ParsingAndValidationOutcomeCacheConnector,
                                              view: FileUploadSuccessView
-                                           ) extends FrontendBaseController with I18nSupport {
+                                           )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val eventType = EventType.Event22
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
-      val dummyFileName = "Dummy filename.csv" //TODO: This needs to use the BE to retrieve the data.
       val continueUrl = controllers.common.routes.MembersSummaryController.onPageLoad(waypoints, eventType).url
-      Ok(view(continueUrl, dummyFileName))
+      parsingAndValidationOutcomeCacheConnector.getOutcome.map {
+        case Some(ParsingAndValidationOutcome(Success, _, fileName)) =>
+          Ok(view(continueUrl, fileName.getOrElse("Your file")))
+        case _ => NotFound
+      }
   }
 }

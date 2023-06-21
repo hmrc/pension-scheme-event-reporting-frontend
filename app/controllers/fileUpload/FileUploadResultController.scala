@@ -126,7 +126,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                         userAnswersCacheConnector.save(request.pstr, eventType, updatedUA).flatMap { _ =>
 
                           eventReportingConnector.compileEvent(request.pstr, updatedUA.eventDataIdentifier(eventType))
-                            .map(_ => ParsingAndValidationOutcome(Success))
+                            .map(_ => ParsingAndValidationOutcome(Success, Json.obj(), fileName))
                         }
                     }
                     futureOutcome.map { outcome =>
