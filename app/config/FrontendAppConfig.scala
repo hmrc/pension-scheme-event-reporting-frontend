@@ -46,15 +46,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   lazy val erLoginUrl: String = configuration.get[String](path = "urls.partials.erLoginLink")
 
-  // TODO: add below to app-config-base:
-
-  //  partials {
-  //    erLoginLink = "/manage-pension-scheme-event-report/select-tax-year",
-  //    erCompiledLink = "/manage-pension-scheme-event-report/?????",
-  //    erSubmittedLink = "/manage-pension-scheme-event-report/?????",
-  //  }
-
-  // TODO: these are temporary only for local testing
+  // TODO: these are temporary only for local testing, remove and replace with commented lines once PODS-8495 PR in app-config-base merged.
   lazy val erCompiledUrl: String = "http://localhost:8216/manage-pension-scheme-event-report/view-event-report-in-progress"
   // lazy val erCompiledUrl: String = configuration.get[String](path = "urls.partials.erCompiledLink")
   lazy val erSubmittedUrl: String = "http://localhost:8216/manage-pension-scheme-event-report/view-or-change-past-event-reports"
