@@ -90,7 +90,7 @@ class EarlyBenefitsBriefDescriptionControllerSpec extends SpecBase with BeforeAn
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(Some(validValue)), waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -121,6 +121,27 @@ class EarlyBenefitsBriefDescriptionControllerSpec extends SpecBase with BeforeAn
           .build()
 
       val invalidValue = "*" * 151
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", invalidValue))
+
+        val view = application.injector.instanceOf[EarlyBenefitsBriefDescriptionView]
+        val boundForm = form.bind(Map("value" -> invalidValue))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
+
+    "must return bad request when no data is submitted" in {
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
+
+      val invalidValue = ""
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", invalidValue))
