@@ -18,9 +18,8 @@ package controllers.event7
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import controllers.event7.Event7MembersSummaryControllerSpec.{fake26MappedMembers, paginationStats26Members}
 import data.SampleData
-import data.SampleData.{event7UADataWithPagination, memberDetails, sampleMemberJourneyDataEvent7}
+import data.SampleData.{memberDetails, sampleMemberJourneyDataEvent7}
 import forms.common.MembersSummaryFormProvider
 import forms.mappings.Formatters
 import helpers.DateHelper
@@ -39,7 +38,7 @@ import services.EventPaginationService
 import services.EventPaginationService.PaginationStatsEvent7
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import viewmodels.{Message, SummaryListRowWithThreeValues}
-import views.html.event7.{Event7MembersSummaryView, Event7MembersSummaryViewWithPagination}
+import views.html.event7.Event7MembersSummaryView
 
 import scala.concurrent.Future
 

@@ -58,7 +58,7 @@ class Event3CheckYourAnswersController @Inject()(
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event3) andThen requireData).async {  implicit request =>
 
-      connector.compileEvent(request.pstr, Event3).map {
+      connector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(Event3)).map {
         _ =>
           Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event3).url)
       }

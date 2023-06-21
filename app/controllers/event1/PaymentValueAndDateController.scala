@@ -19,7 +19,7 @@ package controllers.event1
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event1.PaymentValueAndDateFormProvider
-import helpers.DateHelper.getTaxYear
+import helpers.DateHelper.getTaxYearFromOption
 import models.enumeration.EventType
 import models.{Index, UserAnswers}
 import pages.Waypoints
@@ -44,13 +44,13 @@ class PaymentValueAndDateController @Inject()(val controllerComponents: Messages
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val form = formProvider(getTaxYear(request.userAnswers))
+    val form = formProvider(getTaxYearFromOption(request.userAnswers))
     val preparedForm = request.userAnswers.flatMap(_.get(PaymentValueAndDatePage(index))).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, index))
   }
 
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
-    val form = formProvider(getTaxYear(request.userAnswers))
+    val form = formProvider(getTaxYearFromOption(request.userAnswers))
     form.bindFromRequest().fold(
       formWithErrors => {
         Future.successful(BadRequest(view(formWithErrors, waypoints, index)))

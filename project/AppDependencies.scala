@@ -9,6 +9,7 @@ object AppDependencies {
     "uk.gov.hmrc"                   %% "bootstrap-frontend-play-28"     % "7.13.0",
     "uk.gov.hmrc"                   %% "domain"                         % "8.1.0-play-28",
     "org.typelevel"                 %% "cats-core"                      % "2.9.0",
+    "com.univocity"                 %  "univocity-parsers"               % "2.9.1",
     "com.fasterxml.jackson.module"  %% "jackson-module-scala"           % "2.14.2"
   )
 

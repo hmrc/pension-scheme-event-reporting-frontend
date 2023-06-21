@@ -19,7 +19,7 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.enumeration.EventType
-import models.{FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
+import models.{EventDataIdentifier, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -69,12 +69,14 @@ class EventReportingConnector @Inject()(
       Future.successful(HttpResponse(NOT_FOUND, "Not found"))
   }
 
-  def compileEvent(pstr: String, eventType: EventType)
+  def compileEvent(pstr: String, edi: EventDataIdentifier)
                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
-      "eventType" -> eventType.toString
+      "eventType" -> edi.eventType.toString,
+      "year" -> edi.year,
+      "version" -> edi.version
     )
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
@@ -101,7 +103,7 @@ class EventReportingConnector @Inject()(
     http.POST[JsValue, HttpResponse](eventSubmitUrl, ua.data)(implicitly, implicitly, hc, implicitly)
       .map { response =>
         response.status match {
-          case OK => ()
+          case NO_CONTENT => ()
           case _ =>
             throw new HttpException(response.body, response.status)
         }
@@ -150,11 +152,14 @@ class EventReportingConnector @Inject()(
     http.GET[HttpResponse](getFileUploadResponseUrl)(implicitly, headerCarrier, implicitly).map{ response =>
       response.status match {
         case OK =>
-          ((response.json \ "fileStatus").asOpt[String], (response.json \ "uploadDetails" \ "fileName").asOpt[String]) match {
-            case (Some("READY"),file@Some(_)) => FileUploadOutcomeResponse(file, FileUploadOutcomeStatus.SUCCESS)
-            case _ => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.FAILURE)
+          ((response.json \ "fileStatus").asOpt[String],
+            (response.json \ "uploadDetails" \ "fileName").asOpt[String],
+            (response.json \ "downloadUrl").asOpt[String]) match {
+            case (Some("READY"),file@Some(_), downloadUrl@Some(_)) =>
+              FileUploadOutcomeResponse(file, FileUploadOutcomeStatus.SUCCESS, downloadUrl)
+            case _ => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.FAILURE, None)
           }
-        case NOT_FOUND => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.IN_PROGRESS)
+        case NOT_FOUND => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.IN_PROGRESS, None)
         case _ =>
           throw new HttpException(response.body, response.status)
       }

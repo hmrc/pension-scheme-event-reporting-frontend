@@ -16,8 +16,10 @@
 
 package viewmodels.checkAnswers
 
-import models.{Index, UserAnswers}
+import helpers.DateHelper.getTaxYear
+import models.common.ChooseTaxYear
 import models.enumeration.EventType
+import models.{Index, UserAnswers}
 import pages.{CheckAnswersPage, Waypoints, common}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -29,8 +31,10 @@ import viewmodels.implicits._
 object ChooseTaxYearSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Index)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(common.ChooseTaxYearPage(eventType, index)).map {
+         (implicit messages: Messages): Option[SummaryListRow] = {
+    val taxYearChosen = getTaxYear(answers)
+    val rdsTaxYear = (ChooseTaxYear.reads(ChooseTaxYear.enumerable(taxYearChosen)))
+    answers.get(common.ChooseTaxYearPage(eventType, index))(rdsTaxYear).map {
       answer =>
 
         val value = ValueViewModel(
@@ -48,4 +52,5 @@ object ChooseTaxYearSummary {
           )
         )
     }
+  }
 }

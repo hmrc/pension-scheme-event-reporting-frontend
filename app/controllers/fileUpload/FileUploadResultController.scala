@@ -16,7 +16,7 @@
 
 package controllers.fileUpload
 
-import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import connectors.{EventReportingConnector, ParsingAndValidationOutcomeCacheConnector, UpscanInitiateConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.fileUpload.FileUploadResultFormProvider
 import models.FileUploadOutcomeStatus.IN_PROGRESS
@@ -26,13 +26,16 @@ import models.FileUploadOutcomeResponse
 import models.UserAnswers
 import models.enumeration.EventType
 import models.enumeration.EventType.getEventTypeByName
-import models.fileUpload.FileUploadResult
+import models.fileUpload.ParsingAndValidationOutcomeStatus._
+import models.fileUpload.{FileUploadResult, ParsingAndValidationOutcome}
 import models.requests.OptionalDataRequest
 import pages.Waypoints
 import pages.fileUpload.FileUploadResultPage
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.i18n.Lang.logger
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Request}
+import services.fileUpload.CSVParser
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadResultView
 
@@ -44,7 +47,9 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                                            getData: DataRetrievalAction,
                                            userAnswersCacheConnector: UserAnswersCacheConnector,
                                            eventReportingConnector: EventReportingConnector,
+                                           upscanInitiateConnector: UpscanInitiateConnector,
                                            formProvider: FileUploadResultFormProvider,
+                                           parsingAndValidationOutcomeCacheConnector: ParsingAndValidationOutcomeCacheConnector,
                                            view: FileUploadResultView
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -56,11 +61,11 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       case Some(uploadIdReference) =>
         val submitUrl = Call("POST", routes.FileUploadResultController.onSubmit(waypoints).url + s"?key=$uploadIdReference")
         eventReportingConnector.getFileUploadOutcome(uploadIdReference).map {
-          case FileUploadOutcomeResponse(_, IN_PROGRESS) =>
+          case FileUploadOutcomeResponse(_, IN_PROGRESS, _) =>
             status(view(preparedForm, waypoints, getEventTypeByName(eventType), None, submitUrl))
-          case FileUploadOutcomeResponse(fileName@Some(_), SUCCESS) =>
+          case FileUploadOutcomeResponse(fileName@Some(_), SUCCESS, _) =>
             status(view(preparedForm, waypoints, getEventTypeByName(eventType), fileName, submitUrl))
-          case FileUploadOutcomeResponse(_, FAILURE) =>
+          case FileUploadOutcomeResponse(_, FAILURE, _) =>
             Redirect(controllers.fileUpload.routes.FileRejectedController.onPageLoad(waypoints).url)
           case _ => throw new RuntimeException("UploadId reference does not exist")
         }
@@ -81,11 +86,54 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(FileUploadResultPage(eventType), value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(FileUploadResultPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).flatMap { _ =>
+            if (value == FileUploadResult.Yes) {
+              parsingAndValidationOutcomeCacheConnector.deleteOutcome.map { _ =>
+                asyncGetUpscanFileAndParse
+              }
+            } else {
+              Future.successful(())
+            }
+            Future.successful(Redirect(FileUploadResultPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route))
           }
         }
       )
   }
 
+  private def asyncGetUpscanFileAndParse(implicit request: Request[AnyContent]): Unit = {
+    request.queryString.get("key")
+    val referenceOpt: Option[String] = request.queryString.get("key").flatMap { values =>
+      values.headOption
+    }
+
+    referenceOpt match {
+      case Some(reference) =>
+        eventReportingConnector.getFileUploadOutcome(reference).flatMap { fileUploadOutcomeResponse =>
+          val fileName = fileUploadOutcomeResponse.fileName
+          fileUploadOutcomeResponse.downloadUrl match {
+            case Some(downloadUrl) =>
+              upscanInitiateConnector.download(downloadUrl).flatMap { httpResponse =>
+                httpResponse.status match {
+                  case OK => {
+                    CSVParser.split(httpResponse.body).foreach { row =>
+                      //TODO - This for loop is temporary code to allow parsing to be printed in the console for testing
+                      //TODO - To be removed at a later stage
+                      val formattedRow: String = row.mkString(",")
+                    }
+                    parsingAndValidationOutcomeCacheConnector.setOutcome(outcome = ParsingAndValidationOutcome(status = Success, fileName = fileName))
+                  } recoverWith {
+                    case e: Throwable =>
+                      logger.error("Error during parsing and validation", e)
+                      parsingAndValidationOutcomeCacheConnector.setOutcome(outcome = ParsingAndValidationOutcome(status = GeneralError, fileName = fileName))
+                  }
+                  case _ => throw new RuntimeException("Unhandled response from upscan in FileUploadResultController")
+                }
+              }
+            case None => throw new RuntimeException("No download url in FileUploadResultController")
+          }
+        }
+      case _ => throw new RuntimeException("No reference number in FileUploadResultController")
+    }
+  }
 }
+

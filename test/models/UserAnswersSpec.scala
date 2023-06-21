@@ -20,21 +20,27 @@ import base.SpecBase
 import data.SampleData
 import data.SampleData._
 import models.common.ManualOrUpload.Manual
-import models.common.MembersSummary
+import models.common.{ChooseTaxYear, MembersSummary}
 import models.common.MembersSummary.readsMemberValue
+import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event22}
 import models.event1.MembersOrEmployersSummary.readsMemberOrEmployerValue
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.{MembersOrEmployersSummary, PaymentDetails}
 import org.scalatest.matchers.must.Matchers
-import pages.common.{ChooseTaxYearPage, ManualOrUploadPage, MembersDetailsPage, MembersOrEmployersPage, MembersPage}
+import pages.TaxYearPage
+import pages.common._
 import pages.event1.employer.CompanyDetailsPage
 import pages.event1.{PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
+import play.api.libs.json.JsString
+import play.api.libs.json.Writes
 
 import java.time.LocalDate
 
 class UserAnswersSpec extends SpecBase with Matchers {
 
+  private val userAnswersDataTaxYear = UserAnswers().setOrException(TaxYearPage, TaxYear("2020")).data
+  private val writesTaxYear: Writes[ChooseTaxYear]= ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
 
 
   "getAll" - {
@@ -111,7 +117,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
 
       "must return the list of members where member value and member details missing" in {
         val userAnswersWithOneMember: UserAnswers = UserAnswers()
-          .setOrException(ChooseTaxYearPage(Event22, 0), taxYear)
+          .setOrException(ChooseTaxYearPage(Event22, 0), taxYear)(writesTaxYear)
 
         userAnswersWithOneMember.getAll(MembersPage(Event22))(MembersSummary.readsMember(Event22)) mustBe
           Seq(MembersSummary("Not entered", BigDecimal(0.00), "Not entered"))
@@ -140,4 +146,91 @@ class UserAnswersSpec extends SpecBase with Matchers {
       }
     }
   }
+
+
+  "get (page)" - {
+    "must return None when does not exist" in {
+      UserAnswers().get(TaxYearPage) mustBe None
+    }
+
+    "must return value when in non event type data" in {
+      UserAnswers(noEventTypeData = userAnswersDataTaxYear).get(TaxYearPage) mustBe Some(TaxYear("2020"))
+    }
+
+    "must return value when in event type data" in {
+      UserAnswers(data = userAnswersDataTaxYear).get(TaxYearPage) mustBe Some(TaxYear("2020"))
+    }
+  }
+
+  "get (path)" - {
+    "must return None when does not exist" in {
+      UserAnswers().get(TaxYearPage.path) mustBe None
+    }
+
+    "must return value when in non event type data" in {
+      UserAnswers(noEventTypeData = userAnswersDataTaxYear).get(TaxYearPage.path) mustBe Some(JsString("2020"))
+    }
+
+    "must return value when in event type data" in {
+      UserAnswers(data = userAnswersDataTaxYear).get(TaxYearPage.path) mustBe Some(JsString("2020"))
+    }
+  }
+
+  "isDefined" - {
+    "must return false when does not exist" in {
+      UserAnswers().isDefined(TaxYearPage) mustBe false
+    }
+
+    "must return true when in non event type data" in {
+      UserAnswers(noEventTypeData = userAnswersDataTaxYear).isDefined(TaxYearPage) mustBe true
+    }
+
+    "must return true when in event type data" in {
+      UserAnswers(data = userAnswersDataTaxYear).isDefined(TaxYearPage) mustBe true
+    }
+  }
+
+  "set" - {
+    "must return value when in event type data" in {
+      UserAnswers().set(TaxYearPage, TaxYear("2020")).get.get(TaxYearPage) mustBe Some(TaxYear("2020"))
+    }
+
+    "must return value when in non event type data and store in correct json" in {
+      val ua = UserAnswers().set(TaxYearPage, TaxYear("2020"), nonEventTypeData = true).get
+      ua.get(TaxYearPage) mustBe Some(TaxYear("2020"))
+      ua.data.fields.size mustBe 0
+      ua.noEventTypeData.fields.size mustBe 1
+    }
+  }
+
+  "remove" - {
+    "must remove value when in event type data" in {
+      val ua = UserAnswers().set(TaxYearPage, TaxYear("2020")).get.remove(TaxYearPage).get
+      ua.get(TaxYearPage) mustBe None
+      ua.data.fields.size mustBe 0
+      ua.noEventTypeData.fields.size mustBe 0
+    }
+
+    "must remove value when in non event type data" in {
+      val ua = UserAnswers().set(TaxYearPage, TaxYear("2020"), nonEventTypeData = true).get.remove(TaxYearPage, nonEventTypeData = true).get
+      ua.get(TaxYearPage) mustBe None
+      ua.data.fields.size mustBe 0
+      ua.noEventTypeData.fields.size mustBe 0
+    }
+  }
+
+  "eventDataIdentifier" - {
+    "must return the correct event data identifier if year present in non event type data" in {
+      val ua = UserAnswers().set(TaxYearPage, TaxYear("2020"), nonEventTypeData = true).get
+      ua.eventDataIdentifier(EventType.Event1) mustBe EventDataIdentifier(EventType.Event1, "2020", "1")
+    }
+
+    "must throw an exception if year not present in non event type data" in {
+      val ua = UserAnswers().set(TaxYearPage, TaxYear("2020")).get
+      a[RuntimeException] mustBe thrownBy {
+        ua.eventDataIdentifier(EventType.Event1)
+      }
+    }
+  }
+
 }

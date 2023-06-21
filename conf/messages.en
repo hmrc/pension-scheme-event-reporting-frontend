@@ -1442,9 +1442,29 @@ ceasedDate.change.hidden = When did the scheme cease to be occupational?
 
 whatYouWillNeed.event20.title = What you will need
 whatYouWillNeed.event20.heading = What you will need
-whatYouWillNeed.event20.p = Awaiting a content update for this page:
-whatYouWillNeed.event20.item1 = if you want to change these list items
-whatYouWillNeed.event20.item2 = search for whatYouWillNeed.event20 in messages.en
+whatYouWillNeed.event20.p = For this event, you will need to tell us the date that the scheme either became or ceased to be an occupational pension.
+
+event19.countryOrTerritory.title = Which country or territory has this scheme been relocated to?
+event19.countryOrTerritory.heading = In which country or territory is the scheme now established?
+event19.countryOrTerritory.error.required = Please select an option
+event19.countryOrTerritory.error.invalid = Invalid country
+event19.countryOrTerritory.change.hidden = In which country or territory is the scheme now established?
+event19.countryOrTerritory.change.checkYourAnswersLabel = Country or territory
+
+event19.dateChangeMade.title = When did the territory change take place for this scheme?
+event19.dateChangeMade.heading = When did the territory change take place for this scheme?
+event19.dateChangeMade.hint = For example, 12 11 2007
+event19.dateChangeMade.checkYourAnswersLabel = When did the territory change take place for this scheme?
+event19.dateChangeMade.error.required.all = Enter the date when the change was made
+event19.dateChangeMade.error.required.two = The date must include the {0} and {1}
+event19.dateChangeMade.error.required = The date must include the {0}
+event19.dateChangeMade.error.outside.taxYear = Date must be between 6 April {0} and 5 April {1}
+event19.dateChangeMade.error.invalid = Enter a real date
+event19.dateChangeMade.change.hidden = When did the territory change take place for this scheme?
+
+whatYouWillNeed.event19.p = To record a change country or territory of establishment for the scheme you will need to tell us the:
+whatYouWillNeed.event19.item1 = new country or territory
+whatYouWillNeed.event19.item2 = date that the change took place
 
 whatYouWillNeed.event20A.p = For this event, you will need to tell us the date that the scheme either became or ceased to be a Master Trust.
 whatYouWillNeed.event20A.item1 = Awaiting a content update for this page:

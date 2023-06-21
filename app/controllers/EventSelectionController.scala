@@ -20,7 +20,7 @@ import audit.{AuditService, StartNewERAuditEvent}
 import connectors.UserAnswersCacheConnector
 import controllers.actions.IdentifierAction
 import forms.EventSelectionFormProvider
-import models.UserAnswers
+import models.{TaxYear, UserAnswers}
 import models.enumeration.EventType
 import pages.{EventSelectionPage, Waypoints}
 import play.api.i18n.I18nSupport
@@ -59,8 +59,11 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
               }
 
               futureUA.map { ua =>
+
+                val taxYear = TaxYear.getSelectedTaxYear(ua)
                 val answers = ua.setOrException(EventSelectionPage, value)
-                auditService.sendEvent(StartNewERAuditEvent(request.loggedInUser.psaIdOrPspId, request.pstr))
+                auditService.sendEvent(
+                  StartNewERAuditEvent(request.loggedInUser.psaIdOrPspId, request.pstr, taxYear = taxYear, eventType: EventType))
                 Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
               }
             case _ => Future.successful(Ok(view(form, waypoints)))
@@ -68,5 +71,4 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
         }
       )
   }
-
 }

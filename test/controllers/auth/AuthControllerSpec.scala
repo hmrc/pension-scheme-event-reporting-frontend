@@ -67,7 +67,7 @@ class AuthControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterE
 
         val result = route(application, request).value
 
-        val expectedRedirectUrl = s"${appConfig.exitSurveyUrl}"
+        val expectedRedirectUrl = s"${appConfig.signOutUrl}"
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expectedRedirectUrl

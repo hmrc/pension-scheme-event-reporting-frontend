@@ -34,7 +34,7 @@ object UploadId {
   def generate: UploadId = UploadId(UUID.randomUUID().toString)
 }
 
-case class FileUploadOutcomeResponse(fileName: Option[String], fileUploadStatus: FileUploadOutcomeStatus)
+case class FileUploadOutcomeResponse(fileName: Option[String], fileUploadStatus: FileUploadOutcomeStatus, downloadUrl: Option[String])
 
 object FileUploadOutcomeResponse {
     implicit val format: OFormat[FileUploadOutcomeResponse] = Json.format[FileUploadOutcomeResponse]
