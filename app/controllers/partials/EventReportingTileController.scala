@@ -70,7 +70,7 @@ class EventReportingTileController @Inject()(
         }
       }
 
-      val maybeCompiledVersions = true // anyCompiledReports.collectFirst(x => x).getOrElse(false)
+      val maybeCompiledVersions = anyCompiledReports.collectFirst(x => x).getOrElse(false)
       val maybeSubmittedVersions = anySubmittedReports.collectFirst(x => x).getOrElse(false)
 
       val loginLink = Seq(Link("erLoginLink", appConfig.erLoginUrl, Text(Messages("eventReportingTile.link.new"))))
