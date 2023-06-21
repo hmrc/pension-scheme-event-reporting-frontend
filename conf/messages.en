@@ -1471,8 +1471,8 @@ fileUpload.memberDetails.generic.error.firstName = member’s first name is miss
 fileUpload.memberDetails.generic.error.lastName = member’s last name is missing or in the wrong format
 fileUpload.memberDetails.generic.error.nino = member’s National Insurance number is missing or in the wrong format
 
-fileUpload.taxYear.generic.error = Tax year bla bla
-fileUpload.totalAmounts.generic.error = total amounts bla bla
+fileUpload.taxYear.generic.error = tax year is missing or in the wrong format
+fileUpload.totalAmounts.generic.error = total amounts are missing or in the wrong format
 fileUploadSuccess.title = Your file upload was successful
 fileUploadSuccess.heading = Your file upload was successful
 fileUploadSuccess.p = {0} was uploaded successfully and the charge was added to the event. Select continue to view the changes.
