@@ -27,7 +27,7 @@ import java.time.LocalDate
 class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours with BeforeAndAfterEach{
 
   override protected def beforeEach(): Unit = {
-    utils.DateHelper.setDate(Some(LocalDate.of(2023, 1, 1)))
+    utils.DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
   }
 
   ".value" - {
@@ -41,13 +41,13 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours with BeforeAnd
         form,
         fieldName,
         validValues = ChooseTaxYear.valuesForEventType(Event23),
-        invalidError = FormError(fieldName, "chooseTaxYear.event22.error.outsideRange", Seq("2015", "2023"))
+        invalidError = FormError(fieldName, "chooseTaxYear.event22.error.outsideRange", Seq("2013", "2023"))
       )
 
       behave like mandatoryField(
         form,
         fieldName,
-        requiredError = FormError(fieldName, requiredKeyEvent23, Seq("2015", "2023"))
+        requiredError = FormError(fieldName, requiredKeyEvent23, Seq("2013", "2023"))
       )
     }
 
@@ -79,7 +79,7 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours with BeforeAnd
       }
 
       "not bind when year is greater than max" in {
-        utils.DateHelper.setDate(Some(LocalDate.of(2023,4,1)))
+        utils.DateHelper.setDate(Some(LocalDate.of(2023,6,1)))
         val fieldName = "value"
         val fields = Map[String, String](
           fieldName -> "2024"

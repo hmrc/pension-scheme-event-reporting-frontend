@@ -31,7 +31,7 @@ class ChooseTaxYearFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[ChooseTaxYear](requiredKey = s"chooseTaxYear.event${eventType.toString}.error.required",
         invalidKey = "chooseTaxYear.event22.error.outsideRange",
-        Seq(ChooseTaxYear.minimumYear(eventType).toString, ChooseTaxYear.maximumYear.toString)
+        Seq(ChooseTaxYear.minimumYear.toString, ChooseTaxYear.maximumYear.toString)
       )
     )
   }

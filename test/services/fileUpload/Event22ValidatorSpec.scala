@@ -81,7 +81,7 @@ class Event22ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
     }
 
     "return validation errors when present, including tax year in future" in {
-      DateHelper.setDate(Some(LocalDate.of(2023, 2, 10)))
+      DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
 ,Bloggs,AA234567D,2024,12.20
@@ -91,10 +91,10 @@ Steven,,xyz,,"""
       val result = validator.validate(csvFile, UserAnswers())
       result mustBe Invalid(Seq(
         ValidationError(1, 0, "membersDetails.error.firstName.required", "firstName"),
-        ValidationError(1, 3, "chooseTaxYear.event22.error.outsideRange", "taxYear", Seq("2013", "2022")),
+        ValidationError(1, 3, "chooseTaxYear.event22.error.outsideRange", "taxYear", Seq("2013", "2023")),
         ValidationError(2, 1, "membersDetails.error.lastName.required", "lastName"),
         ValidationError(2, 2, "membersDetails.error.nino.invalid", "nino"),
-        ValidationError(2, 3, "chooseTaxYear.event22.error.required", "taxYear", Seq("2013", "2022")),
+        ValidationError(2, 3, "chooseTaxYear.event22.error.required", "taxYear", Seq("2013", "2023")),
         ValidationError(2, 4, "totalPensionAmounts.value.error.nothingEntered", "totalAmounts")
       ))
     }

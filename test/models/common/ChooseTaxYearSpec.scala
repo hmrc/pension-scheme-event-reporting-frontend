@@ -68,25 +68,25 @@ class ChooseTaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
     }
   }
 
-//  "values" - {
-//    "yield seq of tax year start years for all years up to BUT NOT INCLUDING current calendar year " +
-//      "where current calendar date is set to 5th April (end of old tax year) of a random year" in {
-//      forAll(genYear -> "valid years") { year =>
-//        DateHelper.setDate(Some(LocalDate.of(year, 4, 5)))
-//        val expectedResult =
-//          (2013 until year).reverse.map(yr => ChooseTaxYear(yr.toString))
-//        ChooseTaxYear.values mustBe expectedResult
-//      }
-//    }
-//
-//    "yield tax year start years for all years up to AND INCLUDING current calendar year " +
-//      "where current calendar date is set to 6th April (start of new tax year) of a random year" in {
-//      forAll(genYear -> "valid years") { year =>
-//        DateHelper.setDate(Some(LocalDate.of(year, 4, 6)))
-//        val expectedResult =
-//          (2013 to year).reverse.map(yr => ChooseTaxYear(yr.toString))
-//        ChooseTaxYear.values mustBe expectedResult
-//      }
-//    }
-//  }
+  "values" - {
+    "yield seq of tax year start years for all years up to BUT NOT INCLUDING current calendar year " +
+      "where current calendar date is set to 5th April (end of old tax year) of a random year" in {
+      forAll(genYear -> "valid years") { year =>
+        DateHelper.setDate(Some(LocalDate.of(year, 4, 5)))
+        val expectedResult =
+          (2013 until year).reverse.map(yr => ChooseTaxYear(yr.toString))
+        ChooseTaxYear.values mustBe expectedResult
+      }
+    }
+
+    "yield tax year start years for all years up to AND INCLUDING current calendar year " +
+      "where current calendar date is set to 6th April (start of new tax year) of a random year" in {
+      forAll(genYear -> "valid years") { year =>
+        DateHelper.setDate(Some(LocalDate.of(year, 4, 6)))
+        val expectedResult =
+          (2013 to year).reverse.map(yr => ChooseTaxYear(yr.toString))
+        ChooseTaxYear.values mustBe expectedResult
+      }
+    }
+  }
 }
