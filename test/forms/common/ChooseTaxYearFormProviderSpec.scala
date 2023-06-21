@@ -21,6 +21,8 @@ import models.common.ChooseTaxYear
 import models.enumeration.EventType.{Event22, Event23}
 import play.api.data.FormError
 
+import java.time.LocalDate
+
 class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours {
 
   ".value" - {
@@ -34,13 +36,13 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours {
         form,
         fieldName,
         validValues = ChooseTaxYear.valuesForEventType(Event23),
-        invalidError = FormError(fieldName, "chooseTaxYear.event22.error.notFuture")
+        invalidError = FormError(fieldName, "chooseTaxYear.event22.error.outsideRange", Seq("2015", "2023"))
       )
 
       behave like mandatoryField(
         form,
         fieldName,
-        requiredError = FormError(fieldName, requiredKeyEvent23)
+        requiredError = FormError(fieldName, requiredKeyEvent23, Seq("2015", "2023"))
       )
     }
 
@@ -53,14 +55,33 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours {
         form,
         fieldName,
         validValues = ChooseTaxYear.valuesForEventType(Event22),
-        invalidError = FormError(fieldName, "chooseTaxYear.event22.error.notFuture")
+        invalidError = FormError(fieldName, "chooseTaxYear.event22.error.outsideRange", Seq("2013", "2023"))
       )
 
       behave like mandatoryField(
         form,
         fieldName,
-        requiredError = FormError(fieldName, requiredKeyEvent22)
+        requiredError = FormError(fieldName, requiredKeyEvent22, Seq("2013", "2023"))
       )
+
+      "not bind when year is earlier than min" in {
+        val fieldName = "value"
+        val fields = Map[String, String](
+          fieldName -> "2012"
+        )
+        val result = form.bind(fields).apply(fieldName)
+        result.errors mustEqual Seq(FormError(fieldName, "chooseTaxYear.event22.error.outsideRange", Seq("2013", "2023")))
+      }
+
+      "not bind when year is greater than max" in {
+        utils.DateHelper.setDate(Some(LocalDate.of(2023,4,1)))
+        val fieldName = "value"
+        val fields = Map[String, String](
+          fieldName -> "2024"
+        )
+        val result = form.bind(fields).apply(fieldName)
+        result.errors mustEqual Seq(FormError(fieldName, "chooseTaxYear.event22.error.outsideRange", Seq("2013", "2023")))
+      }
     }
   }
 }

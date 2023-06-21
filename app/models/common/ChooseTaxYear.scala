@@ -37,6 +37,23 @@ object ChooseTaxYear extends Enumerable.Implicits {
   private final val minYearEvent22: Int = 2013
   private final val minYearEvent23: Int = 2015
 
+  def minimumYear(eventType: EventType): Int = eventType match {
+    case Event23 => minYearEvent23
+    case Event22 => minYearEvent22
+    case _ => minYearDefault
+  }
+
+  def maximumYear: Int = {
+    val currentYear = DateHelper.today.getYear
+    val newTaxYearStart = LocalDate.of(currentYear, Month.APRIL.getValue, startDayOfNewTaxYear)
+
+    if (DateHelper.today.isBefore(newTaxYearStart)) {
+      currentYear - 1
+    } else {
+      currentYear
+    }
+  }
+
   def values: Seq[ChooseTaxYear] = valueMinYear(minYearDefault)
 
   def valuesForEventType(eventType: EventType): Seq[ChooseTaxYear] = {

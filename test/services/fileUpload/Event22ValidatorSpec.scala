@@ -90,12 +90,12 @@ Steven,,xyz,,"""
 
       val result = validator.validate(csvFile, UserAnswers())
       result mustBe Invalid(Seq(
-        ValidationError(1, 0, messages("membersDetails.error.firstName.required"), "firstName"),
-        ValidationError(1, 3, messages("chooseTaxYear.event22.error.notFuture"), "taxYear"),
-        ValidationError(2, 1, messages("membersDetails.error.lastName.required"), "lastName"),
-        ValidationError(2, 2, messages("membersDetails.error.nino.invalid"), "nino"),
-        ValidationError(2, 3, messages("chooseTaxYear.event22.error.required"), "taxYear"),
-        ValidationError(2, 4, messages("totalPensionAmounts.value.error.nothingEntered"), "totalAmounts")
+        ValidationError(1, 0, "membersDetails.error.firstName.required", "firstName"),
+        ValidationError(1, 3, "chooseTaxYear.event22.error.outsideRange", "taxYear", Seq("2013", "2022")),
+        ValidationError(2, 1, "membersDetails.error.lastName.required", "lastName"),
+        ValidationError(2, 2, "membersDetails.error.nino.invalid", "nino"),
+        ValidationError(2, 3, "chooseTaxYear.event22.error.required", "taxYear", Seq("2013", "2022")),
+        ValidationError(2, 4, "totalPensionAmounts.value.error.nothingEntered", "totalAmounts")
       ))
     }
 

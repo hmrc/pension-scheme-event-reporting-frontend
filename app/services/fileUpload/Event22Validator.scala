@@ -46,7 +46,7 @@ class Event22Validator @Inject()(
   private val fieldNoTotalAmounts = 4
 
   private def taxYearValidation(index: Int,
-                                chargeFields: Seq[String])(implicit messages:Messages): Validated[Seq[ValidationError], ChooseTaxYear] = {
+                                chargeFields: Seq[String]): Validated[Seq[ValidationError], ChooseTaxYear] = {
     val fields = Seq(
       Field(valueFormField, chargeFields(fieldNoTaxYear), taxYear, fieldNoTaxYear)
     )
@@ -62,7 +62,7 @@ class Event22Validator @Inject()(
   }
 
   private def totalAmountsValidation(index: Int,
-                                      chargeFields: Seq[String])(implicit messages: Messages): Validated[Seq[ValidationError], BigDecimal] = {
+                                      chargeFields: Seq[String]): Validated[Seq[ValidationError], BigDecimal] = {
     val fields = Seq(
       Field(valueFormField, chargeFields(fieldNoTotalAmounts), totalAmounts, fieldNoTotalAmounts)
     )
@@ -76,7 +76,7 @@ class Event22Validator @Inject()(
   }
 
   override protected def validateFields(index: Int,
-                                        columns: Seq[String])(implicit messages: Messages): Result = {
+                                        columns: Seq[String]): Result = {
     val a = resultFromFormValidationResult[MembersDetails](
       memberDetailsValidation(index, columns, membersDetailsFormProvider(Event22, index)),
       createCommitItem(index, MembersDetailsPage.apply(Event22, _))

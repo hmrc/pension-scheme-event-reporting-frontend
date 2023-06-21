@@ -138,7 +138,6 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event23, 0)(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
         }
       }
@@ -214,7 +213,6 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event22, 0)(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
         }
       }

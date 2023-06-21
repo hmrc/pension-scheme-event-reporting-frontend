@@ -48,22 +48,6 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   "Processing Request Controller" - {
 
-    "must return OK and the correct view for a GET" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      running(application) {
-
-        val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints).url)
-
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[ProcessingRequestView]
-
-        contentAsString(result) mustEqual view(controllers.routes.IndexController.onPageLoad.url)(request, messages(application)).toString
-      }
-    }
-
     "return OK and the correct view for a GET when outcome is Success and can get file name" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()

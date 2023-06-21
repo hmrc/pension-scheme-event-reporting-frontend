@@ -61,8 +61,7 @@ trait Validator {
     }
 
 
-  def validate(rows: Seq[Array[String]], userAnswers: UserAnswers)
-              (implicit messages: Messages): Validated[Seq[ValidationError], UserAnswers] = {
+  def validate(rows: Seq[Array[String]], userAnswers: UserAnswers): Validated[Seq[ValidationError], UserAnswers] = {
     Invalid(Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty))
     rows.headOption match {
       case Some(row) if row.mkString(",").equalsIgnoreCase(validHeader) =>
@@ -76,8 +75,7 @@ trait Validator {
     }
   }
 
-  private def validateDataRows(rows: Seq[Array[String]])
-                              (implicit messages: Messages): Result = {
+  private def validateDataRows(rows: Seq[Array[String]]): Result = {
     rows.zipWithIndex.foldLeft[Result](Valid(Nil)) {
       case (acc, Tuple2(_, 0)) => acc
       case (acc, Tuple2(row, index)) => Seq(acc, validateFields(index, row.toIndexedSeq)).combineAll
@@ -85,10 +83,10 @@ trait Validator {
   }
 
   protected def validateFields(index: Int,
-                               columns: Seq[String])(implicit messages: Messages): Result
+                               columns: Seq[String]): Result
 
   protected def memberDetailsValidation(index: Int, columns: Seq[String],
-                                        memberDetailsForm: Form[MembersDetails])(implicit messages: Messages): Validated[Seq[ValidationError], MembersDetails] = {
+                                        memberDetailsForm: Form[MembersDetails]): Validated[Seq[ValidationError], MembersDetails] = {
     val fields = Seq(
       Field(MemberDetailsFieldNames.firstName, fieldValue(columns, fieldNoFirstName), MemberDetailsFieldNames.firstName, 0),
       Field(MemberDetailsFieldNames.lastName, fieldValue(columns, fieldNoLastName), MemberDetailsFieldNames.lastName, 1),
@@ -103,13 +101,13 @@ trait Validator {
     )
   }
 
-  protected final def errorsFromForm[A](formWithErrors: Form[A], fields: Seq[Field], index: Int)(implicit messages: Messages): Seq[ValidationError] = {
+  protected final def errorsFromForm[A](formWithErrors: Form[A], fields: Seq[Field], index: Int): Seq[ValidationError] = {
     for {
       formError <- formWithErrors.errors
       field <- fields.find(_.getFormValidationFullFieldName == formError.key)
     }
     yield {
-      ValidationError(index, field.columnNo, messages(formError.message), field.columnName)
+      ValidationError(index, field.columnNo, formError.message, field.columnName, formError.args)
     }
   }
 
