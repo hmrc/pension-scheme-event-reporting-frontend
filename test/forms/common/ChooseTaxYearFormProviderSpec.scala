@@ -19,11 +19,16 @@ package forms.common
 import forms.behaviours.OptionFieldBehaviours
 import models.common.ChooseTaxYear
 import models.enumeration.EventType.{Event22, Event23}
+import org.scalatest.BeforeAndAfterEach
 import play.api.data.FormError
 
 import java.time.LocalDate
 
-class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours {
+class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours with BeforeAndAfterEach{
+
+  override protected def beforeEach(): Unit = {
+    utils.DateHelper.setDate(Some(LocalDate.of(2023, 1, 1)))
+  }
 
   ".value" - {
 
@@ -84,4 +89,6 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours {
       }
     }
   }
+
+
 }
