@@ -176,4 +176,11 @@ trait Constraints {
       case date if date.getYear >= 1000 => Valid
       case _ => Invalid(errorKey)
     }
+
+  protected def isEqual(expectedValue: Option[String], errorKey: String): Constraint[String] =
+    Constraint {
+      case _ if expectedValue.isEmpty => Valid
+      case s if expectedValue.contains(s) => Valid
+      case _ => Invalid(errorKey)
+    }
 }

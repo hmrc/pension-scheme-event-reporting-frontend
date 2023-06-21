@@ -16,7 +16,7 @@
 
 package controllers.event20A
 
-import connectors.{MinimalConnector, UserAnswersCacheConnector}
+import connectors.{MinimalConnector, SchemeDetailsConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event20A.Event20APspDeclarationFormProvider
 import helpers.DateHelper.getTaxYear
@@ -24,6 +24,7 @@ import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
 import pages.event20A.Event20APspDeclarationPage
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -38,14 +39,18 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
                                          userAnswersCacheConnector: UserAnswersCacheConnector,
                                          formProvider: Event20APspDeclarationFormProvider,
                                          minimalConnector: MinimalConnector,
+                                         schemeDetailsConnector: SchemeDetailsConnector,
                                          view: Event20APspDeclarationView
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
+  private def form(authorisingPsaId: Option[String]):Form[String] = formProvider(authorisingPSAID = authorisingPsaId)
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(Event20APspDeclarationPage)).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(Event20APspDeclarationPage)) match {
+      case Some(value) => form(authorisingPsaId=None).fill(value)
+      case None => form(authorisingPsaId=None)
+    }
     minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map {
       minimalDetails =>
         Ok(view(request.schemeName, request.pstr, getTaxYear(request.userAnswers).toString, minimalDetails.name, preparedForm, waypoints))
@@ -54,18 +59,21 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
-      minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).flatMap{ minimalDetails =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(request.schemeName, request.pstr, getTaxYear(request.userAnswers).toString, minimalDetails.name, formWithErrors, waypoints))),
-        value => {
-          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(Event20APspDeclarationPage, value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(Event20APspDeclarationPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
-          }
+      minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
+        schemeDetailsConnector.getPspSchemeDetails(request.loggedInUser.psaIdOrPspId, request.pstr).map(_.authorisingPSAID).flatMap { authorisingPsaId =>
+          form(authorisingPsaId = authorisingPsaId)
+            .bindFromRequest().fold(
+            formWithErrors =>
+              Future.successful(BadRequest(view(request.schemeName, request.pstr, getTaxYear(request.userAnswers).toString, minimalDetails.name, formWithErrors, waypoints))),
+            value => {
+              val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+              val updatedAnswers = originalUserAnswers.setOrException(Event20APspDeclarationPage, value)
+              userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+                Redirect(Event20APspDeclarationPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+              }
+            }
+          )
         }
-      )
       }
   }
 

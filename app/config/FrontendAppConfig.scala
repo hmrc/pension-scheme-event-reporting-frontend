@@ -38,6 +38,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   lazy val eventReportingUrl: String = servicesConfig.baseUrl("pension-scheme-event-reporting")
   lazy val pensionsAdministratorUrl: String = servicesConfig.baseUrl("pension-administrator")
+  lazy val pensionSchemeUrl: String = servicesConfig.baseUrl("pensions-scheme")
   lazy val addressLookUp: String = s"${servicesConfig.baseUrl("address-lookup")}"
 
   lazy val locationCanonicalList: String = loadConfig("location.canonical.list")
@@ -79,6 +80,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   lazy val minimumYear: Int = configuration.get[Int]("minimumYear")
 
   lazy val minimalDetailsUrl: String = s"$pensionsAdministratorUrl${configuration.get[String](path = "urls.minimalDetails")}"
+  lazy val schemeDetailsUrl: String = s"$pensionSchemeUrl${configuration.get[String](path = "urls.schemeDetails")}"
+  lazy val pspSchemeDetailsUrl: String = s"$pensionSchemeUrl${configuration.get[String](path = "urls.pspSchemeDetails")}"
 
   lazy val emailApiUrl: String = servicesConfig.baseUrl("email")
   lazy val emailSendForce: Boolean = configuration.getOptional[Boolean]("email.force").getOrElse(false)

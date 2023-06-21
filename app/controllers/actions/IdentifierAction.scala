@@ -23,7 +23,7 @@ import models.LoggedInUser
 import models.common.EventReporting
 import models.enumeration.AdministratorOrPractitioner
 import models.enumeration.AdministratorOrPractitioner._
-import models.requests.IdentifierRequest
+import models.requests.{DataRequest, IdentifierRequest, OptionalDataRequest}
 import play.api.Logger
 import play.api.mvc.Results._
 import play.api.mvc._

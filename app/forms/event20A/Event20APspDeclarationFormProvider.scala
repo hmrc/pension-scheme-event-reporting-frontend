@@ -23,14 +23,15 @@ import play.api.data.Form
 
 class Event20APspDeclarationFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(authorisingPSAID: Option[String]): Form[String] =
     Form(
       "value" -> text("event20A.pspDeclaration.error.required")
         .verifying(
           firstError(
             minLength(8, "event20A.pspDeclaration.error.length"),
             maxLength(8, "event20A.pspDeclaration.error.length"),
-            regexp(psaIdRegex, "event20A.pspDeclaration.error.invalid")
+            regexp(psaIdRegex, "event20A.pspDeclaration.error.invalid"),
+            isEqual(authorisingPSAID, "event20A.pspDeclaration.error.noMatch")
           )
         )
     )
