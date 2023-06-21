@@ -19,9 +19,9 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.enumeration.EventType
-import models.{EventDataIdentifier, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
+import models.{EROverview, EventDataIdentifier, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
 import play.api.http.Status._
-import play.api.libs.json.{JsArray, JsString, JsValue, Json}
+import play.api.libs.json.{JsArray, JsError, JsResultException, JsString, JsSuccess, JsValue, Json, Reads}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
 
@@ -170,7 +170,7 @@ class EventReportingConnector @Inject()(
   }
 
   def getOverview(pstr: String, reportType: String, startDate: String, endDate: String)
-                 (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[JsArray] = {
+                 (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EROverview]] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -184,9 +184,12 @@ class EventReportingConnector @Inject()(
     http.GET[HttpResponse](eventOverviewUrl)(implicitly, hc, implicitly)
       .map { response =>
         response.status match {
-          case OK => Json.arr(Json.parse(response.body))// Json.parse(response.body)
-          case _ =>
-            throw new HttpException(response.body, response.status)
+          case OK =>
+            Json.parse(response.body).validate[Seq[EROverview]](Reads.seq(EROverview.rds)) match {
+              case JsSuccess(data, _) => data
+              case JsError(errors) => throw JsResultException(errors)
+            }
+          case _ => throw new HttpException(response.body, response.status)
         }
       }
   }

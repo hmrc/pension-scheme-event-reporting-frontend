@@ -19,7 +19,7 @@ package controllers.partials
 import config.FrontendAppConfig
 import connectors.EventReportingConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import models.{TaxYear, ToggleDetails}
+import models.{EROverview, EROverviewVersion, TaxYear, ToggleDetails}
 import pages.TaxYearPage
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.libs.json.{JsArray, JsBoolean, JsString, JsValue, Json}
@@ -51,33 +51,33 @@ class EventReportingTileController @Inject()(
   def eventReportPartial(): Action[AnyContent] = {
     identify.async { implicit request =>
 
-      val futureArray: Future[JsArray] = eventReportingConnector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString)
-      val result: JsArray = Await.result(futureArray, 20.seconds) // typical timeout, testing purposes
+      val futureArray: Future[Seq[EROverview]] = eventReportingConnector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString)
+      val result: Seq[EROverview] = Await.result(futureArray, 20.seconds) // typical timeout, testing purposes
 
-      val mapResult = result.value.flatMap { value =>
-        Seq(
-          "anyStartDates" -> (value \\ "periodStartDate"), // if compiled and available, use in subheading
-          "anyEndDates" -> (value \\ "periodEndDate"), // if compiled and available, use in subheading
-          "anySubmittedVersions" -> (value \\ "submittedVersionAvailable"), // if any trues, link to old submissions
-          "anyCompiledVersions" -> (value \\ "compiledVersionAvailable") // if any trues, link to in progress
-        )
-      }.toMap
+      val anyStartAndEndDates = result.map { value => (value.periodStartDate, value.periodEndDate) }
+
+      val anySubmittedReports = result.map { value => value.versionDetails match {
+        case Some(EROverviewVersion(_, submittedVersionAvailable, _)) => submittedVersionAvailable
+        case None => false
+        }
+      }
+
+      val anyCompiledReports = result.map { value => value.versionDetails match {
+        case Some(EROverviewVersion(_, _, compiledVersionAvailable)) => compiledVersionAvailable
+        case None => false
+        }
+      }
+
+      val maybeCompiledVersions = anyCompiledReports.collectFirst(x => x).getOrElse(false)
+      val maybeSubmittedVersions = anySubmittedReports.collectFirst(x => x).getOrElse(false)
 
       val loginLink = Seq(Link("erLoginLink", appConfig.erLoginUrl, Text(Messages("eventReportingTile.link.new"))))
 
-      val maybeCompiledVersions = mapResult("anyCompiledVersions").collectFirst { x =>
-        JsBoolean(x.toString.toBoolean) == JsBoolean(true)
-      }.getOrElse(false)
-
-      val maybeSubmittedVersions = mapResult("anySubmittedVersions").collectFirst { x =>
-        JsBoolean(x.toString.toBoolean) == JsBoolean(true)
-      }.getOrElse(false)
-
-      val maybeCompiledLink: Seq[Link] = if (maybeCompiledVersions) { // maybeCompiledVersions
+      val maybeCompiledLink: Seq[Link] = if (maybeCompiledVersions) {
         Seq(Link("erCompiledLink", appConfig.erCompiledUrl, Text("eventReportingTile.link.compiled")))
       } else Nil
 
-      val maybeSubmittedLink: Seq[Link] = if (maybeSubmittedVersions) { // maybeSubmittedVersions
+      val maybeSubmittedLink: Seq[Link] = if (maybeSubmittedVersions) {
         Seq(Link("erSubmittedLink", appConfig.erSubmittedUrl, Text("eventReportingTile.link.submitted")))
       } else Nil
 
@@ -89,7 +89,7 @@ class EventReportingTileController @Inject()(
         if (maybeCompiledVersions) {
           Seq(
             CardSubHeading(
-              subHeading = Messages("eventReportingTile.subHeading", mapResult("anyStartDates").head, mapResult("anyEndDates").head), // TODO: fix strings
+              subHeading = Messages("eventReportingTile.subHeading", anyStartAndEndDates.head._1, anyStartAndEndDates.head._2),
               subHeadingClasses = "card-sub-heading",
               subHeadingParams =
                 Seq(
@@ -137,5 +137,5 @@ class EventReportingTileController @Inject()(
 
 object EventReportingTileController {
   val minStartDateAsString = "2000-04-06"                               // TODO: confirm min start date
-  val maxEndDateAsString = s"${LocalDate.now().getYear + 1}-04-05"      // TODO: confirm max start date
+  val maxEndDateAsString = s"${LocalDate.now().getYear + 1}-04-05"      // TODO: confirm max end date
 }
