@@ -51,8 +51,8 @@ class Event22ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
     "return items in user answers when there are no validation errors" in {
       val validCSVFile = CSVParser.split(
         s"""$header
-                            Joe,Bloggs,AA234567D,2020,12.20
-                            Steven,Bloggs,AA123456C,2022,13.20"""
+                            Joe,Bloggs,AA234567D,2020 to 2023,12.20
+                            Steven,Bloggs,AA123456C,2022 to 2023,13.20"""
       )
       val result = validator.validate(validCSVFile, UserAnswers())
       result mustBe Valid(UserAnswers()

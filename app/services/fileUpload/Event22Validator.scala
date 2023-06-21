@@ -48,7 +48,7 @@ class Event22Validator @Inject()(
   private def taxYearValidation(index: Int,
                                 chargeFields: Seq[String]): Validated[Seq[ValidationError], ChooseTaxYear] = {
     val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoTaxYear), taxYear, fieldNoTaxYear)
+      Field(valueFormField, chargeFields(fieldNoTaxYear).takeWhile(_ != ' '), taxYear, fieldNoTaxYear)
     )
     val form: Form[ChooseTaxYear] = chooseTaxYearFormProvider(eventType = Event22)
     form.bind(
