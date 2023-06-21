@@ -52,8 +52,10 @@ class EventReportingTileController @Inject()(
     identify.async { implicit request =>
 
       val futureArray: Future[Seq[EROverview]] = eventReportingConnector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString)
+
       val result: Seq[EROverview] = Await.result(futureArray, 20.seconds) // typical timeout, testing purposes
 
+      // TODO: if this seq > 1, you want to display seq.length in progress rather than the year range
       val anyStartAndEndDates = result.map { value => (value.periodStartDate, value.periodEndDate) }
 
       val anySubmittedReports = result.map { value => value.versionDetails match {
@@ -68,7 +70,7 @@ class EventReportingTileController @Inject()(
         }
       }
 
-      val maybeCompiledVersions = anyCompiledReports.collectFirst(x => x).getOrElse(false)
+      val maybeCompiledVersions = true // anyCompiledReports.collectFirst(x => x).getOrElse(false)
       val maybeSubmittedVersions = anySubmittedReports.collectFirst(x => x).getOrElse(false)
 
       val loginLink = Seq(Link("erLoginLink", appConfig.erLoginUrl, Text(Messages("eventReportingTile.link.new"))))
@@ -118,13 +120,11 @@ class EventReportingTileController @Inject()(
                 CardViewModel(
                 id = "compiled",
                 heading = "",
-                subHeadings = Seq(CardSubHeading(subHeading = "", subHeadingClasses = "")),
                 links = maybeCompiledLink
               ),
               CardViewModel(
                 id = "submitted",
                 heading = "",
-                subHeadings = Seq(CardSubHeading(subHeading = "", subHeadingClasses = "")),
                 links = maybeSubmittedLink
               )
             )
