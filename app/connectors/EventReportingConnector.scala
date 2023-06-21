@@ -35,6 +35,7 @@ class EventReportingConnector @Inject()(
   private def eventRepSummaryUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/event-summary"
   private def eventCompileUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/compile"
   private def eventSubmitUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event-declaration-report"
+  private def event20ASubmitUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event20a-declaration-report"
   private def getFileUploadResponseUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/get"
 
   private def eventReportingToggleUrl(toggleName:String) = s"${config.eventReportingUrl}/admin/get-toggle/$toggleName"
@@ -98,6 +99,26 @@ class EventReportingConnector @Inject()(
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
     http.POST[JsValue, HttpResponse](eventSubmitUrl, ua.data)(implicitly, implicitly, hc, implicitly)
+      .map { response =>
+        response.status match {
+          case OK => ()
+          case _ =>
+            throw new HttpException(response.body, response.status)
+        }
+      }
+  }
+
+  def submitReportEvent20A(pstr: String, ua: UserAnswers)
+                  (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+
+    val headers: Seq[(String, String)] = Seq(
+      "Content-Type" -> "application/json",
+      "pstr" -> pstr
+    )
+
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.POST[JsValue, HttpResponse](event20ASubmitUrl, ua.data)(implicitly, implicitly, hc, implicitly)
       .map { response =>
         response.status match {
           case OK => ()
