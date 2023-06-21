@@ -61,7 +61,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    DateHelper.setDate(Some(LocalDate.of(2015, 6, 1)))
+    DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
 
     reset(mockUserAnswersCacheConnector)
   }
