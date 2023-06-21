@@ -23,7 +23,7 @@ import forms.fileUpload.FileUploadResultFormProvider
 import helpers.fileUpload.FileUploadGenericErrorReporter
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.EventType
-import models.enumeration.EventType.getEventTypeByName
+import models.enumeration.EventType.{Event6, getEventTypeByName}
 import models.fileUpload.ParsingAndValidationOutcomeStatus._
 import models.fileUpload.{FileUploadResult, ParsingAndValidationOutcome}
 import models.requests.OptionalDataRequest
@@ -123,8 +123,11 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                     val futureOutcome = event22Validator.validate(parsedCSV, request.userAnswers.getOrElse(UserAnswers())) match {
                       case Invalid(errors) => Future.successful(processInvalid(eventType, errors))
                       case Valid(updatedUA) =>
-                        eventReportingConnector.compileEvent(request.pstr, updatedUA.eventDataIdentifier(eventType))
-                          .map(_ => ParsingAndValidationOutcome(Success))
+                        userAnswersCacheConnector.save(request.pstr, Event6, updatedUA).flatMap { _ =>
+
+                          eventReportingConnector.compileEvent(request.pstr, updatedUA.eventDataIdentifier(eventType))
+                            .map(_ => ParsingAndValidationOutcome(Success))
+                        }
                     }
                     futureOutcome.map { outcome =>
                       parsingAndValidationOutcomeCacheConnector.setOutcome(outcome)
