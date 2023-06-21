@@ -47,12 +47,15 @@ index.guidance = Welcome to your new frontend. Please see the README file for a 
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 
-journeyRecovery.continue.title = Sorry, there is a problem with the service
-journeyRecovery.continue.heading = Sorry, there is a problem with the service
-journeyRecovery.continue.guidance = [Add content to explain how to proceed.]
+journeyRecovery.continue.title = Sorry, there is a problem with the service and it is temporarily unavailable
+journeyRecovery.continue.heading = Sorry, there is a problem with the service and it is temporarily unavailable
+journeyRecovery.continue.guidance1 = Please try again later.
+journeyRecovery.continue.guidance2 = If you were using the service when it became unavailable, any information entered will have been saved from the last ‘save and continue’.
+
 journeyRecovery.startAgain.title = Sorry, there is a problem with the service
 journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
-journeyRecovery.startAgain.guidance = [Add content to explain why the user needs to start again.]
+journeyRecovery.startAgain.guidance1 = Please try again later.
+journeyRecovery.startAgain.guidance2 = If you were using the service when it became unavailable, any information entered will have been saved from the last ‘save and continue’.
 
 signedOut.title = For your security, we signed you out
 signedOut.heading = For your security, we signed you out
@@ -96,7 +99,7 @@ eventReportingTile.heading = Event Reporting
 eventReportingTile.subHeading = Event report {0} to {1}:
 eventReportingTile.subHeading.param = In progress
 eventReportingTile.link.compiled = View event report in progress
-eventReportingTile.link.aft-overview = Start a new event report
+eventReportingTile.link.new = Start a new event report
 eventReportingTile.link.submitted = View or change past event reports
 
 eventSelection.title = Which event are you adding to the event report?

@@ -115,7 +115,7 @@ class EventReportingTileController @Inject()(
           val card =
             Seq(
               CardViewModel(
-                id = "aft-overview",
+                id = "new",
                 heading = Messages("eventReportingTile.heading"),
                 subHeadings = maybeCardSubHeading,
                 links = loginLink
