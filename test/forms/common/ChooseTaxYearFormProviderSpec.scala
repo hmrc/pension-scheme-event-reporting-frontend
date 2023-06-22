@@ -26,14 +26,14 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours {
   ".value" - {
 
     "event23" - {
-      val form = new ChooseTaxYearFormProvider()(Event23)
+      val form = new ChooseTaxYearFormProvider()(Event23, 2021)
       val fieldName = "value"
       val requiredKeyEvent23 = "chooseTaxYear.event23.error.required"
 
       behave like optionsField[ChooseTaxYear](
         form,
         fieldName,
-        validValues = ChooseTaxYear.valuesForEventType(Event23),
+        validValues = ChooseTaxYear.valuesForYearRange(2021),
         invalidError = FormError(fieldName, "error.invalid")
       )
 
@@ -45,14 +45,14 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours {
     }
 
     "event22" - {
-      val form = new ChooseTaxYearFormProvider()(Event22)
+      val form = new ChooseTaxYearFormProvider()(Event22, 2021)
       val fieldName = "value"
       val requiredKeyEvent22 = "chooseTaxYear.event22.error.required"
 
       behave like optionsField[ChooseTaxYear](
         form,
         fieldName,
-        validValues = ChooseTaxYear.valuesForEventType(Event22),
+        validValues = ChooseTaxYear.valuesForYearRange(2021),
         invalidError = FormError(fieldName, "error.invalid")
       )
 
