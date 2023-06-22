@@ -18,7 +18,6 @@ package controllers.fileUpload
 
 import controllers.actions._
 import models.enumeration.EventType
-import models.fileUpload.ParsingAndValidationOutcome
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,13 +37,20 @@ class FileUploadSuccessController @Inject()(
 
   private val eventType = EventType.Event22
 
-  def onPageLoad(waypoints: Waypoints, outcome: ParsingAndValidationOutcome): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
+  def onPageLoadWithOutcome(waypoints: Waypoints, outcome: String): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
     implicit request =>
 
       // Maybe works?
-      val status = outcome.status
-      val filename = outcome.fileName
+      val status = outcome
+      println(status)
+      // val filename = outcome.fileName
 
+      val dummyFileName = "Dummy filename.csv" //TODO: This needs to use the BE to retrieve the data.
+      val continueUrl = controllers.common.routes.MembersSummaryController.onPageLoad(waypoints, eventType).url
+      Ok(view(continueUrl, dummyFileName))
+  }
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
+    implicit request =>
       val dummyFileName = "Dummy filename.csv" //TODO: This needs to use the BE to retrieve the data.
       val continueUrl = controllers.common.routes.MembersSummaryController.onPageLoad(waypoints, eventType).url
       Ok(view(continueUrl, dummyFileName))

@@ -57,13 +57,14 @@ document.addEventListener('DOMContentLoaded', function(event) {
                 }
             }).then(function (data) {
                 console.log(data);
-                if (!data.filename) {
+                if (!data.fileName) {
                     setTimeout(function() {
                         pollName();
                     }, 4000);
                 } else {
                     fileName.innerHTML = data.fileName;
                     button.disabled = false;
+                    button.classList.remove("govuk-button--disabled");
                     radios.forEach(function(radio) {
                         radio.disabled = false;
                     });
@@ -88,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
                 }
             }).then(function (data) {
                 console.log(data);
-                if (data.status === '') {
+                if (data === '') {
                     setTimeout(function() {
                         pollData();
                     }, 4000);

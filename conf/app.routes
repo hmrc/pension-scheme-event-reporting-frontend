@@ -460,6 +460,7 @@ GET         /new-report/event-20-check-your-answers                             
 GET         /new-report/event-20-click                                           controllers.event20.Event20CheckYourAnswersController.onClick
 
 GET        /new-report/event-22-upload-successful                                 controllers.fileUpload.FileUploadSuccessController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/event-22-upload-successful                                 controllers.fileUpload.FileUploadSuccessController.onPageLoadWithOutcome(waypoints: Waypoints ?= EmptyWaypoints, outcome: String)
 
 GET        /new-report/event-22-upload-fail                                       controllers.fileUpload.ValidationErrorsAllController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 

@@ -22,7 +22,6 @@ import models.fileUpload.ParsingAndValidationOutcome
 import models.fileUpload.ParsingAndValidationOutcomeStatus.{GeneralError, Success, ValidationErrorsLessThan10, ValidationErrorsMoreThanOrEqual10}
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.ProcessingRequestView
@@ -45,17 +44,17 @@ class ProcessingStatusRequestController @Inject()(
       Future.successful(Ok(view(controllers.routes.IndexController.onPageLoad.url)))
       parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap {
         case x@Some(ParsingAndValidationOutcome(Success, _, _)) =>
-          val xyz = x.get
-          Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints, xyz)))
+          val xyz = x.get.status.toString
+          Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoadWithOutcome(waypoints, xyz)))
         case Some(ParsingAndValidationOutcome(GeneralError, _, _)) =>
-          Future.successful("GeneralError")
+          Future.successful(Redirect(controllers.fileUpload.routes.ProblemWithServiceController.onPageLoad(waypoints)))
         case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _)) =>
-          Future.successful("ValidationErrorsLessThan10")
+          Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsAllController.onPageLoad(waypoints)))
         case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _)) =>
-          Future.successful("ValidationErrorsMoreThanOrEqual10")
+          Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsSummaryController.onPageLoad(waypoints)))
         case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
         case _ =>
-          Future.successful("ValidationErrorsMoreThanOrEqual10")
+          Future.successful(Ok(view(controllers.routes.IndexController.onPageLoad.url)))
       }
   }
 }
