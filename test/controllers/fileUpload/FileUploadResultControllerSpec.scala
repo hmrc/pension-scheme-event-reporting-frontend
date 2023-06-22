@@ -21,7 +21,7 @@ import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import forms.fileUpload.FileUploadResultFormProvider
 import models.FileUploadOutcomeResponse
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
-import models.enumeration.EventType.{Event22, getEventTypeByName}
+import models.enumeration.EventType.{Event22, Event23, getEventTypeByName}
 import models.fileUpload.FileUploadResult
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -48,6 +48,8 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockERConnector = mock[EventReportingConnector]
+  private val event22 = Event22
+  private val event23 = Event23
 
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -55,9 +57,9 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
     bind[EventReportingConnector].toInstance(mockERConnector)
   )
 
-  private def getRoute: String = routes.FileUploadResultController.onPageLoad(waypoints).url
+  private def getRoute: String = routes.FileUploadResultController.onPageLoad(waypoints, event22).url
 
-  private def postRoute: String = routes.FileUploadResultController.onSubmit(waypoints).url
+  private def postRoute: String = routes.FileUploadResultController.onSubmit(waypoints, event22).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()

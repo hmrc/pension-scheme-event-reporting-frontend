@@ -17,6 +17,7 @@
 package controllers.event22
 
 import base.SpecBase
+import models.enumeration.EventType
 import pages.EmptyWaypoints
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -28,7 +29,7 @@ class FileUploadWhatYouWillNeedControllerSpec extends SpecBase {
   private def getRoute: String = routes.FileUploadWhatYouWillNeedController.onPageLoad().url
 
   //TODO: The continue URL needs to be changed for the future "next" page
-  private def continueUrl: Call = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints = EmptyWaypoints)
+  private def continueUrl: Call = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints = EmptyWaypoints, EventType.Event22)
 
   private def templateDownloadLink: Call = controllers.routes.FileDownloadController.templateFile
 
