@@ -123,7 +123,7 @@ class EventReportingConnector @Inject()(
     http.POST[JsValue, HttpResponse](event20ASubmitUrl, ua.data)(implicitly, implicitly, hc, implicitly)
       .map { response =>
         response.status match {
-          case OK => ()
+          case NO_CONTENT => ()
           case _ =>
             throw new HttpException(response.body, response.status)
         }
