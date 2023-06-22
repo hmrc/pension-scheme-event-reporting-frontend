@@ -18,10 +18,13 @@ package controllers.event20A
 
 import connectors.{EventReportingConnector, MinimalConnector}
 import controllers.actions._
-import helpers.DateHelper.getTaxYear
+import helpers.DateHelper.{getTaxYear, getTaxYearFromOption}
 import models.{LoggedInUser, TaxYear, UserAnswers}
 import models.enumeration.{AdministratorOrPractitioner, EventType}
+import models.event20A.WhatChange.{BecameMasterTrust, CeasedMasterTrust}
+import models.requests.DataRequest
 import pages.Waypoints
+import pages.event20A.{BecameDatePage, CeasedDatePage, WhatChangePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,33 +49,43 @@ class Event20APsaDeclarationController @Inject()(
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
       minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map{
         minimalDetails =>
-      Ok(view(request.schemeName, request.pstr, getTaxYear(request.userAnswers).toString, minimalDetails.name,
+      Ok(view(request.schemeName, request.pstr, getTaxYearFromOption(request.userAnswers).toString, minimalDetails.name,
         controllers.event20A.routes.Event20APsaDeclarationController.onClick(waypoints).url))
       }
   }
 
-//  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
-//    implicit request =>
-//      val data: UserAnswers = UserAnswers(declarationDataEvent20A(request.pstr, getTaxYear(request.userAnswers)))
-//      eventReportingConnector.submitReportEvent20A(request.pstr, ).map { _ =>
-//        Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
-//
-//      }
-//  }
+  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
+    implicit request =>
+      val data: UserAnswers = UserAnswers(declarationDataEvent20A(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, request))
+      eventReportingConnector.submitReportEvent20A(request.pstr,data).map { _ =>
+        Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
+      }
+  }
 
-  def declarationDataEvent20A(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser): JsObject = {
+  def declarationDataEvent20A(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser, request: DataRequest[AnyContent]): JsObject = {
+
+    val ceaseDateOrStartDateNode =
+      request.userAnswers.get(WhatChangePage) match {
+        case Some(BecameMasterTrust) =>
+          val t =  request.userAnswers.get(BecameDatePage)
+          Json.obj("startDate" -> t)
+        case Some(CeasedMasterTrust) =>
+          val t = request.userAnswers.get(CeasedDatePage)
+          Json.obj("endDate" -> t)
+        case None => Json.obj()
+      }
+
     val common: JsObject = Json.obj(
-      "erDetails" -> Json.obj(
+      "er20aDetails" -> Json.obj(
         "pSTR" -> pstr,
         "reportStartDate" -> s"${taxYear.startYear}-04-06",
         "reportEndDate" -> s"${taxYear.endYear}-04-05"
       ),
       "erDeclarationDetails" -> Json.obj(
-        //PSA or PSP access
         "submittedBy" -> "PSA",
-        //PSA or PSP ID
         "submittedID" -> loggedInUser.psaIdOrPspId
-      )
+      ),
+      "schemeMasterTrustDetails" -> ceaseDateOrStartDateNode
     )
 
     val declarationDetails = common + ("psaDeclaration" -> Json.obj(

@@ -19,7 +19,7 @@ package controllers.event20A
 import connectors.{MinimalConnector, SchemeDetailsConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event20A.Event20APspDeclarationFormProvider
-import helpers.DateHelper.getTaxYear
+import helpers.DateHelper.{getTaxYear, getTaxYearFromOption}
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
@@ -53,7 +53,7 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
     }
     minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map {
       minimalDetails =>
-        Ok(view(request.schemeName, request.pstr, getTaxYear(request.userAnswers).toString, minimalDetails.name, preparedForm, waypoints))
+        Ok(view(request.schemeName, request.pstr, getTaxYearFromOption(request.userAnswers).toString, minimalDetails.name, preparedForm, waypoints))
     }
   }
 
@@ -64,7 +64,7 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
           form(authorisingPsaId = authorisingPsaId)
             .bindFromRequest().fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(request.schemeName, request.pstr, getTaxYear(request.userAnswers).toString, minimalDetails.name, formWithErrors, waypoints))),
+              Future.successful(BadRequest(view(request.schemeName, request.pstr, getTaxYearFromOption(request.userAnswers).toString, minimalDetails.name, formWithErrors, waypoints))),
             value => {
               val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
               val updatedAnswers = originalUserAnswers.setOrException(Event20APspDeclarationPage, value)
