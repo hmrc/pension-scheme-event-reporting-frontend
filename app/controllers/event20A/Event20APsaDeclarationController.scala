@@ -56,47 +56,47 @@ class Event20APsaDeclarationController @Inject()(
 
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
+      //Redirect(controllers.routes.IndexController.onPageLoad.url)
       val data: UserAnswers = UserAnswers(declarationDataEvent20A(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, request))
       eventReportingConnector.submitReportEvent20A(request.pstr,data).map { _ =>
         Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
       }
   }
 
-  def declarationDataEvent20A(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser, request: DataRequest[AnyContent]): JsObject = {
+  def declarationDataEvent20A(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser, request: DataRequest[AnyContent]): Option[JsObject] = {
+    val optCeaseDateOrStartDateNode =
+      (request.userAnswers.get(WhatChangePage), request.userAnswers.get(BecameDatePage), request.userAnswers.get(CeasedDatePage)) match {
+      case (Some(BecameMasterTrust), Some(becameDate), _) => Some(Json.obj("startDate" -> becameDate))
+      case (Some(CeasedMasterTrust), _, Some(ceasedDate)) => Some(Json.obj("endDate" -> ceasedDate))
+      case _ => None
+    }
 
-    val ceaseDateOrStartDateNode =
-      request.userAnswers.get(WhatChangePage) match {
-        case Some(BecameMasterTrust) =>
-          val t =  request.userAnswers.get(BecameDatePage)
-          Json.obj("startDate" -> t)
-        case Some(CeasedMasterTrust) =>
-          val t = request.userAnswers.get(CeasedDatePage)
-          Json.obj("endDate" -> t)
-        case None => Json.obj()
-      }
+    optCeaseDateOrStartDateNode.map{ ceaseDateOrStartDateNode =>
+      val common: JsObject = Json.obj(
+        "er20aDetails" -> Json.obj(
+          "pSTR" -> pstr,
+          "reportStartDate" -> s"${taxYear.startYear}-04-06",
+          "reportEndDate" -> s"${taxYear.endYear}-04-05"
+        ),
+        "erDeclarationDetails" -> Json.obj(
+          "submittedBy" -> "PSA",
+          "submittedID" -> loggedInUser.psaIdOrPspId
+        ),
+        "schemeMasterTrustDetails" -> ceaseDateOrStartDateNode
+      )
 
-    val common: JsObject = Json.obj(
-      "er20aDetails" -> Json.obj(
-        "pSTR" -> pstr,
-        "reportStartDate" -> s"${taxYear.startYear}-04-06",
-        "reportEndDate" -> s"${taxYear.endYear}-04-05"
-      ),
-      "erDeclarationDetails" -> Json.obj(
-        "submittedBy" -> "PSA",
-        "submittedID" -> loggedInUser.psaIdOrPspId
-      ),
-      "schemeMasterTrustDetails" -> ceaseDateOrStartDateNode
-    )
+      val declarationDetails = common + ("psaDeclaration" -> Json.obj(
+        //Both of those are always selected. Users can't access the page otherwise.
+        "psaDeclaration1" -> "Selected",
+        "psaDeclaration2" -> "Selected"
+      ))
 
-    val declarationDetails = common + ("psaDeclaration" -> Json.obj(
-       //Both of those are always selected. Users can't access the page otherwise.
-       "psaDeclaration1" -> "Selected",
-       "psaDeclaration2" -> "Selected"
-        ))
+      Json.obj(
+        "declarationDetails" -> declarationDetails
+      )
+    }
 
-    Json.obj(
-      "declarationDetails" -> declarationDetails
-    )
+
   }
 
 }
