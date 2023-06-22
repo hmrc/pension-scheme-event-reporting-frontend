@@ -54,6 +54,7 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
   private val psaId = "psaId"
   private val pstr = "87219363YN"
   private val eventType = EventType.Event1
+  private val reportVersion = "1"
 
   override protected def beforeEach(): Unit = {
     reset(mockUserAnswersCacheConnector)
@@ -104,7 +105,7 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
         redirectLocation(result).value mustEqual EventSelectionPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).url
 
         eventually {
-          val expectedAuditEvent = StartNewERAuditEvent(psaId, pstr, taxYear, eventType)
+          val expectedAuditEvent = StartNewERAuditEvent(psaId, pstr, taxYear, eventType, reportVersion)
           verify(mockAuditService, times(1)).sendEvent(ArgumentMatchers.eq(expectedAuditEvent))(any(), any())
         }
       }

@@ -63,7 +63,12 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
                 val taxYear = TaxYear.getSelectedTaxYear(ua)
                 val answers = ua.setOrException(EventSelectionPage, value)
                 auditService.sendEvent(
-                  StartNewERAuditEvent(request.loggedInUser.psaIdOrPspId, request.pstr, taxYear = taxYear, eventType: EventType))
+                  StartNewERAuditEvent(
+                    request.loggedInUser.psaIdOrPspId,
+                    request.pstr,
+                    taxYear = taxYear,
+                    eventType: EventType,
+                    reportVersion = answers.eventDataIdentifier(eventType).version))
                 Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
               }
             case _ => Future.successful(Ok(view(form, waypoints)))
