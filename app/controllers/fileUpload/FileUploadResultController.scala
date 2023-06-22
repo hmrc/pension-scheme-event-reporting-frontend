@@ -59,14 +59,14 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                         (implicit request: OptionalDataRequest[AnyContent]) = {
     request.request.queryString.get("key").flatMap(_.headOption) match {
       case Some(uploadIdReference) =>
-        val submitUrl = Call("POST", routes.FileUploadResultController.onSubmit(waypoints).url + s"?key=$uploadIdReference")
+        val submitUrl = Call("POST", routes.FileUploadResultController.onSubmit(waypoints, eventType).url + s"?key=$uploadIdReference")
         eventReportingConnector.getFileUploadOutcome(uploadIdReference).map {
           case FileUploadOutcomeResponse(_, IN_PROGRESS, _) =>
             status(view(preparedForm, waypoints, getEventTypeByName(eventType), None, submitUrl))
           case FileUploadOutcomeResponse(fileName@Some(_), SUCCESS, _) =>
             status(view(preparedForm, waypoints, getEventTypeByName(eventType), fileName, submitUrl))
           case FileUploadOutcomeResponse(_, FAILURE, _) =>
-            Redirect(controllers.fileUpload.routes.FileRejectedController.onPageLoad(waypoints).url)
+            Redirect(controllers.fileUpload.routes.FileRejectedController.onPageLoad(waypoints, eventType).url)
           case _ => throw new RuntimeException("UploadId reference does not exist")
         }
       case _ => Future.successful(BadRequest("Missing Key"))

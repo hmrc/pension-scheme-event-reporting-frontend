@@ -32,7 +32,7 @@ case class FileUploadResultPage(eventType: EventType) extends QuestionPage[FileU
   override def toString: String = "fileUploadResult"
 
   override def route(waypoints: Waypoints): Call =
-    routes.FileUploadResultController.onPageLoad(waypoints)
+    routes.FileUploadResultController.onPageLoad(waypoints, eventType)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
