@@ -45,6 +45,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   val betaFeedbackUnauthenticatedUrl: String = getConfigString("contact-frontend.beta-feedback-url.unauthenticated")
 
   lazy val erLoginUrl: String = configuration.get[String](path = "urls.partials.erLoginLink")
+  lazy val erStartNewUrl: String = configuration.get[String](path = "urls.partials.erStartNew")
 
   // TODO: these are temporary only for local testing, remove and replace with commented lines once PODS-8495 PR in app-config-base merged.
   lazy val erCompiledUrl: String = "http://localhost:8216/manage-pension-scheme-event-report/view-event-report-in-progress"

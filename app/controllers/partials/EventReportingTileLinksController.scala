@@ -19,12 +19,14 @@ package controllers.partials
 import com.google.inject.Inject
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.EROverview
-import pages.{EmptyWaypoints, EventReportingOverviewPage}
+import models.enumeration.JourneyStartType
+import models.{EROverview, TaxYear}
+import pages.{EmptyWaypoints, EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.CheckYourAnswersView
+import JourneyStartType._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,17 +37,27 @@ class EventReportingTileLinksController @Inject()(
                                                    requireData: DataRequiredAction,
                                                    connector: EventReportingConnector,
                                                    val controllerComponents: MessagesControllerComponents,
-                                                   view: CheckYourAnswersView
+                                                   view: CheckYourAnswersView,
+                                                   userAnswersCacheConnector: UserAnswersCacheConnector
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
   def onClickCompiled: Action[AnyContent] =
-    (identify andThen getData() andThen requireData) { implicit request =>
+    (identify andThen getData() andThen requireData).async { implicit request =>
       // TODO: implement redirect to the compiled event summary in the specified year.
       request.userAnswers.get(EventReportingOverviewPage) match {
-        case Some(Seq(erOverview)) => Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
-        case Some(s:Seq[EROverview]) => Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
-        case _ => Redirect(controllers.routes.IndexController.onPageLoad.url)
+        case Some(Seq(erOverview)) =>
+          val ua = request.userAnswers
+            .setOrException(TaxYearPage, TaxYear(erOverview.periodStartDate.getYear.toString), nonEventTypeData = true)
+            .setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)
+          userAnswersCacheConnector.save(request.pstr, ua).map { _ =>
+            Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
+          }
+        case _ =>
+          val ua = request.userAnswers.setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)
+          userAnswersCacheConnector.save(request.pstr, ua).map { _ =>
+            Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
+          }
       }
 
       /* TODO: implement below in PODS-8491.
@@ -60,13 +72,26 @@ class EventReportingTileLinksController @Inject()(
 
     }
 
+  def onClickNew: Action[AnyContent] =
+    (identify andThen getData() andThen requireData).async { implicit request =>
+      val ua = request.userAnswers.setOrException(EventReportingTileLinksPage, StartNew, nonEventTypeData = true)
+      userAnswersCacheConnector.save(request.pstr, ua).map { _ =>
+        Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints))
+      }
+    }
+
   def onClickSubmitted: Action[AnyContent] =
-    (identify andThen getData() andThen requireData) { implicit request =>
+    (identify andThen getData() andThen requireData).async { implicit request =>
       // TODO: change redirect to go to new "select which year you want to see event report" or similar.
       request.userAnswers.get(EventReportingOverviewPage) match {
-        case Some(Seq(erOverview)) => Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
-        case Some(s: Seq[EROverview]) => Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
-        case _ => Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
+        case Some(s: Seq[EROverview]) =>
+          val ua = request.userAnswers
+            .setOrException(EventReportingTileLinksPage, PastEventTypes, nonEventTypeData = true)
+          userAnswersCacheConnector.save(request.pstr, ua).map { _ =>
+            Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
+          }
+
+        case _ => Future.successful(Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url))
       }
     }
 }
