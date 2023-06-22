@@ -139,7 +139,7 @@ final case class UserAnswers(
   def removeWithPath(path: JsPath): UserAnswers = {
     data.removeObject(path) match {
       case JsSuccess(jsValue, _) =>
-        UserAnswers(jsValue)
+        UserAnswers(jsValue, noEventTypeData)
       case JsError(_) =>
         throw new RuntimeException("Unable to remove with path: " + path)
     }

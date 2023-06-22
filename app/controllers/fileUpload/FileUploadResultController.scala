@@ -42,6 +42,8 @@ import views.html.fileUpload.FileUploadResultView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
+
 
 class FileUploadResultController @Inject()(val controllerComponents: MessagesControllerComponents,
                                            identify: IdentifierAction,
@@ -120,8 +122,14 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                 httpResponse.status match {
                   case OK => {
                     val parsedCSV = CSVParser.split(httpResponse.body)
-//                    val uaAfterRemovalOfEventType = request.userAnswers.getOrElse(UserAnswers()).removeWithPath(JsPath \ "event22")
-                    val futureOutcome = event22Validator.validate(parsedCSV, request.userAnswers.getOrElse(UserAnswers())) match {
+                    val uaAfterRemovalOfEventType = Try(request.userAnswers
+                      .getOrElse(UserAnswers()).removeWithPath(JsPath \ "event22")) match {
+                      case scala.util.Success(ua) => ua
+                      case scala.util.Failure(ex) =>
+                        request.userAnswers.getOrElse(UserAnswers())
+                    }
+
+                    val futureOutcome = event22Validator.validate(parsedCSV, uaAfterRemovalOfEventType) match {
                       case Invalid(errors) =>
                         Future.successful(processInvalid(eventType, errors))
                       case Valid(updatedUA) =>
@@ -130,9 +138,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                             .map(_ => ParsingAndValidationOutcome(Success, Json.obj(), fileName))
                         }
                     }
-                    futureOutcome.map { outcome =>
-                      parsingAndValidationOutcomeCacheConnector.setOutcome(outcome)
-                    }
+                    futureOutcome.map(outcome => parsingAndValidationOutcomeCacheConnector.setOutcome(outcome))
                   } recoverWith {
                     case e: Throwable =>
                       logger.error("Error during parsing and validation", e)
