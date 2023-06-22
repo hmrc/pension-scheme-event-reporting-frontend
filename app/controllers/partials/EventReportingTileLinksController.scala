@@ -40,7 +40,7 @@ class EventReportingTileLinksController @Inject()(
 
   def onClickCompiled: Action[AnyContent] =
     (identify).async { implicit request => //(identify andThen getData(WindUp) andThen requireData).async
-
+println("\nIN PROGRESS")
       /* TODO: implement below in PODS-8491.
       If 1 compile is in progress (i.e. with compiledVersionAvailable as Yes) then
 

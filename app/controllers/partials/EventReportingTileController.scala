@@ -19,8 +19,9 @@ package controllers.partials
 import config.FrontendAppConfig
 import connectors.EventReportingConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import models.{EROverview, EROverviewVersion, TaxYear, ToggleDetails}
-import pages.TaxYearPage
+import models.enumeration.EventType.Event10
+import models.{EROverview, EROverviewVersion, TaxYear, ToggleDetails, UserAnswers}
+import pages.{EventReportingOverviewPage, TaxYearPage}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.libs.json.{JsArray, JsBoolean, JsString, JsValue, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,7 +39,7 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 class EventReportingTileController @Inject()(
                                               identify: IdentifierAction,
                                               view: EventReportingTileView,
-                                              // getData: DataRetrievalAction, PODS-8495
+                                              getData: DataRetrievalAction,
                                               val controllerComponents: MessagesControllerComponents,
                                               appConfig: FrontendAppConfig,
                                               eventReportingConnector: EventReportingConnector
@@ -49,90 +50,91 @@ class EventReportingTileController @Inject()(
 
 
   def eventReportPartial(): Action[AnyContent] = {
-    identify.async { implicit request =>
+    (identify andThen getData(Event10)).async { implicit request =>
 
-      val futureArray: Future[Seq[EROverview]] = eventReportingConnector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString)
+      request.userAnswers.getOrElse(UserAnswers()).setOrException(EventReportingOverviewPage)
 
-      val result: Seq[EROverview] = Await.result(futureArray, 20.seconds) // typical timeout, testing purposes
+      eventReportingConnector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString).flatMap { result =>
 
-
-
-      val anySubmittedReports = result.map { value => value.versionDetails match {
-        case Some(EROverviewVersion(_, submittedVersionAvailable, _)) => submittedVersionAvailable
-        case None => false
+        val anySubmittedReports = result.map { value =>
+          value.versionDetails match {
+            case Some(EROverviewVersion(_, submittedVersionAvailable, _)) => submittedVersionAvailable
+            case None => false
+          }
         }
-      }
 
-      val anyCompiledReports = result.map { value => value.versionDetails match {
-        case Some(EROverviewVersion(_, _, compiledVersionAvailable)) => compiledVersionAvailable
-        case None => false
+        val anyCompiledReports = result.map { value =>
+          value.versionDetails match {
+            case Some(EROverviewVersion(_, _, compiledVersionAvailable)) => compiledVersionAvailable
+            case None => false
+          }
         }
-      }
 
-      // TODO: if this seq > 1, you want to display s"${seq.length} in progress" rather than the year range
-      val anyStartAndEndDates = result.map { value => (value.periodStartDate, value.periodEndDate) }
+        // TODO: if this seq > 1, you want to display s"${seq.length} in progress" rather than the year range
+        val anyStartAndEndDates = result.map { value => (value.periodStartDate, value.periodEndDate) }
 
-      val maybeCompiledVersions = anyCompiledReports.collectFirst(x => x).getOrElse(false)
-      val maybeSubmittedVersions = anySubmittedReports.collectFirst(x => x).getOrElse(false)
+        val maybeCompiledVersions = anyCompiledReports.collectFirst(x => x).getOrElse(false)
+        val maybeSubmittedVersions = anySubmittedReports.collectFirst(x => x).getOrElse(false)
 
-      val loginLink = Seq(Link("erLoginLink", appConfig.erLoginUrl, Text(Messages("eventReportingTile.link.new"))))
+        val loginLink = Seq(Link("erLoginLink", appConfig.erLoginUrl, Text(Messages("eventReportingTile.link.new"))))
 
-      val maybeCompiledLink: Seq[Link] = if (maybeCompiledVersions) {
-        Seq(Link("erCompiledLink", appConfig.erCompiledUrl, Text("eventReportingTile.link.compiled")))
-      } else Nil
+        val maybeCompiledLink: Seq[Link] = if (maybeCompiledVersions) {
+          Seq(Link("erCompiledLink", appConfig.erCompiledUrl, Text("eventReportingTile.link.compiled")))
+        } else Nil
 
-      val maybeSubmittedLink: Seq[Link] = if (maybeSubmittedVersions) {
-        Seq(Link("erSubmittedLink", appConfig.erSubmittedUrl, Text("eventReportingTile.link.submitted")))
-      } else Nil
+        val maybeSubmittedLink: Seq[Link] = if (maybeSubmittedVersions) {
+          Seq(Link("erSubmittedLink", appConfig.erSubmittedUrl, Text("eventReportingTile.link.submitted")))
+        } else Nil
 
-      // TODO: implement below link in future - in PODS-8491.
-      // View event reports in progress
-      // Link(...)
+        // TODO: implement below link in future - in PODS-8491.
+        // View event reports in progress
+        // Link(...)
 
-      val maybeCardSubHeading: Seq[CardSubHeading] = {
-        if (maybeCompiledVersions) {
-          Seq(
-            CardSubHeading(
-              // TODO: if multiple compile in progress, display s"${seq.length} in progress", PODS-8491
-              subHeading = Messages("eventReportingTile.subHeading", anyStartAndEndDates.head._1, anyStartAndEndDates.head._2),
-              subHeadingClasses = "card-sub-heading",
-              subHeadingParams =
-                Seq(
-                  CardSubHeadingParam(
-                    subHeadingParam = Messages("eventReportingTile.subHeading.param"),
-                    subHeadingParamClasses = "font-small bold"
-                  )
-                )
-            )
-          )
-        } else {
-          Seq(CardSubHeading(subHeading = "", subHeadingClasses = ""))
-        }
-      }
-
-      eventReportingConnector.getFeatureToggle("event-reporting").map {
-        case ToggleDetails(_, _, true) =>
-          val card =
+        val maybeCardSubHeading: Seq[CardSubHeading] = {
+          if (maybeCompiledVersions) {
             Seq(
-              CardViewModel(
-                id = "new",
-                heading = Messages("eventReportingTile.heading"),
-                subHeadings = maybeCardSubHeading,
-                links = loginLink
-              ),
-                CardViewModel(
-                id = "compiled",
-                heading = "",
-                links = maybeCompiledLink
-              ),
-              CardViewModel(
-                id = "submitted",
-                heading = "",
-                links = maybeSubmittedLink
+              CardSubHeading(
+                // TODO: if multiple compile in progress, display s"${seq.length} in progress", PODS-8491
+                subHeading = Messages("eventReportingTile.subHeading", anyStartAndEndDates.head._1, anyStartAndEndDates.head._2),
+                subHeadingClasses = "card-sub-heading",
+                subHeadingParams =
+                  Seq(
+                    CardSubHeadingParam(
+                      subHeadingParam = Messages("eventReportingTile.subHeading.param"),
+                      subHeadingParamClasses = "font-small bold"
+                    )
+                  )
               )
             )
-          Ok(view(card))
-        case _ => Ok("")
+          } else {
+            Seq(CardSubHeading(subHeading = "", subHeadingClasses = ""))
+          }
+        }
+
+        eventReportingConnector.getFeatureToggle("event-reporting").map {
+          case ToggleDetails(_, _, true) =>
+            val card =
+              Seq(
+                CardViewModel(
+                  id = "new",
+                  heading = Messages("eventReportingTile.heading"),
+                  subHeadings = maybeCardSubHeading,
+                  links = loginLink
+                ),
+                CardViewModel(
+                  id = "compiled",
+                  heading = "",
+                  links = maybeCompiledLink
+                ),
+                CardViewModel(
+                  id = "submitted",
+                  heading = "",
+                  links = maybeSubmittedLink
+                )
+              )
+            Ok(view(card))
+          case _ => Ok("")
+        }
       }
     }
   }
