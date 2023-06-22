@@ -121,7 +121,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                   case OK => {
                     val parsedCSV = CSVParser.split(httpResponse.body)
 //                    val uaAfterRemovalOfEventType = request.userAnswers.getOrElse(UserAnswers()).removeWithPath(JsPath \ "event22")
-                    val futureOutcome = event22Validator.validate(parsedCSV, uaAfterRemovalOfEventType) match {
+                    val futureOutcome = event22Validator.validate(parsedCSV, request.userAnswers.getOrElse(UserAnswers())) match {
                       case Invalid(errors) =>
                         Future.successful(processInvalid(eventType, errors))
                       case Valid(updatedUA) =>
