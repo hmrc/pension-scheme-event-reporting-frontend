@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import models.requests.OptionalDataRequest
-import models.{EROverview, EROverviewVersion, ToggleDetails, UserAnswers}
+import models.{EROverview, ToggleDetails, UserAnswers}
 import pages.EventReportingOverviewPage
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -53,27 +53,14 @@ class EventReportingTileController @Inject()(
       eventReportingConnector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString).flatMap { seqEROverview =>
         val ua = request.userAnswers.getOrElse(UserAnswers()).setOrException(EventReportingOverviewPage, seqEROverview, nonEventTypeData = true)
         userAnswersCacheConnector.save(request.pstr, ua).flatMap { _ =>
-          val anySubmittedReports = seqEROverview.map { value =>
-            value.versionDetails match {
-              case Some(EROverviewVersion(_, submittedVersionAvailable, _)) => submittedVersionAvailable
-              case None => false
-            }
-          }
-          val anyCompiledReports = seqEROverview.map { value =>
-            value.versionDetails match {
-              case Some(EROverviewVersion(_, _, compiledVersionAvailable)) => compiledVersionAvailable
-              case None => false
-            }
-          }
-
+          val isAnySubmittedReports = seqEROverview.exists( _.versionDetails.exists(_.submittedVersionAvailable))
+          val isAnyCompiledReports = seqEROverview.exists( _.versionDetails.exists(_.compiledVersionAvailable))
           // TODO: if this seq > 1, you want to display s"${seq.length} in progress" rather than the year range
-          val maybeCompiledVersions: Boolean = anyCompiledReports.collectFirst(x => x).getOrElse(false)
-          val maybeCompiledLink: Seq[Link] = if (maybeCompiledVersions) {
+          val compiledLinks: Seq[Link] = if (isAnyCompiledReports) {
             Seq(Link("erCompiledLink", appConfig.erCompiledUrl, Text("eventReportingTile.link.compiled")))
           } else Nil
 
-          val maybeSubmittedVersions: Boolean = anySubmittedReports.collectFirst(x => x).getOrElse(false)
-          val maybeSubmittedLink: Seq[Link] = if (maybeSubmittedVersions) {
+          val submittedLinks: Seq[Link] = if (isAnySubmittedReports) {
             Seq(Link("erSubmittedLink", appConfig.erSubmittedUrl, Text("eventReportingTile.link.submitted")))
           } else Nil
 
@@ -82,14 +69,14 @@ class EventReportingTileController @Inject()(
           // Link(...)
 
           val loginLink: Seq[Link] = Seq(Link("erLoginLink", appConfig.erLoginUrl, Text(Messages("eventReportingTile.link.new"))))
-          cardViewModels(maybeCompiledLink, maybeSubmittedLink, cardSubheadings(maybeCompiledVersions, seqEROverview), loginLink)
+          cardViewModels(compiledLinks, submittedLinks, cardSubheadings(isAnyCompiledReports, seqEROverview), loginLink)
         }
       }
     }
   }
 
-  private def cardSubheadings(maybeCompiledVersions: Boolean, seqEROverview: Seq[EROverview])(implicit request: OptionalDataRequest[AnyContent]): Seq[CardSubHeading] = {
-    if (maybeCompiledVersions) {
+  private def cardSubheadings(isAnyCompiledReports: Boolean, seqEROverview: Seq[EROverview])(implicit request: OptionalDataRequest[AnyContent]): Seq[CardSubHeading] = {
+    if (isAnyCompiledReports) {
       val anyStartAndEndDates = seqEROverview.map { value => (value.periodStartDate, value.periodEndDate) }
       Seq(
         CardSubHeading(
@@ -110,8 +97,8 @@ class EventReportingTileController @Inject()(
     }
   }
 
-  private def cardViewModels(maybeCompiledLink: Seq[Link],
-                             maybeSubmittedLink: Seq[Link],
+  private def cardViewModels(compiledLinks: Seq[Link],
+                             submittedLinks: Seq[Link],
                              maybeCardSubHeading: Seq[CardSubHeading],
                              loginLink: Seq[Link])(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
     eventReportingConnector.getFeatureToggle("event-reporting").map {
@@ -127,12 +114,12 @@ class EventReportingTileController @Inject()(
             CardViewModel(
               id = "compiled",
               heading = "",
-              links = maybeCompiledLink
+              links = compiledLinks
             ),
             CardViewModel(
               id = "submitted",
               heading = "",
-              links = maybeSubmittedLink
+              links = submittedLinks
             )
           )
         Ok(view(card))
