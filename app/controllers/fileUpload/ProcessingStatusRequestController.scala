@@ -42,9 +42,11 @@ class ProcessingStatusRequestController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify.async {
     implicit request =>
+      Future.successful(Ok(view(controllers.routes.IndexController.onPageLoad.url)))
       parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap {
-        case Some(ParsingAndValidationOutcome(Success, _, _)) =>
-          Future.successful("Success")
+        case x@Some(ParsingAndValidationOutcome(Success, _, _)) =>
+          val xyz = x.get
+          Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints, xyz)))
         case Some(ParsingAndValidationOutcome(GeneralError, _, _)) =>
           Future.successful("GeneralError")
         case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _)) =>

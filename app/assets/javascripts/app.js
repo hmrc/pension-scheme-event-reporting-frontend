@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     // file upload status
     var ajaxRedirect = document.querySelector('#processing-status');
     if( ajaxRedirect ) {
-        var url = "/manage-pension-scheme-event-report/new-report/event-22-checking-file";
+        var url = "/manage-pension-scheme-event-report/new-report/event-checking-file";
         function pollData(){
             fetch(url).then(function (response) {
                 if (response.ok) {

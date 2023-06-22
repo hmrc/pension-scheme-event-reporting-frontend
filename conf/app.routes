@@ -241,6 +241,7 @@ POST        /new-report/event-22-check                                          
 GET         /new-report/event-22-wrong-format                                     controllers.fileUpload.FileRejectedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-22-checking-file                                    controllers.fileUpload.ProcessingRequestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
 GET         /new-report/event-checking-file                                       controllers.fileUpload.ProcessingStatusRequestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
 
