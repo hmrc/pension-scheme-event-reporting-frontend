@@ -19,10 +19,11 @@ package controllers.fileUpload
 import connectors.ParsingAndValidationOutcomeCacheConnector
 import controllers.actions._
 import models.fileUpload.ParsingAndValidationOutcome
-import models.fileUpload.ParsingAndValidationOutcomeStatus.{GeneralError, Success, ValidationErrorsLessThan10, ValidationErrorsMoreThanOrEqual10}
+import models.fileUpload.ParsingAndValidationOutcomeStatus.{GeneralError, Success}
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.libs.json.Json
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Results}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.ProcessingRequestView
 
@@ -41,20 +42,25 @@ class ProcessingStatusRequestController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify.async {
     implicit request =>
-      Future.successful(Ok(view(controllers.routes.IndexController.onPageLoad.url)))
-      parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap {
-        case x@Some(ParsingAndValidationOutcome(Success, _, _)) =>
-          val xyz = x.get.status.toString
-          Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoadWithOutcome(waypoints, xyz)))
+      val xxx = parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap {
+        case Some(ParsingAndValidationOutcome(Success, _, _)) =>
+          Future.successful(Json.obj("status" -> "Success"))
         case Some(ParsingAndValidationOutcome(GeneralError, _, _)) =>
-          Future.successful(Redirect(controllers.fileUpload.routes.ProblemWithServiceController.onPageLoad(waypoints)))
-        case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _)) =>
-          Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsAllController.onPageLoad(waypoints)))
-        case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _)) =>
-          Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsSummaryController.onPageLoad(waypoints)))
+          // Future.successful("GeneralError")
+          Future.successful(Json.obj("status" -> "GeneralError"))
+        case Some(ParsingAndValidationOutcome(aValidationErrorsLessThan10, _, _)) =>
+          // Future.successful("ValidationErrorsLessThan10")
+          Future.successful(Json.obj("status" -> "ValidationErrorsLessThan10"))
+        case Some(ParsingAndValidationOutcome(bValidationErrorsMoreThanOrEqual10, _, _)) =>
+          //Future.successful("ValidationErrorsMoreThanOrEqual10")
+          Future.successful(Json.obj("status" -> "ValidationErrorsMoreThanOrEqual10"))
         case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
         case _ =>
-          Future.successful(Ok(view(controllers.routes.IndexController.onPageLoad.url)))
+          // Future.successful("ValidationErrorsMoreThanOrEqual10")
+          Future.successful(Json.obj("status" -> "processing"))
+      }
+      xxx.map { x =>
+        Results.Ok(x.toString)
       }
   }
 }

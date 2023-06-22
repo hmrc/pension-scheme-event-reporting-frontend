@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
                 }
             }).then(function (data) {
                 console.log(data);
-                if (data === '') {
+                if (data.status === "processing") {
                     setTimeout(function() {
                         pollData();
                     }, 4000);
