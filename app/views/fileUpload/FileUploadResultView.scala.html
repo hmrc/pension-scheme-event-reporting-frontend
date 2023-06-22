@@ -31,9 +31,11 @@
 
 @layout(pageTitle = title(form, messages("fileUploadResult.title", eventByName))) {
 
-       @if(fileName.isEmpty) {
-  <meta http-equiv="refresh" content="2"/>
-      }
+    <noscript>
+        @if(fileName.isEmpty) {
+            <meta http-equiv="refresh" content="4" />
+        }
+    </noscript>
 
     @formHelper(action = submitUrl, Symbol("autoComplete") -> "off") {
 
@@ -43,13 +45,18 @@
 
         <h1 class="govuk-heading-xl">@messages("fileUploadResult.heading", eventByName)</h1>
 
-        @fileName.map{ name =>
-            <p class="govuk-body">@name</p>
-        }
-
-        @if(fileName.isEmpty) {
-            <p class="govuk-body">@messages("fileUploadResult.status.inProgress")</p>
-        }
+        <p class="govuk-body" id="upload-file-name">
+            <noscript>
+                @if(fileName.isEmpty) {
+                    @messages("fileUploadResult.status.inProgress")
+                } else {
+                    @fileName.map{ name =>
+                        @name
+                    }
+                }
+            </noscript>
+            @messages("fileUploadResult.status.inProgress")
+        </p>
 
         @govukInsetText(
             InsetText(

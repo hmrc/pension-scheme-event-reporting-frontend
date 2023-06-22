@@ -38,4 +38,68 @@ document.addEventListener('DOMContentLoaded', function(event) {
         });
     }
 
+    // file upload name
+    var fileName = document.querySelector('#upload-file-name');
+    if( fileName ) {
+        var radios = document.querySelectorAll('.govuk-radios__input');
+        radios.forEach(function(radio) {
+            radio.disabled = true;
+        });
+        var button = document.querySelector('#submit');
+            button.disabled = true;
+        var url = "/manage-pension-scheme-event-report/assets/javascripts/status-test.json";
+        function pollName(){
+            fetch(url).then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return Promise.reject(response);
+                }
+            }).then(function (data) {
+                console.log(data);
+                if (!data.filename) {
+                    setTimeout(function() {
+                        pollName();
+                    }, 4000);
+                } else {
+                    fileName.innerHTML = data.filename;
+                    button.disabled = false;
+                    radios.forEach(function(radio) {
+                        radio.disabled = false;
+                    });
+                }
+            }).catch(function (err) {
+                console.warn('Something went wrong.', err);
+            });
+        }
+        pollName();
+    }
+
+    // file upload status
+    var ajaxRedirect = document.querySelector('#processing-status');
+    if( ajaxRedirect ) {
+        var url = "/manage-pension-scheme-event-report/assets/javascripts/status-test.json";
+        function pollData(){
+            fetch(url).then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return Promise.reject(response);
+                }
+            }).then(function (data) {
+                console.log(data);
+                if (data.status == 'processing') {
+                    setTimeout(function() {
+                        pollData();
+                    }, 4000);
+                } else {
+                    location.reload();
+                }
+            }).catch(function (err) {
+                console.warn('Something went wrong.', err);
+            });
+        }
+        pollData();
+    }
+
 });
