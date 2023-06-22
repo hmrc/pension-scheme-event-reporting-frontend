@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
                         pollName();
                     }, 4000);
                 } else {
-                    fileName.innerHTML = data.filename;
+                    fileName.innerHTML = data.fileName;
                     button.disabled = false;
                     radios.forEach(function(radio) {
                         radio.disabled = false;
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     // file upload status
     var ajaxRedirect = document.querySelector('#processing-status');
     if( ajaxRedirect ) {
-        var url = "/manage-pension-scheme-event-report/assets/javascripts/status-test.json";
+        var url = "/manage-pension-scheme-event-report/new-report/event-22-checking-file";
         function pollData(){
             fetch(url).then(function (response) {
                 if (response.ok) {
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
                 }
             }).then(function (data) {
                 console.log(data);
-                if (data.status == 'processing') {
+                if (data.status === '') {
                     setTimeout(function() {
                         pollData();
                     }, 4000);
