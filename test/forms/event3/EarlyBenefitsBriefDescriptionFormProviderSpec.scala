@@ -22,6 +22,7 @@ import play.api.data.FormError
 class EarlyBenefitsBriefDescriptionFormProviderSpec extends StringFieldBehaviours {
 
   private val lengthKey = "earlyBenefitsBriefDescription.error.length"
+  val requiredKey = "earlyBenefitsBriefDescription.error.required"
   private val maxLength = 150
 
   val form = new EarlyBenefitsBriefDescriptionFormProvider()()
@@ -43,10 +44,10 @@ class EarlyBenefitsBriefDescriptionFormProviderSpec extends StringFieldBehaviour
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
-    "bind empty data" in {
-      val result = form.bind(Map(fieldName -> "")).apply(fieldName)
-      result.value.value mustBe ""
-      result.errors mustBe empty
-    }
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }

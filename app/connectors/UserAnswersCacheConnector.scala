@@ -123,7 +123,6 @@ class UserAnswersCacheConnector @Inject()(
     )
 
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-
     http.POST[JsValue, HttpResponse](url, userAnswers.noEventTypeData)(implicitly, implicitly, hc, implicitly)
       .map { response =>
         response.status match {

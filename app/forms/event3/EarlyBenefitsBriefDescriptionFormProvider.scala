@@ -23,9 +23,9 @@ import javax.inject.Inject
 
 class EarlyBenefitsBriefDescriptionFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Option[String]] =
+  def apply(): Form[String] =
     Form(
-      "value" -> optionalText()
+      "value" -> text("earlyBenefitsBriefDescription.error.required")
         .verifying(maxLength(150, "earlyBenefitsBriefDescription.error.length"))
     )
 }

@@ -16,7 +16,6 @@
 
 package viewmodels.event20.checkAnswers
 
-import java.time.format.DateTimeFormatter
 import models.UserAnswers
 import pages.{CheckAnswersPage, Waypoints}
 import pages.event20.CeasedDatePage

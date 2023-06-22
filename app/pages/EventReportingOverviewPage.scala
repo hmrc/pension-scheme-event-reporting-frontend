@@ -16,11 +16,15 @@
 
 package pages
 
-import models.EROverview
+import models.{EROverview, UserAnswers}
 import play.api.libs.json.JsPath
-import queries.{Gettable, Settable}
+import play.api.mvc.Call
 
-case object EventReportingOverviewPage extends Gettable[Seq[EROverview]] with Settable[Seq[EROverview]] {
+case object EventReportingOverviewPage extends QuestionPage[Seq[EROverview]] {
+  override def route(waypoints: Waypoints): Call = Call("GET", "")
+
+  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = EventReportingOverviewPage
+
   override def path: JsPath = JsPath \ toString
   override def toString: String = "overview"
 }

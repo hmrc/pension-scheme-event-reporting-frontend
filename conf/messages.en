@@ -1218,6 +1218,7 @@ earlyBenefitsBriefDescription.title = Brief description of why the benefits were
 earlyBenefitsBriefDescription.checkYourAnswersLabel = Give a brief description of why the benefits were taken early
 earlyBenefitsBriefDescription.error.length = The description must be 150 characters or fewer
 earlyBenefitsBriefDescription.change.hidden = The description for why the benefits were taken early
+earlyBenefitsBriefDescription.error.required = Enter description of why the benefits were taken early
 
 event4.paymentDetails.title = Amount paid and date
 event4.paymentDetails.heading = Amount paid and date

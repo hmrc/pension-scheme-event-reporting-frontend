@@ -20,6 +20,7 @@ import audit.{AuditService, StartNewERAuditEvent}
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.EventSelectionFormProvider
+import models.enumeration.EventType
 import models.{EventSelection, TaxYear}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -52,6 +53,7 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
 
   private val psaId = "psaId"
   private val pstr = "87219363YN"
+  private val eventType = EventType.Event1
 
   override protected def beforeEach(): Unit = {
     reset(mockUserAnswersCacheConnector)
@@ -82,11 +84,11 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
   "POST" - {
     "must redirect to next page on submit (when selecting an option) and send audit event" in {
       val ua = emptyUserAnswersWithTaxYear
-      val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
+      val application = applicationBuilder(None, extraModules).build()
       running(application) {
 
         when(mockUserAnswersCacheConnector.get(any(), any())(any(), any()))
-          .thenReturn(Future.successful(None))
+          .thenReturn(Future.successful(Some(ua)))
         doNothing().when(mockAuditService).sendEvent(any())(any(), any())
 
         val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "event1"))
@@ -96,11 +98,13 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
           .setOrException(TaxYearPage, TaxYear("2022"))
           .setOrException(EventSelectionPage, EventSelection.Event1)
 
+        val taxYear = TaxYear.getSelectedTaxYear(userAnswerUpdated)
+
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual EventSelectionPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).url
 
         eventually {
-          val expectedAuditEvent = StartNewERAuditEvent(psaId, pstr)
+          val expectedAuditEvent = StartNewERAuditEvent(psaId, pstr, taxYear, eventType)
           verify(mockAuditService, times(1)).sendEvent(ArgumentMatchers.eq(expectedAuditEvent))(any(), any())
         }
       }

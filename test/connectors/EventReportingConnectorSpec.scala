@@ -17,9 +17,9 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.{EROverview, EROverviewVersion, EventDataIdentifier, FileUploadOutcomeResponse, UserAnswers}
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.{Enumerable, EventType}
+import models.{EROverview, EROverviewVersion, EventDataIdentifier, FileUploadOutcomeResponse, UserAnswers}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import play.api.libs.json.{JsArray, Json}

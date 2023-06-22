@@ -44,7 +44,7 @@ class EarlyBenefitsBriefDescriptionController @Inject()(val controllerComponents
   private val eventType = EventType.Event3
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(EarlyBenefitsBriefDescriptionPage(index))).fold(form)(v => form.fill(Some(v)))
+    val preparedForm = request.userAnswers.flatMap(_.get(EarlyBenefitsBriefDescriptionPage(index))).fold(form)(v => form.fill(v))
     Ok(view(preparedForm, waypoints, index))
   }
 
@@ -55,10 +55,7 @@ class EarlyBenefitsBriefDescriptionController @Inject()(val controllerComponents
           Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = value match {
-            case Some(v) => originalUserAnswers.setOrException(EarlyBenefitsBriefDescriptionPage(index), v)
-            case None => originalUserAnswers.removeOrException(EarlyBenefitsBriefDescriptionPage(index))
-          }
+          val updatedAnswers = originalUserAnswers.setOrException(EarlyBenefitsBriefDescriptionPage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(EarlyBenefitsBriefDescriptionPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }

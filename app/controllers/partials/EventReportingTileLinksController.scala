@@ -17,9 +17,10 @@
 package controllers.partials
 
 import com.google.inject.Inject
-import connectors.EventReportingConnector
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import pages.EmptyWaypoints
+import models.EROverview
+import pages.{EmptyWaypoints, EventReportingOverviewPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -39,8 +40,14 @@ class EventReportingTileLinksController @Inject()(
 
 
   def onClickCompiled: Action[AnyContent] =
-    (identify).async { implicit request => //(identify andThen getData(WindUp) andThen requireData).async
-println("\nIN PROGRESS")
+    (identify andThen getData() andThen requireData) { implicit request =>
+      // TODO: implement redirect to the compiled event summary in the specified year.
+      request.userAnswers.get(EventReportingOverviewPage) match {
+        case Some(Seq(erOverview)) => Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
+        case Some(s:Seq[EROverview]) => Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
+        case _ => Redirect(controllers.routes.IndexController.onPageLoad.url)
+      }
+
       /* TODO: implement below in PODS-8491.
       If 1 compile is in progress (i.e. with compiledVersionAvailable as Yes) then
 
@@ -51,19 +58,15 @@ println("\nIN PROGRESS")
       b) display content in subheading of tile "Event report 2022 to 2023: in progress"
        */
 
-
-      // TODO: implement redirect to the compiled event summary in the specified year.
-      val waypoints = EmptyWaypoints
-      Future.successful(Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url))
-
     }
 
   def onClickSubmitted: Action[AnyContent] =
-    (identify).async { implicit request => //(identify andThen getData(WindUp) andThen requireData).async
-
+    (identify andThen getData() andThen requireData) { implicit request =>
       // TODO: change redirect to go to new "select which year you want to see event report" or similar.
-      val waypoints = EmptyWaypoints
-      Future.successful(Redirect(controllers.routes.TaxYearController.onPageLoad(waypoints).url))
-
+      request.userAnswers.get(EventReportingOverviewPage) match {
+        case Some(Seq(erOverview)) => Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
+        case Some(s: Seq[EROverview]) => Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
+        case _ => Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
+      }
     }
 }

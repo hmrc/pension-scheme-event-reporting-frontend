@@ -25,7 +25,7 @@ import forms.common.MembersSummaryFormProvider
 import helpers.DateHelper
 import models.UserAnswers
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event2, Event22, Event23, Event3, Event4, Event5, Event6, Event8, Event8A}
+import models.enumeration.EventType._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach

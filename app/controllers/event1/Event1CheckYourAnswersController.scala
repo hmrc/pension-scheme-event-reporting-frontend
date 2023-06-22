@@ -19,7 +19,7 @@ package controllers.event1
 import com.google.inject.Inject
 import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.{Index, UserAnswers}
+import models.Index
 import models.enumeration.AddressJourneyType
 import models.enumeration.EventType.Event1
 import models.event1.PaymentNature._
