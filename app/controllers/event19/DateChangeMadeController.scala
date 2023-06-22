@@ -19,7 +19,7 @@ package controllers.event19
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event19.DateChangeMadeFormProvider
-import helpers.DateHelper.getTaxYearFromOption
+import models.TaxYear.getTaxYearFromOption
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
