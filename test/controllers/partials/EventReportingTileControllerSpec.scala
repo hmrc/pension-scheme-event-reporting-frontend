@@ -43,15 +43,9 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
     .bindings(bind[EventReportingConnector].to(mockConnector))
     .build()
 
-  /* TODO: this method will be reinstated in PODS-8495.
-    def appWithTaxYear: Application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear))
-    .bindings(bind[EventReportingConnector].to(mockConnector))
-    .build()
-   */
-
   "Event Reporting Tile Controller" - {
 
-    "must return OK and the correct view for a GET (no tax year selected)" in {
+    "must return OK and the correct view for a GET" in {
 
       when(mockConnector.getFeatureToggle(any())(any(), any())).thenReturn(
         Future.successful(ToggleDetails("event-reporting", None, isEnabled = true))
@@ -78,42 +72,6 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
         contentAsString(result) mustEqual view(card)(request, messages(application)).toString
       }
     }
-/* TODO: this test will be reinstated in PODS-8495.
-
-    "must return OK and the correct view for a GET (with tax year selected)" in {
-
-      when(mockConnector.getFeatureToggle(any())(any(), any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting", None, isEnabled = true))
-      )
-
-      val application = appWithTaxYear
-
-      val view = application.injector.instanceOf[EventReportingTileView]
-      val appConfig = application.injector.instanceOf[FrontendAppConfig]
-
-      running(application) {
-        val request = FakeRequest(GET, controllers.partials.routes.EventReportingTileController.eventReportPartial().url)
-
-        val result = route(application, request).value
-
-        val card = Seq(CardViewModel(
-          id = "aft-overview",
-          heading = Messages("eventReportingTile.heading"),
-          subHeadings = Seq(CardSubHeading(subHeading = Messages("eventReportingTile.subHeading", "2022", "2023"),
-            subHeadingClasses = "card-sub-heading",
-            subHeadingParams = Seq(CardSubHeadingParam(
-              subHeadingParam = Messages("eventReportingTile.subHeading.param"),
-              subHeadingParamClasses = "font-small bold")
-            ))),
-          links = Seq(Link("erLoginLink", appConfig.erLoginUrl, Text(Messages("eventReportingTile.link.item2"))))
-        ))
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(card)(request, messages(application)).toString
-      }
-    }
-
- */
 
     "must return empty html if feature toggle is disabled" in {
       when(mockConnector.getFeatureToggle(any())(any(), any())).thenReturn(
