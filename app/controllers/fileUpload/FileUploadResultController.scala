@@ -33,7 +33,7 @@ import pages.fileUpload.FileUploadResultPage
 import play.api.data.Form
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, Messages}
-import play.api.libs.json.{JsArray, JsObject, Json}
+import play.api.libs.json.{JsArray, JsObject, JsPath, Json}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.fileUpload.Validator.FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty
 import services.fileUpload.{CSVParser, Event22Validator, ValidationError}
@@ -120,11 +120,12 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                 httpResponse.status match {
                   case OK => {
                     val parsedCSV = CSVParser.split(httpResponse.body)
-                    val futureOutcome = event22Validator.validate(parsedCSV, request.userAnswers.getOrElse(UserAnswers())) match {
-                      case Invalid(errors) => Future.successful(processInvalid(eventType, errors))
+                    val uaAfterRemovalOfEventType = request.userAnswers.getOrElse(UserAnswers()).removeWithPath(JsPath \ "event22")
+                    val futureOutcome = event22Validator.validate(parsedCSV, uaAfterRemovalOfEventType) match {
+                      case Invalid(errors) =>
+                        Future.successful(processInvalid(eventType, errors))
                       case Valid(updatedUA) =>
                         userAnswersCacheConnector.save(request.pstr, eventType, updatedUA).flatMap { _ =>
-
                           eventReportingConnector.compileEvent(request.pstr, updatedUA.eventDataIdentifier(eventType))
                             .map(_ => ParsingAndValidationOutcome(Success, Json.obj(), fileName))
                         }

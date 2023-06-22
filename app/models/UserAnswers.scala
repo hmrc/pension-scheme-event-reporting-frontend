@@ -136,6 +136,16 @@ final case class UserAnswers(
     }
   }
 
+  def removeWithPath(path: JsPath): UserAnswers = {
+    data.removeObject(path) match {
+      case JsSuccess(jsValue, _) =>
+        UserAnswers(jsValue)
+      case JsError(_) =>
+        throw new RuntimeException("Unable to remove with path: " + path)
+    }
+  }
+
+
   def getAll[A](page: Gettable[Seq[A]])(implicit reads: Reads[A]): Seq[A] =
     data.as[Option[Seq[A]]](page.path.readNullable[Seq[A]]).toSeq.flatten
 

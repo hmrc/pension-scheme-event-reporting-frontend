@@ -41,7 +41,6 @@ class ProcessingRequestController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify.async {
     implicit request =>
-      Future.successful(Ok(view(controllers.routes.IndexController.onPageLoad.url)))
       parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap {
         case Some(ParsingAndValidationOutcome(Success, _, _)) =>
           Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints)))
@@ -52,7 +51,7 @@ class ProcessingRequestController @Inject()(
         case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _)) =>
           Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsSummaryController.onPageLoad(waypoints)))
         case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
-        case _ =>
+        case e =>
           Future.successful(Ok(view(controllers.routes.IndexController.onPageLoad.url)))
       }
   }
