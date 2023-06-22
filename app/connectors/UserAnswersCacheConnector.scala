@@ -50,7 +50,7 @@ class UserAnswersCacheConnector @Inject()(
           "year" -> year,
           "version" -> "1"
         )
-      case None => throw new RuntimeException("No tax year available")
+      case None => throw new RuntimeException("No tax year available - UserAnswersCacheConnector")
     }
   }
 
@@ -110,7 +110,7 @@ class UserAnswersCacheConnector @Inject()(
                 throw new HttpException(response.body, response.status)
             }
           }
-      case None => throw new RuntimeException("No tax year available")
+      case None => throw new RuntimeException("No tax year available - UserAnswersCacheConnector")
     }
   }
 

@@ -133,7 +133,7 @@ final case class UserAnswers(
   def eventDataIdentifier(eventType: EventType): EventDataIdentifier = {
     (noEventTypeData \ TaxYearPage.toString).asOpt[String] match {
       case Some(year) => EventDataIdentifier(eventType, year, "1")
-      case _ => throw new RuntimeException("No tax year available")
+      case _ => throw new RuntimeException("No tax year available - UserAnswers")
     }
   }
 }
