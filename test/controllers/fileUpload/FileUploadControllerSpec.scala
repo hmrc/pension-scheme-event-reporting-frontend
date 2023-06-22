@@ -38,11 +38,10 @@ import scala.concurrent.Future
 class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
+  private val seqOfEvents = Seq(Event22, Event23)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockUpscanInitiateConnector = mock[UpscanInitiateConnector]
-  private val event22 = Event22
-  private val event23 = Event23
 
   private def getRoute(eventType: EventType): String = routes.FileUploadController.onPageLoad(waypoints, eventType).url
 
@@ -68,34 +67,20 @@ class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
     reset(mockUpscanInitiateConnector)
   }
 
-  "onPageLoad" - {
-
-    "must return OK and the correct view for a GET (Event 22)" in {
-
-      when(mockUpscanInitiateConnector.initiateV2(any(), any())(any(), any())).thenReturn(Future.successful(upscanInitiateResponse))
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
-
-      running(application) {
-        val request = FakeRequest(GET, getRoute(event22))
-
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[FileUploadView]
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual
-          view(
-            waypoints, getEventTypeByName(event22), event22, Call("post", upscanInitiateResponse.postTarget), formFieldsMap, None)(request, messages(application)).toString
-      }
+  "FileUpload Controller" - {
+    for (event <- seqOfEvents) {
+      testReturnOkAndCorrectView(event)
     }
+  }
 
-    "must return OK and the correct view for a GET (Event 23)" in {
+  private def testReturnOkAndCorrectView(eventType: EventType): Unit = {
+    s"must return OK and the correct view for a GET (Event ${eventType.toString})" in {
 
       when(mockUpscanInitiateConnector.initiateV2(any(), any())(any(), any())).thenReturn(Future.successful(upscanInitiateResponse))
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
 
       running(application) {
-        val request = FakeRequest(GET, getRoute(event23))
+        val request = FakeRequest(GET, getRoute(eventType))
 
         val result = route(application, request).value
 
@@ -104,7 +89,7 @@ class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
         status(result) mustEqual OK
         contentAsString(result) mustEqual
           view(
-            waypoints, getEventTypeByName(event23), event23, Call("post", upscanInitiateResponse.postTarget), formFieldsMap, None)(request, messages(application)).toString
+            waypoints, getEventTypeByName(eventType), eventType, Call("post", upscanInitiateResponse.postTarget), formFieldsMap, None)(request, messages(application)).toString
       }
     }
   }
