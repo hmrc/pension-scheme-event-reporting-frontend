@@ -93,7 +93,8 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
           )
         )
         status(result) mustEqual OK
-        // contentAsString(result) mustEqual view(card)(request, messages(application)).toString
+        
+        contentAsString(result).filterNot(_.isWhitespace) mustEqual view(card)(request, messages(application)).toString.filterNot(_.isWhitespace)
       }
     }
 
