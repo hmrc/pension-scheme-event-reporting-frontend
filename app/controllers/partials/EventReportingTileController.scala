@@ -19,12 +19,10 @@ package controllers.partials
 import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import models.enumeration.EventType.Event10
 import models.requests.OptionalDataRequest
-import models.{EROverviewVersion, ToggleDetails, UserAnswers}
+import models.{EROverview, EROverviewVersion, ToggleDetails, UserAnswers}
 import pages.EventReportingOverviewPage
 import play.api.i18n.{I18nSupport, Messages}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -47,20 +45,21 @@ class EventReportingTileController @Inject()(
                                             )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
+
   import EventReportingTileController._
 
   def eventReportPartial(): Action[AnyContent] = {
     (identify andThen getData()).async { implicit request =>
-      eventReportingConnector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString).flatMap { result =>
-        val ua = request.userAnswers.getOrElse(UserAnswers()).setOrException(EventReportingOverviewPage, result, nonEventTypeData = true)
+      eventReportingConnector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString).flatMap { seqEROverview =>
+        val ua = request.userAnswers.getOrElse(UserAnswers()).setOrException(EventReportingOverviewPage, seqEROverview, nonEventTypeData = true)
         userAnswersCacheConnector.save(request.pstr, ua).flatMap { _ =>
-          val anySubmittedReports = result.map { value =>
+          val anySubmittedReports = seqEROverview.map { value =>
             value.versionDetails match {
               case Some(EROverviewVersion(_, submittedVersionAvailable, _)) => submittedVersionAvailable
               case None => false
             }
           }
-          val anyCompiledReports = result.map { value =>
+          val anyCompiledReports = seqEROverview.map { value =>
             value.versionDetails match {
               case Some(EROverviewVersion(_, _, compiledVersionAvailable)) => compiledVersionAvailable
               case None => false
@@ -68,12 +67,12 @@ class EventReportingTileController @Inject()(
           }
 
           // TODO: if this seq > 1, you want to display s"${seq.length} in progress" rather than the year range
-          val maybeCompiledVersions = anyCompiledReports.collectFirst(x => x).getOrElse(false)
+          val maybeCompiledVersions: Boolean = anyCompiledReports.collectFirst(x => x).getOrElse(false)
           val maybeCompiledLink: Seq[Link] = if (maybeCompiledVersions) {
             Seq(Link("erCompiledLink", appConfig.erCompiledUrl, Text("eventReportingTile.link.compiled")))
           } else Nil
 
-          val maybeSubmittedVersions = anySubmittedReports.collectFirst(x => x).getOrElse(false)
+          val maybeSubmittedVersions: Boolean = anySubmittedReports.collectFirst(x => x).getOrElse(false)
           val maybeSubmittedLink: Seq[Link] = if (maybeSubmittedVersions) {
             Seq(Link("erSubmittedLink", appConfig.erSubmittedUrl, Text("eventReportingTile.link.submitted")))
           } else Nil
@@ -82,38 +81,39 @@ class EventReportingTileController @Inject()(
           // View event reports in progress
           // Link(...)
 
-          val maybeCardSubHeading: Seq[CardSubHeading] = {
-            if (maybeCompiledVersions) {
-              val anyStartAndEndDates = result.map { value => (value.periodStartDate, value.periodEndDate) }
-              Seq(
-                CardSubHeading(
-                  // TODO: if multiple compile in progress, display s"${seq.length} in progress", PODS-8491
-                  subHeading = Messages("eventReportingTile.subHeading", anyStartAndEndDates.head._1, anyStartAndEndDates.head._2),
-                  subHeadingClasses = "card-sub-heading",
-                  subHeadingParams =
-                    Seq(
-                      CardSubHeadingParam(
-                        subHeadingParam = Messages("eventReportingTile.subHeading.param"),
-                        subHeadingParamClasses = "font-small bold"
-                      )
-                    )
-                )
-              )
-            } else {
-              Seq(CardSubHeading(subHeading = "", subHeadingClasses = ""))
-            }
-          }
           val loginLink: Seq[Link] = Seq(Link("erLoginLink", appConfig.erLoginUrl, Text(Messages("eventReportingTile.link.new"))))
-          renderTile(maybeCompiledLink, maybeSubmittedLink, maybeCardSubHeading, loginLink)
+          cardViewModels(maybeCompiledLink, maybeSubmittedLink, cardSubheadings(maybeCompiledVersions, seqEROverview), loginLink)
         }
       }
     }
   }
 
-  private def renderTile(maybeCompiledLink: Seq[Link],
-                  maybeSubmittedLink: Seq[Link],
-                  maybeCardSubHeading: Seq[CardSubHeading],
-                  loginLink: Seq[Link])(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
+  private def cardSubheadings(maybeCompiledVersions: Boolean, seqEROverview: Seq[EROverview])(implicit request: OptionalDataRequest[AnyContent]): Seq[CardSubHeading] = {
+    if (maybeCompiledVersions) {
+      val anyStartAndEndDates = seqEROverview.map { value => (value.periodStartDate, value.periodEndDate) }
+      Seq(
+        CardSubHeading(
+          // TODO: if multiple compile in progress, display s"${seq.length} in progress", PODS-8491
+          subHeading = Messages("eventReportingTile.subHeading", anyStartAndEndDates.head._1, anyStartAndEndDates.head._2),
+          subHeadingClasses = "card-sub-heading",
+          subHeadingParams =
+            Seq(
+              CardSubHeadingParam(
+                subHeadingParam = Messages("eventReportingTile.subHeading.param"),
+                subHeadingParamClasses = "font-small bold"
+              )
+            )
+        )
+      )
+    } else {
+      Seq(CardSubHeading(subHeading = "", subHeadingClasses = ""))
+    }
+  }
+
+  private def cardViewModels(maybeCompiledLink: Seq[Link],
+                             maybeSubmittedLink: Seq[Link],
+                             maybeCardSubHeading: Seq[CardSubHeading],
+                             loginLink: Seq[Link])(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
     eventReportingConnector.getFeatureToggle("event-reporting").map {
       case ToggleDetails(_, _, true) =>
         val card =
@@ -142,6 +142,6 @@ class EventReportingTileController @Inject()(
 }
 
 object EventReportingTileController {
-  val minStartDateAsString = "2000-04-06"                               // TODO: confirm min start date
-  val maxEndDateAsString = s"${LocalDate.now().getYear + 1}-04-05"      // TODO: confirm max end date
+  val minStartDateAsString = "2000-04-06" // TODO: confirm min start date
+  val maxEndDateAsString = s"${LocalDate.now().getYear + 1}-04-05" // TODO: confirm max end date
 }
