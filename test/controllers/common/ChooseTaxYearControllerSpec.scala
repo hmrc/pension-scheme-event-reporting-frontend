@@ -29,12 +29,11 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.{EmptyWaypoints, common}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.libs.json.Writes
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.DateHelper
 import views.html.common.ChooseTaxYearView
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
@@ -42,8 +41,10 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new ChooseTaxYearFormProvider()
-  private val formEvent23 = formProvider(Event23)
-  private val formEvent22 = formProvider(Event22)
+  private val formEvent23 = formProvider(Event23, 2021)
+  private val formEvent22 = formProvider(Event22, 2021)
+  private val writesTaxYear: Writes[ChooseTaxYear]= ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
+
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
@@ -61,8 +62,6 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    DateHelper.setDate(Some(LocalDate.of(2015, 6, 1)))
-
     reset(mockUserAnswersCacheConnector)
   }
 
@@ -70,7 +69,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
     "Event 23" - {
       "must return OK and the correct view for a GET" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
 
         running(application) {
           val request = FakeRequest(GET, getRouteEvent23)
@@ -80,13 +79,12 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val view = application.injector.instanceOf[ChooseTaxYearView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent23, waypoints, Event23, 0)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent23, waypoints, Event23, 0, 2022)(request, messages(application)).toString
         }
       }
 
       "must populate the view correctly on a GET when the question has previously been answered" in {
-
-        val userAnswers = UserAnswers().set(common.ChooseTaxYearPage(Event23, 0), ChooseTaxYear.values.head).success.value
+        val userAnswers = emptyUserAnswersWithTaxYear.set(common.ChooseTaxYearPage(Event23, 0), ChooseTaxYear.values(2022).head)(writesTaxYear).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -98,7 +96,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent23.fill(ChooseTaxYear.values.head), waypoints, Event23, 0)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent23.fill(ChooseTaxYear.values(2022).head), waypoints, Event23, 0, 2022)(request, messages(application)).toString
         }
       }
 
@@ -107,15 +105,15 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           .thenReturn(Future.successful(()))
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {
           val request =
-            FakeRequest(POST, postRouteEvent23).withFormUrlEncodedBody(("value", ChooseTaxYear.values.head.toString))
+            FakeRequest(POST, postRouteEvent23).withFormUrlEncodedBody(("value", ChooseTaxYear.values(2022).head.toString))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(common.ChooseTaxYearPage(Event23, 0), ChooseTaxYear.values.head).success.value
+          val updatedAnswers = emptyUserAnswers.set(common.ChooseTaxYearPage(Event23, 0), ChooseTaxYear.values(2022).head)(writesTaxYear).success.value
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual common.ChooseTaxYearPage(Event23, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
@@ -125,7 +123,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
       "must return bad request when invalid data is submitted" in {
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {
@@ -138,7 +136,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event23, 0)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event23, 0, 2022)(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
         }
       }
@@ -146,7 +144,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
     "Event 22" - {
       "must return OK and the correct view for a GET" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
 
         running(application) {
           val request = FakeRequest(GET, getRouteEvent22)
@@ -156,13 +154,13 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val view = application.injector.instanceOf[ChooseTaxYearView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent22, waypoints, Event22, 0)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent22, waypoints, Event22, 0, 2022)(request, messages(application)).toString
         }
       }
 
       "must populate the view correctly on a GET when the question has previously been answered" in {
 
-        val userAnswers = UserAnswers().set(common.ChooseTaxYearPage(Event22, 0), ChooseTaxYear.values.head).success.value
+        val userAnswers = emptyUserAnswersWithTaxYear.set(common.ChooseTaxYearPage(Event22, 0), ChooseTaxYear.values(2022).head)(writesTaxYear).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -174,7 +172,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent22.fill(ChooseTaxYear.values.head), waypoints, Event22, 0)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent22.fill(ChooseTaxYear.values(2022).head), waypoints, Event22, 0, 2022)(request, messages(application)).toString
         }
       }
 
@@ -183,15 +181,15 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           .thenReturn(Future.successful(()))
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {
           val request =
-            FakeRequest(POST, postRouteEvent22).withFormUrlEncodedBody(("value", ChooseTaxYear.values.head.toString))
+            FakeRequest(POST, postRouteEvent22).withFormUrlEncodedBody(("value", ChooseTaxYear.values(2022).head.toString))
 
           val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(common.ChooseTaxYearPage(Event22, 0), ChooseTaxYear.values.head).success.value
+          val updatedAnswers = emptyUserAnswers.set(common.ChooseTaxYearPage(Event22, 0), ChooseTaxYear.values(2022).head)(writesTaxYear).success.value
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual common.ChooseTaxYearPage(Event22, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
@@ -201,7 +199,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
       "must return bad request when invalid data is submitted" in {
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {
@@ -214,7 +212,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event22, 0)(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event22, 0, 2022)(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
         }
       }

@@ -25,7 +25,7 @@
         govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, index: Index, taxYearMax: Int)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"chooseTaxYear.event${eventType.toString}.title"))) {
 
@@ -39,7 +39,7 @@
             RadiosViewModel(
                 field = form("value"),
                 legend = LegendViewModel(messages(s"chooseTaxYear.event${eventType.toString}.heading")).asPageHeading(),
-                items = ChooseTaxYear.options(eventType)
+                items = ChooseTaxYear.options(taxYearMax)
             )
         )
 
