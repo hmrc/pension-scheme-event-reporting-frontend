@@ -16,10 +16,10 @@
 
 package pages.common
 
-import play.api.mvc.Call
-import pages.{Page, Waypoints}
 import controllers.common.routes
 import models.enumeration.EventType
+import pages.{Page, Waypoints}
+import play.api.mvc.Call
 
 case class FileUploadWhatYouWillNeedPage(eventType: EventType) extends Page {
 

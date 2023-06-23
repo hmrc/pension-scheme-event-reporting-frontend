@@ -17,6 +17,7 @@
 package controllers.fileUpload
 
 import controllers.actions._
+import models.enumeration.EventType.Event22
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,6 +35,6 @@ class FileRejectedController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
     implicit request =>
-      Ok(view(waypoints, controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints)))
+      Ok(view(waypoints, controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints, Event22)))
   }
 }

@@ -38,6 +38,6 @@ class FileUploadWhatYouWillNeedController @Inject()(
 
       val templateDownloadLink = controllers.routes.FileDownloadController.templateFile(Event22)
       val instructionsDownloadLink = controllers.routes.FileDownloadController.instructionsFile(Event22)
-      Ok(view(controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints).url, templateDownloadLink, instructionsDownloadLink))
+      Ok(view(controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints, Event22).url, templateDownloadLink, instructionsDownloadLink))
   }
 }

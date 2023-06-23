@@ -41,7 +41,7 @@ class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockUpscanInitiateConnector = mock[UpscanInitiateConnector]
 
-  private def getRoute: String = routes.FileUploadController.onPageLoad(waypoints).url
+  private def getRoute: String = routes.FileUploadController.onPageLoad(waypoints, Event22).url
 
   private val formFieldsMap = Map(
     "testField1" -> "value1",
