@@ -17,7 +17,8 @@
 package controllers.fileUpload
 
 import base.SpecBase
-import models.enumeration.EventType.Event22
+import models.enumeration.EventType
+import models.enumeration.EventType.{Event22, Event23}
 import pages.EmptyWaypoints
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -26,16 +27,22 @@ import views.html.fileUpload.ProcessingRequestView
 class ProcessingRequestControllerSpec extends SpecBase {
 
   private val waypoints = EmptyWaypoints
+  private val seqOfEvents = Seq(Event22, Event23)
 
-  "Processing Request Controller" - {
+  "ProcessingRequest Controller" - {
+    for (event <- seqOfEvents) {
+      testReturnOkAndCorrectView(event)
+    }
+  }
 
-    "must return OK and the correct view for a GET" in {
+  private def testReturnOkAndCorrectView(eventType: EventType): Unit = {
+    s"must return OK and the correct view for a GET (Event ${eventType.toString})" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
 
-        val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, Event22).url)
+        val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, eventType).url)
 
         val result = route(application, request).value
 
@@ -45,4 +52,5 @@ class ProcessingRequestControllerSpec extends SpecBase {
       }
     }
   }
+
 }
