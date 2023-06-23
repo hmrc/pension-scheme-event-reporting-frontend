@@ -40,7 +40,7 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours with BeforeAnd
       behave like optionsField[ChooseTaxYear](
         form,
         fieldName,
-        validValues = ChooseTaxYear.valuesForEventType(Event23),
+        validValues = ChooseTaxYear.values,
         invalidError = FormError(fieldName, "chooseTaxYear.event22.error.outsideRange", Seq("2013", "2023"))
       )
 
@@ -59,7 +59,7 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours with BeforeAnd
       behave like optionsField[ChooseTaxYear](
         form,
         fieldName,
-        validValues = ChooseTaxYear.valuesForEventType(Event22),
+        validValues = ChooseTaxYear.values,
         invalidError = FormError(fieldName, "chooseTaxYear.event22.error.outsideRange", Seq("2013", "2023"))
       )
 

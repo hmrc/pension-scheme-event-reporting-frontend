@@ -17,7 +17,6 @@
 package models.common
 
 import models.Enumerable
-import models.enumeration.EventType
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
@@ -47,10 +46,6 @@ object ChooseTaxYear extends Enumerable.Implicits {
 
   def values: Seq[ChooseTaxYear] = valueMinYear(minimumYear)
 
-  def valuesForEventType(eventType: EventType): Seq[ChooseTaxYear] = {
-    valueMinYear(minimumYear)
-  }
-
   private def valueMinYear(minYear: Int): Seq[ChooseTaxYear] = {
     val currentYear = DateHelper.today.getYear
     val newTaxYearStart = LocalDate.of(currentYear, Month.APRIL.getValue, startDayOfNewTaxYear)
@@ -64,7 +59,7 @@ object ChooseTaxYear extends Enumerable.Implicits {
     (minYear to maxYear).reverse.map(year => ChooseTaxYear(year.toString))
   }
 
-  def options(eventType: EventType)(implicit messages: Messages): Seq[RadioItem] = valuesForEventType(eventType).zipWithIndex.map {
+  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
       val yearRangeOption = messages("chooseTaxYear.yearRangeRadio", value, (value.toString.toInt + 1).toString)
       RadioItem(
