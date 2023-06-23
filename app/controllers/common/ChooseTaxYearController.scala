@@ -19,7 +19,7 @@ package controllers.common
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.common.ChooseTaxYearFormProvider
-import helpers.DateHelper.getTaxYearFromOption
+import models.TaxYear.getTaxYearFromOption
 import models.common.ChooseTaxYear
 import models.enumeration.EventType
 import models.{Index, UserAnswers}

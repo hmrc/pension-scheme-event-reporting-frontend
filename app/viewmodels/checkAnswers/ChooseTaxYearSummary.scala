@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers
 
-import helpers.DateHelper.getTaxYear
+import models.TaxYear.getTaxYear
 import models.common.ChooseTaxYear
 import models.enumeration.EventType
 import models.{Index, UserAnswers}

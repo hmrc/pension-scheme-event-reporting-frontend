@@ -20,7 +20,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.eventWindUp.SchemeWindUpDateFormProvider
 import helpers.DateHelper
-import helpers.DateHelper.getTaxYearFromOption
+import models.TaxYear.getTaxYearFromOption
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
