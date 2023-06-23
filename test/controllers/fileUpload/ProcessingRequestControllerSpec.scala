@@ -17,6 +17,7 @@
 package controllers.fileUpload
 
 import base.SpecBase
+import models.enumeration.EventType.Event22
 import pages.EmptyWaypoints
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -34,7 +35,7 @@ class ProcessingRequestControllerSpec extends SpecBase {
 
       running(application) {
 
-        val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints).url)
+        val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, Event22).url)
 
         val result = route(application, request).value
 

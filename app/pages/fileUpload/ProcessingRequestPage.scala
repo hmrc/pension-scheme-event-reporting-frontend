@@ -27,7 +27,7 @@ case class ProcessingRequestPage(eventType: EventType) extends Page {
   override def toString: String = "processingRequest"
 
   override def route(waypoints: Waypoints): Call =
-    routes.ProcessingRequestController.onPageLoad(waypoints)
+    routes.ProcessingRequestController.onPageLoad(waypoints, eventType)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = IndexPage
 
