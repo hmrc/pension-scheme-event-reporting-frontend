@@ -56,7 +56,6 @@ class EventReportingTileController @Inject()(
         userAnswersCacheConnector.save(request.pstr, ua).flatMap { _ =>
           val isAnySubmittedReports = seqEROverview.exists( _.versionDetails.exists(_.submittedVersionAvailable))
           val isAnyCompiledReports = seqEROverview.exists( _.versionDetails.exists(_.compiledVersionAvailable))
-          // TODO: if this seq > 1, you want to display s"${seq.length} in progress" rather than the year range
           val compiledLinks: Seq[Link] = if (isAnyCompiledReports) {
             Seq(Link("erCompiledLink", appConfig.erCompiledUrl, Text("eventReportingTile.link.compiled")))
           } else Nil
@@ -76,7 +75,6 @@ class EventReportingTileController @Inject()(
       val anyStartAndEndDates = seqEROverview.map { value => (value.periodStartDate, value.periodEndDate) }
       Seq(
         CardSubHeading(
-          // TODO: if multiple compile in progress, display s"${seq.length} in progress", PODS-8491
           subHeading = Messages("eventReportingTile.subHeading", anyStartAndEndDates.head._1, anyStartAndEndDates.head._2),
           subHeadingClasses = "card-sub-heading",
           subHeadingParams =
@@ -125,6 +123,6 @@ class EventReportingTileController @Inject()(
 }
 
 object EventReportingTileController {
-  val minStartDateAsString = "2000-04-06" // TODO: confirm min start date
-  val maxEndDateAsString = s"${LocalDate.now().getYear + 1}-04-05" // TODO: confirm max end date
+  val minStartDateAsString = "2000-04-06"
+  val maxEndDateAsString = s"${LocalDate.now().getYear + 1}-04-05"
 }
