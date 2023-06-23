@@ -17,6 +17,7 @@
 package controllers.event22
 
 import controllers.actions._
+import models.enumeration.EventType.Event22
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,8 +36,8 @@ class FileUploadWhatYouWillNeedController @Inject()(
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
     implicit request =>
 
-      val templateDownloadLink = controllers.routes.FileDownloadController.templateFile
-      val instructionsDownloadLink = controllers.routes.FileDownloadController.instructionsFile
+      val templateDownloadLink = controllers.routes.FileDownloadController.templateFile(Event22)
+      val instructionsDownloadLink = controllers.routes.FileDownloadController.instructionsFile(Event22)
       Ok(view(controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints).url, templateDownloadLink, instructionsDownloadLink))
   }
 }
