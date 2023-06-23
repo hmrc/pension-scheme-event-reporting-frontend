@@ -27,7 +27,7 @@ import java.time.LocalDate
 class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours with BeforeAndAfterEach{
 
   override protected def beforeEach(): Unit = {
-    utils.DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
+    utils.DateHelper.setDate(Some(LocalDate.of(2021, 6, 1)))
   }
 
   ".value" - {
@@ -41,13 +41,13 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours with BeforeAnd
         form,
         fieldName,
         validValues = ChooseTaxYear.valuesForYearRange(2021),
-        invalidError = FormError(key = fieldName, message = "chooseTaxYear.event22.error.outsideRange", args = Seq("2013", "2023"))
+        invalidError = FormError(key = fieldName, message = "chooseTaxYear.event22.error.outsideRange", args = Seq("2013", "2021"))
       )
 
       behave like mandatoryField(
         form,
         fieldName,
-        requiredError = FormError(fieldName, requiredKeyEvent23, Seq("2013", "2023"))
+        requiredError = FormError(fieldName, requiredKeyEvent23, Seq("2013", "2021"))
       )
     }
 
@@ -60,13 +60,13 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours with BeforeAnd
         form,
         fieldName,
         validValues = ChooseTaxYear.valuesForYearRange(2021),
-        invalidError = FormError(fieldName, "chooseTaxYear.event22.error.outsideRange", Seq("2013", "2023"))
+        invalidError = FormError(fieldName, "chooseTaxYear.event22.error.outsideRange", Seq("2013", "2021"))
       )
 
       behave like mandatoryField(
         form,
         fieldName,
-        requiredError = FormError(fieldName, requiredKeyEvent22, Seq("2013", "2023"))
+        requiredError = FormError(fieldName, requiredKeyEvent22, Seq("2013", "2021"))
       )
 
       "not bind when year is earlier than min" in {
@@ -75,17 +75,17 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours with BeforeAnd
           fieldName -> "2012"
         )
         val result = form.bind(fields).apply(fieldName)
-        result.errors mustEqual Seq(FormError(fieldName, "chooseTaxYear.event22.error.outsideRange", Seq("2013", "2023")))
+        result.errors mustEqual Seq(FormError(fieldName, "chooseTaxYear.event22.error.outsideRange", Seq("2013", "2021")))
       }
 
       "not bind when year is greater than max" in {
-        utils.DateHelper.setDate(Some(LocalDate.of(2023,6,1)))
+        utils.DateHelper.setDate(Some(LocalDate.of(2021,6,1)))
         val fieldName = "value"
         val fields = Map[String, String](
           fieldName -> "2024"
         )
         val result = form.bind(fields).apply(fieldName)
-        result.errors mustEqual Seq(FormError(fieldName, "chooseTaxYear.event22.error.outsideRange", Seq("2013", "2023")))
+        result.errors mustEqual Seq(FormError(fieldName, "chooseTaxYear.event22.error.outsideRange", Seq("2013", "2021")))
       }
     }
   }
