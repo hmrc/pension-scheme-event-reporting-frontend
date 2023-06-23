@@ -44,13 +44,13 @@ class ProcessingStatusRequestController @Inject()(
     implicit request =>
       val outcomes = parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap {
         case Some(ParsingAndValidationOutcome(Success, _, _)) =>
-          Future.successful(Json.obj("status" -> "Success"))
+          Future.successful(Json.obj("status" -> "processed"))
         case Some(ParsingAndValidationOutcome(GeneralError, _, _)) =>
-          Future.successful(Json.obj("status" -> "GeneralError"))
+          Future.successful(Json.obj("status" -> "processed"))
         case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _)) =>
-          Future.successful(Json.obj("status" -> "ValidationErrorsLessThan10"))
+          Future.successful(Json.obj("status" -> "processed"))
         case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _)) =>
-          Future.successful(Json.obj("status" -> "ValidationErrorsMoreThanOrEqual10"))
+          Future.successful(Json.obj("status" -> "processed"))
         case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
         case _ =>
           Future.successful(Json.obj("status" -> "processing"))
