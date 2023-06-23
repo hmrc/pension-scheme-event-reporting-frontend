@@ -24,8 +24,10 @@ import javax.inject.Inject
 
 class ChooseTaxYearFormProvider @Inject() extends Mappings {
 
-  def apply(eventType: EventType): Form[ChooseTaxYear] =
+  def apply(eventType: EventType, maxTaxYear: Int): Form[ChooseTaxYear] = {
+    val enumerableTaxYear = ChooseTaxYear.enumerable(maxTaxYear)
     Form(
-      "value" -> enumerable[ChooseTaxYear](s"chooseTaxYear.event${eventType.toString}.error.required")
+      "value" -> enumerable[ChooseTaxYear](s"chooseTaxYear.event${eventType.toString}.error.required")(enumerableTaxYear)
     )
+  }
 }
