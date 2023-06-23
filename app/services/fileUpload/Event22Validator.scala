@@ -22,7 +22,6 @@ import cats.implicits.toFoldableOps
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import forms.common.{ChooseTaxYearFormProvider, MembersDetailsFormProvider, TotalPensionAmountsFormProvider}
-import models.Index
 import models.common.{ChooseTaxYear, MembersDetails}
 import models.enumeration.EventType
 import models.enumeration.EventType.Event22
@@ -30,7 +29,6 @@ import models.fileUpload.FileUploadHeaders.Event22FieldNames.totalAmounts
 import models.fileUpload.FileUploadHeaders.valueFormField
 import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import play.api.data.Form
-import play.api.libs.json.Json
 import services.fileUpload.Validator.Result
 
 class Event22Validator @Inject()(
@@ -65,7 +63,7 @@ class Event22Validator @Inject()(
   }
 
   private def totalAmountsValidation(index: Int,
-                                      chargeFields: Seq[String]): Validated[Seq[ValidationError], BigDecimal] = {
+                                     chargeFields: Seq[String]): Validated[Seq[ValidationError], BigDecimal] = {
     val fields = Seq(
       Field(valueFormField, chargeFields(fieldNoTotalAmounts), totalAmounts, fieldNoTotalAmounts)
     )
@@ -86,13 +84,9 @@ class Event22Validator @Inject()(
       createCommitItem(index, MembersDetailsPage.apply(Event22, _))
     )
 
-    val xx: ChooseTaxYear => CommitItem = chooseTaxYear => CommitItem(
-      jsPath = ChooseTaxYearPage(Event22, index - 1).path,
-      value = Json.toJson(chooseTaxYear)(ChooseTaxYear.writes(ChooseTaxYear.enumerable(taxYear))))
-
-
     val b = resultFromFormValidationResult[ChooseTaxYear](
-      taxYearValidation(index, columns, taxYear), xx
+      taxYearValidation(index, columns, taxYear), createCommitItem(index, ChooseTaxYearPage.apply(Event22, _)
+      )(ChooseTaxYear.writes(ChooseTaxYear.enumerable(taxYear)))
     )
 
     val c = resultFromFormValidationResult[BigDecimal](
