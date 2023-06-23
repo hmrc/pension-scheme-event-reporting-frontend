@@ -47,7 +47,6 @@ class Event20APsaDeclarationController @Inject()(
   private val eventType = EventType.Event20A
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
-    println("\n\n\n\npage load1: " + request.userAnswers)
     minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map{
         minimalDetails =>
       Ok(view(request.schemeName, request.pstr, getTaxYearFromOption(request.userAnswers).toString, minimalDetails.name,
@@ -86,7 +85,6 @@ class Event20APsaDeclarationController @Inject()(
         "psaDeclaration1" -> "Selected",
           "psaDeclaration2" -> "Selected"
       )
- println("\n\n\n\n\n\nRESULT: " +( event20AUserAnswers ++ ceaseDateOrStartDateNode))
       event20AUserAnswers ++ ceaseDateOrStartDateNode
     }
   }

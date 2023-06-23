@@ -17,9 +17,10 @@
 package pages.event20A
 
 import controllers.event20A.routes
+import models.UserAnswers
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Waypoints, QuestionPage}
+import pages.{EventSummaryPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 
 case object Event20APspDeclarationPage extends QuestionPage[String] {
 

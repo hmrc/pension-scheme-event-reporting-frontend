@@ -16,16 +16,19 @@
 
 package controllers.event20A
 
-import connectors.{MinimalConnector, SchemeDetailsConnector, UserAnswersCacheConnector}
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import connectors.{EventReportingConnector, MinimalConnector, SchemeDetailsConnector, UserAnswersCacheConnector}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.event20A.Event20APspDeclarationFormProvider
-import helpers.DateHelper.{getTaxYear, getTaxYearFromOption}
-import models.UserAnswers
+import helpers.DateHelper.getTaxYearFromOption
 import models.enumeration.EventType
+import models.event20A.WhatChange.{BecameMasterTrust, CeasedMasterTrust}
+import models.requests.DataRequest
+import models.{LoggedInUser, TaxYear, UserAnswers}
 import pages.Waypoints
-import pages.event20A.Event20APspDeclarationPage
+import pages.event20A.{BecameDatePage, CeasedDatePage, Event20APspDeclarationPage, WhatChangePage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event20A.Event20APspDeclarationView
@@ -34,27 +37,43 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class Event20APspDeclarationController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         userAnswersCacheConnector: UserAnswersCacheConnector,
-                                         formProvider: Event20APspDeclarationFormProvider,
-                                         minimalConnector: MinimalConnector,
-                                         schemeDetailsConnector: SchemeDetailsConnector,
-                                         view: Event20APspDeclarationView
-                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                 identify: IdentifierAction,
+                                                 getData: DataRetrievalAction,
+                                                 userAnswersCacheConnector: UserAnswersCacheConnector,
+                                                 formProvider: Event20APspDeclarationFormProvider,
+                                                 minimalConnector: MinimalConnector,
+                                                 requireData: DataRequiredAction,
+                                                 eventReportingConnector: EventReportingConnector,
+                                                 schemeDetailsConnector: SchemeDetailsConnector,
+                                                 view: Event20APspDeclarationView
+                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def form(authorisingPsaId: Option[String]):Form[String] = formProvider(authorisingPSAID = authorisingPsaId)
-  private val eventType = EventType.Event1
+  private def form(authorisingPsaId: Option[String]): Form[String] = formProvider(authorisingPSAID = authorisingPsaId)
+
+  private val eventType = EventType.Event20A
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(Event20APspDeclarationPage)) match {
-      case Some(value) => form(authorisingPsaId=None).fill(value)
-      case None => form(authorisingPsaId=None)
+      case Some(value) => form(authorisingPsaId = None).fill(value)
+      case None => form(authorisingPsaId = None)
     }
     minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map {
       minimalDetails =>
         Ok(view(request.schemeName, request.pstr, getTaxYearFromOption(request.userAnswers).toString, minimalDetails.name, preparedForm, waypoints))
     }
+  }
+
+  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
+    implicit request =>
+      schemeDetailsConnector.getPspSchemeDetails(request.loggedInUser.psaIdOrPspId, request.pstr).map(_.authorisingPSAID).flatMap { authorisingPsaId =>
+        declarationDataEvent20A(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, authorisingPsaId, request) match {
+          case Some(data) =>
+            eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data)).map { _ =>
+              Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
+            }
+          case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
+        }
+      }
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
@@ -77,4 +96,27 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
       }
   }
 
+  def declarationDataEvent20A(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser, optAuthorisingPsaId: Option[String], request: DataRequest[AnyContent]): Option[JsObject] = {
+    val optCeaseDateOrStartDateNode = (request.userAnswers.get(WhatChangePage), request.userAnswers.get(BecameDatePage), request.userAnswers.get(CeasedDatePage)) match {
+        case (Some(BecameMasterTrust), Some(becameDate), _) => Some(Json.obj("schemeMasterTrustStartDate" -> becameDate))
+        case (Some(CeasedMasterTrust), _, Some(ceasedDate)) => Some(Json.obj("schemeMasterTrustCeaseDate" -> ceasedDate))
+        case _ => None
+      }
+    optCeaseDateOrStartDateNode.flatMap { ceaseDateOrStartDateNode =>
+       optAuthorisingPsaId.map { authorisingPsaId =>
+      val event20AUserAnswers: JsObject = Json.obj(
+        "pstr" -> pstr,
+        "reportStartDate" -> s"${taxYear.startYear}-04-06",
+        "reportEndDate" -> s"${taxYear.endYear}-04-05",
+        "submittedBy" -> "PSP",
+        "submittedID" -> loggedInUser.psaIdOrPspId,
+        "authorisedPSAID" -> authorisingPsaId,
+        //Both of those are always selected. Users can't access the page otherwise.
+        "pspDeclaration1" -> "Selected",
+        "pspDeclaration2" -> "Selected"
+      )
+      event20AUserAnswers ++ ceaseDateOrStartDateNode
+      }
+    }
+  }
 }
