@@ -19,6 +19,8 @@ package controllers.common
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.common.TotalPensionAmountsFormProvider
+import models.TaxYear.getTaxYearFromOption
+import models.common.ChooseTaxYear
 import models.{Index, UserAnswers}
 import models.enumeration.EventType
 import org.apache.commons.lang3.StringUtils
@@ -50,7 +52,8 @@ class TotalPensionAmountsController @Inject()(val controllerComponents: Messages
     }
 
   private def getSelectedTaxYear(userAnswers: Option[UserAnswers], eventType: EventType, index: Index)(implicit messages: Messages): String = {
-    userAnswers.flatMap(_.get(common.ChooseTaxYearPage(eventType, index))) match {
+    val taxYearChosen = getTaxYearFromOption(userAnswers)
+    userAnswers.flatMap(_.get(common.ChooseTaxYearPage(eventType, index))(ChooseTaxYear.reads(ChooseTaxYear.enumerable(taxYearChosen)))) match {
       case Some(taxYear) => messages("chooseTaxYear.yearRangeRadio", taxYear.toString, (taxYear.toString.toInt + 1).toString)
       case _ => StringUtils.EMPTY
     }

@@ -20,46 +20,23 @@ import models.Enumerable
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import utils.DateHelper
 
-import java.time.{LocalDate, Month}
+import scala.language.implicitConversions
 
 case class ChooseTaxYear(startYear: String) {
   override def toString: String = startYear
 }
 
 object ChooseTaxYear extends Enumerable.Implicits {
-
-  private final val startDayOfNewTaxYear: Int = 6
   final val minimumYear: Int = 2013
 
-  def maximumYear: Int = {
-    val currentYear = DateHelper.today.getYear
-    val newTaxYearStart = LocalDate.of(currentYear, Month.APRIL.getValue, startDayOfNewTaxYear)
+  def values(taxYearMax: Int): Seq[ChooseTaxYear] = valuesForYearRange(taxYearMax)
 
-    if (DateHelper.today.isBefore(newTaxYearStart)) {
-      currentYear - 1
-    } else {
-      currentYear
-    }
+  def valuesForYearRange(taxYearMax: Int): Seq[ChooseTaxYear] = {
+    (minimumYear to taxYearMax).reverse.map(year => ChooseTaxYear(year.toString))
   }
 
-  def values: Seq[ChooseTaxYear] = valueMinYear(minimumYear)
-
-  private def valueMinYear(minYear: Int): Seq[ChooseTaxYear] = {
-    val currentYear = DateHelper.today.getYear
-    val newTaxYearStart = LocalDate.of(currentYear, Month.APRIL.getValue, startDayOfNewTaxYear)
-
-    val maxYear =
-      if (DateHelper.today.isBefore(newTaxYearStart)) {
-        currentYear - 1
-      } else {
-        currentYear
-      }
-    (minYear to maxYear).reverse.map(year => ChooseTaxYear(year.toString))
-  }
-
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
+  def options(taxYearMax: Int)(implicit messages: Messages): Seq[RadioItem] = valuesForYearRange(taxYearMax).zipWithIndex.map {
     case (value, index) =>
       val yearRangeOption = messages("chooseTaxYear.yearRangeRadio", value, (value.toString.toInt + 1).toString)
       RadioItem(
@@ -69,6 +46,6 @@ object ChooseTaxYear extends Enumerable.Implicits {
       )
   }
 
-  implicit val enumerable: Enumerable[ChooseTaxYear] =
-    Enumerable(values.map(value => value.toString -> value): _*)
+  implicit def enumerable(taxYearMax: Int): Enumerable[ChooseTaxYear] =
+    Enumerable(values(taxYearMax).map(value => value.toString -> value): _*)
 }

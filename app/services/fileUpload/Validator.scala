@@ -19,6 +19,7 @@ package services.fileUpload
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
+import models.TaxYear.{getTaxYear, getTaxYearFromOption}
 import models.UserAnswers
 import models.common.MembersDetails
 import models.enumeration.EventType
@@ -65,7 +66,8 @@ trait Validator {
     rows.headOption match {
       case Some(row) if row.mkString(",").equalsIgnoreCase(validHeader) =>
         rows.size match {
-          case n if n >= 2 => validateDataRows(rows)
+          case n if n >= 2 =>
+            validateDataRows(rows, getTaxYear(userAnswers))
             .map(_.foldLeft(userAnswers)((acc, ci) => acc.setOrException(ci.jsPath, ci.value)))
           case _ => Invalid(Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty))
         }
@@ -74,15 +76,15 @@ trait Validator {
     }
   }
 
-  private def validateDataRows(rows: Seq[Array[String]]): Result = {
+  private def validateDataRows(rows: Seq[Array[String]], taxYear: Int): Result = {
     rows.zipWithIndex.foldLeft[Result](Valid(Nil)) {
       case (acc, Tuple2(_, 0)) => acc
-      case (acc, Tuple2(row, index)) => Seq(acc, validateFields(index, row.toIndexedSeq)).combineAll
+      case (acc, Tuple2(row, index)) => Seq(acc, validateFields(index, row.toIndexedSeq, taxYear)).combineAll
     }
   }
 
   protected def validateFields(index: Int,
-                               columns: Seq[String]): Result
+                               columns: Seq[String], taxYear: Int): Result
 
   protected def memberDetailsValidation(index: Int, columns: Seq[String],
                                         memberDetailsForm: Form[MembersDetails]): Validated[Seq[ValidationError], MembersDetails] = {

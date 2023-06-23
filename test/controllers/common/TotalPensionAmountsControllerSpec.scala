@@ -19,7 +19,6 @@ package controllers.common
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.common.TotalPensionAmountsFormProvider
-import models.UserAnswers
 import models.enumeration.EventType
 import org.apache.commons.lang3.StringUtils
 import org.mockito.ArgumentMatchers.any
@@ -70,7 +69,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
     "event23" - {
       "must return OK and the correct view for a GET" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
 
         running(application) {
           val request = FakeRequest(GET, getRouteEvent23)
@@ -86,7 +85,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
 
       "must populate the view correctly on a GET when the question has previously been answered" in {
 
-        val userAnswers = UserAnswers().set(TotalPensionAmountsPage(event23, 0), validValue).success.value
+        val userAnswers = emptyUserAnswersWithTaxYear.set(TotalPensionAmountsPage(event23, 0), validValue).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -107,7 +106,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
           .thenReturn(Future.successful(()))
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {
@@ -125,7 +124,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
 
       "must return bad request when invalid data is submitted" in {
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {
@@ -146,7 +145,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
     "event22" - {
       "must return OK and the correct view for a GET" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
 
         running(application) {
           val request = FakeRequest(GET, getRouteEvent22)
@@ -162,7 +161,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
 
       "must populate the view correctly on a GET when the question has previously been answered" in {
 
-        val userAnswers = UserAnswers().set(TotalPensionAmountsPage(event22, 0), validValue).success.value
+        val userAnswers = emptyUserAnswersWithTaxYear.set(TotalPensionAmountsPage(event22, 0), validValue).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -183,7 +182,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
           .thenReturn(Future.successful(()))
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {
@@ -201,7 +200,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
 
       "must return bad request when invalid data is submitted" in {
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {

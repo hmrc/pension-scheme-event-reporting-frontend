@@ -33,15 +33,15 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours with BeforeAnd
   ".value" - {
 
     "event23" - {
-      val form = new ChooseTaxYearFormProvider()(Event23)
+      val form = new ChooseTaxYearFormProvider()(Event23, 2021)
       val fieldName = "value"
       val requiredKeyEvent23 = "chooseTaxYear.event23.error.required"
 
       behave like optionsField[ChooseTaxYear](
         form,
         fieldName,
-        validValues = ChooseTaxYear.values,
-        invalidError = FormError(fieldName, "chooseTaxYear.event22.error.outsideRange", Seq("2013", "2023"))
+        validValues = ChooseTaxYear.valuesForYearRange(2021),
+        invalidError = FormError(key = fieldName, message = "chooseTaxYear.event22.error.outsideRange", args = Seq("2013", "2023"))
       )
 
       behave like mandatoryField(
@@ -52,14 +52,14 @@ class ChooseTaxYearFormProviderSpec extends OptionFieldBehaviours with BeforeAnd
     }
 
     "event22" - {
-      val form = new ChooseTaxYearFormProvider()(Event22)
+      val form = new ChooseTaxYearFormProvider()(Event22, 2021)
       val fieldName = "value"
       val requiredKeyEvent22 = "chooseTaxYear.event22.error.required"
 
       behave like optionsField[ChooseTaxYear](
         form,
         fieldName,
-        validValues = ChooseTaxYear.values,
+        validValues = ChooseTaxYear.valuesForYearRange(2021),
         invalidError = FormError(fieldName, "chooseTaxYear.event22.error.outsideRange", Seq("2013", "2023"))
       )
 
