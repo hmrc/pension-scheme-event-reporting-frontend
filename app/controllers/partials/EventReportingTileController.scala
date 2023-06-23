@@ -64,11 +64,6 @@ class EventReportingTileController @Inject()(
           val submittedLinks: Seq[Link] = if (isAnySubmittedReports) {
             Seq(Link("erSubmittedLink", appConfig.erSubmittedUrl, Text("eventReportingTile.link.submitted")))
           } else Nil
-
-          // TODO: implement below link in future - in PODS-8491.
-          // View event reports in progress
-          // Link(...)
-
           val loginLink: Seq[Link] = Seq(Link("erLoginLink", appConfig.erStartNewUrl, Text(Messages("eventReportingTile.link.new"))))
           cardViewModels(compiledLinks, submittedLinks, cardSubheadings(isAnyCompiledReports, seqEROverview), loginLink)
         }

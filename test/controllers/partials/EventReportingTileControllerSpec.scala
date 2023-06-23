@@ -89,7 +89,7 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
             id = "new",
             heading = Messages("eventReportingTile.heading"),
             subHeadings = Seq(CardSubHeading(subHeading = "", subHeadingClasses = "")),
-            links = Seq(Link("erLoginLink", appConfig.erLoginUrl, Text(Messages("eventReportingTile.link.new"))))
+            links = Seq(Link("erLoginLink", appConfig.erStartNewUrl, Text(Messages("eventReportingTile.link.new"))))
           )
         )
         status(result) mustEqual OK

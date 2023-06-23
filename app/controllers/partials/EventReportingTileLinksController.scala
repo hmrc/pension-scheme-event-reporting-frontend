@@ -44,7 +44,6 @@ class EventReportingTileLinksController @Inject()(
 
   def onClickCompiled: Action[AnyContent] =
     (identify andThen getData() andThen requireData).async { implicit request =>
-      // TODO: implement redirect to the compiled event summary in the specified year.
       request.userAnswers.get(EventReportingOverviewPage) match {
         case Some(Seq(erOverview)) =>
           val ua = request.userAnswers

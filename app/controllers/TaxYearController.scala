@@ -19,9 +19,9 @@ package controllers
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.TaxYearFormProvider
-import models.enumeration.JourneyStartType.PastEventTypes
+import models.enumeration.JourneyStartType.{InProgress, PastEventTypes}
 import models.requests.OptionalDataRequest
-import models.{TaxYear, UserAnswers}
+import models.{EROverview, TaxYear, UserAnswers}
 import pages.{EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage, Waypoints}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -41,25 +41,30 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
+  private val yearsWhereSubmittedVersionAvailable: EROverview => Seq[String] = erOverview =>
+    if (erOverview.versionDetails.exists(_.submittedVersionAvailable)) {
+      Seq(erOverview.periodStartDate.getYear.toString)
+    } else {
+      Nil
+    }
+
+  private val yearsWhereCompiledVersionAvailable: EROverview => Seq[String] = erOverview =>
+    if (erOverview.versionDetails.exists(_.compiledVersionAvailable)) {
+      Seq(erOverview.periodStartDate.getYear.toString)
+    } else {
+      Nil
+    }
 
   private def renderPage(form: Form[TaxYear], waypoints: Waypoints, status: Status)(implicit request: OptionalDataRequest[AnyContent]): Result = {
     val radioOptions = request.userAnswers match {
       case Some(ua) =>
-        ua.get(EventReportingTileLinksPage) match {
-          case Some(PastEventTypes) =>
-            ua.get(EventReportingOverviewPage) match {
-              case Some(s) =>
-                println("\nHERE:" + s)
-                val applicableYears: Seq[String] = s.flatMap { erOverview =>
-                  if (erOverview.versionDetails.exists(_.submittedVersionAvailable)) {
-                    Seq(erOverview.periodStartDate.getYear.toString)
-                  } else {
-                    Nil
-                  }
-                }
-                println("\nappli years: " + applicableYears)
-                TaxYear.optionsFiltered(option => applicableYears.contains(option.startYear))
-            }
+        (ua.get(EventReportingTileLinksPage), ua.get(EventReportingOverviewPage)) match {
+          case (Some(PastEventTypes), Some(seqEROverview)) =>
+            val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereSubmittedVersionAvailable)
+            TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear))
+          case (Some(InProgress), Some(seqEROverview)) =>
+            val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereCompiledVersionAvailable)
+            TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear))
           case _ => TaxYear.options
         }
       case _ => TaxYear.options
