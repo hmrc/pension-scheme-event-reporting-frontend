@@ -17,18 +17,33 @@
 package controllers
 
 import base.SpecBase
+import models.enumeration.EventType
+import models.enumeration.EventType.{Event22, Event23}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 class FileDownloadControllerSpec extends SpecBase {
 
-  "templateFile" - {
+  private val event22Header = Some("""attachment; filename="instructions-event-22-annual-allowance.ods"""")
+  private val event23Header = Some("""attachment; filename="instructions-event-23-dual-annual-allowance.ods"""")
 
-    "return an OK with a GET for event 22 What you will need" in {
+  "FileDownload Controller" - {
+    "templateFile" - {
+      testReturnOkAndCorrectTemplateFile(Event22)
+      testReturnOkAndCorrectTemplateFile(Event23)
+    }
+    "instructionsFile" - {
+      testReturnOkAndCorrectInstructionsFile(Event22, event22Header)
+      testReturnOkAndCorrectInstructionsFile(Event23, event23Header)
+    }
+  }
+
+  private def testReturnOkAndCorrectTemplateFile(eventType: EventType): Unit = {
+    s"return an OK with a GET for event ${eventType.toString} What you will need" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, routes.FileDownloadController.templateFile.url)
+      val request = FakeRequest(GET, routes.FileDownloadController.templateFile(eventType).url)
 
       val result = route(application, request).value
 
@@ -37,19 +52,18 @@ class FileDownloadControllerSpec extends SpecBase {
       whenReady(result) { response =>
         val headers: Option[String] = response.header.headers.get("Content-Disposition")
 
-        headers mustBe Some("""attachment; filename="event-22-bulk-upload.csv"""")
+        headers mustBe Some(s"""attachment; filename="event-${eventType.toString}-bulk-upload.csv"""")
       }
 
       application.stop()
     }
   }
 
-  "instructionsFile" - {
-
-    "return an OK with a GET for event 22 What you will need" in {
+  private def testReturnOkAndCorrectInstructionsFile(eventType: EventType, header: Some[String]): Unit = {
+    s"return an OK with a GET for event ${eventType.toString} What you will need" in {
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, routes.FileDownloadController.instructionsFile.url)
+      val request = FakeRequest(GET, routes.FileDownloadController.instructionsFile(eventType).url)
 
       val result = route(application, request).value
 
@@ -58,7 +72,7 @@ class FileDownloadControllerSpec extends SpecBase {
       whenReady(result) { response =>
         val headers: Option[String] = response.header.headers.get("Content-Disposition")
 
-        headers mustBe Some("""attachment; filename="instructions-event-22-annual-allowance.ods"""")
+        headers mustBe header
       }
 
       application.stop()

@@ -17,11 +17,12 @@
 package pages.common
 
 import play.api.mvc.Call
-import pages.{Waypoints, Page}
+import pages.{Page, Waypoints}
 import controllers.common.routes
+import models.enumeration.EventType
 
-case object FileUploadWhatYouWillNeedPage extends Page {
+case class FileUploadWhatYouWillNeedPage(eventType: EventType) extends Page {
 
   override def route(waypoints: Waypoints): Call =
-    routes.FileUploadWhatYouWillNeedController.onPageLoad(waypoints)
+    routes.FileUploadWhatYouWillNeedController.onPageLoad(waypoints, eventType)
 }

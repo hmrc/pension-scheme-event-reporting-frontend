@@ -231,7 +231,8 @@ POST        /select-tax-year                                                    
 GET         /bulk-what-you-need-old                                               controllers.event22.FileUploadWhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
 # Bulk Upload Event 23
-GET        /bulk-what-you-need                                                    controllers.common.FileUploadWhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
+GET        /bulk-what-you-need-event-22                                           controllers.common.FileUploadWhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+GET        /bulk-what-you-need-event-23                                           controllers.common.FileUploadWhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 
 # file download
 GET         /event-22-upload-format-instructions                                  controllers.FileDownloadController.instructionsFile(eventType: EventType = Event22)
