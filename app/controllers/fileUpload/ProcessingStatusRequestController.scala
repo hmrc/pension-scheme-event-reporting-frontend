@@ -19,7 +19,7 @@ package controllers.fileUpload
 import connectors.ParsingAndValidationOutcomeCacheConnector
 import controllers.actions._
 import models.fileUpload.ParsingAndValidationOutcome
-import models.fileUpload.ParsingAndValidationOutcomeStatus.{GeneralError, Success}
+import models.fileUpload.ParsingAndValidationOutcomeStatus.{GeneralError, Success, ValidationErrorsLessThan10, ValidationErrorsMoreThanOrEqual10}
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -47,9 +47,9 @@ class ProcessingStatusRequestController @Inject()(
           Future.successful(Json.obj("status" -> "Success"))
         case Some(ParsingAndValidationOutcome(GeneralError, _, _)) =>
           Future.successful(Json.obj("status" -> "GeneralError"))
-        case Some(ParsingAndValidationOutcome(aValidationErrorsLessThan10, _, _)) =>
+        case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _)) =>
           Future.successful(Json.obj("status" -> "ValidationErrorsLessThan10"))
-        case Some(ParsingAndValidationOutcome(bValidationErrorsMoreThanOrEqual10, _, _)) =>
+        case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _)) =>
           Future.successful(Json.obj("status" -> "ValidationErrorsMoreThanOrEqual10"))
         case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
         case _ =>
