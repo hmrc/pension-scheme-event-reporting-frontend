@@ -18,9 +18,9 @@ package pages.event20A
 
 import controllers.event20A.routes
 import models.UserAnswers
+import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{EventSummaryPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 
 case object Event20APspDeclarationPage extends QuestionPage[String] {
 
@@ -30,4 +30,8 @@ case object Event20APspDeclarationPage extends QuestionPage[String] {
 
   override def route(waypoints: Waypoints): Call =
     routes.Event20APspDeclarationController.onPageLoad(waypoints)
+
+  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    EventSummaryPage
+  }
 }

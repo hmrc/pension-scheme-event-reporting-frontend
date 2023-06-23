@@ -19,7 +19,7 @@ package controllers.event20A
 import connectors.{EventReportingConnector, MinimalConnector, SchemeDetailsConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.event20A.Event20APspDeclarationFormProvider
-import helpers.DateHelper.getTaxYearFromOption
+import models.TaxYear.{getTaxYear, getTaxYearFromOption}
 import models.enumeration.EventType
 import models.event20A.WhatChange.{BecameMasterTrust, CeasedMasterTrust}
 import models.requests.DataRequest
@@ -63,32 +63,25 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
     }
   }
 
-  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
-    implicit request =>
-      schemeDetailsConnector.getPspSchemeDetails(request.loggedInUser.psaIdOrPspId, request.pstr).map(_.authorisingPSAID).flatMap { authorisingPsaId =>
-        declarationDataEvent20A(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, authorisingPsaId, request) match {
-          case Some(data) =>
-            eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data)).map { _ =>
-              Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
-            }
-          case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
-        }
-      }
-  }
-
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
       minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
         schemeDetailsConnector.getPspSchemeDetails(request.loggedInUser.psaIdOrPspId, request.pstr).map(_.authorisingPSAID).flatMap { authorisingPsaId =>
           form(authorisingPsaId = authorisingPsaId)
             .bindFromRequest().fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(request.schemeName, request.pstr, getTaxYearFromOption(request.userAnswers).toString, minimalDetails.name, formWithErrors, waypoints))),
+              Future.successful(BadRequest(view(request.schemeName, request.pstr, getTaxYear(request.userAnswers).toString, minimalDetails.name, formWithErrors, waypoints))),
             value => {
-              val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+              val originalUserAnswers = request.userAnswers
               val updatedAnswers = originalUserAnswers.setOrException(Event20APspDeclarationPage, value)
-              userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-                Redirect(Event20APspDeclarationPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+              userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).flatMap { _ =>
+                declarationDataEvent20A(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, authorisingPsaId, request) match {
+                  case Some(data) =>
+                    eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data)).map { _ =>
+                      Redirect(Event20APspDeclarationPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+                    }
+                  case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
+                }
               }
             }
           )

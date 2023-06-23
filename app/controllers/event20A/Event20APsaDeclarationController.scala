@@ -18,7 +18,7 @@ package controllers.event20A
 
 import connectors.{EventReportingConnector, MinimalConnector}
 import controllers.actions._
-import helpers.DateHelper.getTaxYearFromOption
+import models.TaxYear.getTaxYearFromOption
 import models.enumeration.EventType
 import models.event20A.WhatChange.{BecameMasterTrust, CeasedMasterTrust}
 import models.requests.DataRequest

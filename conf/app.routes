@@ -473,9 +473,8 @@ GET         /new-report/event-20A-check-your-answers                           c
 #GET         /new-report/event-20A-click                                        controllers.event20A.Event20ACheckYourAnswersController.onClick
 
 GET         /new-report/event-20a-declaration-PSA                               controllers.event20A.Event20APsaDeclarationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-GET         /new-report/event-20a-declaration-PSA-on-click                      controllers.event20A.Event20APsaDeclarationController.onClick(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-20a-declaration-PSA-click                      controllers.event20A.Event20APsaDeclarationController.onClick(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-20a-declaration-PSP                               controllers.event20A.Event20APspDeclarationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-GET         /new-report/event-20a-declaration-PSP-on-click                      controllers.event20A.Event20APspDeclarationController.onClick(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-20a-declaration-PSP                               controllers.event20A.Event20APspDeclarationController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
