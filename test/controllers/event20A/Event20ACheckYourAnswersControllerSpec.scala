@@ -18,6 +18,7 @@ package controllers.event20A
 
 import base.SpecBase
 import data.SampleData.{sampleEvent20ABecameJourneyData, sampleEvent20ACeasedJourneyData}
+import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -51,7 +52,14 @@ class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFl
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-20A-click")(request, messages(application)).toString
+        request.loggedInUser.administratorOrPractitioner match {
+          case Administrator =>
+            contentAsString(result) mustEqual view(
+              list, "/manage-pension-scheme-event-report/new-report/event-20a-declaration-PSA")(request, messages(application)).toString
+          case Practitioner =>
+            contentAsString(result) mustEqual view(
+              list, "/manage-pension-scheme-event-report/new-report/event-20a-declaration-PSP")(request, messages(application)).toString
+        }
       }
     }
 
@@ -170,7 +178,7 @@ object Event20ACheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "becameDateMasterTrust.checkYourAnswersLabel",
-      "12 December 2023",
+      "12 January 2023",
       "/manage-pension-scheme-event-report/new-report/event-20A-when-scheme-became-Master-Trust?waypoints=event-20A-check-answers",
       "becameDateMasterTrust.change.hidden"
     )
@@ -185,7 +193,7 @@ object Event20ACheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "ceasedDateMasterTrust.checkYourAnswersLabel",
-      "12 December 2023",
+      "12 January 2023",
       "/manage-pension-scheme-event-report/new-report/event-20A-when-scheme-ceased-to-be-Master-Trust?waypoints=event-20A-check-answers",
       "ceasedDateMasterTrust.change.hidden"
     )

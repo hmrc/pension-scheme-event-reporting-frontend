@@ -311,10 +311,10 @@ object SampleData extends SpecBase {
   def sampleEvent20ABecameJourneyData: UserAnswers =
     emptyUserAnswersWithTaxYear
       .setOrException(pages.event20A.WhatChangePage, BecameMasterTrust)
-      .setOrException(pages.event20A.BecameDatePage, LocalDate.of(2023, 12, 12))
+      .setOrException(pages.event20A.BecameDatePage, LocalDate.of(2023, 1, 12))
 
   def sampleEvent20ACeasedJourneyData: UserAnswers =
     emptyUserAnswersWithTaxYear
       .setOrException(pages.event20A.WhatChangePage, CeasedMasterTrust)
-      .setOrException(pages.event20A.CeasedDatePage, LocalDate.of(2023, 12, 12))
+      .setOrException(pages.event20A.CeasedDatePage, LocalDate.of(2023, 1, 12))
 }
