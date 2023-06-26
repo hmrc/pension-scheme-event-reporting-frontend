@@ -56,7 +56,7 @@ class ChooseTaxYearController @Inject()(val controllerComponents: MessagesContro
       val form = formProvider(eventType, taxYearChosen)
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, index, getTaxYearFromOption(request.userAnswers)))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, index, taxYearChosen))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(common.ChooseTaxYearPage(eventType, index), value)(ChooseTaxYear.writes(ChooseTaxYear.enumerable(taxYearChosen)))

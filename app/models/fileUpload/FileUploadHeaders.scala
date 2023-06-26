@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package forms.event13
+package models.fileUpload
+object FileUploadHeaders {
 
-import javax.inject.Inject
+  val valueFormField = "value"
 
-import forms.mappings.Mappings
-import play.api.data.Form
+  object MemberDetailsFieldNames {
+    val firstName = "firstName"
+    val lastName = "lastName"
+    val nino = "nino"
+  }
 
-class SchemeStructureDescriptionFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text(errorKey = "event13.schemeStructureDescription.error.required")
-        .verifying(maxLength(150, errorKey = "event13.schemeStructureDescription.error.length"))
-  )
+   object Event22FieldNames {
+    val taxYear: String = "taxYear"
+    val totalAmounts: String = "totalAmounts"
+  }
 }

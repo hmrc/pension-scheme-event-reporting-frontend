@@ -140,7 +140,7 @@ object Event2CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "deceasedMembersDetails.checkYourAnswersLabel.nino",
-      "AA234567V",
+      "AA234567D",
       "/manage-pension-scheme-event-report/new-report/1/event-2-deceased-member-details?waypoints=event-2-check-answers-1",
       "deceasedMembersDetails.change.nino.hidden"
     ),
@@ -153,7 +153,7 @@ object Event2CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "beneficiaryDetails.checkYourAnswersLabel.nino",
-      "AA234567V",
+      "AA234567D",
       "/manage-pension-scheme-event-report/new-report/1/event-2-person-who-was-paid?waypoints=event-2-check-answers-1",
       "beneficiaryDetails.change.nino.hidden"
     ),

@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package forms.event13
+package pages.fileUpload
 
-import javax.inject.Inject
+import play.api.mvc.Call
+import pages.{Waypoints, Page}
+import controllers.fileUpload.routes
 
-import forms.mappings.Mappings
-import play.api.data.Form
+case object ValidationErrorsSummaryPage extends Page {
 
-class SchemeStructureDescriptionFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[String] =
-    Form(
-      "value" -> text(errorKey = "event13.schemeStructureDescription.error.required")
-        .verifying(maxLength(150, errorKey = "event13.schemeStructureDescription.error.length"))
-  )
+  override def route(waypoints: Waypoints): Call =
+    routes.ValidationErrorsSummaryController.onPageLoad(waypoints)
 }

@@ -31,8 +31,10 @@ import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Writes
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import utils.DateHelper
 import views.html.common.ChooseTaxYearView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
@@ -40,8 +42,8 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new ChooseTaxYearFormProvider()
-  private val formEvent23 = formProvider(Event23, 2021)
-  private val formEvent22 = formProvider(Event22, 2021)
+  private val formEvent23 = formProvider(Event23, 2022)
+  private val formEvent22 = formProvider(Event22, 2022)
   private val writesTaxYear: Writes[ChooseTaxYear]= ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
 
 
@@ -61,6 +63,8 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
+
     reset(mockUserAnswersCacheConnector)
   }
 
@@ -119,6 +123,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
         }
       }
+
 
       "must return bad request when invalid data is submitted" in {
         val application =

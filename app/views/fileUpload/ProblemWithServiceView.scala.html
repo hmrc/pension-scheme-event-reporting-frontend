@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package forms.event13
+@this(
+        layout: templates.SchemeLayout,
+        govukButton: GovukButton
+)
 
-import javax.inject.Inject
+@(returnUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-import forms.mappings.Mappings
-import play.api.data.Form
+@layout(pageTitle = titleNoForm(messages("problemWithService.title"))) {
 
-class SchemeStructureDescriptionFormProvider @Inject() extends Mappings {
+    <h1 class="govuk-heading-xl">@messages("problemWithService.heading")</h1>
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text(errorKey = "event13.schemeStructureDescription.error.required")
-        .verifying(maxLength(150, errorKey = "event13.schemeStructureDescription.error.length"))
-  )
+    <p class="govuk-body">@messages("problemWithService.p")</p>
+
+    <p class="govuk-body"><a href="@returnUrl" class="govuk-link">@messages("problemWithService.link")</a></p>
+
 }
