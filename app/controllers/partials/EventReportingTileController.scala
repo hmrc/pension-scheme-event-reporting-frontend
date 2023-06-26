@@ -51,7 +51,6 @@ class EventReportingTileController @Inject()(
   def eventReportPartial(): Action[AnyContent] = {
     (identify andThen getData()).async { implicit request =>
       eventReportingConnector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString).flatMap { seqEROverview =>
-        println("\n>>>" + seqEROverview)
         val ua = request.userAnswers.getOrElse(UserAnswers()).setOrException(EventReportingOverviewPage, seqEROverview, nonEventTypeData = true)
         userAnswersCacheConnector.save(request.pstr, ua).flatMap { _ =>
           val isAnySubmittedReports = seqEROverview.exists( _.versionDetails.exists(_.submittedVersionAvailable))

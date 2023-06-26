@@ -32,9 +32,9 @@ case object TaxYearPage extends QuestionPage[TaxYear] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(EventReportingTileLinksPage) match {
-      case Some(InProgress) => IndexPage // TODO: Event report version page
+      case Some(InProgress) => EventSummaryPage
       case Some(StartNew) => EventSelectionPage
-      case Some(PastEventTypes) => IndexPage // TODO: Event report version page
+      case Some(PastEventTypes) => EventSummaryPage
     }
   }
 }
