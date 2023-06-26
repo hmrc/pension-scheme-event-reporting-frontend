@@ -29,9 +29,9 @@ class Event20APspDeclarationFormProviderSpec extends StringFieldBehaviours {
   val noMatchKey = "event20A.pspDeclaration.error.noMatch"
   private val psaIdRegex = "^A[0-9]{7}$"
 
-//  private val authorisingPsaId = "A1234567"
+  private val authorisingPsaId = Some("A1234567")
 
-  private val form = new Event20APspDeclarationFormProvider()()
+  private val form = new Event20APspDeclarationFormProvider()(authorisingPsaId)
   val fieldName = "value"
 
   ".value" - {

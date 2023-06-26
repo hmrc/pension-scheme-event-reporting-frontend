@@ -49,7 +49,6 @@ import pages.event10.{BecomeOrCeaseSchemePage, ContractsOrPoliciesPage, SchemeCh
 import pages.event12.{DateOfChangePage, HasSchemeChangedRulesPage}
 import pages.event19.{CountryOrTerritoryPage, DateChangeMadePage}
 import pages.event2.{AmountPaidPage, DatePaidPage}
-import pages.event20.{BecameDatePage, WhatChangePage}
 import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage => Event6TypeOfProtectionPage}
 import pages.event7.{CrystallisedAmountPage, LumpSumAmountPage, PaymentDatePage}
 import pages.event8.{LumpSumAmountAndDatePage, TypeOfProtectionReferencePage, TypeOfProtectionPage => Event8TypeOfProtectionPage}

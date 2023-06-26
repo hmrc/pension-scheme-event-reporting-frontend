@@ -17,26 +17,54 @@
 package controllers.event20A
 
 import base.SpecBase
+import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
+import connectors.{EventReportingConnector, MinimalConnector}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
+import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.api.inject.bind
 import views.html.event20A.Event20APsaDeclarationView
 
-class Event20APsaDeclarationControllerSpec extends SpecBase {
+import scala.concurrent.Future
+
+class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterEach {
+
+  private val mockERConnector = mock[EventReportingConnector]
+  private val mockMinimalConnector = mock[MinimalConnector]
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[EventReportingConnector].toInstance(mockERConnector),
+    bind[MinimalConnector].toInstance(mockMinimalConnector)
+  )
+
+  override protected def beforeEach(): Unit = {
+    reset(mockERConnector)
+    reset(mockMinimalConnector)
+  }
+
 
   "Event20APsaDeclaration Controller" - {
 
-    val schemeName = "Big Scheme"
-    val pstr = "PSTR1234"
-    val taxYear = "2021"
+    val schemeName = "schemeName"
+    val pstr = "87219363YN"
+    val taxYear = "2022"
     val adminName = "John Smith"
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val testEmail = "test@test.com"
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
+      val minimalDetails = {
+        MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None,  lastName = "Smith")), false, false)
+      }
 
       running(application) {
-
+        when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
         val request = FakeRequest(GET, routes.Event20APsaDeclarationController.onPageLoad().url)
 
         val result = route(application, request).value
@@ -45,7 +73,7 @@ class Event20APsaDeclarationControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
-          schemeName, pstr, taxYear, adminName, routes.Event20APsaDeclarationController.onPageLoad(EmptyWaypoints).url)(request, messages(application)
+          schemeName, pstr, taxYear, adminName, routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url)(request, messages(application)
         ).toString
       }
     }

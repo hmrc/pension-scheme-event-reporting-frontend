@@ -37,9 +37,9 @@ import scala.concurrent.Future
 class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
-
+  private val authorisingPsaId = Some("A1234567")
   private val formProvider = new Event20APspDeclarationFormProvider()
-  private val form = formProvider()
+  private val form = formProvider(authorisingPsaId)
   val schemeName = "Big Scheme"
   val pstr = "PSTR1234"
   val taxYear = "2021"
@@ -55,7 +55,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
   private val validValue = "abc"
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
