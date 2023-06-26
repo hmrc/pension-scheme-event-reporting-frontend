@@ -24,10 +24,10 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
+import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.inject.bind
 import views.html.event20A.Event20APsaDeclarationView
 
 import scala.concurrent.Future
@@ -65,7 +65,7 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
       running(application) {
         when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
-        val request = FakeRequest(GET, routes.Event20APsaDeclarationController.onPageLoad().url)
+        val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onPageLoad().url)
 
         val result = route(application, request).value
 
@@ -73,9 +73,34 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
-          schemeName, pstr, taxYear, adminName, routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url)(request, messages(application)
+          schemeName, pstr, taxYear, adminName, controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url)(request, messages(application)
         ).toString
       }
     }
+
+//    "must redirect to the correct page for method onClick" in {
+//
+//      val testEmail = "test@test.com"
+//      val templateId = "pods_event_report_submitted"
+//      val organisationName = "Test company ltd"
+//      val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
+//
+//      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+//      when(mockERConnector.submitReportEvent20A(any(), any())(any(), any())).thenReturn(Future.successful(()))
+//
+//      val application =
+//        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+//          .build()
+//
+//      running(application) {
+//        val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url)
+//
+//        val result = route(application, request).value
+//
+//        status(result) mustEqual SEE_OTHER
+//        println("\n\n\n\n\nHEL " + redirectLocation(result))
+//        redirectLocation(result).value mustEqual controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url
+//      }
+//    }
   }
 }
