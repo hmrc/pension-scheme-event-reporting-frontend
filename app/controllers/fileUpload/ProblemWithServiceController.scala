@@ -18,7 +18,6 @@ package controllers.fileUpload
 
 import controllers.actions._
 import models.enumeration.EventType
-import models.enumeration.EventType.Event22
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,12 +33,9 @@ class ProblemWithServiceController @Inject()(
                                               val controllerComponents: MessagesControllerComponents,
                                               view: ProblemWithServiceView
                                             ) extends FrontendBaseController with I18nSupport {
-
-  private val eventType = EventType.Event1
-
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) {
+  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) {
     implicit request =>
-      val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints, Event22).url
+      val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints, eventType).url
       Ok(view(returnUrl))
   }
 }

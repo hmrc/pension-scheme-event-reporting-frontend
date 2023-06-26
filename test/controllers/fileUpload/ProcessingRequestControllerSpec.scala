@@ -18,6 +18,7 @@ package controllers.fileUpload
 
 import base.SpecBase
 import connectors.ParsingAndValidationOutcomeCacheConnector
+import models.enumeration.EventType
 import models.enumeration.EventType.Event22
 import models.fileUpload.{ParsingAndValidationOutcome, ParsingAndValidationOutcomeStatus}
 import org.mockito.ArgumentMatchers.any
@@ -41,15 +42,24 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
     bind[ParsingAndValidationOutcomeCacheConnector].to(mockParsingAndValidationOutcomeCacheConnector)
   )
   private val waypoints = EmptyWaypoints
+  private val seqOfEvents = Seq(Event22)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockParsingAndValidationOutcomeCacheConnector)
   }
 
-  "Processing Request Controller" - {
+  "ProcessingRequest Controller" - {
+    for (event <- seqOfEvents) {
+      testReturnOkAndCorrectViewWhenOutcomeSuccess(event)
+      testReturnOkAndCorrectViewWhenOutcomeGeneralError(event)
+      testReturnOkAndCorrectViewWhenValidationErrorsLessThan10(event)
+      testReturnOkAndCorrectViewWhenValidationErrorsMoreThanOrEqualTo10(event)
+    }
+  }
 
-    "return OK and the correct view for a GET when outcome is Success and can get file name" in {
+  private def testReturnOkAndCorrectViewWhenOutcomeSuccess(eventType: EventType): Unit = {
+    s"return OK and the correct view for a GET when outcome is Success and can get file name (Event${eventType.toString})" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
@@ -57,16 +67,18 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
       when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
         .thenReturn(Future.successful(Some(ParsingAndValidationOutcome(status = ParsingAndValidationOutcomeStatus.Success, fileName = Some(testFile)))))
 
-      val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, Event22).url)
+      val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, eventType).url)
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.FileUploadSuccessController.onPageLoad(waypoints).url
+      redirectLocation(result).value mustEqual routes.FileUploadSuccessController.onPageLoad(waypoints, eventType).url
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
     }
+  }
 
-    "return OK and the correct view for a GET when outcome is GeneralError" in {
+  private def testReturnOkAndCorrectViewWhenOutcomeGeneralError(eventType: EventType): Unit = {
+    s"return OK and the correct view for a GET when outcome is GeneralError (Event${eventType.toString})" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
@@ -74,16 +86,18 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
       when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
         .thenReturn(Future.successful(Some(ParsingAndValidationOutcome(status = ParsingAndValidationOutcomeStatus.GeneralError, fileName = Some(testFile)))))
 
-      val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, Event22).url)
+      val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, eventType).url)
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ProblemWithServiceController.onPageLoad(waypoints).url
+      redirectLocation(result).value mustEqual routes.ProblemWithServiceController.onPageLoad(waypoints, eventType).url
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
     }
+  }
 
-    "return OK and the correct view for a GET when outcome is ValidationErrorsLessThan10" in {
+  private def testReturnOkAndCorrectViewWhenValidationErrorsLessThan10(eventType: EventType): Unit = {
+    s"return OK and the correct view for a GET when outcome is ValidationErrorsLessThan10 (Event${eventType.toString})" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
@@ -91,16 +105,18 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
       when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
         .thenReturn(Future.successful(Some(ParsingAndValidationOutcome(status = ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10, fileName = Some(testFile)))))
 
-      val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, Event22).url)
+      val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, eventType).url)
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ValidationErrorsAllController.onPageLoad(waypoints).url
+      redirectLocation(result).value mustEqual routes.ValidationErrorsAllController.onPageLoad(waypoints, eventType).url
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
     }
+  }
 
-    "return OK and the correct view for a GET when outcome is ValidationErrorsMoreThanOrEqualTo10" in {
+  private def testReturnOkAndCorrectViewWhenValidationErrorsMoreThanOrEqualTo10(eventType: EventType): Unit = {
+    s"return OK and the correct view for a GET when outcome is ValidationErrorsMoreThanOrEqualTo10 (Event${eventType.toString})" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
@@ -108,12 +124,12 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
       when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
         .thenReturn(Future.successful(Some(ParsingAndValidationOutcome(status = ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10, fileName = Some(testFile)))))
 
-      val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, Event22).url)
+      val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, eventType).url)
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ValidationErrorsSummaryController.onPageLoad(waypoints).url
+      redirectLocation(result).value mustEqual routes.ValidationErrorsSummaryController.onPageLoad(waypoints, eventType).url
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
     }
   }
