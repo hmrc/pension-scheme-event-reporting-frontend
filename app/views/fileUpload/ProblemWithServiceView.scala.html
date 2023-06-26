@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models.fileUpload
+@this(
+        layout: templates.SchemeLayout,
+        govukButton: GovukButton
+)
 
-import play.api.libs.json._
+@(returnUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-case class ParsingAndValidationOutcome(
-                                        status: ParsingAndValidationOutcomeStatus,
-                                        json: JsObject = Json.obj(),
-                                        fileName: Option[String] = None
-                                      )
+@layout(pageTitle = titleNoForm(messages("problemWithService.title"))) {
 
+    <h1 class="govuk-heading-xl">@messages("problemWithService.heading")</h1>
 
-object ParsingAndValidationOutcome {
-  implicit val format: OFormat[ParsingAndValidationOutcome] = Json.format[ParsingAndValidationOutcome]
+    <p class="govuk-body">@messages("problemWithService.p")</p>
+
+    <p class="govuk-body"><a href="@returnUrl" class="govuk-link">@messages("problemWithService.link")</a></p>
+
 }

@@ -455,3 +455,11 @@ POST       /new-report/event-20-when-scheme-ceased-to-be-occupational           
 
 GET         /new-report/event-20-check-your-answers                              controllers.event20.Event20CheckYourAnswersController.onPageLoad
 GET         /new-report/event-20-click                                           controllers.event20.Event20CheckYourAnswersController.onClick
+
+GET        /new-report/event-22-upload-successful                                 controllers.fileUpload.FileUploadSuccessController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-22-upload-fail                                       controllers.fileUpload.ValidationErrorsAllController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-22-upload-error-many                                 controllers.fileUpload.ValidationErrorsSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/event-22-upload-problem                                    controllers.fileUpload.ProblemWithServiceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)

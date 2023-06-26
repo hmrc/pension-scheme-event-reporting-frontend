@@ -26,9 +26,15 @@ object ParsingAndValidationOutcomeStatus extends Enumerable.Implicits {
 
   case object GeneralError extends WithName("GeneralError") with ParsingAndValidationOutcomeStatus
 
+  case object ValidationErrorsLessThan10 extends WithName("ValidationErrorsLess10") with ParsingAndValidationOutcomeStatus
+
+  case object ValidationErrorsMoreThanOrEqual10 extends WithName("ValidationErrorsMoreThanOrEqualTo10") with ParsingAndValidationOutcomeStatus
+
   val values: Seq[ParsingAndValidationOutcomeStatus] = Seq(
     Success,
-    GeneralError
+    GeneralError,
+    ValidationErrorsLessThan10,
+    ValidationErrorsMoreThanOrEqual10
   )
 
   implicit val enumerable: Enumerable[ParsingAndValidationOutcomeStatus] =

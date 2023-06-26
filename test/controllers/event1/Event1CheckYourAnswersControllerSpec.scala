@@ -200,7 +200,7 @@ object Event1CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "membersDetails.checkYourAnswersLabel.nino",
-      "AA234567V",
+      "AA234567D",
       "/manage-pension-scheme-event-report/new-report/1/event-1-member-details?waypoints=event-1-check-answers-1",
       "membersDetails.change.nino.hidden"
     ),
