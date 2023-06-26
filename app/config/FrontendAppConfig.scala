@@ -96,4 +96,5 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
         encryptedPsaId
       )
   }"
+  lazy val validEvent22Header: String = configuration.get[String]("validEvent22Header")
 }

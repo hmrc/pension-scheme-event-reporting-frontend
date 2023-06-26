@@ -15,16 +15,19 @@
  */
 
 package models.fileUpload
+object FileUploadHeaders {
 
-import play.api.libs.json._
+  val valueFormField = "value"
 
-case class ParsingAndValidationOutcome(
-                                        status: ParsingAndValidationOutcomeStatus,
-                                        json: JsObject = Json.obj(),
-                                        fileName: Option[String] = None
-                                      )
+  object MemberDetailsFieldNames {
+    val firstName = "firstName"
+    val lastName = "lastName"
+    val nino = "nino"
+  }
 
 
-object ParsingAndValidationOutcome {
-  implicit val format: OFormat[ParsingAndValidationOutcome] = Json.format[ParsingAndValidationOutcome]
+   object Event22FieldNames {
+    val taxYear: String = "taxYear"
+    val totalAmounts: String = "totalAmounts"
+  }
 }

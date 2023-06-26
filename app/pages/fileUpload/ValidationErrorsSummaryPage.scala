@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package models.fileUpload
+package pages.fileUpload
 
-import play.api.libs.json._
+import play.api.mvc.Call
+import pages.{Waypoints, Page}
+import controllers.fileUpload.routes
 
-case class ParsingAndValidationOutcome(
-                                        status: ParsingAndValidationOutcomeStatus,
-                                        json: JsObject = Json.obj(),
-                                        fileName: Option[String] = None
-                                      )
+case object ValidationErrorsSummaryPage extends Page {
 
-
-object ParsingAndValidationOutcome {
-  implicit val format: OFormat[ParsingAndValidationOutcome] = Json.format[ParsingAndValidationOutcome]
+  override def route(waypoints: Waypoints): Call =
+    routes.ValidationErrorsSummaryController.onPageLoad(waypoints)
 }
