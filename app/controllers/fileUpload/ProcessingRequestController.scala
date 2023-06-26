@@ -44,13 +44,13 @@ class ProcessingRequestController @Inject()(
     implicit request =>
       parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap {
         case Some(ParsingAndValidationOutcome(Success, _, _)) =>
-          Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints, eventType)))
+          Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints)))
         case Some(ParsingAndValidationOutcome(GeneralError, _, _)) =>
-          Future.successful(Redirect(controllers.fileUpload.routes.ProblemWithServiceController.onPageLoad(waypoints, eventType)))
+          Future.successful(Redirect(controllers.fileUpload.routes.ProblemWithServiceController.onPageLoad(waypoints)))
         case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _)) =>
-          Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsAllController.onPageLoad(waypoints, eventType)))
+          Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsAllController.onPageLoad(waypoints)))
         case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _)) =>
-          Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsSummaryController.onPageLoad(waypoints, eventType)))
+          Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsSummaryController.onPageLoad(waypoints)))
         case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
         case _ =>
           Future.successful(Ok(view(controllers.routes.IndexController.onPageLoad.url)))

@@ -72,7 +72,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.FileUploadSuccessController.onPageLoad(waypoints, eventType).url
+      redirectLocation(result).value mustEqual routes.FileUploadSuccessController.onPageLoad(waypoints).url
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
     }
   }
@@ -91,7 +91,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ProblemWithServiceController.onPageLoad(waypoints, eventType).url
+      redirectLocation(result).value mustEqual routes.ProblemWithServiceController.onPageLoad(waypoints).url
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
     }
   }
@@ -110,7 +110,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ValidationErrorsAllController.onPageLoad(waypoints, eventType).url
+      redirectLocation(result).value mustEqual routes.ValidationErrorsAllController.onPageLoad(waypoints).url
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
     }
   }
@@ -129,7 +129,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ValidationErrorsSummaryController.onPageLoad(waypoints, eventType).url
+      redirectLocation(result).value mustEqual routes.ValidationErrorsSummaryController.onPageLoad(waypoints).url
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
     }
   }
