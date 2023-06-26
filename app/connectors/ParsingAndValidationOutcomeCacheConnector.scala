@@ -56,7 +56,7 @@ class ParsingAndValidationOutcomeCacheConnector @Inject()(config: FrontendAppCon
 
     http.POST[JsValue, HttpResponse](url, Json.toJson(outcome))(implicitly, implicitly, hc, implicitly) andThen {
       case Failure(t: Throwable) => logger.warn("Unable to post parsing and validation outcome", t)
-    } map{ _ => ()}
+    } map { _ => () }
   }
 
   def deleteOutcome(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
@@ -65,7 +65,7 @@ class ParsingAndValidationOutcomeCacheConnector @Inject()(config: FrontendAppCon
 
     http.DELETE[HttpResponse](url)(implicitly, hc, implicitly) andThen {
       case Failure(t: Throwable) => logger.warn("Unable to delete parsing and validation outcome", t)
-    } map { _ =>()}
+    } map { _ => () }
   }
 
   private def mapExceptionsToStatus: PartialFunction[Throwable, Future[HttpResponse]] = {

@@ -16,11 +16,8 @@
 
 package helpers
 
-import models.UserAnswers
-import pages.TaxYearPage
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import scala.util.{Failure, Success, Try}
 
 class DateHelper {
   def now: LocalDate = LocalDate.now()
@@ -40,16 +37,6 @@ object DateHelper {
       year - 1
     } else {
       year
-    }
-  }
-
-  def getTaxYear(userAnswers: Option[UserAnswers]): Int = {
-    userAnswers.flatMap(_.get(TaxYearPage)) match {
-      case Some(year) => Try(year.startYear.toInt) match {
-        case Success(value) => value
-        case Failure(exception) => throw new RuntimeException("Tax year is not a number", exception)
-      }
-      case _ => throw new RuntimeException("Tax year not entered")
     }
   }
 }

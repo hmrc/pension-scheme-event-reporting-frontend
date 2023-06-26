@@ -41,7 +41,7 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url)
@@ -138,7 +138,7 @@ object Event23CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel.nino",
-      "AA234567V",
+      "AA234567D",
       "/manage-pension-scheme-event-report/new-report/1/event-23-member-details?waypoints=event-23-check-answers-1",
       "membersDetails.change.nino.hidden"
     ),

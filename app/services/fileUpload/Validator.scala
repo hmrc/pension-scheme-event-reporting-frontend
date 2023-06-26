@@ -19,29 +19,30 @@ package services.fileUpload
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
-import ParserErrorMessages.HeaderInvalidOrFileIsEmpty
+import models.TaxYear.{getTaxYear, getTaxYearFromOption}
 import models.UserAnswers
+import models.common.MembersDetails
 import models.enumeration.EventType
+import models.fileUpload.FileUploadHeaders.MemberDetailsFieldNames
 import org.apache.commons.lang3.StringUtils.EMPTY
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json._
 import queries.Gettable
+import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
 
-import java.time.LocalDate
-
-object ParserErrorMessages {
+object ValidatorErrorMessages {
   val HeaderInvalidOrFileIsEmpty = "Header invalid or File is empty"
 }
 
-object Parser {
-  type Result = Validated[Seq[ParserValidationError], Seq[CommitItem]]
-  val FileLevelParserValidationErrorTypeHeaderInvalidOrFileEmpty: ParserValidationError = ParserValidationError(0, 0, HeaderInvalidOrFileIsEmpty, EMPTY)
+object Validator {
+  type Result = Validated[Seq[ValidationError], Seq[CommitItem]]
+  val FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty: ValidationError = ValidationError(0, 0, HeaderInvalidOrFileIsEmpty, EMPTY)
 }
 
-trait Parser {
+trait Validator {
 
-  import Parser._
+  import Validator._
 
   protected val eventType: EventType
 
@@ -49,39 +50,9 @@ trait Parser {
   protected val fieldNoLastName = 1
   protected val fieldNoNino = 2
 
-  protected final val YearLength = 4
-
   protected def validHeader: String
 
   // scalastyle:off parameter.number
-  protected def validateField[A](
-                                  index: Int,
-                                  columns: Seq[String],
-                                  page: Int => Gettable[_],
-                                  formFieldName: String,
-                                  columnName: String,
-                                  fieldNo: Int,
-                                  formProvider: => Form[A],
-                                  convertValue: String => String = identity
-                                )(implicit writes: Writes[A]): Result = {
-    def bindForm(index: Int, columns: Seq[String],
-                 fieldName: String, fieldNo: Int)
-    : Validated[Seq[ParserValidationError], A] = {
-      val form: Form[A] = formProvider
-      val fields = Seq(Field(fieldName, convertValue(fieldValue(columns, fieldNo)), columnName, fieldNo))
-      val toMap = Field.seqToMap(fields)
-      val bind = form.bind(toMap)
-      bind.fold(
-        formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-        value => Valid(value)
-      )
-    }
-
-    resultFromFormValidationResult[A](
-      bindForm(index, columns, formFieldName, fieldNo),
-      createCommitItem(index, page)
-    )
-  }
 
   protected def fieldValue(columns: Seq[String], fieldNo: Int): String =
     if (columns.isDefinedAt(fieldNo)) {
@@ -89,65 +60,62 @@ trait Parser {
     } else {
       ""
     }
-    
 
-  def parse(startDate: LocalDate, rows: Seq[Array[String]], userAnswers: UserAnswers)
-           (implicit messages: Messages): Validated[Seq[ParserValidationError], UserAnswers] = {
-    Invalid(Seq(FileLevelParserValidationErrorTypeHeaderInvalidOrFileEmpty))
-//    rows.headOption match {
-//      case Some(row) if row.mkString(",").equalsIgnoreCase(validHeader) =>
-//        rows.size match {
-//          case n if n >= 2 => parseDataRows(startDate, rows)
-//            .map(_.foldLeft(userAnswers)((acc, ci) => acc.setOrException(ci.jsPath, ci.value)))
-//          case _ => Invalid(Seq(FileLevelParserValidationErrorTypeHeaderInvalidOrFileEmpty))
-//        }
-//      case _ =>
-//        Invalid(Seq(FileLevelParserValidationErrorTypeHeaderInvalidOrFileEmpty))
-//    }
-  }
 
-  private def parseDataRows(startDate: LocalDate, rows: Seq[Array[String]])
-                           (implicit messages: Messages): Result = {
-    rows.zipWithIndex.foldLeft[Result](Valid(Nil)) {
-      case (acc, Tuple2(_, 0)) => acc
-      case (acc, Tuple2(row, index)) => Seq(acc, validateFields(startDate, index, row.toIndexedSeq)).combineAll
+  def validate(rows: Seq[Array[String]], userAnswers: UserAnswers): Validated[Seq[ValidationError], UserAnswers] = {
+    rows.headOption match {
+      case Some(row) if row.mkString(",").equalsIgnoreCase(validHeader) =>
+        rows.size match {
+          case n if n >= 2 =>
+            validateDataRows(rows, getTaxYear(userAnswers))
+            .map(_.foldLeft(userAnswers)((acc, ci) => acc.setOrException(ci.jsPath, ci.value)))
+          case _ => Invalid(Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty))
+        }
+      case _ =>
+        Invalid(Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty))
     }
   }
 
-  protected def validateFields(startDate: LocalDate,
-                               index: Int,
-                               columns: Seq[String])(implicit messages: Messages): Result
+  private def validateDataRows(rows: Seq[Array[String]], taxYear: Int): Result = {
+    rows.zipWithIndex.foldLeft[Result](Valid(Nil)) {
+      case (acc, Tuple2(_, 0)) => acc
+      case (acc, Tuple2(row, index)) => Seq(acc, validateFields(index, row.toIndexedSeq, taxYear)).combineAll
+    }
+  }
 
-//  protected def memberDetailsValidation(index: Int, columns: Seq[String],
-//                                        memberDetailsForm: Form[MemberDetails]): Validated[Seq[ParserValidationError], MemberDetails] = {
-//    val fields = Seq(
-//      Field(MemberDetailsFieldNames.firstName, fieldValue(columns, fieldNoFirstName), MemberDetailsFieldNames.firstName, 0),
-//      Field(MemberDetailsFieldNames.lastName, fieldValue(columns, fieldNoLastName), MemberDetailsFieldNames.lastName, 1),
-//      Field(MemberDetailsFieldNames.nino, fieldValue(columns, fieldNoNino), MemberDetailsFieldNames.nino, 2)
-//    )
-//    val toMap = Field.seqToMap(fields)
-//
-//    val bind = memberDetailsForm.bind(toMap)
-//    bind.fold(
-//      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-//      value => Valid(value)
-//    )
-//  }
+  protected def validateFields(index: Int,
+                               columns: Seq[String], taxYear: Int): Result
 
-  protected final def errorsFromForm[A](formWithErrors: Form[A], fields: Seq[Field], index: Int): Seq[ParserValidationError] = {
+  protected def memberDetailsValidation(index: Int, columns: Seq[String],
+                                        memberDetailsForm: Form[MembersDetails]): Validated[Seq[ValidationError], MembersDetails] = {
+    val fields = Seq(
+      Field(MemberDetailsFieldNames.firstName, fieldValue(columns, fieldNoFirstName), MemberDetailsFieldNames.firstName, 0),
+      Field(MemberDetailsFieldNames.lastName, fieldValue(columns, fieldNoLastName), MemberDetailsFieldNames.lastName, 1),
+      Field(MemberDetailsFieldNames.nino, fieldValue(columns, fieldNoNino), MemberDetailsFieldNames.nino, 2)
+    )
+    val toMap = Field.seqToMap(fields)
+
+    val bind = memberDetailsForm.bind(toMap)
+    bind.fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  protected final def errorsFromForm[A](formWithErrors: Form[A], fields: Seq[Field], index: Int): Seq[ValidationError] = {
     for {
       formError <- formWithErrors.errors
       field <- fields.find(_.getFormValidationFullFieldName == formError.key)
     }
     yield {
-      ParserValidationError(index, field.columnNo, formError.message, field.columnName, formError.args)
+      ValidationError(index, field.columnNo, formError.message, field.columnName, formError.args)
     }
   }
 
   protected final def createCommitItem[A](index: Int, page: Int => Gettable[_])(implicit writes: Writes[A]): A => CommitItem =
     a => CommitItem(page(index - 1).path, Json.toJson(a))
 
-  protected def resultFromFormValidationResult[A](formValidationResult: Validated[Seq[ParserValidationError], A],
+  protected def resultFromFormValidationResult[A](formValidationResult: Validated[Seq[ValidationError], A],
                                                   generateCommitItem: A => CommitItem): Result = {
     formValidationResult match {
       case Invalid(resultAErrors) => Invalid(resultAErrors)
@@ -163,8 +131,6 @@ trait Parser {
       case None => default
       case Some(a) => a
     }
-
-  protected final val minChargeValueAllowed = BigDecimal("0.01")
 
   protected final def splitDayMonthYear(date: String): ParsedDate = {
     date.split("/").toSeq match {
@@ -183,7 +149,7 @@ trait Parser {
     }
 }
 
-case class ParserValidationError(row: Int, col: Int, error: String, columnName: String = EMPTY, args: Seq[Any] = Nil)
+case class ValidationError(row: Int, col: Int, error: String, columnName: String = EMPTY, args: Seq[Any] = Nil)
 
 protected case class CommitItem(jsPath: JsPath, value: JsValue)
 

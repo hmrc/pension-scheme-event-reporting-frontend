@@ -46,12 +46,14 @@ import pages.event12.{CannotSubmitPage, DateOfChangePage, Event12CheckYourAnswer
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.{EventWindUpCheckYourAnswersPage, SchemeWindUpDatePage}
 import pages.{DeclarationPage, EventSelectionPage, EventSummaryPage, WantToSubmitPage}
+import play.api.libs.json.Writes
 //import pages.fileUpload.FileUploadResultPage
 //import pages.fileUpload.ProcessingRequestPage
 
 import java.time.{LocalDate, Month}
 
 class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerators {
+  private val writesTaxYear: Writes[ChooseTaxYear]= ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
 
   "test journey" in {
 
@@ -295,7 +297,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(ManualOrUploadPage(EventType.Event22, 0), Manual),
         next,
         submitAnswer(pages.common.MembersDetailsPage(EventType.Event22, 0), membersDetails.get),
-        submitAnswer(ChooseTaxYearPage(EventType.Event22, 0), taxYear.get),
+        submitAnswer(ChooseTaxYearPage(EventType.Event22, 0), taxYear.get)(writesTaxYear, implicitly),
         pageMustBe(TotalPensionAmountsPage(EventType.Event22, 0))
       )
   }
@@ -309,7 +311,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(ManualOrUploadPage(EventType.Event23, 0), Manual),
         next,
         submitAnswer(pages.common.MembersDetailsPage(EventType.Event23, 0), membersDetails.get),
-        submitAnswer(ChooseTaxYearPage(EventType.Event23, 0), taxYear.get),
+        submitAnswer(ChooseTaxYearPage(EventType.Event23, 0), taxYear.get)(writesTaxYear, implicitly),
         pageMustBe(TotalPensionAmountsPage(EventType.Event23, 0))
       )
   }

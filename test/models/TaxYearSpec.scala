@@ -31,7 +31,7 @@ class TaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyCheck
 
   override def beforeEach(): Unit = {
     super.beforeEach
-    DateHelper.setDate(Some(LocalDate.of(2024, 4, 5)))
+    DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
   }
 
   "TaxYear" - {

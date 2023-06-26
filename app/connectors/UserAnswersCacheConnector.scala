@@ -110,7 +110,8 @@ class UserAnswersCacheConnector @Inject()(
                 throw new HttpException(response.body, response.status)
             }
           }
-      case None => throw new RuntimeException("No tax year available - UserAnswersCacheConnector")
+      case None =>
+        Future.failed(new RuntimeException("No tax year available"))
     }
   }
 

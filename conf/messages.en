@@ -1007,6 +1007,7 @@ chooseTaxYear.event22.heading = In which tax year was the annual allowance excee
 chooseTaxYear.event22.checkYourAnswersLabel = In which tax year was the annual allowance exceeded
 chooseTaxYear.event22.error.required = Select the tax year in which the annual allowance was exceeded
 chooseTaxYear.event22.change.hidden = Select the tax year in which the annual allowance was exceeded
+chooseTaxYear.event22.error.outsideRange = The tax year must be {0} or earlier. It cannot be a tax year in the future
 
 totalPensionAmounts.event22.title = What is the total of the member’s pension input amounts for all arrangements under the scheme for the tax year
 totalPensionAmounts.event22.heading = What is the total of the member’s pension input amounts for all arrangements under the scheme for the tax year
@@ -1198,7 +1199,8 @@ event13.schemeStructureDescription.title = Give a brief description of the pensi
 event13.schemeStructureDescription.heading = Give a brief description of the pension scheme structure
 event13.schemeStructureDescription.hint = You can enter up to 150 characters
 event13.schemeStructureDescription.checkYourAnswersLabel = Description of the scheme structure
-event13.schemeStructureDescription.error.length = You can enter up to 150 characters
+event13.schemeStructureDescription.error.required = Enter description of the pension scheme structure
+event13.schemeStructureDescription.error.length = The scheme structure description must be 150 characters or less
 event13.schemeStructureDescription.change.hidden = Give a brief description of the pension scheme structure
 
 reasonForBenefits.event3.title = Reason for the benefits being taken
@@ -1466,3 +1468,33 @@ event19.dateChangeMade.change.hidden = When did the territory change take place 
 whatYouWillNeed.event19.p = To record a change country or territory of establishment for the scheme you will need to tell us the:
 whatYouWillNeed.event19.item1 = new country or territory
 whatYouWillNeed.event19.item2 = date that the change took place
+
+fileUpload.memberDetails.generic.error.firstName = member’s first name is missing or in the wrong format
+fileUpload.memberDetails.generic.error.lastName = member’s last name is missing or in the wrong format
+fileUpload.memberDetails.generic.error.nino = member’s National Insurance number is missing or in the wrong format
+
+fileUpload.taxYear.generic.error = tax year is missing, invalid or in the wrong format
+fileUpload.totalAmounts.generic.error = the total of the member’s pension input amounts is missing, invalid or in the wrong format
+fileUploadSuccess.title = Your file upload was successful
+fileUploadSuccess.heading = Your file upload was successful
+fileUploadSuccess.p = {0} was uploaded successfully and the charge was added to the event. Select continue to view the changes.
+
+fileupload.invalid.title = There is a problem with your file
+fileupload.invalid.heading = There is a problem with your file
+fileupload.invalid.p1 = Correct the following errors and upload it again, or upload a different file.
+fileupload.invalid.download.instructions.link = Download the instructions for the format of your files
+fileupload.invalid.subheading.p2 = for more information.
+fileupload.invalid.h1 = Problems with your file
+fileupload.invalid.item1 = Cell
+fileupload.invalid.item2 = Error
+
+return.to.fileupload = Return to file upload
+
+fileUpload.generic.total.error.part1 = Your file has {0} errors. At least one:
+
+problemWithService.title = Sorry, there was a problem with the service
+problemWithService.heading = Sorry, there was a problem with the service
+problemWithService.p = We could not process your file upload
+problemWithService.link = Try uploading your file again.
+
+chooseTaxYear.event22.error.outsideRange = The tax year must be between {0} and {1}
