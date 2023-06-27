@@ -17,15 +17,16 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.{EventDataIdentifier, FileUploadOutcomeResponse}
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.{Enumerable, EventType}
-import models.UserAnswers
+import models.{EROverview, EROverviewVersion, EventDataIdentifier, FileUploadOutcomeResponse, UserAnswers}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
-import play.api.libs.json.Json
+import play.api.libs.json.{JsArray, Json}
 import uk.gov.hmrc.http._
 import utils.WireMockHelper
+
+import java.time.LocalDate
 
 class EventReportingConnectorSpec
   extends AsyncWordSpec
@@ -58,6 +59,7 @@ class EventReportingConnectorSpec
   private val eventReportCompileUrl = "/pension-scheme-event-reporting/compile"
   private val eventReportSubmitUrl = "/pension-scheme-event-reporting/submit-event-declaration-report"
   private val getFileUploadResponseUrl = "/pension-scheme-event-reporting/file-upload-response/get"
+  private val getOverviewUrl = "/pension-scheme-event-reporting/overview"
 
   private val failureOutcome = FileUploadOutcomeResponse(fileName = None, FAILURE, None)
   private val failureOutcomeJson = Json.obj("fileStatus" -> "ERROR")
@@ -217,6 +219,64 @@ class EventReportingConnectorSpec
       connector.getFileUploadOutcome(referenceStub) map {
         result =>
           result mustEqual inProgressOutcome
+      }
+    }
+  }
+
+  "getOverview" must {
+    "return the seq of overviewDetails returned from BE" in {
+      val erOverviewResponseJson: JsArray = Json.arr(
+        Json.obj(
+          "periodStartDate" -> "2022-04-06",
+          "periodEndDate" -> "2023-04-05",
+          "versionDetails" -> Json.obj(
+            "numberOfVersions" -> 3,
+            "submittedVersionAvailable" -> false,
+            "compiledVersionAvailable" -> true
+          )
+        ),
+        Json.obj(
+          "periodStartDate" -> "2022-04-06",
+          "periodEndDate" -> "2023-04-05",
+          "versionDetails" -> Json.obj(
+          "numberOfVersions" -> 2,
+          "submittedVersionAvailable" -> true,
+          "compiledVersionAvailable" -> true
+        )
+        )
+      )
+
+      val overview1 = EROverview(
+        LocalDate.of(2022, 4, 6),
+        LocalDate.of(2023, 4, 5),
+        tpssReportPresent = false,
+        Some(EROverviewVersion(
+          3,
+          submittedVersionAvailable = false,
+          compiledVersionAvailable = true)))
+
+      val overview2 = EROverview(
+        LocalDate.of(2022, 4, 6),
+        LocalDate.of(2023, 4, 5),
+        tpssReportPresent = false,
+        Some(EROverviewVersion(
+          2,
+          submittedVersionAvailable = true,
+          compiledVersionAvailable = true)))
+
+      val erOverview = Seq(overview1, overview2)
+
+
+      server.stubFor(
+        get(urlEqualTo(getOverviewUrl))
+          .willReturn(
+            ok
+              .withHeader("Content-Type", "application/json")
+              .withBody(erOverviewResponseJson.toString())
+          )
+      )
+      connector.getOverview(pstr, "ER", "2022-04-06", "2023-04-05").map { response =>
+        response mustBe erOverview
       }
     }
   }
