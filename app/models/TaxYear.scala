@@ -24,9 +24,12 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utils.DateHelper
 
 import java.time.LocalDate
+import scala.util.{Failure, Success, Try}
 
 case class TaxYear(startYear: String) {
   def endYear: String = (startYear.toInt + 1).toString
+
+  def rangeAsSeqString: Seq[String] = Seq(startYear, endYear)
 }
 
 object TaxYear extends Enumerable.Implicits {
@@ -45,6 +48,22 @@ object TaxYear extends Enumerable.Implicits {
         value = Some(value.startYear),
         id = Some(s"value_$index")
       )
+  }
+
+  def optionsFiltered(func: TaxYear => Boolean)(implicit messages: Messages): Seq[RadioItem] = {
+    values.zipWithIndex.flatMap {
+      case (value, index) =>
+        if (func(value)) {
+          Seq(RadioItem(
+            content = Text(messages("chooseTaxYear.yearRangeRadio", value.startYear, value.endYear)),
+            value = Some(value.startYear),
+            id = Some(s"value_$index")
+          )
+          )
+        } else {
+          Nil
+        }
+    }
   }
 
   def yearRange(currentDate: LocalDate): Seq[TaxYear] = {
@@ -69,6 +88,20 @@ object TaxYear extends Enumerable.Implicits {
   def getSelectedTaxYearAsString(userAnswers: UserAnswers): String = {
     val taxYear = getSelectedTaxYear(userAnswers)
     s"${Integer.parseInt(taxYear.endYear.stripPrefix("TaxYear(").stripSuffix(")").trim)}"
+  }
+
+  def getTaxYearFromOption(userAnswers: Option[UserAnswers]): Int = {
+    userAnswers.map(y => getTaxYear(y)).getOrElse(throw new RuntimeException("Tax year not entered"))
+  }
+
+  def getTaxYear(userAnswers: UserAnswers): Int = {
+    userAnswers.get(TaxYearPage) match {
+      case Some(year) => Try(year.startYear.toInt) match {
+        case Success(value) => value
+        case Failure(exception) => throw new RuntimeException("Tax year is not a number", exception)
+      }
+      case _ => throw new RuntimeException("Tax year not entered")
+    }
   }
 
   implicit val enumerable: Enumerable[TaxYear] =

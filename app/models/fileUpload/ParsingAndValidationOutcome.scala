@@ -16,13 +16,14 @@
 
 package models.fileUpload
 
-import play.api.libs.json.{JsObject, Json, OFormat}
+import play.api.libs.json._
 
 case class ParsingAndValidationOutcome(
-                              status: ParsingAndValidationOutcomeStatus,
-                              json: JsObject = Json.obj(),
-                              fileName: Option[String] = None
-                            )
+                                        status: ParsingAndValidationOutcomeStatus,
+                                        json: JsObject = Json.obj(),
+                                        fileName: Option[String] = None
+                                      )
+
 
 object ParsingAndValidationOutcome {
   implicit val format: OFormat[ParsingAndValidationOutcome] = Json.format[ParsingAndValidationOutcome]

@@ -19,9 +19,9 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.enumeration.EventType
-import models.{FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
+import models.{EROverview, EventDataIdentifier, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
 import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
 
@@ -36,8 +36,9 @@ class EventReportingConnector @Inject()(
   private def eventCompileUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/compile"
   private def eventSubmitUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event-declaration-report"
   private def getFileUploadResponseUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/get"
-
   private def eventReportingToggleUrl(toggleName:String) = s"${config.eventReportingUrl}/admin/get-toggle/$toggleName"
+  private def eventOverviewUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/overview"
+
 
   def getEventReportSummary(pstr: String, reportStartDate: String)
                            (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventType]] = {
@@ -68,12 +69,14 @@ class EventReportingConnector @Inject()(
       Future.successful(HttpResponse(NOT_FOUND, "Not found"))
   }
 
-  def compileEvent(pstr: String, eventType: EventType)
+  def compileEvent(pstr: String, edi: EventDataIdentifier)
                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
-      "eventType" -> eventType.toString
+      "eventType" -> edi.eventType.toString,
+      "year" -> edi.year,
+      "version" -> edi.version
     )
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
@@ -142,6 +145,31 @@ class EventReportingConnector @Inject()(
       }
 
     }
+  }
+
+  def getOverview(pstr: String, reportType: String, startDate: String, endDate: String)
+                 (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EROverview]] = {
+
+    val headers: Seq[(String, String)] = Seq(
+      "Content-Type" -> "application/json",
+      "pstr" -> pstr,
+      "reportType" -> reportType,
+      "startDate" -> startDate,
+      "endDate" -> endDate
+    )
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.GET[HttpResponse](eventOverviewUrl)(implicitly, hc, implicitly)
+      .map { response =>
+        response.status match {
+          case OK =>
+            Json.parse(response.body).validate[Seq[EROverview]](Reads.seq(EROverview.rds)) match {
+              case JsSuccess(data, _) => data
+              case JsError(errors) => throw JsResultException(errors)
+            }
+          case _ => throw new HttpException(response.body, response.status)
+        }
+      }
   }
 }
 

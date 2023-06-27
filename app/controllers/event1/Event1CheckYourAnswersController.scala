@@ -68,7 +68,7 @@ class Event1CheckYourAnswersController @Inject()(
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event1) andThen requireData).async { implicit request =>
       val waypoints = EmptyWaypoints
-      connector.compileEvent(request.pstr, Event1).map {
+      connector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(Event1)).map {
         _ =>
           Redirect(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(waypoints))
       }

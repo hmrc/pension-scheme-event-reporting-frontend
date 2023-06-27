@@ -21,7 +21,7 @@ import play.api.data.FormError
 
 class SchemeStructureDescriptionFormProviderSpec extends StringFieldBehaviours {
 
-  private val lengthKey = "schemeStructureDescription.error.length"
+  private val lengthKey = "event13.schemeStructureDescription.error.length"
   private val maxLength = 150
 
   private val form = new SchemeStructureDescriptionFormProvider()()

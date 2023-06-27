@@ -18,12 +18,13 @@ package controllers.partials
 
 import base.SpecBase
 import config.FrontendAppConfig
-import connectors.EventReportingConnector
-import models.ToggleDetails
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import models.{EROverview, ToggleDetails}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.Application
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -32,15 +33,25 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import viewmodels.partials.{CardSubHeading, CardSubHeadingParam, CardViewModel, Link}
 import views.html.partials.EventReportingTileView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val mockConnector = mock[EventReportingConnector]
+  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  def app = applicationBuilder()
-    .bindings(bind[EventReportingConnector].to(mockConnector))
+  def appNoTaxYear: Application = applicationBuilder()
+    .bindings(
+      bind[EventReportingConnector].to(mockConnector),
+      bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector)
+    )
     .build()
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockUserAnswersCacheConnector)
+  }
 
   "Event Reporting Tile Controller" - {
 
@@ -50,7 +61,20 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
         Future.successful(ToggleDetails("event-reporting", None, isEnabled = true))
       )
 
-      val application = app
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+
+      when(mockConnector.getOverview(any(), any(), any(), any())(any(), any())).thenReturn(
+        Future.successful(Seq(EROverview(
+          LocalDate.now(),
+          LocalDate.now().plusYears(1),
+          tpssReportPresent = false,
+          None
+        )))
+      )
+
+
+      val application = appNoTaxYear
 
       val view = application.injector.instanceOf[EventReportingTileView]
       val appConfig = application.injector.instanceOf[FrontendAppConfig]
@@ -60,20 +84,17 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
 
         val result = route(application, request).value
 
-        val card = Seq(CardViewModel(
-          id = "aft-overview",
-          heading = Messages("eventReportingTile.heading"),
-          subHeadings = Seq(CardSubHeading(subHeading = Messages("eventReportingTile.subHeading", "2022", "2023"),
-            subHeadingClasses = "card-sub-heading",
-            subHeadingParams = Seq(CardSubHeadingParam(
-              subHeadingParam = Messages("eventReportingTile.subHeading.param"),
-              subHeadingParamClasses = "font-small bold")
-            ))),
-          links = Seq(Link("erLoginLink", appConfig.erLoginUrl, Text(Messages("eventReportingTile.link.item2"))))
-        ))
-
+        val card = Seq(
+          CardViewModel(
+            id = "new",
+            heading = Messages("eventReportingTile.heading"),
+            subHeadings = Seq(CardSubHeading(subHeading = "", subHeadingClasses = "")),
+            links = Seq(Link("erLoginLink", appConfig.erStartNewUrl, Text(Messages("eventReportingTile.link.new"))))
+          )
+        )
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(card)(request, messages(application)).toString
+        
+        contentAsString(result).filterNot(_.isWhitespace) mustEqual view(card)(request, messages(application)).toString.filterNot(_.isWhitespace)
       }
     }
 
@@ -82,7 +103,19 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
         Future.successful(ToggleDetails("event-reporting", None, isEnabled = false))
       )
 
-      val application = app
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+
+      when(mockConnector.getOverview(any(), any(), any(), any())(any(), any())).thenReturn(
+        Future.successful(Seq(EROverview(
+          LocalDate.now(),
+          LocalDate.now().plusYears(1),
+          tpssReportPresent = false,
+          None
+        )))
+      )
+
+      val application = appNoTaxYear
 
       running(application) {
         val request = FakeRequest(GET, controllers.partials.routes.EventReportingTileController.eventReportPartial().url)
