@@ -49,7 +49,6 @@ class DeclarationController @Inject()(
                                        minimalConnector: MinimalConnector,
                                        auditService: AuditService,
                                        config: FrontendAppConfig,
-                                       view: DeclarationView
                                        view: DeclarationView,
                                        view2: DeclarationPspView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -65,8 +64,8 @@ class DeclarationController @Inject()(
   def onPageLoadPractitioner(waypoints: Waypoints): Action[AnyContent] = identify {
     implicit request =>
       request.loggedInUser.administratorOrPractitioner match {
-        case Practitioner => Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
-        case _ => Ok(view2(continueUrl = controllers.routes.DeclarationController.onPageLoadAdministrator(waypoints).url))
+        case Practitioner => Ok(view2(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
+        case _ => Ok(view(continueUrl = controllers.routes.DeclarationController.onPageLoadAdministrator(waypoints).url))
       }
   }
 
@@ -150,6 +149,17 @@ class DeclarationController @Inject()(
           "pspDeclaration2" -> "Selected"
         )
     }
+
+    //{
+    //  "pstr": "61001598KU",
+    //  "reportStartDate": "1997-02-21",
+    //  "reportEndDate": "1997-02-22",
+    //  "submittedBy": "PSP",
+    //  "submittedID": "60467529",
+    //  "authorisedPSAID": "A23435362",
+    //  "pspDeclaration1": "Selected",
+    //  "pspDeclaration2": "Selected"
+    //}
 
     Json.obj(
       "pstr" -> pstr,
