@@ -27,18 +27,18 @@ import views.html.common.FileUploadWhatYouWillNeedView
 import javax.inject.Inject
 
 class FileUploadWhatYouWillNeedController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           identify: IdentifierAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: FileUploadWhatYouWillNeedView
-                                         ) extends FrontendBaseController with I18nSupport {
+                                                     override val messagesApi: MessagesApi,
+                                                     identify: IdentifierAction,
+                                                     getData: DataRetrievalAction,
+                                                     val controllerComponents: MessagesControllerComponents,
+                                                     view: FileUploadWhatYouWillNeedView
+                                                   ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) {
     implicit request =>
       val templateDownloadLink = controllers.routes.FileDownloadController.templateFile(eventType)
       val instructionsDownloadLink = controllers.routes.FileDownloadController.instructionsFile(eventType)
-      Ok(view(controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints, eventType).url, templateDownloadLink, instructionsDownloadLink, eventType))
+      Ok(view(controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints, eventType).url,
+        templateDownloadLink, instructionsDownloadLink, eventType))
   }
 }
