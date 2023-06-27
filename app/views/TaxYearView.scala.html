@@ -22,7 +22,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, radioOptions: Seq[RadioItem])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("taxYear.title"))) {
 
@@ -36,7 +36,7 @@
             RadiosViewModel(
                 field  = form("value"),
                 legend = LegendViewModel(messages("taxYear.heading")).asPageHeading(),
-                items  = TaxYear.options
+                items  = radioOptions
             )
         )
 

@@ -223,6 +223,9 @@ GET         /new-report/event-23-summary/page/:pageNumber                       
 POST        /new-report/event-23-summary                                          controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 
 GET         /event-reporting-partials                                             controllers.partials.EventReportingTileController.eventReportPartial()
+GET         /view-event-report-in-progress                                        controllers.partials.EventReportingTileLinksController.onClickCompiled
+GET         /view-or-change-past-event-reports                                    controllers.partials.EventReportingTileLinksController.onClickSubmitted
+GET         /new-event-report                                                     controllers.partials.EventReportingTileLinksController.onClickNew
 
 GET         /select-tax-year                                                      controllers.TaxYearController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /select-tax-year                                                      controllers.TaxYearController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

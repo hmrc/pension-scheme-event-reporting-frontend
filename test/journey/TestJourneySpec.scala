@@ -18,12 +18,12 @@ package journey
 
 import data.SampleData.{companyDetails, seqTolerantAddresses}
 import generators.ModelGenerators
-import models.EventSelection
+import models.{EventSelection, TaxYear, UserAnswers}
 import models.EventSelection._
 import models.common.ManualOrUpload.Manual
 import models.common.{ChooseTaxYear, MembersDetails}
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
-import models.enumeration.EventType
+import models.enumeration.{EventType, JourneyStartType}
 import models.event1.PaymentDetails
 import models.event1.PaymentNature._
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
@@ -45,7 +45,7 @@ import pages.event10.{BecomeOrCeaseSchemePage, ContractsOrPoliciesPage, Event10C
 import pages.event12.{CannotSubmitPage, DateOfChangePage, Event12CheckYourAnswersPage, HasSchemeChangedRulesPage}
 import pages.event18.Event18ConfirmationPage
 import pages.eventWindUp.{EventWindUpCheckYourAnswersPage, SchemeWindUpDatePage}
-import pages.{DeclarationPage, EventSelectionPage, EventSummaryPage, WantToSubmitPage}
+import pages.{DeclarationPage, EventReportingTileLinksPage, EventSelectionPage, EventSummaryPage, TaxYearPage, WantToSubmitPage}
 import play.api.libs.json.Writes
 //import pages.fileUpload.FileUploadResultPage
 //import pages.fileUpload.ProcessingRequestPage
@@ -313,6 +313,26 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(pages.common.MembersDetailsPage(EventType.Event23, 0), membersDetails.get),
         submitAnswer(ChooseTaxYearPage(EventType.Event23, 0), taxYear.get)(writesTaxYear, implicitly),
         pageMustBe(TotalPensionAmountsPage(EventType.Event23, 0))
+      )
+  }
+
+  "test navigation from tax year page to event summary page after user chosen compiled events" in {
+    val ua = UserAnswers()
+      .setOrException(EventReportingTileLinksPage, JourneyStartType.InProgress, nonEventTypeData = true)
+    startingFrom(TaxYearPage, answers = ua)
+      .run(
+        submitAnswer(TaxYearPage, TaxYear("2020")),
+        pageMustBe(EventSummaryPage)
+      )
+  }
+
+  "test navigation from tax year page to event summary page after user chosen past submitted events" in {
+    val ua = UserAnswers()
+      .setOrException(EventReportingTileLinksPage, JourneyStartType.PastEventTypes, nonEventTypeData = true)
+    startingFrom(TaxYearPage, answers = ua)
+      .run(
+        submitAnswer(TaxYearPage, TaxYear("2020")),
+        pageMustBe(EventSummaryPage)
       )
   }
 
