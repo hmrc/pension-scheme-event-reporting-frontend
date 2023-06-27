@@ -57,14 +57,6 @@ class Event20ACheckYourAnswersController @Inject()(
       Ok(view(SummaryListViewModel(rows = buildEvent20ACYARows(waypoints, thisPage, request.userAnswers)), continueUrl))
     }
 
-//  def onClick: Action[AnyContent] =
-//    (identify andThen getData(Event20A) andThen requireData).async { implicit request =>
-//          connector.compileEvent(request.pstr, Event20A).map {
-//            _ =>
-//              Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
-//          }
-//    }
-
   private def buildEvent20ACYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, answers: UserAnswers)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
 
