@@ -31,7 +31,6 @@ class FileUploadWhatYouWillNeedControllerSpec extends SpecBase {
 
   private def getRoute(eventType: EventType): String = controllers.common.routes.FileUploadWhatYouWillNeedController.onPageLoad(EmptyWaypoints, eventType).url
 
-  //TODO: The continue URL needs to be changed for the future "next" page
   private def continueUrl(eventType: EventType): Call = controllers.fileUpload.routes.FileUploadController.onPageLoad(EmptyWaypoints, eventType)
 
   private def templateDownloadLink(eventType: EventType): Call = controllers.routes.FileDownloadController.templateFile(eventType)
@@ -60,7 +59,8 @@ class FileUploadWhatYouWillNeedControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[FileUploadWhatYouWillNeedView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(continueUrl(eventType).url, templateDownloadLink(eventType), instructionsDownloadLink(eventType), eventType)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(continueUrl(eventType).url, templateDownloadLink(eventType),
+          instructionsDownloadLink(eventType), eventType)(request, messages(application)).toString
       }
     }
   }
