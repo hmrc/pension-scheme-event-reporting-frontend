@@ -17,6 +17,7 @@
 package controllers.event22
 
 import base.SpecBase
+import models.enumeration.EventType
 import models.enumeration.EventType.Event22
 import pages.EmptyWaypoints
 import play.api.mvc.Call

@@ -110,7 +110,8 @@ class UserAnswersCacheConnector @Inject()(
                 throw new HttpException(response.body, response.status)
             }
           }
-      case None => throw new RuntimeException("No tax year available")
+      case None =>
+        Future.failed(new RuntimeException("No tax year available"))
     }
   }
 
@@ -123,7 +124,6 @@ class UserAnswersCacheConnector @Inject()(
     )
 
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-
     http.POST[JsValue, HttpResponse](url, userAnswers.noEventTypeData)(implicitly, implicitly, hc, implicitly)
       .map { response =>
         response.status match {

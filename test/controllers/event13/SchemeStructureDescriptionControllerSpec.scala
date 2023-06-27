@@ -89,7 +89,7 @@ class SchemeStructureDescriptionControllerSpec extends SpecBase with BeforeAndAf
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(Some(validValue)), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validValue), waypoints)(request, messages(application)).toString
       }
     }
 
@@ -104,27 +104,6 @@ class SchemeStructureDescriptionControllerSpec extends SpecBase with BeforeAndAf
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "abcdef"))
-
-        val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(SchemeStructureDescriptionPage, validValue).success.value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual SchemeStructureDescriptionPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
-      }
-    }
-
-    "must save the answer and redirect to the next page when valid data is submitted (empty value)" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(SchemeStructureDescriptionPage, validValue).success.value

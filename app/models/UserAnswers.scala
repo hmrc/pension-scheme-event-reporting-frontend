@@ -54,8 +54,8 @@ final case class UserAnswers(
       case JsSuccess(a@Some(_), _) if a.isDefined => true
       case _ =>
         Reads.optionNoError(Reads.at[JsValue](gettable.path)).reads(noEventTypeData)
-            .map(_.isDefined)
-            .getOrElse(false)
+          .map(_.isDefined)
+          .getOrElse(false)
     }
   }
 
@@ -82,11 +82,31 @@ final case class UserAnswers(
     }
   }
 
+  def set(path: JsPath, value: JsValue): Try[UserAnswers] = {
+    val updatedData = data.setObject(path, Json.toJson(value)) match {
+      case JsSuccess(jsValue, _) =>
+        Success(jsValue)
+      case JsError(errors) =>
+        Failure(JsResultException(errors))
+    }
+
+    updatedData.flatMap {
+      d =>
+        val updatedAnswers = copy(data = d)
+        Success(updatedAnswers)
+    }
+  }
+
   def setOrException[A](page: QuestionPage[A], value: A, nonEventTypeData: Boolean = false)(implicit writes: Writes[A]): UserAnswers = {
     set(page, value, nonEventTypeData) match {
       case Success(ua) => ua
       case Failure(ex) => throw ex
     }
+  }
+
+  def setOrException(path: JsPath, value: JsValue): UserAnswers = set(path, value) match {
+    case Success(ua) => ua
+    case Failure(ex) => throw ex
   }
 
   def remove[A](page: Settable[A], nonEventTypeData: Boolean = false): Try[UserAnswers] = {
@@ -115,6 +135,16 @@ final case class UserAnswers(
       case Failure(ex) => throw ex
     }
   }
+
+  def removeWithPath(path: JsPath): UserAnswers = {
+    data.removeObject(path) match {
+      case JsSuccess(jsValue, _) =>
+        UserAnswers(jsValue, noEventTypeData)
+      case JsError(_) =>
+        throw new RuntimeException("Unable to remove with path: " + path)
+    }
+  }
+
 
   def getAll[A](page: Gettable[Seq[A]])(implicit reads: Reads[A]): Seq[A] =
     data.as[Option[Seq[A]]](page.path.readNullable[Seq[A]]).toSeq.flatten

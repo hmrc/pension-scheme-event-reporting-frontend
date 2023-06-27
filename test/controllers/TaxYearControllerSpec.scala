@@ -19,16 +19,18 @@ package controllers
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.TaxYearFormProvider
-import models.{TaxYear, UserAnswers}
+import models.enumeration.JourneyStartType.{InProgress, PastEventTypes, StartNew}
+import models.{EROverview, EROverviewVersion, TaxYear, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, TaxYearPage}
+import pages.{EmptyWaypoints, EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utils.DateHelper
 import views.html.TaxYearView
 
@@ -47,14 +49,36 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
   private def getRoute: String = routes.TaxYearController.onPageLoad(waypoints).url
   private def postRoute: String = routes.TaxYearController.onSubmit(waypoints).url
 
+  private val radioOptions: Seq[RadioItem] = TaxYear.options
+
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
+  private val overview1 = EROverview(
+    LocalDate.of(2021, 4, 6),
+    LocalDate.of(2022, 4, 5),
+    tpssReportPresent = false,
+    Some(EROverviewVersion(
+      3,
+      submittedVersionAvailable = false,
+      compiledVersionAvailable = true)))
+
+  private val overview2 = EROverview(
+    LocalDate.of(2022, 4, 6),
+    LocalDate.of(2023, 4, 5),
+    tpssReportPresent = false,
+    Some(EROverviewVersion(
+      2,
+      submittedVersionAvailable = true,
+      compiledVersionAvailable = false)))
+
+  private val erOverview = Seq(overview1, overview2)
+
   override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
-    DateHelper.setDate(Some(LocalDate.of(2023, 2, 10)))
+    DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
   }
 
   "TaxYear Controller" - {
@@ -71,7 +95,49 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         val view = application.injector.instanceOf[TaxYearView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, radioOptions)(request, messages(application)).toString
+      }
+    }
+
+    "must return OK and the correct view for a GET when past events chosen from tile page" in {
+      val ua = emptyUserAnswers
+        .setOrException(EventReportingTileLinksPage, PastEventTypes)
+        .setOrException(EventReportingOverviewPage, erOverview)
+
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val result = route(application, request).value
+
+        val radioOptions: Seq[RadioItem] = TaxYear.optionsFiltered( _.startYear == "2022")
+
+        val view = application.injector.instanceOf[TaxYearView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form, waypoints, radioOptions)(request, messages(application)).toString
+      }
+    }
+
+    "must return OK and the correct view for a GET when in progress events chosen from tile page" in {
+      val ua = emptyUserAnswers
+        .setOrException(EventReportingTileLinksPage, InProgress)
+        .setOrException(EventReportingOverviewPage, erOverview)
+
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val result = route(application, request).value
+
+        val radioOptions: Seq[RadioItem] = TaxYear.optionsFiltered(_.startYear == "2021")
+
+        val view = application.injector.instanceOf[TaxYearView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form, waypoints, radioOptions)(request, messages(application)).toString
       }
     }
 
@@ -89,7 +155,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(TaxYear.values.head), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(TaxYear.values.head), waypoints, radioOptions)(request, messages(application)).toString
       }
     }
 
@@ -97,8 +163,10 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
+      val ua = emptyUserAnswers.setOrException(EventReportingTileLinksPage, StartNew)
+
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(ua), extraModules)
           .build()
 
       running(application) {
@@ -106,7 +174,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", TaxYear.values.head.startYear))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(TaxYearPage, TaxYear.values.head).success.value
+        val updatedAnswers = ua.set(TaxYearPage, TaxYear.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual TaxYearPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
@@ -129,7 +197,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, radioOptions)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

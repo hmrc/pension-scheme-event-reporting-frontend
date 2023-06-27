@@ -223,6 +223,9 @@ GET         /new-report/event-23-summary/page/:pageNumber                       
 POST        /new-report/event-23-summary                                          controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 
 GET         /event-reporting-partials                                             controllers.partials.EventReportingTileController.eventReportPartial()
+GET         /view-event-report-in-progress                                        controllers.partials.EventReportingTileLinksController.onClickCompiled
+GET         /view-or-change-past-event-reports                                    controllers.partials.EventReportingTileLinksController.onClickSubmitted
+GET         /new-event-report                                                     controllers.partials.EventReportingTileLinksController.onClickNew
 
 GET         /select-tax-year                                                      controllers.TaxYearController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /select-tax-year                                                      controllers.TaxYearController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
@@ -248,9 +251,16 @@ GET         /new-report/event-23-upload                                         
 GET         /new-report/event-22-check                                            controllers.fileUpload.FileUploadResultController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 POST        /new-report/event-22-check                                            controllers.fileUpload.FileUploadResultController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 
-GET         /new-report/event-22-wrong-format                                     controllers.fileUpload.FileRejectedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-23-check                                            controllers.fileUpload.FileUploadResultController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
+POST        /new-report/event-23-check                                            controllers.fileUpload.FileUploadResultController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 
-GET         /new-report/event-22-checking-file                                    controllers.fileUpload.ProcessingRequestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-22-wrong-format                                     controllers.fileUpload.FileRejectedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+
+GET         /new-report/event-23-wrong-format                                     controllers.fileUpload.FileRejectedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
+
+GET         /new-report/event-22-checking-file                                    controllers.fileUpload.ProcessingRequestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+
+GET         /new-report/event-23-checking-file                                    controllers.fileUpload.ProcessingRequestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 
 GET         /new-report/:index/event-3-member-details                             controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3, index: Index, memberPageNo: Int = 0)
 POST        /new-report/:index/event-3-member-details                             controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3, index: Index, memberPageNo: Int = 0)
@@ -419,14 +429,14 @@ GET         /new-report/:index/dummy-member-details                             
 POST        /new-report/:index/dummy-member-details                              controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index,memberPageNo: Int ?= 0)
 
 # Event 13
-GET        /new-report/event-13-scheme-structure                                 controllers.event13.SchemeStructureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/event-13-scheme-structure                                 controllers.event13.SchemeStructureController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/event-13-new-scheme-structure                             controllers.event13.SchemeStructureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-13-new-scheme-structure                             controllers.event13.SchemeStructureController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /new-report/event-13-date-of-change                                   controllers.event13.ChangeDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/event-13-date-of-change                                   controllers.event13.ChangeDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/event-13-when-change-was-made                             controllers.event13.ChangeDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-13-when-change-was-made                             controllers.event13.ChangeDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /new-report/event-13-other-structure                                  controllers.event13.SchemeStructureDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST       /new-report/event-13-other-structure                                  controllers.event13.SchemeStructureDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/event-13-brief-description-of-scheme-structure            controllers.event13.SchemeStructureDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/event-13-brief-description-of-scheme-structure            controllers.event13.SchemeStructureDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-13-check-your-answers                              controllers.event13.Event13CheckYourAnswersController.onPageLoad
 GET         /new-report/event-13-click                                           controllers.event13.Event13CheckYourAnswersController.onClick
@@ -465,3 +475,11 @@ POST       /new-report/event-20-when-scheme-ceased-to-be-occupational           
 
 GET         /new-report/event-20-check-your-answers                              controllers.event20.Event20CheckYourAnswersController.onPageLoad
 GET         /new-report/event-20-click                                           controllers.event20.Event20CheckYourAnswersController.onClick
+
+GET        /new-report/event-22-upload-successful                                 controllers.fileUpload.FileUploadSuccessController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+
+GET        /new-report/event-22-upload-fail                                       controllers.fileUpload.ValidationErrorsAllController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+
+GET        /new-report/event-22-upload-error-many                                 controllers.fileUpload.ValidationErrorsSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+
+GET        /new-report/event-22-upload-problem                                    controllers.fileUpload.ProblemWithServiceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)

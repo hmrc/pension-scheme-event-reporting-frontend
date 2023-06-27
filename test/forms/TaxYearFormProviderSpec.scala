@@ -44,7 +44,7 @@ class TaxYearFormProviderSpec extends OptionFieldBehaviours with BeforeAndAfterE
 
   override def beforeEach(): Unit = {
     super.beforeEach
-    DateHelper.setDate(Some(LocalDate.of(2023, 2, 10)))
+    DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
   }
   private val form = new TaxYearFormProvider()()
 

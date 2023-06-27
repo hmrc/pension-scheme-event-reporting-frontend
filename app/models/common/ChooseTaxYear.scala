@@ -28,13 +28,12 @@ case class ChooseTaxYear(startYear: String) {
 }
 
 object ChooseTaxYear extends Enumerable.Implicits {
-
-  private final val minYear: Int = 2013
+  final val minimumYear: Int = 2013
 
   def values(taxYearMax: Int): Seq[ChooseTaxYear] = valuesForYearRange(taxYearMax)
 
   def valuesForYearRange(taxYearMax: Int): Seq[ChooseTaxYear] = {
-    (minYear to taxYearMax).reverse.map(year => ChooseTaxYear(year.toString))
+    (minimumYear to taxYearMax).reverse.map(year => ChooseTaxYear(year.toString))
   }
 
   def options(taxYearMax: Int)(implicit messages: Messages): Seq[RadioItem] = valuesForYearRange(taxYearMax).zipWithIndex.map {
