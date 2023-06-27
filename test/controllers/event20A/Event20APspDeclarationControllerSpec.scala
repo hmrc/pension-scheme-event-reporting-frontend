@@ -24,7 +24,7 @@ import forms.event20A.Event20APspDeclarationFormProvider
 import models.{SchemeDetails, UserAnswers}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, reset, times, verify, when}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
@@ -32,7 +32,7 @@ import pages.event20A.Event20APspDeclarationPage
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.event20A.Event20APspDeclarationView
@@ -130,29 +130,29 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       }
     }
 
-//    "must save the answer and redirect to the next page when valid data is submitted" in {
-//      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
-//      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
-//      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-//        .thenReturn(Future.successful(()))
-//      when(mockEventReportingConnector.submitReportEvent20A(
-//        ArgumentMatchers.eq("87219363YN"), ArgumentMatchers.eq(mockEvent20AData))(any(), any())).thenReturn(Future.successful())
-//      val application =
-//        applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
-//          .build()
-//
-//      running(application) {
-//        val request =
-//          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
-//
-//        val result = route(application, request).value
-//        val updatedAnswers = emptyUserAnswersWithTaxYear.set(Event20APspDeclarationPage, validValue).success.value
-//
-//        status(result) mustEqual SEE_OTHER
-//        redirectLocation(result).value mustEqual Event20APspDeclarationPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-//        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
-//      }
-//    }
+    "must save the answer and redirect to the next page when valid data is submitted" in {
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+      when(mockEventReportingConnector.submitReportEvent20A(
+        ArgumentMatchers.eq("87219363YN"), ArgumentMatchers.eq(mockEvent20AData))(any(), any())).thenReturn(Future.successful())
+      val application =
+        applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "A1234567"))
+
+        val result = route(application, request).value
+        val updatedAnswers = emptyUserAnswersWithTaxYear.set(Event20APspDeclarationPage, validValue).success.value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual Event20APspDeclarationPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+      }
+    }
 
     "must return bad request when invalid data is submitted" in {
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))

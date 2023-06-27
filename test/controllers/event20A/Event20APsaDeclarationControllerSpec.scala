@@ -19,6 +19,7 @@ package controllers.event20A
 import base.SpecBase
 import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
 import connectors.{EventReportingConnector, MinimalConnector}
+import data.SampleData.sampleEvent20ABecameJourneyData
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -78,29 +79,27 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       }
     }
 
-//    "must redirect to the correct page for method onClick" in {
-//
-//      val testEmail = "test@test.com"
-//      val templateId = "pods_event_report_submitted"
-//      val organisationName = "Test company ltd"
-//      val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
-//
-//      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
-//      when(mockERConnector.submitReportEvent20A(any(), any())(any(), any())).thenReturn(Future.successful(()))
-//
-//      val application =
-//        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
-//          .build()
-//
-//      running(application) {
-//        val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url)
-//
-//        val result = route(application, request).value
-//
-//        status(result) mustEqual SEE_OTHER
-//        println("\n\n\n\n\nHEL " + redirectLocation(result))
-//        redirectLocation(result).value mustEqual controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url
-//      }
-//    }
+    "must redirect to the correct page for method onClick" in {
+
+      val testEmail = "test@test.com"
+      val organisationName = "Test company ltd"
+      val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
+
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+      when(mockERConnector.submitReportEvent20A(any(), any())(any(), any())).thenReturn(Future.successful(()))
+
+      val application =
+        applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
+          .build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url
+      }
+    }
   }
 }
