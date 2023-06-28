@@ -43,7 +43,7 @@ class CompileService @Inject()(
         case _ => throw new RuntimeException(s"No version available")
       }
       val updatedUA = userAnswers.setOrException(VersionInfoPage, newVersionInfo, nonEventTypeData = true)
-      userAnswersCacheConnector.save(pstr, eventType, updatedUA)
+      userAnswersCacheConnector.save(pstr, updatedUA)
     }
   }
 }

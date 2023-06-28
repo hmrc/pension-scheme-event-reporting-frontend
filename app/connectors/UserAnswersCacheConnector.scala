@@ -111,7 +111,7 @@ class UserAnswersCacheConnector @Inject()(
           "pstr" -> pstr,
           "eventType" -> eventType.toString,
           "year" -> year.startYear,
-          "version" -> version.toString
+          "version" -> version.version.toString
         )
 
         val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)

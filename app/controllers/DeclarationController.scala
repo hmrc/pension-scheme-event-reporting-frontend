@@ -62,7 +62,8 @@ class DeclarationController @Inject()(
         declarationData(
           request.pstr,
           TaxYear.getSelectedTaxYear(request.userAnswers),
-          request.loggedInUser)
+          request.loggedInUser),
+        request.userAnswers.noEventTypeData
       )
 
       def emailFuture = minimalConnector.getMinimalDetails(
@@ -74,9 +75,12 @@ class DeclarationController @Inject()(
         sendEmail(minimalDetails.name, email, taxYear, schemeName)
       }
 
-      submitService.submitReport(request.pstr, data).flatMap { _ =>
-        emailFuture.map { _ =>
-          Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
+      submitService.submitReport(request.pstr, data).flatMap { r =>
+        r.header.status match {
+          case OK => emailFuture.map { _ =>
+            Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
+          }
+          case _ => throw new RuntimeException(s"Invalid response returned from submit report: $r")
         }
       }
   }
