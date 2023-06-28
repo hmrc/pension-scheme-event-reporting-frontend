@@ -50,6 +50,22 @@ object TaxYear extends Enumerable.Implicits {
       )
   }
 
+  def optionsFiltered(func: TaxYear => Boolean)(implicit messages: Messages): Seq[RadioItem] = {
+    values.zipWithIndex.flatMap {
+      case (value, index) =>
+        if (func(value)) {
+          Seq(RadioItem(
+            content = Text(messages("chooseTaxYear.yearRangeRadio", value.startYear, value.endYear)),
+            value = Some(value.startYear),
+            id = Some(s"value_$index")
+          )
+          )
+        } else {
+          Nil
+        }
+    }
+  }
+
   def yearRange(currentDate: LocalDate): Seq[TaxYear] = {
     val endOfTaxYear = LocalDate.of(currentDate.getYear, 4, 5)
     val startOfTaxYear = LocalDate.of(currentDate.getYear, 4, 6)

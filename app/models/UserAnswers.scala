@@ -54,8 +54,8 @@ final case class UserAnswers(
       case JsSuccess(a@Some(_), _) if a.isDefined => true
       case _ =>
         Reads.optionNoError(Reads.at[JsValue](gettable.path)).reads(noEventTypeData)
-            .map(_.isDefined)
-            .getOrElse(false)
+          .map(_.isDefined)
+          .getOrElse(false)
     }
   }
 

@@ -45,6 +45,10 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   val betaFeedbackUnauthenticatedUrl: String = getConfigString("contact-frontend.beta-feedback-url.unauthenticated")
 
   lazy val erLoginUrl: String = configuration.get[String](path = "urls.partials.erLoginLink")
+  lazy val erStartNewUrl: String = configuration.get[String](path = "urls.partials.erStartNew")
+  lazy val erCompiledUrl: String = configuration.get[String](path = "urls.partials.erCompiledLink")
+  lazy val erSubmittedUrl: String = configuration.get[String](path = "urls.partials.erSubmittedLink")
+
   val loginUrl: String = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String = loadConfig("urls.signOut")
