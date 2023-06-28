@@ -84,9 +84,9 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
         value => {
           val originalUserAnswers = request.userAnswers
 
-//          val vv = originalUserAnswers.get(EventReportingOverviewPage).toSeq.flatten.filter(
-//            _.periodStartDate
-//          )
+          //          val vv = originalUserAnswers.get(EventReportingOverviewPage).toSeq.flatten.filter(
+          //            _.periodStartDate
+          //          )
 
           val updatedAnswers = originalUserAnswers.setOrException(TaxYearPage, value, nonEventTypeData = true)
           userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>

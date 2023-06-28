@@ -47,6 +47,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute: String = routes.TaxYearController.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.TaxYearController.onSubmit(waypoints).url
 
   private val radioOptions: Seq[RadioItem] = TaxYear.options
@@ -113,7 +114,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
         val result = route(application, request).value
 
-        val radioOptions: Seq[RadioItem] = TaxYear.optionsFiltered( _.startYear == "2022")
+        val radioOptions: Seq[RadioItem] = TaxYear.optionsFiltered(_.startYear == "2022")
         val view = application.injector.instanceOf[TaxYearView]
 
         status(result) mustEqual OK
