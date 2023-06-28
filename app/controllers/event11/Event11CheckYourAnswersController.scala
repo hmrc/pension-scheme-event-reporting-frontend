@@ -17,7 +17,6 @@
 package controllers.event11
 
 import com.google.inject.Inject
-import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.UserAnswers
 import models.enumeration.EventType.Event11
@@ -26,6 +25,7 @@ import pages.event11.{Event11CheckYourAnswersPage, HasSchemeChangedRulesInvestme
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.event11.checkAnswers.{HasSchemeChangedRulesInvestmentsInAssetsSummary, HasSchemeChangedRulesSummary, InvestmentsInAssetsRuleChangeDateSummary, UnAuthPaymentsRuleChangeDateSummary}
@@ -39,7 +39,7 @@ class Event11CheckYourAnswersController @Inject()(
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
-                                                   connector: EventReportingConnector,
+                                                   compileService: CompileService,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: CheckYourAnswersView
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -61,7 +61,7 @@ class Event11CheckYourAnswersController @Inject()(
         case (false, false) =>
           Future.successful(Redirect(controllers.event11.routes.Event11CannotSubmitController.onPageLoad(EmptyWaypoints).url))
         case _ =>
-          connector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(Event11)).map {
+          compileService.compileEvent(Event11, request.pstr, request.userAnswers).map {
             _ =>
               Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
           }

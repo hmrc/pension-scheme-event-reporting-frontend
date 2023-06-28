@@ -17,11 +17,12 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.UserAnswers
 import models.enumeration.EventType
+import models.enumeration.VersionStatus.Compiled
+import models.{TaxYear, UserAnswers, VersionInfo}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
-import pages.TaxYearPage
+import pages.{TaxYearPage, VersionInfoPage}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http._
 import utils.WireMockHelper
@@ -48,6 +49,9 @@ class UserAnswersCacheConnectorSpec
     )
 
   private val userAnswers = UserAnswers(validResponse)
+  private val userAnswersForSave = UserAnswers(Json.obj("test" -> "test"))
+    .setOrException(VersionInfoPage, VersionInfo(2, Compiled))
+    .setOrException(TaxYearPage, TaxYear("2020"))
 
 
   "get" must {
@@ -55,13 +59,13 @@ class UserAnswersCacheConnectorSpec
       server.stubFor(
         get(urlEqualTo(userAnswersCacheUrl))
           .willReturn(
-            ok(Json.stringify(validResponse))
+            ok(Json.stringify(userAnswersForSave.data))
               .withHeader("Content-Type", "application/json")
           )
       )
 
       connector.get(pstr, eventType) map {
-        _ mustBe Some(UserAnswers(validResponse, validResponse))
+        _ mustBe Some(UserAnswers(userAnswersForSave.data, userAnswersForSave.data))
       }
     }
 
@@ -105,8 +109,8 @@ class UserAnswersCacheConnectorSpec
           )
       )
 
-      connector.save(pstr, eventType, userAnswers) map {
-        _ mustBe ()
+      connector.save(pstr, eventType, userAnswersForSave) map {
+        _ mustBe()
       }
     }
 
@@ -136,7 +140,7 @@ class UserAnswersCacheConnectorSpec
       )
 
       recoverToSucceededIf[HttpException] {
-        connector.save(pstr, eventType, userAnswers)
+        connector.save(pstr, eventType, userAnswersForSave)
       }
     }
   }

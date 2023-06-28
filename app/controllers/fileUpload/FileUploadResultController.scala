@@ -35,6 +35,7 @@ import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.libs.json.{JsArray, JsObject, JsPath, Json}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import services.CompileService
 import services.fileUpload.Validator.FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty
 import services.fileUpload.{CSVParser, Event22Validator, ValidationError}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -50,6 +51,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                                            getData: DataRetrievalAction,
                                            userAnswersCacheConnector: UserAnswersCacheConnector,
                                            eventReportingConnector: EventReportingConnector,
+                                           compileService: CompileService,
                                            upscanInitiateConnector: UpscanInitiateConnector,
                                            formProvider: FileUploadResultFormProvider,
                                            parsingAndValidationOutcomeCacheConnector: ParsingAndValidationOutcomeCacheConnector,
@@ -106,12 +108,12 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       )
   }
 
+  // scalastyle:off cyclomatic.complexity
   private def asyncGetUpscanFileAndParse(eventType: EventType)(implicit request: OptionalDataRequest[AnyContent]): Unit = {
     request.queryString.get("key")
     val referenceOpt: Option[String] = request.request.queryString.get("key").flatMap { values =>
       values.headOption
     }
-
     referenceOpt match {
       case Some(reference) =>
         eventReportingConnector.getFileUploadOutcome(reference).flatMap { fileUploadOutcomeResponse =>
@@ -134,10 +136,11 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                         Future.successful(processInvalid(eventType, errors))
                       case Valid(updatedUA) =>
                         userAnswersCacheConnector.save(request.pstr, eventType, updatedUA).flatMap { _ =>
-                          eventReportingConnector.compileEvent(request.pstr, updatedUA.eventDataIdentifier(eventType))
+                          compileService.compileEvent(eventType, request.pstr, updatedUA)
                             .map(_ => ParsingAndValidationOutcome(Success, Json.obj(), fileName))
                         }
                     }
+
                     futureOutcome.map(outcome => parsingAndValidationOutcomeCacheConnector.setOutcome(outcome))
                   } recoverWith {
                     case e: Throwable =>
