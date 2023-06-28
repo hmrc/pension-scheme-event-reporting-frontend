@@ -17,22 +17,33 @@
 package services
 
 import com.google.inject.Inject
-import connectors.EventReportingConnector
-import models.UserAnswers
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.enumeration.EventType
-import models.requests.DataRequest
-import play.api.mvc.AnyContent
+import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
+import models.{UserAnswers, VersionInfo}
+import pages.VersionInfoPage
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class CompileService @Inject()(
-                              eventReportingConnector: EventReportingConnector
+                              eventReportingConnector: EventReportingConnector,
+                              userAnswersCacheConnector: UserAnswersCacheConnector
                               ){
+
   def compileEvent(eventType: EventType, pstr: String, userAnswers: UserAnswers)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
-    val edi = userAnswers.eventDataIdentifier(eventType) // Version is so can retrieve in BE from user answers
-    // Need to get version from user answers not hard code in above
-    eventReportingConnector.compileEvent(pstr, edi)
-    // Then after successful compile do point c) on 8520 ticket
+    eventReportingConnector.compileEvent(pstr, userAnswers.eventDataIdentifier(eventType)).flatMap{ _ =>
+      val newVersionInfo = userAnswers.get(VersionInfoPage) match {
+        case Some(vi) =>
+          vi match {
+            case VersionInfo(version, NotStarted) => VersionInfo(version, Compiled)
+            case vi@VersionInfo(_, Compiled) => vi
+            case VersionInfo(version, Submitted) => VersionInfo(version + 1, Compiled)
+          }
+        case _ => throw new RuntimeException(s"No version available")
+      }
+      val updatedUA = userAnswers.setOrException(VersionInfoPage, newVersionInfo, nonEventTypeData = true)
+      userAnswersCacheConnector.save(pstr, eventType, updatedUA)
+    }
   }
 }

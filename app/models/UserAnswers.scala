@@ -17,7 +17,8 @@
 package models
 
 import models.enumeration.EventType
-import pages.{QuestionPage, TaxYearPage}
+import models.enumeration.VersionStatus.{Compiled, Submitted}
+import pages.{QuestionPage, TaxYearPage, VersionInfoPage}
 import play.api.libs.json._
 import queries.{Derivable, Gettable, Query, Settable}
 
@@ -99,8 +100,10 @@ final case class UserAnswers(
 
   def setOrException[A](page: QuestionPage[A], value: A, nonEventTypeData: Boolean = false)(implicit writes: Writes[A]): UserAnswers = {
     set(page, value, nonEventTypeData) match {
-      case Success(ua) => ua
-      case Failure(ex) => throw ex
+      case Success(ua) =>
+        ua
+      case Failure(ex) =>
+        throw ex
     }
   }
 
@@ -161,9 +164,9 @@ final case class UserAnswers(
   }
 
   def eventDataIdentifier(eventType: EventType): EventDataIdentifier = {
-    (noEventTypeData \ TaxYearPage.toString).asOpt[String] match {
-      case Some(year) => EventDataIdentifier(eventType, year, "1")
-      case _ => throw new RuntimeException("No tax year available")
+    ( (noEventTypeData \ TaxYearPage.toString).asOpt[String], get(VersionInfoPage).map(_.version.toString)) match {
+      case (Some(year), Some(version)) => EventDataIdentifier(eventType, year, version)
+      case (ty, v) => throw new RuntimeException(s"No tax year or version available $ty/ $v")
     }
   }
 }
