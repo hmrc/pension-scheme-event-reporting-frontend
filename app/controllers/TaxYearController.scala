@@ -44,7 +44,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
   private val form = formProvider()
   private val yearsWhereSubmittedVersionAvailable: EROverview => Seq[String] = erOverview =>
     if (erOverview.versionDetails.exists(_.submittedVersionAvailable)) {
-      Seq(erOverview.periodStartDate.getYear.toString)
+      Seq(erOverview.taxYear.startYear)
     } else {
       Nil
     }

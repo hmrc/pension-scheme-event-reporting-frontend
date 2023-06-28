@@ -58,6 +58,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
   private val overview1 = EROverview(
     LocalDate.of(2021, 4, 6),
     LocalDate.of(2022, 4, 5),
+    TaxYear("2021"),
     tpssReportPresent = false,
     Some(EROverviewVersion(
       3,
@@ -67,6 +68,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
   private val overview2 = EROverview(
     LocalDate.of(2022, 4, 6),
     LocalDate.of(2023, 4, 5),
+    TaxYear("2022"),
     tpssReportPresent = false,
     Some(EROverviewVersion(
       2,
@@ -112,7 +114,6 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         val result = route(application, request).value
 
         val radioOptions: Seq[RadioItem] = TaxYear.optionsFiltered( _.startYear == "2022")
-
         val view = application.injector.instanceOf[TaxYearView]
 
         status(result) mustEqual OK
