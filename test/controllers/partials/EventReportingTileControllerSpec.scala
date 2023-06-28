@@ -19,7 +19,7 @@ package controllers.partials
 import base.SpecBase
 import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
-import models.{EROverview, ToggleDetails}
+import models.{EROverview, TaxYear, ToggleDetails}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -68,6 +68,7 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
         Future.successful(Seq(EROverview(
           LocalDate.now(),
           LocalDate.now().plusYears(1),
+          TaxYear(LocalDate.now().getYear.toString),
           tpssReportPresent = false,
           None
         )))
@@ -110,6 +111,7 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
         Future.successful(Seq(EROverview(
           LocalDate.now(),
           LocalDate.now().plusYears(1),
+          TaxYear(LocalDate.now().getYear.toString),
           tpssReportPresent = false,
           None
         )))

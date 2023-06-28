@@ -19,7 +19,7 @@ package connectors
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.{Enumerable, EventType}
-import models.{EROverview, EROverviewVersion, EventDataIdentifier, FileUploadOutcomeResponse, UserAnswers}
+import models.{EROverview, EROverviewVersion, EventDataIdentifier, FileUploadOutcomeResponse, TaxYear, UserAnswers}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import play.api.libs.json.{JsArray, Json}
@@ -249,6 +249,7 @@ class EventReportingConnectorSpec
       val overview1 = EROverview(
         LocalDate.of(2022, 4, 6),
         LocalDate.of(2023, 4, 5),
+        TaxYear("2022"),
         tpssReportPresent = false,
         Some(EROverviewVersion(
           3,
@@ -258,6 +259,7 @@ class EventReportingConnectorSpec
       val overview2 = EROverview(
         LocalDate.of(2022, 4, 6),
         LocalDate.of(2023, 4, 5),
+        TaxYear("2022"),
         tpssReportPresent = false,
         Some(EROverviewVersion(
           2,
