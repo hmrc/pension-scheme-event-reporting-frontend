@@ -50,6 +50,7 @@ object EROverviewVersion {
 case class EROverview(
                        periodStartDate: LocalDate,
                        periodEndDate: LocalDate,
+                       taxYear: TaxYear,
                        tpssReportPresent: Boolean,
                        versionDetails: Option[EROverviewVersion]
                      )
@@ -67,6 +68,7 @@ object EROverview {
       EROverview(
         LocalDate.parse(startDate),
         LocalDate.parse(endDate),
+        TaxYear( LocalDate.parse(startDate).getYear.toString ),
         tpssReport,
         versionDetails))
 
