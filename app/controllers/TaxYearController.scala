@@ -17,11 +17,11 @@
 package controllers
 
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.TaxYearFormProvider
 import models.enumeration.JourneyStartType.{InProgress, PastEventTypes}
-import models.requests.OptionalDataRequest
-import models.{EROverview, TaxYear, UserAnswers}
+import models.requests.DataRequest
+import models.{EROverview, TaxYear}
 import pages.{EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage, Waypoints}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -35,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TaxYearController @Inject()(val controllerComponents: MessagesControllerComponents,
                                   identify: IdentifierAction,
                                   getData: DataRetrievalAction,
+                                  requireData: DataRequiredAction,
                                   userAnswersCacheConnector: UserAnswersCacheConnector,
                                   formProvider: TaxYearFormProvider,
                                   view: TaxYearView
@@ -55,36 +56,38 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
       Nil
     }
 
-  private def renderPage(form: Form[TaxYear], waypoints: Waypoints, status: Status)(implicit request: OptionalDataRequest[AnyContent]): Result = {
-    val radioOptions = request.userAnswers match {
-      case Some(ua) =>
-        (ua.get(EventReportingTileLinksPage), ua.get(EventReportingOverviewPage)) match {
-          case (Some(PastEventTypes), Some(seqEROverview)) =>
-            val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereSubmittedVersionAvailable)
-            TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear))
-          case (Some(InProgress), Some(seqEROverview)) =>
-            val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereCompiledVersionAvailable)
-            TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear))
-          case _ => TaxYear.options
-        }
-      case _ => TaxYear.options
-    }
-
+  private def renderPage(form: Form[TaxYear], waypoints: Waypoints, status: Status)(implicit request: DataRequest[AnyContent]): Result = {
+    val ua = request.userAnswers
+    val radioOptions =
+      (ua.get(EventReportingTileLinksPage), ua.get(EventReportingOverviewPage)) match {
+        case (Some(PastEventTypes), Some(seqEROverview)) =>
+          val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereSubmittedVersionAvailable)
+          TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear))
+        case (Some(InProgress), Some(seqEROverview)) =>
+          val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereCompiledVersionAvailable)
+          TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear))
+        case _ => TaxYear.options
+      }
     status(view(form, waypoints, radioOptions))
   }
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(TaxYearPage)).fold(form)(form.fill)
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) { implicit request =>
+    val preparedForm = request.userAnswers.get(TaxYearPage).fold(form)(form.fill)
     renderPage(preparedForm, waypoints, Ok)
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(renderPage(formWithErrors, waypoints, BadRequest)),
         value => {
-          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+          val originalUserAnswers = request.userAnswers
+
+//          val vv = originalUserAnswers.get(EventReportingOverviewPage).toSeq.flatten.filter(
+//            _.periodStartDate
+//          )
+
           val updatedAnswers = originalUserAnswers.setOrException(TaxYearPage, value, nonEventTypeData = true)
           userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
             Redirect(TaxYearPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
