@@ -20,9 +20,10 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.TaxYearFormProvider
 import models.enumeration.JourneyStartType.{InProgress, PastEventTypes}
+import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
 import models.requests.DataRequest
-import models.{EROverview, TaxYear}
-import pages.{EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage, Waypoints}
+import models.{EROverview, TaxYear, VersionInfo}
+import pages.{EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage, VersionInfoPage, Waypoints}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -83,12 +84,19 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
           Future.successful(renderPage(formWithErrors, waypoints, BadRequest)),
         value => {
           val originalUserAnswers = request.userAnswers
+          val vd = originalUserAnswers
+            .get(EventReportingOverviewPage).toSeq.flatten.find(_.taxYear == value).flatMap(_.versionDetails)
+          val versionInfo =
+            (vd.map(_.compiledVersionAvailable), vd.map(_.submittedVersionAvailable), vd.map(_.numberOfVersions)) match {
+              case (Some(true), _, Some(versions)) => VersionInfo(versions, Compiled)
+              case (_, Some(true), Some(versions)) => VersionInfo(versions, Submitted)
+              case _ => VersionInfo(1, NotStarted)
+            }
 
-          //          val vv = originalUserAnswers.get(EventReportingOverviewPage).toSeq.flatten.filter(
-          //            _.periodStartDate
-          //          )
 
-          val updatedAnswers = originalUserAnswers.setOrException(TaxYearPage, value, nonEventTypeData = true)
+          val updatedAnswers = originalUserAnswers
+            .setOrException(TaxYearPage, value, nonEventTypeData = true)
+            .setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
           userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
             Redirect(TaxYearPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
