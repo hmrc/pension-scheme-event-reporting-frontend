@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.UserAnswers
 import models.enumeration.EventType
-import pages.TaxYearPage
+import pages.{TaxYearPage, VersionInfoPage}
 import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -41,16 +41,29 @@ class UserAnswersCacheConnector @Inject()(
   )
 
   private def eventHeaders(pstr: String, eventType: EventType, noEventJson: Option[JsObject]): Seq[(String, String)] = {
-    noEventJson.flatMap{ json => (json \ TaxYearPage.toString).asOpt[String]} match {
-      case Some(year) =>
-        Seq(
-          "Content-Type" -> "application/json",
-          "pstr" -> pstr,
-          "eventType" -> eventType.toString,
-          "year" -> year,
-          "version" -> "1"
-        )
-      case None => throw new RuntimeException("No tax year available")
+    val headers = noEventJson match {
+      case Some(json) =>
+        val taxYear = (json \ TaxYearPage.toString).asOpt[String]
+        val versionInfo = (json \ VersionInfoPage.toString \ "version").asOpt[Int].map(_.toString)
+
+        Tuple2(taxYear, versionInfo) match {
+          case (Some(year), Some(version)) =>
+            Seq(
+              "Content-Type" -> "application/json",
+              "pstr" -> pstr,
+              "eventType" -> eventType.toString,
+              "year" -> year,
+              "version" -> version
+            )
+          case _ => Nil
+        }
+      case _ => Nil
+    }
+
+    if (headers.isEmpty) {
+      throw new RuntimeException("No tax year or version available")
+    } else {
+      headers
     }
   }
 
@@ -90,14 +103,15 @@ class UserAnswersCacheConnector @Inject()(
 
   def save(pstr: String, eventType: EventType, userAnswers: UserAnswers)
           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
-    userAnswers.get(TaxYearPage) match {
-      case Some(year) =>
+
+    (userAnswers.get(TaxYearPage), userAnswers.get(VersionInfoPage)) match {
+      case (Some(year), Some(version)) =>
         val headers: Seq[(String, String)] = Seq(
           "Content-Type" -> "application/json",
           "pstr" -> pstr,
           "eventType" -> eventType.toString,
           "year" -> year.startYear,
-          "version" -> "1"
+          "version" -> version.toString
         )
 
         val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
@@ -110,8 +124,8 @@ class UserAnswersCacheConnector @Inject()(
                 throw new HttpException(response.body, response.status)
             }
           }
-      case None =>
-        Future.failed(new RuntimeException("No tax year available"))
+      case (y, v) =>
+        Future.failed(new RuntimeException(s"No tax year or version available: $y / $v"))
     }
   }
 
