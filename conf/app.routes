@@ -230,11 +230,16 @@ GET         /new-event-report                                                   
 GET         /select-tax-year                                                      controllers.TaxYearController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /select-tax-year                                                      controllers.TaxYearController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-#  Bulk upload event 22
-GET         /bulk-what-you-need                                                   controllers.event22.FileUploadWhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+# Bulk Upload
+GET        /bulk-what-you-need-event-22                                           controllers.common.FileUploadWhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+GET        /bulk-what-you-need-event-23                                           controllers.common.FileUploadWhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
+
 # file download
-GET         /event-22-upload-format-instructions                                  controllers.FileDownloadController.instructionsFile
-GET         /event-22-bulk-upload-template                                        controllers.FileDownloadController.templateFile
+GET         /event-22-upload-format-instructions                                  controllers.FileDownloadController.instructionsFile(eventType: EventType = Event22)
+GET         /event-22-bulk-upload-template                                        controllers.FileDownloadController.templateFile(eventType: EventType = Event22)
+
+GET         /event-23-upload-format-instructions                                  controllers.FileDownloadController.instructionsFile(eventType: EventType = Event23)
+GET         /event-23-bulk-upload-template                                        controllers.FileDownloadController.templateFile(eventType: EventType = Event23)
 
 GET         /new-report/event-22-upload                                           controllers.fileUpload.FileUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 

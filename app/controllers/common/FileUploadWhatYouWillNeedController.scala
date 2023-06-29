@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.event22
+package controllers.common
 
 import controllers.actions._
 import models.enumeration.EventType
@@ -22,22 +22,23 @@ import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event22.FileUploadWhatYouWillNeedView
+import views.html.common.FileUploadWhatYouWillNeedView
 
 import javax.inject.Inject
 
 class FileUploadWhatYouWillNeedController @Inject()(
                                                      override val messagesApi: MessagesApi,
                                                      identify: IdentifierAction,
+                                                     getData: DataRetrievalAction,
                                                      val controllerComponents: MessagesControllerComponents,
                                                      view: FileUploadWhatYouWillNeedView
                                                    ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
+  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) {
     implicit request =>
-
-      val templateDownloadLink = controllers.routes.FileDownloadController.templateFile
-      val instructionsDownloadLink = controllers.routes.FileDownloadController.instructionsFile
-      Ok(view(controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints, EventType.Event22).url, templateDownloadLink, instructionsDownloadLink))
+      val templateDownloadLink = controllers.routes.FileDownloadController.templateFile(eventType)
+      val instructionsDownloadLink = controllers.routes.FileDownloadController.instructionsFile(eventType)
+      Ok(view(controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints, eventType).url,
+        templateDownloadLink, instructionsDownloadLink, eventType))
   }
 }
