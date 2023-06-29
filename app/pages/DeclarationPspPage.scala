@@ -16,16 +16,16 @@
 
 package pages
 
-import models.UserAnswers
-import models.enumeration.JourneyStartType
+import controllers.routes
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-
-case object EventReportingTileLinksPage extends QuestionPage[JourneyStartType] {
-  override def route(waypoints: Waypoints): Call = Call("GET", "")
-
-  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = EventReportingOverviewPage
+case object DeclarationPspPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
-  override def toString: String = "tileLinks"
+
+  override def toString: String = "declarationPsp"
+
+  override def route(waypoints: Waypoints): Call =
+    routes.DeclarationPspController.onPageLoad(waypoints)
+
 }

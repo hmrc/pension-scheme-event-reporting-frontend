@@ -22,7 +22,6 @@ import connectors.{EmailConnector, EmailStatus, EventReportingConnector, Minimal
 import controllers.actions._
 import models.enumeration.AdministratorOrPractitioner
 import models.requests.DataRequest
-import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
 import models.{LoggedInUser, TaxYear, UserAnswers}
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -32,7 +31,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.DateHelper.formatSubmittedDate
 import views.html.DeclarationView
-import views.html.{DeclarationPspView, DeclarationView}
 
 import java.time.{ZoneId, ZonedDateTime}
 import javax.inject.Inject
@@ -49,24 +47,12 @@ class DeclarationController @Inject()(
                                        minimalConnector: MinimalConnector,
                                        auditService: AuditService,
                                        config: FrontendAppConfig,
-                                       view: DeclarationView,
-                                       view2: DeclarationPspView
+                                       view: DeclarationView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoadAdministrator(waypoints: Waypoints): Action[AnyContent] = identify {
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
     implicit request =>
-    request.loggedInUser.administratorOrPractitioner match {
-      case Administrator => Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
-      case _ => Ok(view2(continueUrl = controllers.routes.DeclarationController.onPageLoadPractitioner(waypoints).url))
-    }
-  }
-
-  def onPageLoadPractitioner(waypoints: Waypoints): Action[AnyContent] = identify {
-    implicit request =>
-      request.loggedInUser.administratorOrPractitioner match {
-        case Practitioner => Ok(view2(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
-        case _ => Ok(view(continueUrl = controllers.routes.DeclarationController.onPageLoadAdministrator(waypoints).url))
-      }
+      Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
   }
 
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {

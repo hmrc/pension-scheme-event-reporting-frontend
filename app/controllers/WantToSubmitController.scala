@@ -57,8 +57,8 @@ class WantToSubmitController @Inject()(
             if (value) {
               Redirect(
                 request.loggedInUser.administratorOrPractitioner match {
-                  case Administrator => routes.DeclarationController.onPageLoadAdministrator(waypoints)
-                  case Practitioner => routes.DeclarationController.onPageLoadPractitioner(waypoints)
+                  case Administrator => routes.DeclarationController.onPageLoad(waypoints)
+                  case Practitioner => routes.DeclarationPspController.onPageLoad(waypoints)
                 }
               )
             } else {

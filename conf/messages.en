@@ -1510,6 +1510,8 @@ event20A.psaDeclaration.p = I, {0} declare that:
 event20A.psaDeclaration.item1 = to the best of my knowledge and belief, the information given in this tax return is correct and complete
 event20A.psaDeclaration.item2 = I understand that if I have made a false statement in this tax return, I may be liable to a penalty, and that false statements may also lead to prosecution
 
+pspDeclaration.p = I, {0} declare that the content of this return has been approved by the Scheme Administrator and the Scheme Administrator named below has authorised me to submit this return.
+pspDeclaration.input = Scheme administrator ID
 
 event20A.pspDeclaration.title = Declaration
 event20A.pspDeclaration.heading = Declaration
@@ -1552,3 +1554,9 @@ problemWithService.p = We could not process your file upload
 problemWithService.link = Try uploading your file again.
 
 chooseTaxYear.event22.error.outsideRange = The tax year must be between {0} and {1}
+declarationPsp.title = declarationPsp
+declarationPsp.heading = declarationPsp
+declarationPsp.checkYourAnswersLabel = declarationPsp
+declarationPsp.error.required = Enter declarationPsp
+declarationPsp.error.length = DeclarationPsp must be 100 characters or less
+declarationPsp.change.hidden = DeclarationPsp

@@ -25,9 +25,11 @@ POST        /event-summary                                                      
 GET         /new-report/want-to-submit                                            controllers.WantToSubmitController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/want-to-submit                                            controllers.WantToSubmitController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET        /new-report/declaration                                               controllers.DeclarationController.onPageLoadAdministrator(waypoints: Waypoints ?= EmptyWaypoints)
-GET        /new-report/declaration-psp                                           controllers.DeclarationController.onPageLoadPractitioner(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/declaration                                               controllers.DeclarationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 GET        /new-report/declaration-on-click                                      controllers.DeclarationController.onClick(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/declaration-psp                                           controllers.DeclarationPspController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /new-report/declaration-psp                                           controllers.DeclarationPspController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/done-page                                                 controllers.ReturnSubmittedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 

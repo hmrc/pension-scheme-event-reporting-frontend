@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import models.UserAnswers
-import models.enumeration.JourneyStartType
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import javax.inject.Inject
 
-case object EventReportingTileLinksPage extends QuestionPage[JourneyStartType] {
-  override def route(waypoints: Waypoints): Call = Call("GET", "")
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = EventReportingOverviewPage
+class DeclarationPspFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = JsPath \ toString
-  override def toString: String = "tileLinks"
+  def apply(authorisingPSAID: Option[String]): Form[String] =
+    Form(
+      "value" -> text("declarationPsp.error.required")
+        .verifying(maxLength(100, "declarationPsp.error.length"))
+    )
 }

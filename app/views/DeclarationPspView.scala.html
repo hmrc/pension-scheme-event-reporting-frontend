@@ -14,25 +14,40 @@
  * limitations under the License.
  *@
 
+@import viewmodels.InputWidth._
+
 @this(
     layout: templates.SchemeLayout,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    formHelper: FormWithCSRF,
+    govukInput: GovukInput,
+    govukErrorSummary: GovukErrorSummary,
 )
 
-@(continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@( form: Form[_], waypoints: Waypoints)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("declaration.title"))) {
+ @layout(pageTitle = title(form, messages("declaration.title"))) {
 
-<h1 class="govuk-heading-xl">@messages("declaration.heading")</h1>
+  @if(form.errors.nonEmpty) {
+   @govukErrorSummary(ErrorSummaryViewModel(form))
+  }
 
-<p class="govuk-body">@messages("declaration.p")</p>
+  @formHelper(action = controllers.routes.DeclarationPspController.onSubmit(waypoints)) {
 
-<ul class="govuk-list govuk-list--bullet">
-    <li>@messages("declaration.item1")</li>
-    <li>@messages("declaration.item2")</li>
-</ul>
+   <h1 class="govuk-heading-xl">@messages("declaration.heading")</h1>
 
-@govukButton(
-    ButtonViewModel(messages("site.declaration")).withAttribute(("id", "submit")).asLink(continueUrl)
-)
-}
+   <p class="govuk-body">@messages("pspDeclaration.p")</p>
+
+
+   @govukInput(
+    InputViewModel(
+     field = form("value"),
+     label = LabelViewModel(messages("pspDeclaration.input")).withCssClass("govuk-label govuk-label--s")
+    ).withWidth(Fixed20)
+   )
+
+   @govukButton(
+    ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))
+   )
+  }
+ }
