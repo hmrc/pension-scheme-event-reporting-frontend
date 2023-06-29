@@ -45,6 +45,7 @@
                 </span>
             </summary>
             <div class="govuk-details__text">
+                @if(eventType.toString == "22") {
                     <p>@messages("fileUpload.upload.details.annualAllowanceEvent22.p1")</p>
                     <ul class="govuk-list govuk-list--bullet">
                         <li>@messages("fileUpload.upload.details.annualAllowanceEvent22.item1")</li>
@@ -52,6 +53,15 @@
                         <li>@messages("fileUpload.upload.details.annualAllowanceEvent22.item3")</li>
                         <li>@messages("fileUpload.upload.details.annualAllowanceEvent22.item4")</li>
                     </ul>
+                } else if(eventType.toString == "23") {
+                <p>@messages("whatYouWillNeed.event23.p")</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>@messages("whatYouWillNeed.event23.item1")</li>
+                        <li>@messages("whatYouWillNeed.event23.item2")</li>
+                        <li>@messages("whatYouWillNeed.event23.item3")</li>
+                        <li>@messages("whatYouWillNeed.event23.item4")</li>
+                    </ul>
+                }
             </div>
         </details>
 

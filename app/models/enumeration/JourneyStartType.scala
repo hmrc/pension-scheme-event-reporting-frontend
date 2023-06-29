@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package pages.fileUpload
+package models.enumeration
 
-import controllers.fileUpload.routes
-import models.UserAnswers
-import models.enumeration.EventType
-import pages.{IndexPage, Page, Waypoints}
-import play.api.mvc.Call
+sealed trait JourneyStartType
 
-case class ProcessingRequestPage(eventType: EventType) extends Page {
+object JourneyStartType extends Enumerable.Implicits {
 
-  override def toString: String = "processingRequest"
+  case object StartNew extends WithName("startNew") with JourneyStartType
 
-  override def route(waypoints: Waypoints): Call =
-    routes.ProcessingRequestController.onPageLoad(waypoints, eventType)
+  case object InProgress extends WithName("inProgress") with JourneyStartType
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = IndexPage
+  case object PastEventTypes extends WithName("pastEventTypes") with JourneyStartType
 
+  private val values: List[JourneyStartType] = List(StartNew, InProgress, PastEventTypes)
+  implicit val enumerable: Enumerable[JourneyStartType] =
+    Enumerable(values.map(v => v.toString -> v): _*)
 }

@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package pages.fileUpload
+package pages
 
-import controllers.fileUpload.routes
-import models.UserAnswers
-import models.enumeration.EventType
-import pages.{IndexPage, Page, Waypoints}
+import controllers.routes
+import models.{UserAnswers, VersionInfo}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ProcessingRequestPage(eventType: EventType) extends Page {
+case object VersionInfoPage extends QuestionPage[VersionInfo] {
 
-  override def toString: String = "processingRequest"
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "versionInfo"
 
   override def route(waypoints: Waypoints): Call =
-    routes.ProcessingRequestController.onPageLoad(waypoints, eventType)
+    routes.IndexController.onPageLoad
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = IndexPage
-
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = VersionInfoPage
 }

@@ -18,6 +18,7 @@ package controllers.fileUpload
 
 import connectors.ParsingAndValidationOutcomeCacheConnector
 import controllers.actions._
+import models.enumeration.EventType
 import models.fileUpload.ParsingAndValidationOutcome
 import models.fileUpload.ParsingAndValidationOutcomeStatus.{GeneralError, Success, ValidationErrorsLessThan10, ValidationErrorsMoreThanOrEqual10}
 import pages.Waypoints
@@ -39,7 +40,7 @@ class ProcessingRequestController @Inject()(
 
   extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify.async {
+  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = identify.async {
     implicit request =>
       parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap {
         case Some(ParsingAndValidationOutcome(Success, _, _)) =>
@@ -51,7 +52,7 @@ class ProcessingRequestController @Inject()(
         case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _)) =>
           Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsSummaryController.onPageLoad(waypoints)))
         case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
-        case e =>
+        case _ =>
           Future.successful(Ok(view(controllers.routes.IndexController.onPageLoad.url)))
       }
   }
