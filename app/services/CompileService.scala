@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.enumeration.EventType
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
-import models.{EROverview, EROverviewVersion, UserAnswers, VersionInfo}
+import models.{EROverview, EROverviewVersion, TaxYear, UserAnswers, VersionInfo}
 import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -31,30 +31,35 @@ class CompileService @Inject()(
                                 userAnswersCacheConnector: UserAnswersCacheConnector
                               ) {
 
+
+  private def updateOverviewSeq(overviewSeq: Seq[EROverview], taxYear: TaxYear, newVersion: Int): Seq[EROverview] = {
+    overviewSeq.map { erOverview =>
+      if (erOverview.taxYear == taxYear) {
+        val newVersionDetails = erOverview.versionDetails.map { erOverviewVersion =>
+          EROverviewVersion(
+            numberOfVersions = newVersion,
+            submittedVersionAvailable = erOverviewVersion.submittedVersionAvailable,
+            compiledVersionAvailable = true
+          )
+        }
+        erOverview copy (versionDetails = newVersionDetails)
+      } else {
+        erOverview
+      }
+    }
+  }
+
   private def updateUAVersionAndOverview(pstr: String,
-                                   eventType: EventType,
-                                   userAnswers: UserAnswers,
-                                   newVersionInfo: VersionInfo)(implicit ec: ExecutionContext,
-                                                                headerCarrier: HeaderCarrier): Future[Option[Seq[EROverview]]] = {
-    userAnswersCacheConnector.changeVersion(pstr, userAnswers.eventDataIdentifier(eventType), newVersionInfo.version.toString).map { _ =>
-      (userAnswers.get(EventReportingOverviewPage), userAnswers.get(TaxYearPage)) match {
-        case (Some(overviewSeq), Some(taxYear)) =>
-          val newOverviewSeq = overviewSeq.map { erOverview =>
-            if (erOverview.taxYear == taxYear) {
-              val newVersionDetails = erOverview.versionDetails.map { yy =>
-                EROverviewVersion(
-                  numberOfVersions = newVersionInfo.version,
-                  submittedVersionAvailable = yy.submittedVersionAvailable,
-                  compiledVersionAvailable = true
-                )
-              }
-              erOverview copy (versionDetails = newVersionDetails)
-            } else {
-              erOverview
-            }
-          }
-          Some(newOverviewSeq)
-        case _ => None
+                                         eventType: EventType,
+                                         userAnswers: UserAnswers,
+                                         newVersion: Int)(implicit ec: ExecutionContext,
+                                                          headerCarrier: HeaderCarrier): Future[Option[Seq[EROverview]]] = {
+    userAnswersCacheConnector.changeVersion(pstr, userAnswers.eventDataIdentifier(eventType), newVersion.toString).flatMap { _ =>
+      userAnswersCacheConnector.removeAllButVersion(newVersion).map { _ =>
+        (userAnswers.get(EventReportingOverviewPage), userAnswers.get(TaxYearPage)) match {
+          case (Some(overviewSeq), Some(taxYear)) => Some(updateOverviewSeq(overviewSeq, taxYear, newVersion))
+          case _ => None
+        }
       }
     }
   }
@@ -70,14 +75,14 @@ class CompileService @Inject()(
             case VersionInfo(version, Submitted) => VersionInfo(version + 1, Compiled)
           }
           val futureOptChangedOverviewSeq = if (newVersionInfo.version > vi.version) {
-            updateUAVersionAndOverview(pstr, eventType, userAnswers, newVersionInfo)
+            updateUAVersionAndOverview(pstr, eventType, userAnswers, newVersionInfo.version)
           } else {
             Future.successful(None)
           }
-
           futureOptChangedOverviewSeq.flatMap { optChangedOverviewSeq =>
             def uaNonEventTypeVersionUpdated: UserAnswers =
               userAnswers.setOrException(VersionInfoPage, newVersionInfo, nonEventTypeData = true)
+
             val updatedUA = optChangedOverviewSeq match {
               case Some(seqErOverview) => uaNonEventTypeVersionUpdated
                 .setOrException(EventReportingOverviewPage, seqErOverview, nonEventTypeData = true)

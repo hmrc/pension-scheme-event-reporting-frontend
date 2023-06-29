@@ -85,7 +85,7 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "must call connector with correct tax year and version when in submitted + increase version" in {
+    "must call connector with correct tax year and version when in submitted + increase version, amend status + update overview" in {
       val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       val edi = EventDataIdentifier(Event1, taxYear, "1")
       when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi))(any, any()))
@@ -116,8 +116,6 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
           .changeVersion(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), ArgumentMatchers.eq("2"))(any(), any())
         val actualUAAfterSave = captor.getValue
         actualUAAfterSave.get(VersionInfoPage) mustBe Some(VersionInfo(2, Compiled))
-
-
         val actualOverviewValues = actualUAAfterSave.get(EventReportingOverviewPage).flatMap {
           _.headOption.map { o =>
             Tuple2(o.versionDetails.head.numberOfVersions, o.versionDetails.head.compiledVersionAvailable)
