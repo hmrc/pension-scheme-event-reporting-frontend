@@ -19,7 +19,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
-    layout: templates.Layout,
+    layout: templates.SchemeLayout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
@@ -69,10 +69,10 @@
             firstCellIsHeader = true
         ))
 
-        <p class="govuk-body">@messages("event20A.psaDeclaration.p", practitionerName)</p>
+        <p class="govuk-body">@messages("event20A.pspDeclaration.p", practitionerName)</p>
         <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("event20A.psaDeclaration.item1")</li>
-            <li>@messages("event20A.psaDeclaration.item2")</li>
+            <li>@messages("event20A.pspDeclaration.item1")</li>
+            <li>@messages("event20A.pspDeclaration.item2")</li>
         </ul>
 
         @govukInput(
