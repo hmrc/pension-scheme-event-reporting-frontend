@@ -18,7 +18,7 @@ package controllers.partials
 
 import base.SpecBase
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
-import models.{EROverview, EROverviewVersion}
+import models.{EROverview, EROverviewVersion, TaxYear}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -54,6 +54,7 @@ class EventReportingTileLinksControllerSpec extends SpecBase with BeforeAndAfter
       val overview1 = EROverview(
         LocalDate.of(2021, 4, 6),
         LocalDate.of(2022, 4, 5),
+        TaxYear("2021"),
         tpssReportPresent = false,
         Some(EROverviewVersion(
           3,
@@ -63,6 +64,7 @@ class EventReportingTileLinksControllerSpec extends SpecBase with BeforeAndAfter
       val overview2 = EROverview(
         LocalDate.of(2022, 4, 6),
         LocalDate.of(2023, 4, 5),
+        TaxYear("2022"),
         tpssReportPresent = false,
         Some(EROverviewVersion(
           2,
@@ -92,6 +94,7 @@ class EventReportingTileLinksControllerSpec extends SpecBase with BeforeAndAfter
       val overview1 = EROverview(
         LocalDate.of(2021, 4, 6),
         LocalDate.of(2022, 4, 5),
+        TaxYear("2021"),
         tpssReportPresent = false,
         Some(EROverviewVersion(
           3,
@@ -101,6 +104,7 @@ class EventReportingTileLinksControllerSpec extends SpecBase with BeforeAndAfter
       val overview2 = EROverview(
         LocalDate.of(2022, 4, 6),
         LocalDate.of(2023, 4, 5),
+        TaxYear("2022"),
         tpssReportPresent = false,
         Some(EROverviewVersion(
           2,
@@ -130,6 +134,7 @@ class EventReportingTileLinksControllerSpec extends SpecBase with BeforeAndAfter
       val overview1 = EROverview(
         LocalDate.of(2021, 4, 6),
         LocalDate.of(2022, 4, 5),
+        TaxYear("2021"),
         tpssReportPresent = false,
         Some(EROverviewVersion(
           3,
