@@ -22,7 +22,7 @@
         govukTable: GovukTable
 )
 
-@(schemeName: String, pstr: String, taxYear: String, adminName: String, continueUrl: String)(implicit request: Request[_], messages: Messages)
+@(schemeName: String, pstr: String, taxYear: String, adminName: String, continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("event20A.psaDeclaration.title"))) {
 
