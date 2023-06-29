@@ -105,7 +105,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
       }
   }
 
-  private def sendEmail(psaName: String, email: String, taxYear: String, schemeName: String)(
+  private def sendEmail(pspName: String, email: String, taxYear: String, schemeName: String)(
     implicit request: DataRequest[_], hc: HeaderCarrier): Future[EmailStatus] = {
     val requestId = hc.requestId.map(_.value).getOrElse(request.headers.get("X-Session-ID").getOrElse(""))
 
@@ -113,7 +113,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
     val schemeAdministratorType = AdministratorOrPractitioner.Administrator
 
     val templateParams = Map(
-      "psaName" -> psaName,
+      "pspName" -> pspName,
       "schemeName" -> schemeName,
       "taxYear" -> taxYear,
       "dateSubmitted" -> submittedDate
