@@ -16,10 +16,10 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.{ok, _}
 import models.enumeration.EventType
 import models.enumeration.VersionStatus.Compiled
-import models.{TaxYear, UserAnswers, VersionInfo}
+import models.{EventDataIdentifier, TaxYear, UserAnswers, VersionInfo}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import pages.{TaxYearPage, VersionInfoPage}
@@ -33,6 +33,9 @@ class UserAnswersCacheConnectorSpec
     with WireMockHelper {
 
   private val pstr = "87219363YN"
+  private val year = "2022"
+  private val version = "2"
+  private val newVersion = "3"
   private val eventType = EventType.Event1
 
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
@@ -145,6 +148,27 @@ class UserAnswersCacheConnectorSpec
     }
   }
 
+  "changeVersion" must {
+    "return successfully when passed new version" in {
+      server.stubFor(
+        put(urlEqualTo(userAnswersCacheUrl))
+          .withHeader("eventType", equalTo(eventType.toString))
+          .withHeader("pstr", equalTo(pstr))
+          .withHeader("year", equalTo(year))
+          .withHeader("version", equalTo(version))
+          .withHeader("newVersion", equalTo(newVersion))
+          .willReturn(
+            noContent()
+          )
+      )
+
+      connector.changeVersion(pstr, EventDataIdentifier(eventType, year, version), newVersion) map {
+        _ mustBe()
+      }
+    }
+
+  }
+
   "removeAll" must {
     "return successfully when passed pstr and the backend has returned OK and a correct response" in {
       server.stubFor(
@@ -156,6 +180,36 @@ class UserAnswersCacheConnectorSpec
       )
 
       connector.removeAll(pstr) map {
+        _ mustBe()
+      }
+    }
+
+    "return BadRequestException when the backend has returned bad request response" in {
+      server.stubFor(
+        delete(urlEqualTo(userAnswersCacheUrl))
+          .withHeader("pstr", equalTo(pstr))
+          .willReturn(
+            badRequest
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      recoverToSucceededIf[HttpException] {
+        connector.removeAll(pstr)
+      }
+    }
+  }
+  "removeAllButVersion" must {
+    "return successfully when passed pstr and the backend has returned OK and a correct response" in {
+      server.stubFor(
+        delete(urlEqualTo(userAnswersCacheUrl))
+          .withHeader("version", equalTo("2"))
+          .willReturn(
+            ok()
+          )
+      )
+
+      connector.removeAllButVersion(2) map {
         _ mustBe()
       }
     }

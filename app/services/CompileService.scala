@@ -80,9 +80,7 @@ class CompileService @Inject()(
             Future.successful(None)
           }
           futureOptChangedOverviewSeq.flatMap { optChangedOverviewSeq =>
-            def uaNonEventTypeVersionUpdated: UserAnswers =
-              userAnswers.setOrException(VersionInfoPage, newVersionInfo, nonEventTypeData = true)
-
+            val uaNonEventTypeVersionUpdated = userAnswers.setOrException(VersionInfoPage, newVersionInfo, nonEventTypeData = true)
             val updatedUA = optChangedOverviewSeq match {
               case Some(seqErOverview) => uaNonEventTypeVersionUpdated
                 .setOrException(EventReportingOverviewPage, seqErOverview, nonEventTypeData = true)
