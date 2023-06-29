@@ -18,8 +18,8 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import models.UserAnswers
 import models.enumeration.EventType
+import models.{EventDataIdentifier, UserAnswers}
 import pages.{TaxYearPage, VersionInfoPage}
 import play.api.http.Status._
 import play.api.libs.json._
@@ -127,6 +127,31 @@ class UserAnswersCacheConnector @Inject()(
       case (y, v) =>
         Future.failed(new RuntimeException(s"No tax year or version available: $y / $v"))
     }
+  }
+
+  def changeVersion(pstr: String, edi: EventDataIdentifier, newVersion: String)
+                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+
+
+    val headers: Seq[(String, String)] = Seq(
+      "Content-Type" -> "application/json",
+      "pstr" -> pstr,
+      "eventType" -> edi.eventType.toString,
+      "year" -> edi.year,
+      "version" -> edi.version,
+      "newVersion" -> newVersion
+    )
+
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.PUT[JsValue, HttpResponse](url, Json.obj())(implicitly, implicitly, hc, implicitly)
+      .map { response =>
+        response.status match {
+          case NO_CONTENT => ()
+          case _ =>
+            throw new HttpException(response.body, response.status)
+        }
+      }
   }
 
   def save(pstr: String, userAnswers: UserAnswers)

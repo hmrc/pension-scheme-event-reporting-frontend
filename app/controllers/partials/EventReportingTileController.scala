@@ -51,19 +51,21 @@ class EventReportingTileController @Inject()(
   def eventReportPartial(): Action[AnyContent] = {
     (identify andThen getData()).async { implicit request =>
       eventReportingConnector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString).flatMap { seqEROverview =>
-        val ua = request.userAnswers.getOrElse(UserAnswers()).setOrException(EventReportingOverviewPage, seqEROverview, nonEventTypeData = true)
-        userAnswersCacheConnector.save(request.pstr, ua).flatMap { _ =>
-          val isAnySubmittedReports = seqEROverview.exists( _.versionDetails.exists(_.submittedVersionAvailable))
-          val isAnyCompiledReports = seqEROverview.exists( _.versionDetails.exists(_.compiledVersionAvailable))
-          val compiledLinks: Seq[Link] = if (isAnyCompiledReports) {
-            Seq(Link("erCompiledLink", appConfig.erCompiledUrl, Text("eventReportingTile.link.compiled")))
-          } else Nil
+        val ua = UserAnswers().setOrException(EventReportingOverviewPage, seqEROverview, nonEventTypeData = true)
+        userAnswersCacheConnector.removeAll(request.pstr).flatMap { _ =>
+          userAnswersCacheConnector.save(request.pstr, ua).flatMap { _ =>
+            val isAnySubmittedReports = seqEROverview.exists(_.versionDetails.exists(_.submittedVersionAvailable))
+            val isAnyCompiledReports = seqEROverview.exists(_.versionDetails.exists(_.compiledVersionAvailable))
+            val compiledLinks: Seq[Link] = if (isAnyCompiledReports) {
+              Seq(Link("erCompiledLink", appConfig.erCompiledUrl, Text("eventReportingTile.link.compiled")))
+            } else Nil
 
-          val submittedLinks: Seq[Link] = if (isAnySubmittedReports) {
-            Seq(Link("erSubmittedLink", appConfig.erSubmittedUrl, Text("eventReportingTile.link.submitted")))
-          } else Nil
-          val loginLink: Seq[Link] = Seq(Link("erLoginLink", appConfig.erStartNewUrl, Text(Messages("eventReportingTile.link.new"))))
-          cardViewModels(compiledLinks, submittedLinks, cardSubheadings(isAnyCompiledReports, seqEROverview), loginLink)
+            val submittedLinks: Seq[Link] = if (isAnySubmittedReports) {
+              Seq(Link("erSubmittedLink", appConfig.erSubmittedUrl, Text("eventReportingTile.link.submitted")))
+            } else Nil
+            val loginLink: Seq[Link] = Seq(Link("erLoginLink", appConfig.erStartNewUrl, Text(Messages("eventReportingTile.link.new"))))
+            cardViewModels(compiledLinks, submittedLinks, cardSubheadings(isAnyCompiledReports, seqEROverview), loginLink)
+          }
         }
       }
     }
