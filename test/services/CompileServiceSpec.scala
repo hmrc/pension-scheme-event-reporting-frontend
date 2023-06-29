@@ -92,6 +92,8 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
         .thenReturn(Future.successful((): Unit))
       when(mockUserAnswersCacheConnector.save(ArgumentMatchers.eq(pstr), any())(any(), any()))
         .thenReturn(Future.successful((): Unit))
+      when(mockUserAnswersCacheConnector.removeAllButVersion(ArgumentMatchers.eq(2))(any(), any()))
+        .thenReturn(Future.successful((): Unit))
       when(mockUserAnswersCacheConnector.changeVersion(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), ArgumentMatchers.eq("2"))(any(), any()))
         .thenReturn(Future.successful((): Unit))
       val currentTaxYear = TaxYear(taxYear)
@@ -114,6 +116,7 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
           .save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any())
         verify(mockUserAnswersCacheConnector, times(1))
           .changeVersion(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), ArgumentMatchers.eq("2"))(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).removeAllButVersion(ArgumentMatchers.eq(2))(any(), any())
         val actualUAAfterSave = captor.getValue
         actualUAAfterSave.get(VersionInfoPage) mustBe Some(VersionInfo(2, Compiled))
         val actualOverviewValues = actualUAAfterSave.get(EventReportingOverviewPage).flatMap {
