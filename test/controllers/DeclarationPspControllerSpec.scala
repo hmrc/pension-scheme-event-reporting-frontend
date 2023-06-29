@@ -21,10 +21,10 @@ import connectors.UserAnswersCacheConnector
 import forms.DeclarationPspFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito.{never, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import pages.{EmptyWaypoints, DeclarationPspPage}
+import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.{DeclarationPspPage, EmptyWaypoints}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -36,9 +36,9 @@ import scala.concurrent.Future
 class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
-
+  private val authorisingPsaId = Some("A1234567")
   private val formProvider = new DeclarationPspFormProvider()
-  private val form = formProvider()
+  private val form = formProvider(authorisingPsaId)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
