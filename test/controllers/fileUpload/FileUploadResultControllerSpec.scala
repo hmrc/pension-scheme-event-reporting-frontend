@@ -21,7 +21,8 @@ import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import forms.fileUpload.FileUploadResultFormProvider
 import models.FileUploadOutcomeResponse
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
-import models.enumeration.EventType.{Event22, getEventTypeByName}
+import models.enumeration.EventType
+import models.enumeration.EventType.{Event22, Event23, getEventTypeByName}
 import models.fileUpload.FileUploadResult
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -45,19 +46,19 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val formProvider = new FileUploadResultFormProvider()
   private val form = formProvider()
+  private val seqOfEvents = Seq(Event22, Event23)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockERConnector = mock[EventReportingConnector]
-
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
     bind[EventReportingConnector].toInstance(mockERConnector)
   )
 
-  private def getRoute: String = routes.FileUploadResultController.onPageLoad(waypoints).url
+  private def getRoute(eventType: EventType): String = routes.FileUploadResultController.onPageLoad(waypoints, eventType).url
 
-  private def postRoute: String = routes.FileUploadResultController.onSubmit(waypoints).url
+  private def postRoute(eventType: EventType): String = routes.FileUploadResultController.onSubmit(waypoints, eventType).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -67,64 +68,85 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   "FileUploadResult Controller" - {
 
-    "must return OK and the correct view for a GET when a file name is successfully retrieved from mongo cache" in {
+    for (event <- seqOfEvents) {
+      testReturnOkAndCorrectViewFileSuccessfullyRetrieved(event)
+      testReturnOkAndCorrectViewFileRetrievalInProgress(event)
+      testReturnOkAndRedirectFileRejected(event)
+      testReturnBadRequestIfUploadIdNotFound(event)
+      testSaveAnswerAndRedirectWhenValid(event)
+      testBadRequestForInvalidDataSubmission(event)
+    }
+  }
+
+  private def testReturnOkAndCorrectViewFileSuccessfullyRetrieved(eventType: EventType): Unit = {
+    s"must return OK and the correct view for a GET when a file name is successfully retrieved from mongo cache (Event $eventType)" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
-      .thenReturn(Future.successful(FileUploadOutcomeResponse(Some("testFile"), SUCCESS, Some("downloadUrl"))))
+        .thenReturn(Future.successful(FileUploadOutcomeResponse(Some("testFile"), SUCCESS, Some("downloadUrl"))))
       running(application) {
-        val request = FakeRequest.apply(method = GET, path = getRoute + "?key=123")
+        val request = FakeRequest.apply(method = GET, path = getRoute(eventType) + "?key=123")
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[FileUploadResultView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, getEventTypeByName(Event22), Some("testFile"),
-          Call("POST", postRoute + "?key=123"))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, getEventTypeByName(eventType), Some("testFile"),
+          Call("POST", postRoute(eventType) + "?key=123"))(request, messages(application)).toString
       }
     }
+  }
 
-    "must return OK and the correct view for a GET when a file name retrieval from mongo cache is in progress" in {
+  private def testReturnOkAndCorrectViewFileRetrievalInProgress(eventType: EventType): Unit = {
+    s"must return OK and the correct view for a GET when a file name retrieval from mongo cache is in progress (Event $eventType)" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
         .thenReturn(Future.successful(FileUploadOutcomeResponse(None, IN_PROGRESS, None)))
       running(application) {
-        val request = FakeRequest.apply(method = GET, path = getRoute + "?key=123")
+        val request = FakeRequest.apply(method = GET, path = getRoute(eventType) + "?key=123")
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[FileUploadResultView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, getEventTypeByName(Event22),
-          None, Call("POST", postRoute + "?key=123"))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, getEventTypeByName(eventType),
+          None, Call("POST", postRoute(eventType) + "?key=123"))(request, messages(application)).toString
       }
     }
+  }
 
-    "must return OK and redirect to the file rejected controller if file name is not retrieved from mongo cache" in {
+  private def testReturnOkAndRedirectFileRejected(eventType: EventType): Unit = {
+    s"must return OK and redirect to the file rejected controller if file name is not retrieved from mongo cache (Event $eventType)" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
         .thenReturn(Future.successful(FileUploadOutcomeResponse(None, FAILURE, None)))
       running(application) {
-        val request = FakeRequest.apply(method = GET, path = getRoute + "?key=123")
+        val request = FakeRequest.apply(method = GET, path = getRoute(eventType) + "?key=123")
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
       }
     }
-    "must return BadRequest and redirect to the file rejected controller if upload id is not found in request" in {
+  }
+
+  private def testReturnBadRequestIfUploadIdNotFound(eventType: EventType): Unit = {
+    s"must return BadRequest and redirect to the file rejected controller if upload id is not found in request (Event $eventType)" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       running(application) {
-        val request = FakeRequest.apply(method = GET, path = getRoute)
+        val request = FakeRequest.apply(method = GET, path = getRoute(eventType))
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
       }
     }
+  }
 
-    "must save the answer and redirect to the next page when valid data is submitted" in {
+  private def testSaveAnswerAndRedirectWhenValid(eventType: EventType): Unit = {
+    s"must save the answer and redirect to the next page when valid data is submitted (Event $eventType)" in {
+
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
@@ -134,18 +156,20 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest.apply(POST, path = postRoute).withFormUrlEncodedBody(("value", FileUploadResult.values.head.toString))
+          FakeRequest.apply(POST, path = postRoute(eventType)).withFormUrlEncodedBody(("value", FileUploadResult.values.head.toString))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(FileUploadResultPage(Event22), FileUploadResult.values.head).success.value
+        val updatedAnswers = emptyUserAnswers.set(FileUploadResultPage(eventType), FileUploadResult.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual FileUploadResultPage(Event22).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual FileUploadResultPage(eventType).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
+  }
 
-    "must return bad request when invalid data is submitted" in {
+  private def testBadRequestForInvalidDataSubmission(eventType: EventType): Unit = {
+    s"must return bad request when invalid data is submitted (Event $eventType)" in {
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
@@ -153,7 +177,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest.apply(method = POST, path = postRoute).withFormUrlEncodedBody(("value", "invalid"))
+          FakeRequest.apply(method = POST, path = postRoute(eventType)).withFormUrlEncodedBody(("value", "invalid"))
 
         val result = route(application, request).value
         status(result) mustEqual BAD_REQUEST

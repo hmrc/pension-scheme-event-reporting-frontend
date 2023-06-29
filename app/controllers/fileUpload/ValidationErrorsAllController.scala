@@ -41,11 +41,9 @@ class ValidationErrorsAllController @Inject()(
                                                parsingAndValidationOutcomeCacheConnector: ParsingAndValidationOutcomeCacheConnector
                                              )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val eventType = EventType.Event22
-
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
-      val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints).url
+      val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints, eventType).url
       val fileDownloadInstructionLink = controllers.routes.FileDownloadController.instructionsFile.url
       parsingAndValidationOutcomeCacheConnector.getOutcome.map {
         case Some(outcome@ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _)) =>
