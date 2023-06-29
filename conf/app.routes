@@ -29,7 +29,7 @@ GET        /new-report/declaration                                              
 GET        /new-report/declaration-on-click                                      controllers.DeclarationController.onClick(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET        /new-report/declaration-psp                                           controllers.DeclarationPspController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-GET        /new-report/declaration-psp                                           controllers.DeclarationPspController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /new-report/declaration-psp                                           controllers.DeclarationPspController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/done-page                                                 controllers.ReturnSubmittedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
