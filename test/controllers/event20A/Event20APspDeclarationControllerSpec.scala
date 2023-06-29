@@ -22,7 +22,6 @@ import connectors.{EventReportingConnector, MinimalConnector, SchemeDetailsConne
 import data.SampleData.sampleEvent20ABecameJourneyData
 import forms.event20A.Event20APspDeclarationFormProvider
 import models.{SchemeDetails, UserAnswers}
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -49,22 +48,11 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
   val pstr = "87219363YN"
   val taxYear = "2022"
   val practitionerName = "John Smith"
-  val mockEvent20AData: UserAnswers = UserAnswers(Json.obj(
-    "pstr" -> pstr,
-    "reportStartDate" -> "2022-04-06",
-    "reportEndDate" -> "2023-04-05",
-    "submittedBy" -> "PSP",
-    "submittedID" -> "pspId",
-    "authorisedPSAID" -> authorisingPsaId,
-    "psaDeclaration1" -> "Selected",
-    "psaDeclaration2" -> "Selected",
-    "schemeMasterTrustStartDate" -> "2023-01-12")
-  )
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockSchemeDetailsConnector = mock[SchemeDetailsConnector]
   private val mockEventReportingConnector = mock[EventReportingConnector]
   private val mockMinimalConnector = mock[MinimalConnector]
-  private val mockSchemeDetails = SchemeDetails("schemeName", "87219363YN", "Open", Some("A2100005"))
+  private val mockSchemeDetails = SchemeDetails("schemeName", "87219363YN", "Open", authorisingPsaId)
   private def getRoute: String = routes.Event20APspDeclarationController.onPageLoad(waypoints).url
   private def postRoute: String = routes.Event20APspDeclarationController.onSubmit(waypoints).url
 
@@ -136,7 +124,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
       when(mockEventReportingConnector.submitReportEvent20A(
-        ArgumentMatchers.eq("87219363YN"), ArgumentMatchers.eq(mockEvent20AData))(any(), any())).thenReturn(Future.successful())
+        any(), any())(any(), any())).thenReturn(Future.successful(()))
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
           .build()
@@ -160,7 +148,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
       when(mockEventReportingConnector.submitReportEvent20A(
-        ArgumentMatchers.eq("87219363YN"), ArgumentMatchers.eq(mockEvent20AData))(any(), any())).thenReturn(Future.successful())
+       any(), any())(any(), any())).thenReturn(Future.successful())
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()

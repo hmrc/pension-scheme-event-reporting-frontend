@@ -17,12 +17,12 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
-        layout: templates.Layout,
+        layout: templates.SchemeLayout,
         govukButton: GovukButton,
         govukTable: GovukTable
 )
 
-@(schemeName: String, pstr: String, taxYear: String, adminName: String, continueUrl: String)(implicit request: Request[_], messages: Messages)
+@(schemeName: String, pstr: String, taxYear: String, adminName: String, continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("event20A.psaDeclaration.title"))) {
 
@@ -32,7 +32,7 @@
         rows = Seq(
             Seq(
                 TableRow(
-                    content = Text("Scheme name")
+                    content = Text(messages("event20A.declaration.table.header1"))
                 ),
                 TableRow(
                     content = Text(schemeName)
@@ -40,7 +40,7 @@
             ),
             Seq(
                 TableRow(
-                    content = Text("PSTR")
+                    content = Text(messages("event20A.declaration.table.header2"))
                 ),
                 TableRow(
                     content = Text(pstr)
@@ -48,7 +48,7 @@
             ),
             Seq(
                 TableRow(
-                    content = Text("Tax year")
+                    content = Text(messages("event20A.declaration.table.header1"))
                 ),
                 TableRow(
                     content = Text(taxYear + " to " +( taxYear.toInt + 1).toString)

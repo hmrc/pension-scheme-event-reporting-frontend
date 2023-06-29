@@ -33,12 +33,9 @@ class ProblemWithServiceController @Inject()(
                                               val controllerComponents: MessagesControllerComponents,
                                               view: ProblemWithServiceView
                                             ) extends FrontendBaseController with I18nSupport {
-
-  private val eventType = EventType.Event1
-
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) {
+  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)) {
     implicit request =>
-      val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints).url
+      val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints, eventType).url
       Ok(view(returnUrl))
   }
 }

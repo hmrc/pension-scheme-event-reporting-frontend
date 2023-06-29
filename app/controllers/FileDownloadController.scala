@@ -17,6 +17,7 @@
 package controllers
 
 import controllers.actions.IdentifierAction
+import models.enumeration.EventType
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.FileProviderService
@@ -33,21 +34,21 @@ class FileDownloadController @Inject()(override val messagesApi: MessagesApi,
   extends FrontendBaseController
     with I18nSupport {
 
-  def templateFile: Action[AnyContent] = {
+  def templateFile(eventType: EventType): Action[AnyContent] = {
     identify.async { _ =>
       Future.successful(
         Ok.sendFile(
-          content = fileProviderService.getTemplateFile,
+          content = fileProviderService.getTemplateFile(eventType),
           inline = false
         ))
     }
   }
 
-  def instructionsFile: Action[AnyContent] = {
+  def instructionsFile(eventType: EventType): Action[AnyContent] = {
     identify.async { _ =>
       Future.successful(
         Ok.sendFile(
-          content = fileProviderService.getInstructionsFile,
+          content = fileProviderService.getInstructionsFile(eventType),
           inline = false
         ))
     }

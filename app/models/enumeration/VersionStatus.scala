@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package pages.event22
+package models.enumeration
 
-import controllers.event22.routes
-import models.UserAnswers
-import models.enumeration.EventType.Event22
-import pages.fileUpload.FileUploadPage
-import pages.{Page, Waypoints}
-import play.api.mvc.Call
+sealed trait VersionStatus
 
+object VersionStatus extends Enumerable.Implicits {
+  case object NotStarted extends WithName("notStarted") with VersionStatus
 
-case object FileUploadWhatYouWillNeedPage extends Page {
+  case object Compiled extends WithName("compiled") with VersionStatus
 
-  override def route(waypoints: Waypoints): Call =
-    routes.FileUploadWhatYouWillNeedController.onPageLoad(waypoints)
+  case object Submitted extends WithName("submitted") with VersionStatus
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    FileUploadPage(Event22)
+  private val values: List[VersionStatus] = List(NotStarted, Compiled, Submitted)
+
+  implicit val enumerable: Enumerable[VersionStatus] =
+    Enumerable(values.map(v => v.toString -> v): _*)
 }

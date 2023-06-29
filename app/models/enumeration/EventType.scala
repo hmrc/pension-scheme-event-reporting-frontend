@@ -102,6 +102,7 @@ object EventType extends Enumerable.Implicits {
   def getEventTypeByName(eventType: EventType): String = {
     eventType match {
       case Event22 => "annual allowance"
+      case Event23 => "dual annual allowances"
       case _ => "EventTypeByName needs to be implemented for other events"
     }
   }
@@ -124,6 +125,7 @@ object EventType extends Enumerable.Implicits {
 
   def toRoute(eventType: EventType): String = eventType match {
     case Event22 => "event-22"
+    case Event23 => "event-23"
     case _ => throw new RuntimeException(s"Unimplemented event type: $eventType")
   }
 
