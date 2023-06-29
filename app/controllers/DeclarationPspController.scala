@@ -56,12 +56,15 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
   private def form(authorisingPsaId: Option[String]): Form[String] = formProvider(authorisingPSAID = authorisingPsaId)
 
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()) { implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(DeclarationPspPage)) match {
       case Some(value) => form(authorisingPsaId = None).fill(value)
       case None => form(authorisingPsaId = None)
     }
-    Ok(view(preparedForm, waypoints))
+    minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map {
+      minimalDetails =>
+    Ok(view(minimalDetails.name, preparedForm, waypoints))
+    }
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
@@ -77,26 +80,28 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
       }
 
       schemeDetailsConnector.getPspSchemeDetails(request.loggedInUser.psaIdOrPspId, request.pstr).map(_.authorisingPSAID).flatMap { authorisingPsaId =>
-        form(authorisingPsaId = authorisingPsaId)
-          .bindFromRequest().fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, waypoints))),
-          value => {
-            val originalUserAnswers = request.userAnswers
-            val updatedAnswers = originalUserAnswers.setOrException(DeclarationPspPage, value)
-            userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
-              declarationData(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, authorisingPsaId) match {
-                case Some(data) =>
-                  erConnector.submitReport(request.pstr, UserAnswers(data)).flatMap { _ =>
-                    emailFuture.map { _ =>
-                      Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints))
+        minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
+          form(authorisingPsaId = authorisingPsaId)
+            .bindFromRequest().fold(
+            formWithErrors =>
+              Future.successful(BadRequest(view(minimalDetails.name, formWithErrors, waypoints))),
+            value => {
+              val originalUserAnswers = request.userAnswers
+              val updatedAnswers = originalUserAnswers.setOrException(DeclarationPspPage, value)
+              userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
+                declarationData(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, authorisingPsaId) match {
+                  case Some(data) =>
+                    erConnector.submitReport(request.pstr, UserAnswers(data)).flatMap { _ =>
+                      emailFuture.map { _ =>
+                        Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints))
+                      }
                     }
-                  }
-                case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
+                  case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
+                }
               }
             }
-          }
-        )
+          )
+        }
       }
   }
 

@@ -19,7 +19,6 @@ package controllers.partials
 import com.google.inject.Inject
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.enumeration.JourneyStartType
 import models.enumeration.JourneyStartType._
 import models.{EROverview, TaxYear}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage}

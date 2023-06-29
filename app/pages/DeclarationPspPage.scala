@@ -23,7 +23,7 @@ case object DeclarationPspPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "declarationPsp"
+  override def toString: String = "pspDeclaration"
 
   override def route(waypoints: Waypoints): Call =
     routes.DeclarationPspController.onPageLoad(waypoints)

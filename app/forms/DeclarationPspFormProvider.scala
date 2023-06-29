@@ -25,7 +25,12 @@ class DeclarationPspFormProvider @Inject() extends Mappings {
 
   def apply(authorisingPSAID: Option[String]): Form[String] =
     Form(
-      "value" -> text("declarationPsp.error.required")
-        .verifying(maxLength(100, "declarationPsp.error.length"))
+      "value" -> text("pspDeclaration.error.required")
+        .verifying(
+          minLength(8, "pspDeclaration.error.length"),
+          maxLength(8, "pspDeclaration.error.length"),
+          regexp(psaIdRegex, "pspDeclaration.error.length"),
+          isEqual(authorisingPSAID, "pspDeclaration.error.noMatch")
+        )
     )
 }
