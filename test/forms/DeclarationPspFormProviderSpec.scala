@@ -21,21 +21,20 @@ import play.api.data.FormError
 
 class DeclarationPspFormProviderSpec extends StringFieldBehaviours {
 
-  private val requiredKey = "declarationPsp.error.required"
-  private val lengthKey = "declarationPsp.error.length"
-  private val maxLength = 100
+  private val requiredKey = "pspDeclaration.error.required"
+  private val lengthKey = "pspDeclaration.error.length"
+  private val maxLength = 8
   private val authorisingPsaId = Some("A1234567")
   private val form = new DeclarationPspFormProvider()(authorisingPsaId)
+  val fieldName = "value"
 
   ".value" - {
 
-    val fieldName = "value"
-
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxLength)
-    )
+    "bind valid data" in {
+      val validValue = "A1234567"
+      val result = form.bind(Map(fieldName -> validValue)).apply(fieldName)
+      result.value.value mustBe validValue
+    }
 
     behave like fieldWithMaxLength(
       form,

@@ -27,10 +27,12 @@ class DeclarationPspFormProvider @Inject() extends Mappings {
     Form(
       "value" -> text("pspDeclaration.error.required")
         .verifying(
-          minLength(8, "pspDeclaration.error.length"),
-          maxLength(8, "pspDeclaration.error.length"),
-          regexp(psaIdRegex, "pspDeclaration.error.length"),
-          isEqual(authorisingPSAID, "pspDeclaration.error.noMatch")
+          firstError(
+            minLength(8, "pspDeclaration.error.length"),
+            maxLength(8, "pspDeclaration.error.length"),
+            regexp(psaIdRegex, "pspDeclaration.error.length"),
+            isEqual(authorisingPSAID, "pspDeclaration.error.noMatch")
+          )
         )
     )
 }
