@@ -30,7 +30,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.fileUpload.ProcessingRequestView
 
 import scala.concurrent.Future
 
@@ -72,7 +71,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.FileUploadSuccessController.onPageLoad(waypoints).url
+      redirectLocation(result).value mustEqual routes.FileUploadSuccessController.onPageLoad(waypoints, eventType).url
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
     }
   }
@@ -91,7 +90,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ProblemWithServiceController.onPageLoad(waypoints).url
+      redirectLocation(result).value mustEqual routes.ProblemWithServiceController.onPageLoad(waypoints, eventType).url
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
     }
   }
@@ -110,7 +109,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ValidationErrorsAllController.onPageLoad(waypoints).url
+      redirectLocation(result).value mustEqual routes.ValidationErrorsAllController.onPageLoad(waypoints, eventType).url
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
     }
   }
@@ -129,7 +128,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ValidationErrorsSummaryController.onPageLoad(waypoints).url
+      redirectLocation(result).value mustEqual routes.ValidationErrorsSummaryController.onPageLoad(waypoints, eventType).url
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
     }
   }

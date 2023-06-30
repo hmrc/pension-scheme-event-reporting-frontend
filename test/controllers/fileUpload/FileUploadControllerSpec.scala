@@ -88,8 +88,8 @@ class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(
-            waypoints, getEventTypeByName(eventType), eventType, Call("post", upscanInitiateResponse.postTarget), formFieldsMap, None)(request, messages(application)).toString
+          view(waypoints, getEventTypeByName(eventType), eventType,
+            Call("post", upscanInitiateResponse.postTarget), formFieldsMap, None)(request, messages(application)).toString
       }
     }
   }
