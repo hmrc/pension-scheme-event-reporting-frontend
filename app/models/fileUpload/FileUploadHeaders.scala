@@ -15,6 +15,7 @@
  */
 
 package models.fileUpload
+
 object FileUploadHeaders {
 
   val valueFormField = "value"
@@ -25,8 +26,12 @@ object FileUploadHeaders {
     val nino = "nino"
   }
 
+  object Event22FieldNames {
+    val taxYear: String = "taxYear"
+    val totalAmounts: String = "totalAmounts"
+  }
 
-   object Event22FieldNames {
+  object Event23FieldNames {
     val taxYear: String = "taxYear"
     val totalAmounts: String = "totalAmounts"
   }

@@ -18,12 +18,15 @@ package controllers.fileUpload
 
 import base.SpecBase
 import connectors.ParsingAndValidationOutcomeCacheConnector
+import models.enumeration.EventType
+import models.enumeration.EventType.{Event22, Event23}
 import models.fileUpload.ParsingAndValidationOutcome
 import models.fileUpload.ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.EmptyWaypoints
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
@@ -36,9 +39,8 @@ import scala.concurrent.Future
 
 class ValidationErrorsAllControllerSpec extends SpecBase with BeforeAndAfterEach {
 
-  private val returnUrl = "/manage-pension-scheme-event-report/new-report/event-22-upload"
-  private val fileDownloadInstructionLink = "/manage-pension-scheme-event-report/event-22-upload-format-instructions"
   private val mockParsingAndValidationOutcomeCacheConnector = mock[ParsingAndValidationOutcomeCacheConnector]
+  private val seqOfEvents = Seq(Event22, Event23)
 
   private val expectedOutcome = ParsingAndValidationOutcome(
     status = ValidationErrorsLessThan10,
@@ -62,14 +64,17 @@ class ValidationErrorsAllControllerSpec extends SpecBase with BeforeAndAfterEach
     bind[ParsingAndValidationOutcomeCacheConnector].toInstance(mockParsingAndValidationOutcomeCacheConnector)
   )
 
+  private def returnUrl(eventType: EventType) = s"/manage-pension-scheme-event-report/new-report/event-${eventType.toString}-upload"
+
+  private def fileDownloadInstructionLink(eventType: EventType) = s"/manage-pension-scheme-event-report/event-${eventType.toString}-upload-format-instructions"
+
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockParsingAndValidationOutcomeCacheConnector)
   }
 
-  "ValidationErrorsAll Controller" - {
-
-    "must return OK and the correct view for a GET" in {
+  private def testReturnOkAndCorrectView(eventType: EventType): Unit = {
+    s"must return OK and the correct view for a GET (Event ${eventType.toString})" in {
 
       when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
         .thenReturn(Future.successful(Some(expectedOutcome)))
@@ -78,7 +83,7 @@ class ValidationErrorsAllControllerSpec extends SpecBase with BeforeAndAfterEach
 
       running(application) {
 
-        val request = FakeRequest(GET, routes.ValidationErrorsAllController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.ValidationErrorsAllController.onPageLoad(EmptyWaypoints, eventType).url)
 
         val result = route(application, request).value
 
@@ -88,8 +93,15 @@ class ValidationErrorsAllControllerSpec extends SpecBase with BeforeAndAfterEach
           ValidationErrorForRendering(cell = "B2", error = "error2", columnName = "column2")
         )
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(returnUrl, fileDownloadInstructionLink, dummyErrors)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(returnUrl(eventType),
+          fileDownloadInstructionLink(eventType), dummyErrors)(request, messages(application)).toString
       }
+    }
+  }
+
+  "ValidationErrorsAll Controller" - {
+    for (event <- seqOfEvents) {
+      testReturnOkAndCorrectView(event)
     }
   }
 }

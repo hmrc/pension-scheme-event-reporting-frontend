@@ -18,12 +18,15 @@ package controllers.fileUpload
 
 import base.SpecBase
 import connectors.ParsingAndValidationOutcomeCacheConnector
+import models.enumeration.EventType
+import models.enumeration.EventType.{Event22, Event23}
 import models.fileUpload.ParsingAndValidationOutcome
 import models.fileUpload.ParsingAndValidationOutcomeStatus.Success
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.EmptyWaypoints
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
@@ -35,8 +38,10 @@ import scala.concurrent.Future
 
 class FileUploadSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
-  private val continueUrl = "/manage-pension-scheme-event-report/new-report/event-22-summary"
+  private def continueUrl(eventType: EventType) = s"/manage-pension-scheme-event-report/new-report/event-${eventType.toString}-summary"
+
   private val mockParsingAndValidationOutcomeCacheConnector = mock[ParsingAndValidationOutcomeCacheConnector]
+  private val seqOfEvents = Seq(Event22, Event23)
 
   private val expectedOutcome = ParsingAndValidationOutcome(
     status = Success,
@@ -54,8 +59,13 @@ class FileUploadSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
   }
 
   "FileUploadSuccess Controller" - {
+    for (event <- seqOfEvents) {
+      testReturnOkAndCorrectView(event)
+    }
+  }
 
-    "must return OK and the correct view for a GET" in {
+  private def testReturnOkAndCorrectView(eventType: EventType): Unit = {
+    s"must return OK and the correct view for a GET (Event ${eventType.toString})" in {
 
       when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
         .thenReturn(Future.successful(Some(expectedOutcome)))
@@ -64,7 +74,7 @@ class FileUploadSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
 
-        val request = FakeRequest(GET, routes.FileUploadSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.FileUploadSuccessController.onPageLoad(EmptyWaypoints, eventType).url)
 
         val result = route(application, request).value
 
@@ -73,7 +83,7 @@ class FileUploadSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
         val fileName = expectedOutcome.fileName.getOrElse("Your file")
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(continueUrl, fileName)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(continueUrl(eventType), fileName)(request, messages(application)).toString
       }
     }
   }
