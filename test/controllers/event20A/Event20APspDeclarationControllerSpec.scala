@@ -21,7 +21,7 @@ import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
 import connectors.{EventReportingConnector, MinimalConnector, SchemeDetailsConnector, UserAnswersCacheConnector}
 import data.SampleData.sampleEvent20ABecameJourneyData
 import forms.event20A.Event20APspDeclarationFormProvider
-import models.{SchemeDetails, UserAnswers}
+import models.SchemeDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -31,7 +31,6 @@ import pages.event20A.Event20APspDeclarationPage
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.event20A.Event20APspDeclarationView
