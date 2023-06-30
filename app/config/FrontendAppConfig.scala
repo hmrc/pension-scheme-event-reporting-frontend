@@ -18,8 +18,8 @@ package config
 
 import com.google.inject.{Inject, Singleton}
 import models.enumeration.AdministratorOrPractitioner.Administrator
-import models.enumeration.{AdministratorOrPractitioner, EventType}
 import models.enumeration.EventType.toRoute
+import models.enumeration.{AdministratorOrPractitioner, EventType}
 import play.api.Configuration
 import play.api.i18n.Lang
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -103,6 +103,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
         encryptedPsaId
       )
   }"
+
+  lazy val validEvent6Header: String = configuration.get[String]("validEvent6Header")
   lazy val validEvent22Header: String = configuration.get[String]("validEvent22Header")
   lazy val validEvent23Header: String = configuration.get[String]("validEvent23Header")
 }

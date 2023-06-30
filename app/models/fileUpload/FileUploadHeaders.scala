@@ -26,6 +26,13 @@ object FileUploadHeaders {
     val nino = "nino"
   }
 
+  object Event6FieldNames {
+    val typeOfProtection: String = "typeOfProtection"
+    val typeOfProtectionReference: String = "typeOfProtectionReference"
+    val lumpSumAmount: String = "lumpSumAmount"
+    val lumpSumDate: String = "lumpSumDate"
+  }
+
   object Event22FieldNames {
     val taxYear: String = "taxYear"
     val totalAmounts: String = "totalAmounts"

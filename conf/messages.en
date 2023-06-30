@@ -1561,6 +1561,12 @@ fileUpload.memberDetails.generic.error.nino = member’s National Insurance numb
 
 fileUpload.taxYear.generic.error = tax year is missing, invalid or in the wrong format
 fileUpload.totalAmounts.generic.error = the total of the member’s pension input amounts is missing, invalid or in the wrong format
+
+fileUpload.typeOfProtection.generic.error = "Error for type of protection needs to be confirmed"
+fileUpload.typeOfProtectionReference.generic.error = "Error for type of protection reference needs to be confirmed"
+fileUpload.lumpSumAmount.generic.error = "Error for type of lumpSumAmount needs to be confirmed"
+fileUpload.lumpSumDate.generic.error = "Error for type of lumpSumDate needs to be confirmed"
+
 fileUploadSuccess.title = Your file upload was successful
 fileUploadSuccess.heading = Your file upload was successful
 fileUploadSuccess.p = {0} was uploaded successfully and the charge was added to the event. Select continue to view the changes.

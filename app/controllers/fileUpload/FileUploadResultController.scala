@@ -23,7 +23,7 @@ import forms.fileUpload.FileUploadResultFormProvider
 import helpers.fileUpload.FileUploadGenericErrorReporter
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, getEventTypeByName}
+import models.enumeration.EventType.{Event22, Event23, getEventTypeByName}
 import models.fileUpload.ParsingAndValidationOutcomeStatus._
 import models.fileUpload.{FileUploadResult, ParsingAndValidationOutcome}
 import models.requests.OptionalDataRequest
@@ -34,7 +34,7 @@ import play.api.data.Form
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.libs.json.{JsArray, JsObject, JsPath, Json}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.mvc._
 import services.fileUpload.Validator.FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty
 import services.fileUpload._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -110,6 +110,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
   private def validatorForEvent(eventType: EventType): Validator = {
     eventType match {
       case Event22 => event22Validator
+      case Event23 => event23Validator
       case _ => event23Validator
     }
   }
