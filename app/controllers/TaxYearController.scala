@@ -94,7 +94,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
               case _ => VersionInfo(1, NotStarted)
             }
 
-          val futureAfteClearDown = request.userAnswers.get(TaxYearPage) match {
+          val futureAfterClearDown = request.userAnswers.get(TaxYearPage) match {
             case Some(v) if v != value => userAnswersCacheConnector.removeAll(request.pstr)
             case _ => Future.successful((): Unit)
           }
@@ -102,7 +102,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
           val updatedAnswers = originalUserAnswers
             .setOrException(TaxYearPage, value, nonEventTypeData = true)
             .setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
-          futureAfteClearDown.flatMap { _ =>
+          futureAfterClearDown.flatMap { _ =>
             userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
               Redirect(TaxYearPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
             }
