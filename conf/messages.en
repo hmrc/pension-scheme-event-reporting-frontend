@@ -1584,3 +1584,11 @@ problemWithService.p = We could not process your file upload
 problemWithService.link = Try uploading your file again.
 
 chooseTaxYear.event22.error.outsideRange = The tax year must be between {0} and {1}
+
+whatYouWillNeed.event6.title = What you will need
+whatYouWillNeed.event6.heading = What you will need
+whatYouWillNeed.event6.p = To record a benefit crystallisation, where the member relies on an applicable LTA protection, you will need to tell us the:
+whatYouWillNeed.event6.item1 = member’s name and National Insurance number
+whatYouWillNeed.event6.item2 = details of the type of protection held for the crystallisation
+whatYouWillNeed.event6.item3 = amount that was crystallised
+whatYouWillNeed.event6.item4 = date of the benefit crystallisation
