@@ -21,7 +21,7 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.WantToSubmitFormProvider
 import models.UserAnswers
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
-import pages.{DeclarationPage, WantToSubmitPage, Waypoints}
+import pages.{WantToSubmitPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController

@@ -17,11 +17,12 @@
 package controllers
 
 import base.SpecBase
-import connectors.UserAnswersCacheConnector
+import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
+import connectors.{EventReportingConnector, MinimalConnector, SchemeDetailsConnector, UserAnswersCacheConnector}
 import forms.DeclarationPspFormProvider
-import models.UserAnswers
+import models.{SchemeDetails, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, reset, times, verify, when}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{DeclarationPspPage, EmptyWaypoints}
@@ -39,28 +40,41 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val authorisingPsaId = Some("A1234567")
   private val formProvider = new DeclarationPspFormProvider()
   private val form = formProvider(authorisingPsaId)
+  val practitionerName = "John Smith"
+
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-
+  private val mockSchemeDetailsConnector = mock[SchemeDetailsConnector]
+  private val mockEventReportingConnector = mock[EventReportingConnector]
+  private val mockMinimalConnector = mock[MinimalConnector]
+  private val mockSchemeDetails = SchemeDetails("schemeName", "87219363YN", "Open", Some("A2100005"))
+  val testEmail = "test@test.com"
+  val mockMinimalDetails: MinimalDetails = {
+    MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None,  lastName = "Smith")), false, false)
+  }
   private def getRoute: String = routes.DeclarationPspController.onPageLoad(waypoints).url
   private def postRoute: String = routes.DeclarationPspController.onSubmit(waypoints).url
 
-  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
-  )
-
   private val validValue = "abc"
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
+    bind[SchemeDetailsConnector].toInstance(mockSchemeDetailsConnector),
+    bind[EventReportingConnector].toInstance(mockEventReportingConnector),
+    bind[MinimalConnector].toInstance(mockMinimalConnector)
+  )
 
   "DeclarationPsp Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -70,12 +84,12 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[DeclarationPspView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(practitionerName, form, waypoints)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       val userAnswers = UserAnswers().set(DeclarationPspPage, validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
@@ -88,11 +102,16 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(practitionerName, form.fill(validValue), waypoints)(request, messages(application)).toString
       }
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+      when(mockEventReportingConnector.submitReportEvent20A(any(), any())(any(), any())).thenReturn(Future.successful())
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
@@ -102,7 +121,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "A1234567"))
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(DeclarationPspPage, validValue).success.value
@@ -114,6 +133,14 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must return bad request when invalid data is submitted" in {
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+      when(mockEventReportingConnector.submitReportEvent20A(any(), any())(any(), any())).thenReturn(Future.successful())
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
           .build()
@@ -128,7 +155,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(practitionerName, boundForm, waypoints)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
