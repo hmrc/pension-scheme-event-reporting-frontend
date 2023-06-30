@@ -17,6 +17,7 @@
 package helpers.fileUpload
 
 import models.enumeration.EventType
+import models.enumeration.EventType.Event22
 import models.fileUpload.FileUploadHeaders._
 import services.fileUpload.ValidationError
 
@@ -35,14 +36,28 @@ object FileUploadGenericErrorReporter {
     nino -> "fileUpload.memberDetails.generic.error.nino"
   )
 
-  private val event22Header = commonColumnAndErrorMessageMap ++
-    Map(
-      Event22FieldNames.taxYear -> "fileUpload.taxYear.generic.error",
-      Event22FieldNames.totalAmounts -> "fileUpload.totalAmounts.generic.error"
-    )
+
+  private def eventHeader(eventType: EventType) = {
+    eventType match {
+      case Event22 =>
+        commonColumnAndErrorMessageMap ++
+          Map(
+            Event22FieldNames.taxYear -> "fileUpload.taxYear.generic.error",
+            Event22FieldNames.totalAmounts -> "fileUpload.totalAmounts.generic.error"
+          )
+      case _ =>
+        commonColumnAndErrorMessageMap ++
+          Map(
+            Event23FieldNames.taxYear -> "fileUpload.taxYear.generic.error",
+            Event23FieldNames.totalAmounts -> "fileUpload.totalAmounts.generic.error"
+          )
+    }
+
+  }
 
   private def getColumnsAndErrorMap(eventType: EventType): ColumnAndErrorMap = eventType match {
-    case EventType.Event22 => event22Header
+    case EventType.Event22 => eventHeader(eventType)
+    case EventType.Event23 => eventHeader(eventType)
     case _ => throw new RuntimeException("Invalid event type")
   }
 

@@ -104,4 +104,5 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
       )
   }"
   lazy val validEvent22Header: String = configuration.get[String]("validEvent22Header")
+  lazy val validEvent23Header: String = configuration.get[String]("validEvent23Header")
 }
