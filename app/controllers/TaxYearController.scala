@@ -22,10 +22,11 @@ import forms.TaxYearFormProvider
 import models.enumeration.JourneyStartType.{InProgress, PastEventTypes}
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
 import models.requests.DataRequest
-import models.{EROverview, TaxYear, VersionInfo}
+import models.{EROverview, TaxYear, UserAnswers, VersionInfo}
 import pages.{EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage, VersionInfoPage, Waypoints}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.TaxYearView
@@ -93,12 +94,18 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
               case _ => VersionInfo(1, NotStarted)
             }
 
+          val futureAfterClearDown = request.userAnswers.get(TaxYearPage) match {
+            case Some(v) if v != value => userAnswersCacheConnector.removeAll(request.pstr)
+            case _ => Future.successful((): Unit)
+          }
 
           val updatedAnswers = originalUserAnswers
             .setOrException(TaxYearPage, value, nonEventTypeData = true)
             .setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
-          userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
-            Redirect(TaxYearPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+          futureAfterClearDown.flatMap { _ =>
+            userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
+              Redirect(TaxYearPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            }
           }
         }
       )

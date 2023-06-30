@@ -17,7 +17,6 @@
 package controllers.event2
 
 import com.google.inject.Inject
-import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.Index
 import models.enumeration.EventType.Event2
@@ -26,6 +25,7 @@ import pages.event2.Event2CheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Event2MemberPageNumbers
@@ -41,7 +41,7 @@ class Event2CheckYourAnswersController @Inject()(
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
-                                                   connector: EventReportingConnector,
+                                                   compileService: CompileService,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: CheckYourAnswersView
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -56,7 +56,7 @@ class Event2CheckYourAnswersController @Inject()(
 
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event2) andThen requireData).async { implicit request =>
-                connector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(Event2)).map {
+                compileService.compileEvent(Event2, request.pstr, request.userAnswers).map {
                   _ =>
           Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event2).url)
           }

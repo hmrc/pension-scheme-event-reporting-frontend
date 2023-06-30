@@ -16,13 +16,14 @@
 
 package controllers.event18
 
-import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.enumeration.EventType
 import pages.Waypoints
 import pages.event18.Event18ConfirmationPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.CompileService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event18.Event18ConfirmationView
 
@@ -33,7 +34,7 @@ class Event18ConfirmationController @Inject()(val controllerComponents: Messages
                                               identify: IdentifierAction,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
-                                              connector: EventReportingConnector,
+                                              compileService: CompileService,
                                               userAnswersCacheConnector: UserAnswersCacheConnector,
                                               view: Event18ConfirmationView
                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -49,7 +50,7 @@ class Event18ConfirmationController @Inject()(val controllerComponents: Messages
       val originalUserAnswers = request.userAnswers
       val updatedAnswers = originalUserAnswers.setOrException(Event18ConfirmationPage, true)
       userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).flatMap { _ =>
-        connector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(eventType)).map {
+        compileService.compileEvent(eventType, request.pstr, request.userAnswers).map {
           _ =>
             Redirect(Event18ConfirmationPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
         }

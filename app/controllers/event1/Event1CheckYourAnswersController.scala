@@ -17,7 +17,6 @@
 package controllers.event1
 
 import com.google.inject.Inject
-import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.Index
 import models.enumeration.AddressJourneyType
@@ -32,6 +31,7 @@ import pages.event1.{Event1CheckYourAnswersPage, ValueOfUnauthorisedPaymentPage,
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.address.checkAnswers.ChooseAddressSummary
@@ -49,7 +49,7 @@ class Event1CheckYourAnswersController @Inject()(
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
-                                                  connector: EventReportingConnector,
+                                                  compileService: CompileService,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: CheckYourAnswersView
                                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -68,7 +68,7 @@ class Event1CheckYourAnswersController @Inject()(
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event1) andThen requireData).async { implicit request =>
       val waypoints = EmptyWaypoints
-      connector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(Event1)).map {
+      compileService.compileEvent(Event1, request.pstr, request.userAnswers).map {
         _ =>
           Redirect(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(waypoints))
       }
