@@ -21,16 +21,17 @@ import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
 import connectors.{EventReportingConnector, MinimalConnector, SchemeDetailsConnector, UserAnswersCacheConnector}
 import data.SampleData.sampleEvent20JourneyData
 import forms.DeclarationPspFormProvider
-import models.SchemeDetails
+import models.{SchemeDetails, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.EmptyWaypoints
+import pages.{DeclarationPspPage, EmptyWaypoints}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import views.html.DeclarationPspView
 
 import scala.concurrent.Future
 
@@ -73,40 +74,40 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   "DeclarationPsp Controller" - {
 
-//    "must return OK and the correct view for a GET" in {
-//
-//      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
-//      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
-//
-//      running(application) {
-//        val request = FakeRequest(GET, getRoute)
-//
-//        val result = route(application, request).value
-//
-//        val view = application.injector.instanceOf[DeclarationPspView]
-//
-//        status(result) mustEqual OK
-//        contentAsString(result) mustEqual view(practitionerName, form, waypoints)(request, messages(application)).toString
-//      }
-//    }
-//
-//    "must populate the view correctly on a GET when the question has previously been answered" in {
-//      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
-//      val userAnswers = UserAnswers().set(DeclarationPspPage, validValue).success.value
-//
-//      val application = applicationBuilder(userAnswers = Some(userAnswers), extraModules).build()
-//
-//      running(application) {
-//        val request = FakeRequest(GET, getRoute)
-//
-//        val view = application.injector.instanceOf[DeclarationPspView]
-//
-//        val result = route(application, request).value
-//
-//        status(result) mustEqual OK
-//        contentAsString(result) mustEqual view(practitionerName, form.fill(validValue), waypoints)(request, messages(application)).toString
-//      }
-//    }
+    "must return OK and the correct view for a GET" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[DeclarationPspView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(practitionerName, form, waypoints)(request, messages(application)).toString
+      }
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      val userAnswers = UserAnswers().set(DeclarationPspPage, validValue).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val view = application.injector.instanceOf[DeclarationPspView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(practitionerName, form.fill(validValue), waypoints)(request, messages(application)).toString
+      }
+    }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
@@ -127,36 +128,36 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.ReturnSubmittedController.onPageLoad(waypoints).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
       }
     }
 
-//    "must return bad request when invalid data is submitted" in {
-//      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
-//      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
-//      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-//        .thenReturn(Future.successful(()))
-//      when(mockEventReportingConnector.submitReport(any(), any())(any(), any())).thenReturn(Future.successful())
-//      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-//        .thenReturn(Future.successful(()))
-//
-//      val application =
-//        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-//          .build()
-//
-//      running(application) {
-//        val request =
-//          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
-//
-//        val view = application.injector.instanceOf[DeclarationPspView]
-//        val boundForm = form.bind(Map("value" -> ""))
-//
-//        val result = route(application, request).value
-//
-//        status(result) mustEqual BAD_REQUEST
-//        contentAsString(result) mustEqual view(practitionerName, boundForm, waypoints)(request, messages(application)).toString
-//        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
-//      }
-//    }
+    "must return bad request when invalid data is submitted" in {
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+      when(mockEventReportingConnector.submitReport(any(), any())(any(), any())).thenReturn(Future.successful())
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
+
+        val view = application.injector.instanceOf[DeclarationPspView]
+        val boundForm = form.bind(Map("value" -> ""))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(practitionerName, boundForm, waypoints)(request, messages(application)).toString
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
   }
 }
