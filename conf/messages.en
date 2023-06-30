@@ -1487,6 +1487,60 @@ whatYouWillNeed.event19.p = To record a change country or territory of establish
 whatYouWillNeed.event19.item1 = new country or territory
 whatYouWillNeed.event19.item2 = date that the change took place
 
+whatYouWillNeed.event20A.p = For this event, you will need to tell us the date that the scheme either became or ceased to be a Master Trust.
+whatYouWillNeed.event20A.item1 = Awaiting a content update for this page:
+whatYouWillNeed.event20A.item2 = search for whatYouWillNeed.event20A in messages.en to change these list items
+
+ceasedDateMasterTrust.title = When did the scheme cease to be a Master Trust?
+ceasedDateMasterTrust.heading = When did the scheme cease to be a Master Trust?
+ceasedDateMasterTrust.hint = For example, 12 11 2007
+ceasedDateMasterTrust.checkYourAnswersLabel = When pension scheme ceased to be a Master Trust
+ceasedDateMasterTrust.error.required.all = Enter the date
+ceasedDateMasterTrust.error.required.two = The date must include {0} and {1}
+ceasedDateMasterTrust.error.required = The date must include {0}
+ceasedDateMasterTrust.error.invalid = Enter a real date
+ceasedDateMasterTrust.change.hidden = When did the scheme cease to be a Master Trust?
+
+becameDateMasterTrust.title = When did the scheme become a Master Trust?
+becameDateMasterTrust.heading = When did the scheme become a Master Trust?
+becameDateMasterTrust.hint = For example, 12 11 2007
+becameDateMasterTrust.checkYourAnswersLabel = When pension scheme became a Master Trust
+becameDateMasterTrust.error.required.all = Enter the date
+becameDateMasterTrust.error.required.two = The date must include {0} and {1}
+becameDateMasterTrust.error.required = The date must include {0}
+becameDateMasterTrust.error.invalid = Enter a real date
+becameDateMasterTrust.change.hidden = When did the scheme become a Master Trust?
+
+schemeChangeDate.event20A.error.nothingEntered = Enter the date
+schemeChangeDate.event20A.error.noDayMonthOrYear = The date must include a day, month and year
+schemeChangeDate.event20A.error.outsideDateRanges = Enter a real date
+schemeChangeDate.event20A.error.outsideReportedYear = The date must be between {0} and {1}
+
+whatChange.becameMasterTrust = It became a Master Trust
+whatChange.ceasedMasterTrust = It has ceased to be a Master Trust
+
+event20A.psaDeclaration.title = Declaration
+event20A.psaDeclaration.heading = Declaration
+event20A.psaDeclaration.p = I, {0} declare that:
+event20A.psaDeclaration.item1 = to the best of my knowledge and belief, the information given in this tax return is correct and complete
+event20A.psaDeclaration.item2 = I understand that if I have made a false statement in this tax return, I may be liable to a penalty, and that false statements may also lead to prosecution
+
+event20A.declaration.table.header1 = Scheme name
+event20A.declaration.table.header2 = PSTR
+event20A.declaration.table.header3 = Tax year
+
+event20A.pspDeclaration.title = Declaration
+event20A.pspDeclaration.heading = Declaration
+event20A.pspDeclaration.input = ID of authorising scheme administrator:
+event20A.pspDeclaration.error.required = Enter the scheme administrator's ID
+event20A.pspDeclaration.error.noMatch = Enter the correct pension scheme administrator ID
+event20A.pspDeclaration.error.invalid = The scheme administrator's ID must only include letters and numbers
+event20A.pspDeclaration.error.length = The scheme administrator's ID must be the letter A followed by 7 numbers, like A 9999999
+event20A.pspDeclaration.change.hidden = Declaration
+event20A.pspDeclaration.p = I, {0} declare that the:
+event20A.pspDeclaration.item1 =  content of this report has been approved by the scheme administrator
+event20A.pspDeclaration.item2 = scheme administrator named below has authorised me to submit this report
+
 fileUpload.memberDetails.generic.error.firstName = member’s first name is missing or in the wrong format
 fileUpload.memberDetails.generic.error.lastName = member’s last name is missing or in the wrong format
 fileUpload.memberDetails.generic.error.nino = member’s National Insurance number is missing or in the wrong format

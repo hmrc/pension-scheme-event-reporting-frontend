@@ -33,6 +33,7 @@ import models.event10.{BecomeOrCeaseScheme, SchemeChangeDate}
 import models.event12.DateOfChange
 import models.event20.Event20Date
 import models.event20.WhatChange.BecameOccupationalScheme
+import models.event20A.WhatChange.{BecameMasterTrust, CeasedMasterTrust}
 import models.event6.{CrystallisedDetails, TypeOfProtection => Event6TypeOfProtection}
 import models.event7.PaymentDate
 import models.event8.{LumpSumDetails, TypeOfProtection => Event8TypeOfProtection}
@@ -48,7 +49,6 @@ import pages.event10.{BecomeOrCeaseSchemePage, ContractsOrPoliciesPage, SchemeCh
 import pages.event12.{DateOfChangePage, HasSchemeChangedRulesPage}
 import pages.event19.{CountryOrTerritoryPage, DateChangeMadePage}
 import pages.event2.{AmountPaidPage, DatePaidPage}
-import pages.event20.{BecameDatePage, WhatChangePage}
 import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage => Event6TypeOfProtectionPage}
 import pages.event7.{CrystallisedAmountPage, LumpSumAmountPage, PaymentDatePage}
 import pages.event8.{LumpSumAmountAndDatePage, TypeOfProtectionReferencePage, TypeOfProtectionPage => Event8TypeOfProtectionPage}
@@ -309,6 +309,16 @@ object SampleData extends SpecBase {
 
   def sampleEvent20JourneyData: UserAnswers =
     emptyUserAnswersWithTaxYear
-      .setOrException(WhatChangePage, BecameOccupationalScheme)
-      .setOrException(BecameDatePage, Event20Date(LocalDate.of(2023, 12, 12)))
+      .setOrException(pages.event20.WhatChangePage, BecameOccupationalScheme)
+      .setOrException(pages.event20.BecameDatePage, Event20Date(LocalDate.of(2023, 12, 12)))
+
+  def sampleEvent20ABecameJourneyData: UserAnswers =
+    emptyUserAnswersWithTaxYear
+      .setOrException(pages.event20A.WhatChangePage, BecameMasterTrust)
+      .setOrException(pages.event20A.BecameDatePage, LocalDate.of(2023, 1, 12))
+
+  def sampleEvent20ACeasedJourneyData: UserAnswers =
+    emptyUserAnswersWithTaxYear
+      .setOrException(pages.event20A.WhatChangePage, CeasedMasterTrust)
+      .setOrException(pages.event20A.CeasedDatePage, LocalDate.of(2023, 1, 12))
 }

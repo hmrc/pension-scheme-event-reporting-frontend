@@ -58,6 +58,8 @@ class EventReportingConnectorSpec
   private val eventReportSummaryCacheUrl = "/pension-scheme-event-reporting/event-summary"
   private val eventReportCompileUrl = "/pension-scheme-event-reporting/compile"
   private val eventReportSubmitUrl = "/pension-scheme-event-reporting/submit-event-declaration-report"
+  private def event20AReportSubmitUrl = "/pension-scheme-event-reporting/submit-event20a-declaration-report"
+
   private val getFileUploadResponseUrl = "/pension-scheme-event-reporting/file-upload-response/get"
   private val getOverviewUrl = "/pension-scheme-event-reporting/overview"
 
@@ -170,6 +172,34 @@ class EventReportingConnectorSpec
 
       recoverToSucceededIf[HttpException] {
         connector.submitReport(pstr, userAnswers)
+      }
+    }
+  }
+
+  "submitReportEvent20A" must {
+    "return unit for successful post" in {
+      server.stubFor(
+        post(urlEqualTo(event20AReportSubmitUrl))
+          .willReturn(
+            noContent
+          )
+      )
+      connector.submitReportEvent20A(pstr, userAnswers).map {
+        _ mustBe()
+      }
+    }
+
+    "return BadRequestException when the backend has returned bad request response" in {
+      server.stubFor(
+        post(urlEqualTo(event20AReportSubmitUrl))
+          .willReturn(
+            badRequest
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      recoverToSucceededIf[HttpException] {
+        connector.submitReportEvent20A(pstr, userAnswers)
       }
     }
   }

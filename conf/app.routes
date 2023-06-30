@@ -485,3 +485,32 @@ POST       /new-report/event-20-when-scheme-ceased-to-be-occupational           
 
 GET         /new-report/event-20-check-your-answers                              controllers.event20.Event20CheckYourAnswersController.onPageLoad
 GET         /new-report/event-20-click                                           controllers.event20.Event20CheckYourAnswersController.onClick
+
+GET        /new-report/event-22-upload-successful                                 controllers.fileUpload.FileUploadSuccessController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+
+GET        /new-report/event-22-upload-fail                                       controllers.fileUpload.ValidationErrorsAllController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+
+GET        /new-report/event-22-upload-error-many                                 controllers.fileUpload.ValidationErrorsSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+
+GET        /new-report/event-22-upload-problem                                    controllers.fileUpload.ProblemWithServiceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+
+# Event 20A
+
+GET         /new-report/event-20A-what-you-will-need                           controllers.event20A.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-20A-Master-Trust                                 controllers.event20A.WhatChangeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-20A-Master-Trust                                 controllers.event20A.WhatChangeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-20A-when-scheme-became-Master-Trust              controllers.event20A.BecameDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-20A-when-scheme-became-Master-Trust              controllers.event20A.BecameDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-20A-when-scheme-ceased-to-be-Master-Trust        controllers.event20A.CeasedDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-20A-when-scheme-ceased-to-be-Master-Trust        controllers.event20A.CeasedDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-20A-check-your-answers                           controllers.event20A.Event20ACheckYourAnswersController.onPageLoad
+
+GET         /new-report/event-20a-declaration-PSA                               controllers.event20A.Event20APsaDeclarationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-20a-declaration-PSA-click                      controllers.event20A.Event20APsaDeclarationController.onClick(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /new-report/event-20a-declaration-PSP                               controllers.event20A.Event20APspDeclarationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST        /new-report/event-20a-declaration-PSP                               controllers.event20A.Event20APspDeclarationController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
