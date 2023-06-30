@@ -50,16 +50,14 @@ class CompileService @Inject()(
   }
 
   private def updateUAVersionAndOverview(pstr: String,
-                                         eventType: EventType,
                                          userAnswers: UserAnswers,
+                                         version: Int,
                                          newVersion: Int)(implicit ec: ExecutionContext,
                                                           headerCarrier: HeaderCarrier): Future[Option[Seq[EROverview]]] = {
-    userAnswersCacheConnector.changeVersion(pstr, userAnswers.eventDataIdentifier(eventType), newVersion.toString).flatMap { _ =>
-      userAnswersCacheConnector.removeAllButVersion(newVersion).map { _ =>
-        (userAnswers.get(EventReportingOverviewPage), userAnswers.get(TaxYearPage)) match {
-          case (Some(overviewSeq), Some(taxYear)) => Some(updateOverviewSeq(overviewSeq, taxYear, newVersion))
-          case _ => None
-        }
+    userAnswersCacheConnector.changeVersion(pstr, version.toString, newVersion.toString).map { _ =>
+      (userAnswers.get(EventReportingOverviewPage), userAnswers.get(TaxYearPage)) match {
+        case (Some(overviewSeq), Some(taxYear)) => Some(updateOverviewSeq(overviewSeq, taxYear, newVersion))
+        case _ => None
       }
     }
   }
@@ -75,7 +73,7 @@ class CompileService @Inject()(
             case VersionInfo(version, Submitted) => VersionInfo(version + 1, Compiled)
           }
           val futureOptChangedOverviewSeq = if (newVersionInfo.version > vi.version) {
-            updateUAVersionAndOverview(pstr, eventType, userAnswers, newVersionInfo.version)
+            updateUAVersionAndOverview(pstr, userAnswers, vi.version, newVersionInfo.version)
           } else {
             Future.successful(None)
           }

@@ -129,16 +129,12 @@ class UserAnswersCacheConnector @Inject()(
     }
   }
 
-  def changeVersion(pstr: String, edi: EventDataIdentifier, newVersion: String)
+  def changeVersion(pstr: String, version: String, newVersion: String)
                    (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
-
-
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
-      "eventType" -> edi.eventType.toString,
-      "year" -> edi.year,
-      "version" -> edi.version,
+      "version" -> version,
       "newVersion" -> newVersion
     )
 
@@ -184,26 +180,6 @@ class UserAnswersCacheConnector @Inject()(
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr
-    )
-
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-
-    http.DELETE[HttpResponse](url)(implicitly, hc, implicitly)
-      .map { response =>
-        response.status match {
-          case OK => ()
-          case _ =>
-            throw new HttpException(response.body, response.status)
-        }
-      }
-  }
-
-  def removeAllButVersion(version: Int)
-               (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
-
-    val headers: Seq[(String, String)] = Seq(
-      "Content-Type" -> "application/json",
-      "version" -> version.toString
     )
 
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
