@@ -43,7 +43,7 @@
             rows = Seq(
                 Seq(
                     TableRow(
-                        content = Text("Scheme name")
+                        content = Text(messages("event20A.declaration.table.header1"))
                     ),
                     TableRow(
                         content = Text(schemeName)
@@ -51,7 +51,7 @@
                 ),
                 Seq(
                     TableRow(
-                        content = Text("PSTR")
+                        content = Text(messages("event20A.declaration.table.header2"))
                     ),
                     TableRow(
                         content = Text(pstr)
@@ -59,7 +59,7 @@
                 ),
                 Seq(
                     TableRow(
-                        content = Text("Tax year")
+                        content = Text(messages("event20A.declaration.table.header3"))
                     ),
                     TableRow(
                         content = Text(taxYear + " to " +( taxYear.toInt + 1).toString)

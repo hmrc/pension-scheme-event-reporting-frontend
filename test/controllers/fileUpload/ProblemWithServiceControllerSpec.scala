@@ -17,7 +17,8 @@
 package controllers.fileUpload
 
 import base.SpecBase
-import models.enumeration.EventType.Event22
+import models.enumeration.EventType
+import models.enumeration.EventType.{Event22, Event23}
 import pages.EmptyWaypoints
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -25,16 +26,23 @@ import views.html.fileUpload.ProblemWithServiceView
 
 class ProblemWithServiceControllerSpec extends SpecBase {
 
-  "ProblemWithService Controller" - {
+  private val seqOfEvents = Seq(Event22, Event23)
 
-    "must return OK and the correct view for a GET" in {
+  "ProblemWithService Controller" - {
+    for (event <- seqOfEvents) {
+      testReturnOkAndCorrectView(event)
+    }
+  }
+
+  private def testReturnOkAndCorrectView(eventType: EventType): Unit = {
+    s"must return OK and the correct view for a GET (Event ${eventType.toString})" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
-      val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(EmptyWaypoints, Event22).url
+      val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(EmptyWaypoints, eventType).url
 
       running(application) {
 
-        val request = FakeRequest(GET, routes.ProblemWithServiceController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.ProblemWithServiceController.onPageLoad(EmptyWaypoints, eventType).url)
 
         val result = route(application, request).value
 
