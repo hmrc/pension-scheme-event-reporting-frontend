@@ -40,9 +40,7 @@ class FileUploadSuccessController @Inject()(
                                              view: FileUploadSuccessView
                                            )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val eventType = EventType.Event22
-
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
+  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
       val continueUrl = controllers.common.routes.MembersSummaryController.onPageLoad(waypoints, eventType).url
       parsingAndValidationOutcomeCacheConnector.getOutcome.map {

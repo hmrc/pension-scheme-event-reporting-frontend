@@ -23,7 +23,7 @@ import forms.fileUpload.FileUploadResultFormProvider
 import helpers.fileUpload.FileUploadGenericErrorReporter
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.EventType
-import models.enumeration.EventType.getEventTypeByName
+import models.enumeration.EventType.{Event22, getEventTypeByName}
 import models.fileUpload.ParsingAndValidationOutcomeStatus._
 import models.fileUpload.{FileUploadResult, ParsingAndValidationOutcome}
 import models.requests.OptionalDataRequest
@@ -34,10 +34,10 @@ import play.api.data.Form
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.libs.json.{JsArray, JsObject, JsPath, Json}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc._
 import services.CompileService
 import services.fileUpload.Validator.FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty
-import services.fileUpload.{CSVParser, Event22Validator, ValidationError}
+import services.fileUpload._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadResultView
 
@@ -56,7 +56,8 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                                            formProvider: FileUploadResultFormProvider,
                                            parsingAndValidationOutcomeCacheConnector: ParsingAndValidationOutcomeCacheConnector,
                                            view: FileUploadResultView,
-                                           event22Validator: Event22Validator
+                                           event22Validator: Event22Validator,
+                                           event23Validator: Event23Validator
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
@@ -64,17 +65,17 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
   private val maximumNumberOfError = 10
 
   private def renderView(waypoints: Waypoints, eventType: EventType, preparedForm: Form[FileUploadResult], status: Status)
-                        (implicit request: OptionalDataRequest[AnyContent]) = {
+                        (implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
     request.request.queryString.get("key").flatMap(_.headOption) match {
       case Some(uploadIdReference) =>
-        val submitUrl = Call("POST", routes.FileUploadResultController.onSubmit(waypoints).url + s"?key=$uploadIdReference")
+        val submitUrl = Call("POST", routes.FileUploadResultController.onSubmit(waypoints, eventType).url + s"?key=$uploadIdReference")
         eventReportingConnector.getFileUploadOutcome(uploadIdReference).map {
           case FileUploadOutcomeResponse(_, IN_PROGRESS, _) =>
             status(view(preparedForm, waypoints, getEventTypeByName(eventType), None, submitUrl))
           case FileUploadOutcomeResponse(fileName@Some(_), SUCCESS, _) =>
             status(view(preparedForm, waypoints, getEventTypeByName(eventType), fileName, submitUrl))
           case FileUploadOutcomeResponse(_, FAILURE, _) =>
-            Redirect(controllers.fileUpload.routes.FileRejectedController.onPageLoad(waypoints).url)
+            Redirect(controllers.fileUpload.routes.FileRejectedController.onPageLoad(waypoints, eventType).url)
           case _ => throw new RuntimeException("UploadId reference does not exist")
         }
       case _ => Future.successful(BadRequest("Missing Key"))
@@ -108,6 +109,14 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       )
   }
 
+  private def validatorForEvent(eventType: EventType): Validator = {
+    eventType match {
+      case Event22 => event22Validator
+      case _ => event23Validator
+    }
+  }
+
+  //noinspection ScalaStyle
   // scalastyle:off cyclomatic.complexity
   private def asyncGetUpscanFileAndParse(eventType: EventType)(implicit request: OptionalDataRequest[AnyContent]): Unit = {
     request.queryString.get("key")
@@ -125,13 +134,14 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                   case OK => {
                     val parsedCSV = CSVParser.split(httpResponse.body)
                     val uaAfterRemovalOfEventType = Try(request.userAnswers
-                      .getOrElse(UserAnswers()).removeWithPath(JsPath \ "event22")) match {
+                      .getOrElse(UserAnswers()).removeWithPath(JsPath \ s"event${eventType.toString}")) match {
                       case scala.util.Success(ua) => ua
-                      case scala.util.Failure(ex) =>
+                      case scala.util.Failure(_) =>
                         request.userAnswers.getOrElse(UserAnswers())
                     }
 
-                    val futureOutcome = event22Validator.validate(parsedCSV, uaAfterRemovalOfEventType) match {
+                    val eventValidator = validatorForEvent(eventType)
+                    val futureOutcome = eventValidator.validate(parsedCSV, uaAfterRemovalOfEventType) match {
                       case Invalid(errors) =>
                         Future.successful(processInvalid(eventType, errors))
                       case Valid(updatedUA) =>
