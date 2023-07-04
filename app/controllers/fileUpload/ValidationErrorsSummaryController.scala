@@ -40,8 +40,6 @@ class ValidationErrorsSummaryController @Inject()(
                                                    view: ValidationErrorsSummaryView
                                                  )(implicit Ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val eventType = EventType.Event22
-
   private def generateAllErrors(parsingAndValidationOutcome: ParsingAndValidationOutcome): (Seq[String], Int) = {
     val numOfErrorsReads = (JsPath \ "totalErrors").read[Int]
     val readsErrors = (JsPath \ "errors").read[Seq[String]](JsPath.read[Seq[String]](__.read(Reads.seq[String])))
@@ -58,10 +56,10 @@ class ValidationErrorsSummaryController @Inject()(
     (errors, numberOfErrors)
   }
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
-      val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints).url
-      val fileDownloadInstructionLink = controllers.routes.FileDownloadController.instructionsFile.url
+      val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints, eventType).url
+      val fileDownloadInstructionLink = controllers.routes.FileDownloadController.instructionsFile(eventType).url
 
       parsingAndValidationOutcomeCacheConnector.getOutcome.map {
         case Some(outcome@ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _)) =>

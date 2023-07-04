@@ -80,7 +80,7 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryChooseTaxYear: Arbitrary[ChooseTaxYear] =
     Arbitrary {
-      Gen.oneOf(common.ChooseTaxYear.values)
+      Gen.oneOf(common.ChooseTaxYear.values(2021))
     }
 
   implicit lazy val arbitraryReasonForTheOverpaymentOrWriteOff: Arbitrary[ReasonForTheOverpaymentOrWriteOff] =

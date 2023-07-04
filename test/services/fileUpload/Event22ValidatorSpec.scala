@@ -21,7 +21,7 @@ import cats.data.Validated.{Invalid, Valid}
 import config.FrontendAppConfig
 import data.SampleData
 import forms.common.{ChooseTaxYearFormProvider, MembersDetailsFormProvider, TotalPensionAmountsFormProvider}
-import models.UserAnswers
+import models.{TaxYear, UserAnswers}
 import models.common.ChooseTaxYear
 import models.enumeration.EventType.Event22
 import org.mockito.Mockito
@@ -30,6 +30,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.TaxYearPage
 import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import play.api.libs.json.Json
 import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
@@ -54,13 +55,14 @@ class Event22ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
                             Joe,Bloggs,AA234567D,2020 to 2023,12.20
                             Steven,Bloggs,AA123456C,2022 to 2023,13.20"""
       )
-      val result = validator.validate(validCSVFile, UserAnswers())
-      result mustBe Valid(UserAnswers()
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
+      val result = validator.validate(validCSVFile, ua)
+      result mustBe Valid(ua
         .setOrException(MembersDetailsPage(Event22, 0).path, Json.toJson(SampleData.memberDetails))
-        .setOrException(ChooseTaxYearPage(Event22, 0).path, Json.toJson(ChooseTaxYear("2020")))
+        .setOrException(ChooseTaxYearPage(Event22, 0).path, Json.toJson(ChooseTaxYear("2020"))(ChooseTaxYear.writes(ChooseTaxYear.enumerable(2023))))
         .setOrException(TotalPensionAmountsPage(Event22, 0).path, Json.toJson(BigDecimal(12.20)))
         .setOrException(MembersDetailsPage(Event22, 1).path, Json.toJson(SampleData.memberDetails2))
-        .setOrException(ChooseTaxYearPage(Event22, 1).path, Json.toJson(ChooseTaxYear("2022")))
+        .setOrException(ChooseTaxYearPage(Event22, 1).path, Json.toJson(ChooseTaxYear("2022"))(ChooseTaxYear.writes(ChooseTaxYear.enumerable(2023))))
         .setOrException(TotalPensionAmountsPage(Event22, 1).path, Json.toJson(BigDecimal(13.20)))
       )
     }
@@ -87,8 +89,9 @@ class Event22ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
 ,Bloggs,AA234567D,2024,12.20
 Steven,,xyz,,"""
       )
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
 
-      val result = validator.validate(csvFile, UserAnswers())
+      val result = validator.validate(csvFile, ua)
       result mustBe Invalid(Seq(
         ValidationError(1, 0, "membersDetails.error.firstName.required", "firstName"),
         ValidationError(1, 3, "chooseTaxYear.event22.error.outsideRange", "taxYear", Seq("2013", "2023")),

@@ -23,9 +23,11 @@ import models.enumeration.EventType.Event3
 import models.event3.ReasonForBenefits
 import models.event3.ReasonForBenefits.Other
 import pages.common.{MembersPage, PaymentDetailsPage}
-import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{JourneyRecoveryPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.{Success, Try}
 
 case class ReasonForBenefitsPage(index: Int) extends QuestionPage[ReasonForBenefits] {
 
@@ -36,6 +38,14 @@ case class ReasonForBenefitsPage(index: Int) extends QuestionPage[ReasonForBenef
   override def route(waypoints: Waypoints): Call =
     routes.ReasonForBenefitsController.onPageLoad(waypoints, index)
 
+  override def cleanupBeforeSettingValue(value: Option[ReasonForBenefits], userAnswers: UserAnswers): Try[UserAnswers] = {
+    userAnswers.get(ReasonForBenefitsPage(index)) match {
+      case originalReasonForBenefit@Some(_) if originalReasonForBenefit != value =>
+        userAnswers.remove(EarlyBenefitsBriefDescriptionPage(index))
+      case _ => Success(userAnswers)
+    }
+  }
+
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this) match {
       case Some(Other) => EarlyBenefitsBriefDescriptionPage(index)
@@ -43,12 +53,22 @@ case class ReasonForBenefitsPage(index: Int) extends QuestionPage[ReasonForBenef
     }
   }
 
-  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
     updatedAnswers.get(this) match {
       case Some(Other) => EarlyBenefitsBriefDescriptionPage(index)
       case _ => PaymentDetailsPage(Event3, index)
     }
 
+    val originalOptionSelected = originalAnswers.get(ReasonForBenefitsPage(index))
+    val updatedOptionSelected = updatedAnswers.get(ReasonForBenefitsPage(index))
+    val answerIsChanged = originalOptionSelected != updatedOptionSelected
 
-
+    (updatedAnswers.get(this), answerIsChanged) match {
+      case (Some(Other), true) => EarlyBenefitsBriefDescriptionPage(index)
+      case (_, false) => Event3CheckYourAnswersPage(index)
+      case (_, true) => PaymentDetailsPage(Event3, index)
+      case (Some(Other), false) => Event3CheckYourAnswersPage(index)
+      case _ => JourneyRecoveryPage
+    }
+  }
 }

@@ -19,7 +19,7 @@ package controllers
 import audit.AuditService
 import base.SpecBase
 import connectors.MinimalConnector.MinimalDetails
-import connectors.{EmailConnector, EventReportingConnector, EmailSent, MinimalConnector}
+import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector}
 import models.enumeration.AdministratorOrPractitioner.Administrator
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -29,8 +29,10 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.SubmitService
 import views.html.DeclarationView
 
 import scala.concurrent.Future
@@ -43,12 +45,14 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
   private val mockAuditService = mock[AuditService]
   private val mockEmailConnector = mock[EmailConnector]
   private val mockMinimalConnector = mock[MinimalConnector]
+  private val mockSubmitService = mock[SubmitService]
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[EventReportingConnector].toInstance(mockERConnector),
     bind[EmailConnector].toInstance(mockEmailConnector),
     bind[AuditService].toInstance(mockAuditService),
-    bind[MinimalConnector].toInstance(mockMinimalConnector)
+    bind[MinimalConnector].toInstance(mockMinimalConnector),
+    bind[SubmitService].toInstance(mockSubmitService)
   )
 
   override protected def beforeEach(): Unit = {
@@ -56,6 +60,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
     reset(mockAuditService)
     reset(mockEmailConnector)
     reset(mockMinimalConnector)
+    reset(mockSubmitService)
   }
 
   "Declaration Controller" - {
@@ -95,6 +100,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         templateParams = any())(any(), any()))
         .thenReturn(Future.successful(EmailSent))
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+      when(mockSubmitService.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(Ok))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)

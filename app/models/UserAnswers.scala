@@ -17,7 +17,8 @@
 package models
 
 import models.enumeration.EventType
-import pages.{QuestionPage, TaxYearPage}
+import models.enumeration.VersionStatus.{Compiled, Submitted}
+import pages.{QuestionPage, TaxYearPage, VersionInfoPage}
 import play.api.libs.json._
 import queries.{Derivable, Gettable, Query, Settable}
 
@@ -54,8 +55,8 @@ final case class UserAnswers(
       case JsSuccess(a@Some(_), _) if a.isDefined => true
       case _ =>
         Reads.optionNoError(Reads.at[JsValue](gettable.path)).reads(noEventTypeData)
-            .map(_.isDefined)
-            .getOrElse(false)
+          .map(_.isDefined)
+          .getOrElse(false)
     }
   }
 
@@ -99,8 +100,10 @@ final case class UserAnswers(
 
   def setOrException[A](page: QuestionPage[A], value: A, nonEventTypeData: Boolean = false)(implicit writes: Writes[A]): UserAnswers = {
     set(page, value, nonEventTypeData) match {
-      case Success(ua) => ua
-      case Failure(ex) => throw ex
+      case Success(ua) =>
+        ua
+      case Failure(ex) =>
+        throw ex
     }
   }
 
@@ -136,6 +139,16 @@ final case class UserAnswers(
     }
   }
 
+  def removeWithPath(path: JsPath): UserAnswers = {
+    data.removeObject(path) match {
+      case JsSuccess(jsValue, _) =>
+        UserAnswers(jsValue, noEventTypeData)
+      case JsError(_) =>
+        throw new RuntimeException("Unable to remove with path: " + path)
+    }
+  }
+
+
   def getAll[A](page: Gettable[Seq[A]])(implicit reads: Reads[A]): Seq[A] =
     data.as[Option[Seq[A]]](page.path.readNullable[Seq[A]]).toSeq.flatten
 
@@ -151,9 +164,9 @@ final case class UserAnswers(
   }
 
   def eventDataIdentifier(eventType: EventType): EventDataIdentifier = {
-    (noEventTypeData \ TaxYearPage.toString).asOpt[String] match {
-      case Some(year) => EventDataIdentifier(eventType, year, "1")
-      case _ => throw new RuntimeException("No tax year available")
+    ( (noEventTypeData \ TaxYearPage.toString).asOpt[String], get(VersionInfoPage).map(_.version.toString)) match {
+      case (Some(year), Some(version)) => EventDataIdentifier(eventType, year, version)
+      case (ty, v) => throw new RuntimeException(s"No tax year or version available $ty/ $v")
     }
   }
 }

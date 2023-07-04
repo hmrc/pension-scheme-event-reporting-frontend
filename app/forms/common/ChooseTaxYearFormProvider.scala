@@ -19,20 +19,18 @@ package forms.common
 import forms.mappings.Mappings
 import models.common.ChooseTaxYear
 import models.enumeration.EventType
-import models.enumeration.EventType.Event23
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class ChooseTaxYearFormProvider @Inject() extends Mappings {
 
-  def apply(eventType: EventType): Form[ChooseTaxYear] = {
-
+  def apply(eventType: EventType, maxTaxYear: Int): Form[ChooseTaxYear] = {
+    val enumerableTaxYear = ChooseTaxYear.enumerable(maxTaxYear)
     Form(
-      "value" -> enumerable[ChooseTaxYear](requiredKey = s"chooseTaxYear.event${eventType.toString}.error.required",
-        invalidKey = "chooseTaxYear.event22.error.outsideRange",
-        Seq(ChooseTaxYear.minimumYear.toString, ChooseTaxYear.maximumYear.toString)
-      )
+      "value" -> enumerable[ChooseTaxYear](requiredKey = s"chooseTaxYear.event${eventType.toString}.error.required", invalidKey = "chooseTaxYear.event22.error.outsideRange",
+        Seq(ChooseTaxYear.minimumYear.toString, maxTaxYear.toString)
+      )(enumerableTaxYear)
     )
   }
 }

@@ -33,6 +33,7 @@ import models.event10.{BecomeOrCeaseScheme, SchemeChangeDate}
 import models.event12.DateOfChange
 import models.event20.Event20Date
 import models.event20.WhatChange.BecameOccupationalScheme
+import models.event20A.WhatChange.{BecameMasterTrust, CeasedMasterTrust}
 import models.event6.{CrystallisedDetails, TypeOfProtection => Event6TypeOfProtection}
 import models.event7.PaymentDate
 import models.event8.{LumpSumDetails, TypeOfProtection => Event8TypeOfProtection}
@@ -48,11 +49,11 @@ import pages.event10.{BecomeOrCeaseSchemePage, ContractsOrPoliciesPage, SchemeCh
 import pages.event12.{DateOfChangePage, HasSchemeChangedRulesPage}
 import pages.event19.{CountryOrTerritoryPage, DateChangeMadePage}
 import pages.event2.{AmountPaidPage, DatePaidPage}
-import pages.event20.{BecameDatePage, WhatChangePage}
 import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage => Event6TypeOfProtectionPage}
 import pages.event7.{CrystallisedAmountPage, LumpSumAmountPage, PaymentDatePage}
 import pages.event8.{LumpSumAmountAndDatePage, TypeOfProtectionReferencePage, TypeOfProtectionPage => Event8TypeOfProtectionPage}
 import pages.event8a.PaymentTypePage
+import play.api.libs.json.Writes
 import utils.{CountryOptions, Event2MemberPageNumbers, InputOption}
 
 import java.time.LocalDate
@@ -119,6 +120,8 @@ object SampleData extends SpecBase {
 
   val memberDetails: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567D")
   val memberDetails2: MembersDetails = MembersDetails("Steven", "Bloggs", "AA123456C")
+
+  private val writesTaxYear: Writes[ChooseTaxYear]= ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
 
   val paymentDetails: Event1PaymentDetails = Event1PaymentDetails(1000.00, LocalDate.of(2022, 11, 8))
   val crystallisedDetails: CrystallisedDetails = CrystallisedDetails(10.00, LocalDate.of(2022, 11, 8))
@@ -263,24 +266,24 @@ object SampleData extends SpecBase {
   def sampleMemberJourneyDataEvent22and23(eventType: EventType): UserAnswers = UserAnswers()
     .setOrException(TaxYearPage, TaxYear("2022"))
     .setOrException(MembersDetailsPage(eventType, 0), memberDetails)
-    .setOrException(ChooseTaxYearPage(eventType, 0), ChooseTaxYear("2015"))
+    .setOrException(ChooseTaxYearPage(eventType, 0), ChooseTaxYear("2015"))(writesTaxYear)
     .setOrException(TotalPensionAmountsPage(eventType, 0), BigDecimal(10.00))
 
 
   def event22and23UADataWithPagination(eventType: EventType) =
     (0 to 25).foldLeft(emptyUserAnswersWithTaxYear) { (acc, i) =>
       acc.setOrException(MembersDetailsPage(eventType, i), memberDetails)
-        .setOrException(ChooseTaxYearPage(eventType, i), ChooseTaxYear("2015"))
+        .setOrException(ChooseTaxYearPage(eventType, i), ChooseTaxYear("2015"))(writesTaxYear)
         .setOrException(TotalPensionAmountsPage(eventType, i), BigDecimal(10.00))
     }
 
   def sampleTwoMemberJourneyDataEvent22and23(eventType: EventType): UserAnswers =
     UserAnswers()
       .setOrException(MembersDetailsPage(eventType, 0), memberDetails)
-      .setOrException(ChooseTaxYearPage(eventType, 0), taxYear)
+      .setOrException(ChooseTaxYearPage(eventType, 0), taxYear)(writesTaxYear)
       .setOrException(TotalPensionAmountsPage(eventType, 0), totalPaymentAmountEvent22and23)
       .setOrException(MembersDetailsPage(eventType, 1), memberDetails2)
-      .setOrException(ChooseTaxYearPage(eventType, 1), taxYear)
+      .setOrException(ChooseTaxYearPage(eventType, 1), taxYear)(writesTaxYear)
       .setOrException(TotalPensionAmountsPage(eventType, 1), totalPaymentAmountEvent22and23)
 
   def sampleJourneyData10BecameAScheme: UserAnswers =
@@ -306,6 +309,16 @@ object SampleData extends SpecBase {
 
   def sampleEvent20JourneyData: UserAnswers =
     emptyUserAnswersWithTaxYear
-      .setOrException(WhatChangePage, BecameOccupationalScheme)
-      .setOrException(BecameDatePage, Event20Date(LocalDate.of(2023, 12, 12)))
+      .setOrException(pages.event20.WhatChangePage, BecameOccupationalScheme)
+      .setOrException(pages.event20.BecameDatePage, Event20Date(LocalDate.of(2023, 12, 12)))
+
+  def sampleEvent20ABecameJourneyData: UserAnswers =
+    emptyUserAnswersWithTaxYear
+      .setOrException(pages.event20A.WhatChangePage, BecameMasterTrust)
+      .setOrException(pages.event20A.BecameDatePage, LocalDate.of(2023, 1, 12))
+
+  def sampleEvent20ACeasedJourneyData: UserAnswers =
+    emptyUserAnswersWithTaxYear
+      .setOrException(pages.event20A.WhatChangePage, CeasedMasterTrust)
+      .setOrException(pages.event20A.CeasedDatePage, LocalDate.of(2023, 1, 12))
 }

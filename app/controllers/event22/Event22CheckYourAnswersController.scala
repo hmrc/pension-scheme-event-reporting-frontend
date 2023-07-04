@@ -17,7 +17,6 @@
 package controllers.event22
 
 import com.google.inject.Inject
-import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.Index
 import models.enumeration.EventType.Event22
@@ -26,6 +25,7 @@ import pages.event22.Event22CheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.{ChooseTaxYearSummary, MembersDetailsSummary, TotalPensionAmountsSummary}
@@ -39,7 +39,7 @@ class Event22CheckYourAnswersController @Inject()(
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
-                                                   connector: EventReportingConnector,
+                                                   compileService: CompileService,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: CheckYourAnswersView
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -54,7 +54,7 @@ class Event22CheckYourAnswersController @Inject()(
 
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event22) andThen requireData).async { implicit request =>
-      connector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(Event22)).map {
+      compileService.compileEvent(Event22, request.pstr, request.userAnswers).map {
         _ =>
           Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event22).url)
       }

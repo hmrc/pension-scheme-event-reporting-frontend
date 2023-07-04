@@ -14,14 +14,24 @@
  * limitations under the License.
  */
 
-package pages.fileUpload
+package pages.event20A
 
+import controllers.event20A.routes
+import models.UserAnswers
+import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Waypoints, Page}
-import controllers.fileUpload.routes
 
-case object ValidationErrorsSummaryPage extends Page {
+case object Event20APspDeclarationPage extends QuestionPage[String] {
+
+  override def path: JsPath = JsPath \ "event20A" \ toString
+
+  override def toString: String = "event20APspDeclaration"
 
   override def route(waypoints: Waypoints): Call =
-    routes.ValidationErrorsSummaryController.onPageLoad(waypoints)
+    routes.Event20APspDeclarationController.onPageLoad(waypoints)
+
+  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    EventSummaryPage
+  }
 }

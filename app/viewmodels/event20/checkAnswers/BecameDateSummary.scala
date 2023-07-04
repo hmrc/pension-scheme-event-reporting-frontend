@@ -17,8 +17,8 @@
 package viewmodels.event20.checkAnswers
 
 import models.UserAnswers
-import pages.{CheckAnswersPage, Waypoints}
 import pages.event20.BecameDatePage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._

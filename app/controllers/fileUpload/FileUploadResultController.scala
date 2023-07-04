@@ -23,7 +23,7 @@ import forms.fileUpload.FileUploadResultFormProvider
 import helpers.fileUpload.FileUploadGenericErrorReporter
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.EventType
-import models.enumeration.EventType.getEventTypeByName
+import models.enumeration.EventType.{Event22, getEventTypeByName}
 import models.fileUpload.ParsingAndValidationOutcomeStatus._
 import models.fileUpload.{FileUploadResult, ParsingAndValidationOutcome}
 import models.requests.OptionalDataRequest
@@ -33,26 +33,31 @@ import pages.fileUpload.FileUploadResultPage
 import play.api.data.Form
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, Messages}
-import play.api.libs.json.{JsArray, JsObject, Json}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.libs.json.{JsArray, JsObject, JsPath, Json}
+import play.api.mvc._
+import services.CompileService
 import services.fileUpload.Validator.FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty
-import services.fileUpload.{CSVParser, Event22Validator, ValidationError}
+import services.fileUpload._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadResultView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
+
 
 class FileUploadResultController @Inject()(val controllerComponents: MessagesControllerComponents,
                                            identify: IdentifierAction,
                                            getData: DataRetrievalAction,
                                            userAnswersCacheConnector: UserAnswersCacheConnector,
                                            eventReportingConnector: EventReportingConnector,
+                                           compileService: CompileService,
                                            upscanInitiateConnector: UpscanInitiateConnector,
                                            formProvider: FileUploadResultFormProvider,
                                            parsingAndValidationOutcomeCacheConnector: ParsingAndValidationOutcomeCacheConnector,
                                            view: FileUploadResultView,
-                                           event22Validator: Event22Validator
+                                           event22Validator: Event22Validator,
+                                           event23Validator: Event23Validator
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
@@ -60,17 +65,17 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
   private val maximumNumberOfError = 10
 
   private def renderView(waypoints: Waypoints, eventType: EventType, preparedForm: Form[FileUploadResult], status: Status)
-                        (implicit request: OptionalDataRequest[AnyContent]) = {
+                        (implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
     request.request.queryString.get("key").flatMap(_.headOption) match {
       case Some(uploadIdReference) =>
-        val submitUrl = Call("POST", routes.FileUploadResultController.onSubmit(waypoints).url + s"?key=$uploadIdReference")
+        val submitUrl = Call("POST", routes.FileUploadResultController.onSubmit(waypoints, eventType).url + s"?key=$uploadIdReference")
         eventReportingConnector.getFileUploadOutcome(uploadIdReference).map {
           case FileUploadOutcomeResponse(_, IN_PROGRESS, _) =>
             status(view(preparedForm, waypoints, getEventTypeByName(eventType), None, submitUrl))
           case FileUploadOutcomeResponse(fileName@Some(_), SUCCESS, _) =>
             status(view(preparedForm, waypoints, getEventTypeByName(eventType), fileName, submitUrl))
           case FileUploadOutcomeResponse(_, FAILURE, _) =>
-            Redirect(controllers.fileUpload.routes.FileRejectedController.onPageLoad(waypoints).url)
+            Redirect(controllers.fileUpload.routes.FileRejectedController.onPageLoad(waypoints, eventType).url)
           case _ => throw new RuntimeException("UploadId reference does not exist")
         }
       case _ => Future.successful(BadRequest("Missing Key"))
@@ -104,12 +109,20 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       )
   }
 
+  private def validatorForEvent(eventType: EventType): Validator = {
+    eventType match {
+      case Event22 => event22Validator
+      case _ => event23Validator
+    }
+  }
+
+  //noinspection ScalaStyle
+  // scalastyle:off cyclomatic.complexity
   private def asyncGetUpscanFileAndParse(eventType: EventType)(implicit request: OptionalDataRequest[AnyContent]): Unit = {
     request.queryString.get("key")
     val referenceOpt: Option[String] = request.request.queryString.get("key").flatMap { values =>
       values.headOption
     }
-
     referenceOpt match {
       case Some(reference) =>
         eventReportingConnector.getFileUploadOutcome(reference).flatMap { fileUploadOutcomeResponse =>
@@ -120,18 +133,25 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                 httpResponse.status match {
                   case OK => {
                     val parsedCSV = CSVParser.split(httpResponse.body)
-                    val futureOutcome = event22Validator.validate(parsedCSV, request.userAnswers.getOrElse(UserAnswers())) match {
-                      case Invalid(errors) => Future.successful(processInvalid(eventType, errors))
+                    val uaAfterRemovalOfEventType = Try(request.userAnswers
+                      .getOrElse(UserAnswers()).removeWithPath(JsPath \ s"event${eventType.toString}")) match {
+                      case scala.util.Success(ua) => ua
+                      case scala.util.Failure(_) =>
+                        request.userAnswers.getOrElse(UserAnswers())
+                    }
+
+                    val eventValidator = validatorForEvent(eventType)
+                    val futureOutcome = eventValidator.validate(parsedCSV, uaAfterRemovalOfEventType) match {
+                      case Invalid(errors) =>
+                        Future.successful(processInvalid(eventType, errors))
                       case Valid(updatedUA) =>
                         userAnswersCacheConnector.save(request.pstr, eventType, updatedUA).flatMap { _ =>
-
-                          eventReportingConnector.compileEvent(request.pstr, updatedUA.eventDataIdentifier(eventType))
-                            .map(_ => ParsingAndValidationOutcome(Success))
+                          compileService.compileEvent(eventType, request.pstr, updatedUA)
+                            .map(_ => ParsingAndValidationOutcome(Success, Json.obj(), fileName))
                         }
                     }
-                    futureOutcome.map { outcome =>
-                      parsingAndValidationOutcomeCacheConnector.setOutcome(outcome)
-                    }
+
+                    futureOutcome.map(outcome => parsingAndValidationOutcomeCacheConnector.setOutcome(outcome))
                   } recoverWith {
                     case e: Throwable =>
                       logger.error("Error during parsing and validation", e)

@@ -20,19 +20,19 @@ import controllers.fileUpload.routes
 import models.UserAnswers
 import models.enumeration.EventType
 import models.fileUpload.FileUploadResult
-import models.fileUpload.FileUploadResult.{Yes, No}
+import models.fileUpload.FileUploadResult.{No, Yes}
 import pages.{IndexPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class FileUploadResultPage(eventType: EventType) extends QuestionPage[FileUploadResult] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ s"event${eventType.toString}" \ toString
 
   override def toString: String = "fileUploadResult"
 
   override def route(waypoints: Waypoints): Call =
-    routes.FileUploadResultController.onPageLoad(waypoints)
+    routes.FileUploadResultController.onPageLoad(waypoints, eventType)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {

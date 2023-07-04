@@ -17,7 +17,6 @@
 package controllers.event13
 
 import com.google.inject.Inject
-import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.enumeration.EventType.Event13
 import models.requests.DataRequest
@@ -25,6 +24,7 @@ import pages.event13.Event13CheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.{ChangeDateSummary, SchemeStructureDescriptionSummary}
@@ -39,7 +39,7 @@ class Event13CheckYourAnswersController @Inject()(
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
-                                                   connector: EventReportingConnector,
+                                                   compileService: CompileService,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: CheckYourAnswersView
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -54,7 +54,7 @@ class Event13CheckYourAnswersController @Inject()(
 
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event13) andThen requireData).async { implicit request =>
-      connector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(Event13)).map {
+      compileService.compileEvent(Event13, request.pstr, request.userAnswers).map {
         _ =>
           Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
       }

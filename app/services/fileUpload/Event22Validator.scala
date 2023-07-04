@@ -25,11 +25,10 @@ import forms.common.{ChooseTaxYearFormProvider, MembersDetailsFormProvider, Tota
 import models.common.{ChooseTaxYear, MembersDetails}
 import models.enumeration.EventType
 import models.enumeration.EventType.Event22
-import models.fileUpload.FileUploadHeaders.Event22FieldNames.{taxYear, totalAmounts}
+import models.fileUpload.FileUploadHeaders.Event22FieldNames.totalAmounts
 import models.fileUpload.FileUploadHeaders.valueFormField
 import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import play.api.data.Form
-import play.api.i18n.Messages
 import services.fileUpload.Validator.Result
 
 class Event22Validator @Inject()(
@@ -46,11 +45,13 @@ class Event22Validator @Inject()(
   private val fieldNoTotalAmounts = 4
 
   private def taxYearValidation(index: Int,
-                                chargeFields: Seq[String]): Validated[Seq[ValidationError], ChooseTaxYear] = {
+                                chargeFields: Seq[String],
+                                taxYear: Int): Validated[Seq[ValidationError], ChooseTaxYear] = {
     val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoTaxYear).takeWhile(_ != ' '), taxYear, fieldNoTaxYear)
+      Field(valueFormField, chargeFields(fieldNoTaxYear).takeWhile(_ != ' '), models.fileUpload.FileUploadHeaders.Event22FieldNames.taxYear, fieldNoTaxYear)
     )
-    val form: Form[ChooseTaxYear] = chooseTaxYearFormProvider(eventType = Event22)
+
+    val form: Form[ChooseTaxYear] = chooseTaxYearFormProvider(eventType = Event22, maxTaxYear = taxYear)
     form.bind(
       Field.seqToMap(fields)
     ).fold(
@@ -62,7 +63,7 @@ class Event22Validator @Inject()(
   }
 
   private def totalAmountsValidation(index: Int,
-                                      chargeFields: Seq[String]): Validated[Seq[ValidationError], BigDecimal] = {
+                                     chargeFields: Seq[String]): Validated[Seq[ValidationError], BigDecimal] = {
     val fields = Seq(
       Field(valueFormField, chargeFields(fieldNoTotalAmounts), totalAmounts, fieldNoTotalAmounts)
     )
@@ -76,14 +77,16 @@ class Event22Validator @Inject()(
   }
 
   override protected def validateFields(index: Int,
-                                        columns: Seq[String]): Result = {
+                                        columns: Seq[String],
+                                        taxYear: Int): Result = {
     val a = resultFromFormValidationResult[MembersDetails](
       memberDetailsValidation(index, columns, membersDetailsFormProvider(Event22, index)),
       createCommitItem(index, MembersDetailsPage.apply(Event22, _))
     )
 
     val b = resultFromFormValidationResult[ChooseTaxYear](
-      taxYearValidation(index, columns), createCommitItem(index, ChooseTaxYearPage.apply(Event22, _))
+      taxYearValidation(index, columns, taxYear), createCommitItem(index, ChooseTaxYearPage.apply(Event22, _)
+      )(ChooseTaxYear.writes(ChooseTaxYear.enumerable(taxYear)))
     )
 
     val c = resultFromFormValidationResult[BigDecimal](

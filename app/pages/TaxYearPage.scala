@@ -17,7 +17,9 @@
 package pages
 
 import controllers.routes
-import models.{TaxYear, UserAnswers}
+import models.enumeration.JourneyStartType.{InProgress, PastEventTypes, StartNew}
+import models.enumeration.VersionStatus.NotStarted
+import models.{TaxYear, UserAnswers, VersionInfo}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 case object TaxYearPage extends QuestionPage[TaxYear] {
@@ -30,6 +32,11 @@ case object TaxYearPage extends QuestionPage[TaxYear] {
     routes.TaxYearController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    EventSelectionPage
+    (answers.get(EventReportingTileLinksPage), answers.get(VersionInfoPage)) match {
+      case (Some(InProgress), _) => EventSummaryPage
+      case (Some(StartNew), Some(VersionInfo(_, NotStarted)) | None) => EventSelectionPage
+      case (Some(StartNew), _) => EventSummaryPage
+      case (Some(PastEventTypes), _) => EventSummaryPage
+    }
   }
 }

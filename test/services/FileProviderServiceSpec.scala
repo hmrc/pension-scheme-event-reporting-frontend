@@ -17,6 +17,8 @@
 package services
 
 import base.SpecBase
+import models.enumeration.EventType
+import models.enumeration.EventType.{Event22, Event23}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Environment
 import play.api.test.Helpers.baseApplicationBuilder.injector
@@ -27,26 +29,28 @@ class FileProviderServiceSpec extends SpecBase with MockitoSugar {
 
   private val environment: Environment = injector.instanceOf[Environment]
   private val fileProviderService = new FileProviderService(environment)
+  private val instructionsFileToCheckEvent22 = new File("./conf/fileDownload/instructions/instructions-event-22-annual-allowance.ods")
+  private val instructionsFileToCheckEvent23 = new File("./conf/fileDownload/instructions/instructions-event-23-dual-annual-allowance.ods")
 
-  "getInstructionsFile" - {
+  "FileProviderService Service" - {
 
-    "for event 22 what you will need page return the correct file name" in {
+    testReturnCorrectInstructionsFile(Event22, instructionsFileToCheckEvent22)
+    testReturnCorrectInstructionsFile(Event23, instructionsFileToCheckEvent23)
+    testReturnCorrectTemplateFile(Event22)
+    testReturnCorrectTemplateFile(Event23)
+  }
 
-      val instructionsFileToCheck = new File("./conf/fileDownload/instructions/instructions-event-22-annual-allowance.ods")
 
-      fileProviderService.getInstructionsFile mustBe instructionsFileToCheck
-
+  private def testReturnCorrectInstructionsFile(eventType: EventType, instructionsFile: File): Unit = {
+    s"must return the correct instructions file for Event $eventType" in {
+      fileProviderService.getInstructionsFile(eventType) mustBe instructionsFile
     }
   }
 
-  "getTemplateFile" - {
-    "for event 22 what you will need page return the correct file name" in {
-
-      val templateFileToCheck =
-        new File("./conf/fileDownload/template/event-22-bulk-upload.csv")
-
-      fileProviderService.getTemplateFile mustBe templateFileToCheck
-
+  private def testReturnCorrectTemplateFile(eventType: EventType): Unit = {
+    s"must return the correct template file for Event $eventType" in {
+      val templateFileToCheck = new File(s"./conf/fileDownload/template/event-${eventType.toString}-bulk-upload.csv")
+      fileProviderService.getTemplateFile(eventType) mustBe templateFileToCheck
     }
   }
 

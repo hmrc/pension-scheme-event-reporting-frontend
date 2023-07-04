@@ -18,12 +18,12 @@ package journey
 
 import data.SampleData.{companyDetails, seqTolerantAddresses}
 import generators.ModelGenerators
-import models.EventSelection
+import models.{EventSelection, TaxYear, UserAnswers}
 import models.EventSelection._
 import models.common.ManualOrUpload.Manual
 import models.common.{ChooseTaxYear, MembersDetails}
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
-import models.enumeration.EventType
+import models.enumeration.{EventType, JourneyStartType}
 import models.event1.PaymentDetails
 import models.event1.PaymentNature._
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
@@ -34,6 +34,9 @@ import models.event1.member.RefundOfContributions.WidowOrOrphan
 import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
 import models.event10.{BecomeOrCeaseScheme, SchemeChangeDate}
 import models.event12.DateOfChange
+import models.event20A.WhatChange
+import pages.event20A.{WhatYouWillNeedPage => Event20AWhatYouWillNeedPage}
+import models.event20A.WhatChange.{BecameMasterTrust, CeasedMasterTrust}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.ManualAddressPage
@@ -44,14 +47,17 @@ import pages.event1.member._
 import pages.event10.{BecomeOrCeaseSchemePage, ContractsOrPoliciesPage, Event10CheckYourAnswersPage, SchemeChangeDatePage}
 import pages.event12.{CannotSubmitPage, DateOfChangePage, Event12CheckYourAnswersPage, HasSchemeChangedRulesPage}
 import pages.event18.Event18ConfirmationPage
+import pages.event20A.{BecameDatePage, CeasedDatePage, Event20ACheckYourAnswersPage, Event20APsaDeclarationPage, WhatChangePage}
 import pages.eventWindUp.{EventWindUpCheckYourAnswersPage, SchemeWindUpDatePage}
-import pages.{DeclarationPage, EventSelectionPage, EventSummaryPage, WantToSubmitPage}
+import pages.{DeclarationPage, EventReportingTileLinksPage, EventSelectionPage, EventSummaryPage, TaxYearPage, WantToSubmitPage}
+import play.api.libs.json.Writes
 //import pages.fileUpload.FileUploadResultPage
 //import pages.fileUpload.ProcessingRequestPage
 
 import java.time.{LocalDate, Month}
 
 class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerators {
+  private val writesTaxYear: Writes[ChooseTaxYear]= ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
 
   "test journey" in {
 
@@ -295,7 +301,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(ManualOrUploadPage(EventType.Event22, 0), Manual),
         next,
         submitAnswer(pages.common.MembersDetailsPage(EventType.Event22, 0), membersDetails.get),
-        submitAnswer(ChooseTaxYearPage(EventType.Event22, 0), taxYear.get),
+        submitAnswer(ChooseTaxYearPage(EventType.Event22, 0), taxYear.get)(writesTaxYear, implicitly),
         pageMustBe(TotalPensionAmountsPage(EventType.Event22, 0))
       )
   }
@@ -309,8 +315,28 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
         submitAnswer(ManualOrUploadPage(EventType.Event23, 0), Manual),
         next,
         submitAnswer(pages.common.MembersDetailsPage(EventType.Event23, 0), membersDetails.get),
-        submitAnswer(ChooseTaxYearPage(EventType.Event23, 0), taxYear.get),
+        submitAnswer(ChooseTaxYearPage(EventType.Event23, 0), taxYear.get)(writesTaxYear, implicitly),
         pageMustBe(TotalPensionAmountsPage(EventType.Event23, 0))
+      )
+  }
+
+  "test navigation from tax year page to event summary page after user chosen compiled events" in {
+    val ua = UserAnswers()
+      .setOrException(EventReportingTileLinksPage, JourneyStartType.InProgress, nonEventTypeData = true)
+    startingFrom(TaxYearPage, answers = ua)
+      .run(
+        submitAnswer(TaxYearPage, TaxYear("2020")),
+        pageMustBe(EventSummaryPage)
+      )
+  }
+
+  "test navigation from tax year page to event summary page after user chosen past submitted events" in {
+    val ua = UserAnswers()
+      .setOrException(EventReportingTileLinksPage, JourneyStartType.PastEventTypes, nonEventTypeData = true)
+    startingFrom(TaxYearPage, answers = ua)
+      .run(
+        submitAnswer(TaxYearPage, TaxYear("2020")),
+        pageMustBe(EventSummaryPage)
       )
   }
 
@@ -486,4 +512,57 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
     }
   }
 
+  "Event 20A" - {
+    "testing navigation from the Event Selection page to 'What you will need' page" in {
+      startingFrom(EventSelectionPage)
+        .run(
+          submitAnswer(EventSelectionPage, EventSelection.Event20A),
+          pageMustBe(Event20AWhatYouWillNeedPage)
+        )
+    }
+    "testing navigation from 'What change has taken place for this pension scheme?' page to scheme date page (Became a Master Trust scheme)" in {
+      startingFrom(WhatChangePage)
+        .run(
+          submitAnswer(WhatChangePage, WhatChange.BecameMasterTrust),
+          pageMustBe(BecameDatePage)
+        )
+    }
+    "testing navigation from 'What change has taken place for this pension scheme?' page to scheme date page (Ceased to become a Master Trust scheme)" in {
+      startingFrom(WhatChangePage)
+        .run(
+          submitAnswer(WhatChangePage, WhatChange.CeasedMasterTrust),
+          pageMustBe(CeasedDatePage)
+        )
+    }
+    "testing navigation from 'When did the scheme become a Master Trust?' page to CYA" in {
+      startingFrom(WhatChangePage)
+        .run(
+          submitAnswer(WhatChangePage, BecameMasterTrust),
+          submitAnswer(BecameDatePage, LocalDate.of(2022, Month.MAY, 22)),
+          pageMustBe(Event20ACheckYourAnswersPage())
+        )
+    }
+    "testing navigation from 'When did this scheme cease to be an Master Trust?' page to CYA" in {
+      startingFrom(WhatChangePage)
+        .run(
+          submitAnswer(WhatChangePage, CeasedMasterTrust),
+          submitAnswer(CeasedDatePage,LocalDate.of(2022, Month.MAY, 22)),
+          pageMustBe(Event20ACheckYourAnswersPage())
+        )
+    }
+    "testing navigation from CYA page to Event20A declaration page" in {
+      startingFrom(Event20ACheckYourAnswersPage())
+        .run(
+          goTo(Event20APsaDeclarationPage),
+          pageMustBe(Event20APsaDeclarationPage)
+        )
+    }
+    "testing navigation from Event20A declaration page to Event Summary page" in {
+      startingFrom(Event20APsaDeclarationPage)
+        .run(
+          goTo(EventSummaryPage),
+          pageMustBe(EventSummaryPage)
+        )
+    }
+  }
 }

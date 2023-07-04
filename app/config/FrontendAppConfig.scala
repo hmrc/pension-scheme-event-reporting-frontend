@@ -38,6 +38,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   lazy val eventReportingUrl: String = servicesConfig.baseUrl("pension-scheme-event-reporting")
   lazy val pensionsAdministratorUrl: String = servicesConfig.baseUrl("pension-administrator")
+  lazy val pensionSchemeUrl: String = servicesConfig.baseUrl("pensions-scheme")
   lazy val addressLookUp: String = s"${servicesConfig.baseUrl("address-lookup")}"
 
   lazy val locationCanonicalList: String = loadConfig("location.canonical.list")
@@ -45,6 +46,10 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   val betaFeedbackUnauthenticatedUrl: String = getConfigString("contact-frontend.beta-feedback-url.unauthenticated")
 
   lazy val erLoginUrl: String = configuration.get[String](path = "urls.partials.erLoginLink")
+  lazy val erStartNewUrl: String = configuration.get[String](path = "urls.partials.erStartNew")
+  lazy val erCompiledUrl: String = configuration.get[String](path = "urls.partials.erCompiledLink")
+  lazy val erSubmittedUrl: String = configuration.get[String](path = "urls.partials.erSubmittedLink")
+
   val loginUrl: String = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String = loadConfig("urls.signOut")
@@ -77,6 +82,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   lazy val minimalDetailsUrl: String = s"$pensionsAdministratorUrl${configuration.get[String](path = "urls.minimalDetails")}"
   lazy val parsingAndValidationUrl: String = s"$eventReportingUrl${configuration.get[String](path = "urls.parsingAndValidation")}"
+  lazy val schemeDetailsUrl: String = s"$pensionSchemeUrl${configuration.get[String](path = "urls.schemeDetails")}"
+  lazy val pspSchemeDetailsUrl: String = s"$pensionSchemeUrl${configuration.get[String](path = "urls.pspSchemeDetails")}"
 
   lazy val emailApiUrl: String = servicesConfig.baseUrl("email")
   lazy val emailSendForce: Boolean = configuration.getOptional[Boolean]("email.force").getOrElse(false)
@@ -97,4 +104,5 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
       )
   }"
   lazy val validEvent22Header: String = configuration.get[String]("validEvent22Header")
+  lazy val validEvent23Header: String = configuration.get[String]("validEvent23Header")
 }

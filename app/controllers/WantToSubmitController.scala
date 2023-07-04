@@ -17,12 +17,12 @@
 package controllers
 
 import connectors.UserAnswersCacheConnector
+import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.WantToSubmitFormProvider
 import models.UserAnswers
-import pages.{EventSelectionPage, WantToSubmitPage, Waypoints}
-import play.api.i18n.I18nSupport
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
+import pages.{WantToSubmitPage, Waypoints}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.WantToSubmitView
@@ -57,8 +57,8 @@ class WantToSubmitController @Inject()(
             if (value) {
               Redirect(
                 request.loggedInUser.administratorOrPractitioner match {
-                  case Administrator => WantToSubmitPage.navigate(waypoints, updatedAnswers, updatedAnswers).route
-                  case Practitioner => EventSelectionPage.route(waypoints)
+                  case Administrator => routes.DeclarationController.onPageLoad(waypoints)
+                  case Practitioner => routes.DeclarationPspController.onPageLoad(waypoints)
                 }
               )
             } else {

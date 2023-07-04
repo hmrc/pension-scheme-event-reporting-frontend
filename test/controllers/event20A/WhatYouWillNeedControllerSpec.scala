@@ -14,28 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.event22
+package controllers.event20A
 
 import base.SpecBase
 import pages.EmptyWaypoints
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event22.FileUploadWhatYouWillNeedView
+import views.html.event20A.WhatYouWillNeedView
 
-class FileUploadWhatYouWillNeedControllerSpec extends SpecBase {
+class WhatYouWillNeedControllerSpec extends SpecBase {
 
-  private def getRoute: String = routes.FileUploadWhatYouWillNeedController.onPageLoad().url
+  private val waypoints = EmptyWaypoints
 
-  //TODO: The continue URL needs to be changed for the future "next" page
-  private def continueUrl: Call = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints = EmptyWaypoints)
-
-  private def templateDownloadLink: Call = controllers.routes.FileDownloadController.templateFile
-
-  private def instructionsDownloadLink: Call = controllers.routes.FileDownloadController.instructionsFile
-
-  "FileUploadWhatYouWillNeed Controller" - {
-
+  "WhatYouWillNeed Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -43,14 +34,15 @@ class FileUploadWhatYouWillNeedControllerSpec extends SpecBase {
 
       running(application) {
 
-        val request = FakeRequest(GET, getRoute)
+        val request = FakeRequest(GET, routes.WhatYouWillNeedController.onPageLoad(waypoints).url)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[FileUploadWhatYouWillNeedView]
+        val view = application.injector.instanceOf[WhatYouWillNeedView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(continueUrl.url, templateDownloadLink, instructionsDownloadLink)(request, messages(application)).toString
+        contentAsString(result) mustEqual
+          view(controllers.event20A.routes.WhatChangeController.onPageLoad(waypoints).url)(request, messages(application)).toString
       }
     }
   }
