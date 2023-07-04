@@ -62,7 +62,7 @@ trait Validator {
     }
 
 
-  def validate(rows: Seq[Array[String]], userAnswers: UserAnswers): Validated[Seq[ValidationError], UserAnswers] = {
+  def validate(rows: Seq[Array[String]], userAnswers: UserAnswers): Validated[Seq[ValidationError], UserAnswers] = { // TODO Add implciit
     rows.headOption match {
       case Some(row) if row.mkString(",").equalsIgnoreCase(validHeader) =>
         rows.size match {
