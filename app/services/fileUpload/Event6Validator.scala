@@ -35,8 +35,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import services.fileUpload.Validator.Result
 
-import java.time.LocalDate
-import scala.util.{Failure, Success, Try}
+import java.time.{LocalDate, Month}
 
 class Event6Validator @Inject()(
                                  membersDetailsFormProvider: MembersDetailsFormProvider,
@@ -69,17 +68,11 @@ class Event6Validator @Inject()(
   private def typeOfProtectionValidation(index: Int,
                                          chargeFields: Seq[String]): Validated[Seq[ValidationError], TypeOfProtection] = {
 
-    //
-
-    val tt = mapTypeOfProtection.applyOrElse[String, String](chargeFields(fieldNoTypeOfProtection),  (_: String) => "Type of protection is not found or doesn't exist")
-
-    //    val mappedTypeOfProtection = Try(mapTypeOfProtection.apply(chargeFields(fieldNoTypeOfProtection))) match {
-//      case Success(s) =>
-//      case Failure(exception) =>
-//    }
+    val mappedTypeOfProtection = mapTypeOfProtection.applyOrElse[String, String](chargeFields(fieldNoTypeOfProtection),
+      (_: String) => "Type of protection is not found or doesn't exist")
 
     val fields = Seq(
-      Field(valueFormField, tt, typeOfProtection, fieldNoTypeOfProtection)
+      Field(valueFormField, mappedTypeOfProtection, typeOfProtection, fieldNoTypeOfProtection)
     )
     val form: Form[TypeOfProtection] = typeOfProtectionFormProvider()
     form.bind(
@@ -104,39 +97,34 @@ class Event6Validator @Inject()(
     )
   }
 
-    private def lumpSumAmountValidation(index: Int,
-                                        chargeFields: Seq[String]): Validated[Seq[ValidationError], CrystallisedDetails] = {
-      val fields = Seq(
-        Field(valueFormField, chargeFields(fieldNoLumpSumAmount), lumpSumAmount, fieldNoLumpSumAmount),
-        Field(valueFormField, chargeFields(fieldNoLumpSumAmount), lumpSumAmount, fieldNoLumpSumAmount)
-      )
-      val maxTaxYearDate = LocalDate.now() // TODO SEt this
-      val form: Form[CrystallisedDetails] = amountCrystallisedAndDateFormProvider(maxTaxYearDate)
-      form.bind(
-        Field.seqToMap(fields)
-      ).fold(
-        formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-        value => Valid(value)
-      )
-    }
+  //noinspection ScalaStyle
+  private def AmountCrystallisedAndDateValidation(index: Int,
+                                      chargeFields: Seq[String],
+                                      taxYear: Int)
+                                     (implicit messages: Messages): Validated[Seq[ValidationError], CrystallisedDetails] = {
 
-  //  private def lumpSumDateValidation(index: Int,
-  //                                    chargeFields: Seq[String]): Validated[Seq[ValidationError], CrystallisedDetails] = {
-  //    val fields = Seq(
-  //      Field(valueFormField, chargeFields(fieldNoLumpSumDate), lumpSumDate, fieldNoLumpSumDate)
-  //    )
-  //    val form: Form[CrystallisedDetails] = amountCrystallisedAndDateFormProvider()
-  //    form.bind(
-  //      Field.seqToMap(fields)
-  //    ).fold(
-  //      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-  //      value => Valid(value)
-  //    )
-  //  }
+    val maxTaxYearDate = LocalDate.of(taxYear + 1, Month.APRIL, 5)
 
+    val fields = Seq(
+      Field("amountCrystallised", chargeFields(fieldNoLumpSumAmount), lumpSumAmount, fieldNoLumpSumAmount),
+      Field("crystallisedDate", chargeFields(fieldNoLumpSumDate), lumpSumDate, fieldNoLumpSumDate)
+    )
+
+    val test = Field.seqToMap(fields)
+    println(s"\n\n Field.seqToMap ${test}\n\n")
+
+    val form: Form[CrystallisedDetails] = amountCrystallisedAndDateFormProvider(maxTaxYearDate)
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
   override protected def validateFields(index: Int,
                                         columns: Seq[String],
-                                        taxYear: Int): Result = {
+                                        taxYear: Int)
+                                       (implicit messages: Messages): Result = {
     val a = resultFromFormValidationResult[MembersDetails](
       memberDetailsValidation(index, columns, membersDetailsFormProvider(Event6, index)),
       createCommitItem(index, MembersDetailsPage.apply(Event6, _))
@@ -150,14 +138,10 @@ class Event6Validator @Inject()(
       typeOfProtectionReferenceValidation(index, columns), createCommitItem(index, InputProtectionTypePage.apply(Event6, _))
     )
 
-        val d = resultFromFormValidationResult[CrystallisedDetails](
-          lumpSumAmountValidation(index, columns), createCommitItem(index, AmountCrystallisedAndDatePage.apply(Event6, _))
-        )
-    //
-    //    val e = resultFromFormValidationResult[CrystallisedDetails](
-    //      lumpSumDateValidation(index, columns), createCommitItem(index, AmountCrystallisedAndDatePage.apply(Event6, _))
-    //    )
+    val d = resultFromFormValidationResult[CrystallisedDetails](
+      AmountCrystallisedAndDateValidation(index, columns, taxYear), createCommitItem(index, AmountCrystallisedAndDatePage.apply(Event6, _))
+    )
 
-    Seq(a, b, c).combineAll
+    Seq(a, b, c, d).combineAll
   }
 }

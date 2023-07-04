@@ -19,7 +19,7 @@ package services.fileUpload
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
-import models.TaxYear.{getTaxYear, getTaxYearFromOption}
+import models.TaxYear.getTaxYear
 import models.UserAnswers
 import models.common.MembersDetails
 import models.enumeration.EventType
@@ -62,13 +62,14 @@ trait Validator {
     }
 
 
-  def validate(rows: Seq[Array[String]], userAnswers: UserAnswers): Validated[Seq[ValidationError], UserAnswers] = { // TODO Add implciit
+  def validate(rows: Seq[Array[String]], userAnswers: UserAnswers)
+              (implicit messages: Messages): Validated[Seq[ValidationError], UserAnswers] = {
     rows.headOption match {
       case Some(row) if row.mkString(",").equalsIgnoreCase(validHeader) =>
         rows.size match {
           case n if n >= 2 =>
             validateDataRows(rows, getTaxYear(userAnswers))
-            .map(_.foldLeft(userAnswers)((acc, ci) => acc.setOrException(ci.jsPath, ci.value)))
+              .map(_.foldLeft(userAnswers)((acc, ci) => acc.setOrException(ci.jsPath, ci.value)))
           case _ => Invalid(Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty))
         }
       case _ =>
@@ -76,7 +77,8 @@ trait Validator {
     }
   }
 
-  private def validateDataRows(rows: Seq[Array[String]], taxYear: Int): Result = {
+  private def validateDataRows(rows: Seq[Array[String]], taxYear: Int)
+                              (implicit messages: Messages): Result = {
     rows.zipWithIndex.foldLeft[Result](Valid(Nil)) {
       case (acc, Tuple2(_, 0)) => acc
       case (acc, Tuple2(row, index)) => Seq(acc, validateFields(index, row.toIndexedSeq, taxYear)).combineAll
@@ -84,7 +86,8 @@ trait Validator {
   }
 
   protected def validateFields(index: Int,
-                               columns: Seq[String], taxYear: Int): Result
+                               columns: Seq[String], taxYear: Int)
+                              (implicit messages: Messages): Result
 
   protected def memberDetailsValidation(index: Int, columns: Seq[String],
                                         memberDetailsForm: Form[MembersDetails]): Validated[Seq[ValidationError], MembersDetails] = {
@@ -103,6 +106,9 @@ trait Validator {
   }
 
   protected final def errorsFromForm[A](formWithErrors: Form[A], fields: Seq[Field], index: Int): Seq[ValidationError] = {
+
+    println(s"\n\n ============= ${formWithErrors}\n\n")
+
     for {
       formError <- formWithErrors.errors
       field <- fields.find(_.getFormValidationFullFieldName == formError.key)

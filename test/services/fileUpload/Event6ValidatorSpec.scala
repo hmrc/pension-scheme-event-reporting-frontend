@@ -90,19 +90,19 @@ class Event6ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
 //      DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
 //      val csvFile = CSVParser.split(
 //        s"""$header
-//,Bloggs,AA234567D,Enhanced lifetime allowance,,12.20,08/11/2022
-//Joe,Bloggs,,Enhanced lifetime allowance,s,12.20,08/11/2026"""
+//    Joe,,AA234567D,enhanced lifetime allowance,,12.20,08/11/2022
+//    Joe,Bloggs,,enhanced lifetime allowance,s,12.20,08/11/2026"""
 //
 //      )
 //      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
 //
 //      val result = validator.validate(csvFile, ua)
 //      result mustBe Invalid(Seq(
-//        ValidationError(1, 0, "membersDetails.error.firstName.required", "firstName"),
-//        ValidationError(1, 5, "typeOfProtection.error.required", "typeOfProtectionReference"),
-//        ValidationError(2, 1, "membersDetails.error.nino.required", "nino"),
-//        ValidationError(2, 5, "typeOfProtectionReference.error.length", "typeOfProtectionReference"),
-//        ValidationError(2, 7, "amountCrystallisedAndDate.date.error.outsideReportedYear", "lumpSumAmount")
+//        ValidationError(1, 1, "membersDetails.error.lastName.required", "lastName"),
+//        ValidationError(1, 4, "inputProtectionType.error.required", "typeOfProtectionReference"),
+//        ValidationError(2, 2, "membersDetails.error.nino.required", "nino"),
+//        ValidationError(2, 4, "inputProtectionType.error.length", "typeOfProtectionReference"),
+//        ValidationError(2, 6, "amountCrystallisedAndDate.date.error.outsideReportedYear", "lumpSumDate")
 //      ))
 //    }
 
