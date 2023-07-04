@@ -46,16 +46,13 @@
         <h1 class="govuk-heading-xl">@messages("fileUploadResult.heading", eventByName)</h1>
 
         <p class="govuk-body" id="upload-file-name">
-            <noscript>
-                @if(fileName.isEmpty) {
-                    @messages("fileUploadResult.status.inProgress")
-                } else {
-                    @fileName.map{ name =>
-                        @name
-                    }
+            @if(fileName.isEmpty) {
+                @messages("fileUploadResult.status.inProgress")
+            } else {
+                @fileName.map{ name =>
+                    @name
                 }
-            </noscript>
-            @messages("fileUploadResult.status.inProgress")
+            }
         </p>
 
         @govukInsetText(

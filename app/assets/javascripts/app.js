@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
         });
         var button = document.querySelector('#submit');
             button.disabled = true;
-        var url = "/manage-pension-scheme-event-report/assets/javascripts/status-test.json";
+        var url = "/manage-pension-scheme-event-report/new-report/event-filename";
         function pollName(){
             fetch(url).then(function (response) {
                 if (response.ok) {
@@ -56,7 +56,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
                     return Promise.reject(response);
                 }
             }).then(function (data) {
-                console.log(data);
                 if (!data.fileName) {
                     setTimeout(function() {
                         pollName();
@@ -88,12 +87,13 @@ document.addEventListener('DOMContentLoaded', function(event) {
                     return Promise.reject(response);
                 }
             }).then(function (data) {
-                console.log(data);
                 if (data.status === "processing") {
+                    console.log(data);
                     setTimeout(function() {
                         pollData();
                     }, 4000);
                 } else {
+                    console.log(data);
                     location.reload();
                 }
             }).catch(function (err) {

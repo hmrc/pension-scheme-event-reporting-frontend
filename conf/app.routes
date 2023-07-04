@@ -243,6 +243,7 @@ GET         /new-report/event-22-wrong-format                                   
 GET         /new-report/event-22-checking-file                                    controllers.fileUpload.ProcessingRequestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-checking-file                                       controllers.fileUpload.ProcessingStatusRequestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/event-filename                                            controllers.fileUpload.FileUploadFileNameController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
 
 GET         /new-report/:index/event-3-member-details                             controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3, index: Index, memberPageNo: Int = 0)

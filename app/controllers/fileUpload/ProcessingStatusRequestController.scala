@@ -21,20 +21,17 @@ import controllers.actions._
 import models.fileUpload.ParsingAndValidationOutcome
 import models.fileUpload.ParsingAndValidationOutcomeStatus.{GeneralError, Success, ValidationErrorsLessThan10, ValidationErrorsMoreThanOrEqual10}
 import pages.Waypoints
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Results}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.fileUpload.ProcessingRequestView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ProcessingStatusRequestController @Inject()(
-                                             override val messagesApi: MessagesApi,
                                              identify: IdentifierAction,
                                              val controllerComponents: MessagesControllerComponents,
-                                             view: ProcessingRequestView,
                                              parsingAndValidationOutcomeCacheConnector: ParsingAndValidationOutcomeCacheConnector
                                            )(implicit ec: ExecutionContext)
 
@@ -44,16 +41,26 @@ class ProcessingStatusRequestController @Inject()(
     implicit request =>
       val outcomes = parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap {
         case Some(ParsingAndValidationOutcome(Success, _, _)) =>
-          Future.successful(Json.obj("status" -> "processed"))
+          Future.successful(Json.obj(
+            "status" -> "processed",
+          ))
         case Some(ParsingAndValidationOutcome(GeneralError, _, _)) =>
-          Future.successful(Json.obj("status" -> "processed"))
+          Future.successful(Json.obj(
+            "status" -> "processed",
+          ))
         case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _)) =>
-          Future.successful(Json.obj("status" -> "processed"))
+          Future.successful(Json.obj(
+            "status" -> "processed",
+          ))
         case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _)) =>
-          Future.successful(Json.obj("status" -> "processed"))
+          Future.successful(Json.obj(
+            "status" -> "processed",
+          ))
         case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
         case _ =>
-          Future.successful(Json.obj("status" -> "processing"))
+          Future.successful(Json.obj(
+            "status" -> "processing",
+          ))
       }
       outcomes.map { outcome =>
         Results.Ok(outcome.toString)

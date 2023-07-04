@@ -17,30 +17,23 @@
 package controllers.fileUpload
 
 import controllers.actions._
-import models.enumeration.EventType
 import pages.Waypoints
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.fileUpload.FileUploadSuccessView
-
 import javax.inject.Inject
 
-class FileUploadSuccessController @Inject()(
-                                             override val messagesApi: MessagesApi,
+class FileUploadFileNameController @Inject()(
                                              identify: IdentifierAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              val controllerComponents: MessagesControllerComponents,
-                                             view: FileUploadSuccessView
                                            ) extends FrontendBaseController with I18nSupport {
 
-  private val eventType = EventType.Event22
-
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) {
     implicit request =>
-      val dummyFileName = "Dummy filename.csv" //TODO: This needs to use the BE to retrieve the data.
-      val continueUrl = controllers.common.routes.MembersSummaryController.onPageLoad(waypoints, eventType).url
-      Ok(view(continueUrl, dummyFileName))
+      val dummyFileName = "123abc.csv" //TODO: This needs to use the BE to retrieve the data.
+      Ok(Json.obj("fileName" -> dummyFileName))
   }
 }
