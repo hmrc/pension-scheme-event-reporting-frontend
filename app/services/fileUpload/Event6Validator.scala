@@ -27,15 +27,15 @@ import models.common.MembersDetails
 import models.enumeration.EventType
 import models.enumeration.EventType.Event6
 import models.event6.{CrystallisedDetails, TypeOfProtection}
-import models.fileUpload.FileUploadHeaders.Event6FieldNames.{lumpSumAmount, lumpSumDate, typeOfProtection, typeOfProtectionReference}
-import models.fileUpload.FileUploadHeaders.valueFormField
+import models.fileUpload.FileUploadHeaders.Event6FieldNames._
+import models.fileUpload.FileUploadHeaders.{Event6FieldNames, valueFormField}
 import pages.common.MembersDetailsPage
 import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage}
 import play.api.data.Form
 import play.api.i18n.Messages
 import services.fileUpload.Validator.Result
 
-import java.time.{LocalDate, Month}
+import java.time.LocalDate
 
 class Event6Validator @Inject()(
                                  membersDetailsFormProvider: MembersDetailsFormProvider,
@@ -99,21 +99,22 @@ class Event6Validator @Inject()(
 
   //noinspection ScalaStyle
   private def AmountCrystallisedAndDateValidation(index: Int,
-                                      chargeFields: Seq[String],
-                                      taxYear: Int)
-                                     (implicit messages: Messages): Validated[Seq[ValidationError], CrystallisedDetails] = {
+                                                  chargeFields: Seq[String],
+                                                  taxYear: Int)
+                                                 (implicit messages: Messages): Validated[Seq[ValidationError], CrystallisedDetails] = {
 
-    val maxTaxYearDate = LocalDate.of(taxYear + 1, Month.APRIL, 5)
+    val maxDate = LocalDate.of(taxYear + 1, 4, 5)
+    val parsedDate = splitDayMonthYear(chargeFields(fieldNoLumpSumDate))
 
     val fields = Seq(
-      Field("amountCrystallised", chargeFields(fieldNoLumpSumAmount), lumpSumAmount, fieldNoLumpSumAmount),
-      Field("crystallisedDate", chargeFields(fieldNoLumpSumDate), lumpSumDate, fieldNoLumpSumDate)
+      Field(lumpSumAmount, chargeFields(fieldNoLumpSumAmount), lumpSumAmount, fieldNoLumpSumAmount),
+      Field(dateOfEventDay, parsedDate.day, lumpSumDate, fieldNoLumpSumDate, Some(Event6FieldNames.lumpSumDate)),
+      Field(dateOfEventMonth, parsedDate.month, lumpSumDate, fieldNoLumpSumDate, Some(Event6FieldNames.lumpSumDate)),
+      Field(dateOfEventYear, parsedDate.year, lumpSumDate, fieldNoLumpSumDate, Some(Event6FieldNames.lumpSumDate))
     )
 
-    val test = Field.seqToMap(fields)
-    println(s"\n\n Field.seqToMap ${test}\n\n")
+    val form: Form[CrystallisedDetails] = amountCrystallisedAndDateFormProvider(maxDate)
 
-    val form: Form[CrystallisedDetails] = amountCrystallisedAndDateFormProvider(maxTaxYearDate)
     form.bind(
       Field.seqToMap(fields)
     ).fold(
@@ -121,6 +122,7 @@ class Event6Validator @Inject()(
       value => Valid(value)
     )
   }
+
   override protected def validateFields(index: Int,
                                         columns: Seq[String],
                                         taxYear: Int)

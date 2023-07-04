@@ -107,8 +107,6 @@ trait Validator {
 
   protected final def errorsFromForm[A](formWithErrors: Form[A], fields: Seq[Field], index: Int): Seq[ValidationError] = {
 
-    println(s"\n\n ============= ${formWithErrors}\n\n")
-
     for {
       formError <- formWithErrors.errors
       field <- fields.find(_.getFormValidationFullFieldName == formError.key)

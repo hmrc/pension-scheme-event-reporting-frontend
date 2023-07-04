@@ -23,7 +23,7 @@ import forms.fileUpload.FileUploadResultFormProvider
 import helpers.fileUpload.FileUploadGenericErrorReporter
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23, Event6, getEventTypeByName}
+import models.enumeration.EventType.{Event22, Event6, getEventTypeByName}
 import models.fileUpload.ParsingAndValidationOutcomeStatus._
 import models.fileUpload.{FileUploadResult, ParsingAndValidationOutcome}
 import models.requests.OptionalDataRequest
