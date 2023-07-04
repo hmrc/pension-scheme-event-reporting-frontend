@@ -17,7 +17,6 @@
 package controllers.event8a
 
 import com.google.inject.Inject
-import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.enumeration.EventType.Event8A
 import models.event8a.PaymentType
@@ -28,6 +27,7 @@ import pages.event8a.Event8ACheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.MembersDetailsSummary
@@ -43,7 +43,7 @@ class Event8ACheckYourAnswersController @Inject()(
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
-                                                   connector: EventReportingConnector,
+                                                   compileService: CompileService,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: CheckYourAnswersView
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport { //scalastyle:off method.length
@@ -116,7 +116,7 @@ class Event8ACheckYourAnswersController @Inject()(
 
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event8A) andThen requireData).async { implicit request =>
-      connector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(Event8A)).map {
+      compileService.compileEvent(Event8A, request.pstr, request.userAnswers).map {
         _ =>
           Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event8A).url)
       }

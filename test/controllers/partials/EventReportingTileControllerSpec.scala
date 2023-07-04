@@ -21,7 +21,7 @@ import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.{EROverview, TaxYear, ToggleDetails}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
@@ -64,6 +64,9 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
+      when(mockUserAnswersCacheConnector.removeAll(any())(any(), any()))
+        .thenReturn(Future.successful(():Unit))
+
       when(mockConnector.getOverview(any(), any(), any(), any())(any(), any())).thenReturn(
         Future.successful(Seq(EROverview(
           LocalDate.now(),
@@ -94,7 +97,8 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
           )
         )
         status(result) mustEqual OK
-        
+        verify(mockUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
+
         contentAsString(result).filterNot(_.isWhitespace) mustEqual view(card)(request, messages(application)).toString.filterNot(_.isWhitespace)
       }
     }
@@ -106,6 +110,8 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
 
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
+      when(mockUserAnswersCacheConnector.removeAll(any())(any(), any()))
+        .thenReturn(Future.successful((): Unit))
 
       when(mockConnector.getOverview(any(), any(), any(), any())(any(), any())).thenReturn(
         Future.successful(Seq(EROverview(
@@ -125,6 +131,7 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
         val result = route(application, request).value
 
         status(result) mustEqual OK
+        verify(mockUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
         contentAsString(result) mustEqual ""
       }
     }

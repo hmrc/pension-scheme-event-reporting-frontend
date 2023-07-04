@@ -18,7 +18,7 @@ package controllers
 
 import audit.{AuditService, EventReportingSubmissionEmailAuditEvent}
 import config.FrontendAppConfig
-import connectors.{EmailConnector, EmailStatus, EventReportingConnector, MinimalConnector}
+import connectors.{EmailConnector, EmailStatus, MinimalConnector}
 import controllers.actions._
 import models.enumeration.AdministratorOrPractitioner
 import models.requests.DataRequest
@@ -27,6 +27,7 @@ import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SubmitService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.DateHelper.formatSubmittedDate
@@ -41,7 +42,7 @@ class DeclarationController @Inject()(
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       erConnector: EventReportingConnector,
+                                       submitService: SubmitService,
                                        val controllerComponents: MessagesControllerComponents,
                                        emailConnector: EmailConnector,
                                        minimalConnector: MinimalConnector,
@@ -61,7 +62,8 @@ class DeclarationController @Inject()(
         declarationData(
           request.pstr,
           TaxYear.getSelectedTaxYear(request.userAnswers),
-          request.loggedInUser)
+          request.loggedInUser),
+        request.userAnswers.noEventTypeData
       )
 
       def emailFuture = minimalConnector.getMinimalDetails(
@@ -73,9 +75,12 @@ class DeclarationController @Inject()(
         sendEmail(minimalDetails.name, email, taxYear, schemeName)
       }
 
-      erConnector.submitReport(request.pstr, data).flatMap { _ =>
-        emailFuture.map { _ =>
-          Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
+      submitService.submitReport(request.pstr, data).flatMap { r =>
+        r.header.status match {
+          case OK => emailFuture.map { _ =>
+            Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
+          }
+          case _ => throw new RuntimeException(s"Invalid response returned from submit report: $r")
         }
       }
   }

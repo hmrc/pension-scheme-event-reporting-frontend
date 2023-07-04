@@ -17,7 +17,6 @@
 package controllers.event20
 
 import com.google.inject.Inject
-import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.UserAnswers
 import models.enumeration.EventType.Event20
@@ -27,6 +26,7 @@ import pages.event20._
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.event20.checkAnswers._
@@ -40,7 +40,7 @@ class Event20CheckYourAnswersController @Inject()(
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
-                                                   connector: EventReportingConnector,
+                                                   compileService: CompileService,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: CheckYourAnswersView
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -55,7 +55,7 @@ class Event20CheckYourAnswersController @Inject()(
 
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event20) andThen requireData).async { implicit request =>
-          connector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(Event20)).map {
+          compileService.compileEvent(Event20, request.pstr, request.userAnswers).map {
             _ =>
               Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
           }

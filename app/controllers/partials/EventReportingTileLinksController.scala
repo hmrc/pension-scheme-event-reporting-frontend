@@ -86,7 +86,6 @@ class EventReportingTileLinksController @Inject()(
 
   def onClickSubmitted: Action[AnyContent] =
     (identify andThen getData() andThen requireData).async { implicit request =>
-      // TODO: change redirect to go to new "select which year you want to see event report" or similar.
       request.userAnswers.get(EventReportingOverviewPage) match {
         case Some(s: Seq[EROverview]) =>
           val ua = request.userAnswers
