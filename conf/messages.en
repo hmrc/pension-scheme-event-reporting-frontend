@@ -1098,6 +1098,7 @@ typeOfProtection.individualProtection2014 = Individual protection 2014
 typeOfProtection.individualProtection2016 = Individual protection 2016
 typeOfProtection.checkYourAnswersLabel = Protection type
 typeOfProtection.error.required = Select what type of protection is held
+typeOfProtection.error.format = Enter the type of protection in the correct format
 typeOfProtection.change.hidden = The protection type
 
 event8.typeOfProtection.title = What type of protection was held for the lump sum?
@@ -1563,9 +1564,9 @@ fileUpload.taxYear.generic.error = tax year is missing, invalid or in the wrong 
 fileUpload.totalAmounts.generic.error = the total of the member’s pension input amounts is missing, invalid or in the wrong format
 
 fileUpload.typeOfProtection.generic.error = "Error for type of protection needs to be confirmed"
-fileUpload.typeOfProtectionReference.generic.error = "Error for type of protection reference needs to be confirmed"
-fileUpload.lumpSumAmount.generic.error = "Error for type of lumpSumAmount needs to be confirmed"
-fileUpload.lumpSumDate.generic.error = "Error for type of lumpSumDate needs to be confirmed"
+fileUpload.typeOfProtectionReference.generic.error = The protection reference is a maximum of 15 characters and a combination of numbers and letters
+fileUpload.lumpSumAmount.generic.error = The total amount crystallised must be an amount of money, like 123.45 or 156.00. It must include pence and cannot be a negative amount, nor exceed £999999999.99
+fileUpload.lumpSumDate.generic.error = The date must be between 6 April 2006 and 5 April of the tax year that is being submitted
 
 fileUploadSuccess.title = Your file upload was successful
 fileUploadSuccess.heading = Your file upload was successful
