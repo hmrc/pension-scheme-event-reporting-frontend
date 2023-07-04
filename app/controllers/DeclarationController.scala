@@ -125,29 +125,14 @@ class DeclarationController @Inject()(
       case _ => throw new RuntimeException("Unknown user type")
     }
 
-    val declarationDetails = loggedInUser.administratorOrPractitioner match {
-      case AdministratorOrPractitioner.Administrator =>
-        Json.obj(
-          //Both of those are always selected. Users can't access the page otherwise.
-          "psaDeclaration1" -> "Selected",
-          "psaDeclaration2" -> "Selected"
-        )
-      case AdministratorOrPractitioner.Practitioner =>
-        Json.obj(
-          //Both of those are always selected. Users can't access the page otherwise.
-          "authorisedPSAID" -> ???, //TODO: Implement declaration submission by PSP
-          "pspDeclaration1" -> "Selected",
-          "pspDeclaration2" -> "Selected"
-        )
-    }
-
     Json.obj(
       "pstr" -> pstr,
       "reportStartDate" -> s"${taxYear.startYear}-04-06",
       "reportEndDate" -> s"${taxYear.endYear}-04-05",
       "submittedBy" -> psaOrPsp,
-      "submittedID" -> loggedInUser.psaIdOrPspId
-    ) ++ declarationDetails
-
+      "submittedID" -> loggedInUser.psaIdOrPspId,
+      "psaDeclaration1" -> "Selected",
+      "psaDeclaration2" -> "Selected"
+    )
   }
 }

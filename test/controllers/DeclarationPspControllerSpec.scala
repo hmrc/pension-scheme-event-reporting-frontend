@@ -14,46 +14,56 @@
  * limitations under the License.
  */
 
-package controllers.event20A
+package controllers
 
 import base.SpecBase
 import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
 import connectors.{EventReportingConnector, MinimalConnector, SchemeDetailsConnector, UserAnswersCacheConnector}
-import data.SampleData.sampleEvent20ABecameJourneyData
-import forms.event20A.Event20APspDeclarationFormProvider
-import models.SchemeDetails
+import data.SampleData.sampleEvent20JourneyData
+import forms.DeclarationPspFormProvider
+import models.{SchemeDetails, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.EmptyWaypoints
-import pages.event20A.Event20APspDeclarationPage
-import play.api.Application
+import pages.{DeclarationPspPage, EmptyWaypoints}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event20A.Event20APspDeclarationView
+import views.html.DeclarationPspView
 
 import scala.concurrent.Future
 
-class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterEach {
+class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
   private val authorisingPsaId = Some("A1234567")
-  private val formProvider = new Event20APspDeclarationFormProvider()
+  private val formProvider = new DeclarationPspFormProvider()
   private val form = formProvider(authorisingPsaId)
-  val schemeName = "schemeName"
-  val pstr = "87219363YN"
-  val taxYear = "2022"
   val practitionerName = "John Smith"
+
+
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockSchemeDetailsConnector = mock[SchemeDetailsConnector]
   private val mockEventReportingConnector = mock[EventReportingConnector]
   private val mockMinimalConnector = mock[MinimalConnector]
   private val mockSchemeDetails = SchemeDetails("schemeName", "87219363YN", "Open", authorisingPsaId)
-  private def getRoute: String = routes.Event20APspDeclarationController.onPageLoad(waypoints).url
-  private def postRoute: String = routes.Event20APspDeclarationController.onSubmit(waypoints).url
+  val testEmail = "test@test.com"
+  val mockMinimalDetails: MinimalDetails = {
+    MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None,  lastName = "Smith")), false, false)
+  }
+  private def getRoute: String = routes.DeclarationPspController.onPageLoad(waypoints).url
+  private def postRoute: String = routes.DeclarationPspController.onSubmit(waypoints).url
+
+  private val validValue = "abc"
+
+  override def beforeEach(): Unit = {
+    reset(mockUserAnswersCacheConnector)
+    reset(mockSchemeDetailsConnector)
+    reset(mockEventReportingConnector)
+    reset(mockMinimalConnector)
+  }
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
@@ -62,23 +72,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
     bind[MinimalConnector].toInstance(mockMinimalConnector)
   )
 
-  private val validValue = "abc"
-
-  override def beforeEach(): Unit = {
-    super.beforeEach
-    reset(mockUserAnswersCacheConnector)
-    reset(mockSchemeDetailsConnector)
-    reset(mockEventReportingConnector)
-    reset(mockMinimalConnector)
-  }
-
-  val testEmail = "test@test.com"
-  val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
-  val mockMinimalDetails: MinimalDetails = {
-    MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None,  lastName = "Smith")), false, false)
-  }
-
-  "Event20APspDeclaration Controller" - {
+  "DeclarationPsp Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -90,42 +84,40 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[Event20APspDeclarationView]
+        val view = application.injector.instanceOf[DeclarationPspView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(schemeName, pstr, taxYear, practitionerName, form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(practitionerName, form, waypoints)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
-      val userAnswers = emptyUserAnswersWithTaxYear.set(Event20APspDeclarationPage, validValue).success.value
+      val userAnswers = UserAnswers().set(DeclarationPspPage, validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers), extraModules).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[Event20APspDeclarationView]
+        val view = application.injector.instanceOf[DeclarationPspView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(
-          schemeName, pstr, taxYear, practitionerName, form.fill(validValue), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(practitionerName, form.fill(validValue), waypoints)(request, messages(application)).toString
       }
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockEventReportingConnector.submitReportEvent20A(
-        any(), any())(any(), any())).thenReturn(Future.successful(()))
+      when(mockEventReportingConnector.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(()))
+
       val application =
-        applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
+        applicationBuilder(userAnswers = Some(sampleEvent20JourneyData), extraModules)
           .build()
 
       running(application) {
@@ -133,11 +125,10 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "A1234567"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswersWithTaxYear.set(Event20APspDeclarationPage, validValue).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual Event20APspDeclarationPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        redirectLocation(result).value mustEqual routes.ReturnSubmittedController.onPageLoad(waypoints).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
       }
     }
 
@@ -146,23 +137,25 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockEventReportingConnector.submitReportEvent20A(
-       any(), any())(any(), any())).thenReturn(Future.successful())
+      when(mockEventReportingConnector.submitReport(any(), any())(any(), any())).thenReturn(Future.successful())
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
           .build()
 
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
 
-        val view = application.injector.instanceOf[Event20APspDeclarationView]
+        val view = application.injector.instanceOf[DeclarationPspView]
         val boundForm = form.bind(Map("value" -> ""))
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(schemeName, pstr, taxYear, practitionerName, boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(practitionerName, boundForm, waypoints)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

@@ -1529,6 +1529,9 @@ event20A.declaration.table.header1 = Scheme name
 event20A.declaration.table.header2 = PSTR
 event20A.declaration.table.header3 = Tax year
 
+pspDeclaration.p = I, {0} declare that the content of this return has been approved by the Scheme Administrator and the Scheme Administrator named below has authorised me to submit this return.
+pspDeclaration.input = Scheme administrator ID
+
 event20A.pspDeclaration.title = Declaration
 event20A.pspDeclaration.heading = Declaration
 event20A.pspDeclaration.input = ID of authorising scheme administrator:
@@ -1570,3 +1573,8 @@ problemWithService.p = We could not process your file upload
 problemWithService.link = Try uploading your file again.
 
 chooseTaxYear.event22.error.outsideRange = The tax year must be between {0} and {1}
+pspDeclaration.error.required = Enter the scheme administrator's ID
+pspDeclaration.error.invalid = The scheme administrator's ID must only include letters and numbers
+pspDeclaration.error.length = The scheme administrator's ID must be the letter A followed by 7 numbers, like A 9999999
+PspDeclaration.change.hidden = DeclarationPsp
+pspDeclaration.error.noMatch = Enter the correct pension scheme administrator ID
