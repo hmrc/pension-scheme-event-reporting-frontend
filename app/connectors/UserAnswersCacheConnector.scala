@@ -41,10 +41,13 @@ class UserAnswersCacheConnector @Inject()(
   )
 
   private def eventHeaders(pstr: String, eventType: EventType, noEventJson: Option[JsObject]): Seq[(String, String)] = {
+    println("\n\n\n\n\nNOEVENTJSON: " + noEventJson)
     val headers = noEventJson match {
       case Some(json) =>
         val taxYear = (json \ TaxYearPage.toString).asOpt[String]
         val versionInfo = (json \ VersionInfoPage.toString \ "version").asOpt[Int].map(_.toString)
+            println("\n\n\n\ntaxyear: "+ taxYear)
+            println("\n\n\n\nversionInfo: "+ versionInfo)
 
         Tuple2(taxYear, versionInfo) match {
           case (Some(year), Some(version)) =>
@@ -61,6 +64,7 @@ class UserAnswersCacheConnector @Inject()(
     }
 
     if (headers.isEmpty) {
+      println("\n\n\n\n\nEVENTHEADERS")
       throw new RuntimeException("No tax year or version available")
     } else {
       headers
@@ -125,6 +129,7 @@ class UserAnswersCacheConnector @Inject()(
             }
           }
       case (y, v) =>
+        println("\n\n\n\n\nSAVEEEE")
         Future.failed(new RuntimeException(s"No tax year or version available: $y / $v"))
     }
   }
