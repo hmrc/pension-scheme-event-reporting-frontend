@@ -71,20 +71,20 @@ class Event6ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       )
     }
 
-//    "return validation error for incorrect header" in {
-//      val csvFile = CSVParser.split("""test""")
-//      val result = validator.validate(csvFile, UserAnswers())
-//      result mustBe Invalid(Seq(
-//        ValidationError(0, 0, HeaderInvalidOrFileIsEmpty)
-//      ))
-//    }
-//
-//    "return validation error for empty file" in {
-//      val result = validator.validate(Nil, UserAnswers())
-//      result mustBe Invalid(Seq(
-//        ValidationError(0, 0, HeaderInvalidOrFileIsEmpty)
-//      ))
-//    }
+    "return validation error for incorrect header" in {
+      val csvFile = CSVParser.split("""test""")
+      val result = validator.validate(csvFile, UserAnswers())
+      result mustBe Invalid(Seq(
+        ValidationError(0, 0, HeaderInvalidOrFileIsEmpty)
+      ))
+    }
+
+    "return validation error for empty file" in {
+      val result = validator.validate(Nil, UserAnswers())
+      result mustBe Invalid(Seq(
+        ValidationError(0, 0, HeaderInvalidOrFileIsEmpty)
+      ))
+    }
 
     "return validation errors when present, including tax year in future" in {
       DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
