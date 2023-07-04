@@ -41,7 +41,6 @@ class UserAnswersCacheConnector @Inject()(
   )
 
   private def eventHeaders(pstr: String, eventType: EventType, noEventJson: Option[JsObject]): Seq[(String, String)] = {
-
     val headers = noEventJson match {
       case Some(json) =>
         val taxYear = (json \ TaxYearPage.toString).asOpt[String]
