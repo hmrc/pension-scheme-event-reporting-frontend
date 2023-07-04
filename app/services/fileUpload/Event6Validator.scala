@@ -110,7 +110,7 @@ class Event6Validator @Inject()(
       Field("crystallisedDate", chargeFields(fieldNoLumpSumDate), lumpSumDate, fieldNoLumpSumDate)
     )
 
-    val test = Field.seqToMap(fields)
+    val test: Map[String, String] = Field.seqToMap(fields)
     println(s"\n\n Field.seqToMap ${test}\n\n")
 
     val form: Form[CrystallisedDetails] = amountCrystallisedAndDateFormProvider(maxTaxYearDate)
