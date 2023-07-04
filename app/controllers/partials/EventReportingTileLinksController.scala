@@ -48,18 +48,11 @@ class EventReportingTileLinksController @Inject()(
             case Seq(erOverview) =>
 
               val version = erOverview.versionDetails.map(_.numberOfVersions).getOrElse(1)
-
               val versionInfo =  VersionInfo(version, Compiled)
-
-
-
               val ua = request.userAnswers
                 .setOrException(TaxYearPage, erOverview.taxYear, nonEventTypeData = true)
                 .setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)
                 .setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
-
-
-
 
               userAnswersCacheConnector.save(request.pstr, ua).map { _ =>
                 Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)

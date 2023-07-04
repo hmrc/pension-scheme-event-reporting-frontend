@@ -66,7 +66,6 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
           val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereSubmittedVersionAvailable)
           TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear))
         case (Some(InProgress), Some(seqEROverview)) =>
-          println("\n>>>>" + seqEROverview)
           val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereCompiledVersionAvailable)
           TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear))
         case _ => TaxYear.options
