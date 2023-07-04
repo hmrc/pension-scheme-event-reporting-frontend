@@ -19,7 +19,6 @@ package controllers.partials
 import com.google.inject.Inject
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.enumeration.JourneyStartType
 import models.enumeration.JourneyStartType._
 import models.{EROverview, TaxYear}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage}
@@ -87,7 +86,6 @@ class EventReportingTileLinksController @Inject()(
 
   def onClickSubmitted: Action[AnyContent] =
     (identify andThen getData() andThen requireData).async { implicit request =>
-      // TODO: change redirect to go to new "select which year you want to see event report" or similar.
       request.userAnswers.get(EventReportingOverviewPage) match {
         case Some(s: Seq[EROverview]) =>
           val ua = request.userAnswers

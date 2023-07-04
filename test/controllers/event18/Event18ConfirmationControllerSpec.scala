@@ -17,20 +17,22 @@
 package controllers.event18
 
 import base.SpecBase
-import connectors.{EventReportingConnector, UserAnswersCacheConnector}
-import models.{EventDataIdentifier, TaxYear, UserAnswers}
+import connectors.UserAnswersCacheConnector
 import models.enumeration.EventType.Event18
+import models.enumeration.VersionStatus.Compiled
+import models.{TaxYear, UserAnswers, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, TaxYearPage}
 import pages.event18.Event18ConfirmationPage
+import pages.{EmptyWaypoints, TaxYearPage, VersionInfoPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.CompileService
 import views.html.event18.Event18ConfirmationView
 
 import scala.concurrent.Future
@@ -40,7 +42,7 @@ class Event18ConfirmationControllerSpec extends SpecBase with BeforeAndAfterEach
   private val waypoints = EmptyWaypoints
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val mockEventReportingConnector = mock[EventReportingConnector]
+  private val mockCompileService = mock[CompileService]
 
   private def getRoute: String = routes.Event18ConfirmationController.onPageLoad(waypoints).url
 
@@ -48,13 +50,13 @@ class Event18ConfirmationControllerSpec extends SpecBase with BeforeAndAfterEach
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
-    bind[EventReportingConnector].toInstance(mockEventReportingConnector)
+    bind[CompileService].toInstance(mockCompileService)
   )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockUserAnswersCacheConnector)
-    reset(mockEventReportingConnector)
+    reset(mockCompileService)
   }
 
   private val validAnswer: Boolean = true
@@ -79,16 +81,16 @@ class Event18ConfirmationControllerSpec extends SpecBase with BeforeAndAfterEach
   }
 
   "Event18Confirmation Controller onClick" - {
-
     "must always save the answer 'true' and redirect to the next page" in {
       val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq("87219363YN"),
-        ArgumentMatchers.eq(EventDataIdentifier(Event18, "2020", "1")))(any(), any()))
+      when(mockCompileService.compileEvent(ArgumentMatchers.eq(Event18), ArgumentMatchers.eq("87219363YN"), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
-      val ua = emptyUserAnswers.setOrException(TaxYearPage, TaxYear("2020"), nonEventTypeData = true)
+      val ua = emptyUserAnswers
+        .setOrException(TaxYearPage, TaxYear("2020"), nonEventTypeData = true)
+        .setOrException(VersionInfoPage, VersionInfo(1, Compiled))
 
       val application =
         applicationBuilder(userAnswers = Some(ua), extraModules)

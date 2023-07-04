@@ -17,7 +17,6 @@
 package controllers.event10
 
 import com.google.inject.Inject
-import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.enumeration.EventType.Event10
 import models.requests.DataRequest
@@ -25,6 +24,7 @@ import pages.event10.Event10CheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.event10.checkAnswers.{BecomeOrCeaseSchemeSummary, ContractsOrPoliciesSummary, SchemeChangeDateSummary}
@@ -38,7 +38,7 @@ class Event10CheckYourAnswersController @Inject()(
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
-                                                   connector: EventReportingConnector,
+                                                   compileService: CompileService,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: CheckYourAnswersView
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -53,8 +53,7 @@ class Event10CheckYourAnswersController @Inject()(
 
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event10) andThen requireData).async { implicit request =>
-      connector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(Event10)).map {
-        _ =>
+      compileService.compileEvent(Event10, request.pstr, request.userAnswers).map { _ =>
           Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
       }
     }

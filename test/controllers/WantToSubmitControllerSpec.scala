@@ -22,12 +22,11 @@ import forms.WantToSubmitFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, EventSelectionPage, WantToSubmitPage}
-import play.api.inject.guice.GuiceableModule
+import pages.{EmptyWaypoints, WantToSubmitPage}
 import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.WantToSubmitView
@@ -147,7 +146,7 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
 
         status(result) mustEqual SEE_OTHER
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
-        redirectLocation(result).value mustEqual EventSelectionPage.route(waypoints).url
+        redirectLocation(result).value mustEqual routes.DeclarationPspController.onPageLoad(waypoints).url
       }
     }
 
