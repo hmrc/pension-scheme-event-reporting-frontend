@@ -275,9 +275,7 @@ GET         /event-22-bulk-upload-template                                      
 GET         /event-23-upload-format-instructions                                  controllers.FileDownloadController.instructionsFile(eventType: EventType = Event23)
 GET         /event-23-bulk-upload-template                                        controllers.FileDownloadController.templateFile(eventType: EventType = Event23)
 
-GET         /new-report/event-checking-file                                       controllers.fileUpload.ProcessingStatusRequestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-GET         /new-report/event-filename                                            controllers.fileUpload.FileUploadFileNameController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-
+GET         /new-report/event-checking-file                                       controllers.fileUpload.ProcessingRequestController.onPageLoadStatus()
 
 GET         /new-report/:index/event-3-member-details                             controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3, index: Index, memberPageNo: Int = 0)
 POST        /new-report/:index/event-3-member-details                             controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3, index: Index, memberPageNo: Int = 0)
