@@ -23,7 +23,7 @@ import controllers.actions._
 import models.enumeration.AdministratorOrPractitioner
 import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}
-import pages.Waypoints
+import pages.{VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -99,6 +99,11 @@ class DeclarationController @Inject()(
       "dateSubmitted" -> submittedDate
     )
 
+    val reportVersion = request.userAnswers.get(VersionInfoPage) match {
+      case Some(value) => value.version.toString
+      case None => ""
+    }
+
     emailConnector.sendEmail(schemeAdministratorType,
       requestId,
       request.loggedInUser.idName,
@@ -109,13 +114,13 @@ class DeclarationController @Inject()(
         EventReportingSubmissionEmailAuditEvent(
           request.loggedInUser.idName,
           schemeAdministratorType,
-          email
+          email,
+          reportVersion
         )
       )
       emailStatus
     }
   }
-
 
   private def declarationData(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser) = {
 
