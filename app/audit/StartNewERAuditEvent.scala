@@ -30,8 +30,8 @@ case class StartNewERAuditEvent(
 
   override def details: Map[String, String] = {
     Map(
-      "psaOrPspId" -> psaIdentifier,
-      "pstr" -> pstr,
+      "PensionSchemeAdministratorOrPensionSchemePractitionerId" -> psaIdentifier,
+      "PensionSchemeTaxReference" -> pstr,
       "taxYear" -> s"${taxYear.startYear} to ${taxYear.endYear}",
       "eventNumber" -> eventNumber.toString,
       "reportVersion" -> reportVersion

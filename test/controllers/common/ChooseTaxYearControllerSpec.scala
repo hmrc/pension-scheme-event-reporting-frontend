@@ -19,7 +19,6 @@ package controllers.common
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.common.ChooseTaxYearFormProvider
-import models.UserAnswers
 import models.common.ChooseTaxYear
 import models.enumeration.EventType.{Event22, Event23}
 import org.mockito.ArgumentMatchers.any

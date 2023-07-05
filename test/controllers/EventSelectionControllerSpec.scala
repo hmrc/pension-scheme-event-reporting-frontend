@@ -20,15 +20,15 @@ import audit.{AuditService, StartNewERAuditEvent}
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.EventSelectionFormProvider
-import models.enumeration.EventType
-import models.{EventSelection, TaxYear}
+import models.enumeration.{EventType, VersionStatus}
+import models.{EventSelection, TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{doNothing, reset, times, verify, when}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.Eventually.eventually
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, EventSelectionPage, TaxYearPage}
+import pages.{EmptyWaypoints, EventSelectionPage, TaxYearPage, VersionInfoPage}
 import play.api.inject
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -84,7 +84,7 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
 
   "POST" - {
     "must redirect to next page on submit (when selecting an option) and send audit event" in {
-      val ua = emptyUserAnswersWithTaxYear
+      val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, VersionStatus.Submitted))
       val application = applicationBuilder(None, extraModules).build()
       running(application) {
 
