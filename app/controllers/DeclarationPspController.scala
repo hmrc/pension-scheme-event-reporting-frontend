@@ -18,13 +18,13 @@ package controllers
 
 import audit.{AuditService, EventReportingSubmissionEmailAuditEvent}
 import config.FrontendAppConfig
-import connectors.{EmailConnector, EmailStatus, EventReportingConnector, MinimalConnector, SchemeDetailsConnector, UserAnswersCacheConnector}
+import connectors._
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.DeclarationPspFormProvider
 import models.enumeration.AdministratorOrPractitioner
 import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}
-import pages.{DeclarationPspPage, Waypoints}
+import pages.{DeclarationPspPage, VersionInfoPage, Waypoints}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
@@ -63,7 +63,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
     }
     minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map {
       minimalDetails =>
-    Ok(view(minimalDetails.name, preparedForm, waypoints))
+        Ok(view(minimalDetails.name, preparedForm, waypoints))
     }
   }
 
@@ -119,6 +119,11 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
       "dateSubmitted" -> submittedDate
     )
 
+    val reportVersion = request.userAnswers.get(VersionInfoPage) match {
+      case Some(value) => value.version.toString
+      case None => ""
+    }
+
     emailConnector.sendEmail(schemeAdministratorType,
       requestId,
       request.loggedInUser.idName,
@@ -129,7 +134,8 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
         EventReportingSubmissionEmailAuditEvent(
           request.loggedInUser.idName,
           schemeAdministratorType,
-          email
+          email,
+          reportVersion
         )
       )
       emailStatus
