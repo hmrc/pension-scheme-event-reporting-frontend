@@ -20,8 +20,9 @@ import com.google.inject.Inject
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.enumeration.JourneyStartType._
-import models.{EROverview, TaxYear}
-import pages.{EmptyWaypoints, EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage}
+import models.enumeration.VersionStatus.Compiled
+import models.{EROverview, TaxYear, VersionInfo}
+import pages.{EmptyWaypoints, EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -45,9 +46,14 @@ class EventReportingTileLinksController @Inject()(
           val compiledVersionsOnly = s.filter(_.versionDetails.exists(_.compiledVersionAvailable))
           compiledVersionsOnly match {
             case Seq(erOverview) =>
+
+              val version = erOverview.versionDetails.map(_.numberOfVersions).getOrElse(1)
+              val versionInfo =  VersionInfo(version, Compiled)
               val ua = request.userAnswers
                 .setOrException(TaxYearPage, erOverview.taxYear, nonEventTypeData = true)
                 .setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)
+                .setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
+
               userAnswersCacheConnector.save(request.pstr, ua).map { _ =>
                 Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
               }
