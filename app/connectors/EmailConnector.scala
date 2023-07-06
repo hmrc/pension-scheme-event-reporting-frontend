@@ -19,7 +19,7 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.SendEmailRequest
-import models.enumeration.AdministratorOrPractitioner
+import models.enumeration.{AdministratorOrPractitioner, WithName}
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
@@ -33,9 +33,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait EmailStatus
 
-case object EmailSent extends EmailStatus
+case object EmailSent extends WithName("EmailSent") with EmailStatus
 
-case object EmailNotSent extends EmailStatus
+case object EmailNotSent extends WithName("EmailNotSent") with EmailStatus
 
 class EmailConnector @Inject()(
                                 appConfig: FrontendAppConfig,

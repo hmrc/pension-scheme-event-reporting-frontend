@@ -134,7 +134,8 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
           request.loggedInUser.idName,
           schemeAdministratorType,
           email,
-          reportVersion
+          reportVersion,
+          emailStatus
         )
       )
       emailStatus
