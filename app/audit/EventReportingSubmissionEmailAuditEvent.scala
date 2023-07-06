@@ -16,13 +16,15 @@
 
 package audit
 
+import connectors.EmailStatus
 import models.enumeration.AdministratorOrPractitioner
 
 case class EventReportingSubmissionEmailAuditEvent(
                                                     psaOrPspId: String,
                                                     schemeAdministratorType: AdministratorOrPractitioner,
                                                     emailAddress: String,
-                                                    reportVersion: String
+                                                    reportVersion: String,
+                                                    emailStatus: EmailStatus
                                                   ) extends AuditEvent {
 
   override def auditType: String = "EventReportingEmailEvent"
@@ -36,7 +38,8 @@ case class EventReportingSubmissionEmailAuditEvent(
     Map(
       "emailAddress" -> emailAddress,
       "submittedBy" -> schemeAdministratorType.toString,
-      "reportVersion" -> reportVersion
+      "reportVersion" -> reportVersion,
+      "event" -> emailStatus.toString
     ) ++ psaOrPspIdJson
   }
 }

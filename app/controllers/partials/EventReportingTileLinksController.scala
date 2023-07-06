@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.enumeration.JourneyStartType._
 import models.enumeration.VersionStatus.Compiled
-import models.{EROverview, TaxYear, VersionInfo}
+import models.{EROverview, VersionInfo}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -48,7 +48,7 @@ class EventReportingTileLinksController @Inject()(
             case Seq(erOverview) =>
 
               val version = erOverview.versionDetails.map(_.numberOfVersions).getOrElse(1)
-              val versionInfo =  VersionInfo(version, Compiled)
+              val versionInfo = VersionInfo(version, Compiled)
               val ua = request.userAnswers
                 .setOrException(TaxYearPage, erOverview.taxYear, nonEventTypeData = true)
                 .setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)

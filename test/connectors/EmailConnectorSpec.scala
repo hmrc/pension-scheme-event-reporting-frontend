@@ -54,7 +54,8 @@ class EmailConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper
           testPsaId.id,
           testEmailAddress,
           testTemplate,
-          Map.empty
+          Map.empty,
+          "reportVersion"
         ).map { result => result mustBe EmailSent }
       }
     }
@@ -69,7 +70,7 @@ class EmailConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper
         )
 
         connector.sendEmail(AdministratorOrPractitioner.Administrator,
-          requestId, testPsaId.id, testEmailAddress, testTemplate, Map.empty).map { result => result mustBe EmailNotSent
+          requestId, testPsaId.id, testEmailAddress, testTemplate, Map.empty, "reportVersion").map { result => result mustBe EmailNotSent
         }
       }
 
@@ -81,7 +82,7 @@ class EmailConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper
           )
         )
         connector.sendEmail(AdministratorOrPractitioner.Administrator,
-          requestId, testPsaId.id, testEmailAddress, testTemplate, Map.empty).map { result => result mustBe EmailNotSent
+          requestId, testPsaId.id, testEmailAddress, testTemplate, Map.empty, "reportVersion").map { result => result mustBe EmailNotSent
         }
       }
     }

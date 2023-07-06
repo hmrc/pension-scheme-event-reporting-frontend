@@ -86,7 +86,7 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
 
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
-      when(mockERConnector.submitReportEvent20A(any(), any())(any(), any())).thenReturn(Future.successful(()))
+      when(mockERConnector.submitReportEvent20A(any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
 
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)

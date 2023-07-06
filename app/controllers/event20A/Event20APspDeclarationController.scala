@@ -24,8 +24,8 @@ import models.enumeration.EventType
 import models.event20A.WhatChange.{BecameMasterTrust, CeasedMasterTrust}
 import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}
-import pages.Waypoints
 import pages.event20A.{BecameDatePage, CeasedDatePage, Event20APspDeclarationPage, WhatChangePage}
+import pages.{VersionInfoPage, Waypoints}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.{JsObject, Json}
@@ -77,7 +77,8 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
               userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).flatMap { _ =>
                 declarationDataEvent20A(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, authorisingPsaId, request) match {
                   case Some(data) =>
-                    eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data)).map { _ =>
+                    val reportVersion = request.userAnswers.get(VersionInfoPage).get.version.toString
+                    eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion).map { _ =>
                       Redirect(Event20APspDeclarationPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
                     }
                   case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
@@ -91,24 +92,24 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
 
   def declarationDataEvent20A(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser, optAuthorisingPsaId: Option[String], request: DataRequest[AnyContent]): Option[JsObject] = {
     val optCeaseDateOrStartDateNode = (request.userAnswers.get(WhatChangePage), request.userAnswers.get(BecameDatePage), request.userAnswers.get(CeasedDatePage)) match {
-        case (Some(BecameMasterTrust), Some(becameDate), _) => Some(Json.obj("schemeMasterTrustStartDate" -> becameDate))
-        case (Some(CeasedMasterTrust), _, Some(ceasedDate)) => Some(Json.obj("schemeMasterTrustCeaseDate" -> ceasedDate))
-        case _ => None
-      }
+      case (Some(BecameMasterTrust), Some(becameDate), _) => Some(Json.obj("schemeMasterTrustStartDate" -> becameDate))
+      case (Some(CeasedMasterTrust), _, Some(ceasedDate)) => Some(Json.obj("schemeMasterTrustCeaseDate" -> ceasedDate))
+      case _ => None
+    }
     optCeaseDateOrStartDateNode.flatMap { ceaseDateOrStartDateNode =>
-       optAuthorisingPsaId.map { authorisingPsaId =>
-      val event20AUserAnswers: JsObject = Json.obj(
-        "pstr" -> pstr,
-        "reportStartDate" -> s"${taxYear.startYear}-04-06",
-        "reportEndDate" -> s"${taxYear.endYear}-04-05",
-        "submittedBy" -> "PSP",
-        "submittedID" -> loggedInUser.psaIdOrPspId,
-        "authorisedPSAID" -> authorisingPsaId,
-        //Both of those are always selected. Users can't access the page otherwise.
-        "pspDeclaration1" -> "Selected",
-        "pspDeclaration2" -> "Selected"
-      )
-      event20AUserAnswers ++ ceaseDateOrStartDateNode
+      optAuthorisingPsaId.map { authorisingPsaId =>
+        val event20AUserAnswers: JsObject = Json.obj(
+          "pstr" -> pstr,
+          "reportStartDate" -> s"${taxYear.startYear}-04-06",
+          "reportEndDate" -> s"${taxYear.endYear}-04-05",
+          "submittedBy" -> "PSP",
+          "submittedID" -> loggedInUser.psaIdOrPspId,
+          "authorisedPSAID" -> authorisingPsaId,
+          //Both of those are always selected. Users can't access the page otherwise.
+          "pspDeclaration1" -> "Selected",
+          "pspDeclaration2" -> "Selected"
+        )
+        event20AUserAnswers ++ ceaseDateOrStartDateNode
       }
     }
   }
