@@ -53,7 +53,6 @@ class EventSummaryController @Inject()(
       case Some(taxYear) =>
         val startYear = s"${taxYear.startYear}-04-06"
         connector.getEventReportSummary(request.pstr, startYear).map { seqOfEventTypes =>
-          println("\n>>>>SEQ@" + seqOfEventTypes)
           seqOfEventTypes.map { event =>
             SummaryListRow(
               key = Key(
