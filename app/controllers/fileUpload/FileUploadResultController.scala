@@ -95,15 +95,16 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(FileUploadResultPage(eventType), value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).flatMap { _ =>
+          val redirectResultPage: Result = Redirect(FileUploadResultPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             if (value == FileUploadResult.Yes) {
-              parsingAndValidationOutcomeCacheConnector.deleteOutcome.map { _ =>
-                asyncGetUpscanFileAndParse(eventType)
-              }
+              parsingAndValidationOutcomeCacheConnector
+                .deleteOutcome
+                .flatMap(_ => asyncGetUpscanFileAndParse(eventType))
+              redirectResultPage
             } else {
-              Future.successful(())
+              redirectResultPage
             }
-            Future.successful(Redirect(FileUploadResultPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route))
           }
         }
       )
@@ -116,14 +117,44 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
     }
   }
 
-  //noinspection ScalaStyle
-  // scalastyle:off cyclomatic.complexity
-  private def asyncGetUpscanFileAndParse(eventType: EventType)(implicit request: OptionalDataRequest[AnyContent]): Unit = {
-    request.queryString.get("key")
-    val referenceOpt: Option[String] = request.request.queryString.get("key").flatMap { values =>
-      values.headOption
+  private def setGeneralErrorOutcome(errorMessage: String,
+                                     fileName: Option[String] = None,
+                                     error: Option[Throwable] = None)(implicit request: OptionalDataRequest[AnyContent]): Future[Unit] = {
+    error.foreach { e =>
+      logger.error(errorMessage, e)
     }
-    referenceOpt match {
+    parsingAndValidationOutcomeCacheConnector.setOutcome(
+      ParsingAndValidationOutcome(status = GeneralError, fileName = fileName)
+    )
+  }
+
+  private def performValidation(eventType: EventType,
+                                csvFileContent: String,
+                                fileName: Option[String])(implicit request: OptionalDataRequest[AnyContent]): Future[Unit] = {
+    val parsedCSV = CSVParser.split(csvFileContent)
+    val uaAfterRemovalOfEventType = Try(request.userAnswers
+      .getOrElse(UserAnswers()).removeWithPath(JsPath \ s"event${eventType.toString}")) match {
+      case scala.util.Success(ua) => ua
+      case scala.util.Failure(_) =>
+        request.userAnswers.getOrElse(UserAnswers())
+    }
+
+    val eventValidator = validatorForEvent(eventType)
+    val futureOutcome = eventValidator.validate(parsedCSV, uaAfterRemovalOfEventType) match {
+      case Invalid(errors) =>
+        Future.successful(processInvalid(eventType, errors))
+      case Valid(updatedUA) =>
+        userAnswersCacheConnector.save(request.pstr, eventType, updatedUA).flatMap { _ =>
+          compileService.compileEvent(eventType, request.pstr, updatedUA)
+            .map(_ => ParsingAndValidationOutcome(Success, Json.obj(), fileName))
+        }
+    }
+
+    futureOutcome.flatMap(outcome => parsingAndValidationOutcomeCacheConnector.setOutcome(outcome))
+  }
+
+  private def asyncGetUpscanFileAndParse(eventType: EventType)(implicit request: OptionalDataRequest[AnyContent]): Future[Unit] = {
+    request.request.queryString.get("key").flatMap(_.headOption) match {
       case Some(reference) =>
         eventReportingConnector.getFileUploadOutcome(reference).flatMap { fileUploadOutcomeResponse =>
           val fileName = fileUploadOutcomeResponse.fileName
@@ -131,42 +162,21 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
             case Some(downloadUrl) =>
               upscanInitiateConnector.download(downloadUrl).flatMap { httpResponse =>
                 httpResponse.status match {
-                  case OK => {
-                    val parsedCSV = CSVParser.split(httpResponse.body)
-                    val uaAfterRemovalOfEventType = Try(request.userAnswers
-                      .getOrElse(UserAnswers()).removeWithPath(JsPath \ s"event${eventType.toString}")) match {
-                      case scala.util.Success(ua) => ua
-                      case scala.util.Failure(_) =>
-                        request.userAnswers.getOrElse(UserAnswers())
-                    }
-
-                    val eventValidator = validatorForEvent(eventType)
-                    val futureOutcome = eventValidator.validate(parsedCSV, uaAfterRemovalOfEventType) match {
-                      case Invalid(errors) =>
-                        Future.successful(processInvalid(eventType, errors))
-                      case Valid(updatedUA) =>
-                        userAnswersCacheConnector.save(request.pstr, eventType, updatedUA).flatMap { _ =>
-                          compileService.compileEvent(eventType, request.pstr, updatedUA)
-                            .map(_ => ParsingAndValidationOutcome(Success, Json.obj(), fileName))
-                        }
-                    }
-
-                    futureOutcome.map(outcome => parsingAndValidationOutcomeCacheConnector.setOutcome(outcome))
-                  } recoverWith {
+                  case OK => performValidation(eventType, httpResponse.body, fileName) recoverWith {
                     case e: Throwable =>
-                      logger.error("Error during parsing and validation", e)
-                      parsingAndValidationOutcomeCacheConnector.setOutcome(outcome = ParsingAndValidationOutcome(status = GeneralError, fileName = fileName))
+                      setGeneralErrorOutcome(s"Unable to download file: download URL = $downloadUrl", fileName, Some(e))
                   }
-                  case _ => throw new RuntimeException("Unhandled response from upscan in FileUploadResultController")
+                  case e =>
+                    setGeneralErrorOutcome(s"Upscan download error response code $e and response body is ${httpResponse.body}", fileName)
                 }
               }
-            case None => throw new RuntimeException("No download url in FileUploadResultController")
+            case None => setGeneralErrorOutcome(
+              s"No download url: fileuploadstatus = ${fileUploadOutcomeResponse.fileUploadStatus}", fileName)
           }
         }
-      case _ => throw new RuntimeException("No reference number in FileUploadResultController")
+      case _ => setGeneralErrorOutcome(s"No reference number in FileUploadResultController")
     }
   }
-
 
   private def processInvalid(eventType: EventType,
                              errors: Seq[ValidationError])(implicit messages: Messages): ParsingAndValidationOutcome = {
