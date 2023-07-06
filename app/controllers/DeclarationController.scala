@@ -99,17 +99,15 @@ class DeclarationController @Inject()(
       "dateSubmitted" -> submittedDate
     )
 
-    val reportVersion = request.userAnswers.get(VersionInfoPage) match {
-      case Some(value) => value.version.toString
-      case None => ""
-    }
+    val reportVersion = request.userAnswers.get(VersionInfoPage).get.version.toString
 
     emailConnector.sendEmail(schemeAdministratorType,
       requestId,
       request.loggedInUser.idName,
       email,
       config.fileReturnTemplateId,
-      templateParams).map { emailStatus =>
+      templateParams,
+      reportVersion).map { emailStatus =>
       auditService.sendEvent(
         EventReportingSubmissionEmailAuditEvent(
           request.loggedInUser.idName,

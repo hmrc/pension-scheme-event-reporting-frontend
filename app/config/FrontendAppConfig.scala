@@ -93,14 +93,16 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
                                    schemeAdministratorType: AdministratorOrPractitioner,
                                    requestId: String,
                                    encryptedEmail: String,
-                                   encryptedPsaId: String
+                                   encryptedPsaId: String,
+                                   reportVersion: String
                                  ) = s"$eventReportingUrl${
     configuration.get[String](path = "urls.emailCallback")
       .format(
         if (schemeAdministratorType == Administrator) "PSA" else "PSP",
         requestId,
         encryptedEmail,
-        encryptedPsaId
+        encryptedPsaId,
+        reportVersion
       )
   }"
   lazy val validEvent22Header: String = configuration.get[String]("validEvent22Header")

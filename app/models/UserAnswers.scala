@@ -17,7 +17,6 @@
 package models
 
 import models.enumeration.EventType
-import models.enumeration.VersionStatus.{Compiled, Submitted}
 import pages.{QuestionPage, TaxYearPage, VersionInfoPage}
 import play.api.libs.json._
 import queries.{Derivable, Gettable, Query, Settable}
@@ -62,6 +61,7 @@ final case class UserAnswers(
 
   def set[A](page: Settable[A], value: A, nonEventTypeData: Boolean = false)(implicit writes: Writes[A]): Try[UserAnswers] = {
     def dataToUpdate(ua: UserAnswers): JsObject = if (nonEventTypeData) ua.noEventTypeData else ua.data
+
     page.cleanupBeforeSettingValue(Some(value), this).flatMap { ua =>
       val updatedData = dataToUpdate(ua).setObject(page.path, Json.toJson(value)) match {
         case JsSuccess(jsValue, _) =>
@@ -114,6 +114,7 @@ final case class UserAnswers(
 
   def remove[A](page: Settable[A], nonEventTypeData: Boolean = false): Try[UserAnswers] = {
     def dataToUpdate(ua: UserAnswers): JsObject = if (nonEventTypeData) ua.noEventTypeData else ua.data
+
     val updatedData = dataToUpdate(this).removeObject(page.path) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
@@ -164,7 +165,7 @@ final case class UserAnswers(
   }
 
   def eventDataIdentifier(eventType: EventType): EventDataIdentifier = {
-    ( (noEventTypeData \ TaxYearPage.toString).asOpt[String], get(VersionInfoPage).map(_.version.toString)) match {
+    ((noEventTypeData \ TaxYearPage.toString).asOpt[String], get(VersionInfoPage).map(_.version.toString)) match {
       case (Some(year), Some(version)) => EventDataIdentifier(eventType, year, version)
       case (ty, v) => throw new RuntimeException(s"No tax year or version available $ty/ $v")
     }

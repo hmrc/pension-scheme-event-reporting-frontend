@@ -22,11 +22,10 @@ import forms.TaxYearFormProvider
 import models.enumeration.JourneyStartType.{InProgress, PastEventTypes}
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
 import models.requests.DataRequest
-import models.{EROverview, TaxYear, UserAnswers, VersionInfo}
+import models.{EROverview, TaxYear, VersionInfo}
 import pages.{EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage, VersionInfoPage, Waypoints}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.TaxYearView

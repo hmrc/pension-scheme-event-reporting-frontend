@@ -33,7 +33,6 @@ class UserAnswersCacheConnectorSpec
     with WireMockHelper {
 
   private val pstr = "87219363YN"
-  private val year = "2022"
   private val version = "2"
   private val newVersion = "3"
   private val eventType = EventType.Event1

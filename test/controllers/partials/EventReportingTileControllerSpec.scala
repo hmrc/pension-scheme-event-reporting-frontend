@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import viewmodels.partials.{CardSubHeading, CardSubHeadingParam, CardViewModel, Link}
+import viewmodels.partials.{CardSubHeading, CardViewModel, Link}
 import views.html.partials.EventReportingTileView
 
 import java.time.LocalDate
@@ -65,7 +65,7 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
         .thenReturn(Future.successful(()))
 
       when(mockUserAnswersCacheConnector.removeAll(any())(any(), any()))
-        .thenReturn(Future.successful(():Unit))
+        .thenReturn(Future.successful((): Unit))
 
       when(mockConnector.getOverview(any(), any(), any(), any())(any(), any())).thenReturn(
         Future.successful(Seq(EROverview(
