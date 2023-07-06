@@ -123,7 +123,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
       when(mockEventReportingConnector.submitReportEvent20A(
-        any(), any())(any(), any())).thenReturn(Future.successful(()))
+        any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
           .build()
@@ -144,10 +144,8 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
     "must return bad request when invalid data is submitted" in {
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
       when(mockEventReportingConnector.submitReportEvent20A(
-       any(), any())(any(), any())).thenReturn(Future.successful())
+       any(), any(), any())(any(), any())).thenReturn(Future.successful())
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()

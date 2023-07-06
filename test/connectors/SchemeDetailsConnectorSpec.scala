@@ -31,7 +31,6 @@ class SchemeDetailsConnectorSpec
 
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
   private val psaId = "0000"
-  private val srn = "test srn"
   private val idNumber = "00000000AA"
 
   "getSchemeDetails" must {
