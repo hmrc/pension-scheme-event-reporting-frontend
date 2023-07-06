@@ -14,8 +14,9 @@
  * limitations under the License.
  *@
 
-@import controllers.event18.routes
+@import controllers.common.routes
 @import viewmodels.LegendSize
+@import models.enumeration.EventType
 
 @this(
     layout: templates.SchemeLayout,
@@ -25,11 +26,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("removeEvent18.title"))) {
+@layout(pageTitle = title(form, messages("removeEvent.title", messages(s"eventSummary.event$eventType")))) {
 
-    @formHelper(action = routes.RemoveEvent18Controller.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.RemoveEventController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -38,7 +39,7 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("removeEvent18.heading")).asPageHeading(LegendSize.Large)
+                legend = LegendViewModel(messages("removeEvent.heading", messages(s"eventSummary.event$eventType"))).asPageHeading(LegendSize.Large)
             )
         )
 

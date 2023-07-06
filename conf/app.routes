@@ -36,8 +36,8 @@ GET         /new-report/done-page                                               
 GET         /new-report/event-18-confirmation                                     controllers.event18.Event18ConfirmationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 GET         /new-report/event-18-on-click                                         controllers.event18.Event18ConfirmationController.onClick(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET         /new-report/event18/remove-event                                      controllers.event18.RemoveEvent18Controller.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-POST        /new-report/event18/remove-event                                      controllers.event18.RemoveEvent18Controller.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /new-report/remove-18                                                 controllers.common.RemoveEventController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event18)
+POST        /new-report/remove-18                                                 controllers.common.RemoveEventController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event18)
 
 GET         /new-report/wind-up-check-your-answers                                controllers.eventWindUp.EventWindUpCheckYourAnswersController.onPageLoad()
 GET         /new-report/event-windup-click                                        controllers.eventWindUp.EventWindUpCheckYourAnswersController.onClick

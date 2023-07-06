@@ -14,43 +14,42 @@
  * limitations under the License.
  */
 
-package controllers.event18
+package controllers.common
 
 import connectors.UserAnswersCacheConnector
-import models.enumeration.EventType
 import controllers.actions._
-import forms.event18.RemoveEvent18FormProvider
+import forms.common.RemoveEventFormProvider
 import models.UserAnswers
+import models.enumeration.EventType
 import models.requests.DataRequest
-
-import javax.inject.Inject
 import pages.Waypoints
-import pages.event18.{Event18ConfirmationPage, RemoveEvent18Page}
+import pages.common.RemoveEventPage
+import pages.event18.Event18ConfirmationPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event18.RemoveEvent18View
+import views.html.common.RemoveEventView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveEvent18Controller @Inject()(
-                                         val controllerComponents: MessagesControllerComponents,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         userAnswersCacheConnector: UserAnswersCacheConnector,
-                                         formProvider: RemoveEvent18FormProvider,
-                                         view: RemoveEvent18View
+class RemoveEventController @Inject()(
+                                       val controllerComponents: MessagesControllerComponents,
+                                       identify: IdentifierAction,
+                                       getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
+                                       userAnswersCacheConnector: UserAnswersCacheConnector,
+                                       formProvider: RemoveEventFormProvider,
+                                       view: RemoveEventView
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
-  private val eventType = EventType.Event18
-
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
-    Ok(view(form, waypoints))
+  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)
+    andThen requireData) { implicit request =>
+    val form = formProvider(eventType)
+    Ok(view(form, waypoints, eventType))
   }
 
-  private def update(value: Boolean)(implicit request: DataRequest[AnyContent]): Future[UserAnswers] = {
+  private def update(value: Boolean, eventType: EventType)(implicit request: DataRequest[AnyContent]): Future[UserAnswers] = {
     val originalUserAnswers = request.userAnswers
     if (value) {
       val updatedAnswers = originalUserAnswers.setOrException(Event18ConfirmationPage, false)
@@ -63,16 +62,17 @@ class RemoveEvent18Controller @Inject()(
     }
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
+  def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
+      val form = formProvider(eventType)
       form.bindFromRequest().fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, eventType))),
         value => {
           val originalUserAnswers = request.userAnswers
           for {
-            userAnswers <- update(value)
+            userAnswers <- update(value, eventType)
           } yield {
-            Redirect(RemoveEvent18Page.navigate(waypoints, originalUserAnswers, userAnswers).route)
+            Redirect(RemoveEventPage.navigate(waypoints, originalUserAnswers, userAnswers).route)
           }
         }
       )

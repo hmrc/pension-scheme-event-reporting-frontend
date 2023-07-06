@@ -109,7 +109,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
               items = Seq(
                 ActionItem(
                   content = Text(Message("site.remove")),
-                  href = event18.routes.RemoveEvent18Controller.onPageLoad(EmptyWaypoints).url
+                  href = event18.routes.RemoveEventController.onPageLoad(EmptyWaypoints).url
                 )
               )
             ))

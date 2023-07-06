@@ -21,7 +21,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
-import pages.common.MembersDetailsPage
+import pages.common.{MembersDetailsPage, RemoveEventPage}
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.event13.SchemeStructurePage
@@ -51,7 +51,7 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(event13.ChangeDatePage.type, JsValue)] ::
     arbitrary[(SchemeStructurePage.type, JsValue)] ::
     arbitrary[(TaxYearPage.type, JsValue)] ::
-    arbitrary[(event18.RemoveEvent18Page.type, JsValue)] ::
+    arbitrary[(RemoveEventPage.type, JsValue)] ::
     arbitrary[(event14.HowManySchemeMembersPage.type, JsValue)] ::
     arbitrary[(event12.DateOfChangePage.type, JsValue)] ::
       arbitrary[(event12.HasSchemeChangedRulesPage.type, JsValue)] ::

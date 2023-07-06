@@ -22,7 +22,7 @@ import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContribu
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
-import pages.common.MembersDetailsPage
+import pages.common.{MembersDetailsPage, RemoveEventPage}
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.event13.SchemeStructurePage
@@ -281,10 +281,10 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryRemoveEvent18UserAnswersEntry: Arbitrary[(pages.event18.RemoveEvent18Page.type, JsValue)] =
+  implicit lazy val arbitraryRemoveEventUserAnswersEntry: Arbitrary[(RemoveEventPage.type, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[pages.event18.RemoveEvent18Page.type]
+        page <- arbitrary[RemoveEventPage.type]
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }

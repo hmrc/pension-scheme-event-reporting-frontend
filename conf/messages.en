@@ -1035,6 +1035,12 @@ removeEvent18.checkYourAnswersLabel = Are you sure you want to remove Event 18: 
 removeEvent18.error.required = Select if you want to remove Event 18
 removeEvent18.change.hidden = Are you sure you want to remove Event 18: Scheme chargeable payment?
 
+removeEvent.title = Are you sure you want to remove {0}?
+removeEvent.heading = Are you sure you want to remove {0}?
+removeEvent.checkYourAnswersLabel = Are you sure you want to remove {0}?
+removeEvent.error.required = Select if you want to remove {0}
+removeEvent.change.hidden = Are you sure you want to remove {0}?
+
 taxYear.title = Which tax year are you submitting an event report for?
 taxYear.heading = Which tax year are you submitting an event report for?
 taxYear.checkYourAnswersLabel = Which tax year are you submitting an event report for?

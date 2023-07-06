@@ -18,7 +18,7 @@ package controllers.event18
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event18.RemoveEvent18FormProvider
+import forms.common.RemoveEventFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -26,27 +26,28 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
-import pages.event18.{Event18ConfirmationPage, RemoveEvent18Page}
+import pages.common.RemoveEventPage
+import pages.event18.Event18ConfirmationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event18.RemoveEvent18View
+import views.html.event18.RemoveEventView
 
 import scala.concurrent.Future
 
-class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach {
+class RemoveEventControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new RemoveEvent18FormProvider()
+  private val formProvider = new RemoveEventFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.RemoveEvent18Controller.onPageLoad(waypoints).url
+  private def getRoute: String = routes.RemoveEventController.onPageLoad(waypoints).url
 
-  private def postRoute: String = routes.RemoveEvent18Controller.onSubmit(waypoints).url
+  private def postRoute: String = routes.RemoveEventController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -57,7 +58,7 @@ class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach {
     reset(mockUserAnswersCacheConnector)
   }
 
-  "RemoveEvent18 Controller" - {
+  "RemoveEvent Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -68,7 +69,7 @@ class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[RemoveEvent18View]
+        val view = application.injector.instanceOf[RemoveEventView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
@@ -93,7 +94,7 @@ class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
         uaCaptor.getValue.get(Event18ConfirmationPage) mustBe Some(false)
-        redirectLocation(result).value mustEqual RemoveEvent18Page.navigate(waypoints, emptyUserAnswers, uaCaptor.getValue).url
+        redirectLocation(result).value mustEqual RemoveEventPage.navigate(waypoints, emptyUserAnswers, uaCaptor.getValue).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -110,7 +111,7 @@ class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RemoveEvent18Page.navigate(waypoints, emptyUserAnswers, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual RemoveEventPage.navigate(waypoints, emptyUserAnswers, emptyUserAnswers).url
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
@@ -124,7 +125,7 @@ class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[RemoveEvent18View]
+        val view = application.injector.instanceOf[RemoveEventView]
         val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value

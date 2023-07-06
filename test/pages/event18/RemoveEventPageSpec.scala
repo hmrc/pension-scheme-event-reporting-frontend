@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package forms.event18
+package pages.event18
 
-import javax.inject.Inject
+import pages.behaviours.PageBehaviours
+import pages.common.RemoveEventPage
 
-import forms.mappings.Mappings
-import play.api.data.Form
+class RemoveEventPageSpec extends PageBehaviours {
 
-class RemoveEvent18FormProvider @Inject() extends Mappings {
+  "RemoveEventPage" - {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("removeEvent18.error.required")
-    )
+    beRetrievable[Boolean](RemoveEventPage)
+
+    beSettable[Boolean](RemoveEventPage)
+
+    beRemovable[Boolean](RemoveEventPage)
+  }
 }

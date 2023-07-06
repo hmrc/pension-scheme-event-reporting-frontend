@@ -128,7 +128,7 @@ class EventSummaryController @Inject()(
 
   private def removeLinkForEvent(eventType: EventType): String = {
     eventType match {
-      case EventType.Event18 => controllers.event18.routes.RemoveEvent18Controller.onPageLoad(EmptyWaypoints).url
+      case EventType.Event18 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints).url
       case _ => "#"
     }
   }
