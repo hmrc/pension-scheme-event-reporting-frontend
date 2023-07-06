@@ -23,16 +23,18 @@ case class StartNewERAuditEvent(
                                psaIdentifier: String,
                                pstr: String,
                                taxYear: TaxYear,
-                               eventNumber: EventType
+                               eventNumber: EventType,
+                               reportVersion: String
                              ) extends AuditEvent {
   override def auditType: String = "EventReportingStart"
 
   override def details: Map[String, String] = {
     Map(
-      "psaOrPspId" -> psaIdentifier,
-      "pstr" -> pstr,
+      "PensionSchemeAdministratorOrPensionSchemePractitionerId" -> psaIdentifier,
+      "PensionSchemeTaxReference" -> pstr,
       "taxYear" -> s"${taxYear.startYear} to ${taxYear.endYear}",
-      "eventNumber" -> eventNumber.toString
+      "eventNumber" -> eventNumber.toString,
+      "reportVersion" -> reportVersion
     )
   }
 }

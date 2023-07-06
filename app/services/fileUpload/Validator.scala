@@ -26,7 +26,6 @@ import models.enumeration.EventType
 import models.fileUpload.FileUploadHeaders.MemberDetailsFieldNames
 import org.apache.commons.lang3.StringUtils.EMPTY
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.libs.json._
 import queries.Gettable
 import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
