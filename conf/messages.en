@@ -1041,6 +1041,26 @@ taxYear.checkYourAnswersLabel = Which tax year are you submitting an event repor
 taxYear.error.required = Select a tax year
 taxYear.change.hidden = Which tax year are you submitting an event report for?
 
+fileUploadWhatYouWillNeed.event1.title = What you will need
+fileUploadWhatYouWillNeed.event1.heading = What you will need
+fileUploadWhatYouWillNeed.event1.p1 = To record an unauthorised payment for a member you will need to tell us:
+fileUploadWhatYouWillNeed.event1.p2 = To record an unauthorised payment for an employer you will need to tell us:
+fileUploadWhatYouWillNeed.event1.p3 = Documents previously sent to HMRC for event reporting purposes are out of date and cannot be uploaded. For the correct document and information on how to complete it, download:
+fileUploadWhatYouWillNeed.event1.item1 = the member’s name and National Insurance number
+fileUploadWhatYouWillNeed.event1.item2 = if you hold a signed mandate from the member to deduct tax from their unauthorised payment
+fileUploadWhatYouWillNeed.event1.item3 = if the value of the unauthorised payment is more than 25% of the pension fund for the individual
+fileUploadWhatYouWillNeed.event1.item4 = if the scheme is paying the unauthorised payment surcharge on behalf of the member
+fileUploadWhatYouWillNeed.event1.item5 = the nature of the payment
+fileUploadWhatYouWillNeed.event1.item6 = the payment value and date
+fileUploadWhatYouWillNeed.event1.item7 = the company or organisation name
+fileUploadWhatYouWillNeed.event1.item8 = the company number
+fileUploadWhatYouWillNeed.event1.item9 = the company address
+fileUploadWhatYouWillNeed.event1.item10 = – do not change or delete the header (row 1) or change the order of the columns
+fileUploadWhatYouWillNeed.event1.item10.prefix = the
+fileUploadWhatYouWillNeed.event1.instructions.link.text = instructions explaining the process and the formatting that should be used
+fileUploadWhatYouWillNeed.event1.template.link.text = latest template file
+fileUploadWhatYouWillNeed.event1.inset = All the data you have previously added for this charge in this quarter will be overwritten when you upload a file.
+
 fileUploadWhatYouWillNeed.event6.title = What you will need
 fileUploadWhatYouWillNeed.event6.heading = What you will need
 fileUploadWhatYouWillNeed.event6.p1 = To record a benefit crystallisation, where the member relies on an applicable LTA protection, you will need to upload a .csv file and include the following information for each member:

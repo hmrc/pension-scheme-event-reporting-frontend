@@ -101,6 +101,7 @@ object EventType extends Enumerable.Implicits {
 
   def getEventTypeByName(eventType: EventType): String = {
     eventType match {
+      case Event1 => "unauthorised payments"
       case Event6 => "benefit crystallisation where the member relies on LTA protections"
       case Event22 => "annual allowance"
       case Event23 => "dual annual allowances"
@@ -125,6 +126,7 @@ object EventType extends Enumerable.Implicits {
     }
 
   def toRoute(eventType: EventType): String = eventType match {
+    case Event1 => "event-1"
     case Event6 => "event-6"
     case Event22 => "event-22"
     case Event23 => "event-23"
