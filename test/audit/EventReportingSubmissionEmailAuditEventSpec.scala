@@ -27,13 +27,15 @@ class EventReportingSubmissionEmailAuditEventSpec extends AnyFlatSpec with Match
     val event = EventReportingSubmissionEmailAuditEvent(
       psaOrPspId = "A2500001",
       Administrator,
-      emailAddress = "test@test.com"
+      emailAddress = "test@test.com",
+      reportVersion = "1"
     )
 
     val expected: Map[String, String] = Map(
       "emailAddress" -> "test@test.com",
       "submittedBy" -> Administrator.toString,
-      "psaId" -> "A2500001"
+      "PensionSchemeAdministratorId" -> "A2500001",
+      "reportVersion" -> "1"
     )
 
     event.auditType shouldBe "EventReportingEmailEvent"

@@ -19,14 +19,13 @@ package services.fileUpload
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
-import models.TaxYear.{getTaxYear, getTaxYearFromOption}
+import models.TaxYear.getTaxYear
 import models.UserAnswers
 import models.common.MembersDetails
 import models.enumeration.EventType
 import models.fileUpload.FileUploadHeaders.MemberDetailsFieldNames
 import org.apache.commons.lang3.StringUtils.EMPTY
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.libs.json._
 import queries.Gettable
 import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
@@ -68,7 +67,7 @@ trait Validator {
         rows.size match {
           case n if n >= 2 =>
             validateDataRows(rows, getTaxYear(userAnswers))
-            .map(_.foldLeft(userAnswers)((acc, ci) => acc.setOrException(ci.jsPath, ci.value)))
+              .map(_.foldLeft(userAnswers)((acc, ci) => acc.setOrException(ci.jsPath, ci.value)))
           case _ => Invalid(Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty))
         }
       case _ =>
