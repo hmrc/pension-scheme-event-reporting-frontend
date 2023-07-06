@@ -16,6 +16,7 @@
 
 package audit
 
+import connectors.EmailSent
 import models.enumeration.AdministratorOrPractitioner.Administrator
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -28,14 +29,16 @@ class EventReportingSubmissionEmailAuditEventSpec extends AnyFlatSpec with Match
       psaOrPspId = "A2500001",
       Administrator,
       emailAddress = "test@test.com",
-      reportVersion = "1"
+      reportVersion = "1",
+      EmailSent
     )
 
     val expected: Map[String, String] = Map(
       "emailAddress" -> "test@test.com",
       "submittedBy" -> Administrator.toString,
       "PensionSchemeAdministratorId" -> "A2500001",
-      "reportVersion" -> "1"
+      "reportVersion" -> "1",
+      "event" -> "EmailSent"
     )
 
     event.auditType shouldBe "EventReportingEmailEvent"

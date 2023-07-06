@@ -87,11 +87,12 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
               Future.successful(BadRequest(view(minimalDetails.name, formWithErrors, waypoints))),
             value => {
               val originalUserAnswers = request.userAnswers
+              val reportVersion = originalUserAnswers.get(VersionInfoPage).get.version.toString
               val updatedAnswers = originalUserAnswers.setOrException(DeclarationPspPage, value)
               userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
                 declarationData(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, authorisingPsaId) match {
                   case Some(data) =>
-                    erConnector.submitReport(request.pstr, UserAnswers(data)).flatMap { _ =>
+                    erConnector.submitReport(request.pstr, UserAnswers(data), reportVersion).flatMap { _ =>
                       emailFuture.map { _ =>
                         Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints))
                       }
@@ -119,23 +120,22 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
       "dateSubmitted" -> submittedDate
     )
 
-    val reportVersion = request.userAnswers.get(VersionInfoPage) match {
-      case Some(value) => value.version.toString
-      case None => ""
-    }
+    val reportVersion = request.userAnswers.get(VersionInfoPage).get.version.toString
 
     emailConnector.sendEmail(schemeAdministratorType,
       requestId,
       request.loggedInUser.idName,
       email,
       config.fileReturnTemplateId,
-      templateParams).map { emailStatus =>
+      templateParams,
+      reportVersion).map { emailStatus =>
       auditService.sendEvent(
         EventReportingSubmissionEmailAuditEvent(
           request.loggedInUser.idName,
           schemeAdministratorType,
           email,
-          reportVersion
+          reportVersion,
+          emailStatus
         )
       )
       emailStatus

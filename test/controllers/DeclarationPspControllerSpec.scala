@@ -114,7 +114,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockEventReportingConnector.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(()))
+      when(mockEventReportingConnector.submitReport(any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
 
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20JourneyData), extraModules)
@@ -137,7 +137,6 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockEventReportingConnector.submitReport(any(), any())(any(), any())).thenReturn(Future.successful())
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 

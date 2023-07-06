@@ -23,8 +23,8 @@ import models.enumeration.EventType
 import models.event20A.WhatChange.{BecameMasterTrust, CeasedMasterTrust}
 import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}
-import pages.Waypoints
 import pages.event20A.{BecameDatePage, CeasedDatePage, WhatChangePage}
+import pages.{VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,30 +35,31 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class Event20APsaDeclarationController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           identify: IdentifierAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: Event20APsaDeclarationView,
-                                           eventReportingConnector: EventReportingConnector,
-                                           minimalConnector: MinimalConnector)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                  override val messagesApi: MessagesApi,
+                                                  identify: IdentifierAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: Event20APsaDeclarationView,
+                                                  eventReportingConnector: EventReportingConnector,
+                                                  minimalConnector: MinimalConnector)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val eventType = EventType.Event20A
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
-    minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map{
-        minimalDetails =>
-      Ok(view(request.schemeName, request.pstr, getTaxYearFromOption(request.userAnswers).toString, minimalDetails.name,
-        controllers.event20A.routes.Event20APsaDeclarationController.onClick(waypoints).url))
-      }
+    minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map {
+      minimalDetails =>
+        Ok(view(request.schemeName, request.pstr, getTaxYearFromOption(request.userAnswers).toString, minimalDetails.name,
+          controllers.event20A.routes.Event20APsaDeclarationController.onClick(waypoints).url))
+    }
   }
 
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
       declarationDataEvent20A(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, request) match {
         case Some(data) =>
-          eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data)).map { _ =>
+          val reportVersion = request.userAnswers.get(VersionInfoPage).get.version.toString
+          eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion).map { _ =>
             Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
           }
         case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
@@ -68,22 +69,22 @@ class Event20APsaDeclarationController @Inject()(
   def declarationDataEvent20A(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser, request: DataRequest[AnyContent]): Option[JsObject] = {
     val optCeaseDateOrStartDateNode =
       (request.userAnswers.get(WhatChangePage), request.userAnswers.get(BecameDatePage), request.userAnswers.get(CeasedDatePage)) match {
-      case (Some(BecameMasterTrust), Some(becameDate), _) => Some(Json.obj("schemeMasterTrustStartDate" -> becameDate))
-      case (Some(CeasedMasterTrust), _, Some(ceasedDate)) => Some(Json.obj("schemeMasterTrustCeaseDate" -> ceasedDate))
-      case _ => None
-    }
+        case (Some(BecameMasterTrust), Some(becameDate), _) => Some(Json.obj("schemeMasterTrustStartDate" -> becameDate))
+        case (Some(CeasedMasterTrust), _, Some(ceasedDate)) => Some(Json.obj("schemeMasterTrustCeaseDate" -> ceasedDate))
+        case _ => None
+      }
 
-    optCeaseDateOrStartDateNode.map{ ceaseDateOrStartDateNode =>
+    optCeaseDateOrStartDateNode.map { ceaseDateOrStartDateNode =>
 
       val event20AUserAnswers: JsObject = Json.obj(
-          "pstr" -> pstr,
-          "reportStartDate" -> s"${taxYear.startYear}-04-06",
-          "reportEndDate" -> s"${taxYear.endYear}-04-05",
-          "submittedBy" -> "PSA",
-          "submittedID" -> loggedInUser.psaIdOrPspId,
+        "pstr" -> pstr,
+        "reportStartDate" -> s"${taxYear.startYear}-04-06",
+        "reportEndDate" -> s"${taxYear.endYear}-04-05",
+        "submittedBy" -> "PSA",
+        "submittedID" -> loggedInUser.psaIdOrPspId,
         //Both of those are always selected. Users can't access the page otherwise.
         "psaDeclaration1" -> "Selected",
-          "psaDeclaration2" -> "Selected"
+        "psaDeclaration2" -> "Selected"
       )
       event20AUserAnswers ++ ceaseDateOrStartDateNode
     }

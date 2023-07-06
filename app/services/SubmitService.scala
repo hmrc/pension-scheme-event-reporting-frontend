@@ -36,7 +36,7 @@ class SubmitService @Inject()(
                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
     ua.get(VersionInfoPage) match {
       case Some(VersionInfo(version, Compiled)) =>
-        eventReportingConnector.submitReport(pstr, ua).flatMap { _ =>
+        eventReportingConnector.submitReport(pstr, ua, version.toString).flatMap { _ =>
           val updatedUA = ua.setOrException(VersionInfoPage, VersionInfo(version, Submitted), nonEventTypeData = true)
           userAnswersCacheConnector.save(pstr, updatedUA).map{_ => Ok}
         }
