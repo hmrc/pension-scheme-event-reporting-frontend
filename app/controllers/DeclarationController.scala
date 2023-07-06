@@ -115,7 +115,8 @@ class DeclarationController @Inject()(
           request.loggedInUser.idName,
           schemeAdministratorType,
           email,
-          reportVersion
+          reportVersion,
+          emailStatus
         )
       )
       emailStatus
