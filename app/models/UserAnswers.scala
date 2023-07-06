@@ -152,8 +152,11 @@ final case class UserAnswers(
   def getAll[A](page: Gettable[Seq[A]])(implicit reads: Reads[A]): Seq[A] =
     data.as[Option[Seq[A]]](page.path.readNullable[Seq[A]]).toSeq.flatten
 
-  def countAll(page: Query): Int =
-    page.path.readNullable[JsArray].reads(data).asOpt.flatten.map(_.value.size).getOrElse(0)
+  def countAll(page: Query): Int = {
+    val x = page.path.readNullable[JsArray].reads(data).asOpt.flatten.map(_.value.size).getOrElse(0)
+    println("\nx=" + x + " and page is " + page + " and path is " + page.path)
+    x
+  }
 
   def sumAll(page: Query, readsBigDecimal: Reads[BigDecimal]): BigDecimal = {
     def zeroValue = BigDecimal(0)
