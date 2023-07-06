@@ -98,7 +98,7 @@ class Event6Validator @Inject()(
   }
 
   //noinspection ScalaStyle
-  private def AmountCrystallisedAndDateValidation(index: Int,
+  private def amountCrystallisedAndDateValidation(index: Int,
                                                   chargeFields: Seq[String],
                                                   taxYear: Int)
                                                  (implicit messages: Messages): Validated[Seq[ValidationError], CrystallisedDetails] = {
@@ -141,7 +141,7 @@ class Event6Validator @Inject()(
     )
 
     val d = resultFromFormValidationResult[CrystallisedDetails](
-      AmountCrystallisedAndDateValidation(index, columns, taxYear), createCommitItem(index, AmountCrystallisedAndDatePage.apply(Event6, _))
+      amountCrystallisedAndDateValidation(index, columns, taxYear), createCommitItem(index, AmountCrystallisedAndDatePage.apply(Event6, _))
     )
 
     Seq(a, b, c, d).combineAll
