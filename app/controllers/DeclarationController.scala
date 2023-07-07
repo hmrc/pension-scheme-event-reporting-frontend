@@ -76,13 +76,13 @@ class DeclarationController @Inject()(
         sendEmail(minimalDetails.name, email, taxYear, schemeName)
       }
 
-      submitService.submitReport(request.pstr, data).flatMap { r =>
-        r.header.status match {
+      submitService.submitReport(request.pstr, data).flatMap { result =>
+        result.header.status match {
           case OK => emailFuture.map(_ =>Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
           case NOT_FOUND =>
             logger.warn(s"Unable to submit declaration because there is nothing to submit (nothing in compile state)")
             Future.successful(Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url))
-          case _ => throw new RuntimeException(s"Invalid response returned from submit report: ${r.header.status}")
+          case _ => throw new RuntimeException(s"Invalid response returned from submit report: ${result.header.status}")
         }
       }
   }
