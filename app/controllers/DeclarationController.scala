@@ -24,6 +24,7 @@ import models.enumeration.AdministratorOrPractitioner
 import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}
 import pages.{VersionInfoPage, Waypoints}
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,7 +51,7 @@ class DeclarationController @Inject()(
                                        config: FrontendAppConfig,
                                        view: DeclarationView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-
+  private val logger = Logger(classOf[DeclarationController])
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
     implicit request =>
       Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
@@ -75,12 +76,13 @@ class DeclarationController @Inject()(
         sendEmail(minimalDetails.name, email, taxYear, schemeName)
       }
 
-      submitService.submitReport(request.pstr, data).flatMap { r =>
-        r.header.status match {
-          case OK => emailFuture.map { _ =>
-            Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
-          }
-          case _ => throw new RuntimeException(s"Invalid response returned from submit report: $r")
+      submitService.submitReport(request.pstr, data).flatMap { result =>
+        result.header.status match {
+          case OK => emailFuture.map(_ =>Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
+          case NOT_FOUND =>
+            logger.warn(s"Unable to submit declaration because there is nothing to submit (nothing in compile state)")
+            Future.successful(Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url))
+          case _ => throw new RuntimeException(s"Invalid response returned from submit report: ${result.header.status}")
         }
       }
   }
