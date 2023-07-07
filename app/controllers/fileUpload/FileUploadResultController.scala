@@ -127,6 +127,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       case Some(reference) =>
         eventReportingConnector.getFileUploadOutcome(reference).flatMap { fileUploadOutcomeResponse =>
           val fileName = fileUploadOutcomeResponse.fileName
+
           fileUploadOutcomeResponse.downloadUrl match {
             case Some(downloadUrl) =>
               upscanInitiateConnector.download(downloadUrl).flatMap { httpResponse =>
@@ -167,6 +168,12 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
     }
   }
 
+  def getFilename(fileName: Option[String]): String = {
+    fileName match {
+      case Some(value) => value
+      case _ => ""
+    }
+  }
 
   private def processInvalid(eventType: EventType,
                              errors: Seq[ValidationError])(implicit messages: Messages): ParsingAndValidationOutcome = {

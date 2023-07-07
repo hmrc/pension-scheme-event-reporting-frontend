@@ -251,6 +251,8 @@ GET         /new-report/event-23-wrong-format                                   
 
 GET         /new-report/event-22-checking-file                                    controllers.fileUpload.ProcessingRequestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 GET         /new-report/event-23-checking-file                                    controllers.fileUpload.ProcessingRequestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
+GET         /new-report/event-checking-file                                       controllers.fileUpload.ProcessingRequestController.onPageLoadStatus()
+GET         /new-report/event-checking-filename                                   controllers.fileUpload.FileUploadResultController.getFilename()
 
 GET        /new-report/event-22-upload-successful                                 controllers.fileUpload.FileUploadSuccessController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 
@@ -274,8 +276,6 @@ GET         /event-22-bulk-upload-template                                      
 
 GET         /event-23-upload-format-instructions                                  controllers.FileDownloadController.instructionsFile(eventType: EventType = Event23)
 GET         /event-23-bulk-upload-template                                        controllers.FileDownloadController.templateFile(eventType: EventType = Event23)
-
-GET         /new-report/event-checking-file                                       controllers.fileUpload.ProcessingRequestController.onPageLoadStatus()
 
 GET         /new-report/:index/event-3-member-details                             controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3, index: Index, memberPageNo: Int = 0)
 POST        /new-report/:index/event-3-member-details                             controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3, index: Index, memberPageNo: Int = 0)

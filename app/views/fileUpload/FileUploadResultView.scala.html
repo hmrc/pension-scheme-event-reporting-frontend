@@ -30,10 +30,11 @@
 @(form: Form[_], waypoints: Waypoints, eventByName: String, fileName: Option[String], submitUrl: Call)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("fileUploadResult.title", eventByName))) {
-
-    @if(fileName.isEmpty) {
-        <meta http-equiv="refresh" content="4" />
-    }
+    <noscript>
+        @if(fileName.isEmpty) {
+            <meta http-equiv="refresh" content="4" />
+        }
+    </noscript>
 
     @formHelper(action = submitUrl, Symbol("autoComplete") -> "off") {
 
@@ -43,7 +44,7 @@
 
         <h1 class="govuk-heading-xl">@messages("fileUploadResult.heading", eventByName)</h1>
 
-        <p class="govuk-body">
+        <p class="govuk-body" id="upload-file-name">
             @if(fileName.isEmpty) {
                 @messages("fileUploadResult.status.inProgress")
             } else {
