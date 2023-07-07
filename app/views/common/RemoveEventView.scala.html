@@ -30,7 +30,7 @@
 
 @layout(pageTitle = title(form, messages("removeEvent.title", messages(s"eventSummary.event$eventType")))) {
 
-    @formHelper(action = routes.RemoveEventController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.RemoveEventController.onSubmit(waypoints, eventType), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

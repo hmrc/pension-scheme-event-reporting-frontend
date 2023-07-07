@@ -26,6 +26,7 @@ import pages.Waypoints
 import pages.common.RemoveEventPage
 import pages.event18.Event18ConfirmationPage
 import play.api.i18n.I18nSupport
+import play.api.libs.json.JsPath
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.common.RemoveEventView
@@ -49,16 +50,26 @@ class RemoveEventController @Inject()(
     Ok(view(form, waypoints, eventType))
   }
 
-  private def update(value: Boolean, eventType: EventType)(implicit request: DataRequest[AnyContent]): Future[UserAnswers] = {
+//  private def update(value: Boolean, eventType: EventType)(implicit request: DataRequest[AnyContent]): Future[UserAnswers] = {
+//    val originalUserAnswers = request.userAnswers
+//    if (value) {
+//      val updatedAnswers = originalUserAnswers.setOrException(Event18ConfirmationPage, false)
+//      userAnswersCacheConnector
+//        .save(request.pstr, eventType, updatedAnswers)
+//        .map(_ => updatedAnswers)
+//    }
+//    else {
+//      Future.successful(originalUserAnswers)
+//    }
+//  }
+
+  private def remove(value: Boolean, eventType: EventType)(implicit request: DataRequest[AnyContent]): UserAnswers = {
     val originalUserAnswers = request.userAnswers
     if (value) {
-      val updatedAnswers = originalUserAnswers.setOrException(Event18ConfirmationPage, false)
-      userAnswersCacheConnector
-        .save(request.pstr, eventType, updatedAnswers)
-        .map(_ => updatedAnswers)
+      request.userAnswers.removeWithPath(JsPath \ s"event${eventType.toString}")
     }
     else {
-      Future.successful(originalUserAnswers)
+      originalUserAnswers
     }
   }
 
@@ -69,10 +80,9 @@ class RemoveEventController @Inject()(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, eventType))),
         value => {
           val originalUserAnswers = request.userAnswers
-          for {
-            userAnswers <- update(value, eventType)
-          } yield {
-            Redirect(RemoveEventPage.navigate(waypoints, originalUserAnswers, userAnswers).route)
+          val updatedUserAnswers = remove(value, eventType)
+            userAnswersCacheConnector.save(request.pstr, eventType, updatedUserAnswers).map { _ =>
+            Redirect(RemoveEventPage(eventType).navigate(waypoints, originalUserAnswers, updatedUserAnswers).route)
           }
         }
       )

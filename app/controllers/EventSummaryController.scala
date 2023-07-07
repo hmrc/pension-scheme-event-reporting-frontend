@@ -128,7 +128,27 @@ class EventSummaryController @Inject()(
 
   private def removeLinkForEvent(eventType: EventType): String = {
     eventType match {
-      case EventType.Event18 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints).url
+      case EventType.Event1 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event2 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event3 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event4 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event5 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event6 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event7 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event8 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event8A => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event10 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event11 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event12 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event13 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event14 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event18 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event19 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event20 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event20A => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event22 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.Event23 => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
+      case EventType.WindUp => controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url
       case _ => "#"
     }
   }
