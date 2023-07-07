@@ -19,15 +19,13 @@ package controllers.common
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.common.RemoveEventFormProvider
-import models.UserAnswers
 import models.enumeration.EventType
-import models.requests.DataRequest
 import pages.Waypoints
 import pages.common.RemoveEventPage
-import pages.event18.Event18ConfirmationPage
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsPath
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.CompileService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.common.RemoveEventView
 
@@ -41,6 +39,7 @@ class RemoveEventController @Inject()(
                                        requireData: DataRequiredAction,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
                                        formProvider: RemoveEventFormProvider,
+                                       compileService: CompileService,
                                        view: RemoveEventView
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -50,29 +49,6 @@ class RemoveEventController @Inject()(
     Ok(view(form, waypoints, eventType))
   }
 
-//  private def update(value: Boolean, eventType: EventType)(implicit request: DataRequest[AnyContent]): Future[UserAnswers] = {
-//    val originalUserAnswers = request.userAnswers
-//    if (value) {
-//      val updatedAnswers = originalUserAnswers.setOrException(Event18ConfirmationPage, false)
-//      userAnswersCacheConnector
-//        .save(request.pstr, eventType, updatedAnswers)
-//        .map(_ => updatedAnswers)
-//    }
-//    else {
-//      Future.successful(originalUserAnswers)
-//    }
-//  }
-
-  private def remove(value: Boolean, eventType: EventType)(implicit request: DataRequest[AnyContent]): UserAnswers = {
-    val originalUserAnswers = request.userAnswers
-    if (value) {
-      request.userAnswers.removeWithPath(JsPath \ s"event${eventType.toString}")
-    }
-    else {
-      originalUserAnswers
-    }
-  }
-
   def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
       val form = formProvider(eventType)
@@ -80,9 +56,15 @@ class RemoveEventController @Inject()(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, eventType))),
         value => {
           val originalUserAnswers = request.userAnswers
-          val updatedUserAnswers = remove(value, eventType)
-            userAnswersCacheConnector.save(request.pstr, eventType, updatedUserAnswers).map { _ =>
-            Redirect(RemoveEventPage(eventType).navigate(waypoints, originalUserAnswers, updatedUserAnswers).route)
+          if (value) {
+            val removedUserAnswers = originalUserAnswers.removeWithPath(JsPath \ s"event${eventType.toString}")
+            userAnswersCacheConnector.save(request.pstr, eventType, removedUserAnswers).flatMap { _ =>
+              compileService.compileEvent(eventType, request.pstr, removedUserAnswers).map { _ =>
+                Redirect(RemoveEventPage(eventType).navigate(waypoints, originalUserAnswers, removedUserAnswers).route)
+              }
+            }
+          } else {
+            Future.successful(Redirect(RemoveEventPage(eventType).navigate(waypoints, originalUserAnswers, originalUserAnswers).route))
           }
         }
       )
