@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     }
 
     // file upload name
-    var fileName = document.querySelector('#upload-file-namex');
+    var fileName = document.querySelector('#upload-file-name');
     if( fileName ) {
         var radios = document.querySelectorAll('.govuk-radios__input');
         radios.forEach(function(radio) {
@@ -58,10 +58,12 @@ document.addEventListener('DOMContentLoaded', function(event) {
                 }
             }).then(function (data) {
                 if (!data.fileName) {
+                    console.log(data);
                     setTimeout(function() {
                         pollName();
                     }, 4000);
                 } else {
+                    console.log(data);
                     fileName.innerHTML = data.fileName;
                     button.disabled = false;
                     button.classList.remove("govuk-button--disabled");
