@@ -242,7 +242,6 @@ GET        /new-report/event-23-upload                                          
 
 GET         /new-report/event-22-check                                            controllers.fileUpload.FileUploadResultController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 POST        /new-report/event-22-check                                            controllers.fileUpload.FileUploadResultController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
-GET         /new-report/event-filename                                            controllers.fileUpload.FileUploadResultController.test(fileName: Option[String] = None)
 
 GET         /new-report/event-23-check                                            controllers.fileUpload.FileUploadResultController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 POST        /new-report/event-23-check                                            controllers.fileUpload.FileUploadResultController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)

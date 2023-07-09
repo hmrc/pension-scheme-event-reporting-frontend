@@ -140,7 +140,6 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                       case scala.util.Failure(_) =>
                         request.userAnswers.getOrElse(UserAnswers())
                     }
-                    test(fileName)
                     val eventValidator = validatorForEvent(eventType)
                     val futureOutcome = eventValidator.validate(parsedCSV, uaAfterRemovalOfEventType) match {
                       case Invalid(errors) =>
@@ -167,40 +166,6 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       case _ => throw new RuntimeException("No reference number in FileUploadResultController")
     }
   }
-
-  def test(fileName: Option[String]): Action[AnyContent] = identify.async { implicit request =>
-    val outcomes = fileName match {
-      case Some(fileName) => Future.successful(Json.obj("fileName" -> fileName))
-      case _ => Future.successful(Json.obj("fileName" -> ""))
-    }
-    outcomes.map { outcome =>
-      Results.Ok(outcome.toString)
-    }
-  }
-
-//  def onPageLoadStatus(): Action[AnyContent] = identify.async { implicit request =>
-//
-//    request.queryString.get("key")
-//    val referenceOpt: Option[String] = request.request.queryString.get("key").flatMap { values =>
-//      values.headOption
-//    }
-//
-//    referenceOpt match {
-//      case Some(reference) =>
-//        eventReportingConnector.getFileUploadOutcome(reference).flatMap { fileUploadOutcomeResponse =>
-//          val fileName = fileUploadOutcomeResponse.fileName
-//
-//          val outcomes = fileName match {
-//            case Some(fileName) => Future.successful(Json.obj("fileName" -> fileName))
-//            case _ => Future.successful(Json.obj("fileName" -> ""))
-//          }
-//          outcomes.map { outcome =>
-//            Results.Ok(outcome.toString)
-//          }
-//        }
-//      case _ => throw new RuntimeException("No reference number in FileUploadResultController")
-//    }
-//  }
 
   private def processInvalid(eventType: EventType,
                              errors: Seq[ValidationError])(implicit messages: Messages): ParsingAndValidationOutcome = {
