@@ -22,6 +22,7 @@ import forms.event1.UnauthPaymentSummaryFormProvider
 import forms.mappings.Formatters
 import models.UserAnswers
 import models.enumeration.EventType
+import models.enumeration.EventType.Event1
 import models.event1.MembersOrEmployersSummary
 import pages.{EmptyWaypoints, Waypoints}
 import pages.common.MembersOrEmployersPage
@@ -90,7 +91,7 @@ class UnauthPaymentSummaryController @Inject()(
               ActionItem(
                 content = Text(Message("site.remove")),
                 // TODO: parameterise for Event 1.
-                href = controllers.common.routes.RemoveMemberController.onPageLoad(EmptyWaypoints).url
+                href = controllers.common.routes.RemoveMemberController.onPageLoad(EmptyWaypoints, Event1).url
               )
             )
           ))
