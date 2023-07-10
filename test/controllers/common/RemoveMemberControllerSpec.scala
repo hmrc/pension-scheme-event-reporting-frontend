@@ -17,13 +17,14 @@
 package controllers.common
 
 import base.SpecBase
-import org.mockito.Mockito.{never, times, verify, when}
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito.{never, reset, times, verify, when}
 import connectors.UserAnswersCacheConnector
 import forms.common.RemoveMemberFormProvider
 import models.UserAnswers
+import models.enumeration.EventType.Event1
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
 import pages.common.RemoveMemberPage
 import play.api.inject.bind
@@ -43,8 +44,8 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.RemoveMemberController.onPageLoad(waypoints).url
-  private def postRoute: String = routes.RemoveMemberController.onSubmit(waypoints).url
+  private def getRoute: String = routes.RemoveMemberController.onPageLoad(waypoints, Event1).url
+  private def postRoute: String = routes.RemoveMemberController.onSubmit(waypoints, Event1).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -70,14 +71,14 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val view = application.injector.instanceOf[RemoveMemberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, Event1, "unauthorised payment")(request, messages(application)).toString
       }
     }
 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(RemoveMemberPage, true).success.value
+      val userAnswers = UserAnswers().set(RemoveMemberPage(Event1), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -89,7 +90,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), waypoints, Event1, "unauthorised payment")(request, messages(application)).toString
       }
     }
 
@@ -106,10 +107,10 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(RemoveMemberPage, true).success.value
+        val updatedAnswers = emptyUserAnswers.set(RemoveMemberPage(Event1), true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RemoveMemberPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual RemoveMemberPage(Event1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -129,7 +130,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, Event1, "unauthorised payment")(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

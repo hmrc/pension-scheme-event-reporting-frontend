@@ -22,7 +22,6 @@ import controllers.actions._
 import controllers.common.RemoveMemberController.eventTypeMessage
 import forms.common.RemoveMemberFormProvider
 import models.enumeration.EventType._
-
 import javax.inject.Inject
 import pages.Waypoints
 import pages.common.RemoveMemberPage
