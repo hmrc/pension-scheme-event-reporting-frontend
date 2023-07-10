@@ -517,3 +517,7 @@ GET         /new-report/event-20a-declaration-PSA-click                      con
 
 GET         /new-report/event-20a-declaration-PSP                               controllers.event20A.Event20APspDeclarationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-20a-declaration-PSP                               controllers.event20A.Event20APspDeclarationController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+# TODO: update URL.
+GET        /removeMember                        controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+POST       /removeMember                        controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)

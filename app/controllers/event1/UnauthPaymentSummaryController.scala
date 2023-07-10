@@ -23,7 +23,7 @@ import forms.mappings.Formatters
 import models.UserAnswers
 import models.enumeration.EventType
 import models.event1.MembersOrEmployersSummary
-import pages.Waypoints
+import pages.{EmptyWaypoints, Waypoints}
 import pages.common.MembersOrEmployersPage
 import pages.event1.UnauthPaymentSummaryPage
 import play.api.i18n.{I18nSupport, Messages}
@@ -89,7 +89,8 @@ class UnauthPaymentSummaryController @Inject()(
               ),
               ActionItem(
                 content = Text(Message("site.remove")),
-                href = "#"
+                // TODO: parameterise for Event 1.
+                href = controllers.common.routes.RemoveMemberController.onPageLoad(EmptyWaypoints).url
               )
             )
           ))

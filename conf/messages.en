@@ -1578,3 +1578,8 @@ pspDeclaration.error.invalid = The scheme administrator's ID must only include l
 pspDeclaration.error.length = The scheme administrator's ID must be the letter A followed by 7 numbers, like A 9999999
 PspDeclaration.change.hidden = DeclarationPsp
 pspDeclaration.error.noMatch = Enter the correct pension scheme administrator ID
+
+removeMember.title = Are you sure you want to remove the ABC for DEF GHI?
+removeMember.heading = Are you sure you want to remove the ABC for DEF GHI?
+removeMember.error.required = Select yes if you want to remove the ABC for DEF GHI
+removeMember.change.hidden = Are you sure you want to remove the ABC for DEF GHI?
