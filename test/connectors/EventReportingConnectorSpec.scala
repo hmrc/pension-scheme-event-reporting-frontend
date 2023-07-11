@@ -65,17 +65,18 @@ class EventReportingConnectorSpec
   private val getFileUploadResponseUrl = "/pension-scheme-event-reporting/file-upload-response/get"
   private val getOverviewUrl = "/pension-scheme-event-reporting/overview"
 
-  private val failureOutcome = FileUploadOutcomeResponse(fileName = None, FAILURE, None)
+  private val failureOutcome = FileUploadOutcomeResponse(fileName = None, FAILURE, None, referenceStub, None)
   private val failureOutcomeJson = Json.obj("fileStatus" -> "ERROR")
-  private val successOutcome = FileUploadOutcomeResponse(fileName = Some("test"), SUCCESS, Some("downloadUrl"))
+  private val successOutcome = FileUploadOutcomeResponse(fileName = Some("test"), SUCCESS, Some("downloadUrl"), referenceStub, Some(100L))
   private val successOutcomeJson = Json.obj(
     "fileStatus" -> "READY",
     "downloadUrl" -> "downloadUrl",
     "uploadDetails" -> Json.obj(
-      "fileName" -> "test"
+      "fileName" -> "test",
+      "size" -> 100L
     )
   )
-  private val inProgressOutcome = FileUploadOutcomeResponse(fileName = None, IN_PROGRESS, None)
+  private val inProgressOutcome = FileUploadOutcomeResponse(fileName = None, IN_PROGRESS, None, referenceStub, None)
 
   "getEventReportSummary" must {
     "return successfully when the backend has returned OK and a correct response" in {
@@ -214,7 +215,7 @@ class EventReportingConnectorSpec
           .willReturn(
             ok
               .withBody(successOutcomeJson.toString)
-              .withHeader("reference", "123")
+              .withHeader("reference", referenceStub)
           )
       )
 
@@ -230,7 +231,7 @@ class EventReportingConnectorSpec
           .willReturn(
             ok
               .withBody(failureOutcomeJson.toString)
-              .withHeader("reference", "123")
+              .withHeader("reference", referenceStub)
           )
       )
 
