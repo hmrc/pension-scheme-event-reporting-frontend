@@ -16,6 +16,7 @@
 
 @import controllers.common.routes
 @import models.enumeration.EventType
+@import models.Index
 
 @this(
     layout: templates.SchemeLayout,
@@ -25,11 +26,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, eventTypeMessage: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, eventTypeMessage: String, index: Index, fullNameAtIndex: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("removeMember.title", eventTypeMessage))) {
+@layout(pageTitle = title(form, messages("removeMember.title", eventTypeMessage, fullNameAtIndex))) {
 
-    @formHelper(action = routes.RemoveMemberController.onSubmit(waypoints, eventType), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.RemoveMemberController.onSubmit(waypoints, eventType, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -38,7 +39,7 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("removeMember.heading", eventTypeMessage)).asPageHeading()
+                legend = LegendViewModel(messages("removeMember.heading", eventTypeMessage, fullNameAtIndex)).asPageHeading()
             )
         )
 

@@ -119,7 +119,7 @@ class MembersSummaryController @Inject()(
               ActionItem(
                 content = Text(Message("site.remove")),
                 // TODO: parameterise per event.
-                href = controllers.common.routes.RemoveMemberController.onPageLoad(EmptyWaypoints, eventType).url
+                href = controllers.common.routes.RemoveMemberController.onPageLoad(EmptyWaypoints, eventType, index).url
               )
             )
           ))

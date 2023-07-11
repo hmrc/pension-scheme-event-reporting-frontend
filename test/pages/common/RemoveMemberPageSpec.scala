@@ -23,10 +23,10 @@ class RemoveMemberPageSpec extends PageBehaviours {
 
   "RemoveMemberPage" - {
 
-    beRetrievable[Boolean](RemoveMemberPage(Event1))
+    beRetrievable[Boolean](RemoveMemberPage(Event1, 0))
 
-    beSettable[Boolean](RemoveMemberPage(Event1))
+    beSettable[Boolean](RemoveMemberPage(Event1, 0))
 
-    beRemovable[Boolean](RemoveMemberPage(Event1))
+    beRemovable[Boolean](RemoveMemberPage(Event1, 0))
   }
 }

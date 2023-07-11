@@ -91,7 +91,7 @@ class UnauthPaymentSummaryController @Inject()(
               ActionItem(
                 content = Text(Message("site.remove")),
                 // TODO: parameterise for Event 1.
-                href = controllers.common.routes.RemoveMemberController.onPageLoad(EmptyWaypoints, Event1).url
+                href = controllers.common.routes.RemoveMemberController.onPageLoad(EmptyWaypoints, Event1, index).url
               )
             )
           ))

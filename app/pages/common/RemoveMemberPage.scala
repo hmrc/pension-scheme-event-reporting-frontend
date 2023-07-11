@@ -17,20 +17,20 @@
 package pages.common
 
 import controllers.common.routes
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import play.api.libs.json.JsPath
 import models.enumeration.EventType
 import play.api.mvc.Call
 import pages.{Page, QuestionPage, Waypoints}
 
-case class RemoveMemberPage(eventType: EventType) extends QuestionPage[Boolean] {
+case class RemoveMemberPage(eventType: EventType, index: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "removeMember"
 
   override def route(waypoints: Waypoints): Call =
-    routes.RemoveMemberController.onPageLoad(waypoints, eventType)
+    routes.RemoveMemberController.onPageLoad(waypoints, eventType, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {

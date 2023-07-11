@@ -519,5 +519,5 @@ GET         /new-report/event-20a-declaration-PSP                               
 POST        /new-report/event-20a-declaration-PSP                               controllers.event20A.Event20APspDeclarationController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 # TODO: update URL and add specific event type urls?
-GET        /removeMember                        controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType)
-POST       /removeMember                        controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType)
+GET        /removeMember/:index                        controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType, index: Index)
+POST       /removeMember/:index                        controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType, index: Index)

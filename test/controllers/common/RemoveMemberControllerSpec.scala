@@ -19,6 +19,7 @@ package controllers.common
 import base.SpecBase
 import org.mockito.Mockito.{never, reset, times, verify, when}
 import connectors.UserAnswersCacheConnector
+import data.SampleData.sampleMemberJourneyDataEvent1
 import forms.common.RemoveMemberFormProvider
 import models.UserAnswers
 import models.enumeration.EventType.Event1
@@ -26,7 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
-import pages.common.RemoveMemberPage
+import pages.common.{MembersPage, RemoveMemberPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -44,8 +45,8 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.RemoveMemberController.onPageLoad(waypoints, Event1).url
-  private def postRoute: String = routes.RemoveMemberController.onSubmit(waypoints, Event1).url
+  private def getRoute: String = routes.RemoveMemberController.onPageLoad(waypoints, Event1, 0).url
+  private def postRoute: String = routes.RemoveMemberController.onSubmit(waypoints, Event1, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -61,7 +62,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent1)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -71,14 +72,14 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val view = application.injector.instanceOf[RemoveMemberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, Event1, "unauthorised payment")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, Event1, "unauthorised payment", 0, "Some Name")(request, messages(application)).toString
       }
     }
 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(RemoveMemberPage(Event1), true).success.value
+      val userAnswers = UserAnswers().set(RemoveMemberPage(Event1, 0), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -90,7 +91,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), waypoints, Event1, "unauthorised payment")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), waypoints, Event1, "unauthorised payment", 0, "Some Name")(request, messages(application)).toString
       }
     }
 
@@ -107,10 +108,10 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(RemoveMemberPage(Event1), true).success.value
+        val updatedAnswers = emptyUserAnswers.set(RemoveMemberPage(Event1, 0), true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RemoveMemberPage(Event1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual RemoveMemberPage(Event1, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -130,7 +131,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, Event1, "unauthorised payment")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, Event1, "unauthorised payment", 0, "Some Name")(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
