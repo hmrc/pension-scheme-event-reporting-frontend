@@ -164,7 +164,7 @@ class EventReportingConnector @Inject()(
           ((response.json \ "fileStatus").asOpt[String],
             (response.json \ "uploadDetails" \ "fileName").asOpt[String],
             (response.json \ "downloadUrl").asOpt[String],
-            (response.json \ "uploadDetails" \ "size").asOpt[Long],
+            (response.json \ "uploadDetails" \ "size").asOpt[Long]
           ) match {
             case (Some("READY"), file@Some(_), downloadUrl@Some(_), fileSize@Some(_)) =>
               FileUploadOutcomeResponse(file, FileUploadOutcomeStatus.SUCCESS, downloadUrl, reference, fileSize)
