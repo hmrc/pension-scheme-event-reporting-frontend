@@ -26,6 +26,6 @@ class TypeOfProtectionFormProvider @Inject() extends Mappings {
 
   def apply(): Form[TypeOfProtection] =
     Form(
-      "value" -> enumerable[TypeOfProtection]("typeOfProtection.error.required")
+      "value" -> enumerable[TypeOfProtection](requiredKey = "typeOfProtection.error.required", invalidKey = "typeOfProtection.error.format")
     )
 }

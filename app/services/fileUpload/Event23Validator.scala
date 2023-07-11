@@ -29,6 +29,7 @@ import models.fileUpload.FileUploadHeaders.Event23FieldNames.totalAmounts
 import models.fileUpload.FileUploadHeaders.valueFormField
 import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import play.api.data.Form
+import play.api.i18n.Messages
 import services.fileUpload.Validator.Result
 
 class Event23Validator @Inject()(
@@ -78,7 +79,8 @@ class Event23Validator @Inject()(
 
   override protected def validateFields(index: Int,
                                         columns: Seq[String],
-                                        taxYear: Int): Result = {
+                                        taxYear: Int)
+                                       (implicit messages: Messages): Result = {
     val a = resultFromFormValidationResult[MembersDetails](
       memberDetailsValidation(index, columns, membersDetailsFormProvider(Event23, index)),
       createCommitItem(index, MembersDetailsPage.apply(Event23, _))

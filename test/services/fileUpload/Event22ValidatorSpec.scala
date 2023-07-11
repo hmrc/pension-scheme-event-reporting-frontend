@@ -21,9 +21,9 @@ import cats.data.Validated.{Invalid, Valid}
 import config.FrontendAppConfig
 import data.SampleData
 import forms.common.{ChooseTaxYearFormProvider, MembersDetailsFormProvider, TotalPensionAmountsFormProvider}
-import models.{TaxYear, UserAnswers}
 import models.common.ChooseTaxYear
 import models.enumeration.EventType.Event22
+import models.{TaxYear, UserAnswers}
 import org.mockito.Mockito
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
