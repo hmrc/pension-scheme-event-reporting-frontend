@@ -17,17 +17,16 @@
 package controllers.common
 
 import base.SpecBase
-import org.mockito.Mockito.{never, reset, times, verify, when}
 import connectors.UserAnswersCacheConnector
 import data.SampleData.sampleMemberJourneyDataEvent1
 import forms.common.RemoveMemberFormProvider
-import models.UserAnswers
 import models.enumeration.EventType.Event1
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
-import pages.common.{MembersPage, RemoveMemberPage}
+import pages.common.RemoveMemberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -72,14 +71,14 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val view = application.injector.instanceOf[RemoveMemberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, Event1, "unauthorised payment", 0, "Some Name")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, Event1, "unauthorised payment", 0, "Joe Bloggs")(request, messages(application)).toString
       }
     }
 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(RemoveMemberPage(Event1, 0), true).success.value
+      val userAnswers = sampleMemberJourneyDataEvent1.set(RemoveMemberPage(Event1, 0), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -91,7 +90,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), waypoints, Event1, "unauthorised payment", 0, "Some Name")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), waypoints, Event1, "unauthorised payment", 0, "Joe Bloggs")(request, messages(application)).toString
       }
     }
 
@@ -118,7 +117,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
 
     "must return bad request when invalid data is submitted" in {
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent1), extraModules)
           .build()
 
       running(application) {
@@ -131,7 +130,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, Event1, "unauthorised payment", 0, "Some Name")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, Event1, "unauthorised payment", 0, "Joe Bloggs")(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
