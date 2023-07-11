@@ -19,7 +19,7 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.SendEmailRequest
-import models.enumeration.AdministratorOrPractitioner
+import models.enumeration.{AdministratorOrPractitioner, WithName}
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
@@ -33,9 +33,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait EmailStatus
 
-case object EmailSent extends EmailStatus
+case object EmailSent extends WithName("EmailSent") with EmailStatus
 
-case object EmailNotSent extends EmailStatus
+case object EmailNotSent extends WithName("EmailNotSent") with EmailStatus
 
 class EmailConnector @Inject()(
                                 appConfig: FrontendAppConfig,
@@ -49,12 +49,13 @@ class EmailConnector @Inject()(
                            schemeAdministratorType: AdministratorOrPractitioner,
                            requestId: String,
                            psaOrPspId: String,
-                           email: String
+                           email: String,
+                           reportVersion: String
                          ): String = {
     val encryptedPsaOrPspId = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaOrPspId)).value, StandardCharsets.UTF_8.toString)
     val encryptedEmail = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(email)).value, StandardCharsets.UTF_8.toString)
 
-    appConfig.eventReportingEmailCallback(schemeAdministratorType, requestId, encryptedEmail, encryptedPsaOrPspId)
+    appConfig.eventReportingEmailCallback(schemeAdministratorType, requestId, encryptedEmail, encryptedPsaOrPspId, reportVersion)
   }
 
   //scalastyle:off parameter.number
@@ -64,12 +65,13 @@ class EmailConnector @Inject()(
                  psaOrPspId: String,
                  emailAddress: String,
                  templateId: String,
-                 templateParams: Map[String, String]
+                 templateParams: Map[String, String],
+                 reportVersion: String
                )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailStatus] = {
     val emailServiceUrl = s"${appConfig.emailApiUrl}/hmrc/email"
 
     val sendEmailReq = SendEmailRequest(List(emailAddress), templateId, templateParams, appConfig.emailSendForce,
-      callBackUrl(schemeAdministratorType, requestId, psaOrPspId, emailAddress))
+      callBackUrl(schemeAdministratorType, requestId, psaOrPspId, emailAddress, reportVersion))
     val jsonData = Json.toJson(sendEmailReq)
 
     http.POST[JsValue, HttpResponse](emailServiceUrl, jsonData).map { response =>

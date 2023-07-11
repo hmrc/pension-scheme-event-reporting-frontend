@@ -38,6 +38,7 @@ class EventReportingConnectorSpec
   private val eventType: EventType = EventType.Event1
   private val eventType2: EventType = EventType.Event2
   private val referenceStub: String = "123"
+  private val reportVersion: String = "reportVersion"
   private val userAnswers = UserAnswers()
 
   private val validResponse = Seq(
@@ -58,6 +59,7 @@ class EventReportingConnectorSpec
   private val eventReportSummaryCacheUrl = "/pension-scheme-event-reporting/event-summary"
   private val eventReportCompileUrl = "/pension-scheme-event-reporting/compile"
   private val eventReportSubmitUrl = "/pension-scheme-event-reporting/submit-event-declaration-report"
+
   private def event20AReportSubmitUrl = "/pension-scheme-event-reporting/submit-event20a-declaration-report"
 
   private val getFileUploadResponseUrl = "/pension-scheme-event-reporting/file-upload-response/get"
@@ -156,7 +158,7 @@ class EventReportingConnectorSpec
             noContent
           )
       )
-      connector.submitReport(pstr, userAnswers).map {
+      connector.submitReport(pstr, userAnswers, reportVersion).map {
         _ mustBe()
       }
     }
@@ -171,7 +173,7 @@ class EventReportingConnectorSpec
       )
 
       recoverToSucceededIf[HttpException] {
-        connector.submitReport(pstr, userAnswers)
+        connector.submitReport(pstr, userAnswers, reportVersion)
       }
     }
   }
@@ -184,7 +186,7 @@ class EventReportingConnectorSpec
             noContent
           )
       )
-      connector.submitReportEvent20A(pstr, userAnswers).map {
+      connector.submitReportEvent20A(pstr, userAnswers, reportVersion).map {
         _ mustBe()
       }
     }
@@ -199,7 +201,7 @@ class EventReportingConnectorSpec
       )
 
       recoverToSucceededIf[HttpException] {
-        connector.submitReportEvent20A(pstr, userAnswers)
+        connector.submitReportEvent20A(pstr, userAnswers, reportVersion)
       }
     }
   }
@@ -269,10 +271,10 @@ class EventReportingConnectorSpec
           "periodStartDate" -> "2022-04-06",
           "periodEndDate" -> "2023-04-05",
           "versionDetails" -> Json.obj(
-          "numberOfVersions" -> 2,
-          "submittedVersionAvailable" -> true,
-          "compiledVersionAvailable" -> true
-        )
+            "numberOfVersions" -> 2,
+            "submittedVersionAvailable" -> true,
+            "compiledVersionAvailable" -> true
+          )
         )
       )
 
