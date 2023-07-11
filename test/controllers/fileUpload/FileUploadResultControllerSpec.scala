@@ -83,7 +83,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
-        .thenReturn(Future.successful(FileUploadOutcomeResponse(Some("testFile"), SUCCESS, Some("downloadUrl"))))
+        .thenReturn(Future.successful(FileUploadOutcomeResponse(Some("testFile"), SUCCESS, Some("downloadUrl"), "reference", None)))
       running(application) {
         val request = FakeRequest.apply(method = GET, path = getRoute(eventType) + "?key=123")
         val result = route(application, request).value
@@ -102,7 +102,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
-        .thenReturn(Future.successful(FileUploadOutcomeResponse(None, IN_PROGRESS, None)))
+        .thenReturn(Future.successful(FileUploadOutcomeResponse(None, IN_PROGRESS, None, "123", None)))
       running(application) {
         val request = FakeRequest.apply(method = GET, path = getRoute(eventType) + "?key=123")
         val result = route(application, request).value
@@ -121,7 +121,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
-        .thenReturn(Future.successful(FileUploadOutcomeResponse(None, FAILURE, None)))
+        .thenReturn(Future.successful(FileUploadOutcomeResponse(None, FAILURE, None, "123", None)))
       running(application) {
         val request = FakeRequest.apply(method = GET, path = getRoute(eventType) + "?key=123")
         val result = route(application, request).value

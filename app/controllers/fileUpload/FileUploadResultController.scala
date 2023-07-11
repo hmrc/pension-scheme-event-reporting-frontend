@@ -16,6 +16,7 @@
 
 package controllers.fileUpload
 
+import audit.{AuditService, EventReportingUpscanFileDownloadAuditEvent, EventReportingUpscanFileUploadAuditEvent}
 import cats.data.Validated.{Invalid, Valid}
 import connectors.{EventReportingConnector, ParsingAndValidationOutcomeCacheConnector, UpscanInitiateConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
@@ -58,7 +59,8 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                                            view: FileUploadResultView,
                                            event6Validator: Event6Validator,
                                            event22Validator: Event22Validator,
-                                           event23Validator: Event23Validator
+                                           event23Validator: Event23Validator,
+                                           auditService: AuditService
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
@@ -67,15 +69,18 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
 
   private def renderView(waypoints: Waypoints, eventType: EventType, preparedForm: Form[FileUploadResult], status: Status)
                         (implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
+    val startTime = System.currentTimeMillis
     request.request.queryString.get("key").flatMap(_.headOption) match {
       case Some(uploadIdReference) =>
         val submitUrl = Call("POST", routes.FileUploadResultController.onSubmit(waypoints, eventType).url + s"?key=$uploadIdReference")
         eventReportingConnector.getFileUploadOutcome(uploadIdReference).map {
-          case FileUploadOutcomeResponse(_, IN_PROGRESS, _) =>
+          case FileUploadOutcomeResponse(_, IN_PROGRESS, _, _, _) =>
             status(view(preparedForm, waypoints, getEventTypeByName(eventType), None, submitUrl))
-          case FileUploadOutcomeResponse(fileName@Some(_), SUCCESS, _) =>
+          case fileUploadOutcomeResponse@FileUploadOutcomeResponse(fileName@Some(_), SUCCESS, _, _, _) =>
+            sendUpscanFileUploadAuditEvent(eventType, fileUploadOutcomeResponse, startTime)
             status(view(preparedForm, waypoints, getEventTypeByName(eventType), fileName, submitUrl))
-          case FileUploadOutcomeResponse(_, FAILURE, _) =>
+          case fileUploadOutcomeResponse@FileUploadOutcomeResponse(_, FAILURE, _, _, _) =>
+            sendUpscanFileUploadAuditEvent(eventType, fileUploadOutcomeResponse, startTime)
             Redirect(controllers.fileUpload.routes.FileRejectedController.onPageLoad(waypoints, eventType).url)
           case _ => throw new RuntimeException("UploadId reference does not exist")
         }
@@ -156,6 +161,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
   }
 
   private def asyncGetUpscanFileAndParse(eventType: EventType)(implicit request: OptionalDataRequest[AnyContent]): Future[Unit] = {
+    val startTime = System.currentTimeMillis
     request.request.queryString.get("key").flatMap(_.headOption) match {
       case Some(reference) =>
         eventReportingConnector.getFileUploadOutcome(reference).flatMap { fileUploadOutcomeResponse =>
@@ -163,6 +169,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
           fileUploadOutcomeResponse.downloadUrl match {
             case Some(downloadUrl) =>
               upscanInitiateConnector.download(downloadUrl).flatMap { httpResponse =>
+                sendUpscanFileDownloadAuditEvent(eventType, httpResponse.status, startTime, fileUploadOutcomeResponse)
                 httpResponse.status match {
                   case OK => performValidation(eventType, httpResponse.body, fileName) recoverWith {
                     case e: Throwable =>
@@ -178,6 +185,49 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
         }
       case _ => setGeneralErrorOutcome(s"No reference number in FileUploadResultController")
     }
+  }
+
+  private def sendUpscanFileUploadAuditEvent(
+                                              eventType: EventType,
+                                              fileUploadOutcomeResponse: FileUploadOutcomeResponse,
+                                              startTime: Long)(implicit request: OptionalDataRequest[AnyContent]): Unit = {
+
+    val endTime = System.currentTimeMillis
+    val duration = endTime - startTime
+
+    auditService.sendEvent(
+      EventReportingUpscanFileUploadAuditEvent(
+        eventType = eventType,
+        psaOrPspId = request.loggedInUser.psaIdOrPspId,
+        pstr = request.pstr,
+        schemeAdministratorType = request.loggedInUser.administratorOrPractitioner,
+        outcome = Right(fileUploadOutcomeResponse),
+        uploadTimeInMilliSeconds = duration
+      )
+    )
+  }
+
+  private def sendUpscanFileDownloadAuditEvent(eventType: EventType,
+                                               responseStatus: Int,
+                                               startTime: Long,
+                                               fileUploadOutcomeResponse: FileUploadOutcomeResponse)
+                                              (implicit request: OptionalDataRequest[AnyContent]): Unit = {
+
+    val endTime = System.currentTimeMillis
+    val duration = endTime - startTime
+    auditService.sendEvent(
+      EventReportingUpscanFileDownloadAuditEvent(
+        psaOrPspId = request.loggedInUser.psaIdOrPspId,
+        pstr = request.pstr,
+        schemeAdministratorType = request.loggedInUser.administratorOrPractitioner,
+        eventType = eventType,
+        fileUploadOutcomeResponse = fileUploadOutcomeResponse,
+        downloadStatus = responseStatus match {
+          case 200 => "Success"
+          case _ => "Failed"
+        },
+        downloadTimeInMilliSeconds = duration
+      ))
   }
 
   private def processInvalid(eventType: EventType,

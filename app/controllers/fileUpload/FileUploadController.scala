@@ -47,7 +47,7 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
 
     val successRedirectUrl = appConfig.successEndPointTarget(eventType)
     val errorRedirectUrl = appConfig.failureEndPointTarget(eventType)
-    upscanInitiateConnector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl)).map { uir =>
+    upscanInitiateConnector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), eventType).map { uir =>
       Ok(view(waypoints, getEventTypeByName(eventType), eventType, Call("post", uir.postTarget), uir.formFields, getErrorCode(request)))
     }
   }
