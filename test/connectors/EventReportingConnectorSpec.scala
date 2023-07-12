@@ -89,7 +89,7 @@ class EventReportingConnectorSpec
           )
       )
 
-      connector.getEventReportSummary(pstr, "21/01/22") map { response =>
+      connector.getEventReportSummary(pstr, "21/01/22", 1) map { response =>
         response mustBe validResponse
       }
     }
@@ -103,7 +103,7 @@ class EventReportingConnectorSpec
           )
       )
 
-      connector.getEventReportSummary(pstr, "21/01/22") map {
+      connector.getEventReportSummary(pstr, "21/01/22", 1) map {
         _ mustBe Nil
       }
     }
@@ -118,7 +118,7 @@ class EventReportingConnectorSpec
       )
 
       recoverToSucceededIf[HttpException] {
-        connector.getEventReportSummary(pstr, "21/01/22")
+        connector.getEventReportSummary(pstr, "21/01/22", 1)
       }
     }
   }
