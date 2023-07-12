@@ -17,17 +17,15 @@
 package controllers.common
 
 import connectors.UserAnswersCacheConnector
-import models.enumeration.EventType
 import controllers.actions._
 import controllers.common.RemoveMemberController.{eventTypeMessage, fullNameAtIndex}
 import forms.common.RemoveMemberFormProvider
-import models.{Index, UserAnswers}
 import models.Index.indexToInt
 import models.common.MembersSummary
+import models.enumeration.EventType
 import models.enumeration.EventType._
 import models.event1.MembersOrEmployersSummary
-
-import javax.inject.Inject
+import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.common.{MembersOrEmployersPage, MembersPage, RemoveMemberPage}
 import play.api.i18n.{I18nSupport, Messages}
@@ -35,6 +33,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.common.RemoveMemberView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveMemberController @Inject()(

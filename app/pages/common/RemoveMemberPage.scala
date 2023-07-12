@@ -20,6 +20,8 @@ import controllers.common.routes
 import models.{Index, UserAnswers}
 import play.api.libs.json.JsPath
 import models.enumeration.EventType
+import models.enumeration.EventType.Event1
+import pages.event1.UnauthPaymentSummaryPage
 import play.api.mvc.Call
 import pages.{Page, QuestionPage, Waypoints}
 
@@ -35,7 +37,7 @@ case class RemoveMemberPage(eventType: EventType, index: Index) extends Question
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
       case true  => this
-      case false => this
+      case false => if (eventType == Event1) UnauthPaymentSummaryPage else MembersSummaryPage(eventType, index)
     }.orRecover
   }
 }
