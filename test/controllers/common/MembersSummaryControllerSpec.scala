@@ -18,7 +18,7 @@ package controllers.common
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import controllers.common.MembersSummaryControllerSpec.{fake26MappedMembers, paginationStats26Members}
+import controllers.common.MembersSummaryControllerSpec.{fake26MappedMembers, fakeChangeUrl, fakeRemoveUrl, paginationStats26Members}
 import data.SampleData
 import data.SampleData._
 import forms.common.MembersSummaryFormProvider
@@ -77,31 +77,31 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
 
   "MembersSummary Controller" - {
     behave like testSuite(formProvider(Event2), Event2, sampleMemberJourneyDataEvent2, SampleData.amountPaid.toString(),
-      controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(0).url, "999.11")
+      fakeChangeUrl(Event2), "999.11")
 
     behave like testSuite(formProvider(Event3), Event3, sampleMemberJourneyDataEvent3and4and5(Event3), SampleData.paymentDetailsCommon.amountPaid.setScale(2).toString,
-      controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(0).url, "10.00")
+      fakeChangeUrl(Event3), "10.00")
 
     behave like testSuite(formProvider(Event4), Event4, sampleMemberJourneyDataEvent3and4and5(Event4), SampleData.paymentDetailsCommon.amountPaid.setScale(2).toString(),
-      controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url, "10.00")
+      fakeChangeUrl(Event4), "10.00")
 
     behave like testSuite(formProvider(Event5), Event5, sampleMemberJourneyDataEvent3and4and5(Event5), SampleData.paymentDetailsCommon.amountPaid.setScale(2).toString(),
-      controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(0).url, "10.00")
+      fakeChangeUrl(Event5), "10.00")
 
     behave like testSuite(formProvider(Event6), Event6, sampleMemberJourneyDataEvent6, SampleData.crystallisedDetails.amountCrystallised.setScale(2).toString(),
-      controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(0).url, "10.00")
+      fakeChangeUrl(Event6), "10.00")
 
     behave like testSuite(formProvider(Event8), Event8, sampleMemberJourneyDataEvent8, SampleData.lumpSumDetails.lumpSumAmount.setScale(2).toString(),
-      controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(0).url, "10.00")
+      fakeChangeUrl(Event8), "10.00")
 
     behave like testSuite(formProvider(Event8A), Event8A, sampleMemberJourneyDataEvent8A, SampleData.lumpSumDetails.lumpSumAmount.setScale(2).toString(),
-      controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(0).url, "10.00")
+      fakeChangeUrl(Event8A), "10.00")
 
     behave like testSuite(formProvider(Event22), Event22, sampleMemberJourneyDataEvent22and23(Event22), SampleData.totalPaymentAmountEvent22and23.setScale(2).toString(),
-      controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url, "10.00")
+      fakeChangeUrl(Event22), "10.00")
 
     behave like testSuite(formProvider(Event23), Event23, sampleMemberJourneyDataEvent22and23(Event23), SampleData.totalPaymentAmountEvent22and23.setScale(2).toString(),
-      controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url, "10.00")
+      fakeChangeUrl(Event23), "10.00")
 
     /* TODO: Temporarily disabled pagination test due to performance issues. -Pavel Vjalicin
     behave like testSuiteWithPagination(
@@ -170,7 +170,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
                   ),
                   ActionItem(
                     content = Text(Message("site.remove")),
-                    href = "#"
+                    href = fakeRemoveUrl(eventType)
                   )
                 )
               ))
@@ -261,6 +261,38 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
 
 object MembersSummaryControllerSpec extends SpecBase {
 
+  private def fakeChangeUrl(eventType: EventType): String = {
+    val directory = "/manage-pension-scheme-event-report"
+    eventType match {
+      case Event2 => directory + controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(0).url
+      case Event3 => directory + controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(0).url
+      case Event4 => directory + controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url
+      case Event5 => directory + controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(0).url
+      case Event6 => directory + controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(0).url
+      case Event8 => directory + controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(0).url
+      case Event8A => directory + controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(0).url
+      case Event22 => directory + controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url
+      case Event23 => directory + controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url
+      case _ => "Not a member event"
+    }
+  }
+
+  private def fakeRemoveUrl(eventType: EventType): String = {
+    val directory = "/manage-pension-scheme-event-report"
+    eventType match {
+      case Event2 => directory + s"/removeMember/1?eventType=2"
+      case Event3 => directory + s"/removeMember/1?eventType=3"
+      case Event4 => directory + s"/removeMember/1?eventType=4"
+      case Event5 => directory + s"/removeMember/1?eventType=5"
+      case Event6 => directory + s"/removeMember/1?eventType=6"
+      case Event8 => directory + s"/removeMember/1?eventType=8"
+      case Event8A => directory + s"/removeMember/1?eventType=8A"
+      case Event22 => directory + s"/removeMember/1?eventType=22"
+      case Event23 => directory + s"/removeMember/1?eventType=23"
+      case _ => "Not a member event"
+    }
+  }
+
   private def fake26MappedMembers(href: String, eventType: EventType): Seq[SummaryListRowWithTwoValues] = fakeXMappedMembers(25, href, eventType)
 
   private def cYAHref(eventType: EventType, index: Int) = {
@@ -290,7 +322,7 @@ object MembersSummaryControllerSpec extends SpecBase {
           ),
           ActionItem(
             content = Text(Message("site.remove")),
-            href = "#"
+            href = fakeRemoveUrl(eventType)
           )
         )
       )))
