@@ -1607,3 +1607,9 @@ whatYouWillNeed.event6.item1 = member’s name and National Insurance number
 whatYouWillNeed.event6.item2 = details of the type of protection held for the crystallisation
 whatYouWillNeed.event6.item3 = amount that was crystallised
 whatYouWillNeed.event6.item4 = date of the benefit crystallisation
+
+
+cannotSubmitEvents.title = You are unable to submit the event report yet
+cannotSubmitEvents.heading = You are unable to submit the event report yet
+cannotSubmitEvents.p1 = You cannot submit an event return in the current tax year unless you have wound up the scheme.
+

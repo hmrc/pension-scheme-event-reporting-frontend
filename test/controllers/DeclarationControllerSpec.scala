@@ -106,7 +106,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       when(mockSubmitService.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(Ok))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled))), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear2023.setOrException(VersionInfoPage, VersionInfo(1, Compiled))), extraModules)
           .build()
 
       running(application) {
@@ -116,6 +116,40 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.ReturnSubmittedController.onPageLoad(waypoints).url
+      }
+    }
+
+    "must redirect to the cannot submit page for method onClick when taxYear is before 2023" in {
+
+      val testEmail = "test@test.com"
+      val templateId = "pods_event_report_submitted"
+      val organisationName = "Test company ltd"
+      val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
+
+      when(mockERConnector.submitReport(any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
+      doNothing().when(mockAuditService).sendEvent(any())(any(), any())
+      when(mockEmailConnector.sendEmail(
+        schemeAdministratorType = ArgumentMatchers.eq(Administrator),
+        requestId = any(), psaOrPspId = any(),
+        emailAddress = ArgumentMatchers.eq(testEmail),
+        templateId = ArgumentMatchers.eq(templateId),
+        templateParams = any(),
+        reportVersion = any())(any(), any()))
+        .thenReturn(Future.successful(EmailSent))
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+      when(mockSubmitService.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(Ok))
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled))), extraModules)
+          .build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.CannotSubmitController.onPageLoad(waypoints).url
       }
     }
   }

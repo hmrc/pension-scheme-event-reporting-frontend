@@ -55,6 +55,7 @@ trait SpecBase
 
   def emptyUserAnswers: UserAnswers = UserAnswers()
   def emptyUserAnswersWithTaxYear: UserAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022"), nonEventTypeData = true).get
+  def emptyUserAnswersWithTaxYear2023: UserAnswers = UserAnswers().set(TaxYearPage, TaxYear("2023"), nonEventTypeData = true).get
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 

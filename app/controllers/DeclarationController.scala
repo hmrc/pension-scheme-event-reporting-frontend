@@ -59,6 +59,9 @@ class DeclarationController @Inject()(
 
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
+
+      // TODO add logic to allow windup to submit
+
       val data: UserAnswers = UserAnswers(
         declarationData(
           request.pstr,
@@ -77,9 +80,11 @@ class DeclarationController @Inject()(
       }
 
       submitService.submitReport(request.pstr, data).flatMap { result =>
-        result.header.status match {
-          case OK => emailFuture.map(_ =>Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
-          case NOT_FOUND =>
+        val ty = TaxYear.getTaxYear(request.userAnswers)
+        (result.header.status, ty) match {
+          case (OK, ty) if ty >= 2023 => emailFuture.map(_ =>Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
+          case (OK, ty) if ty < 2023  => Future.successful(Redirect(controllers.routes.CannotSubmitController.onPageLoad(waypoints).url))
+          case (NOT_FOUND, _) =>
             logger.warn(s"Unable to submit declaration because there is nothing to submit (nothing in compile state)")
             Future.successful(Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url))
           case _ => throw new RuntimeException(s"Invalid response returned from submit report: ${result.header.status}")
