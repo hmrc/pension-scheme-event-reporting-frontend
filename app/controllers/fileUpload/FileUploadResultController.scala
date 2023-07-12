@@ -16,12 +16,14 @@
 
 package controllers.fileUpload
 
-import audit.{AuditService, EventReportingUpscanFileDownloadAuditEvent, EventReportingUpscanFileUploadAuditEvent}
+import audit.{AuditService, EventReportingFileValidationAuditEvent, EventReportingUpscanFileDownloadAuditEvent, EventReportingUpscanFileUploadAuditEvent}
+import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import connectors.{EventReportingConnector, ParsingAndValidationOutcomeCacheConnector, UpscanInitiateConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.fileUpload.FileUploadResultFormProvider
 import helpers.fileUpload.FileUploadGenericErrorReporter
+import helpers.fileUpload.FileUploadGenericErrorReporter.generateGenericErrorReport
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event22, getEventTypeByName}
@@ -29,12 +31,13 @@ import models.fileUpload.ParsingAndValidationOutcomeStatus._
 import models.fileUpload.{FileUploadResult, ParsingAndValidationOutcome}
 import models.requests.OptionalDataRequest
 import models.{FileUploadOutcomeResponse, UserAnswers}
+import org.apache.commons.lang3.StringUtils.EMPTY
 import pages.Waypoints
 import pages.fileUpload.FileUploadResultPage
 import play.api.data.Form
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, Messages}
-import play.api.libs.json.{JsArray, JsObject, JsPath, Json}
+import play.api.libs.json.{JsObject, JsPath, Json}
 import play.api.mvc._
 import services.CompileService
 import services.fileUpload.Validator.FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty
@@ -136,6 +139,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
   private def performValidation(eventType: EventType,
                                 csvFileContent: String,
                                 fileName: Option[String])(implicit request: OptionalDataRequest[AnyContent]): Future[Unit] = {
+    val startTime = System.currentTimeMillis
     val parsedCSV = CSVParser.split(csvFileContent)
     val uaAfterRemovalOfEventType = Try(request.userAnswers
       .getOrElse(UserAnswers()).removeWithPath(JsPath \ s"event${eventType.toString}")) match {
@@ -144,8 +148,10 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
         request.userAnswers.getOrElse(UserAnswers())
     }
 
-    val eventValidator = validatorForEvent(eventType)
-    val futureOutcome = eventValidator.validate(parsedCSV, uaAfterRemovalOfEventType) match {
+    val parserResult = validatorForEvent(eventType).validate(parsedCSV, uaAfterRemovalOfEventType)
+    val endTime = System.currentTimeMillis
+
+    val futureOutcome = parserResult match {
       case Invalid(errors) =>
         Future.successful(processInvalid(eventType, errors))
       case Valid(updatedUA) =>
@@ -155,7 +161,10 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
         }
     }
 
-    futureOutcome.flatMap(outcome => parsingAndValidationOutcomeCacheConnector.setOutcome(outcome))
+    futureOutcome.flatMap { outcome =>
+      sendValidationAuditEvent(pstr = request.pstr, eventType = eventType, numberOfEntries = parsedCSV.size - 1, fileValidationTimeInSeconds = (endTime - startTime) / 1000, parserResult = parserResult)
+      parsingAndValidationOutcomeCacheConnector.setOutcome(outcome)
+    }
   }
 
   private def asyncGetUpscanFileAndParse(eventType: EventType)(implicit request: OptionalDataRequest[AnyContent]): Future[Unit] = {
@@ -183,6 +192,61 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
         }
       case _ => setGeneralErrorOutcome(s"No reference number in FileUploadResultController")
     }
+  }
+
+  private def failureReasonAndErrorReportForAudit(errors: Seq[ValidationError],
+                                                  eventType: EventType)(implicit messages: Messages): Option[(String, String)] = {
+    if (errors.isEmpty) {
+      None
+    } else if (errors.size <= maximumNumberOfError) {
+      val errorReport = errorJson(errors, messages).foldLeft("") { (acc, jsObject) =>
+        ((jsObject \ "cell").asOpt[String], (jsObject \ "error").asOpt[String]) match {
+          case (Some(cell), Some(error)) => acc ++ ((if (acc.nonEmpty) "\n" else EMPTY) + s"$cell: $error")
+          case _ => acc
+        }
+      }
+      Some(Tuple2("Field Validation failure(Less than 10)", errorReport))
+    } else {
+      val errorReport = generateGenericErrorReport(errors, eventType).foldLeft(EMPTY) { (acc, c) =>
+        acc ++ (if (acc.nonEmpty) "\n" else EMPTY) + messages(c)
+      }
+      Some(Tuple2("Generic failure (more than 10)", errorReport))
+    }
+  }
+
+  private def sendValidationAuditEvent(pstr: String,
+                                       eventType: EventType,
+                                       numberOfEntries: Int,
+                                       fileValidationTimeInSeconds: Long,
+                                       parserResult: Validated[Seq[ValidationError], UserAnswers]
+                                      )(implicit request: OptionalDataRequest[AnyContent], messages: Messages): Unit = {
+
+    val numberOfFailures = parserResult.fold(_.size, _ => 0)
+    val (failureReason, errorReport) = parserResult match {
+      case Invalid(Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty)) =>
+        Tuple2(Some(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty.error), None)
+      case Invalid(errors) =>
+        failureReasonAndErrorReportForAudit(errors, eventType)(messages) match {
+          case Some(Tuple2(reason, report)) => Tuple2(Some(reason), Some(report))
+          case _ => Tuple2(None, None)
+        }
+      case _ => Tuple2(None, None)
+    }
+
+    auditService.sendEvent(
+      EventReportingFileValidationAuditEvent(
+        schemeAdministratorType = request.loggedInUser.administratorOrPractitioner,
+        psaOrPspId = request.loggedInUser.psaIdOrPspId,
+        pstr = pstr,
+        numberOfEntries = numberOfEntries,
+        eventType = eventType,
+        validationCheckSuccessful = parserResult.isValid,
+        fileValidationTimeInSeconds = fileValidationTimeInSeconds,
+        failureReason = failureReason,
+        numberOfFailures = numberOfFailures,
+        validationFailureContent = errorReport
+      )
+    )
   }
 
   private def sendUpscanFileUploadAuditEvent(
@@ -235,22 +299,10 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
         ParsingAndValidationOutcome(status = GeneralError)
       case _ =>
         if (errors.size <= maximumNumberOfError) {
-          def errorJson(errors: Seq[ValidationError]): JsArray = {
-            val cellErrors: Seq[JsObject] = errors.map { e =>
-              val cell = String.valueOf(('A' + e.col).toChar) + (e.row + 1)
-              Json.obj(
-                "cell" -> cell,
-                "error" -> messages(e.error, e.args: _*),
-                "columnName" -> e.columnName
-              )
-            }
-            Json.arr(cellErrors.map(x => Json.toJsFieldJsValueWrapper(x)): _*)
-          }
-
           ParsingAndValidationOutcome(
             status = ValidationErrorsLessThan10,
             json = Json.obj(
-              "errors" -> errorJson(errors)
+              "errors" -> Json.arr(errorJson(errors, messages).map(x => Json.toJsFieldJsValueWrapper(x)): _*)
             )
           )
         } else {
@@ -263,5 +315,17 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
           )
         }
     }
+  }
+
+  def errorJson(errors: Seq[ValidationError], messages: Messages): Seq[JsObject] = {
+    val cellErrors: Seq[JsObject] = errors.map { e =>
+      val cell = String.valueOf(('A' + e.col).toChar) + (e.row + 1)
+      Json.obj(
+        "cell" -> cell,
+        "error" -> messages(e.error, e.args: _*),
+        "columnName" -> e.columnName
+      )
+    }
+    cellErrors
   }
 }
