@@ -47,13 +47,13 @@ class EventReportingConnector @Inject()(
   private def eventOverviewUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/overview"
 
 
-  def getEventReportSummary(pstr: String, reportStartDate: String)
+  def getEventReportSummary(pstr: String, reportStartDate: String, version: Int)
                            (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventType]] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
-      "reportVersionNumber" -> "001",
+      "reportVersionNumber" -> version.toString,
       "reportStartDate" -> reportStartDate
     )
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
