@@ -17,7 +17,7 @@
 package controllers.fileUpload
 
 import config.FrontendAppConfig
-import connectors.{UpscanInitiateConnector, UserAnswersCacheConnector}
+import connectors.UpscanInitiateConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.enumeration.EventType
 import models.enumeration.EventType.getEventTypeByName
@@ -34,21 +34,20 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class FileUploadController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       userAnswersCacheConnector: UserAnswersCacheConnector,
-                                       upscanInitiateConnector: UpscanInitiateConnector,
-                                       appConfig: FrontendAppConfig,
-                                       view: FileUploadView
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                     identify: IdentifierAction,
+                                     getData: DataRetrievalAction,
+                                     requireData: DataRequiredAction,
+                                     upscanInitiateConnector: UpscanInitiateConnector,
+                                     appConfig: FrontendAppConfig,
+                                     view: FileUploadView
+                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)
     andThen requireData).async { implicit request =>
 
     val successRedirectUrl = appConfig.successEndPointTarget(eventType)
     val errorRedirectUrl = appConfig.failureEndPointTarget(eventType)
-    upscanInitiateConnector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl)).map { uir =>
+    upscanInitiateConnector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), eventType).map { uir =>
       Ok(view(waypoints, getEventTypeByName(eventType), eventType, Call("post", uir.postTarget), uir.formFields, getErrorCode(request)))
     }
   }

@@ -125,6 +125,7 @@ object SampleData extends SpecBase {
 
   val paymentDetails: Event1PaymentDetails = Event1PaymentDetails(1000.00, LocalDate.of(2022, 11, 8))
   val crystallisedDetails: CrystallisedDetails = CrystallisedDetails(10.00, LocalDate.of(2022, 11, 8))
+  val crystallisedDetails2: CrystallisedDetails = CrystallisedDetails(10.00, LocalDate.of(2022, 8, 12))
   val lumpSumDetails = LumpSumDetails(10.00, LocalDate.of(2022, 3, 22))
   val paymentDetailsCommon: CommonPaymentDetails = CommonPaymentDetails(10.00, LocalDate.of(2022, 4, 5))
 

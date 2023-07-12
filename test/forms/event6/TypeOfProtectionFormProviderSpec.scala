@@ -28,12 +28,13 @@ class TypeOfProtectionFormProviderSpec extends OptionFieldBehaviours {
 
     val fieldName = "value"
     val requiredKey = "typeOfProtection.error.required"
+    val formatKey = "typeOfProtection.error.format"
 
     behave like optionsField[TypeOfProtection](
       form,
       fieldName,
       validValues = TypeOfProtection.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      invalidError = FormError(fieldName, formatKey)
     )
 
     behave like mandatoryField(

@@ -18,24 +18,32 @@ package services
 
 import base.SpecBase
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23}
+import models.enumeration.EventType.{Event1, Event22, Event23, Event6}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Environment
 import play.api.test.Helpers.baseApplicationBuilder.injector
 
 import java.io.File
 
+//noinspection ScalaStyle
 class FileProviderServiceSpec extends SpecBase with MockitoSugar {
 
   private val environment: Environment = injector.instanceOf[Environment]
   private val fileProviderService = new FileProviderService(environment)
+
+  private val instructionsFileToCheckEvent1 = new File("./conf/fileDownload/instructions/instructions-event-1-unauthorised-payments.ods")
+  private val instructionsFileToCheckEvent6 = new File("./conf/fileDownload/instructions/instructions-event-6-benefit-crystallisation-where-the-member-relies-on-LTA-protections.ods")
   private val instructionsFileToCheckEvent22 = new File("./conf/fileDownload/instructions/instructions-event-22-annual-allowance.ods")
   private val instructionsFileToCheckEvent23 = new File("./conf/fileDownload/instructions/instructions-event-23-dual-annual-allowance.ods")
 
   "FileProviderService Service" - {
 
+    testReturnCorrectInstructionsFile(Event1, instructionsFileToCheckEvent1)
+    testReturnCorrectInstructionsFile(Event6, instructionsFileToCheckEvent6)
     testReturnCorrectInstructionsFile(Event22, instructionsFileToCheckEvent22)
     testReturnCorrectInstructionsFile(Event23, instructionsFileToCheckEvent23)
+    testReturnCorrectTemplateFile(Event1)
+    testReturnCorrectTemplateFile(Event6)
     testReturnCorrectTemplateFile(Event22)
     testReturnCorrectTemplateFile(Event23)
   }
