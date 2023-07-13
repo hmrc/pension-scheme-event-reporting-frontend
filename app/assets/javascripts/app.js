@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
                 if (data.status === "processing") {
                     setTimeout(function() {
                         pollData();
-                    }, 4000);
+                    }, 2000);
                 } else {
                     location.reload();
                 }
