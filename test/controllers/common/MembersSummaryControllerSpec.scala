@@ -76,11 +76,6 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
     when(mockTaxYear.now).thenReturn(validAnswer)
   }
 
-  /*
-  fakeChangeLink(eventType) -> String = s"manual expected URL"
-  fakeRemoveLink(eventType) -> String = s"manual expected URL"
-   */
-
   "MembersSummary Controller" - {
     behave like testSuite(formProvider(Event2), Event2, sampleMemberJourneyDataEvent2, SampleData.amountPaid.toString(),
       fakeChangeUrl(Event2), "999.11")
