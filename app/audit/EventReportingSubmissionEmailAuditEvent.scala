@@ -16,25 +16,30 @@
 
 package audit
 
+import connectors.EmailStatus
 import models.enumeration.AdministratorOrPractitioner
 
 case class EventReportingSubmissionEmailAuditEvent(
-                                                psaOrPspId: String,
-                                                schemeAdministratorType: AdministratorOrPractitioner,
-                                                emailAddress: String
-                                              ) extends AuditEvent {
+                                                    psaOrPspId: String,
+                                                    schemeAdministratorType: AdministratorOrPractitioner,
+                                                    emailAddress: String,
+                                                    reportVersion: String,
+                                                    emailStatus: EmailStatus
+                                                  ) extends AuditEvent {
 
   override def auditType: String = "EventReportingEmailEvent"
 
   override def details: Map[String, String] = {
     val psaOrPspIdJson = schemeAdministratorType match {
       case AdministratorOrPractitioner.Administrator =>
-        Map("psaId" -> psaOrPspId)
-      case _ => Map("pspId" -> psaOrPspId)
+        Map("PensionSchemeAdministratorId" -> psaOrPspId)
+      case _ => Map("PensionSchemeAdministratorId" -> psaOrPspId)
     }
     Map(
       "emailAddress" -> emailAddress,
-      "submittedBy" -> schemeAdministratorType.toString
+      "submittedBy" -> schemeAdministratorType.toString,
+      "reportVersion" -> reportVersion,
+      "event" -> emailStatus.toString
     ) ++ psaOrPspIdJson
   }
 }

@@ -171,7 +171,7 @@ eventSummary.event20A = Event 20a: Master Trust scheme
 eventSummary.event22 = Event 22: Annual allowance
 eventSummary.event23 = Event 23: Dual annual allowance
 eventSummary.event24 = Event 24: Public service pension remedy
-eventSummary.event0 = Scheme has wound up
+eventSummary.eventWindUp = Scheme has wound up
 
 schemeWindUpDate.title = When was the scheme wound up?
 schemeWindUpDate.heading = When was the scheme wound up?
@@ -225,7 +225,7 @@ manualOrUpload.event6.fileUpload = Upload a file
 manualOrUpload.event6.checkYourAnswersLabel = How do you want to add the benefit crystallisation details?
 manualOrUpload.event6.error.required = Select how you want to add the benefit crystallisation details
 manualOrUpload.event6.change.hidden = How do you want to add the benefit crystallisation details?
-manualOrUpload.event6.fileUpload.hint = Uploading a file will overwrite any data you have previously added for this event
+manualOrUpload.event6.fileUpload.hint = You’ll have a user ID if you’ve registered for Self Assessment or filed a tax return online before
 
 whoReceivedUnauthPayment.title = Who received the unauthorised payment or deemed unauthorised payment?
 whoReceivedUnauthPayment.heading = Who received the unauthorised payment or deemed unauthorised payment?
@@ -1041,6 +1041,40 @@ taxYear.checkYourAnswersLabel = Which tax year are you submitting an event repor
 taxYear.error.required = Select a tax year
 taxYear.change.hidden = Which tax year are you submitting an event report for?
 
+fileUploadWhatYouWillNeed.event1.title = What you will need
+fileUploadWhatYouWillNeed.event1.heading = What you will need
+fileUploadWhatYouWillNeed.event1.p1 = To record an unauthorised payment for a member you will need to tell us:
+fileUploadWhatYouWillNeed.event1.p2 = To record an unauthorised payment for an employer you will need to tell us:
+fileUploadWhatYouWillNeed.event1.p3 = Documents previously sent to HMRC for event reporting purposes are out of date and cannot be uploaded. For the correct document and information on how to complete it, download:
+fileUploadWhatYouWillNeed.event1.item1 = the member’s name and National Insurance number
+fileUploadWhatYouWillNeed.event1.item2 = if you hold a signed mandate from the member to deduct tax from their unauthorised payment
+fileUploadWhatYouWillNeed.event1.item3 = if the value of the unauthorised payment is more than 25% of the pension fund for the individual
+fileUploadWhatYouWillNeed.event1.item4 = if the scheme is paying the unauthorised payment surcharge on behalf of the member
+fileUploadWhatYouWillNeed.event1.item5 = the nature of the payment
+fileUploadWhatYouWillNeed.event1.item6 = the payment value and date
+fileUploadWhatYouWillNeed.event1.item7 = the company or organisation name
+fileUploadWhatYouWillNeed.event1.item8 = the company number
+fileUploadWhatYouWillNeed.event1.item9 = the company address
+fileUploadWhatYouWillNeed.event1.item10 = – do not change or delete the header (row 1) or change the order of the columns
+fileUploadWhatYouWillNeed.event1.item10.prefix = the
+fileUploadWhatYouWillNeed.event1.instructions.link.text = instructions explaining the process and the formatting that should be used
+fileUploadWhatYouWillNeed.event1.template.link.text = latest template file
+fileUploadWhatYouWillNeed.event1.inset = All the data you have previously added for this charge in this quarter will be overwritten when you upload a file.
+
+fileUploadWhatYouWillNeed.event6.title = What you will need
+fileUploadWhatYouWillNeed.event6.heading = What you will need
+fileUploadWhatYouWillNeed.event6.p1 = To record a benefit crystallisation, where the member relies on an applicable LTA protection, you will need to upload a .csv file and include the following information for each member:
+fileUploadWhatYouWillNeed.event6.p2 = Documents previously sent to HMRC for event reporting purposes are out of date and cannot be uploaded. For the correct document and information on how to complete it, download:
+fileUploadWhatYouWillNeed.event6.item1 = member’s name and National Insurance number
+fileUploadWhatYouWillNeed.event6.item2 = details of the type of protection held for the crystallisation
+fileUploadWhatYouWillNeed.event6.item3 = amount that was crystallised
+fileUploadWhatYouWillNeed.event6.item4 = date of the benefit crystallisation
+fileUploadWhatYouWillNeed.event6.item5 = – do not change or delete the header (row 1) or change the order of the columns
+fileUploadWhatYouWillNeed.event6.item5.prefix = the
+fileUploadWhatYouWillNeed.event6.instructions.link.text = instructions explaining the process and the formatting that should be used
+fileUploadWhatYouWillNeed.event6.template.link.text = latest template file
+fileUploadWhatYouWillNeed.event6.inset = All the data you have previously added for this charge in this quarter will be overwritten when you upload a file.
+
 fileUploadWhatYouWillNeed.event22.title = What you will need
 fileUploadWhatYouWillNeed.event22.heading = What you will need
 fileUploadWhatYouWillNeed.event22.p1 = To report annual allowances events you will need to upload a .csv file and include the following information for each member:
@@ -1084,6 +1118,7 @@ typeOfProtection.individualProtection2014 = Individual protection 2014
 typeOfProtection.individualProtection2016 = Individual protection 2016
 typeOfProtection.checkYourAnswersLabel = Protection type
 typeOfProtection.error.required = Select what type of protection is held
+typeOfProtection.error.format = Enter the type of protection in the correct format
 typeOfProtection.change.hidden = The protection type
 
 event8.typeOfProtection.title = What type of protection was held for the lump sum?
@@ -1550,6 +1585,12 @@ fileUpload.memberDetails.generic.error.nino = member’s National Insurance numb
 
 fileUpload.taxYear.generic.error = tax year is missing, invalid or in the wrong format
 fileUpload.totalAmounts.generic.error = the total of the member’s pension input amounts is missing, invalid or in the wrong format
+
+fileUpload.typeOfProtection.generic.error = "Error for type of protection needs to be confirmed"
+fileUpload.typeOfProtectionReference.generic.error = The protection reference is a maximum of 15 characters and a combination of numbers and letters
+fileUpload.lumpSumAmount.generic.error = The total amount crystallised must be an amount of money, like 123.45 or 156.00. It must include pence and cannot be a negative amount, nor exceed £999999999.99
+fileUpload.lumpSumDate.generic.error = The date must be between 6 April 2006 and 5 April of the tax year that is being submitted
+
 fileUploadSuccess.title = Your file upload was successful
 fileUploadSuccess.heading = Your file upload was successful
 fileUploadSuccess.p = {0} was uploaded successfully and the charge was added to the event. Select continue to view the changes.
@@ -1578,3 +1619,11 @@ pspDeclaration.error.invalid = The scheme administrator's ID must only include l
 pspDeclaration.error.length = The scheme administrator's ID must be the letter A followed by 7 numbers, like A 9999999
 PspDeclaration.change.hidden = DeclarationPsp
 pspDeclaration.error.noMatch = Enter the correct pension scheme administrator ID
+
+whatYouWillNeed.event6.title = What you will need
+whatYouWillNeed.event6.heading = What you will need
+whatYouWillNeed.event6.p = To record a benefit crystallisation, where the member relies on an applicable LTA protection, you will need to tell us the:
+whatYouWillNeed.event6.item1 = member’s name and National Insurance number
+whatYouWillNeed.event6.item2 = details of the type of protection held for the crystallisation
+whatYouWillNeed.event6.item3 = amount that was crystallised
+whatYouWillNeed.event6.item4 = date of the benefit crystallisation

@@ -20,13 +20,15 @@ import audit.AuditService
 import base.SpecBase
 import connectors.MinimalConnector.MinimalDetails
 import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector}
+import models.VersionInfo
 import models.enumeration.AdministratorOrPractitioner.Administrator
+import models.enumeration.VersionStatus.Compiled
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints, VersionInfoPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Results.Ok
@@ -90,20 +92,21 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       val organisationName = "Test company ltd"
       val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
 
-      when(mockERConnector.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(()))
+      when(mockERConnector.submitReport(any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
       doNothing().when(mockAuditService).sendEvent(any())(any(), any())
       when(mockEmailConnector.sendEmail(
         schemeAdministratorType = ArgumentMatchers.eq(Administrator),
         requestId = any(), psaOrPspId = any(),
         emailAddress = ArgumentMatchers.eq(testEmail),
         templateId = ArgumentMatchers.eq(templateId),
-        templateParams = any())(any(), any()))
+        templateParams = any(),
+        reportVersion = any())(any(), any()))
         .thenReturn(Future.successful(EmailSent))
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
       when(mockSubmitService.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(Ok))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled))), extraModules)
           .build()
 
       running(application) {

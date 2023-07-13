@@ -49,12 +49,13 @@ class AuditServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with 
   private val auditService = app.injector.instanceOf[AuditService]
   private val taxYear = TaxYear(startYear = "2022")
   private val eventType = EventType.Event22
+  private val reportVersion = "1"
 
   private def config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
   "AuditService" must {
     "send audit event" in {
-      val aftAuditEvent = StartNewERAuditEvent("test-psa", "test-pstr", taxYear, eventType)
+      val aftAuditEvent = StartNewERAuditEvent("test-psa", "test-pstr", taxYear, eventType, reportVersion)
       val templateCaptor = ArgumentCaptor.forClass(classOf[DataEvent])
 
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
@@ -68,10 +69,11 @@ class AuditServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with 
         case DataEvent(auditSource, auditType, _, _, detail, _, _, _) =>
           auditSource mustBe config.appName
           auditType mustBe "EventReportingStart"
-          detail mustBe Map("psaOrPspId" -> "test-psa",
-                            "pstr" -> "test-pstr",
+          detail mustBe Map("PensionSchemeAdministratorOrPensionSchemePractitionerId" -> "test-psa",
+                            "PensionSchemeTaxReference" -> "test-pstr",
                             "taxYear" -> "2022 to 2023",
-                            "eventNumber" -> "22")
+                            "eventNumber" -> "22",
+                            "reportVersion" -> "1")
       }
       app.stop()
     }

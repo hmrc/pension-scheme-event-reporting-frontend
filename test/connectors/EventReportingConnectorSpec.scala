@@ -38,6 +38,7 @@ class EventReportingConnectorSpec
   private val eventType: EventType = EventType.Event1
   private val eventType2: EventType = EventType.Event2
   private val referenceStub: String = "123"
+  private val reportVersion: String = "reportVersion"
   private val userAnswers = UserAnswers()
 
   private val validResponse = Seq(
@@ -58,22 +59,24 @@ class EventReportingConnectorSpec
   private val eventReportSummaryCacheUrl = "/pension-scheme-event-reporting/event-summary"
   private val eventReportCompileUrl = "/pension-scheme-event-reporting/compile"
   private val eventReportSubmitUrl = "/pension-scheme-event-reporting/submit-event-declaration-report"
+
   private def event20AReportSubmitUrl = "/pension-scheme-event-reporting/submit-event20a-declaration-report"
 
   private val getFileUploadResponseUrl = "/pension-scheme-event-reporting/file-upload-response/get"
   private val getOverviewUrl = "/pension-scheme-event-reporting/overview"
 
-  private val failureOutcome = FileUploadOutcomeResponse(fileName = None, FAILURE, None)
+  private val failureOutcome = FileUploadOutcomeResponse(fileName = None, FAILURE, None, referenceStub, None)
   private val failureOutcomeJson = Json.obj("fileStatus" -> "ERROR")
-  private val successOutcome = FileUploadOutcomeResponse(fileName = Some("test"), SUCCESS, Some("downloadUrl"))
+  private val successOutcome = FileUploadOutcomeResponse(fileName = Some("test"), SUCCESS, Some("downloadUrl"), referenceStub, Some(100L))
   private val successOutcomeJson = Json.obj(
     "fileStatus" -> "READY",
     "downloadUrl" -> "downloadUrl",
     "uploadDetails" -> Json.obj(
-      "fileName" -> "test"
+      "fileName" -> "test",
+      "size" -> 100L
     )
   )
-  private val inProgressOutcome = FileUploadOutcomeResponse(fileName = None, IN_PROGRESS, None)
+  private val inProgressOutcome = FileUploadOutcomeResponse(fileName = None, IN_PROGRESS, None, referenceStub, None)
 
   "getEventReportSummary" must {
     "return successfully when the backend has returned OK and a correct response" in {
@@ -86,7 +89,7 @@ class EventReportingConnectorSpec
           )
       )
 
-      connector.getEventReportSummary(pstr, "21/01/22") map { response =>
+      connector.getEventReportSummary(pstr, "21/01/22", 1) map { response =>
         response mustBe validResponse
       }
     }
@@ -100,7 +103,7 @@ class EventReportingConnectorSpec
           )
       )
 
-      connector.getEventReportSummary(pstr, "21/01/22") map {
+      connector.getEventReportSummary(pstr, "21/01/22", 1) map {
         _ mustBe Nil
       }
     }
@@ -115,7 +118,7 @@ class EventReportingConnectorSpec
       )
 
       recoverToSucceededIf[HttpException] {
-        connector.getEventReportSummary(pstr, "21/01/22")
+        connector.getEventReportSummary(pstr, "21/01/22", 1)
       }
     }
   }
@@ -156,7 +159,7 @@ class EventReportingConnectorSpec
             noContent
           )
       )
-      connector.submitReport(pstr, userAnswers).map {
+      connector.submitReport(pstr, userAnswers, reportVersion).map {
         _ mustBe()
       }
     }
@@ -171,7 +174,7 @@ class EventReportingConnectorSpec
       )
 
       recoverToSucceededIf[HttpException] {
-        connector.submitReport(pstr, userAnswers)
+        connector.submitReport(pstr, userAnswers, reportVersion)
       }
     }
   }
@@ -184,7 +187,7 @@ class EventReportingConnectorSpec
             noContent
           )
       )
-      connector.submitReportEvent20A(pstr, userAnswers).map {
+      connector.submitReportEvent20A(pstr, userAnswers, reportVersion).map {
         _ mustBe()
       }
     }
@@ -199,7 +202,7 @@ class EventReportingConnectorSpec
       )
 
       recoverToSucceededIf[HttpException] {
-        connector.submitReportEvent20A(pstr, userAnswers)
+        connector.submitReportEvent20A(pstr, userAnswers, reportVersion)
       }
     }
   }
@@ -212,7 +215,7 @@ class EventReportingConnectorSpec
           .willReturn(
             ok
               .withBody(successOutcomeJson.toString)
-              .withHeader("reference", "123")
+              .withHeader("reference", referenceStub)
           )
       )
 
@@ -228,7 +231,7 @@ class EventReportingConnectorSpec
           .willReturn(
             ok
               .withBody(failureOutcomeJson.toString)
-              .withHeader("reference", "123")
+              .withHeader("reference", referenceStub)
           )
       )
 
@@ -269,10 +272,10 @@ class EventReportingConnectorSpec
           "periodStartDate" -> "2022-04-06",
           "periodEndDate" -> "2023-04-05",
           "versionDetails" -> Json.obj(
-          "numberOfVersions" -> 2,
-          "submittedVersionAvailable" -> true,
-          "compiledVersionAvailable" -> true
-        )
+            "numberOfVersions" -> 2,
+            "submittedVersionAvailable" -> true,
+            "compiledVersionAvailable" -> true
+          )
         )
       )
 

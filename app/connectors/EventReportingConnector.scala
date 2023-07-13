@@ -33,21 +33,27 @@ class EventReportingConnector @Inject()(
                                        ) {
 
   private def eventRepSummaryUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/event-summary"
+
   private def eventCompileUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/compile"
+
   private def eventSubmitUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event-declaration-report"
+
   private def event20ASubmitUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event20a-declaration-report"
+
   private def getFileUploadResponseUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/get"
-  private def eventReportingToggleUrl(toggleName:String) = s"${config.eventReportingUrl}/admin/get-toggle/$toggleName"
+
+  private def eventReportingToggleUrl(toggleName: String) = s"${config.eventReportingUrl}/admin/get-toggle/$toggleName"
+
   private def eventOverviewUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/overview"
 
 
-  def getEventReportSummary(pstr: String, reportStartDate: String)
+  def getEventReportSummary(pstr: String, reportStartDate: String, version: Int)
                            (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventType]] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
-      "reportVersionNumber" -> "001",
+      "reportVersionNumber" -> version.toString,
       "reportStartDate" -> reportStartDate
     )
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
@@ -91,12 +97,13 @@ class EventReportingConnector @Inject()(
       }
   }
 
-  def submitReport(pstr: String, ua: UserAnswers)
+  def submitReport(pstr: String, ua: UserAnswers, version: String)
                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
-      "pstr" -> pstr
+      "pstr" -> pstr,
+      "version" -> version
     )
 
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
@@ -111,12 +118,13 @@ class EventReportingConnector @Inject()(
       }
   }
 
-  def submitReportEvent20A(pstr: String, ua: UserAnswers)
-                  (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+  def submitReportEvent20A(pstr: String, ua: UserAnswers, version: String)
+                          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
-      "pstr" -> pstr
+      "pstr" -> pstr,
+      "version" -> version
     )
 
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
@@ -150,17 +158,19 @@ class EventReportingConnector @Inject()(
 
   def getFileUploadOutcome(reference: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[FileUploadOutcomeResponse] = {
     val headerCarrier: HeaderCarrier = hc.withExtraHeaders("reference" -> reference)
-    http.GET[HttpResponse](getFileUploadResponseUrl)(implicitly, headerCarrier, implicitly).map{ response =>
+    http.GET[HttpResponse](getFileUploadResponseUrl)(implicitly, headerCarrier, implicitly).map { response =>
       response.status match {
         case OK =>
           ((response.json \ "fileStatus").asOpt[String],
             (response.json \ "uploadDetails" \ "fileName").asOpt[String],
-            (response.json \ "downloadUrl").asOpt[String]) match {
-            case (Some("READY"),file@Some(_), downloadUrl@Some(_)) =>
-              FileUploadOutcomeResponse(file, FileUploadOutcomeStatus.SUCCESS, downloadUrl)
-            case _ => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.FAILURE, None)
+            (response.json \ "downloadUrl").asOpt[String],
+            (response.json \ "uploadDetails" \ "size").asOpt[Long]
+          ) match {
+            case (Some("READY"), file@Some(_), downloadUrl@Some(_), fileSize@Some(_)) =>
+              FileUploadOutcomeResponse(file, FileUploadOutcomeStatus.SUCCESS, downloadUrl, reference, fileSize)
+            case _ => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.FAILURE, None, reference, None)
           }
-        case NOT_FOUND => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.IN_PROGRESS, None)
+        case NOT_FOUND => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.IN_PROGRESS, None, reference, None)
         case _ =>
           throw new HttpException(response.body, response.status)
       }

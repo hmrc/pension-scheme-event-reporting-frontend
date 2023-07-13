@@ -18,13 +18,13 @@ package controllers
 
 import audit.{AuditService, EventReportingSubmissionEmailAuditEvent}
 import config.FrontendAppConfig
-import connectors.{EmailConnector, EmailStatus, EventReportingConnector, MinimalConnector, SchemeDetailsConnector, UserAnswersCacheConnector}
+import connectors._
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.DeclarationPspFormProvider
 import models.enumeration.AdministratorOrPractitioner
 import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}
-import pages.{DeclarationPspPage, Waypoints}
+import pages.{DeclarationPspPage, VersionInfoPage, Waypoints}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
@@ -63,7 +63,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
     }
     minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map {
       minimalDetails =>
-    Ok(view(minimalDetails.name, preparedForm, waypoints))
+        Ok(view(minimalDetails.name, preparedForm, waypoints))
     }
   }
 
@@ -87,11 +87,12 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
               Future.successful(BadRequest(view(minimalDetails.name, formWithErrors, waypoints))),
             value => {
               val originalUserAnswers = request.userAnswers
+              val reportVersion = originalUserAnswers.get(VersionInfoPage).get.version.toString
               val updatedAnswers = originalUserAnswers.setOrException(DeclarationPspPage, value)
               userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
                 declarationData(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, authorisingPsaId) match {
                   case Some(data) =>
-                    erConnector.submitReport(request.pstr, UserAnswers(data)).flatMap { _ =>
+                    erConnector.submitReport(request.pstr, UserAnswers(data), reportVersion).flatMap { _ =>
                       emailFuture.map { _ =>
                         Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints))
                       }
@@ -119,17 +120,22 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
       "dateSubmitted" -> submittedDate
     )
 
+    val reportVersion = request.userAnswers.get(VersionInfoPage).get.version.toString
+
     emailConnector.sendEmail(schemeAdministratorType,
       requestId,
       request.loggedInUser.idName,
       email,
       config.fileReturnTemplateId,
-      templateParams).map { emailStatus =>
+      templateParams,
+      reportVersion).map { emailStatus =>
       auditService.sendEvent(
         EventReportingSubmissionEmailAuditEvent(
           request.loggedInUser.idName,
           schemeAdministratorType,
-          email
+          email,
+          reportVersion,
+          emailStatus
         )
       )
       emailStatus

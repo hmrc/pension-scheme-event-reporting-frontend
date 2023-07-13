@@ -23,9 +23,9 @@ import java.util.UUID
 case class UpscanFileReference(reference: String)
 
 case class UpscanInitiateResponse(
-                                 fileReference: UpscanFileReference,
-                                 postTarget: String,
-                                 formFields: Map[String, String]
+                                   fileReference: UpscanFileReference,
+                                   postTarget: String,
+                                   formFields: Map[String, String]
                                  )
 
 case class UploadId(value: String) extends AnyVal
@@ -34,10 +34,11 @@ object UploadId {
   def generate: UploadId = UploadId(UUID.randomUUID().toString)
 }
 
-case class FileUploadOutcomeResponse(fileName: Option[String], fileUploadStatus: FileUploadOutcomeStatus, downloadUrl: Option[String])
+case class FileUploadOutcomeResponse(fileName: Option[String], fileUploadStatus: FileUploadOutcomeStatus,
+                                     downloadUrl: Option[String], reference: String, fileSize: Option[Long])
 
 object FileUploadOutcomeResponse {
-    implicit val format: OFormat[FileUploadOutcomeResponse] = Json.format[FileUploadOutcomeResponse]
+  implicit val format: OFormat[FileUploadOutcomeResponse] = Json.format[FileUploadOutcomeResponse]
 }
 
 sealed trait FileUploadOutcomeStatus

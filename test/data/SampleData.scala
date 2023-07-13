@@ -23,6 +23,7 @@ import models.common.{ChooseTaxYear, MembersDetails, PaymentDetails => CommonPay
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event2, Event6, Event7, Event8, Event8A}
+import models.enumeration.VersionStatus.Compiled
 import models.event1.PaymentNature.BenefitInKind
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.employer.PaymentNature.TangibleMoveableProperty
@@ -38,8 +39,7 @@ import models.event6.{CrystallisedDetails, TypeOfProtection => Event6TypeOfProte
 import models.event7.PaymentDate
 import models.event8.{LumpSumDetails, TypeOfProtection => Event8TypeOfProtection}
 import models.event8a.PaymentType
-import models.{TaxYear, UserAnswers}
-import pages.TaxYearPage
+import models.{TaxYear, UserAnswers, VersionInfo}
 import pages.address.ManualAddressPage
 import pages.common._
 import pages.event1._
@@ -53,6 +53,7 @@ import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, Typ
 import pages.event7.{CrystallisedAmountPage, LumpSumAmountPage, PaymentDatePage}
 import pages.event8.{LumpSumAmountAndDatePage, TypeOfProtectionReferencePage, TypeOfProtectionPage => Event8TypeOfProtectionPage}
 import pages.event8a.PaymentTypePage
+import pages.{TaxYearPage, VersionInfoPage}
 import play.api.libs.json.Writes
 import utils.{CountryOptions, Event2MemberPageNumbers, InputOption}
 
@@ -65,7 +66,6 @@ object SampleData extends SpecBase {
   )
 
   def countryOptions: CountryOptions = new CountryOptions(options)
-
 
 
   val seqAddresses: Seq[Address] = Seq[Address](
@@ -121,10 +121,11 @@ object SampleData extends SpecBase {
   val memberDetails: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567D")
   val memberDetails2: MembersDetails = MembersDetails("Steven", "Bloggs", "AA123456C")
 
-  private val writesTaxYear: Writes[ChooseTaxYear]= ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
+  private val writesTaxYear: Writes[ChooseTaxYear] = ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
 
   val paymentDetails: Event1PaymentDetails = Event1PaymentDetails(1000.00, LocalDate.of(2022, 11, 8))
   val crystallisedDetails: CrystallisedDetails = CrystallisedDetails(10.00, LocalDate.of(2022, 11, 8))
+  val crystallisedDetails2: CrystallisedDetails = CrystallisedDetails(10.00, LocalDate.of(2022, 8, 12))
   val lumpSumDetails = LumpSumDetails(10.00, LocalDate.of(2022, 3, 22))
   val paymentDetailsCommon: CommonPaymentDetails = CommonPaymentDetails(10.00, LocalDate.of(2022, 4, 5))
 
@@ -311,11 +312,13 @@ object SampleData extends SpecBase {
     emptyUserAnswersWithTaxYear
       .setOrException(pages.event20.WhatChangePage, BecameOccupationalScheme)
       .setOrException(pages.event20.BecameDatePage, Event20Date(LocalDate.of(2023, 12, 12)))
+      .setOrException(VersionInfoPage, VersionInfo(1, Compiled))
 
   def sampleEvent20ABecameJourneyData: UserAnswers =
     emptyUserAnswersWithTaxYear
       .setOrException(pages.event20A.WhatChangePage, BecameMasterTrust)
       .setOrException(pages.event20A.BecameDatePage, LocalDate.of(2023, 1, 12))
+      .setOrException(VersionInfoPage, VersionInfo(1, Compiled))
 
   def sampleEvent20ACeasedJourneyData: UserAnswers =
     emptyUserAnswersWithTaxYear

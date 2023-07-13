@@ -16,9 +16,12 @@
 
 package connectors
 
+import audit.{AuditService, EventReportingUpscanFileUploadAuditEvent}
 import config.FrontendAppConfig
+import models.enumeration.EventType
 import models.requests.DataRequest
 import models.{UpscanFileReference, UpscanInitiateResponse}
+import play.api.Logger
 import play.api.libs.json._
 import play.api.mvc.AnyContent
 import play.mvc.Http.HeaderNames
@@ -27,6 +30,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Failure
 
 sealed trait UpscanInitiateRequest
 
@@ -65,37 +69,63 @@ object PreparedUpload {
   implicit val format: Reads[PreparedUpload] = Json.reads[PreparedUpload]
 }
 
-class UpscanInitiateConnector @Inject()(httpClient: HttpClient, appConfig: FrontendAppConfig)(implicit ec: ExecutionContext) {
+class UpscanInitiateConnector @Inject()(httpClient: HttpClient, appConfig: FrontendAppConfig,
+                                        auditService: AuditService)(implicit ec: ExecutionContext) {
 
   private val headers = Map(
     HeaderNames.CONTENT_TYPE -> "application/json"
   )
+  private val logger = Logger(classOf[UpscanInitiateConnector])
 
-  def initiateV2(redirectOnSuccess: Option[String], redirectOnError: Option[String])
+  def initiateV2(redirectOnSuccess: Option[String], redirectOnError: Option[String], eventType: EventType)
                 (implicit request: DataRequest[AnyContent], headerCarrier: HeaderCarrier): Future[UpscanInitiateResponse] = {
 
     val upscanCallbackURL = s"${appConfig.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/save"
-
+    logger.warn(s"Upscan initiation: callback URL is $upscanCallbackURL")
     val req = UpscanInitiateRequestV2(
       callbackUrl = upscanCallbackURL,
       successRedirect = redirectOnSuccess,
       errorRedirect = redirectOnError,
       maximumFileSize = Some(appConfig.maxUploadFileSize * (1024 * 1024))
     )
-    initiate(appConfig.initiateV2Url, req)
+    initiate(appConfig.initiateV2Url, req, eventType)
   }
 
-  private def initiate[T](url: String, initialRequest: T)(
+  private def initiate[T](url: String, initialRequest: T, eventType: EventType)(
     implicit request: DataRequest[AnyContent], headerCarrier: HeaderCarrier, wts: Writes[T]): Future[UpscanInitiateResponse] = {
-
+    val startTime = System.currentTimeMillis
     httpClient.POST[T, PreparedUpload](url, initialRequest, headers.toSeq).map {
       response =>
         val fileReference = UpscanFileReference(response.reference.reference)
         val postTarget = response.uploadRequest.href
         val formFields = response.uploadRequest.fields
         UpscanInitiateResponse(fileReference, postTarget, formFields)
+    } andThen {
+      case Failure(t) =>
+        sendFailureAuditEvent(eventType, t.getMessage, startTime)
     }
   }
+
+  private def sendFailureAuditEvent(
+                                     eventType: EventType,
+                                     errorMessage: String,
+                                     startTime: Long)(implicit request: DataRequest[AnyContent]): Unit = {
+
+    val endTime = System.currentTimeMillis
+    val duration = endTime - startTime
+
+    auditService.sendEvent(
+      EventReportingUpscanFileUploadAuditEvent(
+        eventType = eventType,
+        psaOrPspId = request.loggedInUser.psaIdOrPspId,
+        pstr = request.pstr,
+        schemeAdministratorType = request.loggedInUser.administratorOrPractitioner,
+        outcome = Left(errorMessage),
+        uploadTimeInMilliSeconds = duration
+      )
+    )
+  }
+
 
   def download(downloadUrl: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     httpClient.GET[HttpResponse](downloadUrl)(implicitly, hc, implicitly)
