@@ -19,8 +19,9 @@ package controllers
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.WantToSubmitFormProvider
-import models.UserAnswers
+import models.{TaxYear, UserAnswers}
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
+import models.enumeration.EventType.{Event10, Event18, WindUp, getEventType}
 import pages.{WantToSubmitPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -53,17 +54,16 @@ class WantToSubmitController @Inject()(
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(WantToSubmitPage, value)
-          userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
-            if (value) {
-              Redirect(
-                request.loggedInUser.administratorOrPractitioner match {
-                  case Administrator => routes.DeclarationController.onPageLoad(waypoints)
-                  case Practitioner => routes.DeclarationPspController.onPageLoad(waypoints)
-                }
-              )
-            } else {
-              Redirect(request.returnUrl)
-            }
+
+          userAnswersCacheConnector.save(request.pstr, updatedAnswers).map {
+            case value if TaxYear.isCurrentTaxYear(updatedAnswers) =>
+              Redirect(controllers.routes.CannotSubmitController.onPageLoad(waypoints).url)
+            case value =>
+              Redirect(request.loggedInUser.administratorOrPractitioner match {
+                case Administrator => routes.DeclarationController.onPageLoad(waypoints)
+                case Practitioner => routes.DeclarationPspController.onPageLoad(waypoints)
+              })
+            case _ => Redirect(request.returnUrl)
           }
         }
       )

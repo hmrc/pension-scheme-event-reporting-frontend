@@ -34,7 +34,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.DateHelper.formatSubmittedDate
 import views.html.DeclarationView
 
-import java.time.{ZoneId, ZonedDateTime}
+import java.time.{LocalDate, ZoneId, ZonedDateTime}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -59,9 +59,6 @@ class DeclarationController @Inject()(
 
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
-
-      // TODO add logic to allow windup to submit
-
       val data: UserAnswers = UserAnswers(
         declarationData(
           request.pstr,
@@ -80,11 +77,10 @@ class DeclarationController @Inject()(
       }
 
       submitService.submitReport(request.pstr, data).flatMap { result =>
-        val ty = TaxYear.getTaxYear(request.userAnswers)
-        (result.header.status, ty) match {
-          case (OK, ty) if ty >= 2023 => emailFuture.map(_ =>Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
-          case (OK, ty) if ty < 2023  => Future.successful(Redirect(controllers.routes.CannotSubmitController.onPageLoad(waypoints).url))
-          case (NOT_FOUND, _) =>
+        (result.header.status) match {
+          case OK =>
+            emailFuture.map(_ =>Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
+          case NOT_FOUND =>
             logger.warn(s"Unable to submit declaration because there is nothing to submit (nothing in compile state)")
             Future.successful(Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url))
           case _ => throw new RuntimeException(s"Invalid response returned from submit report: ${result.header.status}")
