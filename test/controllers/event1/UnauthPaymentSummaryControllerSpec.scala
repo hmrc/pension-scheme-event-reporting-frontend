@@ -84,7 +84,7 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
                 attributes = Map()
               ),
               ActionItem(
-                href = "/manage-pension-scheme-event-report/removeMember/1?eventType=1",
+                href = "/manage-pension-scheme-event-report/new-report/1/remove-event-1",
                 content = Text(Messages("site.remove")),
                 visuallyHiddenText = None,
                 attributes = Map()
@@ -103,7 +103,7 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
                   visuallyHiddenText = None,
                   attributes = Map()
                 ),
-                ActionItem(href = "/manage-pension-scheme-event-report/removeMember/2?eventType=1", content = Text(Messages("site.remove")),
+                ActionItem(href = "/manage-pension-scheme-event-report/new-report/2/remove-event-1", content = Text(Messages("site.remove")),
                   visuallyHiddenText = None,
                   attributes = Map()
                 )

@@ -19,6 +19,7 @@ package controllers.common
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import controllers.common.MembersSummaryControllerSpec.{fake26MappedMembers, fakeChangeUrl, fakeRemoveUrl, paginationStats26Members}
+import controllers.common.routes._
 import data.SampleData
 import data.SampleData._
 import forms.common.MembersSummaryFormProvider
@@ -285,16 +286,12 @@ object MembersSummaryControllerSpec extends SpecBase {
   private def fakeRemoveUrl(eventType: EventType): String = {
     val directory = "/manage-pension-scheme-event-report"
     eventType match {
-      case Event2 => directory + s"/removeMember/1?eventType=2"
-      case Event3 => directory + s"/removeMember/1?eventType=3"
-      case Event4 => directory + s"/removeMember/1?eventType=4"
-      case Event5 => directory + s"/removeMember/1?eventType=5"
-      case Event6 => directory + s"/removeMember/1?eventType=6"
-      case Event8 => directory + s"/removeMember/1?eventType=8"
-      case Event8A => directory + s"/removeMember/1?eventType=8A"
-      case Event22 => directory + s"/removeMember/1?eventType=22"
-      case Event23 => directory + s"/removeMember/1?eventType=23"
-      case _ => "Not a member event"
+      case Event2 | Event3 |
+        Event4 | Event5 |
+        Event6 | Event8 |
+        Event8A | Event22 |
+        Event23 => directory + RemoveMemberController.onPageLoad(EmptyWaypoints, eventType, 0).url
+      case _ => "Not a member event used on this summary page"
     }
   }
 
