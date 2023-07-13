@@ -17,7 +17,7 @@
 package services
 
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23, Event6}
+import models.enumeration.EventType.{Event1, Event22, Event23, Event6}
 import play.api.Environment
 
 import java.io.File
@@ -26,6 +26,9 @@ import javax.inject.Inject
 class FileProviderService @Inject()(environment: Environment) {
   private val baseInstructionsPath: String = "conf/fileDownload/instructions"
   private val baseTemplatePath: String = "conf/fileDownload/template"
+
+  private val instructionsFilePathEvent1 = s"$baseInstructionsPath/instructions-event-1-unauthorised-payments.ods"
+  private val templateFilePathEvent1 = s"$baseTemplatePath/event-1-bulk-upload.csv"
 
   private val instructionsFilePathEvent6 = s"$baseInstructionsPath/instructions-event-6-benefit-crystallisation-where-the-member-relies-on-LTA-protections.ods"
   private val templateFilePathEvent6 = s"$baseTemplatePath/event-6-bulk-upload.csv"
@@ -38,6 +41,7 @@ class FileProviderService @Inject()(environment: Environment) {
 
   def getInstructionsFile(eventType: EventType): File = {
     val path: String = eventType match {
+      case Event1 => instructionsFilePathEvent1
       case Event6 => instructionsFilePathEvent6
       case Event22 => instructionsFilePathEvent22
       case Event23 => instructionsFilePathEvent23
@@ -48,6 +52,7 @@ class FileProviderService @Inject()(environment: Environment) {
 
   def getTemplateFile(eventType: EventType): File = {
     val path: String = eventType match {
+      case Event1 => templateFilePathEvent1
       case Event6 => templateFilePathEvent6
       case Event22 => templateFilePathEvent22
       case Event23 => templateFilePathEvent23

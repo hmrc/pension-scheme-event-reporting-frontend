@@ -20,13 +20,14 @@ import base.SpecBase
 import connectors.EventReportingConnector
 import forms.EventSummaryFormProvider
 import models.enumeration.EventType
-import models.{TaxYear, UserAnswers}
+import models.enumeration.VersionStatus.Compiled
+import models.{TaxYear, UserAnswers, VersionInfo}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, EventSummaryPage, TaxYearPage}
+import pages.{EmptyWaypoints, EventSummaryPage, TaxYearPage, VersionInfoPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -59,10 +60,11 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
       val ua = emptyUserAnswers
         .setOrException(EventSummaryPage, true)
         .setOrException(TaxYearPage, TaxYear("2022"))
+        .setOrException(VersionInfoPage, VersionInfo(1, Compiled))
 
       val seqOfEvents = Seq(EventType.Event1, EventType.Event18)
 
-      when(mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"))(any(), any())).thenReturn(
+      when(mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
         Future.successful(seqOfEvents)
       )
 
