@@ -268,29 +268,27 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
 object MembersSummaryControllerSpec extends SpecBase {
 
   private def fakeChangeUrl(eventType: EventType): String = {
-    val directory = "/manage-pension-scheme-event-report"
     eventType match {
-      case Event2 => directory + controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(0).url
-      case Event3 => directory + controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(0).url
-      case Event4 => directory + controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url
-      case Event5 => directory + controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(0).url
-      case Event6 => directory + controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(0).url
-      case Event8 => directory + controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(0).url
-      case Event8A => directory + controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(0).url
-      case Event22 => directory + controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url
-      case Event23 => directory + controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url
-      case _ => "Not a member event"
+      case Event2 => controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(0).url
+      case Event3 => controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(0).url
+      case Event4 => controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url
+      case Event5 => controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(0).url
+      case Event6 => controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(0).url
+      case Event8 => controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(0).url
+      case Event8A => controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(0).url
+      case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url
+      case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url
+      case _ => "Not a member event used on this summary page"
     }
   }
 
   private def fakeRemoveUrl(eventType: EventType): String = {
-    val directory = "/manage-pension-scheme-event-report"
     eventType match {
       case Event2 | Event3 |
         Event4 | Event5 |
         Event6 | Event8 |
         Event8A | Event22 |
-        Event23 => directory + RemoveMemberController.onPageLoad(EmptyWaypoints, eventType, 0).url
+        Event23 => RemoveMemberController.onPageLoad(EmptyWaypoints, eventType, 0).url
       case _ => "Not a member event used on this summary page"
     }
   }
