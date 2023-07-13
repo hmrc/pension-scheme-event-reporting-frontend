@@ -30,17 +30,22 @@
     <p class="govuk-body">@messages(s"fileUploadWhatYouWillNeed.event${eventType.toString}.p1")</p>
 
     <ul class="govuk-list govuk-list--bullet">
-     @if(eventType.toString == "22") {
-           <li>@messages("fileUploadWhatYouWillNeed.event22.item1")</li>
-           <li>@messages("fileUploadWhatYouWillNeed.event22.item2")</li>
-           <li>@messages("fileUploadWhatYouWillNeed.event22.item3")</li>
-           <li>@messages("fileUploadWhatYouWillNeed.event22.item4")</li>
+     @if(eventType.toString == "6") {
+       <li>@messages("fileUploadWhatYouWillNeed.event6.item1")</li>
+       <li>@messages("fileUploadWhatYouWillNeed.event6.item2")</li>
+       <li>@messages("fileUploadWhatYouWillNeed.event6.item3")</li>
+       <li>@messages("fileUploadWhatYouWillNeed.event6.item4")</li>
+     } else if(eventType.toString == "22") {
+       <li>@messages("fileUploadWhatYouWillNeed.event22.item1")</li>
+       <li>@messages("fileUploadWhatYouWillNeed.event22.item2")</li>
+       <li>@messages("fileUploadWhatYouWillNeed.event22.item3")</li>
+       <li>@messages("fileUploadWhatYouWillNeed.event22.item4")</li>
      } else {
-           <li>@messages("fileUploadWhatYouWillNeed.event23.item1")</li>
-           <li>@messages("fileUploadWhatYouWillNeed.event23.item2")</li>
-           <li>@messages("fileUploadWhatYouWillNeed.event23.item3")</li>
-           <li>@messages("fileUploadWhatYouWillNeed.event23.item4")</li>
-     }
+        <li>@messages("fileUploadWhatYouWillNeed.event23.item1")</li>
+        <li>@messages("fileUploadWhatYouWillNeed.event23.item2")</li>
+        <li>@messages("fileUploadWhatYouWillNeed.event23.item3")</li>
+        <li>@messages("fileUploadWhatYouWillNeed.event23.item4")</li>
+        }
     </ul>
 
     <p class="govuk-body">@messages(s"fileUploadWhatYouWillNeed.event${eventType.toString}.p2")</p>

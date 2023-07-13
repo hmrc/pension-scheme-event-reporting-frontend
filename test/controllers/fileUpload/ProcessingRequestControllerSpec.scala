@@ -19,7 +19,7 @@ package controllers.fileUpload
 import base.SpecBase
 import connectors.ParsingAndValidationOutcomeCacheConnector
 import models.enumeration.EventType
-import models.enumeration.EventType.Event22
+import models.enumeration.EventType.{Event22, Event23, Event6}
 import models.fileUpload.{ParsingAndValidationOutcome, ParsingAndValidationOutcomeStatus}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -41,7 +41,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
     bind[ParsingAndValidationOutcomeCacheConnector].to(mockParsingAndValidationOutcomeCacheConnector)
   )
   private val waypoints = EmptyWaypoints
-  private val seqOfEvents = Seq(Event22)
+  private val seqOfEvents = Seq(Event6, Event22, Event23)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

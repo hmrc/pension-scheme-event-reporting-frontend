@@ -16,21 +16,29 @@
 
 package connectors
 
+import audit.{AuditService, EventReportingUpscanFileUploadAuditEvent}
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.FrontendAppConfig
 import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.enumeration.{Enumerable, EventType}
 import models.requests.DataRequest
 import models.{LoggedInUser, UserAnswers}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{doNothing, never, times, verify}
+import org.mockito.{ArgumentCaptor, Mockito}
+import org.scalatest.Inside.inside
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import org.scalatest.{OptionValues, RecoverMethods}
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.http.Status
 import play.api.http.Status.OK
+import play.api.inject
+import play.api.inject.guice.GuiceableModule
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers.GET
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import utils.WireMockHelper
 
 class UpscanInitiateConnectorSpec
@@ -45,11 +53,24 @@ class UpscanInitiateConnectorSpec
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   override protected def portConfigKey: String = "microservice.services.upscan-initiate.port"
+
   implicit val appConfig: FrontendAppConfig = mock[FrontendAppConfig]
+  val mockAuditService: AuditService = mock[AuditService]
+
   private lazy val connector: UpscanInitiateConnector = app.injector.instanceOf[UpscanInitiateConnector]
   private implicit val dataRequest: DataRequest[AnyContent] =
-    DataRequest("Pstr123", "SchemeABC","returnUrl", FakeRequest(GET, "/"), LoggedInUser("user", Administrator, "psaId"), UserAnswers())
+    DataRequest("Pstr123", "SchemeABC", "returnUrl", FakeRequest(GET, "/"), LoggedInUser("user", Administrator, "psaId"), UserAnswers())
+
   private val url = "/upscan/v2/initiate"
+
+  override def beforeEach(): Unit = {
+    Mockito.reset(mockAuditService)
+    super.beforeEach()
+  }
+
+  override protected def bindings: Seq[GuiceableModule] = Seq[GuiceableModule](
+    inject.bind[AuditService].toInstance(mockAuditService)
+  )
 
   ".initiateV2" must {
     val successRedirectUrl = appConfig.successEndPointTarget(EventType.Event22)
@@ -76,17 +97,48 @@ class UpscanInitiateConnectorSpec
          |        }
          |    }
          |}""".stripMargin
-    "initiate upscan" in {
+
+    "return successful initiate upscan result" in {
+      doNothing().when(mockAuditService).sendEvent(any())(any(), any())
       server.stubFor(
         post(urlEqualTo(url))
           .willReturn(
             aResponse.withBody(response1).withStatus(OK)
           )
       )
-
-      connector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl))(dataRequest, hc) map { result =>
+      connector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), EventType.Event22)(dataRequest, hc) map { result =>
+        verify(mockAuditService, never()).sendEvent(any())(any(), any())
         result.fileReference.reference mustEqual "11370e18-6e24-453e-b45a-76d3e32ea33d"
         result.formFields.get("success_action_redirect") mustEqual Some("https://myservice.com/nextPage")
+      }
+    }
+
+    "return failure initiate upscan result" in {
+      val captor: ArgumentCaptor[EventReportingUpscanFileUploadAuditEvent] =
+        ArgumentCaptor.forClass(classOf[EventReportingUpscanFileUploadAuditEvent])
+
+      server.stubFor(
+        post(urlEqualTo(url))
+          .willReturn(
+            aResponse()
+              .withStatus(400)
+              .withBody("test")
+          )
+      )
+
+      recoverToExceptionIf[UpstreamErrorResponse] {
+        connector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), EventType.Event22)(dataRequest, hc)
+      } map { ex =>
+        verify(mockAuditService, times(1)).sendEvent(captor.capture())(any(), any())
+        ex.statusCode mustEqual Status.BAD_REQUEST
+        inside(captor.getValue) {
+          case EventReportingUpscanFileUploadAuditEvent(eventType, psaOrPspId, pstr, schemeAdministratorType, outcome, _) =>
+            eventType mustBe EventType.Event22
+            psaOrPspId mustBe dataRequest.loggedInUser.psaIdOrPspId
+            pstr mustBe dataRequest.pstr
+            schemeAdministratorType mustBe dataRequest.loggedInUser.administratorOrPractitioner
+            outcome.left.getOrElse("") contains "returned 400. Response body: 'test'" mustBe true
+        }
       }
     }
   }

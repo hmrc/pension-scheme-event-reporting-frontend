@@ -18,7 +18,7 @@ package controllers.fileUpload
 
 import base.SpecBase
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23}
+import models.enumeration.EventType.{Event22, Event23, Event6}
 import pages.EmptyWaypoints
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -26,7 +26,7 @@ import views.html.fileUpload.ProblemWithServiceView
 
 class ProblemWithServiceControllerSpec extends SpecBase {
 
-  private val seqOfEvents = Seq(Event22, Event23)
+  private val seqOfEvents = Seq(Event6, Event22, Event23)
 
   "ProblemWithService Controller" - {
     for (event <- seqOfEvents) {
