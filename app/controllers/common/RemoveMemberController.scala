@@ -46,17 +46,19 @@ class RemoveMemberController @Inject()(
                                         view: RemoveMemberView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
+
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
 
+      val form = formProvider(eventTypeMessage(eventType), fullNameAtIndex(request.userAnswers, eventType, index))
       val preparedForm = request.userAnswers.get(RemoveMemberPage(eventType, index)).fold(form)(form.fill)
       Ok(view(preparedForm, waypoints, eventType, eventTypeMessage(eventType), index, fullNameAtIndex(request.userAnswers, eventType, index)))
     }
 
   def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
+      val form = formProvider(eventTypeMessage(eventType), fullNameAtIndex(request.userAnswers, eventType, index))
 
       form.bindFromRequest().fold(
         formWithErrors =>

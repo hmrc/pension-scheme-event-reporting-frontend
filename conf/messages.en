@@ -1627,7 +1627,8 @@ whatYouWillNeed.event6.item1 = member’s name and National Insurance number
 whatYouWillNeed.event6.item2 = details of the type of protection held for the crystallisation
 whatYouWillNeed.event6.item3 = amount that was crystallised
 whatYouWillNeed.event6.item4 = date of the benefit crystallisation
+
 removeMember.title = Are you sure you want to remove the {0} charge for {1}?
 removeMember.heading = Are you sure you want to remove the {0} charge for {1}?
-removeMember.error.required = Select if you want to remove the {0} charge for {1}
+removeMember.error.required = Select yes if you want to remove the {0} charge for {1}
 removeMember.change.hidden = Are you sure you want to remove the {0} charge for {1}?
