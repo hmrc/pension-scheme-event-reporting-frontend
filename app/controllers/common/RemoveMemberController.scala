@@ -101,13 +101,11 @@ object RemoveMemberController {
       case Event1 =>
         userAnswers.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer).map {
           case membersSummary => membersSummary.name
-          // TODO: unhappy case handling.
           case _ => "this member or employer"
         }.apply(index)
       case _ =>
         userAnswers.getAll(MembersPage(eventType))(MembersSummary.readsMember(eventType)).map {
           case membersSummary => membersSummary.name
-          // TODO: unhappy case handling.
           case _ => "this member"
         }.apply(index)
     }
