@@ -99,7 +99,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
         .thenReturn(Future.successful(()))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent1), extraModules)
           .build()
 
       running(application) {
