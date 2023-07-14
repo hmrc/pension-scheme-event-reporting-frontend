@@ -17,9 +17,11 @@
 package controllers
 
 import base.SpecBase
-import connectors.UserAnswersCacheConnector
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import forms.WantToSubmitFormProvider
 import models.UserAnswers
+import models.enumeration.EventType
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -29,8 +31,10 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import utils.DateHelper
 import views.html.WantToSubmitView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
@@ -44,20 +48,23 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
   private def postRoute: String = routes.WantToSubmitController.onSubmit(waypoints).url
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val mockEventReportingConnector = mock[EventReportingConnector]
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
-
+  private val seqOfEventsWithWindUp = Seq(EventType.Event1, EventType.Event18, EventType.WindUp)
   override def beforeEach(): Unit = {
     super.beforeEach()
+    DateHelper.setDate(Some(LocalDate.of(2022, 4, 7)))
     reset(mockUserAnswersCacheConnector)
+    reset(mockEventReportingConnector)
   }
 
   "WantToSubmit Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -93,7 +100,7 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
         .thenReturn(Future.successful(()))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
 
       running(application) {
@@ -111,12 +118,14 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
       }
     }
 
-    "must save the answer and redirect to next page on submit (when selecting YES) for a PSA" in {
+    "must save the answer and redirect to declaration page on submit (when selecting YES) with correct year/events for a PSA" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
+      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-07"), ArgumentMatchers.eq(1))(any(), any()))
+        .thenReturn(Future.successful(seqOfEventsWithWindUp))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
 
       running(application) {
@@ -131,12 +140,37 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
       }
     }
 
+    "must redirect to cannot submit page on submit (when selecting YES) when current tax year and no wind up for a PSA" in {
+      val seqOfEvents = Seq(EventType.Event1, EventType.Event18)
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+      when(mockEventReportingConnector.getEventReportSummary(any(),ArgumentMatchers.eq("2022-05-06"), ArgumentMatchers.eq(1))(any(), any()))
+        .thenReturn(Future.successful(seqOfEvents))
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+          .build()
+
+      running(application) {
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+        val userAnswerUpdated = UserAnswers().setOrException(WantToSubmitPage, true)
+        println(s"\n\n${result}\n\n")
+        status(result) mustEqual SEE_OTHER
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
+        redirectLocation(result).value mustEqual routes.CannotSubmitController.onPageLoad(waypoints).url
+      }
+    }
+
     "must save the answer and redirect to event selection page on submit (when selecting YES) for a PSP" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
+      when(mockEventReportingConnector.getEventReportSummary(any(),  ArgumentMatchers.eq("2022-05-06"), ArgumentMatchers.eq(1))(any(), any()))
+        .thenReturn(Future.successful(seqOfEventsWithWindUp))
 
       val application =
-        applicationBuilderForPSP(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilderForPSP(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
 
       running(application) {
@@ -153,9 +187,11 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
     "must save the answer and redirect to next page on submit (when selecting NO)" in {
         when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
           .thenReturn(Future.successful(()))
+      when(mockEventReportingConnector.getEventReportSummary(any(),  ArgumentMatchers.eq("2022-05-06"), ArgumentMatchers.eq(1))(any(), any()))
+        .thenReturn(Future.successful(Seq()))
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
             .build()
 
         running(application) {

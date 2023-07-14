@@ -16,12 +16,12 @@
 
 package controllers
 
-import connectors.UserAnswersCacheConnector
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.WantToSubmitFormProvider
-import models.{TaxYear, UserAnswers}
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
-import models.enumeration.EventType.{Event10, Event18, WindUp, getEventType}
+import models.enumeration.EventType.WindUp
+import models.{TaxYear, UserAnswers}
 import pages.{WantToSubmitPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,6 +37,7 @@ class WantToSubmitController @Inject()(
                                         getData: DataRetrievalAction,
                                         formProvider: WantToSubmitFormProvider,
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
+                                        eventReportingConnector: EventReportingConnector,
                                         view: WantToSubmitView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -54,6 +55,18 @@ class WantToSubmitController @Inject()(
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(WantToSubmitPage, value)
+
+//TODO Correctly get version number- check against each eventType- check versionStatus is compiled only then find wind up
+
+//            eventReportingConnector.getEventReportSummary(request.pstr, TaxYear.selectedTaxYearStart(updatedAnswers).toString, 1).flatMap {
+//              listEventTypes =>
+//                listEventTypes.map {
+//                  case WindUp =>
+//                          ???
+//                  case _ =>
+//                          ???
+//                }
+//          }
 
           userAnswersCacheConnector.save(request.pstr, updatedAnswers).map {
             case value if TaxYear.isCurrentTaxYear(updatedAnswers) =>
