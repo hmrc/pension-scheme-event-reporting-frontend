@@ -144,8 +144,6 @@ eventSelection.event22 = Event 22
 eventSelection.event22.hint = Annual allowance
 eventSelection.event23 = Event 23
 eventSelection.event23.hint = Dual annual allowances (money purchase pension savings statement)
-eventSelection.event24 = Event 24
-eventSelection.event24.hint = Public service pension remedy
 eventSelection.eventWoundUp = Scheme has wound up
 eventSelection.checkYourAnswersLabel = Check your answers
 eventSelection.error.required = Select the event you want to add to the event report
@@ -170,7 +168,6 @@ eventSummary.event20 = Event 20: Occupational pension scheme
 eventSummary.event20A = Event 20a: Master Trust scheme
 eventSummary.event22 = Event 22: Annual allowance
 eventSummary.event23 = Event 23: Dual annual allowance
-eventSummary.event24 = Event 24: Public service pension remedy
 eventSummary.eventWindUp = Scheme has wound up
 
 schemeWindUpDate.title = When was the scheme wound up?
