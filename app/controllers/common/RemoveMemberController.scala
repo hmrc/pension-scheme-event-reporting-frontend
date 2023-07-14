@@ -44,16 +44,16 @@ class RemoveMemberController @Inject()(
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                         formProvider: RemoveMemberFormProvider,
                                         view: RemoveMemberView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
 
-    val preparedForm = request.userAnswers.get(RemoveMemberPage(eventType, index)).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, eventType, eventTypeMessage(eventType), index, fullNameAtIndex(request.userAnswers, eventType, index)))
-  }
+      val preparedForm = request.userAnswers.get(RemoveMemberPage(eventType, index)).fold(form)(form.fill)
+      Ok(view(preparedForm, waypoints, eventType, eventTypeMessage(eventType), index, fullNameAtIndex(request.userAnswers, eventType, index)))
+    }
 
   def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
@@ -64,13 +64,20 @@ class RemoveMemberController @Inject()(
             view(formWithErrors, waypoints, eventType, eventTypeMessage(eventType), index, fullNameAtIndex(request.userAnswers, eventType, index)))
           ),
         value => {
-          val originalUserAnswers = request.userAnswers
-          val updatedAnswers = originalUserAnswers.setOrException(RemoveMemberPage(eventType, index), value)
+          val maybeUserAnswersWithRemovedMember: UserAnswers = if (value) {
+            eventType match {
+              case Event1 => request.userAnswers.removeWithPath(MembersOrEmployersPage(eventType).apply(index))
+              case _ => request.userAnswers.removeWithPath(MembersPage(eventType).apply(index))
+            }
+          } else {
+            request.userAnswers
+          }
+          val updatedAnswers = maybeUserAnswersWithRemovedMember.setOrException(RemoveMemberPage(eventType, index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-          Redirect(RemoveMemberPage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(RemoveMemberPage(eventType, index).navigate(waypoints, maybeUserAnswersWithRemovedMember, updatedAnswers).route)
+          }
         }
-      }
-    )
+      )
   }
 }
 
@@ -99,10 +106,10 @@ object RemoveMemberController {
         }.apply(index)
       case _ =>
         userAnswers.getAll(MembersPage(eventType))(MembersSummary.readsMember(eventType)).map {
-        case membersSummary => membersSummary.name
-        // TODO: unhappy case handling.
-        case _ => "this member"
-      }.apply(index)
+          case membersSummary => membersSummary.name
+          // TODO: unhappy case handling.
+          case _ => "this member"
+        }.apply(index)
     }
   }
 }

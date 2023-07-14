@@ -35,8 +35,9 @@ case class RemoveMemberPage(eventType: EventType, index: Index) extends Question
     routes.RemoveMemberController.onPageLoad(waypoints, eventType, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    // TODO: refactor
     answers.get(this).map {
-      case true  => this
+      case true  => if (eventType == Event1) UnauthPaymentSummaryPage else MembersSummaryPage(eventType, index)
       case false => if (eventType == Event1) UnauthPaymentSummaryPage else MembersSummaryPage(eventType, index)
     }.orRecover
   }
