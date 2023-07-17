@@ -16,6 +16,7 @@
 
 package services.fileUpload
 
+import cats.Monoid
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
@@ -36,7 +37,19 @@ object ValidatorErrorMessages {
 }
 
 object Validator {
-  type Result = Validated[Seq[ValidationError], Seq[CommitItem]]
+  case class Result(members: Seq[MembersDetails], validated: Validated[Seq[ValidationError], Seq[CommitItem]])
+
+  implicit def monoidResult: Monoid[Result] = new Monoid[Result] {
+    override def empty: Result = Result(Nil, Valid(Nil))
+
+    override def combine(x: Result, y: Result): Result = {
+      Result(
+        members = x.members ++ y.members,
+        validated = x.validated.combine(y.validated)
+      )
+    }
+  }
+
   val FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty: ValidationError = ValidationError(0, 0, HeaderInvalidOrFileIsEmpty, EMPTY)
 }
 
@@ -68,8 +81,8 @@ trait Validator {
       case Some(row) if row.mkString(",").equalsIgnoreCase(validHeader) =>
         rows.size match {
           case n if n >= 2 =>
-            validateDataRows(rows, getTaxYear(userAnswers))
-              .map(_.foldLeft(userAnswers)((acc, ci) => acc.setOrException(ci.jsPath, ci.value)))
+            val x = validateDataRows(rows, getTaxYear(userAnswers))
+            x.validated.map(_.foldLeft(userAnswers)((acc, ci) => acc.setOrException(ci.jsPath, ci.value)))
           case _ => Invalid(Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty))
         }
       case _ =>
@@ -79,15 +92,17 @@ trait Validator {
 
   private def validateDataRows(rows: Seq[Array[String]], taxYear: Int)
                               (implicit messages: Messages): Result = {
-    rows.zipWithIndex.foldLeft[Result](Valid(Nil)) {
+    rows.zipWithIndex.foldLeft[Result](Result(Nil, Valid(Nil))) {
       case (acc, Tuple2(_, 0)) => acc
-      case (acc, Tuple2(row, index)) => Seq(acc, validateFields(index, row.toIndexedSeq, taxYear)).combineAll
+      case (acc, Tuple2(row, index)) => Seq(acc, validateFields(index, row.toIndexedSeq, taxYear, acc.members)).combineAll
     }
   }
 
   protected def validateFields(index: Int,
-                               columns: Seq[String], taxYear: Int)
-                              (implicit messages: Messages): Result
+                               columns: Seq[String],
+                               taxYear: Int,
+                               members: Seq[MembersDetails]
+                              )(implicit messages: Messages): Result
 
   protected def memberDetailsValidation(index: Int, columns: Seq[String],
                                         memberDetailsForm: Form[MembersDetails]): Validated[Seq[ValidationError], MembersDetails] = {
@@ -122,19 +137,21 @@ trait Validator {
   protected def resultFromFormValidationResult[A](formValidationResult: Validated[Seq[ValidationError], A],
                                                   generateCommitItem: A => CommitItem): Result = {
     formValidationResult match {
-      case Invalid(resultAErrors) => Invalid(resultAErrors)
-      case Valid(resultAObject) => Valid(Seq(generateCommitItem(resultAObject)))
+      case Invalid(resultAErrors) => Result(Nil, Invalid(resultAErrors))
+      case Valid(resultAObject) => Result(Nil, Valid(Seq(generateCommitItem(resultAObject))))
     }
   }
 
-  protected def get[A](r: Result)(implicit reads: Reads[A]): Option[A] =
-    r.toOption.flatMap(_.headOption.flatMap(_.value.asOpt[A]))
-
-  protected def getOrElse[A](r: Result, default: A)(implicit reads: Reads[A]): A =
-    r.toOption.flatMap(_.headOption.flatMap(_.value.asOpt[A])) match {
-      case None => default
-      case Some(a) => a
+  protected def resultFromFormValidationResultMembersDetails(formValidationResult: Validated[Seq[ValidationError], MembersDetails],
+                                                             generateCommitItem: MembersDetails => CommitItem,
+                                                             members: Seq[MembersDetails]): Result = {
+    formValidationResult match {
+      case Invalid(resultAErrors) => Result(Nil, Invalid(resultAErrors))
+      case Valid(resultAObject) => Result(
+        members = members ++ Seq(resultAObject),
+        validated = Valid(Seq(generateCommitItem(resultAObject))))
     }
+  }
 
   protected final def splitDayMonthYear(date: String): ParsedDate = {
     date.split("/").toSeq match {
