@@ -1627,3 +1627,8 @@ whatYouWillNeed.event6.item1 = member’s name and National Insurance number
 whatYouWillNeed.event6.item2 = details of the type of protection held for the crystallisation
 whatYouWillNeed.event6.item3 = amount that was crystallised
 whatYouWillNeed.event6.item4 = date of the benefit crystallisation
+
+noDataEnteredError.title = This report cannot be submitted.
+noDataEnteredError.heading = This report cannot be submitted.
+noDataEnteredError.p1 = No data has been entered.
+noDataEnteredError.p2 = Return to the pensions dashboard to enter data before submitting.
