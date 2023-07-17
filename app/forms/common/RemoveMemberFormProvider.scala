@@ -23,8 +23,8 @@ import play.api.i18n.Messages
 
 class RemoveMemberFormProvider @Inject() extends Mappings {
 
-  def apply(eventTypeMessage: String, fullName: String)(implicit messages: Messages): Form[Boolean] =
+  def apply(eventTypeMessage: String)(implicit messages: Messages): Form[Boolean] =
     Form(
-      "value" -> boolean(messages("removeMember.error.required", eventTypeMessage, fullName))
+      "value" -> boolean(messages("removeMember.error.required", eventTypeMessage))
     )
 }
