@@ -142,11 +142,11 @@ trait Validator {
     }
   }
 
-  protected def resultFromFormValidationResultMembersDetails(formValidationResult: Validated[Seq[ValidationError], MembersDetails],
-                                                             generateCommitItem: MembersDetails => CommitItem,
-                                                             members: Seq[MembersDetails]): Result = {
+  protected def resultFromFormValidationResultForMembersDetails(formValidationResult: Validated[Seq[ValidationError], MembersDetails],
+                                                                generateCommitItem: MembersDetails => CommitItem,
+                                                                members: Seq[MembersDetails]): Result = {
     formValidationResult match {
-      case Invalid(resultAErrors) => Result(Nil, Invalid(resultAErrors))
+      case Invalid(resultAErrors) => Result(members, Invalid(resultAErrors))
       case Valid(resultAObject) => Result(
         members = members ++ Seq(resultAObject),
         validated = Valid(Seq(generateCommitItem(resultAObject))))
