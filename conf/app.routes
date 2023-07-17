@@ -540,3 +540,36 @@ GET         /new-report/event-20a-declaration-PSA-click                      con
 
 GET         /new-report/event-20a-declaration-PSP                               controllers.event20A.Event20APspDeclarationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /new-report/event-20a-declaration-PSP                               controllers.event20A.Event20APspDeclarationController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /new-report/:index/remove-event-1                    controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1, index: Index)
+POST       /new-report/:index/remove-event-1                      controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1, index: Index)
+
+GET        /new-report/:index/remove-event-2                    controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index)
+POST       /new-report/:index/remove-event-2                      controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index)
+
+GET        /new-report/:index/remove-event-3                    controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3, index: Index)
+POST       /new-report/:index/remove-event-3                      controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3, index: Index)
+
+GET        /new-report/:index/remove-event-4                    controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event4, index: Index)
+POST       /new-report/:index/remove-event-4                      controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event4, index: Index)
+
+GET        /new-report/:index/remove-event-5                    controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event5, index: Index)
+POST       /new-report/:index/remove-event-5                      controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event5, index: Index)
+
+GET        /new-report/:index/remove-event-6                    controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6, index: Index)
+POST       /new-report/:index/remove-event-6                      controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6, index: Index)
+
+GET        /new-report/:index/remove-event-7                    controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event7, index: Index)
+POST       /new-report/:index/remove-event-7                      controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event7, index: Index)
+
+GET        /new-report/:index/remove-event-8                    controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8, index: Index)
+POST       /new-report/:index/remove-event-8                      controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8, index: Index)
+
+GET        /new-report/:index/remove-event-8a                    controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8A, index: Index)
+POST       /new-report/:index/remove-event-8a                      controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8A, index: Index)
+
+GET        /new-report/:index/remove-event-22                    controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, index: Index)
+POST       /new-report/:index/remove-event-22                      controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, index: Index)
+
+GET        /new-report/:index/remove-event-23                    controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
+POST       /new-report/:index/remove-event-23                      controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)

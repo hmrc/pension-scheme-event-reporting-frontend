@@ -99,7 +99,7 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
                     ),
                     ActionItem(
                       content = Text(Message("site.remove")),
-                      href = "#"
+                      href = controllers.common.routes.RemoveMemberController.onPageLoad(waypoints, Event7, 0).url
                     )
                   )
                 ))

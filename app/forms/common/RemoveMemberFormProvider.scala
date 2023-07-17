@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package pages.common
+package forms.common
 
-import models.Index
-import models.common.MembersSummary
-import models.enumeration.EventType
-import play.api.libs.json.JsPath
-import queries.Gettable
+import javax.inject.Inject
+import forms.mappings.Mappings
+import play.api.data.Form
+import play.api.i18n.Messages
 
-case class MembersPage(eventType: EventType) extends Gettable[Seq[MembersSummary]] {
-  def apply(index: Index): JsPath = path \ index
+class RemoveMemberFormProvider @Inject() extends Mappings {
 
-  def path: JsPath = JsPath \ s"event${eventType.toString}" \ toString
-
-  override def toString: String = "members"
+  def apply(eventTypeMessage: String, fullName: String)(implicit messages: Messages): Form[Boolean] =
+    Form(
+      "value" -> boolean(messages("removeMember.error.required", eventTypeMessage, fullName))
+    )
 }
