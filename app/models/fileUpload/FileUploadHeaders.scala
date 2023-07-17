@@ -26,6 +26,14 @@ object FileUploadHeaders {
     val nino = "nino"
   }
 
+  object Event1FieldNames {
+    val paymentAmount: String = "paymentValue"
+    val paymentDate: String = "paymentDate"
+    val dateOfEventDay: String = "paymentDate.day"
+    val dateOfEventMonth: String = "paymentDate.month"
+    val dateOfEventYear: String = "paymentDate.year"
+  }
+
   object Event6FieldNames {
     val typeOfProtection: String = "typeOfProtection"
     val typeOfProtectionReference: String = "typeOfProtectionReference"
