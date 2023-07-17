@@ -1631,4 +1631,5 @@ whatYouWillNeed.event6.item4 = date of the benefit crystallisation
 noDataEnteredError.title = This report cannot be submitted.
 noDataEnteredError.heading = This report cannot be submitted.
 noDataEnteredError.p1 = No data has been entered.
-noDataEnteredError.p2 = Return to the pensions dashboard to enter data before submitting.
+noDataEnteredError.p2 = Return to the pensions dashboard
+noDataEnteredError.p3 = to enter data before submitting.

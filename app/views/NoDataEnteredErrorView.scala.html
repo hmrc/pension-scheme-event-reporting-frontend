@@ -18,7 +18,7 @@
     layout: templates.Layout
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(yourPensionSchemesUrl: String)(implicit request: Request[_], messages: Messages)
 
 @layout(
     pageTitle    = titleNoForm(messages("noDataEnteredError.title")),
@@ -28,5 +28,11 @@
     <h1 class="govuk-heading-xl">@messages("noDataEnteredError.heading")</h1>
 
     <p class="govuk-body">@messages("noDataEnteredError.p1")</p>
-    <p class="govuk-body">@messages("noDataEnteredError.p2")</p>
+
+    <p class="govuk-body">@messages("noDataEnteredError.p3") <a href="@yourPensionSchemesUrl" class="govuk-link">@messages("noDataEnteredError.p2")</a></p>
+    <a href="@yourPensionSchemesUrl" class="govuk-link">@messages("noDataEnteredError.p2")</a><p class="govuk-body">@messages("noDataEnteredError.p3")</p>
+
+    <p class="govuk-body">Jump to <a href="#" class="govuk-link">HTML example</a>.</p>
+
 }
+

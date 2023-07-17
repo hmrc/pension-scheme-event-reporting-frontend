@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
 import pages.Waypoints
 import play.api.i18n.I18nSupport
@@ -29,10 +30,11 @@ import scala.concurrent.ExecutionContext
 class NoDataEnteredErrorController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  identify: IdentifierAction,
-                                 view: NoDataEnteredErrorView
+                                 view: NoDataEnteredErrorView,
+                                 config: FrontendAppConfig
                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify { implicit request =>
-    Ok(view())
+    Ok(view(config.yourPensionSchemesUrl))
   }
 }
