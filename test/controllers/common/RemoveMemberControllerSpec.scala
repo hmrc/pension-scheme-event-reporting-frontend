@@ -40,8 +40,8 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new RemoveMemberFormProvider()
-  private val formEvent1 = formProvider("unauthorised payment", "Joe Bloggs")
-  private val formEvent5 = formProvider("cessation of ill-health pension", "Joe Bloggs")
+  private val formEvent1 = formProvider("unauthorised payment")
+  private val formEvent5 = formProvider("cessation of ill-health pension")
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
@@ -74,7 +74,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val view = application.injector.instanceOf[RemoveMemberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(formEvent1, waypoints, Event1, "unauthorised payment", 0, "Joe Bloggs")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(formEvent1, waypoints, Event1, "unauthorised payment", 0)(request, messages(application)).toString
       }
     }
 
@@ -90,7 +90,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val view = application.injector.instanceOf[RemoveMemberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(formEvent5, waypoints, Event5, "cessation of ill-health pension", 0, "Joe Bloggs")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(formEvent5, waypoints, Event5, "cessation of ill-health pension", 0)(request, messages(application)).toString
       }
     }
 
@@ -109,7 +109,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(formEvent1.fill(true), waypoints, Event1, "unauthorised payment", 0, "Joe Bloggs")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(formEvent1.fill(true), waypoints, Event1, "unauthorised payment", 0)(request, messages(application)).toString
       }
     }
 
@@ -127,7 +127,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(formEvent5.fill(true), waypoints, Event5, "cessation of ill-health pension", 0, "Joe Bloggs")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(formEvent5.fill(true), waypoints, Event5, "cessation of ill-health pension", 0)(request, messages(application)).toString
       }
     }
 
@@ -188,7 +188,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, Event1, "unauthorised payment", 0, "Joe Bloggs")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, Event1, "unauthorised payment", 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
@@ -208,7 +208,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, Event5, "cessation of ill-health pension", 0, "Joe Bloggs")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, Event5, "cessation of ill-health pension", 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

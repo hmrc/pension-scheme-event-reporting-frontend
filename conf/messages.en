@@ -1625,7 +1625,7 @@ whatYouWillNeed.event6.item2 = details of the type of protection held for the cr
 whatYouWillNeed.event6.item3 = amount that was crystallised
 whatYouWillNeed.event6.item4 = date of the benefit crystallisation
 
-removeMember.title = Are you sure you want to remove the {0} charge for {1}?
-removeMember.heading = Are you sure you want to remove the {0} charge for {1}?
-removeMember.error.required = Select yes if you want to remove the {0} charge for {1}
-removeMember.change.hidden = Are you sure you want to remove the {0} charge for {1}?
+removeMember.title = Are you sure you want to remove the {0} charge for this member?
+removeMember.heading = Are you sure you want to remove the {0} charge for this member?
+removeMember.error.required = Select yes if you want to remove the {0} charge for this member
+removeMember.change.hidden = Are you sure you want to remove the {0} charge for this member?

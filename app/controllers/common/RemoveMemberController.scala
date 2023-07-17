@@ -18,7 +18,7 @@ package controllers.common
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.common.RemoveMemberController.{eventTypeMessage, fullNameAtIndex}
+import controllers.common.RemoveMemberController.eventTypeMessage
 import forms.common.RemoveMemberFormProvider
 import models.Index.indexToInt
 import models.common.MembersSummary
@@ -51,19 +51,19 @@ class RemoveMemberController @Inject()(
   def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
 
-      val form = formProvider(eventTypeMessage(eventType), fullNameAtIndex(request.userAnswers, eventType, index))
+      val form = formProvider(eventTypeMessage(eventType))
       val preparedForm = request.userAnswers.get(RemoveMemberPage(eventType, index)).fold(form)(form.fill)
-      Ok(view(preparedForm, waypoints, eventType, eventTypeMessage(eventType), index, fullNameAtIndex(request.userAnswers, eventType, index)))
+      Ok(view(preparedForm, waypoints, eventType, eventTypeMessage(eventType), index))
     }
 
   def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
-      val form = formProvider(eventTypeMessage(eventType), fullNameAtIndex(request.userAnswers, eventType, index))
+      val form = formProvider(eventTypeMessage(eventType))
 
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(
-            view(formWithErrors, waypoints, eventType, eventTypeMessage(eventType), index, fullNameAtIndex(request.userAnswers, eventType, index)))
+            view(formWithErrors, waypoints, eventType, eventTypeMessage(eventType), index))
           ),
         value => {
           val maybeUserAnswersWithRemovedMember: UserAnswers = if (value) {
@@ -95,21 +95,6 @@ object RemoveMemberController {
       case Event7 | Event8 | Event8A => "pension commencement lump sum"
       case Event22 => "annual allowance"
       case Event23 => "dual annual allowance"
-    }
-  }
-
-  def fullNameAtIndex(userAnswers: UserAnswers, eventType: EventType, index: Index)(implicit messages: Messages): String = {
-    eventType match {
-      case Event1 =>
-        userAnswers.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer).map {
-          case membersSummary => membersSummary.name
-          case _ => "this member or employer"
-        }.apply(index)
-      case _ =>
-        userAnswers.getAll(MembersPage(eventType))(MembersSummary.readsMember(eventType)).map {
-          case membersSummary => membersSummary.name
-          case _ => "this member"
-        }.apply(index)
     }
   }
 }
