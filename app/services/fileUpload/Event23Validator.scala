@@ -79,11 +79,13 @@ class Event23Validator @Inject()(
 
   override protected def validateFields(index: Int,
                                         columns: Seq[String],
-                                        taxYear: Int)
+                                        taxYear: Int,
+                                        members: Seq[MembersDetails])
                                        (implicit messages: Messages): Result = {
-    val a = resultFromFormValidationResult[MembersDetails](
+    val a = resultFromFormValidationResultMembersDetails(
       memberDetailsValidation(index, columns, membersDetailsFormProvider(Event23, index)),
-      createCommitItem(index, MembersDetailsPage.apply(Event23, _))
+      createCommitItem(index, MembersDetailsPage.apply(Event23, _)),
+      members
     )
 
     val b = resultFromFormValidationResult[ChooseTaxYear](
