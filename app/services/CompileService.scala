@@ -68,20 +68,21 @@ class CompileService @Inject()(
                                                                                  headerCarrier: HeaderCarrier): Future[Unit] = {
 
     def doCompile(oldVersionInfo: VersionInfo, newVersionInfo: VersionInfo): Future[Unit] = {
-      eventReportingConnector.compileEvent(pstr, userAnswers.eventDataIdentifier(eventType, Some(newVersionInfo))).flatMap { _ =>
-        val futureOptChangedOverviewSeq = if (newVersionInfo.version > oldVersionInfo.version) {
-          updateUAVersionAndOverview(pstr, userAnswers, oldVersionInfo.version, newVersionInfo.version)
-        } else {
-          Future.successful(None)
+
+      val futureOptChangedOverviewSeq = if (newVersionInfo.version > oldVersionInfo.version) {
+        updateUAVersionAndOverview(pstr, userAnswers, oldVersionInfo.version, newVersionInfo.version)
+      } else {
+        Future.successful(None)
+      }
+      futureOptChangedOverviewSeq.flatMap { optChangedOverviewSeq =>
+        val uaNonEventTypeVersionUpdated = userAnswers.setOrException(VersionInfoPage, newVersionInfo, nonEventTypeData = true)
+        val updatedUA = optChangedOverviewSeq match {
+          case Some(seqErOverview) => uaNonEventTypeVersionUpdated
+            .setOrException(EventReportingOverviewPage, seqErOverview, nonEventTypeData = true)
+          case _ => uaNonEventTypeVersionUpdated
         }
-        futureOptChangedOverviewSeq.flatMap { optChangedOverviewSeq =>
-          val uaNonEventTypeVersionUpdated = userAnswers.setOrException(VersionInfoPage, newVersionInfo, nonEventTypeData = true)
-          val updatedUA = optChangedOverviewSeq match {
-            case Some(seqErOverview) => uaNonEventTypeVersionUpdated
-              .setOrException(EventReportingOverviewPage, seqErOverview, nonEventTypeData = true)
-            case _ => uaNonEventTypeVersionUpdated
-          }
-          userAnswersCacheConnector.save(pstr, updatedUA)
+        userAnswersCacheConnector.save(pstr, updatedUA).map { _ =>
+          eventReportingConnector.compileEvent(pstr, userAnswers.eventDataIdentifier(eventType, Some(newVersionInfo)))
         }
       }
     }
