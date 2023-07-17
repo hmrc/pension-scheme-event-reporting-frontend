@@ -26,6 +26,7 @@ import models.enumeration.EventType
 import models.fileUpload.FileUploadHeaders.MemberDetailsFieldNames
 import org.apache.commons.lang3.StringUtils.EMPTY
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.libs.json._
 import queries.Gettable
 import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
@@ -61,7 +62,8 @@ trait Validator {
     }
 
 
-  def validate(rows: Seq[Array[String]], userAnswers: UserAnswers): Validated[Seq[ValidationError], UserAnswers] = {
+  def validate(rows: Seq[Array[String]], userAnswers: UserAnswers)
+              (implicit messages: Messages): Validated[Seq[ValidationError], UserAnswers] = {
     rows.headOption match {
       case Some(row) if row.mkString(",").equalsIgnoreCase(validHeader) =>
         rows.size match {
@@ -75,7 +77,8 @@ trait Validator {
     }
   }
 
-  private def validateDataRows(rows: Seq[Array[String]], taxYear: Int): Result = {
+  private def validateDataRows(rows: Seq[Array[String]], taxYear: Int)
+                              (implicit messages: Messages): Result = {
     rows.zipWithIndex.foldLeft[Result](Valid(Nil)) {
       case (acc, Tuple2(_, 0)) => acc
       case (acc, Tuple2(row, index)) => Seq(acc, validateFields(index, row.toIndexedSeq, taxYear)).combineAll
@@ -83,7 +86,8 @@ trait Validator {
   }
 
   protected def validateFields(index: Int,
-                               columns: Seq[String], taxYear: Int): Result
+                               columns: Seq[String], taxYear: Int)
+                              (implicit messages: Messages): Result
 
   protected def memberDetailsValidation(index: Int, columns: Seq[String],
                                         memberDetailsForm: Form[MembersDetails]): Validated[Seq[ValidationError], MembersDetails] = {
@@ -102,6 +106,7 @@ trait Validator {
   }
 
   protected final def errorsFromForm[A](formWithErrors: Form[A], fields: Seq[Field], index: Int): Seq[ValidationError] = {
+
     for {
       formError <- formWithErrors.errors
       field <- fields.find(_.getFormValidationFullFieldName == formError.key)

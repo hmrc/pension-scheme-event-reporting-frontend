@@ -1,0 +1,65 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.enumeration.EventType
+
+@this(
+        layout: templates.SchemeLayout,
+        govukButton: GovukButton
+)
+
+@(continueUrl: String, templateDownloadLink: Call, instructionsDownloadLink: Call)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+
+@layout(pageTitle = titleNoForm(messages("fileUploadWhatYouWillNeed.event1.title"))) {
+
+     <h1 class="govuk-heading-xl">@messages("fileUploadWhatYouWillNeed.event1.heading")</h1>
+
+     <p class="govuk-body">@messages("fileUploadWhatYouWillNeed.event1.p1")</p>
+
+     <ul class="govuk-list govuk-list--bullet">
+      <li>@messages("fileUploadWhatYouWillNeed.event1.item1")</li>
+      <li>@messages("fileUploadWhatYouWillNeed.event1.item2")</li>
+      <li>@messages("fileUploadWhatYouWillNeed.event1.item3")</li>
+      <li>@messages("fileUploadWhatYouWillNeed.event1.item4")</li>
+      <li>@messages("fileUploadWhatYouWillNeed.event1.item5")</li>
+      <li>@messages("fileUploadWhatYouWillNeed.event1.item6")</li>
+     </ul>
+
+     <p class="govuk-body">@messages("fileUploadWhatYouWillNeed.event1.p2")</p>
+
+     <ul class="govuk-list govuk-list--bullet">
+      <li>@messages("fileUploadWhatYouWillNeed.event1.item7")</li>
+      <li>@messages("fileUploadWhatYouWillNeed.event1.item8")</li>
+      <li>@messages("fileUploadWhatYouWillNeed.event1.item9")</li>
+      <li>@messages("fileUploadWhatYouWillNeed.event1.item5")</li>
+      <li>@messages("fileUploadWhatYouWillNeed.event1.item6")</li>
+     </ul>
+
+    <p class="govuk-body">@messages("fileUploadWhatYouWillNeed.event1.p3")</p>
+
+     <ul class="govuk-list govuk-list--bullet">
+      <li>@messages("fileUploadWhatYouWillNeed.event1.item10.prefix")
+       <a href=@templateDownloadLink class="govuk-link">@messages("fileUploadWhatYouWillNeed.event1.template.link.text")</a>
+       @messages("fileUploadWhatYouWillNeed.event1.item10")</li>
+      <li><a href=@instructionsDownloadLink class="govuk-link">@messages("fileUploadWhatYouWillNeed.event1.instructions.link.text")</a></li>
+     </ul>
+
+     <p class="govuk-inset-text">@messages("fileUploadWhatYouWillNeed.event1.inset")</p>
+
+     @govukButton(
+     ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit")).asLink(continueUrl)
+     )
+}

@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package forms.event6
+package pages.event1
 
-import forms.mappings.Mappings
-import models.event6.TypeOfProtection
-import play.api.data.Form
+import controllers.event1.routes
+import pages.{Page, Waypoints}
+import play.api.mvc.Call
 
-import javax.inject.Inject
+case object FileUploadWhatYouWillNeedPage extends Page {
 
-class TypeOfProtectionFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[TypeOfProtection] =
-    Form(
-      "value" -> enumerable[TypeOfProtection](requiredKey = "typeOfProtection.error.required", invalidKey = "typeOfProtection.error.format")
-    )
+  override def route(waypoints: Waypoints): Call =
+    routes.FileUploadWhatYouWillNeedController.onPageLoad(waypoints)
 }

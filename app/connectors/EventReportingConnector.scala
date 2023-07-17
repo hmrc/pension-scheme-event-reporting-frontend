@@ -47,13 +47,13 @@ class EventReportingConnector @Inject()(
   private def eventOverviewUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/overview"
 
 
-  def getEventReportSummary(pstr: String, reportStartDate: String)
+  def getEventReportSummary(pstr: String, reportStartDate: String, version: Int)
                            (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventType]] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
-      "reportVersionNumber" -> "001",
+      "reportVersionNumber" -> version.toString,
       "reportStartDate" -> reportStartDate
     )
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
@@ -163,12 +163,14 @@ class EventReportingConnector @Inject()(
         case OK =>
           ((response.json \ "fileStatus").asOpt[String],
             (response.json \ "uploadDetails" \ "fileName").asOpt[String],
-            (response.json \ "downloadUrl").asOpt[String]) match {
-            case (Some("READY"), file@Some(_), downloadUrl@Some(_)) =>
-              FileUploadOutcomeResponse(file, FileUploadOutcomeStatus.SUCCESS, downloadUrl)
-            case _ => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.FAILURE, None)
+            (response.json \ "downloadUrl").asOpt[String],
+            (response.json \ "uploadDetails" \ "size").asOpt[Long]
+          ) match {
+            case (Some("READY"), file@Some(_), downloadUrl@Some(_), fileSize@Some(_)) =>
+              FileUploadOutcomeResponse(file, FileUploadOutcomeStatus.SUCCESS, downloadUrl, reference, fileSize)
+            case _ => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.FAILURE, None, reference, None)
           }
-        case NOT_FOUND => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.IN_PROGRESS, None)
+        case NOT_FOUND => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.IN_PROGRESS, None, reference, None)
         case _ =>
           throw new HttpException(response.body, response.status)
       }

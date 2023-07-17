@@ -19,7 +19,7 @@ package controllers.fileUpload
 import base.SpecBase
 import connectors.{UpscanInitiateConnector, UserAnswersCacheConnector}
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23, getEventTypeByName}
+import models.enumeration.EventType.{Event22, Event23, Event6, getEventTypeByName}
 import models.{UpscanFileReference, UpscanInitiateResponse}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -38,7 +38,7 @@ import scala.concurrent.Future
 class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
-  private val seqOfEvents = Seq(Event22, Event23)
+  private val seqOfEvents = Seq(Event6, Event22, Event23)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockUpscanInitiateConnector = mock[UpscanInitiateConnector]
@@ -76,7 +76,7 @@ class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
   private def testReturnOkAndCorrectView(eventType: EventType): Unit = {
     s"must return OK and the correct view for a GET (Event ${eventType.toString})" in {
 
-      when(mockUpscanInitiateConnector.initiateV2(any(), any())(any(), any())).thenReturn(Future.successful(upscanInitiateResponse))
+      when(mockUpscanInitiateConnector.initiateV2(any(), any(), any())(any(), any())).thenReturn(Future.successful(upscanInitiateResponse))
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
 
       running(application) {

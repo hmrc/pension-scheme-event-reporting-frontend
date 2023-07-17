@@ -41,15 +41,7 @@ object ManualOrUpload extends Enumerable.Implicits {
         content = Text(messages(s"manualOrUpload.event${eventType.toString}.${value.toString}")),
         value = Some(value.toString),
         id = Some(s"value_$index"),
-        hint = if (value == FileUpload) Some(Hint(content = Text(messages(s"manualOrUpload.event${eventType.toString}.fileUpload.hint")))) else None,
-        disabled = (value, eventType) match {
-          case (FileUpload, EventType.Event22) => false
-          case (Manual, EventType.Event6) => false
-          case (Manual, EventType.Event1) => false
-          case (_, EventType.Event22) => false
-          case (_, EventType.Event23) => false
-          case _ => true
-        }
+        hint = if (value == FileUpload) Some(Hint(content = Text(messages(s"manualOrUpload.event${eventType.toString}.fileUpload.hint")))) else None
       )
   }
 

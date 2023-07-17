@@ -92,15 +92,15 @@ object EventType extends Enumerable.Implicits {
 
   case object Event23 extends WithName("23") with EventType
 
-  case object Event24 extends WithName("24") with EventType
-
   private val values: List[EventType] = List(WindUp, Event1, Event2, Event3, Event4, Event5, Event6, Event7, Event8, Event8A,
-    Event10, Event11, Event12, Event13, Event14, Event18, Event19, Event20, Event20A, Event22, Event23, Event24)
+    Event10, Event11, Event12, Event13, Event14, Event18, Event19, Event20, Event20A, Event22, Event23)
 
   def getEventType(s: String): Option[EventType] = values.find(_.toString == s)
 
   def getEventTypeByName(eventType: EventType): String = {
     eventType match {
+      case Event1 => "unauthorised payments"
+      case Event6 => "benefit crystallisation where the member relies on LTA protections"
       case Event22 => "annual allowance"
       case Event23 => "dual annual allowances"
       case _ => "EventTypeByName needs to be implemented for other events"
@@ -124,6 +124,8 @@ object EventType extends Enumerable.Implicits {
     }
 
   def toRoute(eventType: EventType): String = eventType match {
+    case Event1 => "event-1"
+    case Event6 => "event-6"
     case Event22 => "event-22"
     case Event23 => "event-23"
     case _ => throw new RuntimeException(s"Unimplemented event type: $eventType")
