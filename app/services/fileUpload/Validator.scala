@@ -92,7 +92,7 @@ trait Validator {
 
   private def validateDataRows(rows: Seq[Array[String]], taxYear: Int)
                               (implicit messages: Messages): Result = {
-    rows.zipWithIndex.foldLeft[Result](Result(Nil, Valid(Nil))) {
+    rows.zipWithIndex.foldLeft[Result](monoidResult.empty) {
       case (acc, Tuple2(_, 0)) => acc
       case (acc, Tuple2(row, index)) => Seq(acc, validateFields(index, row.toIndexedSeq, taxYear, acc.members)).combineAll
     }
