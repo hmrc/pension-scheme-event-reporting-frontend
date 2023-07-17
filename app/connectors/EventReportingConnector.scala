@@ -92,6 +92,7 @@ class EventReportingConnector @Inject()(
         response.status match {
           case NO_CONTENT => ()
           case _ =>
+            println(response.body, response.status)
             throw new HttpException(response.body, response.status)
         }
       }
