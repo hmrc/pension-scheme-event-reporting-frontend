@@ -22,13 +22,15 @@ import cats.implicits.toFoldableOps
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import forms.common.MembersDetailsFormProvider
-import forms.event1.PaymentValueAndDateFormProvider
+import forms.event1._
+import forms.event1.member.{SchemeDetailsFormProvider, WhoWasTheTransferMadeFormProvider}
 import models.common.MembersDetails
 import models.enumeration.EventType
 import models.enumeration.EventType.Event6
-import models.event1.PaymentDetails
-import models.fileUpload.FileUploadHeaders.Event1FieldNames
+import models.event1.member.{SchemeDetails, WhoWasTheTransferMade}
+import models.event1.{PaymentDetails, PaymentNature}
 import models.fileUpload.FileUploadHeaders.Event6FieldNames._
+import models.fileUpload.FileUploadHeaders.{Event1FieldNames, valueFormField}
 import pages.common.MembersDetailsPage
 import pages.event1.PaymentValueAndDatePage
 import play.api.data.Form
@@ -37,13 +39,20 @@ import services.fileUpload.Validator.Result
 
 class Event1Validator @Inject()(
                                  membersDetailsFormProvider: MembersDetailsFormProvider,
+                                 doYouHoldSignedMandateFormProvider: DoYouHoldSignedMandateFormProvider,
                                  paymentValueAndDateFormProvider: PaymentValueAndDateFormProvider,
+                                 valueOfUnauthorisedPaymentFormProvider: ValueOfUnauthorisedPaymentFormProvider,
+                                 schemeUnAuthPaySurchargeMemberFormProvider: SchemeUnAuthPaySurchargeMemberFormProvider,
+                                 paymentNatureFormProvider: PaymentNatureFormProvider,
+                                 benefitInKindBriefDescriptionFormProvider: BenefitInKindBriefDescriptionFormProvider,
+                                 whoWasTheTransferMadeFormProvider: WhoWasTheTransferMadeFormProvider,
+                                 schemeDetailsFormProvider: SchemeDetailsFormProvider,
                                  config: FrontendAppConfig
                                ) extends Validator {
 
   override val eventType: EventType = EventType.Event1
 
-  override protected def validHeader: String = config.validEvent1Header
+  override protected def validHeader: String = config.validEvent1Header //TODO: This needs to be updated
 
   private val fieldNoTypeOfProtection = 3
   private val fieldNoTypeOfProtectionReference = 4
@@ -72,6 +81,97 @@ class Event1Validator @Inject()(
       "Tangible" -> "tangibleMoveableProperty",
       "Court" -> "courtOrder",
       "Other" -> "employerOther"
+    )
+  }
+
+  private def doYouHoldSignedMandateValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Boolean] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoTypeOfProtectionReference), typeOfProtectionReference, fieldNoTypeOfProtectionReference)
+    )
+    val form: Form[Boolean] = doYouHoldSignedMandateFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def valueOfUnauthorisedPaymentValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Boolean] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoTypeOfProtectionReference), typeOfProtectionReference, fieldNoTypeOfProtectionReference)
+    )
+    val form: Form[Boolean] = valueOfUnauthorisedPaymentFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def schemeUnAuthPaySurchargeMemberValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Boolean] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoTypeOfProtectionReference), typeOfProtectionReference, fieldNoTypeOfProtectionReference)
+    )
+    val form: Form[Boolean] = schemeUnAuthPaySurchargeMemberFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def paymentNatureValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], PaymentNature] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoTypeOfProtectionReference), typeOfProtectionReference, fieldNoTypeOfProtectionReference)
+    )
+    val form: Form[PaymentNature] = paymentNatureFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def benefitInKindBriefDescriptionValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoTypeOfProtectionReference), typeOfProtectionReference, fieldNoTypeOfProtectionReference)
+    )
+    val form: Form[Option[String]] = benefitInKindBriefDescriptionFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def whoWasTheTransferMadeValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], WhoWasTheTransferMade] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoTypeOfProtectionReference), typeOfProtectionReference, fieldNoTypeOfProtectionReference)
+    )
+    val form: Form[WhoWasTheTransferMade] = whoWasTheTransferMadeFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def schemeDetailsFormValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], SchemeDetails] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoTypeOfProtectionReference), typeOfProtectionReference, fieldNoTypeOfProtectionReference)
+    )
+    val form: Form[SchemeDetails] = schemeDetailsFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
     )
   }
 

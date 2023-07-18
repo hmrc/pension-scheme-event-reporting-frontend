@@ -21,7 +21,8 @@ import cats.data.Validated.{Invalid, Valid}
 import config.FrontendAppConfig
 import data.SampleData
 import forms.common.MembersDetailsFormProvider
-import forms.event1.PaymentValueAndDateFormProvider
+import forms.event1._
+import forms.event1.member.{SchemeDetailsFormProvider, WhoWasTheTransferMadeFormProvider}
 import models.enumeration.EventType.Event1
 import models.event1.PaymentNature.{BenefitInKind, TransferToNonRegPensionScheme}
 import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
@@ -124,7 +125,24 @@ object Event1ValidatorSpec {
   private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   private val membersDetailsFormProvider = new MembersDetailsFormProvider
+  private val doYouHoldSignedMandateFormProvider = new DoYouHoldSignedMandateFormProvider
+  private val valueOfUnauthorisedPaymentFormProvider = new ValueOfUnauthorisedPaymentFormProvider
+  private val schemeUnAuthPaySurchargeMemberFormProvider = new SchemeUnAuthPaySurchargeMemberFormProvider
+  private val paymentNatureFormProvider = new PaymentNatureFormProvider
+  private val benefitInKindBriefDescriptionFormProvider = new BenefitInKindBriefDescriptionFormProvider
   private val paymentValueAndDateFormProvider = new PaymentValueAndDateFormProvider
+  private val whoWasTheTransferMadeFormProvider = new WhoWasTheTransferMadeFormProvider
+  private val schemeDetailsFormProvider = new SchemeDetailsFormProvider
 
-  private val validator = new Event1Validator(membersDetailsFormProvider, paymentValueAndDateFormProvider, mockFrontendAppConfig)
+  private val validator = new Event1Validator(
+    membersDetailsFormProvider,
+    doYouHoldSignedMandateFormProvider,
+    paymentValueAndDateFormProvider,
+    valueOfUnauthorisedPaymentFormProvider,
+    schemeUnAuthPaySurchargeMemberFormProvider,
+    paymentNatureFormProvider,
+    benefitInKindBriefDescriptionFormProvider,
+    whoWasTheTransferMadeFormProvider,
+    schemeDetailsFormProvider,
+    mockFrontendAppConfig)
 }
