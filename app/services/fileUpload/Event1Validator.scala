@@ -26,10 +26,10 @@ import forms.event1._
 import forms.event1.member.{SchemeDetailsFormProvider, WhoWasTheTransferMadeFormProvider}
 import models.common.MembersDetails
 import models.enumeration.EventType
-import models.enumeration.EventType.Event6
+import models.enumeration.EventType.Event1
 import models.event1.member.{SchemeDetails, WhoWasTheTransferMade}
-import models.event1.{PaymentDetails, PaymentNature}
-import models.fileUpload.FileUploadHeaders.Event6FieldNames._
+import models.event1.{PaymentDetails, PaymentNature, WhoReceivedUnauthPayment}
+import models.fileUpload.FileUploadHeaders.Event1FieldNames._
 import models.fileUpload.FileUploadHeaders.{Event1FieldNames, valueFormField}
 import pages.common.MembersDetailsPage
 import pages.event1.PaymentValueAndDatePage
@@ -38,6 +38,7 @@ import play.api.i18n.Messages
 import services.fileUpload.Validator.Result
 
 class Event1Validator @Inject()(
+                                 whoReceivedUnauthPaymentFormProvider: WhoReceivedUnauthPaymentFormProvider,
                                  membersDetailsFormProvider: MembersDetailsFormProvider,
                                  doYouHoldSignedMandateFormProvider: DoYouHoldSignedMandateFormProvider,
                                  paymentValueAndDateFormProvider: PaymentValueAndDateFormProvider,
@@ -54,10 +55,32 @@ class Event1Validator @Inject()(
 
   override protected def validHeader: String = config.validEvent1Header
 
-  private val fieldNoTypeOfProtection = 3
-  private val fieldNoTypeOfProtectionReference = 4
-  private val fieldNoPaymentAmount = 5
-  private val fieldNoPaymentDate = 6
+  private val fieldNoMemberOrEmployer = 0
+  override val fieldNoFirstName = 1
+  override val fieldNoLastName = 2
+  override val fieldNoNino = 3
+  private val fieldNoDoYouHoldSignedMandate = 4
+  private val fieldNoValueOfUnauthorisedPayment = 5
+  private val fieldNoSchemeUnAuthPaySurcharge = 6
+  private val fieldNoCompanyOrOrgName = 7
+  private val fieldNoCompanyNo = 8
+  private val fieldNoCompanyAddress = 9
+  private val fieldNoNatureOfPayment = 10
+  private val fieldNoBenefitDescription = 11
+  private val fieldNoEarlyDescription = 12
+  private val fieldNoCourtNameOfPersonOrOrg = 13
+  private val fieldNoErrorDescription = 14
+  private val fieldNoLoanAmount = 15
+  private val fieldNoValueOfFund = 16
+  private val fieldNoOtherDescription = 17
+  private val fieldNoOverpaymentReason = 18
+  private val fieldNoWhoReceivedRefund = 19
+  private val fieldNoResidentialAddress = 20
+  private val fieldNoTangibleDescription = 21
+  private val fieldNoTransferMadeTo = 22
+  private val fieldNoTransferSchemeDetails = 23
+  private val fieldNoPaymentAmount = 24
+  private val fieldNoPaymentDate = 25
 
   private val mapPaymentNatureMember: Map[String, String] = {
     Map(
@@ -84,9 +107,22 @@ class Event1Validator @Inject()(
     )
   }
 
+  private def whoReceivedUnauthPaymentValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], WhoReceivedUnauthPayment] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoDoYouHoldSignedMandate), doYouHoldSignedMandate, fieldNoDoYouHoldSignedMandate)
+    )
+    val form: Form[WhoReceivedUnauthPayment] = whoReceivedUnauthPaymentFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
   private def doYouHoldSignedMandateValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Boolean] = {
     val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoTypeOfProtectionReference), typeOfProtectionReference, fieldNoTypeOfProtectionReference)
+      Field(valueFormField, chargeFields(fieldNoDoYouHoldSignedMandate), doYouHoldSignedMandate, fieldNoDoYouHoldSignedMandate)
     )
     val form: Form[Boolean] = doYouHoldSignedMandateFormProvider()
     form.bind(
@@ -99,7 +135,7 @@ class Event1Validator @Inject()(
 
   private def valueOfUnauthorisedPaymentValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Boolean] = {
     val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoTypeOfProtectionReference), typeOfProtectionReference, fieldNoTypeOfProtectionReference)
+      Field(valueFormField, chargeFields(fieldNoValueOfUnauthorisedPayment), valueOfUnauthorisedPayment, fieldNoValueOfUnauthorisedPayment)
     )
     val form: Form[Boolean] = valueOfUnauthorisedPaymentFormProvider()
     form.bind(
@@ -112,7 +148,7 @@ class Event1Validator @Inject()(
 
   private def schemeUnAuthPaySurchargeMemberValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Boolean] = {
     val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoTypeOfProtectionReference), typeOfProtectionReference, fieldNoTypeOfProtectionReference)
+      Field(valueFormField, chargeFields(fieldNoSchemeUnAuthPaySurcharge), schemeUnAuthPaySurcharge, fieldNoSchemeUnAuthPaySurcharge)
     )
     val form: Form[Boolean] = schemeUnAuthPaySurchargeMemberFormProvider()
     form.bind(
@@ -123,9 +159,13 @@ class Event1Validator @Inject()(
     )
   }
 
-  private def paymentNatureValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], PaymentNature] = {
+  private def memberPaymentNatureValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], PaymentNature] = {
+
+    val mappedNatureOfPayment = mapPaymentNatureMember.applyOrElse[String, String](chargeFields(fieldNoNatureOfPayment),
+      (_: String) => "Nature of the payment is not found or doesn't exist")
+
     val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoTypeOfProtectionReference), typeOfProtectionReference, fieldNoTypeOfProtectionReference)
+      Field(valueFormField, mappedNatureOfPayment, natureOfPayment, fieldNoNatureOfPayment)
     )
     val form: Form[PaymentNature] = paymentNatureFormProvider()
     form.bind(
@@ -138,7 +178,7 @@ class Event1Validator @Inject()(
 
   private def benefitInKindBriefDescriptionValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
     val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoTypeOfProtectionReference), typeOfProtectionReference, fieldNoTypeOfProtectionReference)
+      Field(valueFormField, chargeFields(fieldNoBenefitDescription), benefitDescription, fieldNoBenefitDescription)
     )
     val form: Form[Option[String]] = benefitInKindBriefDescriptionFormProvider()
     form.bind(
@@ -151,7 +191,7 @@ class Event1Validator @Inject()(
 
   private def whoWasTheTransferMadeValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], WhoWasTheTransferMade] = {
     val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoTypeOfProtectionReference), typeOfProtectionReference, fieldNoTypeOfProtectionReference)
+      Field(valueFormField, chargeFields(fieldNoTransferMadeTo), transferMadeTo, fieldNoTransferMadeTo)
     )
     val form: Form[WhoWasTheTransferMade] = whoWasTheTransferMadeFormProvider()
     form.bind(
@@ -164,7 +204,7 @@ class Event1Validator @Inject()(
 
   private def schemeDetailsFormValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], SchemeDetails] = {
     val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoTypeOfProtectionReference), typeOfProtectionReference, fieldNoTypeOfProtectionReference)
+      Field(valueFormField, chargeFields(fieldNoTransferSchemeDetails), schemeDetails, fieldNoTransferSchemeDetails)
     )
     val form: Form[SchemeDetails] = schemeDetailsFormProvider()
     form.bind(
@@ -175,7 +215,6 @@ class Event1Validator @Inject()(
     )
   }
 
-  //noinspection ScalaStyle
   private def paymentValueAndDateValidation(index: Int,
                                             chargeFields: Seq[String],
                                             taxYear: Int)
@@ -184,10 +223,10 @@ class Event1Validator @Inject()(
     val parsedDate = splitDayMonthYear(chargeFields(fieldNoPaymentDate))
 
     val fields = Seq(
-      Field(lumpSumAmount, chargeFields(fieldNoPaymentAmount), lumpSumAmount, fieldNoPaymentAmount),
-      Field(dateOfEventDay, parsedDate.day, lumpSumDate, fieldNoPaymentDate, Some(Event1FieldNames.paymentDate)),
-      Field(dateOfEventMonth, parsedDate.month, lumpSumDate, fieldNoPaymentDate, Some(Event1FieldNames.paymentDate)),
-      Field(dateOfEventYear, parsedDate.year, lumpSumDate, fieldNoPaymentDate, Some(Event1FieldNames.paymentDate))
+      Field(paymentAmount, chargeFields(fieldNoPaymentAmount), paymentAmount, fieldNoPaymentAmount),
+      Field(dateOfEventDay, parsedDate.day, paymentDate, fieldNoPaymentDate, Some(Event1FieldNames.paymentDate)),
+      Field(dateOfEventMonth, parsedDate.month, paymentDate, fieldNoPaymentDate, Some(Event1FieldNames.paymentDate)),
+      Field(dateOfEventYear, parsedDate.year, paymentDate, fieldNoPaymentDate, Some(Event1FieldNames.paymentDate))
     )
 
     val form: Form[PaymentDetails] = paymentValueAndDateFormProvider(taxYear)
@@ -205,8 +244,8 @@ class Event1Validator @Inject()(
                                         taxYear: Int)
                                        (implicit messages: Messages): Result = {
     val a = resultFromFormValidationResult[MembersDetails](
-      memberDetailsValidation(index, columns, membersDetailsFormProvider(Event6, index)),
-      createCommitItem(index, MembersDetailsPage.apply(Event6, _))
+      memberDetailsValidation(index, columns, membersDetailsFormProvider(Event1, index)),
+      createCommitItem(index, MembersDetailsPage.apply(Event1, _))
     )
 
     val b = resultFromFormValidationResult[PaymentDetails](

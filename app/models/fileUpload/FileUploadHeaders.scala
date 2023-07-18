@@ -27,6 +27,14 @@ object FileUploadHeaders {
   }
 
   object Event1FieldNames {
+
+    val doYouHoldSignedMandate: String = "doYouHoldSignedMandate"
+    val valueOfUnauthorisedPayment: String = "valueOfUnauthorisedPayment"
+    val schemeUnAuthPaySurcharge: String = "schemeUnAuthPaySurcharge"
+    val natureOfPayment: String = "natureOfPayment"
+    val benefitDescription: String = "benefitDescription"
+    val transferMadeTo: String = "transferMadeTo"
+    val schemeDetails: String = "schemeDetails"
     val paymentAmount: String = "paymentValue"
     val paymentDate: String = "paymentDate"
     val dateOfEventDay: String = "paymentDate.day"

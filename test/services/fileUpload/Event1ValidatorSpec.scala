@@ -25,6 +25,7 @@ import forms.event1._
 import forms.event1.member.{SchemeDetailsFormProvider, WhoWasTheTransferMadeFormProvider}
 import models.enumeration.EventType.Event1
 import models.event1.PaymentNature.{BenefitInKind, TransferToNonRegPensionScheme}
+import models.event1.WhoReceivedUnauthPayment.Member
 import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
 import models.{TaxYear, UserAnswers}
 import org.mockito.Mockito
@@ -36,7 +37,7 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.TaxYearPage
 import pages.common.MembersDetailsPage
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage, SchemeDetailsPage, WhoWasTheTransferMadePage}
-import pages.event1.{DoYouHoldSignedMandatePage, PaymentValueAndDatePage, SchemeUnAuthPaySurchargeMemberPage, ValueOfUnauthorisedPaymentPage}
+import pages.event1._
 import play.api.libs.json.Json
 import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
 
@@ -54,12 +55,13 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
     "must return items in user answers when there are no validation errors for Member" in {
       val validCSVFile = CSVParser.split(
         s"""$header
-                            member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,1000.00,08/11/2022
-                            member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,Transfer,Employer,SchemeName,SchemeReference,1000.00,08/11/2022"""
+                            member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                            member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,Transfer,,,,,,,,,,,,Employer,"SchemeName,SchemeReference",1000.00,08/11/2022"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
       val result = validator.validate(validCSVFile, ua)
       result mustBe Valid(ua
+        .setOrException(WhoReceivedUnauthPaymentPage(0).path, Json.toJson(Member.toString))
         .setOrException(MembersDetailsPage(Event1, 0).path, Json.toJson(SampleData.memberDetails))
         .setOrException(DoYouHoldSignedMandatePage(0).path, Json.toJson(true))
         .setOrException(ValueOfUnauthorisedPaymentPage(0).path, Json.toJson(true))
@@ -67,6 +69,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         .setOrException(PaymentNaturePage(0).path, Json.toJson(BenefitInKind.toString))
         .setOrException(BenefitInKindBriefDescriptionPage(0).path, Json.toJson("Description"))
         .setOrException(PaymentValueAndDatePage(0).path, Json.toJson(SampleData.paymentDetails))
+        .setOrException(WhoReceivedUnauthPaymentPage(1).path, Json.toJson(Member.toString))
         .setOrException(MembersDetailsPage(Event1, 1).path, Json.toJson(SampleData.memberDetails2))
         .setOrException(DoYouHoldSignedMandatePage(1).path, Json.toJson(true))
         .setOrException(ValueOfUnauthorisedPaymentPage(1).path, Json.toJson(true))
@@ -124,6 +127,7 @@ object Event1ValidatorSpec {
     "Date of the benefit crystallisation (XX/XX/XXXX)"
   private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
+  private val whoReceivedUnauthPaymentFormProvider = new WhoReceivedUnauthPaymentFormProvider
   private val membersDetailsFormProvider = new MembersDetailsFormProvider
   private val doYouHoldSignedMandateFormProvider = new DoYouHoldSignedMandateFormProvider
   private val valueOfUnauthorisedPaymentFormProvider = new ValueOfUnauthorisedPaymentFormProvider
@@ -135,6 +139,7 @@ object Event1ValidatorSpec {
   private val schemeDetailsFormProvider = new SchemeDetailsFormProvider
 
   private val validator = new Event1Validator(
+    whoReceivedUnauthPaymentFormProvider,
     membersDetailsFormProvider,
     doYouHoldSignedMandateFormProvider,
     paymentValueAndDateFormProvider,
