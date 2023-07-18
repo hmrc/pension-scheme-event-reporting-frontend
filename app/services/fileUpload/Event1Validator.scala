@@ -107,6 +107,22 @@ class Event1Validator @Inject()(
     )
   }
 
+  private val mapOverpayment: Map[String, String] = {
+    Map(
+      "DEATH OF MEMBER" -> "deathOfMember",
+      "DEATH OF DEPENDENT" -> "deathOfDependent",
+      "NO LONGER QUALIFIED" -> "dependentNoLongerQualifiedForPension",
+      "OTHER" -> "other"
+    )
+  }
+
+  private val mapRefund: Map[String, String] = {
+    Map(
+      "WIDOW/ORPHAN" -> "widowOrOrphan",
+      "OTHER" -> "other"
+    )
+  }
+
   private val mapPaymentNatureEmployer: Map[String, String] = {
     Map(
       "Loans" -> "loansExceeding50PercentOfFundValue",
@@ -253,8 +269,12 @@ class Event1Validator @Inject()(
   }
 
   private def refundOfContributionsValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], RefundOfContributions] = {
+
+    val mappedRefundReason = mapRefund.applyOrElse[String, String](chargeFields(fieldNoWhoReceivedRefund),
+      (_: String) => "Reason of the refund is not found or doesn't exist")
+
     val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoWhoReceivedRefund), whoReceivedRefund, fieldNoWhoReceivedRefund)
+      Field(valueFormField, mappedRefundReason, whoReceivedRefund, fieldNoWhoReceivedRefund)
     )
     val form: Form[RefundOfContributions] = refundOfContributionsFormProvider()
     form.bind(
@@ -267,8 +287,12 @@ class Event1Validator @Inject()(
 
   private def reasonForTheOverpaymentOrWriteOffValidation(index: Int,
                                                           chargeFields: Seq[String]): Validated[Seq[ValidationError], ReasonForTheOverpaymentOrWriteOff] = {
+
+    val mappedOverpayment = mapOverpayment.applyOrElse[String, String](chargeFields(fieldNoOverpaymentReason),
+      (_: String) => "Reason for the overpayment is not found or doesn't exist")
+
     val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoOverpaymentReason), overpaymentReason, fieldNoOverpaymentReason)
+      Field(valueFormField, mappedOverpayment, overpaymentReason, fieldNoOverpaymentReason)
     )
     val form: Form[ReasonForTheOverpaymentOrWriteOff] = reasonForTheOverpaymentOrWriteOffFormProvider()
     form.bind(
