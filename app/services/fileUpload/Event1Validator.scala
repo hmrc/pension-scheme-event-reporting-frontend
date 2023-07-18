@@ -21,13 +21,15 @@ import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.toFoldableOps
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import forms.address.ManualAddressFormProvider
 import forms.common.MembersDetailsFormProvider
 import forms.event1._
-import forms.event1.member.{SchemeDetailsFormProvider, WhoWasTheTransferMadeFormProvider}
+import forms.event1.member._
+import models.address.Address
 import models.common.MembersDetails
 import models.enumeration.EventType
 import models.enumeration.EventType.Event1
-import models.event1.member.{SchemeDetails, WhoWasTheTransferMade}
+import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, SchemeDetails, WhoWasTheTransferMade}
 import models.event1.{PaymentDetails, PaymentNature, WhoReceivedUnauthPayment}
 import models.fileUpload.FileUploadHeaders.Event1FieldNames._
 import models.fileUpload.FileUploadHeaders.{Event1FieldNames, valueFormField}
@@ -48,6 +50,14 @@ class Event1Validator @Inject()(
                                  benefitInKindBriefDescriptionFormProvider: BenefitInKindBriefDescriptionFormProvider,
                                  whoWasTheTransferMadeFormProvider: WhoWasTheTransferMadeFormProvider,
                                  schemeDetailsFormProvider: SchemeDetailsFormProvider,
+                                 errorDescriptionFormProvider: ErrorDescriptionFormProvider,
+                                 benefitsPaidEarlyFormProvider: BenefitsPaidEarlyFormProvider,
+                                 refundOfContributionsFormProvider: RefundOfContributionsFormProvider,
+                                 reasonForTheOverpaymentOrWriteOffFormProvider: ReasonForTheOverpaymentOrWriteOffFormProvider,
+                                 manualAddressFormProvider: ManualAddressFormProvider,
+                                 memberTangibleMoveablePropertyFormProvider: MemberTangibleMoveablePropertyFormProvider,
+                                 unauthorisedPaymentRecipientNameFormProvider: UnauthorisedPaymentRecipientNameFormProvider,
+                                 memberPaymentNatureDescriptionFormProvider: MemberPaymentNatureDescriptionFormProvider,
                                  config: FrontendAppConfig
                                ) extends Validator {
 
@@ -109,7 +119,7 @@ class Event1Validator @Inject()(
 
   private def whoReceivedUnauthPaymentValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], WhoReceivedUnauthPayment] = {
     val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoDoYouHoldSignedMandate), doYouHoldSignedMandate, fieldNoDoYouHoldSignedMandate)
+      Field(valueFormField, chargeFields(fieldNoMemberOrEmployer), memberOrEmployer, fieldNoMemberOrEmployer)
     )
     val form: Form[WhoReceivedUnauthPayment] = whoReceivedUnauthPaymentFormProvider()
     form.bind(
@@ -202,11 +212,126 @@ class Event1Validator @Inject()(
     )
   }
 
-  private def schemeDetailsFormValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], SchemeDetails] = {
+  //TODO: Come back to the splitting of this
+  private def schemeDetailsValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], SchemeDetails] = {
     val fields = Seq(
       Field(valueFormField, chargeFields(fieldNoTransferSchemeDetails), schemeDetails, fieldNoTransferSchemeDetails)
     )
     val form: Form[SchemeDetails] = schemeDetailsFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def errorDescriptionValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoErrorDescription), errorDescription, fieldNoErrorDescription)
+    )
+    val form: Form[Option[String]] = errorDescriptionFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def benefitsPaidEarlyValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], String] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoEarlyDescription), earlyDescription, fieldNoEarlyDescription)
+    )
+    val form: Form[String] = benefitsPaidEarlyFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def refundOfContributionsValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], RefundOfContributions] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoWhoReceivedRefund), whoReceivedRefund, fieldNoWhoReceivedRefund)
+    )
+    val form: Form[RefundOfContributions] = refundOfContributionsFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def reasonForTheOverpaymentOrWriteOffValidation(index: Int,
+                                                          chargeFields: Seq[String]): Validated[Seq[ValidationError], ReasonForTheOverpaymentOrWriteOff] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoOverpaymentReason), overpaymentReason, fieldNoOverpaymentReason)
+    )
+    val form: Form[ReasonForTheOverpaymentOrWriteOff] = reasonForTheOverpaymentOrWriteOffFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def memberTangibleMoveablePropertyValidation(index: Int,
+                                                       chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoTangibleDescription), tangibleDescription, fieldNoTangibleDescription)
+    )
+    val form: Form[Option[String]] = memberTangibleMoveablePropertyFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def unauthorisedPaymentRecipientNameValidation(index: Int,
+                                                         chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoCourtNameOfPersonOrOrg), courtNameOfPersonOrOrg, fieldNoCourtNameOfPersonOrOrg)
+    )
+    val form: Form[Option[String]] = unauthorisedPaymentRecipientNameFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def memberPaymentNatureDescriptionValidation(index: Int,
+                                                       chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoOtherDescription), otherDescription, fieldNoOtherDescription)
+    )
+    val form: Form[Option[String]] = memberPaymentNatureDescriptionFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def addressValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Address] = {
+    val parsedAddress = splitAddress(chargeFields(fieldNoCompanyAddress))
+    val fields = Seq(
+      Field(addressLine1, parsedAddress.addressLine1, addressLine1, fieldNoResidentialAddress, Some(Event1FieldNames.addressLine1)),
+      Field(addressLine2, parsedAddress.addressLine2, addressLine2, fieldNoResidentialAddress, Some(Event1FieldNames.addressLine2)),
+      Field(addressLine3, parsedAddress.addressLine3, addressLine3, fieldNoResidentialAddress, Some(Event1FieldNames.addressLine3)),
+      Field(addressLine4, parsedAddress.addressLine4, addressLine4, fieldNoResidentialAddress, Some(Event1FieldNames.addressLine4)),
+      Field(postCode, parsedAddress.postCode, postCode, fieldNoResidentialAddress, Some(Event1FieldNames.postCode)),
+      Field(country, parsedAddress.country, country, fieldNoResidentialAddress, Some(Event1FieldNames.country))
+    )
+    val form: Form[Address] = manualAddressFormProvider()
     form.bind(
       Field.seqToMap(fields)
     ).fold(

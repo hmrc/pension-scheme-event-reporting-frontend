@@ -27,7 +27,7 @@ object FileUploadHeaders {
   }
 
   object Event1FieldNames {
-
+    val memberOrEmployer: String = "memberOrEmployer"
     val doYouHoldSignedMandate: String = "doYouHoldSignedMandate"
     val valueOfUnauthorisedPayment: String = "valueOfUnauthorisedPayment"
     val schemeUnAuthPaySurcharge: String = "schemeUnAuthPaySurcharge"
@@ -35,6 +35,19 @@ object FileUploadHeaders {
     val benefitDescription: String = "benefitDescription"
     val transferMadeTo: String = "transferMadeTo"
     val schemeDetails: String = "schemeDetails"
+    val whoReceivedRefund: String = "whoReceivedRefund"
+    val overpaymentReason: String = "overpaymentReason"
+    val addressLine1: String = "addressLine1"
+    val addressLine2: String = "addressLine2"
+    val addressLine3: String = "addressLine3"
+    val addressLine4: String = "addressLine4"
+    val postCode: String = "postCode"
+    val country: String = "country"
+    val tangibleDescription: String = "tangibleDescription"
+    val courtNameOfPersonOrOrg: String = "courtNameOfPersonOrOrg"
+    val otherDescription: String = "otherDescription"
+    val errorDescription: String = "errorDescription"
+    val earlyDescription: String = "earlyDescription"
     val paymentAmount: String = "paymentValue"
     val paymentDate: String = "paymentDate"
     val dateOfEventDay: String = "paymentDate.day"

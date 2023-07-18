@@ -145,6 +145,18 @@ trait Validator {
     }
   }
 
+  protected final def splitAddress(address: String): ParsedAddress = {
+    address.split(",").toSeq match {
+      case Seq(add1, add2, add3, add4, postCode, country) => ParsedAddress(add1, add2, add3, add4, postCode, country)
+      case Seq(add1, add2, add3, add4, postCode) => ParsedAddress(add1, add2, add3, add4, postCode, EMPTY)
+      case Seq(add1, add2, add3, add4) => ParsedAddress(add1, add2, add3, add4, EMPTY, EMPTY)
+      case Seq(add1, add2, add3) => ParsedAddress(add1, add2, add3, EMPTY, EMPTY, EMPTY)
+      case Seq(add1, add2) => ParsedAddress(add1, add2, EMPTY, EMPTY, EMPTY, EMPTY)
+      case Seq(add1) => ParsedAddress(add1, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)
+      case _ => ParsedAddress(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)
+    }
+  }
+
   protected final def stringToBoolean(s: String): String =
     s.toLowerCase match {
       case "yes" => "true"
@@ -168,6 +180,13 @@ protected case class Field(formValidationFieldName: String,
     case _ => formValidationFieldName
   }
 }
+
+protected case class ParsedAddress(addressLine1: String,
+                                   addressLine2: String,
+                                   addressLine3: String,
+                                   addressLine4: String,
+                                   postCode: String,
+                                   country: String)
 
 protected case class ParsedDate(day: String, month: String, year: String)
 
