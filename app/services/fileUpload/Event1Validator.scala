@@ -77,8 +77,8 @@ class Event1Validator @Inject()(
   private val fieldNoCompanyAddress = 9
   private val fieldNoNatureOfPayment = 10
   private val fieldNoBenefitDescription = 11
-  private val fieldNoEarlyDescription = 12
-  private val fieldNoCourtNameOfPersonOrOrg = 13
+  private val fieldNoCourtNameOfPersonOrOrg = 12
+  private val fieldNoEarlyDescription = 13
   private val fieldNoErrorDescription = 14
   private val fieldNoLoanAmount = 15
   private val fieldNoValueOfFund = 16
