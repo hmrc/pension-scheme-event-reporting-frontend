@@ -52,7 +52,7 @@ class Event1Validator @Inject()(
 
   override val eventType: EventType = EventType.Event1
 
-  override protected def validHeader: String = config.validEvent1Header //TODO: This needs to be updated
+  override protected def validHeader: String = config.validEvent1Header
 
   private val fieldNoTypeOfProtection = 3
   private val fieldNoTypeOfProtectionReference = 4
