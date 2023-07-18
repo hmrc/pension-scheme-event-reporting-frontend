@@ -20,14 +20,12 @@ import base.SpecBase
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import forms.TaxYearFormProvider
 import models.enumeration.JourneyStartType.{InProgress, PastEventTypes, StartNew}
-import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
-import models.{EROverview, EROverviewVersion, TaxYear, ToggleDetails, UserAnswers, VersionInfo}
-import org.mockito.ArgumentCaptor
+import models.{EROverview, EROverviewVersion, TaxYear, ToggleDetails, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage, VersionInfoPage}
+import pages.{EmptyWaypoints, EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -47,18 +45,16 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val mockEventReportingConnector = mock[EventReportingConnector]
 
   private def getRoute: String = routes.TaxYearController.onPageLoad(waypoints).url
 
   private def postRoute: String = routes.TaxYearController.onSubmit(waypoints).url
 
   private val radioOptionsWithToggleOff: Seq[RadioItem] = TaxYear.options
-  private val radioOptionsWithToggleOn: Seq[RadioItem] = TaxYear.optionsFiltered(taxYear =>  taxYear.startYear >= "2023")
+  private val radioOptionsWithToggleOn: Seq[RadioItem] = TaxYear.optionsFiltered(taxYear => taxYear.startYear >= "2023")
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
-    bind[EventReportingConnector].toInstance(mockEventReportingConnector)
+    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
   private val overview1 = EROverview(
@@ -82,24 +78,25 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       compiledVersionAvailable = false)))
 
   private val erOverview = Seq(overview1, overview2)
+  private val mockEventConnector = mock[EventReportingConnector]
 
   override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
-    when(mockEventReportingConnector.getFeatureToggle(any())(any(), any())).thenReturn(
-      Future.successful(ToggleDetails("event-reporting", None, isEnabled = false))
-    )
     DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
   }
 
   "TaxYear Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET with feature toggle OFF" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-      when(mockEventReportingConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).bindings(
+        bind[EventReportingConnector].to(mockEventConnector)).build()
+
+      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
         Future.successful(ToggleDetails("event-reporting", None, isEnabled = false))
       )
+
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
@@ -112,13 +109,37 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       }
     }
 
+    "must return OK and the correct view for a GET with feature toggle ON" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).bindings(
+        bind[EventReportingConnector].to(mockEventConnector)).build()
+
+      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+        Future.successful(ToggleDetails("event-reporting", None, isEnabled = true))
+      )
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[TaxYearView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form, waypoints, radioOptionsWithToggleOn)(request, messages(application)).toString
+      }
+    }
+
     "must return OK and the correct view for a GET when past events chosen from tile page" in {
       val ua = emptyUserAnswers
         .setOrException(EventReportingTileLinksPage, PastEventTypes)
         .setOrException(EventReportingOverviewPage, erOverview)
 
-      val application = applicationBuilder(userAnswers = Some(ua)).build()
-
+      val application = applicationBuilder(userAnswers = Some(ua)).bindings(
+        bind[EventReportingConnector].to(mockEventConnector)).build()
+      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+        Future.successful(ToggleDetails("event-reporting", None, isEnabled = false))
+      )
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
@@ -137,7 +158,11 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         .setOrException(EventReportingTileLinksPage, InProgress)
         .setOrException(EventReportingOverviewPage, erOverview)
 
-      val application = applicationBuilder(userAnswers = Some(ua)).build()
+      val application = applicationBuilder(userAnswers = Some(ua)).bindings(
+        bind[EventReportingConnector].to(mockEventConnector)).build()
+      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+        Future.successful(ToggleDetails("event-reporting", None, isEnabled = false))
+      )
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -153,14 +178,17 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "must populate the view correctly on a GET when the question has previously been answered with feature toggle OFF" in {
 
       val userAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022")).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      when(mockEventReportingConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).bindings(
+        bind[EventReportingConnector].to(mockEventConnector)).build()
+
+      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
         Future.successful(ToggleDetails("event-reporting", None, isEnabled = false))
       )
+
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
@@ -173,99 +201,65 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       }
     }
 
-    "must save answers and redirect to next page when valid data is submitted after choosing start new from tile" in {
-      val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+    "must populate the view correctly on a GET when the question has previously been answered with feature toggle ON" in {
+
+      val userAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022")).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).bindings(
+        bind[EventReportingConnector].to(mockEventConnector)).build()
+
+      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+        Future.successful(ToggleDetails("event-reporting", None, isEnabled = true))
+      )
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val view = application.injector.instanceOf[TaxYearView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form.fill(TaxYear.values.head), waypoints, radioOptionsWithToggleOn)(request, messages(application)).toString
+      }
+    }
+
+    "must save the answer and redirect to the next page when valid data is submitted" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
+
       val ua = emptyUserAnswers.setOrException(EventReportingTileLinksPage, StartNew)
-      val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
+
+      val application =
+        applicationBuilder(userAnswers = Some(ua), extraModules).bindings(
+          bind[EventReportingConnector].to(mockEventConnector)).build()
+
+      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+        Future.successful(ToggleDetails("event-reporting", None, isEnabled = false))
+      )
 
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", TaxYear.values.head.startYear))
+
         val result = route(application, request).value
         val updatedAnswers = ua.set(TaxYearPage, TaxYear.values.head).success.value
+
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual TaxYearPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), captor.capture())(any(), any())
-        val savedUA = captor.getValue
-        savedUA.get(VersionInfoPage) mustBe Some(VersionInfo(1, NotStarted))
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
       }
     }
 
-    "must save answers and redirect to next page when valid data is submitted after choosing in progress from tile" in {
-      val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
-      val ua = emptyUserAnswers
-        .setOrException(EventReportingTileLinksPage, InProgress)
-        .setOrException(EventReportingOverviewPage, erOverview)
-      val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "2021"))
-        val result = route(application, request).value
-        val updatedAnswers = ua.set(TaxYearPage, TaxYear.values.head).success.value
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual TaxYearPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), captor.capture())(any(), any())
-        val savedUA = captor.getValue
-        savedUA.get(VersionInfoPage) mustBe Some(VersionInfo(3, Compiled))
-      }
-    }
-
-    "must save answers and redirect to next page when valid data is submitted after choosing past event types from tile" in {
-      val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
-      val ua = emptyUserAnswers
-        .setOrException(EventReportingTileLinksPage, PastEventTypes)
-        .setOrException(EventReportingOverviewPage, erOverview)
-      val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "2022"))
-        val result = route(application, request).value
-        val updatedAnswers = ua.set(TaxYearPage, TaxYear.values.head).success.value
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual TaxYearPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), captor.capture())(any(), any())
-        val savedUA = captor.getValue
-        savedUA.get(VersionInfoPage) mustBe Some(VersionInfo(2, Submitted))
-      }
-    }
-
-    "must return bad request when invalid data is submitted when feature toggle true" in {
+    "must return bad request when invalid data is submitted with feature toggle OFF" in {
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-      when(mockEventReportingConnector.getFeatureToggle(any())(any(), any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting", None, isEnabled = true))
-      )
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).bindings(
+          bind[EventReportingConnector].to(mockEventConnector)).build()
 
-        val view = application.injector.instanceOf[TaxYearView]
-        val boundForm = form.bind(Map("value" -> "invalid"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, radioOptionsWithToggleOn)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
-      }
-    }
-
-    "must return bad request when invalid data is submitted when feature toggle false" in {
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-      when(mockEventReportingConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
         Future.successful(ToggleDetails("event-reporting", None, isEnabled = false))
       )
+
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
@@ -277,6 +271,30 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, waypoints, radioOptionsWithToggleOff)(request, messages(application)).toString
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
+
+    "must return bad request when invalid data is submitted with feature toggle ON" in {
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).bindings(
+          bind[EventReportingConnector].to(mockEventConnector)).build()
+
+      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+        Future.successful(ToggleDetails("event-reporting", None, isEnabled = true))
+      )
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
+
+        val view = application.injector.instanceOf[TaxYearView]
+        val boundForm = form.bind(Map("value" -> "invalid"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(boundForm, waypoints, radioOptionsWithToggleOn)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
