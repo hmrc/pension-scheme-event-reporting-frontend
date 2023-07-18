@@ -20,9 +20,11 @@ import base.SpecBase
 import cats.data.Validated.{Invalid, Valid}
 import config.FrontendAppConfig
 import data.SampleData
+import forms.address.ManualAddressFormProvider
 import forms.common.MembersDetailsFormProvider
-import forms.event1._
-import forms.event1.member.{SchemeDetailsFormProvider, WhoWasTheTransferMadeFormProvider}
+import forms.event1.employer.{CompanyDetailsFormProvider, LoanDetailsFormProvider, PaymentNatureFormProvider => employerPaymentNatureFormProvider}
+import forms.event1.member._
+import forms.event1.{PaymentNatureFormProvider => memberPaymentNatureFormProvider, _}
 import models.enumeration.EventType.Event1
 import models.event1.PaymentNature.{BenefitInKind, TransferToNonRegPensionScheme}
 import models.event1.WhoReceivedUnauthPayment.Member
@@ -36,8 +38,8 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.TaxYearPage
 import pages.common.MembersDetailsPage
-import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage, SchemeDetailsPage, WhoWasTheTransferMadePage}
 import pages.event1._
+import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage, SchemeDetailsPage, WhoWasTheTransferMadePage}
 import play.api.libs.json.Json
 import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
 
@@ -50,6 +52,8 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
     Mockito.reset(mockFrontendAppConfig)
     when(mockFrontendAppConfig.validEvent1Header).thenReturn(header)
   }
+
+  //TODO: Need to create a generator for all the combinations for the journey
 
   "Event 1 validator" - {
     "must return items in user answers when there are no validation errors for Member" in {
@@ -132,11 +136,22 @@ object Event1ValidatorSpec {
   private val doYouHoldSignedMandateFormProvider = new DoYouHoldSignedMandateFormProvider
   private val valueOfUnauthorisedPaymentFormProvider = new ValueOfUnauthorisedPaymentFormProvider
   private val schemeUnAuthPaySurchargeMemberFormProvider = new SchemeUnAuthPaySurchargeMemberFormProvider
-  private val paymentNatureFormProvider = new PaymentNatureFormProvider
+  private val memberPaymentNatureFormProvider = new memberPaymentNatureFormProvider
   private val benefitInKindBriefDescriptionFormProvider = new BenefitInKindBriefDescriptionFormProvider
   private val paymentValueAndDateFormProvider = new PaymentValueAndDateFormProvider
   private val whoWasTheTransferMadeFormProvider = new WhoWasTheTransferMadeFormProvider
   private val schemeDetailsFormProvider = new SchemeDetailsFormProvider
+  private val errorDescriptionFormProvider = new ErrorDescriptionFormProvider
+  private val benefitsPaidEarlyFormProvider = new BenefitsPaidEarlyFormProvider
+  private val refundOfContributionsFormProvider = new RefundOfContributionsFormProvider
+  private val reasonForTheOverpaymentOrWriteOffFormProvider = new ReasonForTheOverpaymentOrWriteOffFormProvider
+  private val manualAddressFormProvider = new ManualAddressFormProvider
+  private val memberTangibleMoveablePropertyFormProvider = new MemberTangibleMoveablePropertyFormProvider
+  private val unauthorisedPaymentRecipientNameFormProvider = new UnauthorisedPaymentRecipientNameFormProvider
+  private val memberPaymentNatureDescriptionFormProvider = new MemberPaymentNatureDescriptionFormProvider
+  private val companyDetailsFormProvider = new CompanyDetailsFormProvider
+  private val employerPaymentNatureFormProvider = new employerPaymentNatureFormProvider
+  private val loanDetailsFormProvider = new LoanDetailsFormProvider
 
   private val validator = new Event1Validator(
     whoReceivedUnauthPaymentFormProvider,
@@ -145,9 +160,20 @@ object Event1ValidatorSpec {
     paymentValueAndDateFormProvider,
     valueOfUnauthorisedPaymentFormProvider,
     schemeUnAuthPaySurchargeMemberFormProvider,
-    paymentNatureFormProvider,
+    memberPaymentNatureFormProvider,
     benefitInKindBriefDescriptionFormProvider,
     whoWasTheTransferMadeFormProvider,
     schemeDetailsFormProvider,
+    errorDescriptionFormProvider,
+    benefitsPaidEarlyFormProvider,
+    refundOfContributionsFormProvider,
+    reasonForTheOverpaymentOrWriteOffFormProvider,
+    manualAddressFormProvider,
+    memberTangibleMoveablePropertyFormProvider,
+    unauthorisedPaymentRecipientNameFormProvider,
+    memberPaymentNatureDescriptionFormProvider,
+    companyDetailsFormProvider,
+    employerPaymentNatureFormProvider,
+    loanDetailsFormProvider,
     mockFrontendAppConfig)
 }

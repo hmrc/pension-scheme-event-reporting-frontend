@@ -62,7 +62,7 @@ class Event1Validator @Inject()(
                                  memberPaymentNatureDescriptionFormProvider: MemberPaymentNatureDescriptionFormProvider,
                                  companyDetailsFormProvider: CompanyDetailsFormProvider,
                                  employerPaymentNatureFormProvider: employerPaymentNatureFormProvider,
-                                 loanDetailsFormProvider: LoanDetailsFormProvider,
+                                 loanDetailsFormProvider: LoanDetailsFormProvider, //TODO: Add other forms for employer journey
                                  config: FrontendAppConfig
                                ) extends Validator {
 
