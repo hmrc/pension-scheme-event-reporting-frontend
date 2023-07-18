@@ -87,9 +87,9 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "must call connector with correct tax year and version when in submitted + increase version, amend status + update overview" in {
+    "must call connector with correct tax year and version when submitted status + version 1: increase version to 2, amend status + update overview" in {
       val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      val edi = EventDataIdentifier(Event1, taxYear, "1")
+      val edi = EventDataIdentifier(Event1, taxYear, "2")
       when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi))(any, any()))
         .thenReturn(Future.successful((): Unit))
       when(mockUserAnswersCacheConnector
