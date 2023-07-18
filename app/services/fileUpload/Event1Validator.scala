@@ -23,14 +23,16 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import forms.address.ManualAddressFormProvider
 import forms.common.MembersDetailsFormProvider
-import forms.event1._
+import forms.event1.employer.{CompanyDetailsFormProvider, LoanDetailsFormProvider, PaymentNatureFormProvider => employerPaymentNatureFormProvider}
 import forms.event1.member._
+import forms.event1.{PaymentNatureFormProvider => memberPaymentNatureFormProvider, _}
 import models.address.Address
 import models.common.MembersDetails
 import models.enumeration.EventType
 import models.enumeration.EventType.Event1
+import models.event1.employer.{CompanyDetails, LoanDetails, PaymentNature => employerPaymentNature}
 import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, SchemeDetails, WhoWasTheTransferMade}
-import models.event1.{PaymentDetails, PaymentNature, WhoReceivedUnauthPayment}
+import models.event1.{PaymentDetails, WhoReceivedUnauthPayment, PaymentNature => memberPaymentNature}
 import models.fileUpload.FileUploadHeaders.Event1FieldNames._
 import models.fileUpload.FileUploadHeaders.{Event1FieldNames, valueFormField}
 import pages.common.MembersDetailsPage
@@ -46,7 +48,7 @@ class Event1Validator @Inject()(
                                  paymentValueAndDateFormProvider: PaymentValueAndDateFormProvider,
                                  valueOfUnauthorisedPaymentFormProvider: ValueOfUnauthorisedPaymentFormProvider,
                                  schemeUnAuthPaySurchargeMemberFormProvider: SchemeUnAuthPaySurchargeMemberFormProvider,
-                                 paymentNatureFormProvider: PaymentNatureFormProvider,
+                                 memberPaymentNatureFormProvider: memberPaymentNatureFormProvider,
                                  benefitInKindBriefDescriptionFormProvider: BenefitInKindBriefDescriptionFormProvider,
                                  whoWasTheTransferMadeFormProvider: WhoWasTheTransferMadeFormProvider,
                                  schemeDetailsFormProvider: SchemeDetailsFormProvider,
@@ -58,6 +60,9 @@ class Event1Validator @Inject()(
                                  memberTangibleMoveablePropertyFormProvider: MemberTangibleMoveablePropertyFormProvider,
                                  unauthorisedPaymentRecipientNameFormProvider: UnauthorisedPaymentRecipientNameFormProvider,
                                  memberPaymentNatureDescriptionFormProvider: MemberPaymentNatureDescriptionFormProvider,
+                                 companyDetailsFormProvider: CompanyDetailsFormProvider,
+                                 employerPaymentNatureFormProvider: employerPaymentNatureFormProvider,
+                                 loanDetailsFormProvider: LoanDetailsFormProvider,
                                  config: FrontendAppConfig
                                ) extends Validator {
 
@@ -185,7 +190,7 @@ class Event1Validator @Inject()(
     )
   }
 
-  private def memberPaymentNatureValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], PaymentNature] = {
+  private def memberPaymentNatureValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], memberPaymentNature] = {
 
     val mappedNatureOfPayment = mapPaymentNatureMember.applyOrElse[String, String](chargeFields(fieldNoNatureOfPayment),
       (_: String) => "Nature of the payment is not found or doesn't exist")
@@ -193,7 +198,7 @@ class Event1Validator @Inject()(
     val fields = Seq(
       Field(valueFormField, mappedNatureOfPayment, natureOfPayment, fieldNoNatureOfPayment)
     )
-    val form: Form[PaymentNature] = paymentNatureFormProvider()
+    val form: Form[memberPaymentNature] = memberPaymentNatureFormProvider()
     form.bind(
       Field.seqToMap(fields)
     ).fold(
@@ -345,15 +350,59 @@ class Event1Validator @Inject()(
     )
   }
 
-  private def addressValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Address] = {
-    val parsedAddress = splitAddress(chargeFields(fieldNoCompanyAddress))
+  private def companyDetailsValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], CompanyDetails] = {
     val fields = Seq(
-      Field(addressLine1, parsedAddress.addressLine1, addressLine1, fieldNoResidentialAddress, Some(Event1FieldNames.addressLine1)),
-      Field(addressLine2, parsedAddress.addressLine2, addressLine2, fieldNoResidentialAddress, Some(Event1FieldNames.addressLine2)),
-      Field(addressLine3, parsedAddress.addressLine3, addressLine3, fieldNoResidentialAddress, Some(Event1FieldNames.addressLine3)),
-      Field(addressLine4, parsedAddress.addressLine4, addressLine4, fieldNoResidentialAddress, Some(Event1FieldNames.addressLine4)),
-      Field(postCode, parsedAddress.postCode, postCode, fieldNoResidentialAddress, Some(Event1FieldNames.postCode)),
-      Field(country, parsedAddress.country, country, fieldNoResidentialAddress, Some(Event1FieldNames.country))
+      Field(valueFormField, chargeFields(fieldNoCompanyOrOrgName), companyOrOrgName, fieldNoCompanyOrOrgName),
+      Field(valueFormField, chargeFields(fieldNoCompanyNo), companyNo, fieldNoCompanyNo)
+    )
+    val form: Form[CompanyDetails] = companyDetailsFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def employerPaymentNatureValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], employerPaymentNature] = {
+    val mappedNatureOfPayment = mapPaymentNatureEmployer.applyOrElse[String, String](chargeFields(fieldNoNatureOfPayment),
+      (_: String) => "Nature of the payment is not found or doesn't exist")
+
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoNatureOfPayment), companyOrOrgName, fieldNoNatureOfPayment)
+    )
+    val form: Form[employerPaymentNature] = employerPaymentNatureFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def loanDetailsValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], LoanDetails] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoLoanAmount), loanAmount, fieldNoLoanAmount),
+      Field(valueFormField, chargeFields(fieldNoValueOfFund), valueOfFund, fieldNoValueOfFund)
+    )
+    val form: Form[LoanDetails] = loanDetailsFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def addressValidation(index: Int, chargeFields: Seq[String], fieldNumber: Int): Validated[Seq[ValidationError], Address] = {
+    val parsedAddress = splitAddress(chargeFields(fieldNumber))
+    val fields = Seq(
+      Field(addressLine1, parsedAddress.addressLine1, addressLine1, fieldNumber, Some(Event1FieldNames.addressLine1)),
+      Field(addressLine2, parsedAddress.addressLine2, addressLine2, fieldNumber, Some(Event1FieldNames.addressLine2)),
+      Field(addressLine3, parsedAddress.addressLine3, addressLine3, fieldNumber, Some(Event1FieldNames.addressLine3)),
+      Field(addressLine4, parsedAddress.addressLine4, addressLine4, fieldNumber, Some(Event1FieldNames.addressLine4)),
+      Field(postCode, parsedAddress.postCode, postCode, fieldNumber, Some(Event1FieldNames.postCode)),
+      Field(country, parsedAddress.country, country, fieldNumber, Some(Event1FieldNames.country))
     )
     val form: Form[Address] = manualAddressFormProvider()
     form.bind(
