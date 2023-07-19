@@ -164,8 +164,10 @@ final case class UserAnswers(
       .getOrElse(zeroValue)
   }
 
-  def eventDataIdentifier(eventType: EventType): EventDataIdentifier = {
-    ((noEventTypeData \ TaxYearPage.toString).asOpt[String], get(VersionInfoPage).map(_.version.toString)) match {
+  def eventDataIdentifier(eventType: EventType): EventDataIdentifier = eventDataIdentifier(eventType, get(VersionInfoPage))
+
+  def eventDataIdentifier(eventType: EventType, vi: Option[VersionInfo]): EventDataIdentifier = {
+    ((noEventTypeData \ TaxYearPage.toString).asOpt[String], vi.map(_.version.toString)) match {
       case (Some(year), Some(version)) => EventDataIdentifier(eventType, year, version)
       case (ty, v) => throw new RuntimeException(s"No tax year or version available $ty/ $v")
     }

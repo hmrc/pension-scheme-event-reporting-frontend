@@ -16,16 +16,17 @@
 
 package pages.common
 
-import models.Index
-import models.common.MembersSummary
-import models.enumeration.EventType
-import play.api.libs.json.JsPath
-import queries.Gettable
+import models.enumeration.EventType.Event1
+import pages.behaviours.PageBehaviours
 
-case class MembersPage(eventType: EventType) extends Gettable[Seq[MembersSummary]] {
-  def apply(index: Index): JsPath = path \ index
+class RemoveMemberPageSpec extends PageBehaviours {
 
-  def path: JsPath = JsPath \ s"event${eventType.toString}" \ toString
+  "RemoveMemberPage" - {
 
-  override def toString: String = "members"
+    beRetrievable[Boolean](RemoveMemberPage(Event1, 0))
+
+    beSettable[Boolean](RemoveMemberPage(Event1, 0))
+
+    beRemovable[Boolean](RemoveMemberPage(Event1, 0))
+  }
 }
