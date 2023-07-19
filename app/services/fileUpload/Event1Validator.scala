@@ -36,8 +36,8 @@ import models.event1.{PaymentDetails, WhoReceivedUnauthPayment, PaymentNature =>
 import models.fileUpload.FileUploadHeaders.Event1FieldNames._
 import models.fileUpload.FileUploadHeaders.{Event1FieldNames, valueFormField}
 import pages.common.MembersDetailsPage
-import pages.event1.member.{BenefitInKindBriefDescriptionPage, WhoWasTheTransferMadePage, PaymentNaturePage => MemberPaymentNaturePage}
 import pages.event1._
+import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
 import play.api.data.Form
 import play.api.i18n.Messages
 import services.fileUpload.Validator.Result
@@ -224,7 +224,7 @@ class Event1Validator @Inject()(
 
   private case class Abc[A](fieldNum: Int, description: String, form: Form[A])
 
-  private def test[A](index: Int, chargeFields: Seq[String], abc: Abc[A]): Validated[Seq[ValidationError], A] = {
+  private def genericFieldValidation[A](index: Int, chargeFields: Seq[String], abc: Abc[A]): Validated[Seq[ValidationError], A] = {
     val fields = Seq(Field(valueFormField, chargeFields(abc.fieldNum), abc.description, abc.fieldNum))
     abc.form.bind(
       Field.seqToMap(fields)
@@ -523,77 +523,20 @@ class Event1Validator @Inject()(
           memberPaymentNatureValidation(index, columns), createCommitItem(index, MemberPaymentNaturePage.apply)
         )
 
-        val paymentNatureNextStep = columns(10) match {
-          case "Benefit" =>
-            resultFromFormValidationResult[Option[String]](
-              test(index, columns,
-                Abc(fieldNoBenefitDescription, benefitDescription, benefitInKindBriefDescriptionFormProvider())
-              ), createCommitItem(index, BenefitInKindBriefDescriptionPage.apply(_)))
-          case "Transfer" =>
-            resultFromFormValidationResult[WhoWasTheTransferMade](
-              whoWasTheTransferMadeValidation(index, columns), createCommitItem(index, WhoWasTheTransferMadePage.apply(_)))
-//          case "Error" =>
-//          case "Early" =>
-//          case "Refund" =>
-//          case "Overpayment" =>
-//          case "Residential" =>
-//          case "Tangible" =>
-//          case "Court" =>
-//          case "Other" =>
-//          case _ => throw new RuntimeException("Nature of payment not found or doesn't exist")
+        val l = resultFromFormValidationResult[Option[String]](
+          genericFieldValidation(index, columns, Abc(fieldNoBenefitDescription, benefitDescription, benefitInKindBriefDescriptionFormProvider())
+          ), createCommitItem(index, BenefitInKindBriefDescriptionPage.apply(_)))
 
-        }
-
-//        val paymentNatureNextStep = columns(10) match {
-//          case "Benefit" =>
-//            resultFromFormValidationResult[Option[String]](
-//              benefitInKindBriefDescriptionValidation(index, columns), createCommitItem(index, BenefitInKindBriefDescriptionPage.apply(_)))
-////          case "Transfer" =>
-////            resultFromFormValidationResult[WhoWasTheTransferMade](
-////              whoWasTheTransferMadeValidation(index, columns), createCommitItem(index, WhoWasTheTransferMadePage.apply(_)))
-////          case "Error" =>
-////          case "Early" =>
-////          case "Refund" =>
-////          case "Overpayment" =>
-////          case "Residential" =>
-////          case "Tangible" =>
-////          case "Court" =>
-////          case "Other" =>
-////          case _ => throw new RuntimeException("Nature of payment not found or doesn't exist")
-//
-//        }
 
         val y = resultFromFormValidationResult[PaymentDetails](
           paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply(_))
         )
 
 
-        Seq(a, b, c, d, e, k, paymentNatureNextStep, y).combineAll
+        Seq(a, b, c, d, e, k, l, y).combineAll
 
       //      case "employer" =>
-      //        val a = resultFromFormValidationResult[WhoReceivedUnauthPayment](
-      //          whoReceivedUnauthPaymentValidation(index, columns), createCommitItem(index, WhoReceivedUnauthPaymentPage.apply(_))
-      //        )
-      //
-      //        val b = resultFromFormValidationResultForMembersDetails(
-      //          memberDetailsValidation(index, columns, membersDetailsFormProvider(Event1, index)),
-      //          createCommitItem(index, MembersDetailsPage.apply(Event1, _)),
-      //          members
-      //        )
-      //
-      //        val c = resultFromFormValidationResult[Boolean](
-      //          doYouHoldSignedMandateValidation(index, columns), createCommitItem(index, DoYouHoldSignedMandatePage.apply(_))
-      //        )
-      //
-      //        val d = resultFromFormValidationResult[Boolean](
-      //          valueOfUnauthorisedPaymentValidation(index, columns), createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply(_))
-      //        )
-      //
-      //        val e = resultFromFormValidationResult[Boolean](
-      //          schemeUnAuthPaySurchargeMemberValidation(index, columns), createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply(_))
-      //        )
-      //
-      //        Seq(a, b, c, d, e).combineAll
+
       case _ => throw new RuntimeException("Something went wrong")
     }
   }
