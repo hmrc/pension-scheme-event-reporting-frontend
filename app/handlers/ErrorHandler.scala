@@ -40,10 +40,8 @@ class ErrorHandler @Inject()(
     view(pageTitle, heading, message)
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
-    implicit val rh: RequestHeader = request
-
     exception match {
-      case error: ExpectationFailedException => Future.successful(Ok(noDataEnteredView(config.yourPensionSchemesUrl)(Request(request, ""), request2Messages)))
+      case _: ExpectationFailedException => Future.successful(Ok(noDataEnteredView(config.yourPensionSchemesUrl)(Request(request, ""), request2Messages(request))))
       case _ => super.onServerError(request, exception)
     }
   }
