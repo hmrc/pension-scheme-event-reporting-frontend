@@ -23,16 +23,16 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import forms.address.ManualAddressFormProvider
 import forms.common.MembersDetailsFormProvider
-import forms.event1.employer.{CompanyDetailsFormProvider, LoanDetailsFormProvider, PaymentNatureFormProvider => employerPaymentNatureFormProvider}
+import forms.event1.employer.{CompanyDetailsFormProvider, LoanDetailsFormProvider, PaymentNatureFormProvider => EmployerPaymentNatureFormProvider, UnauthorisedPaymentRecipientNameFormProvider => EmployerUnauthorisedPaymentRecipientNameFormProvider}
 import forms.event1.member._
-import forms.event1.{PaymentNatureFormProvider => memberPaymentNatureFormProvider, _}
+import forms.event1.{PaymentNatureFormProvider => MemberPaymentNatureFormProvider, _}
 import models.address.Address
 import models.common.MembersDetails
 import models.enumeration.EventType
 import models.enumeration.EventType.Event1
-import models.event1.employer.{CompanyDetails, LoanDetails, PaymentNature => employerPaymentNature}
+import models.event1.employer.{CompanyDetails, LoanDetails, PaymentNature => EmployerPaymentNature}
 import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, SchemeDetails, WhoWasTheTransferMade}
-import models.event1.{PaymentDetails, WhoReceivedUnauthPayment, PaymentNature => memberPaymentNature}
+import models.event1.{PaymentDetails, WhoReceivedUnauthPayment, PaymentNature => MemberPaymentNature}
 import models.fileUpload.FileUploadHeaders.Event1FieldNames._
 import models.fileUpload.FileUploadHeaders.{Event1FieldNames, valueFormField}
 import pages.common.MembersDetailsPage
@@ -48,7 +48,7 @@ class Event1Validator @Inject()(
                                  paymentValueAndDateFormProvider: PaymentValueAndDateFormProvider,
                                  valueOfUnauthorisedPaymentFormProvider: ValueOfUnauthorisedPaymentFormProvider,
                                  schemeUnAuthPaySurchargeMemberFormProvider: SchemeUnAuthPaySurchargeMemberFormProvider,
-                                 memberPaymentNatureFormProvider: memberPaymentNatureFormProvider,
+                                 memberPaymentNatureFormProvider: MemberPaymentNatureFormProvider,
                                  benefitInKindBriefDescriptionFormProvider: BenefitInKindBriefDescriptionFormProvider,
                                  whoWasTheTransferMadeFormProvider: WhoWasTheTransferMadeFormProvider,
                                  schemeDetailsFormProvider: SchemeDetailsFormProvider,
@@ -58,11 +58,14 @@ class Event1Validator @Inject()(
                                  reasonForTheOverpaymentOrWriteOffFormProvider: ReasonForTheOverpaymentOrWriteOffFormProvider,
                                  manualAddressFormProvider: ManualAddressFormProvider,
                                  memberTangibleMoveablePropertyFormProvider: MemberTangibleMoveablePropertyFormProvider,
-                                 unauthorisedPaymentRecipientNameFormProvider: UnauthorisedPaymentRecipientNameFormProvider,
+                                 memberUnauthorisedPaymentRecipientNameFormProvider: UnauthorisedPaymentRecipientNameFormProvider,
                                  memberPaymentNatureDescriptionFormProvider: MemberPaymentNatureDescriptionFormProvider,
                                  companyDetailsFormProvider: CompanyDetailsFormProvider,
-                                 employerPaymentNatureFormProvider: employerPaymentNatureFormProvider,
-                                 loanDetailsFormProvider: LoanDetailsFormProvider, //TODO: Add other forms for employer journey
+                                 employerPaymentNatureFormProvider: EmployerPaymentNatureFormProvider,
+                                 loanDetailsFormProvider: LoanDetailsFormProvider,
+                                 employerTangibleMoveablePropertyFormProvider: EmployerTangibleMoveablePropertyFormProvider,
+                                 employerUnauthorisedPaymentRecipientNameFormProvider: EmployerUnauthorisedPaymentRecipientNameFormProvider,
+                                 employerPaymentNatureDescriptionFormProvider: EmployerPaymentNatureDescriptionFormProvider,
                                  config: FrontendAppConfig
                                ) extends Validator {
 
@@ -190,7 +193,7 @@ class Event1Validator @Inject()(
     )
   }
 
-  private def memberPaymentNatureValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], memberPaymentNature] = {
+  private def memberPaymentNatureValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], MemberPaymentNature] = {
 
     val mappedNatureOfPayment = mapPaymentNatureMember.applyOrElse[String, String](chargeFields(fieldNoNatureOfPayment),
       (_: String) => "Nature of the payment is not found or doesn't exist")
@@ -198,7 +201,7 @@ class Event1Validator @Inject()(
     val fields = Seq(
       Field(valueFormField, mappedNatureOfPayment, natureOfPayment, fieldNoNatureOfPayment)
     )
-    val form: Form[memberPaymentNature] = memberPaymentNatureFormProvider()
+    val form: Form[MemberPaymentNature] = memberPaymentNatureFormProvider()
     form.bind(
       Field.seqToMap(fields)
     ).fold(
@@ -308,8 +311,7 @@ class Event1Validator @Inject()(
     )
   }
 
-  private def memberTangibleMoveablePropertyValidation(index: Int,
-                                                       chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
+  private def memberTangibleMoveablePropertyValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
     val fields = Seq(
       Field(valueFormField, chargeFields(fieldNoTangibleDescription), tangibleDescription, fieldNoTangibleDescription)
     )
@@ -322,12 +324,11 @@ class Event1Validator @Inject()(
     )
   }
 
-  private def unauthorisedPaymentRecipientNameValidation(index: Int,
-                                                         chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
+  private def unauthorisedPaymentRecipientNameValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
     val fields = Seq(
       Field(valueFormField, chargeFields(fieldNoCourtNameOfPersonOrOrg), courtNameOfPersonOrOrg, fieldNoCourtNameOfPersonOrOrg)
     )
-    val form: Form[Option[String]] = unauthorisedPaymentRecipientNameFormProvider()
+    val form: Form[Option[String]] = memberUnauthorisedPaymentRecipientNameFormProvider()
     form.bind(
       Field.seqToMap(fields)
     ).fold(
@@ -364,14 +365,14 @@ class Event1Validator @Inject()(
     )
   }
 
-  private def employerPaymentNatureValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], employerPaymentNature] = {
+  private def employerPaymentNatureValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], EmployerPaymentNature] = {
     val mappedNatureOfPayment = mapPaymentNatureEmployer.applyOrElse[String, String](chargeFields(fieldNoNatureOfPayment),
       (_: String) => "Nature of the payment is not found or doesn't exist")
 
     val fields = Seq(
       Field(valueFormField, chargeFields(fieldNoNatureOfPayment), companyOrOrgName, fieldNoNatureOfPayment)
     )
-    val form: Form[employerPaymentNature] = employerPaymentNatureFormProvider()
+    val form: Form[EmployerPaymentNature] = employerPaymentNatureFormProvider()
     form.bind(
       Field.seqToMap(fields)
     ).fold(
@@ -386,6 +387,45 @@ class Event1Validator @Inject()(
       Field(valueFormField, chargeFields(fieldNoValueOfFund), valueOfFund, fieldNoValueOfFund)
     )
     val form: Form[LoanDetails] = loanDetailsFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def employerTangibleMoveablePropertyValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoTangibleDescription), tangibleDescription, fieldNoTangibleDescription)
+    )
+    val form: Form[Option[String]] = employerTangibleMoveablePropertyFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def employerUnauthorisedPaymentRecipientValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoCourtNameOfPersonOrOrg), courtNameOfPersonOrOrg, fieldNoCourtNameOfPersonOrOrg)
+    )
+    val form: Form[Option[String]] = employerUnauthorisedPaymentRecipientNameFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def employerPaymentNatureDescriptionValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoOtherDescription), otherDescription, fieldNoOtherDescription)
+    )
+    val form: Form[Option[String]] = employerPaymentNatureDescriptionFormProvider()
     form.bind(
       Field.seqToMap(fields)
     ).fold(
