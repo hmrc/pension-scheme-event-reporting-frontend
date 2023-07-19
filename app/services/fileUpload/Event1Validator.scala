@@ -155,16 +155,15 @@ class Event1Validator @Inject()(
     )
   }
 
-  private def memberPaymentNatureValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], MemberPaymentNature] = {
+  private def genericPaymentNatureFieldValidation[A](index: Int,
+                                                     chargeFields: Seq[String],
+                                                     abc: Abc[A],
+                                                     mapPaymentNature: Map[String, String]): Validated[Seq[ValidationError], A] = {
 
-    val mappedNatureOfPayment = mapPaymentNatureMember.applyOrElse[String, String](chargeFields(fieldNoNatureOfPayment),
+    val mappedNatureOfPayment = mapPaymentNature.applyOrElse[String, String](chargeFields(abc.fieldNum),
       (_: String) => "Nature of the payment is not found or doesn't exist")
-
-    val fields = Seq(
-      Field(valueFormField, mappedNatureOfPayment, natureOfPayment, fieldNoNatureOfPayment)
-    )
-    val form: Form[MemberPaymentNature] = memberPaymentNatureFormProvider()
-    form.bind(
+    val fields = Seq(Field(valueFormField, mappedNatureOfPayment, abc.description, abc.fieldNum))
+    abc.form.bind(
       Field.seqToMap(fields)
     ).fold(
       formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
@@ -474,12 +473,13 @@ class Event1Validator @Inject()(
         )
 
         val k = resultFromFormValidationResult[MemberPaymentNature](
-          memberPaymentNatureValidation(index, columns), createCommitItem(index, MemberPaymentNaturePage.apply)
+          genericPaymentNatureFieldValidation(index, columns, Abc(fieldNoNatureOfPayment, natureOfPayment, memberPaymentNatureFormProvider()), mapPaymentNatureMember),
+          createCommitItem(index, MemberPaymentNaturePage.apply)
         )
 
         val l = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, Abc(fieldNoBenefitDescription, benefitDescription, benefitInKindBriefDescriptionFormProvider())
-          ), createCommitItem(index, BenefitInKindBriefDescriptionPage.apply(_)))
+          genericFieldValidation(index, columns, Abc(fieldNoBenefitDescription, benefitDescription, benefitInKindBriefDescriptionFormProvider())),
+          createCommitItem(index, BenefitInKindBriefDescriptionPage.apply(_)))
 
 
         val y = resultFromFormValidationResult[PaymentDetails](

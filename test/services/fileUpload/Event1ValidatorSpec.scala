@@ -91,25 +91,21 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       ))
     }
 
-    //    "return validation errors when present, including tax year in future" in {
-    //      DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
-    //      val csvFile = CSVParser.split(
-    //        s"""$header
-    //        Joe,,AA234567D,enhanced lifetime allowance,,12.20,08/11/2022
-    //        Joe,Bloggs,,Enhanced lifetime allowance,12345678,12.20,08/11/2026"""
-    //
-    //      )
-    //      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
-    //
-    //      val result = validator.validate(csvFile, ua)
-    //      result mustBe Invalid(Seq(
-    //        ValidationError(1, 1, "membersDetails.error.lastName.required", "lastName"),
-    //        ValidationError(1, 4, "inputProtectionType.error.required", "typeOfProtectionReference"),
-    //        ValidationError(2, 2, "membersDetails.error.nino.required", "nino"),
-    //        ValidationError(2, 3, "typeOfProtection.error.format", "typeOfProtection"),
-    //        ValidationError(2, 6, "Date must be between 06 April 2006 and 05 April 2024", "crystallisedDate")
-    //      ))
-    //    }
+//    "return validation errors when present, including tax year in future" in {
+//      DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
+//      val csvFile = CSVParser.split(
+//        s"""$header
+//            member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022"""
+//
+//      )
+//      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+//
+//      val result = validator.validate(csvFile, ua)
+//      result mustBe Invalid(Seq(
+//        ValidationError(1, 1, "membersDetails.error.lastName.required", "lastName"),
+//        ValidationError(2, 6, "Date must be between 06 April 2006 and 05 April 2024", "crystallisedDate")
+//      ))
+//    }
   }
 
 }
