@@ -36,7 +36,7 @@ import models.event1.{PaymentDetails, WhoReceivedUnauthPayment, PaymentNature =>
 import models.fileUpload.FileUploadHeaders.Event1FieldNames._
 import models.fileUpload.FileUploadHeaders.{Event1FieldNames, valueFormField}
 import pages.common.MembersDetailsPage
-import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
+import pages.event1.member.{BenefitInKindBriefDescriptionPage, WhoWasTheTransferMadePage, PaymentNaturePage => MemberPaymentNaturePage}
 import pages.event1._
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -215,6 +215,19 @@ class Event1Validator @Inject()(
     )
     val form: Form[MemberPaymentNature] = memberPaymentNatureFormProvider()
     form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def test[A](index: Int, chargeFields: Seq[String], formGeneric: Form[A]): Validated[Seq[ValidationError], A] = {
+    val fields = Seq(
+      Field(valueFormField, chargeFields(fieldNoBenefitDescription), benefitDescription, fieldNoBenefitDescription)
+    )
+    val form: Form[A] = formGeneric.ap()
+    formGeneric.bind(
       Field.seqToMap(fields)
     ).fold(
       formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
@@ -524,16 +537,31 @@ class Event1Validator @Inject()(
           memberPaymentNatureValidation(index, columns), createCommitItem(index, MemberPaymentNaturePage.apply(_))
         )
 
-        val l = resultFromFormValidationResult[Option[String]](
-          benefitInKindBriefDescriptionValidation(index, columns), createCommitItem(index, BenefitInKindBriefDescriptionPage.apply(_))
-        )
+        val paymentNatureNextStep = columns(10) match {
+          case "Benefit" =>
+            resultFromFormValidationResult[Option[String]](
+              benefitInKindBriefDescriptionValidation(index, columns), createCommitItem(index, BenefitInKindBriefDescriptionPage.apply(_)))
+//          case "Transfer" =>
+//            resultFromFormValidationResult[WhoWasTheTransferMade](
+//              whoWasTheTransferMadeValidation(index, columns), createCommitItem(index, WhoWasTheTransferMadePage.apply(_)))
+//          case "Error" =>
+//          case "Early" =>
+//          case "Refund" =>
+//          case "Overpayment" =>
+//          case "Residential" =>
+//          case "Tangible" =>
+//          case "Court" =>
+//          case "Other" =>
+//          case _ => throw new RuntimeException("Nature of payment not found or doesn't exist")
+
+        }
 
         val y = resultFromFormValidationResult[PaymentDetails](
           paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply(_))
         )
 
 
-        Seq(a, b, c, d, e, k, l, y).combineAll
+        Seq(a, b, c, d, e, k, paymentNatureNextStep, y).combineAll
 
       //      case "employer" =>
       //        val a = resultFromFormValidationResult[WhoReceivedUnauthPayment](
