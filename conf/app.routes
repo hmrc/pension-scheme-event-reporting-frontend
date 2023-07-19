@@ -260,6 +260,7 @@ GET         /new-report/event-23-wrong-format                                   
 GET         /new-report/event-6-checking-file                                     controllers.fileUpload.ProcessingRequestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6)
 GET         /new-report/event-22-checking-file                                    controllers.fileUpload.ProcessingRequestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 GET         /new-report/event-23-checking-file                                    controllers.fileUpload.ProcessingRequestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
+GET         /new-report/event-checking-file                                       controllers.fileUpload.ProcessingRequestController.onPageLoadStatus()
 
 GET        /new-report/event-6-upload-successful                                  controllers.fileUpload.FileUploadSuccessController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6)
 
