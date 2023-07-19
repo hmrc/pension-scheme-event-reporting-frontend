@@ -144,19 +144,6 @@ class Event1Validator @Inject()(
 
   private def toBoolean(s: String): String = if (s == "YES") "true" else "false"
 
-  private def whoReceivedUnauthPaymentValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], WhoReceivedUnauthPayment] = {
-    val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoMemberOrEmployer), memberOrEmployer, fieldNoMemberOrEmployer)
-    )
-    val form: Form[WhoReceivedUnauthPayment] = whoReceivedUnauthPaymentFormProvider()
-    form.bind(
-      Field.seqToMap(fields)
-    ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
-    )
-  }
-
   private def doYouHoldSignedMandateValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Boolean] = {
 
     val mappedBoolean = toBoolean(chargeFields(fieldNoDoYouHoldSignedMandate))
@@ -498,7 +485,8 @@ class Event1Validator @Inject()(
     columns.head match {
       case "member" =>
         val a = resultFromFormValidationResult[WhoReceivedUnauthPayment](
-          whoReceivedUnauthPaymentValidation(index, columns), createCommitItem(index, WhoReceivedUnauthPaymentPage.apply(_))
+          genericFieldValidation(index, columns, Abc(fieldNoMemberOrEmployer, memberOrEmployer, whoReceivedUnauthPaymentFormProvider())),
+          createCommitItem(index, WhoReceivedUnauthPaymentPage.apply(_))
         )
 
         val b = resultFromFormValidationResultForMembersDetails(

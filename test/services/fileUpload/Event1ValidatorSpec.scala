@@ -53,8 +53,6 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
     when(mockFrontendAppConfig.validEvent1Header).thenReturn(header)
   }
 
-  //TODO: Need to create a generator for all the combinations for the journey
-
   "Event 1 validator" - {
     "must return items in user answers when there are no validation errors for Member" in {
       val validCSVFile = CSVParser.split(
