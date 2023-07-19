@@ -96,7 +96,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       doNothing().when(mockAuditService).sendEvent(any())(any(), any())
       when(mockEmailConnector.sendEmail(
         schemeAdministratorType = ArgumentMatchers.eq(Administrator),
-        requestId = any(), psaOrPspId = any(),
+        requestId = any(), psaOrPspId = any(), pstr = any(),
         emailAddress = ArgumentMatchers.eq(testEmail),
         templateId = ArgumentMatchers.eq(templateId),
         templateParams = any(),
