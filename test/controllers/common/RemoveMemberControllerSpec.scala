@@ -18,9 +18,9 @@ package controllers.common
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import data.SampleData.{sampleMemberJourneyDataEvent1, sampleMemberJourneyDataEvent2, sampleMemberJourneyDataEvent3and4and5}
+import data.SampleData.{sampleMemberJourneyDataEvent1, sampleMemberJourneyDataEvent3and4and5}
 import forms.common.RemoveMemberFormProvider
-import models.enumeration.EventType.{Event1, Event2, Event5, Event6}
+import models.enumeration.EventType.{Event1, Event5}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -35,7 +35,7 @@ import views.html.common.RemoveMemberView
 
 import scala.concurrent.Future
 
-class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
+class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
@@ -46,15 +46,18 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach  {
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRouteForEvent1: String = routes.RemoveMemberController.onPageLoad(waypoints, Event1, 0).url
+
   private def getRoute: String = routes.RemoveMemberController.onPageLoad(waypoints, Event5, 0).url
+
   private def postRouteForEvent1: String = routes.RemoveMemberController.onSubmit(waypoints, Event1, 0).url
+
   private def postRoute: String = routes.RemoveMemberController.onSubmit(waypoints, Event5, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }

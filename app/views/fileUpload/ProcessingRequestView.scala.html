@@ -15,15 +15,20 @@
  *@
 
 @this(
-        layout: templates.Layout,
+ layout: templates.Layout,
 )
 
 @(continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("fileUpload.processingRequest.title"))) {
 
-    <h1 class="govuk-heading-xl">@messages("fileUpload.processingRequest.heading")</h1>
+ <noscript>
+  <meta http-equiv="refresh" content="2" />
+ </noscript>
 
-    <p class="govuk-body">@messages("fileUpload.processingRequest.p1")</p>
+ <div id="processing-status">
+  <h1 class="govuk-heading-xl">@messages("fileUpload.processingRequest.heading")</h1>
+  <p class="govuk-body">@messages("fileUpload.processingRequest.p1")</p>
+ </div>
 
 }
