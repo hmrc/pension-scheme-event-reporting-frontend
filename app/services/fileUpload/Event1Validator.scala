@@ -222,11 +222,12 @@ class Event1Validator @Inject()(
     )
   }
 
+  private case class Abc[A](fieldNum: Int, description: String, form: Form[A])
+
   private def test[A](index: Int, chargeFields: Seq[String], formGeneric: Form[A]): Validated[Seq[ValidationError], A] = {
     val fields = Seq(
       Field(valueFormField, chargeFields(fieldNoBenefitDescription), benefitDescription, fieldNoBenefitDescription)
     )
-    val form: Form[A] = formGeneric.ap()
     formGeneric.bind(
       Field.seqToMap(fields)
     ).fold(
@@ -540,7 +541,7 @@ class Event1Validator @Inject()(
         val paymentNatureNextStep = columns(10) match {
           case "Benefit" =>
             resultFromFormValidationResult[Option[String]](
-              benefitInKindBriefDescriptionValidation(index, columns), createCommitItem(index, BenefitInKindBriefDescriptionPage.apply(_)))
+              test(index, columns, benefitInKindBriefDescriptionFormProvider()), createCommitItem(index, BenefitInKindBriefDescriptionPage.apply(_)))
 //          case "Transfer" =>
 //            resultFromFormValidationResult[WhoWasTheTransferMade](
 //              whoWasTheTransferMadeValidation(index, columns), createCommitItem(index, WhoWasTheTransferMadePage.apply(_)))
@@ -555,6 +556,25 @@ class Event1Validator @Inject()(
 //          case _ => throw new RuntimeException("Nature of payment not found or doesn't exist")
 
         }
+
+//        val paymentNatureNextStep = columns(10) match {
+//          case "Benefit" =>
+//            resultFromFormValidationResult[Option[String]](
+//              benefitInKindBriefDescriptionValidation(index, columns), createCommitItem(index, BenefitInKindBriefDescriptionPage.apply(_)))
+////          case "Transfer" =>
+////            resultFromFormValidationResult[WhoWasTheTransferMade](
+////              whoWasTheTransferMadeValidation(index, columns), createCommitItem(index, WhoWasTheTransferMadePage.apply(_)))
+////          case "Error" =>
+////          case "Early" =>
+////          case "Refund" =>
+////          case "Overpayment" =>
+////          case "Residential" =>
+////          case "Tangible" =>
+////          case "Court" =>
+////          case "Other" =>
+////          case _ => throw new RuntimeException("Nature of payment not found or doesn't exist")
+//
+//        }
 
         val y = resultFromFormValidationResult[PaymentDetails](
           paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply(_))
