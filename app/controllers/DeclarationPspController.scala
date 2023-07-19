@@ -124,7 +124,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
 
     emailConnector.sendEmail(schemeAdministratorType,
       requestId,
-      request.loggedInUser.idName,
+      request.loggedInUser.psaIdOrPspId,
       request.pstr,
       email,
       config.fileReturnTemplateId,
@@ -132,7 +132,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
       reportVersion).map { emailStatus =>
       auditService.sendEvent(
         EventReportingSubmissionEmailAuditEvent(
-          request.loggedInUser.idName,
+          request.loggedInUser.psaIdOrPspId,
           schemeAdministratorType,
           email,
           reportVersion,
