@@ -448,7 +448,7 @@ class Event1Validator @Inject()(
       case "member" =>
         val a = resultFromFormValidationResult[WhoReceivedUnauthPayment](
           genericFieldValidation(index, columns, Abc(fieldNoMemberOrEmployer, memberOrEmployer, whoReceivedUnauthPaymentFormProvider())),
-          createCommitItem(index, WhoReceivedUnauthPaymentPage.apply(_))
+          createCommitItem(index, WhoReceivedUnauthPaymentPage.apply)
         )
 
         val b = resultFromFormValidationResultForMembersDetails(
@@ -459,17 +459,17 @@ class Event1Validator @Inject()(
 
         val c = resultFromFormValidationResult[Boolean](
           genericBooleanFieldValidation(index, columns, Abc(fieldNoDoYouHoldSignedMandate, doYouHoldSignedMandate, doYouHoldSignedMandateFormProvider())),
-          createCommitItem(index, DoYouHoldSignedMandatePage.apply(_))
+          createCommitItem(index, DoYouHoldSignedMandatePage.apply)
         )
 
         val d = resultFromFormValidationResult[Boolean](
           genericBooleanFieldValidation(index, columns, Abc(fieldNoValueOfUnauthorisedPayment, valueOfUnauthorisedPayment, valueOfUnauthorisedPaymentFormProvider())),
-          createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply(_))
+          createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply)
         )
 
         val e = resultFromFormValidationResult[Boolean](
           genericBooleanFieldValidation(index, columns, Abc(fieldNoSchemeUnAuthPaySurcharge, schemeUnAuthPaySurcharge, schemeUnAuthPaySurchargeMemberFormProvider())),
-          createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply(_))
+          createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply)
         )
 
         val k = resultFromFormValidationResult[MemberPaymentNature](
@@ -479,11 +479,11 @@ class Event1Validator @Inject()(
 
         val l = resultFromFormValidationResult[Option[String]](
           genericFieldValidation(index, columns, Abc(fieldNoBenefitDescription, benefitDescription, benefitInKindBriefDescriptionFormProvider())),
-          createCommitItem(index, BenefitInKindBriefDescriptionPage.apply(_)))
+          createCommitItem(index, BenefitInKindBriefDescriptionPage.apply))
 
 
         val y = resultFromFormValidationResult[PaymentDetails](
-          paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply(_))
+          paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply)
         )
 
 
