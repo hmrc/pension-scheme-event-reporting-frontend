@@ -63,7 +63,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
                             member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
                             member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,Transfer,,,,,,,,,,,,Employer,"SchemeName,SchemeReference",1000.00,08/11/2022"""
       )
-      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
       val result = validator.validate(validCSVFile, ua)
       result mustBe Valid(ua
         .setOrException(WhoReceivedUnauthPaymentPage(0).path, Json.toJson(Member.toString))

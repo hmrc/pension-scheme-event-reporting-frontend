@@ -36,7 +36,8 @@ import models.event1.{PaymentDetails, WhoReceivedUnauthPayment, PaymentNature =>
 import models.fileUpload.FileUploadHeaders.Event1FieldNames._
 import models.fileUpload.FileUploadHeaders.{Event1FieldNames, valueFormField}
 import pages.common.MembersDetailsPage
-import pages.event1.{DoYouHoldSignedMandatePage, SchemeUnAuthPaySurchargeMemberPage, ValueOfUnauthorisedPaymentPage, WhoReceivedUnauthPaymentPage}
+import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
+import pages.event1._
 import play.api.data.Form
 import play.api.i18n.Messages
 import services.fileUpload.Validator.Result
@@ -488,33 +489,77 @@ class Event1Validator @Inject()(
     )
   }
 
+  //noinspection ScalaStyle
   override protected def validateFields(index: Int,
                                         columns: Seq[String],
                                         taxYear: Int,
                                         members: Seq[MembersDetails])
                                        (implicit messages: Messages): Result = {
-    val a = resultFromFormValidationResult[WhoReceivedUnauthPayment](
-      whoReceivedUnauthPaymentValidation(index, columns), createCommitItem(index, WhoReceivedUnauthPaymentPage.apply(_))
-    )
 
-    val b = resultFromFormValidationResultForMembersDetails(
-      memberDetailsValidation(index, columns, membersDetailsFormProvider(Event1, index)),
-      createCommitItem(index, MembersDetailsPage.apply(Event1, _)),
-      members
-    )
+    columns.head match {
+      case "member" =>
+        val a = resultFromFormValidationResult[WhoReceivedUnauthPayment](
+          whoReceivedUnauthPaymentValidation(index, columns), createCommitItem(index, WhoReceivedUnauthPaymentPage.apply(_))
+        )
 
-    val c = resultFromFormValidationResult[Boolean](
-      doYouHoldSignedMandateValidation(index, columns), createCommitItem(index, DoYouHoldSignedMandatePage.apply(_))
-    )
+        val b = resultFromFormValidationResultForMembersDetails(
+          memberDetailsValidation(index, columns, membersDetailsFormProvider(Event1, index)),
+          createCommitItem(index, MembersDetailsPage.apply(Event1, _)),
+          members
+        )
 
-    val d = resultFromFormValidationResult[Boolean](
-      valueOfUnauthorisedPaymentValidation(index, columns), createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply(_))
-    )
+        val c = resultFromFormValidationResult[Boolean](
+          doYouHoldSignedMandateValidation(index, columns), createCommitItem(index, DoYouHoldSignedMandatePage.apply(_))
+        )
 
-    val e = resultFromFormValidationResult[Boolean](
-      schemeUnAuthPaySurchargeMemberValidation(index, columns), createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply(_))
-    )
+        val d = resultFromFormValidationResult[Boolean](
+          valueOfUnauthorisedPaymentValidation(index, columns), createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply(_))
+        )
 
-    Seq(a, b, c, d, e).combineAll
+        val e = resultFromFormValidationResult[Boolean](
+          schemeUnAuthPaySurchargeMemberValidation(index, columns), createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply(_))
+        )
+
+        val k = resultFromFormValidationResult[MemberPaymentNature](
+          memberPaymentNatureValidation(index, columns), createCommitItem(index, MemberPaymentNaturePage.apply(_))
+        )
+
+        val l = resultFromFormValidationResult[Option[String]](
+          benefitInKindBriefDescriptionValidation(index, columns), createCommitItem(index, BenefitInKindBriefDescriptionPage.apply(_))
+        )
+
+        val y = resultFromFormValidationResult[PaymentDetails](
+          paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply(_))
+        )
+
+
+        Seq(a, b, c, d, e, k, l, y).combineAll
+
+      //      case "employer" =>
+      //        val a = resultFromFormValidationResult[WhoReceivedUnauthPayment](
+      //          whoReceivedUnauthPaymentValidation(index, columns), createCommitItem(index, WhoReceivedUnauthPaymentPage.apply(_))
+      //        )
+      //
+      //        val b = resultFromFormValidationResultForMembersDetails(
+      //          memberDetailsValidation(index, columns, membersDetailsFormProvider(Event1, index)),
+      //          createCommitItem(index, MembersDetailsPage.apply(Event1, _)),
+      //          members
+      //        )
+      //
+      //        val c = resultFromFormValidationResult[Boolean](
+      //          doYouHoldSignedMandateValidation(index, columns), createCommitItem(index, DoYouHoldSignedMandatePage.apply(_))
+      //        )
+      //
+      //        val d = resultFromFormValidationResult[Boolean](
+      //          valueOfUnauthorisedPaymentValidation(index, columns), createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply(_))
+      //        )
+      //
+      //        val e = resultFromFormValidationResult[Boolean](
+      //          schemeUnAuthPaySurchargeMemberValidation(index, columns), createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply(_))
+      //        )
+      //
+      //        Seq(a, b, c, d, e).combineAll
+      case _ => throw new RuntimeException("Something went wrong")
+    }
   }
 }
