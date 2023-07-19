@@ -42,6 +42,9 @@ import pages.event1._
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage}
 import play.api.libs.json.Json
 import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
+import utils.DateHelper
+
+import java.time.LocalDate
 
 class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with BeforeAndAfterEach {
   //scalastyle:off magic.number

@@ -144,47 +144,10 @@ class Event1Validator @Inject()(
 
   private def toBoolean(s: String): String = if (s == "YES") "true" else "false"
 
-  private def doYouHoldSignedMandateValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Boolean] = {
-
-    val mappedBoolean = toBoolean(chargeFields(fieldNoDoYouHoldSignedMandate))
-
-    val fields = Seq(
-      Field(valueFormField, mappedBoolean, doYouHoldSignedMandate, fieldNoDoYouHoldSignedMandate)
-    )
-    val form: Form[Boolean] = doYouHoldSignedMandateFormProvider()
-    form.bind(
-      Field.seqToMap(fields)
-    ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
-    )
-  }
-
-  private def valueOfUnauthorisedPaymentValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Boolean] = {
-
-    val mappedBoolean = toBoolean(chargeFields(fieldNoValueOfUnauthorisedPayment))
-
-    val fields = Seq(
-      Field(valueFormField, mappedBoolean, valueOfUnauthorisedPayment, fieldNoValueOfUnauthorisedPayment)
-    )
-    val form: Form[Boolean] = valueOfUnauthorisedPaymentFormProvider()
-    form.bind(
-      Field.seqToMap(fields)
-    ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
-    )
-  }
-
-  private def schemeUnAuthPaySurchargeMemberValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Boolean] = {
-
-    val mappedBoolean = toBoolean(chargeFields(fieldNoSchemeUnAuthPaySurcharge))
-
-    val fields = Seq(
-      Field(valueFormField, mappedBoolean, schemeUnAuthPaySurcharge, fieldNoSchemeUnAuthPaySurcharge)
-    )
-    val form: Form[Boolean] = schemeUnAuthPaySurchargeMemberFormProvider()
-    form.bind(
+  private def genericBooleanFieldValidation[Boolean](index: Int, chargeFields: Seq[String], abc: Abc[Boolean]): Validated[Seq[ValidationError], Boolean] = {
+    val mappedBoolean = toBoolean(chargeFields(abc.fieldNum))
+    val fields = Seq(Field(valueFormField, mappedBoolean, abc.description, abc.fieldNum))
+    abc.form.bind(
       Field.seqToMap(fields)
     ).fold(
       formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
@@ -496,15 +459,18 @@ class Event1Validator @Inject()(
         )
 
         val c = resultFromFormValidationResult[Boolean](
-          doYouHoldSignedMandateValidation(index, columns), createCommitItem(index, DoYouHoldSignedMandatePage.apply(_))
+          genericBooleanFieldValidation(index, columns, Abc(fieldNoDoYouHoldSignedMandate, doYouHoldSignedMandate, doYouHoldSignedMandateFormProvider())),
+          createCommitItem(index, DoYouHoldSignedMandatePage.apply(_))
         )
 
         val d = resultFromFormValidationResult[Boolean](
-          valueOfUnauthorisedPaymentValidation(index, columns), createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply(_))
+          genericBooleanFieldValidation(index, columns, Abc(fieldNoValueOfUnauthorisedPayment, valueOfUnauthorisedPayment, valueOfUnauthorisedPaymentFormProvider())),
+          createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply(_))
         )
 
         val e = resultFromFormValidationResult[Boolean](
-          schemeUnAuthPaySurchargeMemberValidation(index, columns), createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply(_))
+          genericBooleanFieldValidation(index, columns, Abc(fieldNoSchemeUnAuthPaySurcharge, schemeUnAuthPaySurcharge, schemeUnAuthPaySurchargeMemberFormProvider())),
+          createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply(_))
         )
 
         val k = resultFromFormValidationResult[MemberPaymentNature](
