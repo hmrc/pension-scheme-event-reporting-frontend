@@ -224,24 +224,9 @@ class Event1Validator @Inject()(
 
   private case class Abc[A](fieldNum: Int, description: String, form: Form[A])
 
-  private def test[A](index: Int, chargeFields: Seq[String], formGeneric: Form[A]): Validated[Seq[ValidationError], A] = {
-    val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoBenefitDescription), benefitDescription, fieldNoBenefitDescription)
-    )
-    formGeneric.bind(
-      Field.seqToMap(fields)
-    ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
-    )
-  }
-
-  private def benefitInKindBriefDescriptionValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
-    val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoBenefitDescription), benefitDescription, fieldNoBenefitDescription)
-    )
-    val form: Form[Option[String]] = benefitInKindBriefDescriptionFormProvider()
-    form.bind(
+  private def test[A](index: Int, chargeFields: Seq[String], abc: Abc[A]): Validated[Seq[ValidationError], A] = {
+    val fields = Seq(Field(valueFormField, chargeFields(abc.fieldNum), abc.description, abc.fieldNum))
+    abc.form.bind(
       Field.seqToMap(fields)
     ).fold(
       formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
@@ -535,16 +520,18 @@ class Event1Validator @Inject()(
         )
 
         val k = resultFromFormValidationResult[MemberPaymentNature](
-          memberPaymentNatureValidation(index, columns), createCommitItem(index, MemberPaymentNaturePage.apply(_))
+          memberPaymentNatureValidation(index, columns), createCommitItem(index, MemberPaymentNaturePage.apply)
         )
 
         val paymentNatureNextStep = columns(10) match {
           case "Benefit" =>
             resultFromFormValidationResult[Option[String]](
-              test(index, columns, benefitInKindBriefDescriptionFormProvider()), createCommitItem(index, BenefitInKindBriefDescriptionPage.apply(_)))
-//          case "Transfer" =>
-//            resultFromFormValidationResult[WhoWasTheTransferMade](
-//              whoWasTheTransferMadeValidation(index, columns), createCommitItem(index, WhoWasTheTransferMadePage.apply(_)))
+              test(index, columns,
+                Abc(fieldNoBenefitDescription, benefitDescription, benefitInKindBriefDescriptionFormProvider())
+              ), createCommitItem(index, BenefitInKindBriefDescriptionPage.apply(_)))
+          case "Transfer" =>
+            resultFromFormValidationResult[WhoWasTheTransferMade](
+              whoWasTheTransferMadeValidation(index, columns), createCommitItem(index, WhoWasTheTransferMadePage.apply(_)))
 //          case "Error" =>
 //          case "Early" =>
 //          case "Refund" =>

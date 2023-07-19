@@ -60,7 +60,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
     "must return items in user answers when there are no validation errors for Member" in {
       val validCSVFile = CSVParser.split(
         s"""$header
-                            member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
+zmember,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
                             member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,Transfer,,,,,,,,,,,,Employer,"SchemeName,SchemeReference",1000.00,08/11/2022"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
