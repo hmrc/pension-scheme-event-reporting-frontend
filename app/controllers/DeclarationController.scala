@@ -106,6 +106,7 @@ class DeclarationController @Inject()(
     emailConnector.sendEmail(schemeAdministratorType,
       requestId,
       request.loggedInUser.idName,
+      request.pstr,
       email,
       config.fileReturnTemplateId,
       templateParams,

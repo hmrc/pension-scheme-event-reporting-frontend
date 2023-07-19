@@ -20,15 +20,12 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.common.RemoveMemberController.eventTypeMessage
 import forms.common.RemoveMemberFormProvider
-import models.Index.indexToInt
-import models.common.MembersSummary
 import models.enumeration.EventType
 import models.enumeration.EventType._
-import models.event1.MembersOrEmployersSummary
 import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.common.{MembersOrEmployersPage, MembersPage, RemoveMemberPage}
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.common.RemoveMemberView
@@ -45,7 +42,6 @@ class RemoveMemberController @Inject()(
                                         formProvider: RemoveMemberFormProvider,
                                         view: RemoveMemberView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-
 
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
