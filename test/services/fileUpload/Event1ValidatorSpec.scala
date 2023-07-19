@@ -20,9 +20,10 @@ import base.SpecBase
 import cats.data.Validated.{Invalid, Valid}
 import config.FrontendAppConfig
 import data.SampleData
+import data.SampleData.countryOptions
 import forms.address.ManualAddressFormProvider
 import forms.common.MembersDetailsFormProvider
-import forms.event1.employer.{CompanyDetailsFormProvider, LoanDetailsFormProvider, PaymentNatureFormProvider => employerPaymentNatureFormProvider}
+import forms.event1.employer.{CompanyDetailsFormProvider, LoanDetailsFormProvider, PaymentNatureFormProvider => employerPaymentNatureFormProvider, UnauthorisedPaymentRecipientNameFormProvider => EmployerUnauthorisedPaymentRecipientNameFormProvider}
 import forms.event1.member._
 import forms.event1.{PaymentNatureFormProvider => memberPaymentNatureFormProvider, _}
 import models.enumeration.EventType.Event1
@@ -145,13 +146,16 @@ object Event1ValidatorSpec {
   private val benefitsPaidEarlyFormProvider = new BenefitsPaidEarlyFormProvider
   private val refundOfContributionsFormProvider = new RefundOfContributionsFormProvider
   private val reasonForTheOverpaymentOrWriteOffFormProvider = new ReasonForTheOverpaymentOrWriteOffFormProvider
-  private val manualAddressFormProvider = new ManualAddressFormProvider
+  private val manualAddressFormProvider = new ManualAddressFormProvider(countryOptions)
   private val memberTangibleMoveablePropertyFormProvider = new MemberTangibleMoveablePropertyFormProvider
   private val unauthorisedPaymentRecipientNameFormProvider = new UnauthorisedPaymentRecipientNameFormProvider
   private val memberPaymentNatureDescriptionFormProvider = new MemberPaymentNatureDescriptionFormProvider
   private val companyDetailsFormProvider = new CompanyDetailsFormProvider
   private val employerPaymentNatureFormProvider = new employerPaymentNatureFormProvider
   private val loanDetailsFormProvider = new LoanDetailsFormProvider
+  private val employerTangibleMoveablePropertyFormProvider = new EmployerTangibleMoveablePropertyFormProvider
+  private val employerUnauthorisedPaymentRecipientNameFormProvider = new EmployerUnauthorisedPaymentRecipientNameFormProvider
+  private val employerPaymentNatureDescriptionFormProvider = new EmployerPaymentNatureDescriptionFormProvider
 
   private val validator = new Event1Validator(
     whoReceivedUnauthPaymentFormProvider,
@@ -175,5 +179,8 @@ object Event1ValidatorSpec {
     companyDetailsFormProvider,
     employerPaymentNatureFormProvider,
     loanDetailsFormProvider,
+    employerTangibleMoveablePropertyFormProvider,
+    employerUnauthorisedPaymentRecipientNameFormProvider,
+    employerPaymentNatureDescriptionFormProvider,
     mockFrontendAppConfig)
 }
