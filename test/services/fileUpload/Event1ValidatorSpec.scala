@@ -28,9 +28,9 @@ import forms.event1.member._
 import forms.event1.{PaymentNatureFormProvider => memberPaymentNatureFormProvider, _}
 import models.enumeration.EventType.Event1
 import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, RefundOfContributions, TransferToNonRegPensionScheme}
-import models.event1.member.{RefundOfContributions => RefundOfContributionsObject}
 import models.event1.WhoReceivedUnauthPayment.Member
 import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
+import models.event1.member.{RefundOfContributions => RefundOfContributionsObject}
 import models.{TaxYear, UserAnswers}
 import org.mockito.Mockito
 import org.mockito.Mockito.when
@@ -41,12 +41,9 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.TaxYearPage
 import pages.common.MembersDetailsPage
 import pages.event1._
-import pages.event1.member.{BenefitInKindBriefDescriptionPage, BenefitsPaidEarlyPage, ErrorDescriptionPage, PaymentNaturePage, RefundOfContributionsPage, SchemeDetailsPage, WhoWasTheTransferMadePage}
+import pages.event1.member._
 import play.api.libs.json.Json
 import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
-import utils.DateHelper
-
-import java.time.LocalDate
 
 class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with BeforeAndAfterEach {
   //scalastyle:off magic.number
@@ -106,7 +103,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         .setOrException(SchemeUnAuthPaySurchargeMemberPage(3).path, Json.toJson(true))
         .setOrException(PaymentNaturePage(3).path, Json.toJson(BenefitsPaidEarly.toString))
         .setOrException(BenefitsPaidEarlyPage(3).path, Json.toJson("Description"))
-        .setOrException(PaymentValueAndDatePage(2).path, Json.toJson(SampleData.paymentDetails))
+        .setOrException(PaymentValueAndDatePage(3).path, Json.toJson(SampleData.paymentDetails))
 
         .setOrException(WhoReceivedUnauthPaymentPage(4).path, Json.toJson(Member.toString))
         .setOrException(MembersDetailsPage(Event1, 4).path, Json.toJson(SampleData.memberDetails))
@@ -134,20 +131,20 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       ))
     }
 
-//    "return validation errors when present, including tax year in future" in {
-//      DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
-//      val csvFile = CSVParser.split(
-//        s"""$header
-//                member,,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022"""
-//
-//      )
-//      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
-//
-//      val result = validator.validate(csvFile, ua)
-//      result mustBe Invalid(Seq(
-//        ValidationError(1, 1, "membersDetails.error.firstName.required", "firstName")
-//      ))
-//    }
+    //    "return validation errors when present, including tax year in future" in {
+    //      DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
+    //      val csvFile = CSVParser.split(
+    //        s"""$header
+    //                member,,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022"""
+    //
+    //      )
+    //      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+    //
+    //      val result = validator.validate(csvFile, ua)
+    //      result mustBe Invalid(Seq(
+    //        ValidationError(1, 1, "membersDetails.error.firstName.required", "firstName")
+    //      ))
+    //    }
   }
 
 }
