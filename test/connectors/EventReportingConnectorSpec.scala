@@ -47,8 +47,6 @@ class EventReportingConnectorSpec
     EventSummary(Event2, 1)
   )
 
-  import EventType.enumerable
-
   private val validResponseJson = Json.arr(
     Json.obj("eventType" -> "1", "recordVersion" -> 2),
     Json.obj("eventType" -> "2", "recordVersion" -> 1)
