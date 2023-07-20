@@ -20,6 +20,7 @@ import base.SpecBase
 import connectors.EventReportingConnector
 import forms.EventSummaryFormProvider
 import models.enumeration.EventType
+import models.enumeration.EventType.{Event1, Event18}
 import models.enumeration.VersionStatus.Compiled
 import models.{EventSummary, TaxYear, UserAnswers, VersionInfo}
 import org.mockito.ArgumentMatchers
@@ -95,7 +96,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
                 ),
                 ActionItem(
                   content = Text(Message("site.remove")),
-                  href = "#"
+                  href = common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, Event1).url
                 )
               )
             ))
@@ -111,7 +112,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
               items = Seq(
                 ActionItem(
                   content = Text(Message("site.remove")),
-                  href = event18.routes.RemoveEvent18Controller.onPageLoad(EmptyWaypoints).url
+                  href = common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, Event18).url
                 )
               )
             ))
