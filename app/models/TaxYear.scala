@@ -36,7 +36,7 @@ object TaxYear extends Enumerable.Implicits {
   implicit val writes: Writes[TaxYear] = (yr: TaxYear) => JsString(yr.startYear)
   private val numberOfYearsToShow = 7
 
-  val values: Seq[TaxYear] = {
+  def values: Seq[TaxYear] = {
     yearRange(DateHelper.today).reverse
   }
 
