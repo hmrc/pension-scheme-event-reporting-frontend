@@ -27,10 +27,10 @@ import forms.event1.employer.{CompanyDetailsFormProvider, LoanDetailsFormProvide
 import forms.event1.member._
 import forms.event1.{PaymentNatureFormProvider => memberPaymentNatureFormProvider, _}
 import models.enumeration.EventType.Event1
-import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, RefundOfContributions, TransferToNonRegPensionScheme}
+import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, OverpaymentOrWriteOff, RefundOfContributions, TransferToNonRegPensionScheme}
 import models.event1.WhoReceivedUnauthPayment.Member
 import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
-import models.event1.member.{RefundOfContributions => RefundOfContributionsObject}
+import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions => RefundOfContributionsObject}
 import models.{TaxYear, UserAnswers}
 import org.mockito.Mockito
 import org.mockito.Mockito.when
@@ -63,7 +63,8 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
                             member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1000.00,08/11/2022
                             member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Error,,,,Description,,,,,,,,,,1000.00,08/11/2022
                             member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,Early,,,Description,,,,,,,,,,,1000.00,08/11/2022
-                            member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Refund,,,,,,,,,WIDOW/ORPHAN,,,,,1000.00,08/11/2022"""
+                            member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Refund,,,,,,,,,WIDOW/ORPHAN,,,,,1000.00,08/11/2022
+                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Overpayment,,,,,,,,NO LONGER QUALIFIED,,,,,,1000.00,08/11/2022"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
       val result = validator.validate(validCSVFile, ua)
@@ -113,6 +114,15 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         .setOrException(PaymentNaturePage(4).path, Json.toJson(RefundOfContributions.toString))
         .setOrException(RefundOfContributionsPage(4).path, Json.toJson(RefundOfContributionsObject.WidowOrOrphan.toString))
         .setOrException(PaymentValueAndDatePage(4).path, Json.toJson(SampleData.paymentDetails))
+
+        .setOrException(WhoReceivedUnauthPaymentPage(5).path, Json.toJson(Member.toString))
+        .setOrException(MembersDetailsPage(Event1, 5).path, Json.toJson(SampleData.memberDetails2))
+        .setOrException(DoYouHoldSignedMandatePage(5).path, Json.toJson(true))
+        .setOrException(ValueOfUnauthorisedPaymentPage(5).path, Json.toJson(true))
+        .setOrException(SchemeUnAuthPaySurchargeMemberPage(5).path, Json.toJson(false))
+        .setOrException(PaymentNaturePage(5).path, Json.toJson(OverpaymentOrWriteOff.toString))
+        .setOrException(ReasonForTheOverpaymentOrWriteOffPage(5).path, Json.toJson(ReasonForTheOverpaymentOrWriteOff.DependentNoLongerQualifiedForPension.toString))
+        .setOrException(PaymentValueAndDatePage(5).path, Json.toJson(SampleData.paymentDetails))
       )
     }
 

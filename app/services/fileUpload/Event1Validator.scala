@@ -37,7 +37,7 @@ import models.fileUpload.FileUploadHeaders.Event1FieldNames._
 import models.fileUpload.FileUploadHeaders.{Event1FieldNames, valueFormField}
 import pages.common.MembersDetailsPage
 import pages.event1._
-import pages.event1.member.{BenefitInKindBriefDescriptionPage, BenefitsPaidEarlyPage, ErrorDescriptionPage, RefundOfContributionsPage, SchemeDetailsPage, WhoWasTheTransferMadePage, PaymentNaturePage => MemberPaymentNaturePage}
+import pages.event1.member.{BenefitInKindBriefDescriptionPage, BenefitsPaidEarlyPage, ErrorDescriptionPage, ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage, SchemeDetailsPage, WhoWasTheTransferMadePage, PaymentNaturePage => MemberPaymentNaturePage}
 import play.api.data.Form
 import play.api.i18n.Messages
 import services.fileUpload.Validator.Result
@@ -484,7 +484,10 @@ class Event1Validator @Inject()(
         val t = resultFromFormValidationResult[RefundOfContributions](
           refundOfContributionsValidation(index, columns), createCommitItem(index, RefundOfContributionsPage.apply))
         Seq(k, t).combineAll
-      //      case "Overpayment" =>
+      case "Overpayment" =>
+        val s = resultFromFormValidationResult[ReasonForTheOverpaymentOrWriteOff](
+          reasonForTheOverpaymentOrWriteOffValidation(index, columns), createCommitItem(index, ReasonForTheOverpaymentOrWriteOffPage.apply))
+        Seq(k, s).combineAll
       //      case "Residential" =>
       //      case "Tangible" =>
       //      case "Court" =>
