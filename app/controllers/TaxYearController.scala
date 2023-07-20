@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.UserAnswersCacheConnector
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.TaxYearFormProvider
 import models.enumeration.JourneyStartType.{InProgress, PastEventTypes}
@@ -27,6 +27,7 @@ import pages.{EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPa
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.TaxYearView
 
@@ -38,6 +39,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
                                   getData: DataRetrievalAction,
                                   requireData: DataRequiredAction,
                                   userAnswersCacheConnector: UserAnswersCacheConnector,
+                                  eventReportingConnector: EventReportingConnector,
                                   formProvider: TaxYearFormProvider,
                                   view: TaxYearView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -57,7 +59,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
       Nil
     }
 
-  private def renderPage(form: Form[TaxYear], waypoints: Waypoints, status: Status)(implicit request: DataRequest[AnyContent]): Result = {
+  private def renderPage(form: Form[TaxYear], waypoints: Waypoints, status: Status, isEnabled: Boolean)(implicit request: DataRequest[AnyContent]): Result = {
     val ua = request.userAnswers
     val radioOptions =
       (ua.get(EventReportingTileLinksPage), ua.get(EventReportingOverviewPage)) match {
@@ -67,21 +69,29 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
         case (Some(InProgress), Some(seqEROverview)) =>
           val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereCompiledVersionAvailable)
           TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear))
-        case _ => TaxYear.options
+        case _ => filteredRadioItems(isEnabled)
       }
     status(view(form, waypoints, radioOptions))
   }
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) { implicit request =>
+  private def filteredRadioItems(isEnabled: Boolean)(implicit request: DataRequest[AnyContent]): Seq[RadioItem] = {
+    if(isEnabled) TaxYear.optionsFiltered(taxYear =>  taxYear.startYear >= "2023") else TaxYear.options
+  }
+
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
     val preparedForm = request.userAnswers.get(TaxYearPage).fold(form)(form.fill)
-    renderPage(preparedForm, waypoints, Ok)
+    eventReportingConnector.getFeatureToggle("event-reporting").flatMap { toggleData =>
+      Future.successful(renderPage(preparedForm, waypoints, Ok, toggleData.isEnabled))
+    }
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(renderPage(formWithErrors, waypoints, BadRequest)),
+          eventReportingConnector.getFeatureToggle("event-reporting").flatMap { toggleData =>
+            Future.successful(renderPage(formWithErrors, waypoints, BadRequest, toggleData.isEnabled))
+          },
         value => {
           val originalUserAnswers = request.userAnswers
           val vd = originalUserAnswers
