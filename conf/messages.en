@@ -1628,8 +1628,8 @@ whatYouWillNeed.event6.item2 = details of the type of protection held for the cr
 whatYouWillNeed.event6.item3 = amount that was crystallised
 whatYouWillNeed.event6.item4 = date of the benefit crystallisation
 
-noDataEnteredError.title = This report cannot be submitted.
-noDataEnteredError.heading = This report cannot be submitted.
-noDataEnteredError.p1 = No data has been entered.
+noDataEnteredError.title = This report cannot be submitted
+noDataEnteredError.heading = This report cannot be submitted
+noDataEnteredError.p1 = No data has been entered
 noDataEnteredError.p2 = Return to the pensions dashboard
-noDataEnteredError.p3 = to enter data before submitting.
+noDataEnteredError.p3 = to enter data before submitting
