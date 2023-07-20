@@ -143,7 +143,7 @@ class UserAnswersCacheConnector @Inject()(
     http.PUT[JsValue, HttpResponse](url, Json.obj())(implicitly, implicitly, hc, implicitly)
       .map { response =>
         response.status match {
-          case NO_CONTENT => ()
+          case NOT_FOUND | NO_CONTENT => ()
           case _ =>
             throw new HttpException(response.body, response.status)
         }

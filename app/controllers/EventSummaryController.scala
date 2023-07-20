@@ -53,20 +53,20 @@ class EventSummaryController @Inject()(
       case (Some(taxYear), Some(versionInfo)) =>
         val startYear = s"${taxYear.startYear}-04-06"
         connector.getEventReportSummary(request.pstr, startYear, versionInfo.version).map { seqOfEventTypes =>
-          seqOfEventTypes.map { event =>
+          seqOfEventTypes.map { es =>
             SummaryListRow(
               key = Key(
-                content = Text(Message(s"eventSummary.event${event.toString}"))
+                content = Text(Message(s"eventSummary.event${es.eventType.toString}"))
               ),
               actions = Some(Actions(
                 items = Seq(
-                  changeLinkForEvent(event).map { link =>  ActionItem(
+                  changeLinkForEvent(es.eventType).map { link =>  ActionItem(
                     content = Text(Message("site.change")),
                     href = link
                   )},
                   Some(ActionItem(
                     content = Text(Message("site.remove")),
-                    href = removeLinkForEvent(event)
+                    href = removeLinkForEvent(es.eventType)
                   ))
                 ).flatten
               ))
