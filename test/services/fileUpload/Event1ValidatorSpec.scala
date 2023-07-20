@@ -26,11 +26,11 @@ import forms.common.MembersDetailsFormProvider
 import forms.event1.employer.{CompanyDetailsFormProvider, LoanDetailsFormProvider, PaymentNatureFormProvider => employerPaymentNatureFormProvider, UnauthorisedPaymentRecipientNameFormProvider => EmployerUnauthorisedPaymentRecipientNameFormProvider}
 import forms.event1.member._
 import forms.event1.{PaymentNatureFormProvider => memberPaymentNatureFormProvider, _}
-import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1MemberPropertyAddressJourney}
+import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.enumeration.EventType.Event1
 import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, MemberOther, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, TransferToNonRegPensionScheme}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
-import models.event1.employer.PaymentNature.LoansExceeding50PercentOfFundValue
+import models.event1.employer.PaymentNature.{LoansExceeding50PercentOfFundValue, ResidentialProperty}
 import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
 import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions => RefundOfContributionsObject}
 import models.{TaxYear, UserAnswers}
@@ -173,7 +173,8 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
     "must return items in user answers when there are no validation errors for Employer" in {
       val validCSVFile = CSVParser.split(
         s"""$header
-                            employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022"""
+                            employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
+                            employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Residential,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
       val result = validator.validate(validCSVFile, ua)
@@ -184,6 +185,13 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         .setOrException(EmployerPaymentNaturePage(0).path, Json.toJson(LoansExceeding50PercentOfFundValue.toString))
         .setOrException(LoanDetailsPage(0).path, Json.toJson(SampleData.loanDetails))
         .setOrException(PaymentValueAndDatePage(0).path, Json.toJson(SampleData.paymentDetails))
+
+        .setOrException(WhoReceivedUnauthPaymentPage(1).path, Json.toJson(Employer.toString))
+        .setOrException(CompanyDetailsPage(1).path, Json.toJson(SampleData.companyDetails))
+        .setOrException(ManualAddressPage(Event1EmployerAddressJourney, 1).path, Json.toJson(SampleData.event1EmployerAddress))
+        .setOrException(EmployerPaymentNaturePage(1).path, Json.toJson(ResidentialProperty.toString))
+        .setOrException(ManualAddressPage(Event1EmployerPropertyAddressJourney, 1).path, Json.toJson(SampleData.event1EmployerAddress))
+        .setOrException(PaymentValueAndDatePage(1).path, Json.toJson(SampleData.paymentDetails))
 
       )
     }

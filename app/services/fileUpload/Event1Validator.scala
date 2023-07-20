@@ -28,7 +28,7 @@ import forms.event1.member._
 import forms.event1.{PaymentNatureFormProvider => MemberPaymentNatureFormProvider, _}
 import models.address.Address
 import models.common.MembersDetails
-import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1MemberPropertyAddressJourney}
+import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.enumeration.EventType
 import models.enumeration.EventType.Event1
 import models.event1.employer.{CompanyDetails, LoanDetails, PaymentNature => EmployerPaymentNature}
@@ -528,10 +528,10 @@ class Event1Validator @Inject()(
         val p = resultFromFormValidationResult[LoanDetails](
           loanDetailsValidation(index, columns), createCommitItem(index, LoanDetailsPage.apply))
         Seq(k, p).combineAll
-      //      case "Residential" =>
-      //        val u = resultFromFormValidationResult[Address](
-      //          addressValidation(index, columns, fieldNoCompanyAddress), createCommitItem(index, ManualAddressPage(Event1EmployerPropertyAddressJourney, _)))
-      //        Seq(k, u).combineAll
+      case "Residential" =>
+        val u = resultFromFormValidationResult[Address](
+          addressValidation(index, columns, fieldNoResidentialAddress), createCommitItem(index, ManualAddressPage(Event1EmployerPropertyAddressJourney, _)))
+        Seq(k, u).combineAll
       //      case "Tangible" =>
       //        val v = resultFromFormValidationResult[Option[String]](
       //          genericFieldValidation(index, columns, Abc(fieldNoTangibleDescription, tangibleDescription, employerTangibleMoveablePropertyFormProvider())),
