@@ -37,7 +37,7 @@ import models.fileUpload.FileUploadHeaders.Event1FieldNames._
 import models.fileUpload.FileUploadHeaders.{Event1FieldNames, valueFormField}
 import pages.common.MembersDetailsPage
 import pages.event1._
-import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
+import pages.event1.member.{BenefitInKindBriefDescriptionPage, SchemeDetailsPage, WhoWasTheTransferMadePage, PaymentNaturePage => MemberPaymentNaturePage}
 import play.api.data.Form
 import play.api.i18n.Messages
 import services.fileUpload.Validator.Result
@@ -142,6 +142,14 @@ class Event1Validator @Inject()(
     )
   }
 
+  private val mapTransferMadeTo: Map[String, String] = {
+    Map(
+      "EMPLOYER" -> "anEmployerFinanced",
+      "NON RECOGNISED PENSION SCHEME" -> "nonRecognisedScheme",
+      "OTHER" -> "other"
+    )
+  }
+
   private def toBoolean(s: String): String = if (s == "YES") "true" else "false"
 
   private def genericBooleanFieldValidation[Boolean](index: Int, chargeFields: Seq[String], abc: Abc[Boolean]): Validated[Seq[ValidationError], Boolean] = {
@@ -184,8 +192,11 @@ class Event1Validator @Inject()(
   }
 
   private def whoWasTheTransferMadeValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], WhoWasTheTransferMade] = {
+
+    val mappedTransferMadeTo = mapTransferMadeTo.applyOrElse[String, String](chargeFields(fieldNoTransferMadeTo),
+      (_: String) => "Option is not found or doesn't exist")
     val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoTransferMadeTo), transferMadeTo, fieldNoTransferMadeTo)
+      Field(valueFormField, mappedTransferMadeTo, transferMadeTo, fieldNoTransferMadeTo)
     )
     val form: Form[WhoWasTheTransferMade] = whoWasTheTransferMadeFormProvider()
     form.bind(
@@ -451,8 +462,14 @@ class Event1Validator @Inject()(
           genericFieldValidation(index, columns, Abc(fieldNoBenefitDescription, benefitDescription, benefitInKindBriefDescriptionFormProvider())),
           createCommitItem(index, BenefitInKindBriefDescriptionPage.apply))
         Seq(k, l).combineAll
-      //
-      //      case "Transfer" =>
+      case "Transfer" =>
+        val w = resultFromFormValidationResult[WhoWasTheTransferMade](
+          whoWasTheTransferMadeValidation(index, columns), createCommitItem(index, WhoWasTheTransferMadePage.apply))
+        val x = resultFromFormValidationResult[SchemeDetails](
+          genericFieldValidation(index, columns, Abc(fieldNoTransferSchemeDetails, schemeDetails, schemeDetailsFormProvider())),
+          createCommitItem(index, SchemeDetailsPage.apply))
+        Seq(k, w, x).combineAll
+
       //      case "Error" =>
       //      case "Early" =>
       //      case "Refund" =>
