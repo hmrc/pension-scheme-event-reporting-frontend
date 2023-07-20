@@ -82,7 +82,7 @@ class RemoveMemberController @Inject()(
 
 object RemoveMemberController {
   def eventTypeMessage(eventType: EventType): String = {
-    //TODO: Replace with messages. - Pavel Vjalicin
+    //TODO: Replace with messages. -Pavel Vjalicin
     eventType match {
       case Event1 => "unauthorised payment"
       case Event2 => "lump sum death benefit payment"
