@@ -39,7 +39,7 @@ import models.fileUpload.FileUploadHeaders.{Event1FieldNames, valueFormField}
 import pages.address.ManualAddressPage
 import pages.common.MembersDetailsPage
 import pages.event1._
-import pages.event1.employer.{CompanyDetailsPage, LoanDetailsPage, PaymentNaturePage => EmployerPaymentNaturePage}
+import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, LoanDetailsPage, PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, BenefitsPaidEarlyPage, ErrorDescriptionPage, MemberPaymentNatureDescriptionPage, MemberTangibleMoveablePropertyPage, ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage, SchemeDetailsPage, UnauthorisedPaymentRecipientNamePage, WhoWasTheTransferMadePage, PaymentNaturePage => MemberPaymentNaturePage}
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -532,11 +532,11 @@ class Event1Validator @Inject()(
         val u = resultFromFormValidationResult[Address](
           addressValidation(index, columns, fieldNoResidentialAddress), createCommitItem(index, ManualAddressPage(Event1EmployerPropertyAddressJourney, _)))
         Seq(k, u).combineAll
-      //      case "Tangible" =>
-      //        val v = resultFromFormValidationResult[Option[String]](
-      //          genericFieldValidation(index, columns, Abc(fieldNoTangibleDescription, tangibleDescription, employerTangibleMoveablePropertyFormProvider())),
-      //          createCommitItem(index, EmployerTangibleMoveablePropertyPage.apply))
-      //        Seq(k, v).combineAll
+      case "Tangible" =>
+        val v = resultFromFormValidationResult[Option[String]](
+          genericFieldValidation(index, columns, Abc(fieldNoTangibleDescription, tangibleDescription, employerTangibleMoveablePropertyFormProvider())),
+          createCommitItem(index, EmployerTangibleMoveablePropertyPage.apply))
+        Seq(k, v).combineAll
       //      case "Court" =>
       //        val m = resultFromFormValidationResult[Option[String]](
       //          genericFieldValidation(index, columns, Abc(fieldNoCourtNameOfPersonOrOrg, courtNameOfPersonOrOrg, employerUnauthorisedPaymentRecipientNameFormProvider())),

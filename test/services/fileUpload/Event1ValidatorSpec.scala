@@ -30,7 +30,7 @@ import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Even
 import models.enumeration.EventType.Event1
 import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, MemberOther, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, TransferToNonRegPensionScheme}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
-import models.event1.employer.PaymentNature.{LoansExceeding50PercentOfFundValue, ResidentialProperty}
+import models.event1.employer.PaymentNature.{LoansExceeding50PercentOfFundValue, ResidentialProperty, TangibleMoveableProperty}
 import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
 import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions => RefundOfContributionsObject}
 import models.{TaxYear, UserAnswers}
@@ -44,7 +44,7 @@ import pages.TaxYearPage
 import pages.address.ManualAddressPage
 import pages.common.MembersDetailsPage
 import pages.event1._
-import pages.event1.employer.{CompanyDetailsPage, LoanDetailsPage, PaymentNaturePage => EmployerPaymentNaturePage}
+import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, LoanDetailsPage, PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member._
 import play.api.libs.json.Json
 import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
@@ -174,7 +174,8 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       val validCSVFile = CSVParser.split(
         s"""$header
                             employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
-                            employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Residential,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022"""
+                            employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Residential,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022
+                            employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Tangible,,,,,,,,,,,,,,1000.00,08/11/2022"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
       val result = validator.validate(validCSVFile, ua)
@@ -192,6 +193,13 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         .setOrException(EmployerPaymentNaturePage(1).path, Json.toJson(ResidentialProperty.toString))
         .setOrException(ManualAddressPage(Event1EmployerPropertyAddressJourney, 1).path, Json.toJson(SampleData.event1EmployerAddress))
         .setOrException(PaymentValueAndDatePage(1).path, Json.toJson(SampleData.paymentDetails))
+
+        .setOrException(WhoReceivedUnauthPaymentPage(2).path, Json.toJson(Employer.toString))
+        .setOrException(CompanyDetailsPage(2).path, Json.toJson(SampleData.companyDetails))
+        .setOrException(ManualAddressPage(Event1EmployerAddressJourney, 2).path, Json.toJson(SampleData.event1EmployerAddress))
+        .setOrException(EmployerPaymentNaturePage(2).path, Json.toJson(TangibleMoveableProperty.toString))
+        .setOrException(EmployerTangibleMoveablePropertyPage(2).path, Json.toJson(None))
+        .setOrException(PaymentValueAndDatePage(2).path, Json.toJson(SampleData.paymentDetails))
 
       )
     }
