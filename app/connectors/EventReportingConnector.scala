@@ -48,6 +48,8 @@ class EventReportingConnector @Inject()(
 
   private def deleteMemberUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/delete-member"
 
+  private def deleteEventUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/delete-event"
+
 
   def getEventReportSummary(pstr: String, reportStartDate: String, version: Int)
                            (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventSummary]] = {
@@ -239,7 +241,7 @@ class EventReportingConnector @Inject()(
     )
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.POST[JsValue, HttpResponse](deleteMemberUrl, Json.obj())(implicitly, implicitly, hc, implicitly)
+    http.POST[JsValue, HttpResponse](deleteEventUrl, Json.obj())(implicitly, implicitly, hc, implicitly)
       .map { response =>
         response.status match {
           case NO_CONTENT => ()
