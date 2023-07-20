@@ -19,7 +19,7 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.enumeration.EventType
-import models.{EROverview, EventDataIdentifier, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
+import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
 import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -48,7 +48,7 @@ class EventReportingConnector @Inject()(
 
 
   def getEventReportSummary(pstr: String, reportStartDate: String, version: Int)
-                           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventType]] = {
+                           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventSummary]] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -64,7 +64,7 @@ class EventReportingConnector @Inject()(
         response.status match {
           case NOT_FOUND => Nil
           case OK =>
-            response.json.as[Seq[EventType]]
+            response.json.as[Seq[EventSummary]]
           case _ =>
             throw new HttpException(response.body, response.status)
         }

@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package forms.event18
+package forms.common
 
+import base.SpecBase
 import forms.behaviours.BooleanFieldBehaviours
+import models.enumeration.EventType.Event18
 import play.api.data.FormError
 
-class RemoveEvent18FormProviderSpec extends BooleanFieldBehaviours {
+class RemoveEventFormProviderSpec extends BooleanFieldBehaviours with SpecBase {
 
-  private val requiredKey = "removeEvent18.error.required"
+  private val requiredKey = messages("removeEvent.error.required", messages(s"eventSelection.event18"))
   private val invalidKey = "error.boolean"
 
-  val form = new RemoveEvent18FormProvider()()
+  val form = new RemoveEventFormProvider().apply(Event18)
 
   ".value" - {
 

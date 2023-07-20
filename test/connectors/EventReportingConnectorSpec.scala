@@ -18,8 +18,9 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
+import models.enumeration.EventType.{Event1, Event2}
 import models.enumeration.{Enumerable, EventType}
-import models.{EROverview, EROverviewVersion, EventDataIdentifier, FileUploadOutcomeResponse, TaxYear, UserAnswers}
+import models.{EROverview, EROverviewVersion, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, TaxYear, UserAnswers}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import play.api.libs.json.{JsArray, Json}
@@ -42,13 +43,13 @@ class EventReportingConnectorSpec
   private val userAnswers = UserAnswers()
 
   private val validResponse = Seq(
-    eventType, eventType2
+    EventSummary(Event1, 2),
+    EventSummary(Event2, 1)
   )
 
-  import EventType.enumerable
-
   private val validResponseJson = Json.arr(
-    eventType, eventType2
+    Json.obj("eventType" -> "1", "recordVersion" -> 2),
+    Json.obj("eventType" -> "2", "recordVersion" -> 1)
   )
 
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
