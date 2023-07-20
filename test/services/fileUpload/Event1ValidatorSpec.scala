@@ -42,6 +42,9 @@ import pages.event1._
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage}
 import play.api.libs.json.Json
 import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
+import utils.DateHelper
+
+import java.time.LocalDate
 
 class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with BeforeAndAfterEach {
   //scalastyle:off magic.number
@@ -88,20 +91,20 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       ))
     }
 
-    //    "return validation errors when present, including tax year in future" in {
-    //      DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
-    //      val csvFile = CSVParser.split(
-    //        s"""$header
-    //            member,,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022"""
-    //
-    //      )
-    //      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
-    //
-    //      val result = validator.validate(csvFile, ua)
-    //      result mustBe Invalid(Seq(
-    //        ValidationError(1, 2, "membersDetails.error.firstName.required", "firstName")
-    //      ))
-    //    }
+//    "return validation errors when present, including tax year in future" in {
+//      DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
+//      val csvFile = CSVParser.split(
+//        s"""$header
+//                member,,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022"""
+//
+//      )
+//      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+//
+//      val result = validator.validate(csvFile, ua)
+//      result mustBe Invalid(Seq(
+//        ValidationError(1, 1, "membersDetails.error.firstName.required", "firstName")
+//      ))
+//    }
   }
 
 }

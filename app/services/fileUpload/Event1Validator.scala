@@ -438,6 +438,35 @@ class Event1Validator @Inject()(
   }
 
   //noinspection ScalaStyle
+  private def validatePaymentNatureJourney(index: Int, columns: Seq[String], paymentNature: String) = {
+
+    val k = resultFromFormValidationResult[MemberPaymentNature](
+      genericPaymentNatureFieldValidation(index, columns, Abc(fieldNoNatureOfPayment, natureOfPayment, memberPaymentNatureFormProvider()), mapPaymentNatureMember),
+      createCommitItem(index, MemberPaymentNaturePage.apply)
+    )
+
+    paymentNature match {
+      case "Benefit" =>
+        val l = resultFromFormValidationResult[Option[String]](
+          genericFieldValidation(index, columns, Abc(fieldNoBenefitDescription, benefitDescription, benefitInKindBriefDescriptionFormProvider())),
+          createCommitItem(index, BenefitInKindBriefDescriptionPage.apply))
+        Seq(k, l).combineAll
+      //
+      //      case "Transfer" =>
+      //      case "Error" =>
+      //      case "Early" =>
+      //      case "Refund" =>
+      //      case "Overpayment" =>
+      //      case "Residential" =>
+      //      case "Tangible" =>
+      //      case "Court" =>
+      //      case "Other" =>
+      case _ => throw new RuntimeException("Cannot find nature of payment")
+
+    }
+  }
+
+  //noinspection ScalaStyle
   override protected def validateFields(index: Int,
                                         columns: Seq[String],
                                         taxYear: Int,
@@ -472,22 +501,13 @@ class Event1Validator @Inject()(
           createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply)
         )
 
-        val k = resultFromFormValidationResult[MemberPaymentNature](
-          genericPaymentNatureFieldValidation(index, columns, Abc(fieldNoNatureOfPayment, natureOfPayment, memberPaymentNatureFormProvider()), mapPaymentNatureMember),
-          createCommitItem(index, MemberPaymentNaturePage.apply)
-        )
-
-        val l = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, Abc(fieldNoBenefitDescription, benefitDescription, benefitInKindBriefDescriptionFormProvider())),
-          createCommitItem(index, BenefitInKindBriefDescriptionPage.apply))
-
+        val paymentNature = validatePaymentNatureJourney(index, columns, columns(10))
 
         val y = resultFromFormValidationResult[PaymentDetails](
           paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply)
         )
 
-
-        Seq(a, b, c, d, e, k, l, y).combineAll
+        Seq(a, b, c, d, e, paymentNature, y).combineAll
 
       //      case "employer" =>
 
