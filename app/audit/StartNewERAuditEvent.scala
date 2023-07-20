@@ -32,7 +32,7 @@ case class StartNewERAuditEvent(
     Map(
       "PensionSchemeAdministratorOrPensionSchemePractitionerId" -> psaIdentifier,
       "PensionSchemeTaxReference" -> pstr,
-      "taxYear" -> s"${taxYear.startYear} to ${taxYear.endYear}",
+      "taxYear" -> s"${taxYear.startYear}-${taxYear.endYear}",
       "eventNumber" -> eventNumber.toString,
       "reportVersion" -> reportVersion
     )

@@ -28,5 +28,4 @@ case class MembersPage(eventType: EventType) extends Gettable[Seq[MembersSummary
   def path: JsPath = JsPath \ s"event${eventType.toString}" \ toString
 
   override def toString: String = "members"
-
 }

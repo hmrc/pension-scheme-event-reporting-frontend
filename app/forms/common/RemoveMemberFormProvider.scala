@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
- layout: templates.Layout,
-)
+package forms.common
 
-@(continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+import javax.inject.Inject
+import forms.mappings.Mappings
+import play.api.data.Form
+import play.api.i18n.Messages
 
-@layout(pageTitle = titleNoForm(messages("fileUpload.processingRequest.title"))) {
+class RemoveMemberFormProvider @Inject() extends Mappings {
 
- <noscript>
-  <meta http-equiv="refresh" content="2" />
- </noscript>
-
- <div id="processing-status">
-  <h1 class="govuk-heading-xl">@messages("fileUpload.processingRequest.heading")</h1>
-  <p class="govuk-body">@messages("fileUpload.processingRequest.p1")</p>
- </div>
-
+  def apply(eventTypeMessage: String)(implicit messages: Messages): Form[Boolean] =
+    Form(
+      "value" -> boolean(messages("removeMember.error.required", eventTypeMessage))
+    )
 }

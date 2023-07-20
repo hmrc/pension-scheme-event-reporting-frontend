@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
- layout: templates.Layout,
-)
+package pages.common
 
-@(continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+import models.enumeration.EventType.Event1
+import pages.behaviours.PageBehaviours
 
-@layout(pageTitle = titleNoForm(messages("fileUpload.processingRequest.title"))) {
+class RemoveMemberPageSpec extends PageBehaviours {
 
- <noscript>
-  <meta http-equiv="refresh" content="2" />
- </noscript>
+  "RemoveMemberPage" - {
 
- <div id="processing-status">
-  <h1 class="govuk-heading-xl">@messages("fileUpload.processingRequest.heading")</h1>
-  <p class="govuk-body">@messages("fileUpload.processingRequest.p1")</p>
- </div>
+    beRetrievable[Boolean](RemoveMemberPage(Event1, 0))
 
+    beSettable[Boolean](RemoveMemberPage(Event1, 0))
+
+    beRemovable[Boolean](RemoveMemberPage(Event1, 0))
+  }
 }

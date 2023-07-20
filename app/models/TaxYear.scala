@@ -113,7 +113,7 @@ object TaxYear extends Enumerable.Implicits {
   }
 
   def isCurrentTaxYear(userAnswers: UserAnswers): Boolean = {
-    LocalDate.now.isBefore(selectedTaxYearEnd(userAnswers)) && LocalDate.now.isAfter(selectedTaxYearStart(userAnswers))
+    DateHelper.today.isBefore(selectedTaxYearEnd(userAnswers)) && DateHelper.today.isAfter(selectedTaxYearStart(userAnswers))
   }
 
   implicit val enumerable: Enumerable[TaxYear] =

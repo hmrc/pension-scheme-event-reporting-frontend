@@ -106,14 +106,15 @@ class DeclarationController @Inject()(
 
     emailConnector.sendEmail(schemeAdministratorType,
       requestId,
-      request.loggedInUser.idName,
+      request.loggedInUser.psaIdOrPspId,
+      request.pstr,
       email,
       config.fileReturnTemplateId,
       templateParams,
       reportVersion).map { emailStatus =>
       auditService.sendEvent(
         EventReportingSubmissionEmailAuditEvent(
-          request.loggedInUser.idName,
+          request.loggedInUser.psaIdOrPspId,
           schemeAdministratorType,
           email,
           reportVersion,
