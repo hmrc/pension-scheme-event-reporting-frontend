@@ -19,6 +19,7 @@ package controllers.fileUpload
 import connectors.ParsingAndValidationOutcomeCacheConnector
 import controllers.actions._
 import models.enumeration.EventType
+import models.enumeration.EventType.Event1
 import models.fileUpload.ParsingAndValidationOutcome
 import models.fileUpload.ParsingAndValidationOutcomeStatus.Success
 import pages.Waypoints
@@ -42,7 +43,10 @@ class FileUploadSuccessController @Inject()(
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
-      val continueUrl = controllers.common.routes.MembersSummaryController.onPageLoad(waypoints, eventType).url
+      val continueUrl = eventType match {
+        case Event1 => controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(waypoints).url
+        case _ => controllers.common.routes.MembersSummaryController.onPageLoad(waypoints, eventType).url
+      }
       parsingAndValidationOutcomeCacheConnector.getOutcome.map {
         case Some(ParsingAndValidationOutcome(Success, _, fileName)) =>
           Ok(view(continueUrl, fileName.getOrElse("Your file")))
