@@ -28,7 +28,7 @@ import forms.event1.member._
 import forms.event1.{PaymentNatureFormProvider => MemberPaymentNatureFormProvider, _}
 import models.address.Address
 import models.common.MembersDetails
-import models.enumeration.AddressJourneyType.Event1MemberPropertyAddressJourney
+import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1MemberPropertyAddressJourney}
 import models.enumeration.EventType
 import models.enumeration.EventType.Event1
 import models.event1.employer.{CompanyDetails, LoanDetails, PaymentNature => EmployerPaymentNature}
@@ -39,6 +39,7 @@ import models.fileUpload.FileUploadHeaders.{Event1FieldNames, valueFormField}
 import pages.address.ManualAddressPage
 import pages.common.MembersDetailsPage
 import pages.event1._
+import pages.event1.employer.{CompanyDetailsPage, LoanDetailsPage, PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, BenefitsPaidEarlyPage, ErrorDescriptionPage, MemberPaymentNatureDescriptionPage, MemberTangibleMoveablePropertyPage, ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage, SchemeDetailsPage, UnauthorisedPaymentRecipientNamePage, WhoWasTheTransferMadePage, PaymentNaturePage => MemberPaymentNaturePage}
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -453,7 +454,7 @@ class Event1Validator @Inject()(
   }
 
   //noinspection ScalaStyle
-  private def validatePaymentNatureJourney(index: Int, columns: Seq[String], paymentNature: String) = {
+  private def validatePaymentNatureMemberJourney(index: Int, columns: Seq[String], paymentNature: String) = {
 
     val k = resultFromFormValidationResult[MemberPaymentNature](
       genericPaymentNatureFieldValidation(index, columns, Abc(fieldNoNatureOfPayment, natureOfPayment, memberPaymentNatureFormProvider()), mapPaymentNatureMember),
@@ -515,6 +516,43 @@ class Event1Validator @Inject()(
   }
 
   //noinspection ScalaStyle
+  private def validatePaymentNatureEmployerJourney(index: Int, columns: Seq[String], paymentNature: String) = {
+
+    val k = resultFromFormValidationResult[EmployerPaymentNature](
+      genericPaymentNatureFieldValidation(index, columns, Abc(fieldNoNatureOfPayment, natureOfPayment, employerPaymentNatureFormProvider()), mapPaymentNatureEmployer),
+      createCommitItem(index, EmployerPaymentNaturePage.apply)
+    )
+
+    paymentNature match {
+      case "Loans" =>
+        val p = resultFromFormValidationResult[LoanDetails](
+          loanDetailsValidation(index, columns), createCommitItem(index, LoanDetailsPage.apply))
+        Seq(k, p).combineAll
+      //      case "Residential" =>
+      //        val u = resultFromFormValidationResult[Address](
+      //          addressValidation(index, columns, fieldNoCompanyAddress), createCommitItem(index, ManualAddressPage(Event1EmployerPropertyAddressJourney, _)))
+      //        Seq(k, u).combineAll
+      //      case "Tangible" =>
+      //        val v = resultFromFormValidationResult[Option[String]](
+      //          genericFieldValidation(index, columns, Abc(fieldNoTangibleDescription, tangibleDescription, employerTangibleMoveablePropertyFormProvider())),
+      //          createCommitItem(index, EmployerTangibleMoveablePropertyPage.apply))
+      //        Seq(k, v).combineAll
+      //      case "Court" =>
+      //        val m = resultFromFormValidationResult[Option[String]](
+      //          genericFieldValidation(index, columns, Abc(fieldNoCourtNameOfPersonOrOrg, courtNameOfPersonOrOrg, employerUnauthorisedPaymentRecipientNameFormProvider())),
+      //          createCommitItem(index, EmployerUnauthorisedPaymentRecipientNamePage.apply))
+      //        Seq(k, m).combineAll
+      //      case "Other" =>
+      //        val r = resultFromFormValidationResult[Option[String]](
+      //          genericFieldValidation(index, columns, Abc(fieldNoOtherDescription, otherDescription, employerPaymentNatureDescriptionValidation())),
+      //          createCommitItem(index, EmployerPaymentNatureDescriptionPage.apply))
+      //        Seq(k, r).combineAll
+      case _ => throw new RuntimeException("Cannot find nature of payment")
+
+    }
+  }
+
+  //noinspection ScalaStyle
   override protected def validateFields(index: Int,
                                         columns: Seq[String],
                                         taxYear: Int,
@@ -549,7 +587,7 @@ class Event1Validator @Inject()(
           createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply)
         )
 
-        val paymentNature = validatePaymentNatureJourney(index, columns, columns(10))
+        val paymentNature = validatePaymentNatureMemberJourney(index, columns, columns(10))
 
         val y = resultFromFormValidationResult[PaymentDetails](
           paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply)
@@ -557,7 +595,27 @@ class Event1Validator @Inject()(
 
         Seq(a, b, c, d, e, paymentNature, y).combineAll
 
-      //      case "employer" =>
+      case "employer" =>
+        val a = resultFromFormValidationResult[WhoReceivedUnauthPayment](
+          genericFieldValidation(index, columns, Abc(fieldNoMemberOrEmployer, memberOrEmployer, whoReceivedUnauthPaymentFormProvider())),
+          createCommitItem(index, WhoReceivedUnauthPaymentPage.apply)
+        )
+
+        val h = resultFromFormValidationResult[CompanyDetails](
+          companyDetailsValidation(index, columns), createCommitItem(index, CompanyDetailsPage.apply)
+        )
+
+        val j = resultFromFormValidationResult[Address](
+          addressValidation(index, columns, fieldNoCompanyAddress), createCommitItem(index, ManualAddressPage(Event1EmployerAddressJourney, _))
+        )
+
+        val paymentNature = validatePaymentNatureEmployerJourney(index, columns, columns(10))
+
+        val y = resultFromFormValidationResult[PaymentDetails](
+          paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply)
+        )
+
+        Seq(a, h, j, paymentNature, y).combineAll
 
       case _ => throw new RuntimeException("Something went wrong")
     }

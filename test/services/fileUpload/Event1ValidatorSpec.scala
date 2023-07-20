@@ -168,6 +168,26 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       )
     }
 
+    "must return items in user answers when there are no validation errors for Employer" in {
+      val validCSVFile = CSVParser.split(
+        s"""$header
+                            employer,,,,,,,Company Name,0123456,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Loans,,,,,100.00,150.00,,,,,,,,1000.00,08/11/2022"""
+      )
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+      val result = validator.validate(validCSVFile, ua)
+      result mustBe Valid(ua
+        .setOrException(WhoReceivedUnauthPaymentPage(0).path, Json.toJson(Member.toString))
+        .setOrException(MembersDetailsPage(Event1, 0).path, Json.toJson(SampleData.memberDetails))
+        .setOrException(DoYouHoldSignedMandatePage(0).path, Json.toJson(true))
+        .setOrException(ValueOfUnauthorisedPaymentPage(0).path, Json.toJson(true))
+        .setOrException(SchemeUnAuthPaySurchargeMemberPage(0).path, Json.toJson(true))
+        .setOrException(PaymentNaturePage(0).path, Json.toJson(BenefitInKind.toString))
+        .setOrException(BenefitInKindBriefDescriptionPage(0).path, Json.toJson("Description"))
+        .setOrException(PaymentValueAndDatePage(0).path, Json.toJson(SampleData.paymentDetails))
+
+      )
+    }
+
     "return validation error for incorrect header" in {
       val csvFile = CSVParser.split("""test""")
       val result = validator.validate(csvFile, UserAnswers())
