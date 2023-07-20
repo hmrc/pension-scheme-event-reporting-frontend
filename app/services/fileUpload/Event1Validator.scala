@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+//noinspection ScalaStyle
+
 package services.fileUpload
 
 import cats.data.Validated
@@ -104,6 +106,16 @@ class Event1Validator @Inject()(
   private val fieldNoPaymentAmount = 24
   private val fieldNoPaymentDate = 25
 
+  private val mapPaymentNatureEmployer: Map[String, String] = {
+    Map(
+      "Loans" -> "loansExceeding50PercentOfFundValue",
+      "Residential" -> "residentialProperty",
+      "Tangible" -> "tangibleMoveableProperty",
+      "Court" -> "courtOrder",
+      "Other" -> "employerOther"
+    )
+  }
+
   private val mapPaymentNatureMember: Map[String, String] = {
     Map(
       "Benefit" -> "benefitInKind",
@@ -135,16 +147,6 @@ class Event1Validator @Inject()(
     )
   }
 
-  private val mapPaymentNatureEmployer: Map[String, String] = {
-    Map(
-      "Loans" -> "loansExceeding50PercentOfFundValue",
-      "Residential" -> "residentialProperty",
-      "Tangible" -> "tangibleMoveableProperty",
-      "Court" -> "courtOrder",
-      "Other" -> "employerOther"
-    )
-  }
-
   private val mapTransferMadeTo: Map[String, String] = {
     Map(
       "EMPLOYER" -> "anEmployerFinanced",
@@ -154,6 +156,8 @@ class Event1Validator @Inject()(
   }
 
   private def toBoolean(s: String): String = if (s == "YES") "true" else "false"
+
+  private case class Abc[A](fieldNum: Int, description: String, form: Form[A])
 
   private def genericBooleanFieldValidation[Boolean](index: Int, chargeFields: Seq[String], abc: Abc[Boolean]): Validated[Seq[ValidationError], Boolean] = {
     val mappedBoolean = toBoolean(chargeFields(abc.fieldNum))
@@ -182,8 +186,6 @@ class Event1Validator @Inject()(
     )
   }
 
-  private case class Abc[A](fieldNum: Int, description: String, form: Form[A])
-
   private def genericFieldValidation[A](index: Int, chargeFields: Seq[String], abc: Abc[A]): Validated[Seq[ValidationError], A] = {
     val fields = Seq(Field(valueFormField, chargeFields(abc.fieldNum), abc.description, abc.fieldNum))
     abc.form.bind(
@@ -202,32 +204,6 @@ class Event1Validator @Inject()(
       Field(valueFormField, mappedTransferMadeTo, transferMadeTo, fieldNoTransferMadeTo)
     )
     val form: Form[WhoWasTheTransferMade] = whoWasTheTransferMadeFormProvider()
-    form.bind(
-      Field.seqToMap(fields)
-    ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
-    )
-  }
-
-  private def errorDescriptionValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
-    val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoErrorDescription), errorDescription, fieldNoErrorDescription)
-    )
-    val form: Form[Option[String]] = errorDescriptionFormProvider()
-    form.bind(
-      Field.seqToMap(fields)
-    ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
-    )
-  }
-
-  private def benefitsPaidEarlyValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], String] = {
-    val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoEarlyDescription), earlyDescription, fieldNoEarlyDescription)
-    )
-    val form: Form[String] = benefitsPaidEarlyFormProvider()
     form.bind(
       Field.seqToMap(fields)
     ).fold(
@@ -271,107 +247,12 @@ class Event1Validator @Inject()(
     )
   }
 
-  private def memberTangibleMoveablePropertyValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
-    val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoTangibleDescription), tangibleDescription, fieldNoTangibleDescription)
-    )
-    val form: Form[Option[String]] = memberTangibleMoveablePropertyFormProvider()
-    form.bind(
-      Field.seqToMap(fields)
-    ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
-    )
-  }
-
-  private def unauthorisedPaymentRecipientNameValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
-    val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoCourtNameOfPersonOrOrg), courtNameOfPersonOrOrg, fieldNoCourtNameOfPersonOrOrg)
-    )
-    val form: Form[Option[String]] = memberUnauthorisedPaymentRecipientNameFormProvider()
-    form.bind(
-      Field.seqToMap(fields)
-    ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
-    )
-  }
-
-  private def memberPaymentNatureDescriptionValidation(index: Int,
-                                                       chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
-    val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoOtherDescription), otherDescription, fieldNoOtherDescription)
-    )
-    val form: Form[Option[String]] = memberPaymentNatureDescriptionFormProvider()
-    form.bind(
-      Field.seqToMap(fields)
-    ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
-    )
-  }
-
-  private def employerPaymentNatureValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], EmployerPaymentNature] = {
-    val mappedNatureOfPayment = mapPaymentNatureEmployer.applyOrElse[String, String](chargeFields(fieldNoNatureOfPayment),
-      (_: String) => "Nature of the payment is not found or doesn't exist")
-
-    val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoNatureOfPayment), companyOrOrgName, fieldNoNatureOfPayment)
-    )
-    val form: Form[EmployerPaymentNature] = employerPaymentNatureFormProvider()
-    form.bind(
-      Field.seqToMap(fields)
-    ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
-    )
-  }
-
   private def loanDetailsValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], LoanDetails] = {
     val fields = Seq(
       Field(loanAmount, chargeFields(fieldNoLoanAmount), loanAmount, fieldNoLoanAmount),
       Field(valueOfFund, chargeFields(fieldNoValueOfFund), valueOfFund, fieldNoValueOfFund)
     )
     val form: Form[LoanDetails] = loanDetailsFormProvider()
-    form.bind(
-      Field.seqToMap(fields)
-    ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
-    )
-  }
-
-  private def employerTangibleMoveablePropertyValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
-    val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoTangibleDescription), tangibleDescription, fieldNoTangibleDescription)
-    )
-    val form: Form[Option[String]] = employerTangibleMoveablePropertyFormProvider()
-    form.bind(
-      Field.seqToMap(fields)
-    ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
-    )
-  }
-
-  private def employerUnauthorisedPaymentRecipientValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
-    val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoCourtNameOfPersonOrOrg), courtNameOfPersonOrOrg, fieldNoCourtNameOfPersonOrOrg)
-    )
-    val form: Form[Option[String]] = employerUnauthorisedPaymentRecipientNameFormProvider()
-    form.bind(
-      Field.seqToMap(fields)
-    ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
-    )
-  }
-
-  private def employerPaymentNatureDescriptionValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
-    val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoOtherDescription), otherDescription, fieldNoOtherDescription)
-    )
-    val form: Form[Option[String]] = employerPaymentNatureDescriptionFormProvider()
     form.bind(
       Field.seqToMap(fields)
     ).fold(
@@ -453,7 +334,6 @@ class Event1Validator @Inject()(
     )
   }
 
-  //noinspection ScalaStyle
   private def validatePaymentNatureMemberJourney(index: Int, columns: Seq[String], paymentNature: String) = {
 
     val k = resultFromFormValidationResult[MemberPaymentNature](
@@ -515,7 +395,6 @@ class Event1Validator @Inject()(
     }
   }
 
-  //noinspection ScalaStyle
   private def validatePaymentNatureEmployerJourney(index: Int, columns: Seq[String], paymentNature: String) = {
 
     val k = resultFromFormValidationResult[EmployerPaymentNature](
@@ -552,7 +431,6 @@ class Event1Validator @Inject()(
     }
   }
 
-  //noinspection ScalaStyle
   override protected def validateFields(index: Int,
                                         columns: Seq[String],
                                         taxYear: Int,
