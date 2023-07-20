@@ -95,7 +95,6 @@ class MembersSummaryController @Inject()(
   private def getMappedMembers(userAnswers: UserAnswers, eventType: EventType)(implicit messages: Messages): Seq[SummaryListRowWithTwoValues] = {
     userAnswers.getAll(MembersPage(eventType))(MembersSummary.readsMember(eventType)).zipWithIndex.collect {
       case (memberSummary, index) if !memberSummary.memberStatus.contains("Deleted") =>
-        println(memberSummary)
         SummaryListRowWithTwoValues(
           key = memberSummary.name,
           firstValue = memberSummary.nINumber,
