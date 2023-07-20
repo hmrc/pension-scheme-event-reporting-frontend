@@ -311,20 +311,6 @@ class Event1Validator @Inject()(
     )
   }
 
-  private def companyDetailsValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], CompanyDetails] = {
-    val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoCompanyOrOrgName), companyOrOrgName, fieldNoCompanyOrOrgName),
-      Field(valueFormField, chargeFields(fieldNoCompanyNo), companyNo, fieldNoCompanyNo)
-    )
-    val form: Form[CompanyDetails] = companyDetailsFormProvider()
-    form.bind(
-      Field.seqToMap(fields)
-    ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
-    )
-  }
-
   private def employerPaymentNatureValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], EmployerPaymentNature] = {
     val mappedNatureOfPayment = mapPaymentNatureEmployer.applyOrElse[String, String](chargeFields(fieldNoNatureOfPayment),
       (_: String) => "Nature of the payment is not found or doesn't exist")
@@ -343,8 +329,8 @@ class Event1Validator @Inject()(
 
   private def loanDetailsValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], LoanDetails] = {
     val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoLoanAmount), loanAmount, fieldNoLoanAmount),
-      Field(valueFormField, chargeFields(fieldNoValueOfFund), valueOfFund, fieldNoValueOfFund)
+      Field(loanAmount, chargeFields(fieldNoLoanAmount), loanAmount, fieldNoLoanAmount),
+      Field(valueOfFund, chargeFields(fieldNoValueOfFund), valueOfFund, fieldNoValueOfFund)
     )
     val form: Form[LoanDetails] = loanDetailsFormProvider()
     form.bind(
@@ -421,6 +407,20 @@ class Event1Validator @Inject()(
       Field(schemeReference, parsedSchemeDetails.schemeReference, schemeDetails, fieldNoTransferSchemeDetails, Some(Event1FieldNames.schemeReference))
     )
     val form: Form[SchemeDetails] = schemeDetailsFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
+  private def companyDetailsValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], CompanyDetails] = {
+    val fields = Seq(
+      Field(companyOrOrgName, chargeFields(fieldNoCompanyOrOrgName), companyOrOrgName, fieldNoCompanyOrOrgName),
+      Field(companyNo, chargeFields(fieldNoCompanyNo), companyNo, fieldNoCompanyNo)
+    )
+    val form: Form[CompanyDetails] = companyDetailsFormProvider()
     form.bind(
       Field.seqToMap(fields)
     ).fold(

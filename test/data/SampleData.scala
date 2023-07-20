@@ -96,7 +96,16 @@ object SampleData extends SpecBase {
     country = "GB"
   )
 
-  val MemberAddress: Address = Address(
+  val event1EmployerAddress: Address = Address(
+    addressLine1 = "10 Other Place",
+    addressLine2 = "Some District",
+    addressLine3 = Some("Anytown"),
+    addressLine4 = Some("Anyplace"),
+    postcode = Some("ZZ1 1ZZ"),
+    country = "GB"
+  )
+
+  val memberAddress: Address = Address(
     addressLine1 = "10 Other Place",
     addressLine2 = "Some District",
     addressLine3 = Some("Anytown"),

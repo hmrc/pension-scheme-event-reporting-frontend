@@ -26,10 +26,11 @@ import forms.common.MembersDetailsFormProvider
 import forms.event1.employer.{CompanyDetailsFormProvider, LoanDetailsFormProvider, PaymentNatureFormProvider => employerPaymentNatureFormProvider, UnauthorisedPaymentRecipientNameFormProvider => EmployerUnauthorisedPaymentRecipientNameFormProvider}
 import forms.event1.member._
 import forms.event1.{PaymentNatureFormProvider => memberPaymentNatureFormProvider, _}
-import models.enumeration.AddressJourneyType.Event1MemberPropertyAddressJourney
+import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1MemberPropertyAddressJourney}
 import models.enumeration.EventType.Event1
 import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, MemberOther, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, TransferToNonRegPensionScheme}
-import models.event1.WhoReceivedUnauthPayment.Member
+import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
+import models.event1.employer.PaymentNature.LoansExceeding50PercentOfFundValue
 import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
 import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions => RefundOfContributionsObject}
 import models.{TaxYear, UserAnswers}
@@ -43,6 +44,7 @@ import pages.TaxYearPage
 import pages.address.ManualAddressPage
 import pages.common.MembersDetailsPage
 import pages.event1._
+import pages.event1.employer.{CompanyDetailsPage, LoanDetailsPage, PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member._
 import play.api.libs.json.Json
 import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
@@ -136,7 +138,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         .setOrException(ValueOfUnauthorisedPaymentPage(6).path, Json.toJson(true))
         .setOrException(SchemeUnAuthPaySurchargeMemberPage(6).path, Json.toJson(false))
         .setOrException(PaymentNaturePage(6).path, Json.toJson(ResidentialPropertyHeld.toString))
-        .setOrException(ManualAddressPage(Event1MemberPropertyAddressJourney, 6).path, Json.toJson(SampleData.MemberAddress))
+        .setOrException(ManualAddressPage(Event1MemberPropertyAddressJourney, 6).path, Json.toJson(SampleData.memberAddress))
         .setOrException(PaymentValueAndDatePage(6).path, Json.toJson(SampleData.paymentDetails))
 
         .setOrException(WhoReceivedUnauthPaymentPage(7).path, Json.toJson(Member.toString))
@@ -171,18 +173,16 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
     "must return items in user answers when there are no validation errors for Employer" in {
       val validCSVFile = CSVParser.split(
         s"""$header
-                            employer,,,,,,,Company Name,0123456,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Loans,,,,,100.00,150.00,,,,,,,,1000.00,08/11/2022"""
+                            employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
       val result = validator.validate(validCSVFile, ua)
       result mustBe Valid(ua
-        .setOrException(WhoReceivedUnauthPaymentPage(0).path, Json.toJson(Member.toString))
-        .setOrException(MembersDetailsPage(Event1, 0).path, Json.toJson(SampleData.memberDetails))
-        .setOrException(DoYouHoldSignedMandatePage(0).path, Json.toJson(true))
-        .setOrException(ValueOfUnauthorisedPaymentPage(0).path, Json.toJson(true))
-        .setOrException(SchemeUnAuthPaySurchargeMemberPage(0).path, Json.toJson(true))
-        .setOrException(PaymentNaturePage(0).path, Json.toJson(BenefitInKind.toString))
-        .setOrException(BenefitInKindBriefDescriptionPage(0).path, Json.toJson("Description"))
+        .setOrException(WhoReceivedUnauthPaymentPage(0).path, Json.toJson(Employer.toString))
+        .setOrException(CompanyDetailsPage(0).path, Json.toJson(SampleData.companyDetails))
+        .setOrException(ManualAddressPage(Event1EmployerAddressJourney, 0).path, Json.toJson(SampleData.event1EmployerAddress))
+        .setOrException(EmployerPaymentNaturePage(0).path, Json.toJson(LoansExceeding50PercentOfFundValue.toString))
+        .setOrException(LoanDetailsPage(0).path, Json.toJson(SampleData.loanDetails))
         .setOrException(PaymentValueAndDatePage(0).path, Json.toJson(SampleData.paymentDetails))
 
       )
