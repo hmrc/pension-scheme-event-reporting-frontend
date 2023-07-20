@@ -28,7 +28,7 @@ import forms.event1.member._
 import forms.event1.{PaymentNatureFormProvider => memberPaymentNatureFormProvider, _}
 import models.enumeration.AddressJourneyType.Event1MemberPropertyAddressJourney
 import models.enumeration.EventType.Event1
-import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, ErrorCalcTaxFreeLumpSums, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TransferToNonRegPensionScheme}
+import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, MemberOther, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, TransferToNonRegPensionScheme}
 import models.event1.WhoReceivedUnauthPayment.Member
 import models.event1.member.WhoWasTheTransferMade.AnEmployerFinanced
 import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions => RefundOfContributionsObject}
@@ -67,7 +67,10 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
                             member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,Early,,,Description,,,,,,,,,,,1000.00,08/11/2022
                             member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Refund,,,,,,,,,WIDOW/ORPHAN,,,,,1000.00,08/11/2022
                             member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Overpayment,,,,,,,,NO LONGER QUALIFIED,,,,,,1000.00,08/11/2022
-                            member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022"""
+                            member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022
+                            member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,Tangible,,,,,,,,,,,Description,,,1000.00,08/11/2022
+                            member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Court,,John,,,,,,,,,,,,1000.00,08/11/2022
+                            member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,Other,,,,,,,Description,,,,,,,1000.00,08/11/2022"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
       val result = validator.validate(validCSVFile, ua)
@@ -135,6 +138,33 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         .setOrException(PaymentNaturePage(6).path, Json.toJson(ResidentialPropertyHeld.toString))
         .setOrException(ManualAddressPage(Event1MemberPropertyAddressJourney, 6).path, Json.toJson(SampleData.MemberAddress))
         .setOrException(PaymentValueAndDatePage(6).path, Json.toJson(SampleData.paymentDetails))
+
+        .setOrException(WhoReceivedUnauthPaymentPage(7).path, Json.toJson(Member.toString))
+        .setOrException(MembersDetailsPage(Event1, 7).path, Json.toJson(SampleData.memberDetails2))
+        .setOrException(DoYouHoldSignedMandatePage(7).path, Json.toJson(true))
+        .setOrException(ValueOfUnauthorisedPaymentPage(7).path, Json.toJson(true))
+        .setOrException(SchemeUnAuthPaySurchargeMemberPage(7).path, Json.toJson(true))
+        .setOrException(PaymentNaturePage(7).path, Json.toJson(TangibleMoveablePropertyHeld.toString))
+        .setOrException(MemberTangibleMoveablePropertyPage(7).path, Json.toJson("Description"))
+        .setOrException(PaymentValueAndDatePage(7).path, Json.toJson(SampleData.paymentDetails))
+
+        .setOrException(WhoReceivedUnauthPaymentPage(8).path, Json.toJson(Member.toString))
+        .setOrException(MembersDetailsPage(Event1, 8).path, Json.toJson(SampleData.memberDetails))
+        .setOrException(DoYouHoldSignedMandatePage(8).path, Json.toJson(true))
+        .setOrException(ValueOfUnauthorisedPaymentPage(8).path, Json.toJson(true))
+        .setOrException(SchemeUnAuthPaySurchargeMemberPage(8).path, Json.toJson(true))
+        .setOrException(PaymentNaturePage(8).path, Json.toJson(CourtOrConfiscationOrder.toString))
+        .setOrException(UnauthorisedPaymentRecipientNamePage(8).path, Json.toJson("John"))
+        .setOrException(PaymentValueAndDatePage(8).path, Json.toJson(SampleData.paymentDetails))
+
+        .setOrException(WhoReceivedUnauthPaymentPage(9).path, Json.toJson(Member.toString))
+        .setOrException(MembersDetailsPage(Event1, 9).path, Json.toJson(SampleData.memberDetails2))
+        .setOrException(DoYouHoldSignedMandatePage(9).path, Json.toJson(true))
+        .setOrException(ValueOfUnauthorisedPaymentPage(9).path, Json.toJson(true))
+        .setOrException(SchemeUnAuthPaySurchargeMemberPage(9).path, Json.toJson(true))
+        .setOrException(PaymentNaturePage(9).path, Json.toJson(MemberOther.toString))
+        .setOrException(MemberPaymentNatureDescriptionPage(9).path, Json.toJson("Description"))
+        .setOrException(PaymentValueAndDatePage(9).path, Json.toJson(SampleData.paymentDetails))
       )
     }
 

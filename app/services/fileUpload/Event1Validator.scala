@@ -39,7 +39,7 @@ import models.fileUpload.FileUploadHeaders.{Event1FieldNames, valueFormField}
 import pages.address.ManualAddressPage
 import pages.common.MembersDetailsPage
 import pages.event1._
-import pages.event1.member.{BenefitInKindBriefDescriptionPage, BenefitsPaidEarlyPage, ErrorDescriptionPage, ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage, SchemeDetailsPage, WhoWasTheTransferMadePage, PaymentNaturePage => MemberPaymentNaturePage}
+import pages.event1.member.{BenefitInKindBriefDescriptionPage, BenefitsPaidEarlyPage, ErrorDescriptionPage, MemberPaymentNatureDescriptionPage, MemberTangibleMoveablePropertyPage, ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage, SchemeDetailsPage, UnauthorisedPaymentRecipientNamePage, WhoWasTheTransferMadePage, PaymentNaturePage => MemberPaymentNaturePage}
 import play.api.data.Form
 import play.api.i18n.Messages
 import services.fileUpload.Validator.Result
@@ -494,9 +494,21 @@ class Event1Validator @Inject()(
         val u = resultFromFormValidationResult[Address](
           addressValidation(index, columns, fieldNoResidentialAddress), createCommitItem(index, ManualAddressPage(Event1MemberPropertyAddressJourney, _)))
         Seq(k, u).combineAll
-      //      case "Tangible" =>
-      //      case "Court" =>
-      //      case "Other" =>
+      case "Tangible" =>
+        val v = resultFromFormValidationResult[Option[String]](
+          genericFieldValidation(index, columns, Abc(fieldNoTangibleDescription, tangibleDescription, memberTangibleMoveablePropertyFormProvider())),
+          createCommitItem(index, MemberTangibleMoveablePropertyPage.apply))
+        Seq(k, v).combineAll
+      case "Court" =>
+        val m = resultFromFormValidationResult[Option[String]](
+          genericFieldValidation(index, columns, Abc(fieldNoCourtNameOfPersonOrOrg, courtNameOfPersonOrOrg, memberUnauthorisedPaymentRecipientNameFormProvider())),
+          createCommitItem(index, UnauthorisedPaymentRecipientNamePage.apply))
+        Seq(k, m).combineAll
+      case "Other" =>
+        val r = resultFromFormValidationResult[Option[String]](
+          genericFieldValidation(index, columns, Abc(fieldNoOtherDescription, otherDescription, memberPaymentNatureDescriptionFormProvider())),
+          createCommitItem(index, MemberPaymentNatureDescriptionPage.apply))
+        Seq(k, r).combineAll
       case _ => throw new RuntimeException("Cannot find nature of payment")
 
     }
