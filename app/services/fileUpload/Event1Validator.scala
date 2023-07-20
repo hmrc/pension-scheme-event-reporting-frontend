@@ -207,20 +207,6 @@ class Event1Validator @Inject()(
     )
   }
 
-  //TODO: Come back to the splitting of this
-  private def schemeDetailsValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], SchemeDetails] = {
-    val fields = Seq(
-      Field(valueFormField, chargeFields(fieldNoTransferSchemeDetails), schemeDetails, fieldNoTransferSchemeDetails)
-    )
-    val form: Form[SchemeDetails] = schemeDetailsFormProvider()
-    form.bind(
-      Field.seqToMap(fields)
-    ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
-    )
-  }
-
   private def errorDescriptionValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], Option[String]] = {
     val fields = Seq(
       Field(valueFormField, chargeFields(fieldNoErrorDescription), errorDescription, fieldNoErrorDescription)
@@ -424,6 +410,22 @@ class Event1Validator @Inject()(
     )
   }
 
+  private def schemeDetailsValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], SchemeDetails] = {
+    val parsedSchemeDetails = splitSchemeDetails(chargeFields(fieldNoTransferSchemeDetails))
+
+    val fields = Seq(
+      Field(schemeName, parsedSchemeDetails.schemeName, schemeDetails, fieldNoTransferSchemeDetails, Some(Event1FieldNames.schemeDetails)),
+      Field(schemeReference, parsedSchemeDetails.schemeReference, schemeDetails, fieldNoTransferSchemeDetails, Some(Event1FieldNames.schemeReference))
+    )
+    val form: Form[SchemeDetails] = schemeDetailsFormProvider()
+    form.bind(
+      Field.seqToMap(fields)
+    ).fold(
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      value => Valid(value)
+    )
+  }
+
   private def paymentValueAndDateValidation(index: Int,
                                             chargeFields: Seq[String],
                                             taxYear: Int)
@@ -466,8 +468,7 @@ class Event1Validator @Inject()(
         val w = resultFromFormValidationResult[WhoWasTheTransferMade](
           whoWasTheTransferMadeValidation(index, columns), createCommitItem(index, WhoWasTheTransferMadePage.apply))
         val x = resultFromFormValidationResult[SchemeDetails](
-          genericFieldValidation(index, columns, Abc(fieldNoTransferSchemeDetails, schemeDetails, schemeDetailsFormProvider())),
-          createCommitItem(index, SchemeDetailsPage.apply))
+          schemeDetailsValidation(index, columns), createCommitItem(index, SchemeDetailsPage.apply))
         Seq(k, w, x).combineAll
       case "Error" =>
         val o = resultFromFormValidationResult[Option[String]](

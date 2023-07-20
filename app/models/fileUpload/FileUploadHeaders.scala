@@ -35,6 +35,8 @@ object FileUploadHeaders {
     val benefitDescription: String = "benefitDescription"
     val transferMadeTo: String = "transferMadeTo"
     val schemeDetails: String = "schemeDetails"
+    val schemeName: String = "schemeName"
+    val schemeReference: String = "reference"
     val whoReceivedRefund: String = "whoReceivedRefund"
     val overpaymentReason: String = "overpaymentReason"
     val addressLine1: String = "addressLine1"

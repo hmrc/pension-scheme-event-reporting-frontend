@@ -162,6 +162,14 @@ trait Validator {
     }
   }
 
+  protected final def splitSchemeDetails(schemeDetails: String): ParsedDetails = {
+    schemeDetails.split(",").toSeq match {
+      case Seq(name, ref) => ParsedDetails(name, ref)
+      case Seq(name) => ParsedDetails(name, EMPTY)
+      case _ => ParsedDetails(EMPTY, EMPTY)
+    }
+  }
+
   protected final def splitAddress(address: String): ParsedAddress = {
     address.split(",").toSeq match {
       case Seq(add1, add2, add3, add4, postCode, country) => ParsedAddress(add1, add2, add3, add4, postCode, country)
@@ -206,6 +214,8 @@ protected case class ParsedAddress(addressLine1: String,
                                    country: String)
 
 protected case class ParsedDate(day: String, month: String, year: String)
+
+protected case class ParsedDetails(schemeName: String, schemeReference: String)
 
 protected object Field {
   def seqToMap(s: Seq[Field]): Map[String, String] = {
