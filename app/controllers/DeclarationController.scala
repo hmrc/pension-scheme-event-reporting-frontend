@@ -114,6 +114,7 @@ class DeclarationController @Inject()(
       auditService.sendEvent(
         EventReportingSubmissionEmailAuditEvent(
           request.loggedInUser.psaIdOrPspId,
+          request.pstr,
           schemeAdministratorType,
           email,
           reportVersion,
