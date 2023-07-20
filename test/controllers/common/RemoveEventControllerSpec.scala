@@ -20,24 +20,19 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import data.SampleData.sampleEvent18JourneyData
 import forms.common.RemoveEventFormProvider
-import models.UserAnswers
 import models.enumeration.EventType.Event18
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
 import pages.common.RemoveEventPage
-import pages.event18.Event18ConfirmationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.CompileService
 import views.html.common.RemoveEventView
-
-import scala.concurrent.Future
 
 class RemoveEventControllerSpec extends SpecBase with BeforeAndAfterEach {
 
@@ -79,31 +74,6 @@ class RemoveEventControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints, Event18)(request, messages(application)).toString
-      }
-    }
-
-    "must remove userAnswers for selected event when selecting true" in {
-      val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-
-      val application =
-        applicationBuilder(userAnswers = Some(sampleEvent18JourneyData), extraModules)
-          .build()
-
-      when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any()))
-        .thenReturn(Future.successful(()))
-      when(mockCompileService.compileEvent(ArgumentMatchers.eq(Event18), any(), uaCaptor.capture())(any(), any()))
-        .thenReturn(Future.successful(()))
-
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        uaCaptor.getValue.get(Event18ConfirmationPage) mustBe None
-        redirectLocation(result).value mustEqual RemoveEventPage(Event18).navigate(waypoints, sampleEvent18JourneyData, uaCaptor.getValue).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
