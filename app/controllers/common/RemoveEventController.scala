@@ -16,16 +16,14 @@
 
 package controllers.common
 
-import connectors.UserAnswersCacheConnector
+import connectors.EventReportingConnector
 import controllers.actions._
 import forms.common.RemoveEventFormProvider
 import models.enumeration.EventType
 import pages.Waypoints
 import pages.common.RemoveEventPage
 import play.api.i18n.I18nSupport
-import play.api.libs.json.JsPath
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CompileService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.common.RemoveEventView
 
@@ -37,9 +35,8 @@ class RemoveEventController @Inject()(
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       userAnswersCacheConnector: UserAnswersCacheConnector,
                                        formProvider: RemoveEventFormProvider,
-                                       compileService: CompileService,
+                                       eventReportingConnector: EventReportingConnector,
                                        view: RemoveEventView
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -57,9 +54,9 @@ class RemoveEventController @Inject()(
         value => {
           val originalUserAnswers = request.userAnswers
           if (value) {
-            val removedUserAnswers = originalUserAnswers.removeWithPath(JsPath \ s"event${eventType.toString}")
-              //TODO: Will be replaced with new BE endpoint created in PODS-8597
-                Future.successful(Redirect(RemoveEventPage(eventType).navigate(waypoints, originalUserAnswers, removedUserAnswers).route))
+            eventReportingConnector.deleteEvent(request.pstr, request.userAnswers.eventDataIdentifier(eventType)).flatMap { - =>
+              Future.successful(Redirect(RemoveEventPage(eventType).navigate(waypoints, originalUserAnswers, originalUserAnswers).route))
+            }
           } else {
             Future.successful(Redirect(RemoveEventPage(eventType).navigate(waypoints, originalUserAnswers, originalUserAnswers).route))
           }
