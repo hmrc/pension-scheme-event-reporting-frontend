@@ -24,7 +24,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json.{Format, JsPath, Json, Reads}
 
-case class MembersOrEmployersSummary(name: String, unauthorisedPaymentValue: BigDecimal)
+case class MembersOrEmployersSummary(name: String, unauthorisedPaymentValue: BigDecimal, memberStatus: Option[String])
 
 object MembersOrEmployersSummary {
   implicit lazy val formats: Format[MembersOrEmployersSummary] = Json.format[MembersOrEmployersSummary]
@@ -37,14 +37,15 @@ object MembersOrEmployersSummary {
     (
       (JsPath \ "membersDetails" \ "firstName").readNullable[String] and
         (JsPath \ "membersDetails" \ "lastName").readNullable[String] and
-        readsMemberOrEmployerValue
+        readsMemberOrEmployerValue and
+        (JsPath \ "memberStatus").readNullable[String]
       ) (
-      (firstName, lastName, paymentValue) => {
+      (firstName, lastName, paymentValue, memberStatus) => {
         (firstName, lastName, paymentValue) match {
-          case (Some(fn), Some(ln), _) =>  MembersOrEmployersSummary(fn + " " + ln, paymentValue)
-          case (None, Some(ln), _) =>  MembersOrEmployersSummary(ln, paymentValue)
-          case (Some(fn), None, _) =>  MembersOrEmployersSummary(fn, paymentValue)
-          case (None, None, _) =>  MembersOrEmployersSummary(messages("site.notEntered"), paymentValue)
+          case (Some(fn), Some(ln), _) =>  MembersOrEmployersSummary(fn + " " + ln, paymentValue, memberStatus)
+          case (None, Some(ln), _) =>  MembersOrEmployersSummary(ln, paymentValue, memberStatus)
+          case (Some(fn), None, _) =>  MembersOrEmployersSummary(fn, paymentValue, memberStatus)
+          case (None, None, _) =>  MembersOrEmployersSummary(messages("site.notEntered"), paymentValue, memberStatus)
         }
       }
     )
@@ -52,12 +53,13 @@ object MembersOrEmployersSummary {
   private def readsEmployerSummary(implicit messages: Messages): Reads[MembersOrEmployersSummary] =
     (
       (JsPath \ s"event${Event1.toString}" \ "companyDetails" \ "companyName").readNullable[String] and
-        readsMemberOrEmployerValue
+        readsMemberOrEmployerValue and
+        (JsPath \ s"event${Event1.toString}" \ "memberStatus").readNullable[String]
       ) (
-      (companyName, paymentValue) => {
+      (companyName, paymentValue, memberStatus) => {
         (companyName, paymentValue) match {
-          case (Some(cn), _) =>  MembersOrEmployersSummary(cn, paymentValue)
-          case (None, _) =>  MembersOrEmployersSummary(messages("site.notEntered"), paymentValue)
+          case (Some(cn), _) =>  MembersOrEmployersSummary(cn, paymentValue, memberStatus)
+          case (None, _) =>  MembersOrEmployersSummary(messages("site.notEntered"), paymentValue, memberStatus)
         }
       }
     )
@@ -66,7 +68,7 @@ object MembersOrEmployersSummary {
     (JsPath \ WhoReceivedUnauthPaymentPage.toString).readNullable[String].flatMap {
       case Some(Member.toString) => readsMemberSummary
       case Some(Employer.toString) => readsEmployerSummary
-      case None => Reads.pure[MembersOrEmployersSummary](MembersOrEmployersSummary(messages("site.notEntered"), BigDecimal(0.00)))
+      case None => Reads.pure[MembersOrEmployersSummary](MembersOrEmployersSummary(messages("site.notEntered"), BigDecimal(0.00), Some("Any")))
       case _ => throw new RuntimeException("Failed reads. Neither Member or Employer")
     }
   }
