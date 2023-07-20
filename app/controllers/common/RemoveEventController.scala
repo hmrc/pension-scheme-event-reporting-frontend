@@ -58,11 +58,8 @@ class RemoveEventController @Inject()(
           val originalUserAnswers = request.userAnswers
           if (value) {
             val removedUserAnswers = originalUserAnswers.removeWithPath(JsPath \ s"event${eventType.toString}")
-            userAnswersCacheConnector.save(request.pstr, eventType, removedUserAnswers).flatMap { _ =>
-              compileService.compileEvent(eventType, request.pstr, removedUserAnswers).map { _ =>
-                Redirect(RemoveEventPage(eventType).navigate(waypoints, originalUserAnswers, removedUserAnswers).route)
-              }
-            }
+              //TODO: Will be replaced with new BE endpoint created in PODS-8597
+                Future.successful(Redirect(RemoveEventPage(eventType).navigate(waypoints, originalUserAnswers, removedUserAnswers).route))
           } else {
             Future.successful(Redirect(RemoveEventPage(eventType).navigate(waypoints, originalUserAnswers, originalUserAnswers).route))
           }
