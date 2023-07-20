@@ -96,6 +96,15 @@ object SampleData extends SpecBase {
     country = "GB"
   )
 
+  val MemberAddress: Address = Address(
+    addressLine1 = "10 Other Place",
+    addressLine2 = "Some District",
+    addressLine3 = Some("Anytown"),
+    addressLine4 = Some("Anyplace"),
+    postcode = Some("ZZ1 1ZZ"),
+    country = "GB"
+  )
+
   val seqTolerantAddresses: Seq[TolerantAddress] = Seq[TolerantAddress](
     TolerantAddress(
       addressLine1 = Some("addr11"),

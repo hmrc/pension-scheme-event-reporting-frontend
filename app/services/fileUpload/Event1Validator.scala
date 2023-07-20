@@ -28,6 +28,7 @@ import forms.event1.member._
 import forms.event1.{PaymentNatureFormProvider => MemberPaymentNatureFormProvider, _}
 import models.address.Address
 import models.common.MembersDetails
+import models.enumeration.AddressJourneyType.Event1MemberPropertyAddressJourney
 import models.enumeration.EventType
 import models.enumeration.EventType.Event1
 import models.event1.employer.{CompanyDetails, LoanDetails, PaymentNature => EmployerPaymentNature}
@@ -35,6 +36,7 @@ import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContribu
 import models.event1.{PaymentDetails, WhoReceivedUnauthPayment, PaymentNature => MemberPaymentNature}
 import models.fileUpload.FileUploadHeaders.Event1FieldNames._
 import models.fileUpload.FileUploadHeaders.{Event1FieldNames, valueFormField}
+import pages.address.ManualAddressPage
 import pages.common.MembersDetailsPage
 import pages.event1._
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, BenefitsPaidEarlyPage, ErrorDescriptionPage, ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage, SchemeDetailsPage, WhoWasTheTransferMadePage, PaymentNaturePage => MemberPaymentNaturePage}
@@ -488,7 +490,10 @@ class Event1Validator @Inject()(
         val s = resultFromFormValidationResult[ReasonForTheOverpaymentOrWriteOff](
           reasonForTheOverpaymentOrWriteOffValidation(index, columns), createCommitItem(index, ReasonForTheOverpaymentOrWriteOffPage.apply))
         Seq(k, s).combineAll
-      //      case "Residential" =>
+      case "Residential" =>
+        val u = resultFromFormValidationResult[Address](
+          addressValidation(index, columns, fieldNoResidentialAddress), createCommitItem(index, ManualAddressPage(Event1MemberPropertyAddressJourney, _)))
+        Seq(k, u).combineAll
       //      case "Tangible" =>
       //      case "Court" =>
       //      case "Other" =>
