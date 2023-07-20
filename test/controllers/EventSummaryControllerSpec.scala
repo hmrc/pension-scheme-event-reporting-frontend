@@ -119,7 +119,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
         })
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, mappedEvents, "2023", schemeName)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, mappedEvents, "2023", schemeName, Some(1))(request, messages(application)).toString
       }
     }
 
