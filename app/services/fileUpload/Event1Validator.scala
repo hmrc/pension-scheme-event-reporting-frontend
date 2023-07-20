@@ -37,7 +37,7 @@ import models.fileUpload.FileUploadHeaders.Event1FieldNames._
 import models.fileUpload.FileUploadHeaders.{Event1FieldNames, valueFormField}
 import pages.common.MembersDetailsPage
 import pages.event1._
-import pages.event1.member.{BenefitInKindBriefDescriptionPage, SchemeDetailsPage, WhoWasTheTransferMadePage, PaymentNaturePage => MemberPaymentNaturePage}
+import pages.event1.member.{BenefitInKindBriefDescriptionPage, ErrorDescriptionPage, SchemeDetailsPage, WhoWasTheTransferMadePage, PaymentNaturePage => MemberPaymentNaturePage}
 import play.api.data.Form
 import play.api.i18n.Messages
 import services.fileUpload.Validator.Result
@@ -469,8 +469,11 @@ class Event1Validator @Inject()(
           genericFieldValidation(index, columns, Abc(fieldNoTransferSchemeDetails, schemeDetails, schemeDetailsFormProvider())),
           createCommitItem(index, SchemeDetailsPage.apply))
         Seq(k, w, x).combineAll
-
-      //      case "Error" =>
+      case "Error" =>
+        val o = resultFromFormValidationResult[Option[String]](
+          genericFieldValidation(index, columns, Abc(fieldNoErrorDescription, errorDescription, errorDescriptionFormProvider())),
+          createCommitItem(index, ErrorDescriptionPage.apply))
+        Seq(k, o).combineAll
       //      case "Early" =>
       //      case "Refund" =>
       //      case "Overpayment" =>
