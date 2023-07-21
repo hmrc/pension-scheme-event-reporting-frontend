@@ -79,13 +79,14 @@ class EventReportingConnector @Inject()(
       Future.successful(HttpResponse(NOT_FOUND, "Not found"))
   }
 
-  def compileEvent(pstr: String, edi: EventDataIdentifier)
+  def compileEvent(pstr: String, edi: EventDataIdentifier, currentVersion: Int)
                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
       "eventType" -> edi.eventType.toString,
       "year" -> edi.year,
+      "currentVersion" -> currentVersion.toString,
       "version" -> edi.version
     )
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
