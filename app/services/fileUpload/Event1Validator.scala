@@ -339,103 +339,6 @@ class Event1Validator @Inject()(
     )
   }
 
-  private def validatePaymentNatureMemberJourney(index: Int, columns: Seq[String], paymentNature: String) = {
-
-    val k = resultFromFormValidationResult[MemberPaymentNature](
-      genericPaymentNatureFieldValidation(index, columns, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, memberPaymentNatureFormProvider()), mapPaymentNatureMember),
-      createCommitItem(index, MemberPaymentNaturePage.apply)
-    )
-
-    paymentNature match {
-      case "Benefit" =>
-        val l = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoBenefitDescription, benefitDescription, benefitInKindBriefDescriptionFormProvider())),
-          createCommitItem(index, BenefitInKindBriefDescriptionPage.apply))
-        Seq(k, l).combineAll
-      case "Transfer" =>
-        val w = resultFromFormValidationResult[WhoWasTheTransferMade](
-          whoWasTheTransferMadeValidation(index, columns), createCommitItem(index, WhoWasTheTransferMadePage.apply))
-        val x = resultFromFormValidationResult[SchemeDetails](
-          schemeDetailsValidation(index, columns), createCommitItem(index, SchemeDetailsPage.apply))
-        Seq(k, w, x).combineAll
-      case "Error" =>
-        val o = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoErrorDescription, errorDescription, errorDescriptionFormProvider())),
-          createCommitItem(index, ErrorDescriptionPage.apply))
-        Seq(k, o).combineAll
-      case "Early" =>
-        val n = resultFromFormValidationResult[String](
-          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoEarlyDescription, earlyDescription, benefitsPaidEarlyFormProvider())),
-          createCommitItem(index, BenefitsPaidEarlyPage.apply))
-        Seq(k, n).combineAll
-      case "Refund" =>
-        val t = resultFromFormValidationResult[RefundOfContributions](
-          refundOfContributionsValidation(index, columns), createCommitItem(index, RefundOfContributionsPage.apply))
-        Seq(k, t).combineAll
-      case "Overpayment" =>
-        val s = resultFromFormValidationResult[ReasonForTheOverpaymentOrWriteOff](
-          reasonForTheOverpaymentOrWriteOffValidation(index, columns), createCommitItem(index, ReasonForTheOverpaymentOrWriteOffPage.apply))
-        Seq(k, s).combineAll
-      case "Residential" =>
-        val u = resultFromFormValidationResult[Address](
-          addressValidation(index, columns, fieldNoResidentialAddress), createCommitItem(index, ManualAddressPage(Event1MemberPropertyAddressJourney, _)))
-        Seq(k, u).combineAll
-      case "Tangible" =>
-        val v = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoTangibleDescription, tangibleDescription, memberTangibleMoveablePropertyFormProvider())),
-          createCommitItem(index, MemberTangibleMoveablePropertyPage.apply))
-        Seq(k, v).combineAll
-      case "Court" =>
-        val m = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoCourtNameOfPersonOrOrg, courtNameOfPersonOrOrg, memberUnauthorisedPaymentRecipientNameFormProvider())),
-          createCommitItem(index, UnauthorisedPaymentRecipientNamePage.apply))
-        Seq(k, m).combineAll
-      case "Other" =>
-        val r = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoOtherDescription, otherDescription, memberPaymentNatureDescriptionFormProvider())),
-          createCommitItem(index, MemberPaymentNatureDescriptionPage.apply))
-        Seq(k, r).combineAll
-      case _ => throw new RuntimeException("Cannot find nature of payment")
-
-    }
-  }
-
-  private def validatePaymentNatureEmployerJourney(index: Int, columns: Seq[String], paymentNature: String) = {
-
-    val k = resultFromFormValidationResult[EmployerPaymentNature](
-      genericPaymentNatureFieldValidation(index, columns, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, employerPaymentNatureFormProvider()), mapPaymentNatureEmployer),
-      createCommitItem(index, EmployerPaymentNaturePage.apply)
-    )
-
-    paymentNature match {
-      case "Loans" =>
-        val p = resultFromFormValidationResult[LoanDetails](
-          loanDetailsValidation(index, columns), createCommitItem(index, LoanDetailsPage.apply))
-        Seq(k, p).combineAll
-      case "Residential" =>
-        val u = resultFromFormValidationResult[Address](
-          addressValidation(index, columns, fieldNoResidentialAddress), createCommitItem(index, ManualAddressPage(Event1EmployerPropertyAddressJourney, _)))
-        Seq(k, u).combineAll
-      case "Tangible" =>
-        val v = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoTangibleDescription, tangibleDescription, employerTangibleMoveablePropertyFormProvider())),
-          createCommitItem(index, EmployerTangibleMoveablePropertyPage.apply))
-        Seq(k, v).combineAll
-      case "Court" =>
-        val m = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoCourtNameOfPersonOrOrg, courtNameOfPersonOrOrg, employerUnauthorisedPaymentRecipientNameFormProvider())),
-          createCommitItem(index, EmployerUnauthorisedPaymentRecipientNamePage.apply))
-        Seq(k, m).combineAll
-      case "Other" =>
-        val r = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoOtherDescription, otherDescription, employerPaymentNatureDescriptionFormProvider())),
-          createCommitItem(index, EmployerPaymentNatureDescriptionPage.apply))
-        Seq(k, r).combineAll
-      case _ => throw new RuntimeException("Cannot find nature of payment")
-
-    }
-  }
-
   override protected def validateFields(index: Int,
                                         columns: Seq[String],
                                         taxYear: Int,
@@ -455,6 +358,114 @@ class Event1Validator @Inject()(
             case "employer" => employerValidation(a, index, columns, taxYear)
           }
           case _ => throw new RuntimeException("Something went wrong: member or employer not entered/found")
+        }
+      case invalidResult@Result(_, Invalid(_)) => invalidResult
+    }
+  }
+
+  private def validatePaymentNatureMemberJourney(index: Int, columns: Seq[String]): Result = {
+
+    val k = resultFromFormValidationResult[MemberPaymentNature](
+      genericPaymentNatureFieldValidation(index, columns, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, memberPaymentNatureFormProvider()), mapPaymentNatureMember),
+      createCommitItem(index, MemberPaymentNaturePage.apply)
+    )
+
+    k match {
+      case Result(_, Valid(seqCommitItems)) =>
+        seqCommitItems.headOption match {
+          case Some(ci) => ci.value.as[JsString].value match {
+            case "benefitInKind" =>
+              val l = resultFromFormValidationResult[Option[String]](
+                genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoBenefitDescription, benefitDescription, benefitInKindBriefDescriptionFormProvider())),
+                createCommitItem(index, BenefitInKindBriefDescriptionPage.apply))
+              Seq(k, l).combineAll
+            case "transferToNonRegPensionScheme" =>
+              val w = resultFromFormValidationResult[WhoWasTheTransferMade](
+                whoWasTheTransferMadeValidation(index, columns), createCommitItem(index, WhoWasTheTransferMadePage.apply))
+              val x = resultFromFormValidationResult[SchemeDetails](
+                schemeDetailsValidation(index, columns), createCommitItem(index, SchemeDetailsPage.apply))
+              Seq(k, w, x).combineAll
+            case "errorCalcTaxFreeLumpSums" =>
+              val o = resultFromFormValidationResult[Option[String]](
+                genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoErrorDescription, errorDescription, errorDescriptionFormProvider())),
+                createCommitItem(index, ErrorDescriptionPage.apply))
+              Seq(k, o).combineAll
+            case "benefitsPaidEarly" =>
+              val n = resultFromFormValidationResult[String](
+                genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoEarlyDescription, earlyDescription, benefitsPaidEarlyFormProvider())),
+                createCommitItem(index, BenefitsPaidEarlyPage.apply))
+              Seq(k, n).combineAll
+            case "refundOfContributions" =>
+              val t = resultFromFormValidationResult[RefundOfContributions](
+                refundOfContributionsValidation(index, columns), createCommitItem(index, RefundOfContributionsPage.apply))
+              Seq(k, t).combineAll
+            case "overpaymentOrWriteOff" =>
+              val s = resultFromFormValidationResult[ReasonForTheOverpaymentOrWriteOff](
+                reasonForTheOverpaymentOrWriteOffValidation(index, columns), createCommitItem(index, ReasonForTheOverpaymentOrWriteOffPage.apply))
+              Seq(k, s).combineAll
+            case "residentialPropertyHeld" =>
+              val u = resultFromFormValidationResult[Address](
+                addressValidation(index, columns, fieldNoResidentialAddress), createCommitItem(index, ManualAddressPage(Event1MemberPropertyAddressJourney, _)))
+              Seq(k, u).combineAll
+            case "tangibleMoveablePropertyHeld" =>
+              val v = resultFromFormValidationResult[Option[String]](
+                genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoTangibleDescription, tangibleDescription, memberTangibleMoveablePropertyFormProvider())),
+                createCommitItem(index, MemberTangibleMoveablePropertyPage.apply))
+              Seq(k, v).combineAll
+            case "courtOrConfiscationOrder" =>
+              val m = resultFromFormValidationResult[Option[String]](
+                genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoCourtNameOfPersonOrOrg, courtNameOfPersonOrOrg, memberUnauthorisedPaymentRecipientNameFormProvider())),
+                createCommitItem(index, UnauthorisedPaymentRecipientNamePage.apply))
+              Seq(k, m).combineAll
+            case "memberOther" =>
+              val r = resultFromFormValidationResult[Option[String]](
+                genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoOtherDescription, otherDescription, memberPaymentNatureDescriptionFormProvider())),
+                createCommitItem(index, MemberPaymentNatureDescriptionPage.apply))
+              Seq(k, r).combineAll
+          }
+          case _ => throw new RuntimeException("Cannot find nature of payment")
+        }
+      case invalidResult@Result(_, Invalid(_)) => invalidResult
+    }
+
+  }
+
+  private def validatePaymentNatureEmployerJourney(index: Int, columns: Seq[String]): Result = {
+
+    val k = resultFromFormValidationResult[EmployerPaymentNature](
+      genericPaymentNatureFieldValidation(index, columns, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, employerPaymentNatureFormProvider()), mapPaymentNatureEmployer),
+      createCommitItem(index, EmployerPaymentNaturePage.apply)
+    )
+
+    k match {
+      case Result(_, Valid(seqCommitItems)) =>
+        seqCommitItems.headOption match {
+          case Some(ci) => ci.value.as[JsString].value match {
+            case "loansExceeding50PercentOfFundValue" =>
+              val p = resultFromFormValidationResult[LoanDetails](
+                loanDetailsValidation(index, columns), createCommitItem(index, LoanDetailsPage.apply))
+              Seq(k, p).combineAll
+            case "residentialProperty" =>
+              val u = resultFromFormValidationResult[Address](
+                addressValidation(index, columns, fieldNoResidentialAddress), createCommitItem(index, ManualAddressPage(Event1EmployerPropertyAddressJourney, _)))
+              Seq(k, u).combineAll
+            case "tangibleMoveableProperty" =>
+              val v = resultFromFormValidationResult[Option[String]](
+                genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoTangibleDescription, tangibleDescription, employerTangibleMoveablePropertyFormProvider())),
+                createCommitItem(index, EmployerTangibleMoveablePropertyPage.apply))
+              Seq(k, v).combineAll
+            case "courtOrder" =>
+              val m = resultFromFormValidationResult[Option[String]](
+                genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoCourtNameOfPersonOrOrg, courtNameOfPersonOrOrg, employerUnauthorisedPaymentRecipientNameFormProvider())),
+                createCommitItem(index, EmployerUnauthorisedPaymentRecipientNamePage.apply))
+              Seq(k, m).combineAll
+            case "employerOther" =>
+              val r = resultFromFormValidationResult[Option[String]](
+                genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoOtherDescription, otherDescription, employerPaymentNatureDescriptionFormProvider())),
+                createCommitItem(index, EmployerPaymentNatureDescriptionPage.apply))
+              Seq(k, r).combineAll
+          }
+          case _ => throw new RuntimeException("Cannot find nature of payment")
         }
       case invalidResult@Result(_, Invalid(_)) => invalidResult
     }
@@ -487,7 +498,7 @@ class Event1Validator @Inject()(
       createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply)
     )
 
-    val paymentNature = validatePaymentNatureMemberJourney(index, columns, columns(10))
+    val paymentNature = validatePaymentNatureMemberJourney(index, columns)
 
     val y = resultFromFormValidationResult[PaymentDetails](
       paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply)
@@ -509,7 +520,7 @@ class Event1Validator @Inject()(
       addressValidation(index, columns, fieldNoCompanyAddress), createCommitItem(index, ManualAddressPage(Event1EmployerAddressJourney, _))
     )
 
-    val paymentNature = validatePaymentNatureEmployerJourney(index, columns, columns(10))
+    val paymentNature = validatePaymentNatureEmployerJourney(index, columns)
 
     val y = resultFromFormValidationResult[PaymentDetails](
       paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply)
