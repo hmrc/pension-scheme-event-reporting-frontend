@@ -22,7 +22,7 @@ import forms.WantToSubmitFormProvider
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
 import models.enumeration.EventType.WindUp
 import models.{TaxYear, UserAnswers}
-import pages.{WantToSubmitPage, Waypoints}
+import pages.{VersionInfoPage, WantToSubmitPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -47,36 +47,38 @@ class WantToSubmitController @Inject()(
     val preparedForm = request.userAnswers.flatMap(_.get(WantToSubmitPage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
-
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
-          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(WantToSubmitPage, value)
+            val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+            val updatedAnswers = originalUserAnswers.setOrException(WantToSubmitPage, value)
+            val version = updatedAnswers.get(VersionInfoPage).get.version
+            val startYear = s"${TaxYear.getSelectedTaxYear(updatedAnswers).startYear}-04-06"
+            eventReportingConnector.getEventReportSummary(request.pstr, startYear, version)
+              .flatMap { seqEventSummaries =>
+                val currentCompileEventTypes = seqEventSummaries.filter { eventSummary =>
+                  eventSummary.recordVersion == version
+                }.map(_.eventType)
 
-//TODO Correctly get version number- check against each eventType- check versionStatus is compiled only then find wind up
-
-//            eventReportingConnector.getEventReportSummary(request.pstr, TaxYear.selectedTaxYearStart(updatedAnswers).toString, 1).flatMap {
-//              listEventTypes =>
-//                listEventTypes.map {
-//                  case WindUp =>
-//                          ???
-//                  case _ =>
-//                          ???
-//                }
-//          }
-
-          userAnswersCacheConnector.save(request.pstr, updatedAnswers).map {
-            case value if TaxYear.isCurrentTaxYear(updatedAnswers) =>
-              Redirect(controllers.routes.CannotSubmitController.onPageLoad(waypoints).url)
-            case value =>
-              Redirect(request.loggedInUser.administratorOrPractitioner match {
-                case Administrator => routes.DeclarationController.onPageLoad(waypoints)
-                case Practitioner => routes.DeclarationPspController.onPageLoad(waypoints)
-              })
-            case _ => Redirect(request.returnUrl)
+                userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
+                  if(value) {
+                    (currentCompileEventTypes.contains(WindUp), TaxYear.isCurrentTaxYear(updatedAnswers)) match {
+                      case (true, _) | (false, false) =>
+                        request.loggedInUser.administratorOrPractitioner match {
+                          case Administrator => Future.successful(Redirect(routes.DeclarationController.onPageLoad(waypoints)))
+                          case Practitioner => Future.successful(Redirect(routes.DeclarationPspController.onPageLoad(waypoints)))
+                        }
+                      case (false, true) =>
+                        Future.successful(Redirect(controllers.routes.CannotSubmitController.onPageLoad(waypoints).url))
+                      case _ =>
+                        Future.successful(Redirect(request.returnUrl))
+                    }
+                  } else {
+                    Future.successful(Redirect(request.returnUrl))
+                  }
+                }
           }
         }
       )
