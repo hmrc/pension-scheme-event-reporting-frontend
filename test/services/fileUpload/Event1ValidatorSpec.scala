@@ -72,6 +72,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       .setOrException(DoYouHoldSignedMandatePage(index).path, Json.toJson(doYouHoldSignedMandate))
       .setOrException(ValueOfUnauthorisedPaymentPage(index).path, Json.toJson(valueOfUnauthorisedPayment))
       .setOrException(SchemeUnAuthPaySurchargeMemberPage(index).path, Json.toJson(schemeUnAuthPaySurcharge))
+      .setOrException(PaymentValueAndDatePage(index).path, Json.toJson(SampleData.paymentDetails))
   }
 
   private val chainUaEmployers: (UserAnswers, Int) => UserAnswers = (ua, index) => {
@@ -79,6 +80,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       .setOrException(WhoReceivedUnauthPaymentPage(index).path, Json.toJson(Employer.toString))
       .setOrException(CompanyDetailsPage(index).path, Json.toJson(SampleData.companyDetails))
       .setOrException(ManualAddressPage(Event1EmployerAddressJourney, index).path, Json.toJson(SampleData.event1EmployerAddress))
+      .setOrException(PaymentValueAndDatePage(index).path, Json.toJson(SampleData.paymentDetails))
   }
 
   "Event 1 validator" - {
@@ -102,53 +104,43 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         .pipe(chainUaMembers(_, 0, SampleData.memberDetails, true, true, true))
         .setOrException(PaymentNaturePage(0).path, Json.toJson(BenefitInKind.toString))
         .setOrException(BenefitInKindBriefDescriptionPage(0).path, Json.toJson("Description"))
-        .setOrException(PaymentValueAndDatePage(0).path, Json.toJson(SampleData.paymentDetails))
 
         .pipe(chainUaMembers(_, 1, SampleData.memberDetails2, true, true, true))
         .setOrException(PaymentNaturePage(1).path, Json.toJson(TransferToNonRegPensionScheme.toString))
         .setOrException(WhoWasTheTransferMadePage(1).path, Json.toJson(AnEmployerFinanced.toString))
         .setOrException(SchemeDetailsPage(1).path, Json.toJson(SampleData.schemeDetails))
-        .setOrException(PaymentValueAndDatePage(1).path, Json.toJson(SampleData.paymentDetails))
 
         .pipe(chainUaMembers(_, 2, SampleData.memberDetails, true, true, true))
         .setOrException(PaymentNaturePage(2).path, Json.toJson(ErrorCalcTaxFreeLumpSums.toString))
         .setOrException(ErrorDescriptionPage(2).path, Json.toJson("Description"))
-        .setOrException(PaymentValueAndDatePage(2).path, Json.toJson(SampleData.paymentDetails))
 
         .pipe(chainUaMembers(_, 3, SampleData.memberDetails2, true, true, true))
         .setOrException(PaymentNaturePage(3).path, Json.toJson(BenefitsPaidEarly.toString))
         .setOrException(BenefitsPaidEarlyPage(3).path, Json.toJson("Description"))
-        .setOrException(PaymentValueAndDatePage(3).path, Json.toJson(SampleData.paymentDetails))
 
         .pipe(chainUaMembers(_, 4, SampleData.memberDetails, true, true, true))
         .setOrException(PaymentNaturePage(4).path, Json.toJson(RefundOfContributions.toString))
         .setOrException(RefundOfContributionsPage(4).path, Json.toJson(RefundOfContributionsObject.WidowOrOrphan.toString))
-        .setOrException(PaymentValueAndDatePage(4).path, Json.toJson(SampleData.paymentDetails))
 
         .pipe(chainUaMembers(_, 5, SampleData.memberDetails2, true, true, false))
         .setOrException(PaymentNaturePage(5).path, Json.toJson(OverpaymentOrWriteOff.toString))
         .setOrException(ReasonForTheOverpaymentOrWriteOffPage(5).path, Json.toJson(ReasonForTheOverpaymentOrWriteOff.DependentNoLongerQualifiedForPension.toString))
-        .setOrException(PaymentValueAndDatePage(5).path, Json.toJson(SampleData.paymentDetails))
 
         .pipe(chainUaMembers(_, 6, SampleData.memberDetails, true, true, false))
         .setOrException(PaymentNaturePage(6).path, Json.toJson(ResidentialPropertyHeld.toString))
         .setOrException(ManualAddressPage(Event1MemberPropertyAddressJourney, 6).path, Json.toJson(SampleData.memberAddress))
-        .setOrException(PaymentValueAndDatePage(6).path, Json.toJson(SampleData.paymentDetails))
 
         .pipe(chainUaMembers(_, 7, SampleData.memberDetails2, true, true, true))
         .setOrException(PaymentNaturePage(7).path, Json.toJson(TangibleMoveablePropertyHeld.toString))
         .setOrException(MemberTangibleMoveablePropertyPage(7).path, Json.toJson("Description"))
-        .setOrException(PaymentValueAndDatePage(7).path, Json.toJson(SampleData.paymentDetails))
 
         .pipe(chainUaMembers(_, 8, SampleData.memberDetails, true, true, true))
         .setOrException(PaymentNaturePage(8).path, Json.toJson(CourtOrConfiscationOrder.toString))
         .setOrException(UnauthorisedPaymentRecipientNamePage(8).path, Json.toJson("John"))
-        .setOrException(PaymentValueAndDatePage(8).path, Json.toJson(SampleData.paymentDetails))
 
         .pipe(chainUaMembers(_, 9, SampleData.memberDetails2, true, true, true))
         .setOrException(PaymentNaturePage(9).path, Json.toJson(MemberOther.toString))
         .setOrException(MemberPaymentNatureDescriptionPage(9).path, Json.toJson("Description"))
-        .setOrException(PaymentValueAndDatePage(9).path, Json.toJson(SampleData.paymentDetails))
       )
     }
 
@@ -167,28 +159,22 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         .pipe(chainUaEmployers(_, 0))
         .setOrException(EmployerPaymentNaturePage(0).path, Json.toJson(LoansExceeding50PercentOfFundValue.toString))
         .setOrException(LoanDetailsPage(0).path, Json.toJson(SampleData.loanDetails))
-        .setOrException(PaymentValueAndDatePage(0).path, Json.toJson(SampleData.paymentDetails))
 
         .pipe(chainUaEmployers(_, 1))
         .setOrException(EmployerPaymentNaturePage(1).path, Json.toJson(ResidentialProperty.toString))
         .setOrException(ManualAddressPage(Event1EmployerPropertyAddressJourney, 1).path, Json.toJson(SampleData.event1EmployerAddress))
-        .setOrException(PaymentValueAndDatePage(1).path, Json.toJson(SampleData.paymentDetails))
 
         .pipe(chainUaEmployers(_, 2))
         .setOrException(EmployerPaymentNaturePage(2).path, Json.toJson(TangibleMoveableProperty.toString))
         .setOrException(EmployerTangibleMoveablePropertyPage(2).path, Json.toJson(None))
-        .setOrException(PaymentValueAndDatePage(2).path, Json.toJson(SampleData.paymentDetails))
 
         .pipe(chainUaEmployers(_, 3))
         .setOrException(EmployerPaymentNaturePage(3).path, Json.toJson(CourtOrder.toString))
         .setOrException(EmployerUnauthorisedPaymentRecipientNamePage(3).path, Json.toJson("Organisation Name"))
-        .setOrException(PaymentValueAndDatePage(3).path, Json.toJson(SampleData.paymentDetails))
 
         .pipe(chainUaEmployers(_, 4))
         .setOrException(EmployerPaymentNaturePage(4).path, Json.toJson(EmployerOther.toString))
         .setOrException(EmployerPaymentNatureDescriptionPage(4).path, Json.toJson("Description"))
-        .setOrException(PaymentValueAndDatePage(4).path, Json.toJson(SampleData.paymentDetails))
-
       )
     }
 
