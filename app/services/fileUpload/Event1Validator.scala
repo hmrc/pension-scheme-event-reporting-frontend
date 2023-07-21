@@ -45,6 +45,7 @@ import pages.event1.employer.{CompanyDetailsPage, EmployerPaymentNatureDescripti
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, BenefitsPaidEarlyPage, ErrorDescriptionPage, MemberPaymentNatureDescriptionPage, MemberTangibleMoveablePropertyPage, ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage, SchemeDetailsPage, UnauthorisedPaymentRecipientNamePage, WhoWasTheTransferMadePage, PaymentNaturePage => MemberPaymentNaturePage}
 import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.libs.json.JsString
 import services.fileUpload.Validator.Result
 
 class Event1Validator @Inject()(
@@ -157,7 +158,7 @@ class Event1Validator @Inject()(
 
   private def toBoolean(s: String): String = if (s == "YES") "true" else "false"
 
-  private case class Abc[A](fieldNum: Int, description: String, form: Form[A])
+  private case class Abc[A](fieldNum: Int, description: String, form: Form[A]) //TODO: Change the name of the Abc def
 
   private def genericBooleanFieldValidation[Boolean](index: Int, chargeFields: Seq[String], abc: Abc[Boolean]): Validated[Seq[ValidationError], Boolean] = {
     val mappedBoolean = toBoolean(chargeFields(abc.fieldNum))
@@ -437,65 +438,70 @@ class Event1Validator @Inject()(
                                         members: Seq[MembersDetails])
                                        (implicit messages: Messages): Result = {
 
-    columns.head match {
-      case "member" =>
-        val a = resultFromFormValidationResult[WhoReceivedUnauthPayment](
-          genericFieldValidation(index, columns, Abc(fieldNoMemberOrEmployer, memberOrEmployer, whoReceivedUnauthPaymentFormProvider())),
-          createCommitItem(index, WhoReceivedUnauthPaymentPage.apply)
-        )
+    val a = resultFromFormValidationResult[WhoReceivedUnauthPayment](
+      genericFieldValidation(index, columns, Abc(fieldNoMemberOrEmployer, memberOrEmployer, whoReceivedUnauthPaymentFormProvider())),
+      createCommitItem(index, WhoReceivedUnauthPaymentPage.apply)
+    )
 
-        val b = resultFromFormValidationResultForMembersDetails(
-          memberDetailsValidation(index, columns, membersDetailsFormProvider(Event1, index)),
-          createCommitItem(index, MembersDetailsPage.apply(Event1, _)),
-          members
-        )
+    a match {
+      case invalidResult@Result(_, Invalid(_)) => invalidResult
+      case Result(_, Valid(seqCommitItems)) =>
+        seqCommitItems.headOption match {
+          case Some(ci) => ci.value.as[JsString].value match {
+            case "member" =>
+              val b = resultFromFormValidationResultForMembersDetails(
+                memberDetailsValidation(index, columns, membersDetailsFormProvider(Event1, index)),
+                createCommitItem(index, MembersDetailsPage.apply(Event1, _)),
+                members
+              )
 
-        val c = resultFromFormValidationResult[Boolean](
-          genericBooleanFieldValidation(index, columns, Abc(fieldNoDoYouHoldSignedMandate, doYouHoldSignedMandate, doYouHoldSignedMandateFormProvider())),
-          createCommitItem(index, DoYouHoldSignedMandatePage.apply)
-        )
+              val c = resultFromFormValidationResult[Boolean](
+                genericBooleanFieldValidation(index, columns, Abc(fieldNoDoYouHoldSignedMandate, doYouHoldSignedMandate, doYouHoldSignedMandateFormProvider())),
+                createCommitItem(index, DoYouHoldSignedMandatePage.apply)
+              )
 
-        val d = resultFromFormValidationResult[Boolean](
-          genericBooleanFieldValidation(index, columns, Abc(fieldNoValueOfUnauthorisedPayment, valueOfUnauthorisedPayment, valueOfUnauthorisedPaymentFormProvider())),
-          createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply)
-        )
+              val d = resultFromFormValidationResult[Boolean](
+                genericBooleanFieldValidation(index, columns, Abc(fieldNoValueOfUnauthorisedPayment, valueOfUnauthorisedPayment, valueOfUnauthorisedPaymentFormProvider())),
+                createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply)
+              )
 
-        val e = resultFromFormValidationResult[Boolean](
-          genericBooleanFieldValidation(index, columns, Abc(fieldNoSchemeUnAuthPaySurcharge, schemeUnAuthPaySurcharge, schemeUnAuthPaySurchargeMemberFormProvider())),
-          createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply)
-        )
+              val e = resultFromFormValidationResult[Boolean](
+                genericBooleanFieldValidation(index, columns, Abc(fieldNoSchemeUnAuthPaySurcharge, schemeUnAuthPaySurcharge, schemeUnAuthPaySurchargeMemberFormProvider())),
+                createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply)
+              )
 
-        val paymentNature = validatePaymentNatureMemberJourney(index, columns, columns(10))
+              val paymentNature = validatePaymentNatureMemberJourney(index, columns, columns(10))
 
-        val y = resultFromFormValidationResult[PaymentDetails](
-          paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply)
-        )
+              val y = resultFromFormValidationResult[PaymentDetails](
+                paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply)
+              )
 
-        Seq(a, b, c, d, e, paymentNature, y).combineAll
+              Seq(a, b, c, d, e, paymentNature, y).combineAll
 
-      case "employer" =>
-        val a = resultFromFormValidationResult[WhoReceivedUnauthPayment](
-          genericFieldValidation(index, columns, Abc(fieldNoMemberOrEmployer, memberOrEmployer, whoReceivedUnauthPaymentFormProvider())),
-          createCommitItem(index, WhoReceivedUnauthPaymentPage.apply)
-        )
+            case "employer" =>
+              val h = resultFromFormValidationResult[CompanyDetails](
+                companyDetailsValidation(index, columns), createCommitItem(index, CompanyDetailsPage.apply)
+              )
 
-        val h = resultFromFormValidationResult[CompanyDetails](
-          companyDetailsValidation(index, columns), createCommitItem(index, CompanyDetailsPage.apply)
-        )
+              val j = resultFromFormValidationResult[Address](
+                addressValidation(index, columns, fieldNoCompanyAddress), createCommitItem(index, ManualAddressPage(Event1EmployerAddressJourney, _))
+              )
 
-        val j = resultFromFormValidationResult[Address](
-          addressValidation(index, columns, fieldNoCompanyAddress), createCommitItem(index, ManualAddressPage(Event1EmployerAddressJourney, _))
-        )
+              val paymentNature = validatePaymentNatureEmployerJourney(index, columns, columns(10))
 
-        val paymentNature = validatePaymentNatureEmployerJourney(index, columns, columns(10))
+              val y = resultFromFormValidationResult[PaymentDetails](
+                paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply)
+              )
 
-        val y = resultFromFormValidationResult[PaymentDetails](
-          paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply)
-        )
+              Seq(a, h, j, paymentNature, y).combineAll
+          }
 
-        Seq(a, h, j, paymentNature, y).combineAll
 
-      case _ => throw new RuntimeException("Something went wrong: member or employer not entered/found")
+          case _ => throw new RuntimeException("Something went wrong: member or employer not entered/found")
+
+        }
+
     }
+
   }
 }
