@@ -18,19 +18,22 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import models.enumeration.EventType
+import models.amend.VersionsWithSubmitter
 import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
+import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
+import utils.HttpResponseHelper
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Failure
 
 class EventReportingConnector @Inject()(
                                          config: FrontendAppConfig,
                                          http: HttpClient
-                                       ) {
+                                       ) extends HttpResponseHelper {
 
   private def eventRepSummaryUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/event-summary"
 
@@ -201,6 +204,25 @@ class EventReportingConnector @Inject()(
           case _ => throw new HttpException(response.body, response.status)
         }
       }
+  }
+
+  def getListOfVersions(pstr: String, startDate: String)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Seq[VersionsWithSubmitter]] = {
+    val logger = Logger(classOf[EventReportingConnector])
+    val url = config.erListOfVersionsUrl
+    val hc = headerCarrier.withExtraHeaders("pstr" -> pstr, "startDate" -> startDate)
+    http.GET[HttpResponse](url)(implicitly, hc, implicitly).map { response =>
+      response.status match {
+        case OK =>
+          Json.parse(response.body).validate[Seq[VersionsWithSubmitter]] match {
+            case JsSuccess(value, _) => value
+            case JsError(errors) => throw JsResultException(errors)
+          }
+        case NOT_FOUND => Seq.empty
+        case _ => handleErrorResponse("GET", url)(response)
+      }
+    } andThen {
+      case Failure(t: Throwable) => logger.warn("Unable to get list of versions", t)
+    }
   }
 }
 

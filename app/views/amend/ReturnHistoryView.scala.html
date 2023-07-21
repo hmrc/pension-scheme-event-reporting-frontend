@@ -1,0 +1,70 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@this(
+        layout: templates.SchemeLayout,
+        govukButton: GovukButton,
+        govukTable: GovukTable
+)
+
+@(taxYearStart: String, taxYearEnd: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+
+@layout(pageTitle = titleNoForm(messages("returnHistory.title", taxYearStart, taxYearEnd))) {
+
+    <h1 class="govuk-heading-l">@messages("returnHistory.heading", taxYearStart, taxYearEnd)</h1>
+
+
+    @govukTable(Table(
+        rows = Seq(
+            Seq(
+                TableRow(
+                    content = Text("First 6 weeks")
+                ),
+                TableRow(
+                    content = Text("£109.80 per week")
+                )
+            ),
+            Seq(
+                TableRow(
+                    content = Text("Next 33 weeks")
+                ),
+                TableRow(
+                    content = Text("£109.80 per week")
+                )
+            ),
+            Seq(
+                TableRow(
+                    content = Text("Total estimated pay")
+                ),
+                TableRow(
+                    content = Text("£4,282.20")
+                )
+            )
+        ),
+        head = Some(Seq(
+            HeadCell(
+                content = Text("Submission")
+            ),
+            HeadCell(
+                content = Text("Status")
+            ),
+            HeadCell(
+                content = Text("Submitted by")
+            )
+        )),
+    ))
+
+}
