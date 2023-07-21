@@ -80,7 +80,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
     val preparedForm = request.userAnswers.get(TaxYearPage).fold(form)(form.fill)
-    eventReportingConnector.getFeatureToggle("event-reporting").flatMap { toggleData =>
+    eventReportingConnector.getFeatureToggle("event-reporting-tax-year").flatMap { toggleData =>
       Future.successful(renderPage(preparedForm, waypoints, Ok, toggleData.isEnabled))
     }
   }
@@ -89,7 +89,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          eventReportingConnector.getFeatureToggle("event-reporting").flatMap { toggleData =>
+          eventReportingConnector.getFeatureToggle("event-reporting-tax-year").flatMap { toggleData =>
             Future.successful(renderPage(formWithErrors, waypoints, BadRequest, toggleData.isEnabled))
           },
         value => {

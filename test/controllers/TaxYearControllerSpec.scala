@@ -94,7 +94,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         bind[EventReportingConnector].to(mockEventConnector)).build()
 
       when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting", None, isEnabled = false))
+        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
       )
 
       running(application) {
@@ -115,7 +115,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         bind[EventReportingConnector].to(mockEventConnector)).build()
 
       when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting", None, isEnabled = true))
+        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = true))
       )
 
       running(application) {
@@ -138,7 +138,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       val application = applicationBuilder(userAnswers = Some(ua)).bindings(
         bind[EventReportingConnector].to(mockEventConnector)).build()
       when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting", None, isEnabled = false))
+        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
       )
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -161,7 +161,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       val application = applicationBuilder(userAnswers = Some(ua)).bindings(
         bind[EventReportingConnector].to(mockEventConnector)).build()
       when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting", None, isEnabled = false))
+        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
       )
 
       running(application) {
@@ -186,7 +186,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         bind[EventReportingConnector].to(mockEventConnector)).build()
 
       when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting", None, isEnabled = false))
+        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
       )
 
       running(application) {
@@ -209,7 +209,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         bind[EventReportingConnector].to(mockEventConnector)).build()
 
       when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting", None, isEnabled = true))
+        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = true))
       )
 
       running(application) {
@@ -235,7 +235,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
           bind[EventReportingConnector].to(mockEventConnector)).build()
 
       when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting", None, isEnabled = false))
+        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
       )
 
       running(application) {
@@ -257,7 +257,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
           bind[EventReportingConnector].to(mockEventConnector)).build()
 
       when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting", None, isEnabled = false))
+        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
       )
 
       running(application) {
@@ -281,7 +281,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
           bind[EventReportingConnector].to(mockEventConnector)).build()
 
       when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting", None, isEnabled = true))
+        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = true))
       )
 
       running(application) {
