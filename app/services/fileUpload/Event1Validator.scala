@@ -448,64 +448,73 @@ class Event1Validator @Inject()(
     )
 
     a match {
-      case invalidResult@Result(_, Invalid(_)) => invalidResult
       case Result(_, Valid(seqCommitItems)) =>
         seqCommitItems.headOption match {
           case Some(ci) => ci.value.as[JsString].value match {
-            case "member" =>
-              val b = resultFromFormValidationResultForMembersDetails(
-                memberDetailsValidation(index, columns, membersDetailsFormProvider(Event1, index)),
-                createCommitItem(index, MembersDetailsPage.apply(Event1, _)),
-                members
-              )
-
-              val c = resultFromFormValidationResult[Boolean](
-                genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoDoYouHoldSignedMandate, doYouHoldSignedMandate, doYouHoldSignedMandateFormProvider())),
-                createCommitItem(index, DoYouHoldSignedMandatePage.apply)
-              )
-
-              val d = resultFromFormValidationResult[Boolean](
-                genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoValueOfUnauthorisedPayment, valueOfUnauthorisedPayment, valueOfUnauthorisedPaymentFormProvider())),
-                createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply)
-              )
-
-              val e = resultFromFormValidationResult[Boolean](
-                genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoSchemeUnAuthPaySurcharge, schemeUnAuthPaySurcharge, schemeUnAuthPaySurchargeMemberFormProvider())),
-                createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply)
-              )
-
-              val paymentNature = validatePaymentNatureMemberJourney(index, columns, columns(10))
-
-              val y = resultFromFormValidationResult[PaymentDetails](
-                paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply)
-              )
-
-              Seq(a, b, c, d, e, paymentNature, y).combineAll
-
-            case "employer" =>
-              val h = resultFromFormValidationResult[CompanyDetails](
-                companyDetailsValidation(index, columns), createCommitItem(index, CompanyDetailsPage.apply)
-              )
-
-              val j = resultFromFormValidationResult[Address](
-                addressValidation(index, columns, fieldNoCompanyAddress), createCommitItem(index, ManualAddressPage(Event1EmployerAddressJourney, _))
-              )
-
-              val paymentNature = validatePaymentNatureEmployerJourney(index, columns, columns(10))
-
-              val y = resultFromFormValidationResult[PaymentDetails](
-                paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply)
-              )
-
-              Seq(a, h, j, paymentNature, y).combineAll
+            case "member" => memberValidation(a, index, columns, taxYear, members)
+            case "employer" => employerValidation(a, index, columns, taxYear)
           }
-
-
           case _ => throw new RuntimeException("Something went wrong: member or employer not entered/found")
-
         }
-
+      case invalidResult@Result(_, Invalid(_)) => invalidResult
     }
+  }
 
+  private def memberValidation(memberOrEmployerResult: Result,
+                               index: Int,
+                               columns: Seq[String],
+                               taxYear: Int,
+                               members: Seq[MembersDetails])
+                              (implicit messages: Messages): Result = {
+    val b = resultFromFormValidationResultForMembersDetails(
+      memberDetailsValidation(index, columns, membersDetailsFormProvider(Event1, index)),
+      createCommitItem(index, MembersDetailsPage.apply(Event1, _)),
+      members
+    )
+
+    val c = resultFromFormValidationResult[Boolean](
+      genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoDoYouHoldSignedMandate, doYouHoldSignedMandate, doYouHoldSignedMandateFormProvider())),
+      createCommitItem(index, DoYouHoldSignedMandatePage.apply)
+    )
+
+    val d = resultFromFormValidationResult[Boolean](
+      genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoValueOfUnauthorisedPayment, valueOfUnauthorisedPayment, valueOfUnauthorisedPaymentFormProvider())),
+      createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply)
+    )
+
+    val e = resultFromFormValidationResult[Boolean](
+      genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoSchemeUnAuthPaySurcharge, schemeUnAuthPaySurcharge, schemeUnAuthPaySurchargeMemberFormProvider())),
+      createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply)
+    )
+
+    val paymentNature = validatePaymentNatureMemberJourney(index, columns, columns(10))
+
+    val y = resultFromFormValidationResult[PaymentDetails](
+      paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply)
+    )
+
+    Seq(memberOrEmployerResult, b, c, d, e, paymentNature, y).combineAll
+  }
+
+  private def employerValidation(memberOrEmployerResult: Result,
+                                 index: Int,
+                                 columns: Seq[String],
+                                 taxYear: Int)
+                                (implicit messages: Messages): Result = {
+    val h = resultFromFormValidationResult[CompanyDetails](
+      companyDetailsValidation(index, columns), createCommitItem(index, CompanyDetailsPage.apply)
+    )
+
+    val j = resultFromFormValidationResult[Address](
+      addressValidation(index, columns, fieldNoCompanyAddress), createCommitItem(index, ManualAddressPage(Event1EmployerAddressJourney, _))
+    )
+
+    val paymentNature = validatePaymentNatureEmployerJourney(index, columns, columns(10))
+
+    val y = resultFromFormValidationResult[PaymentDetails](
+      paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply)
+    )
+
+    Seq(memberOrEmployerResult, h, j, paymentNature, y).combineAll
   }
 }
