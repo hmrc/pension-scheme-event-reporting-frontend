@@ -244,7 +244,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         s"""$header
                     dsfgsd*,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
                     member,,Bloggs12213,AA234567Dasdfsdf,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                    member,Joe,Bloggs,AA234567D,,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022"""
+                    member,Joe,Bloggs,AA234567D,,YES23424,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -255,7 +255,8 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         ValidationError(2, 1, "membersDetails.error.firstName.required", "firstName"),
         ValidationError(2, 2, "membersDetails.error.lastName.invalid", "lastName"),
         ValidationError(2, 3, "membersDetails.error.nino.invalid", "nino"),
-        ValidationError(3, 4, "doYouHoldSignedMandate.error.required", "doYouHoldSignedMandate")
+        ValidationError(3, 4, "doYouHoldSignedMandate.error.required", "doYouHoldSignedMandate"),
+        ValidationError(3, 5, "error.boolean", "valueOfUnauthorisedPayment")
       ))
     }
   }
