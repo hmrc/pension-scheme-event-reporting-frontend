@@ -26,6 +26,7 @@ import forms.common.MembersDetailsFormProvider
 import forms.event1.employer.{CompanyDetailsFormProvider, LoanDetailsFormProvider, PaymentNatureFormProvider => employerPaymentNatureFormProvider, UnauthorisedPaymentRecipientNameFormProvider => EmployerUnauthorisedPaymentRecipientNameFormProvider}
 import forms.event1.member._
 import forms.event1.{PaymentNatureFormProvider => memberPaymentNatureFormProvider, _}
+import models.common.MembersDetails
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.enumeration.EventType.Event1
 import models.event1.PaymentNature.{BenefitInKind, BenefitsPaidEarly, CourtOrConfiscationOrder, ErrorCalcTaxFreeLumpSums, MemberOther, OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TangibleMoveablePropertyHeld, TransferToNonRegPensionScheme}
@@ -51,6 +52,7 @@ import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
 import utils.DateHelper
 
 import java.time.LocalDate
+import scala.util.chaining.scalaUtilChainingOps
 
 class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with BeforeAndAfterEach {
   //scalastyle:off magic.number
@@ -60,6 +62,16 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
   override def beforeEach(): Unit = {
     Mockito.reset(mockFrontendAppConfig)
     when(mockFrontendAppConfig.validEvent1Header).thenReturn(header)
+  }
+
+  private val chainUaMembers: (UserAnswers, Int, MembersDetails, Boolean, Boolean, Boolean) =>
+    UserAnswers = (ua, index, membersDetails, doYouHoldSignedMandate, valueOfUnauthorisedPayment, schemeUnAuthPaySurcharge) => {
+    ua
+      .setOrException(WhoReceivedUnauthPaymentPage(index).path, Json.toJson(Member.toString))
+      .setOrException(MembersDetailsPage(Event1, index).path, Json.toJson(membersDetails))
+      .setOrException(DoYouHoldSignedMandatePage(index).path, Json.toJson(doYouHoldSignedMandate))
+      .setOrException(ValueOfUnauthorisedPaymentPage(index).path, Json.toJson(valueOfUnauthorisedPayment))
+      .setOrException(SchemeUnAuthPaySurchargeMemberPage(index).path, Json.toJson(schemeUnAuthPaySurcharge))
   }
 
   "Event 1 validator" - {
@@ -80,93 +92,53 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
       val result = validator.validate(validCSVFile, ua)
       result mustBe Valid(ua
-        .setOrException(WhoReceivedUnauthPaymentPage(0).path, Json.toJson(Member.toString))
-        .setOrException(MembersDetailsPage(Event1, 0).path, Json.toJson(SampleData.memberDetails))
-        .setOrException(DoYouHoldSignedMandatePage(0).path, Json.toJson(true))
-        .setOrException(ValueOfUnauthorisedPaymentPage(0).path, Json.toJson(true))
-        .setOrException(SchemeUnAuthPaySurchargeMemberPage(0).path, Json.toJson(true))
+        .pipe(chainUaMembers(_, 0, SampleData.memberDetails, true, true, true))
         .setOrException(PaymentNaturePage(0).path, Json.toJson(BenefitInKind.toString))
         .setOrException(BenefitInKindBriefDescriptionPage(0).path, Json.toJson("Description"))
         .setOrException(PaymentValueAndDatePage(0).path, Json.toJson(SampleData.paymentDetails))
 
-        .setOrException(WhoReceivedUnauthPaymentPage(1).path, Json.toJson(Member.toString))
-        .setOrException(MembersDetailsPage(Event1, 1).path, Json.toJson(SampleData.memberDetails2))
-        .setOrException(DoYouHoldSignedMandatePage(1).path, Json.toJson(true))
-        .setOrException(ValueOfUnauthorisedPaymentPage(1).path, Json.toJson(true))
-        .setOrException(SchemeUnAuthPaySurchargeMemberPage(1).path, Json.toJson(true))
+        .pipe(chainUaMembers(_, 1, SampleData.memberDetails2, true, true, true))
         .setOrException(PaymentNaturePage(1).path, Json.toJson(TransferToNonRegPensionScheme.toString))
         .setOrException(WhoWasTheTransferMadePage(1).path, Json.toJson(AnEmployerFinanced.toString))
         .setOrException(SchemeDetailsPage(1).path, Json.toJson(SampleData.schemeDetails))
         .setOrException(PaymentValueAndDatePage(1).path, Json.toJson(SampleData.paymentDetails))
 
-        .setOrException(WhoReceivedUnauthPaymentPage(2).path, Json.toJson(Member.toString))
-        .setOrException(MembersDetailsPage(Event1, 2).path, Json.toJson(SampleData.memberDetails))
-        .setOrException(DoYouHoldSignedMandatePage(2).path, Json.toJson(true))
-        .setOrException(ValueOfUnauthorisedPaymentPage(2).path, Json.toJson(true))
-        .setOrException(SchemeUnAuthPaySurchargeMemberPage(2).path, Json.toJson(true))
+        .pipe(chainUaMembers(_, 2, SampleData.memberDetails, true, true, true))
         .setOrException(PaymentNaturePage(2).path, Json.toJson(ErrorCalcTaxFreeLumpSums.toString))
         .setOrException(ErrorDescriptionPage(2).path, Json.toJson("Description"))
         .setOrException(PaymentValueAndDatePage(2).path, Json.toJson(SampleData.paymentDetails))
 
-        .setOrException(WhoReceivedUnauthPaymentPage(3).path, Json.toJson(Member.toString))
-        .setOrException(MembersDetailsPage(Event1, 3).path, Json.toJson(SampleData.memberDetails2))
-        .setOrException(DoYouHoldSignedMandatePage(3).path, Json.toJson(true))
-        .setOrException(ValueOfUnauthorisedPaymentPage(3).path, Json.toJson(true))
-        .setOrException(SchemeUnAuthPaySurchargeMemberPage(3).path, Json.toJson(true))
+        .pipe(chainUaMembers(_, 3, SampleData.memberDetails2, true, true, true))
         .setOrException(PaymentNaturePage(3).path, Json.toJson(BenefitsPaidEarly.toString))
         .setOrException(BenefitsPaidEarlyPage(3).path, Json.toJson("Description"))
         .setOrException(PaymentValueAndDatePage(3).path, Json.toJson(SampleData.paymentDetails))
 
-        .setOrException(WhoReceivedUnauthPaymentPage(4).path, Json.toJson(Member.toString))
-        .setOrException(MembersDetailsPage(Event1, 4).path, Json.toJson(SampleData.memberDetails))
-        .setOrException(DoYouHoldSignedMandatePage(4).path, Json.toJson(true))
-        .setOrException(ValueOfUnauthorisedPaymentPage(4).path, Json.toJson(true))
-        .setOrException(SchemeUnAuthPaySurchargeMemberPage(4).path, Json.toJson(true))
+        .pipe(chainUaMembers(_, 4, SampleData.memberDetails, true, true, true))
         .setOrException(PaymentNaturePage(4).path, Json.toJson(RefundOfContributions.toString))
         .setOrException(RefundOfContributionsPage(4).path, Json.toJson(RefundOfContributionsObject.WidowOrOrphan.toString))
         .setOrException(PaymentValueAndDatePage(4).path, Json.toJson(SampleData.paymentDetails))
 
-        .setOrException(WhoReceivedUnauthPaymentPage(5).path, Json.toJson(Member.toString))
-        .setOrException(MembersDetailsPage(Event1, 5).path, Json.toJson(SampleData.memberDetails2))
-        .setOrException(DoYouHoldSignedMandatePage(5).path, Json.toJson(true))
-        .setOrException(ValueOfUnauthorisedPaymentPage(5).path, Json.toJson(true))
-        .setOrException(SchemeUnAuthPaySurchargeMemberPage(5).path, Json.toJson(false))
+        .pipe(chainUaMembers(_, 5, SampleData.memberDetails2, true, true, false))
         .setOrException(PaymentNaturePage(5).path, Json.toJson(OverpaymentOrWriteOff.toString))
         .setOrException(ReasonForTheOverpaymentOrWriteOffPage(5).path, Json.toJson(ReasonForTheOverpaymentOrWriteOff.DependentNoLongerQualifiedForPension.toString))
         .setOrException(PaymentValueAndDatePage(5).path, Json.toJson(SampleData.paymentDetails))
 
-        .setOrException(WhoReceivedUnauthPaymentPage(6).path, Json.toJson(Member.toString))
-        .setOrException(MembersDetailsPage(Event1, 6).path, Json.toJson(SampleData.memberDetails))
-        .setOrException(DoYouHoldSignedMandatePage(6).path, Json.toJson(true))
-        .setOrException(ValueOfUnauthorisedPaymentPage(6).path, Json.toJson(true))
-        .setOrException(SchemeUnAuthPaySurchargeMemberPage(6).path, Json.toJson(false))
+        .pipe(chainUaMembers(_, 6, SampleData.memberDetails, true, true, false))
         .setOrException(PaymentNaturePage(6).path, Json.toJson(ResidentialPropertyHeld.toString))
         .setOrException(ManualAddressPage(Event1MemberPropertyAddressJourney, 6).path, Json.toJson(SampleData.memberAddress))
         .setOrException(PaymentValueAndDatePage(6).path, Json.toJson(SampleData.paymentDetails))
 
-        .setOrException(WhoReceivedUnauthPaymentPage(7).path, Json.toJson(Member.toString))
-        .setOrException(MembersDetailsPage(Event1, 7).path, Json.toJson(SampleData.memberDetails2))
-        .setOrException(DoYouHoldSignedMandatePage(7).path, Json.toJson(true))
-        .setOrException(ValueOfUnauthorisedPaymentPage(7).path, Json.toJson(true))
-        .setOrException(SchemeUnAuthPaySurchargeMemberPage(7).path, Json.toJson(true))
+        .pipe(chainUaMembers(_, 7, SampleData.memberDetails2, true, true, true))
         .setOrException(PaymentNaturePage(7).path, Json.toJson(TangibleMoveablePropertyHeld.toString))
         .setOrException(MemberTangibleMoveablePropertyPage(7).path, Json.toJson("Description"))
         .setOrException(PaymentValueAndDatePage(7).path, Json.toJson(SampleData.paymentDetails))
 
-        .setOrException(WhoReceivedUnauthPaymentPage(8).path, Json.toJson(Member.toString))
-        .setOrException(MembersDetailsPage(Event1, 8).path, Json.toJson(SampleData.memberDetails))
-        .setOrException(DoYouHoldSignedMandatePage(8).path, Json.toJson(true))
-        .setOrException(ValueOfUnauthorisedPaymentPage(8).path, Json.toJson(true))
-        .setOrException(SchemeUnAuthPaySurchargeMemberPage(8).path, Json.toJson(true))
+        .pipe(chainUaMembers(_, 8, SampleData.memberDetails, true, true, true))
         .setOrException(PaymentNaturePage(8).path, Json.toJson(CourtOrConfiscationOrder.toString))
         .setOrException(UnauthorisedPaymentRecipientNamePage(8).path, Json.toJson("John"))
         .setOrException(PaymentValueAndDatePage(8).path, Json.toJson(SampleData.paymentDetails))
 
-        .setOrException(WhoReceivedUnauthPaymentPage(9).path, Json.toJson(Member.toString))
-        .setOrException(MembersDetailsPage(Event1, 9).path, Json.toJson(SampleData.memberDetails2))
-        .setOrException(DoYouHoldSignedMandatePage(9).path, Json.toJson(true))
-        .setOrException(ValueOfUnauthorisedPaymentPage(9).path, Json.toJson(true))
-        .setOrException(SchemeUnAuthPaySurchargeMemberPage(9).path, Json.toJson(true))
+        .pipe(chainUaMembers(_, 9, SampleData.memberDetails2, true, true, true))
         .setOrException(PaymentNaturePage(9).path, Json.toJson(MemberOther.toString))
         .setOrException(MemberPaymentNatureDescriptionPage(9).path, Json.toJson("Description"))
         .setOrException(PaymentValueAndDatePage(9).path, Json.toJson(SampleData.paymentDetails))
