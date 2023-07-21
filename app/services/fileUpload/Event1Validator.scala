@@ -471,6 +471,34 @@ class Event1Validator @Inject()(
     }
   }
 
+  private def validateTwoQuestions(index: Int,
+                                   columns: Seq[String],
+                                   valueOfUnauthorisedPayment: String,
+                                   schemeUnAuthPaySurcharge: String): Result = {
+
+    (valueOfUnauthorisedPayment, schemeUnAuthPaySurcharge) match {
+      case ("YES", _) =>
+        val d = resultFromFormValidationResult[Boolean](
+          genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoValueOfUnauthorisedPayment, valueOfUnauthorisedPayment, valueOfUnauthorisedPaymentFormProvider())),
+          createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply)
+        )
+
+        val e = resultFromFormValidationResult[Boolean](
+          genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoSchemeUnAuthPaySurcharge, schemeUnAuthPaySurcharge, schemeUnAuthPaySurchargeMemberFormProvider())),
+          createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply)
+        )
+
+        Seq(d, e).combineAll
+
+      case _ =>
+        val d = resultFromFormValidationResult[Boolean](
+          genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoValueOfUnauthorisedPayment, valueOfUnauthorisedPayment, valueOfUnauthorisedPaymentFormProvider())),
+          createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply)
+        )
+        d
+    }
+  }
+
   private def memberValidation(memberOrEmployerResult: Result,
                                index: Int,
                                columns: Seq[String],
@@ -488,15 +516,7 @@ class Event1Validator @Inject()(
       createCommitItem(index, DoYouHoldSignedMandatePage.apply)
     )
 
-    val d = resultFromFormValidationResult[Boolean](
-      genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoValueOfUnauthorisedPayment, valueOfUnauthorisedPayment, valueOfUnauthorisedPaymentFormProvider())),
-      createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply)
-    )
-
-    val e = resultFromFormValidationResult[Boolean](
-      genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoSchemeUnAuthPaySurcharge, schemeUnAuthPaySurcharge, schemeUnAuthPaySurchargeMemberFormProvider())),
-      createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply)
-    )
+    val memberQuestions = validateTwoQuestions(index, columns, columns(5), columns(6))
 
     val paymentNature = validatePaymentNatureMemberJourney(index, columns)
 
@@ -504,7 +524,7 @@ class Event1Validator @Inject()(
       paymentValueAndDateValidation(index, columns, taxYear), createCommitItem(index, PaymentValueAndDatePage.apply)
     )
 
-    Seq(memberOrEmployerResult, b, c, d, e, paymentNature, y).combineAll
+    Seq(memberOrEmployerResult, b, c, memberQuestions, paymentNature, y).combineAll
   }
 
   private def employerValidation(memberOrEmployerResult: Result,
