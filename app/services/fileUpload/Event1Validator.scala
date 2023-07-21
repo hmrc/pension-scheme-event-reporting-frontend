@@ -495,7 +495,7 @@ class Event1Validator @Inject()(
 
         Seq(a, h, j, paymentNature, y).combineAll
 
-      case _ => throw new RuntimeException("Something went wrong")
+      case _ => throw new RuntimeException("Something went wrong: member or employer not entered/found")
     }
   }
 }

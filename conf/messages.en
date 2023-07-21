@@ -230,6 +230,7 @@ whoReceivedUnauthPayment.member = Member or someone in respect of the member
 whoReceivedUnauthPayment.employer = Employer or someone in respect of the employer
 whoReceivedUnauthPayment.checkYourAnswersLabel = Who received the unauthorised payment or deemed unauthorised payment?
 whoReceivedUnauthPayment.error.required = Select who received the unauthorised payment or deemed unauthorised payment?
+whoReceivedUnauthPayment.error.format = Enter who received the unauthorised payment in the correct format according to the instructions provided
 whoReceivedUnauthPayment.change.hidden = Who received the unauthorised payment or deemed unauthorised payment?
 whoReceivedUnauthPayment.member.hint = If a deemed unauthorised payment is being reported, you must select this option
 
