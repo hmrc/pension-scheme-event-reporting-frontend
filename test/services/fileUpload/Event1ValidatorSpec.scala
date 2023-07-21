@@ -145,6 +145,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
     }
 
     "must return items in user answers when there are no validation errors for Employer" in {
+      //      val commonUaEmployer = """employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB"""
       val validCSVFile = CSVParser.split(
         s"""$header
                             employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
