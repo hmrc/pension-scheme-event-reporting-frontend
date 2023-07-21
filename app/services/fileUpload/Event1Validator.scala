@@ -156,14 +156,18 @@ class Event1Validator @Inject()(
     )
   }
 
-  private def toBoolean(s: String): String = if (s == "YES") "true" else "false"
+  private def toBoolean(s: String): String = s match {
+    case "YES" => "true"
+    case "NO" => "false"
+    case _ => s
+  }
 
-  private case class Abc[A](fieldNum: Int, description: String, form: Form[A]) //TODO: Change the name of the Abc def
+  private case class FieldInfoForValidation[A](fieldNum: Int, description: String, form: Form[A])
 
-  private def genericBooleanFieldValidation[Boolean](index: Int, chargeFields: Seq[String], abc: Abc[Boolean]): Validated[Seq[ValidationError], Boolean] = {
-    val mappedBoolean = toBoolean(chargeFields(abc.fieldNum))
-    val fields = Seq(Field(valueFormField, mappedBoolean, abc.description, abc.fieldNum))
-    abc.form.bind(
+  private def genericBooleanFieldValidation[Boolean](index: Int, chargeFields: Seq[String], fieldInfoForValidation: FieldInfoForValidation[Boolean]): Validated[Seq[ValidationError], Boolean] = {
+    val mappedBoolean = toBoolean(chargeFields(fieldInfoForValidation.fieldNum))
+    val fields = Seq(Field(valueFormField, mappedBoolean, fieldInfoForValidation.description, fieldInfoForValidation.fieldNum))
+    fieldInfoForValidation.form.bind(
       Field.seqToMap(fields)
     ).fold(
       formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
@@ -173,13 +177,13 @@ class Event1Validator @Inject()(
 
   private def genericPaymentNatureFieldValidation[A](index: Int,
                                                      chargeFields: Seq[String],
-                                                     abc: Abc[A],
+                                                     fieldInfoForValidation: FieldInfoForValidation[A],
                                                      mapPaymentNature: Map[String, String]): Validated[Seq[ValidationError], A] = {
 
-    val mappedNatureOfPayment = mapPaymentNature.applyOrElse[String, String](chargeFields(abc.fieldNum),
+    val mappedNatureOfPayment = mapPaymentNature.applyOrElse[String, String](chargeFields(fieldInfoForValidation.fieldNum),
       (_: String) => "Nature of the payment is not found or doesn't exist")
-    val fields = Seq(Field(valueFormField, mappedNatureOfPayment, abc.description, abc.fieldNum))
-    abc.form.bind(
+    val fields = Seq(Field(valueFormField, mappedNatureOfPayment, fieldInfoForValidation.description, fieldInfoForValidation.fieldNum))
+    fieldInfoForValidation.form.bind(
       Field.seqToMap(fields)
     ).fold(
       formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
@@ -187,9 +191,9 @@ class Event1Validator @Inject()(
     )
   }
 
-  private def genericFieldValidation[A](index: Int, chargeFields: Seq[String], abc: Abc[A]): Validated[Seq[ValidationError], A] = {
-    val fields = Seq(Field(valueFormField, chargeFields(abc.fieldNum), abc.description, abc.fieldNum))
-    abc.form.bind(
+  private def genericFieldValidation[A](index: Int, chargeFields: Seq[String], fieldInfoForValidation: FieldInfoForValidation[A]): Validated[Seq[ValidationError], A] = {
+    val fields = Seq(Field(valueFormField, chargeFields(fieldInfoForValidation.fieldNum), fieldInfoForValidation.description, fieldInfoForValidation.fieldNum))
+    fieldInfoForValidation.form.bind(
       Field.seqToMap(fields)
     ).fold(
       formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
@@ -338,14 +342,14 @@ class Event1Validator @Inject()(
   private def validatePaymentNatureMemberJourney(index: Int, columns: Seq[String], paymentNature: String) = {
 
     val k = resultFromFormValidationResult[MemberPaymentNature](
-      genericPaymentNatureFieldValidation(index, columns, Abc(fieldNoNatureOfPayment, natureOfPayment, memberPaymentNatureFormProvider()), mapPaymentNatureMember),
+      genericPaymentNatureFieldValidation(index, columns, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, memberPaymentNatureFormProvider()), mapPaymentNatureMember),
       createCommitItem(index, MemberPaymentNaturePage.apply)
     )
 
     paymentNature match {
       case "Benefit" =>
         val l = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, Abc(fieldNoBenefitDescription, benefitDescription, benefitInKindBriefDescriptionFormProvider())),
+          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoBenefitDescription, benefitDescription, benefitInKindBriefDescriptionFormProvider())),
           createCommitItem(index, BenefitInKindBriefDescriptionPage.apply))
         Seq(k, l).combineAll
       case "Transfer" =>
@@ -356,12 +360,12 @@ class Event1Validator @Inject()(
         Seq(k, w, x).combineAll
       case "Error" =>
         val o = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, Abc(fieldNoErrorDescription, errorDescription, errorDescriptionFormProvider())),
+          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoErrorDescription, errorDescription, errorDescriptionFormProvider())),
           createCommitItem(index, ErrorDescriptionPage.apply))
         Seq(k, o).combineAll
       case "Early" =>
         val n = resultFromFormValidationResult[String](
-          genericFieldValidation(index, columns, Abc(fieldNoEarlyDescription, earlyDescription, benefitsPaidEarlyFormProvider())),
+          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoEarlyDescription, earlyDescription, benefitsPaidEarlyFormProvider())),
           createCommitItem(index, BenefitsPaidEarlyPage.apply))
         Seq(k, n).combineAll
       case "Refund" =>
@@ -378,17 +382,17 @@ class Event1Validator @Inject()(
         Seq(k, u).combineAll
       case "Tangible" =>
         val v = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, Abc(fieldNoTangibleDescription, tangibleDescription, memberTangibleMoveablePropertyFormProvider())),
+          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoTangibleDescription, tangibleDescription, memberTangibleMoveablePropertyFormProvider())),
           createCommitItem(index, MemberTangibleMoveablePropertyPage.apply))
         Seq(k, v).combineAll
       case "Court" =>
         val m = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, Abc(fieldNoCourtNameOfPersonOrOrg, courtNameOfPersonOrOrg, memberUnauthorisedPaymentRecipientNameFormProvider())),
+          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoCourtNameOfPersonOrOrg, courtNameOfPersonOrOrg, memberUnauthorisedPaymentRecipientNameFormProvider())),
           createCommitItem(index, UnauthorisedPaymentRecipientNamePage.apply))
         Seq(k, m).combineAll
       case "Other" =>
         val r = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, Abc(fieldNoOtherDescription, otherDescription, memberPaymentNatureDescriptionFormProvider())),
+          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoOtherDescription, otherDescription, memberPaymentNatureDescriptionFormProvider())),
           createCommitItem(index, MemberPaymentNatureDescriptionPage.apply))
         Seq(k, r).combineAll
       case _ => throw new RuntimeException("Cannot find nature of payment")
@@ -399,7 +403,7 @@ class Event1Validator @Inject()(
   private def validatePaymentNatureEmployerJourney(index: Int, columns: Seq[String], paymentNature: String) = {
 
     val k = resultFromFormValidationResult[EmployerPaymentNature](
-      genericPaymentNatureFieldValidation(index, columns, Abc(fieldNoNatureOfPayment, natureOfPayment, employerPaymentNatureFormProvider()), mapPaymentNatureEmployer),
+      genericPaymentNatureFieldValidation(index, columns, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, employerPaymentNatureFormProvider()), mapPaymentNatureEmployer),
       createCommitItem(index, EmployerPaymentNaturePage.apply)
     )
 
@@ -414,17 +418,17 @@ class Event1Validator @Inject()(
         Seq(k, u).combineAll
       case "Tangible" =>
         val v = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, Abc(fieldNoTangibleDescription, tangibleDescription, employerTangibleMoveablePropertyFormProvider())),
+          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoTangibleDescription, tangibleDescription, employerTangibleMoveablePropertyFormProvider())),
           createCommitItem(index, EmployerTangibleMoveablePropertyPage.apply))
         Seq(k, v).combineAll
       case "Court" =>
         val m = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, Abc(fieldNoCourtNameOfPersonOrOrg, courtNameOfPersonOrOrg, employerUnauthorisedPaymentRecipientNameFormProvider())),
+          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoCourtNameOfPersonOrOrg, courtNameOfPersonOrOrg, employerUnauthorisedPaymentRecipientNameFormProvider())),
           createCommitItem(index, EmployerUnauthorisedPaymentRecipientNamePage.apply))
         Seq(k, m).combineAll
       case "Other" =>
         val r = resultFromFormValidationResult[Option[String]](
-          genericFieldValidation(index, columns, Abc(fieldNoOtherDescription, otherDescription, employerPaymentNatureDescriptionFormProvider())),
+          genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoOtherDescription, otherDescription, employerPaymentNatureDescriptionFormProvider())),
           createCommitItem(index, EmployerPaymentNatureDescriptionPage.apply))
         Seq(k, r).combineAll
       case _ => throw new RuntimeException("Cannot find nature of payment")
@@ -439,7 +443,7 @@ class Event1Validator @Inject()(
                                        (implicit messages: Messages): Result = {
 
     val a = resultFromFormValidationResult[WhoReceivedUnauthPayment](
-      genericFieldValidation(index, columns, Abc(fieldNoMemberOrEmployer, memberOrEmployer, whoReceivedUnauthPaymentFormProvider())),
+      genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoMemberOrEmployer, memberOrEmployer, whoReceivedUnauthPaymentFormProvider())),
       createCommitItem(index, WhoReceivedUnauthPaymentPage.apply)
     )
 
@@ -456,17 +460,17 @@ class Event1Validator @Inject()(
               )
 
               val c = resultFromFormValidationResult[Boolean](
-                genericBooleanFieldValidation(index, columns, Abc(fieldNoDoYouHoldSignedMandate, doYouHoldSignedMandate, doYouHoldSignedMandateFormProvider())),
+                genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoDoYouHoldSignedMandate, doYouHoldSignedMandate, doYouHoldSignedMandateFormProvider())),
                 createCommitItem(index, DoYouHoldSignedMandatePage.apply)
               )
 
               val d = resultFromFormValidationResult[Boolean](
-                genericBooleanFieldValidation(index, columns, Abc(fieldNoValueOfUnauthorisedPayment, valueOfUnauthorisedPayment, valueOfUnauthorisedPaymentFormProvider())),
+                genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoValueOfUnauthorisedPayment, valueOfUnauthorisedPayment, valueOfUnauthorisedPaymentFormProvider())),
                 createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply)
               )
 
               val e = resultFromFormValidationResult[Boolean](
-                genericBooleanFieldValidation(index, columns, Abc(fieldNoSchemeUnAuthPaySurcharge, schemeUnAuthPaySurcharge, schemeUnAuthPaySurchargeMemberFormProvider())),
+                genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoSchemeUnAuthPaySurcharge, schemeUnAuthPaySurcharge, schemeUnAuthPaySurchargeMemberFormProvider())),
                 createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply)
               )
 
