@@ -74,6 +74,13 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       .setOrException(SchemeUnAuthPaySurchargeMemberPage(index).path, Json.toJson(schemeUnAuthPaySurcharge))
   }
 
+  private val chainUaEmployers: (UserAnswers, Int) => UserAnswers = (ua, index) => {
+    ua
+      .setOrException(WhoReceivedUnauthPaymentPage(index).path, Json.toJson(Employer.toString))
+      .setOrException(CompanyDetailsPage(index).path, Json.toJson(SampleData.companyDetails))
+      .setOrException(ManualAddressPage(Event1EmployerAddressJourney, index).path, Json.toJson(SampleData.event1EmployerAddress))
+  }
+
   "Event 1 validator" - {
     "must return items in user answers when there are no validation errors for Member" in {
       val validCSVFile = CSVParser.split(
@@ -157,37 +164,27 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
       val result = validator.validate(validCSVFile, ua)
       result mustBe Valid(ua
-        .setOrException(WhoReceivedUnauthPaymentPage(0).path, Json.toJson(Employer.toString))
-        .setOrException(CompanyDetailsPage(0).path, Json.toJson(SampleData.companyDetails))
-        .setOrException(ManualAddressPage(Event1EmployerAddressJourney, 0).path, Json.toJson(SampleData.event1EmployerAddress))
+        .pipe(chainUaEmployers(_, 0))
         .setOrException(EmployerPaymentNaturePage(0).path, Json.toJson(LoansExceeding50PercentOfFundValue.toString))
         .setOrException(LoanDetailsPage(0).path, Json.toJson(SampleData.loanDetails))
         .setOrException(PaymentValueAndDatePage(0).path, Json.toJson(SampleData.paymentDetails))
 
-        .setOrException(WhoReceivedUnauthPaymentPage(1).path, Json.toJson(Employer.toString))
-        .setOrException(CompanyDetailsPage(1).path, Json.toJson(SampleData.companyDetails))
-        .setOrException(ManualAddressPage(Event1EmployerAddressJourney, 1).path, Json.toJson(SampleData.event1EmployerAddress))
+        .pipe(chainUaEmployers(_, 1))
         .setOrException(EmployerPaymentNaturePage(1).path, Json.toJson(ResidentialProperty.toString))
         .setOrException(ManualAddressPage(Event1EmployerPropertyAddressJourney, 1).path, Json.toJson(SampleData.event1EmployerAddress))
         .setOrException(PaymentValueAndDatePage(1).path, Json.toJson(SampleData.paymentDetails))
 
-        .setOrException(WhoReceivedUnauthPaymentPage(2).path, Json.toJson(Employer.toString))
-        .setOrException(CompanyDetailsPage(2).path, Json.toJson(SampleData.companyDetails))
-        .setOrException(ManualAddressPage(Event1EmployerAddressJourney, 2).path, Json.toJson(SampleData.event1EmployerAddress))
+        .pipe(chainUaEmployers(_, 2))
         .setOrException(EmployerPaymentNaturePage(2).path, Json.toJson(TangibleMoveableProperty.toString))
         .setOrException(EmployerTangibleMoveablePropertyPage(2).path, Json.toJson(None))
         .setOrException(PaymentValueAndDatePage(2).path, Json.toJson(SampleData.paymentDetails))
 
-        .setOrException(WhoReceivedUnauthPaymentPage(3).path, Json.toJson(Employer.toString))
-        .setOrException(CompanyDetailsPage(3).path, Json.toJson(SampleData.companyDetails))
-        .setOrException(ManualAddressPage(Event1EmployerAddressJourney, 3).path, Json.toJson(SampleData.event1EmployerAddress))
+        .pipe(chainUaEmployers(_, 3))
         .setOrException(EmployerPaymentNaturePage(3).path, Json.toJson(CourtOrder.toString))
         .setOrException(EmployerUnauthorisedPaymentRecipientNamePage(3).path, Json.toJson("Organisation Name"))
         .setOrException(PaymentValueAndDatePage(3).path, Json.toJson(SampleData.paymentDetails))
 
-        .setOrException(WhoReceivedUnauthPaymentPage(4).path, Json.toJson(Employer.toString))
-        .setOrException(CompanyDetailsPage(4).path, Json.toJson(SampleData.companyDetails))
-        .setOrException(ManualAddressPage(Event1EmployerAddressJourney, 4).path, Json.toJson(SampleData.event1EmployerAddress))
+        .pipe(chainUaEmployers(_, 4))
         .setOrException(EmployerPaymentNaturePage(4).path, Json.toJson(EmployerOther.toString))
         .setOrException(EmployerPaymentNatureDescriptionPage(4).path, Json.toJson("Description"))
         .setOrException(PaymentValueAndDatePage(4).path, Json.toJson(SampleData.paymentDetails))
