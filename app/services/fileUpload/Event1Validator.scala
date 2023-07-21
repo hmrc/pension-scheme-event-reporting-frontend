@@ -81,9 +81,9 @@ class Event1Validator @Inject()(
   override protected def validHeader: String = config.validEvent1Header
 
   private val fieldNoMemberOrEmployer = 0
-  override val fieldNoFirstName = 1
-  override val fieldNoLastName = 2
-  override val fieldNoNino = 3
+  override protected val fieldNoFirstName = 1
+  override protected val fieldNoLastName = 2
+  override protected val fieldNoNino = 3
   private val fieldNoDoYouHoldSignedMandate = 4
   private val fieldNoValueOfUnauthorisedPayment = 5
   private val fieldNoSchemeUnAuthPaySurcharge = 6

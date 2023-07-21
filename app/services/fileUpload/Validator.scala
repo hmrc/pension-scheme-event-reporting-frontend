@@ -107,9 +107,9 @@ trait Validator {
   protected def memberDetailsValidation(index: Int, columns: Seq[String],
                                         memberDetailsForm: Form[MembersDetails]): Validated[Seq[ValidationError], MembersDetails] = {
     val fields = Seq(
-      Field(MemberDetailsFieldNames.firstName, fieldValue(columns, fieldNoFirstName), MemberDetailsFieldNames.firstName, 0),
-      Field(MemberDetailsFieldNames.lastName, fieldValue(columns, fieldNoLastName), MemberDetailsFieldNames.lastName, 1),
-      Field(MemberDetailsFieldNames.nino, fieldValue(columns, fieldNoNino), MemberDetailsFieldNames.nino, 2)
+      Field(MemberDetailsFieldNames.firstName, fieldValue(columns, fieldNoFirstName), MemberDetailsFieldNames.firstName, fieldNoFirstName),
+      Field(MemberDetailsFieldNames.lastName, fieldValue(columns, fieldNoLastName), MemberDetailsFieldNames.lastName, fieldNoLastName),
+      Field(MemberDetailsFieldNames.nino, fieldValue(columns, fieldNoNino), MemberDetailsFieldNames.nino, fieldNoNino)
     )
     val toMap = Field.seqToMap(fields)
 

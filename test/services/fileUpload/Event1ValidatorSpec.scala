@@ -242,18 +242,19 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
-                    dsfgsd*,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022"""
+                    dsfgsd*,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                    member,,Bloggs12213,AA234567Dasdfsdf,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
 
       val result = validator.validate(csvFile, ua)
       result mustBe Invalid(Seq(
-        ValidationError(1, 0, "whoReceivedUnauthPayment.error.format", "memberOrEmployer")
-//        ValidationError(2, 1, "membersDetails.error.firstName.required", "firstName"),
-//        ValidationError(2, 2, "membersDetails.error.lastName.invalid", "lastName"),
-//        ValidationError(2, 3, "membersDetails.error.nino.invalid", "nino"),
-//        ValidationError(3, 4, "doYouHoldSignedMandate.error.required", "doYouHoldSignedMandate")
+        ValidationError(1, 0, "whoReceivedUnauthPayment.error.format", "memberOrEmployer"),
+        ValidationError(2, 1, "membersDetails.error.firstName.required", "firstName"),
+        ValidationError(2, 2, "membersDetails.error.lastName.invalid", "lastName"),
+        ValidationError(2, 3, "membersDetails.error.nino.invalid", "nino")
+        //        ValidationError(3, 4, "doYouHoldSignedMandate.error.required", "doYouHoldSignedMandate")
       ))
     }
   }
