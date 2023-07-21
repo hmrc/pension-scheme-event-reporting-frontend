@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package pages.event18
+package pages.common
 
-import controllers.event18.routes
+import controllers.common.routes
 import models.UserAnswers
+import models.enumeration.EventType
 import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object RemoveEvent18Page extends QuestionPage[Boolean] {
+case class RemoveEventPage(eventType: EventType) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ s"event${eventType.toString}" \ toString
 
-  override def toString: String = "removeEvent18"
+  override def toString: String = "removeEvent"
 
   override def route(waypoints: Waypoints): Call =
-    routes.RemoveEvent18Controller.onPageLoad(waypoints)
+    routes.RemoveEventController.onPageLoad(waypoints, eventType)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     EventSummaryPage

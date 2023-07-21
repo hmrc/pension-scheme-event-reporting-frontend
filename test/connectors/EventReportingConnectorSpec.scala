@@ -37,7 +37,6 @@ class EventReportingConnectorSpec
 
   private val pstr = "87219363YN"
   private val eventType: EventType = EventType.Event1
-  private val eventType2: EventType = EventType.Event2
   private val referenceStub: String = "123"
   private val reportVersion: String = "reportVersion"
   private val userAnswers = UserAnswers()
@@ -46,8 +45,6 @@ class EventReportingConnectorSpec
     EventSummary(Event1, 2),
     EventSummary(Event2, 1)
   )
-
-  import EventType.enumerable
 
   private val validResponseJson = Json.arr(
     Json.obj("eventType" -> "1", "recordVersion" -> 2),
@@ -134,7 +131,7 @@ class EventReportingConnectorSpec
             noContent
           )
       )
-      connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1")).map {
+      connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1"), 1).map {
         _ mustBe()
       }
     }
@@ -149,7 +146,7 @@ class EventReportingConnectorSpec
       )
 
       recoverToSucceededIf[HttpException] {
-        connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1"))
+        connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1"), 1)
       }
     }
   }
