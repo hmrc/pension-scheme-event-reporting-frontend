@@ -29,7 +29,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{ExpectationFailedException, HeaderCarrier}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.DateHelper.formatSubmittedDate
 import views.html.DeclarationPspView
@@ -67,43 +67,47 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
     }
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
 
-      def emailFuture = minimalConnector.getMinimalDetails(
-        request.loggedInUser.idName,
-        request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
-        val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
-        val email = minimalDetails.email
-        val schemeName = request.schemeName
-        sendEmail(minimalDetails.name, email, taxYear, schemeName)
-      }
+      request.userAnswers.getOrElse(throw new ExpectationFailedException("User data not available"))
+      requireData.invokeBlock(request, { implicit request: DataRequest[_] =>
 
-      schemeDetailsConnector.getPspSchemeDetails(request.loggedInUser.psaIdOrPspId, request.pstr).map(_.authorisingPSAID).flatMap { authorisingPsaId =>
-        minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
-          form(authorisingPsaId = authorisingPsaId)
-            .bindFromRequest().fold(
-            formWithErrors =>
-              Future.successful(BadRequest(view(minimalDetails.name, formWithErrors, waypoints))),
-            value => {
-              val originalUserAnswers = request.userAnswers
-              val reportVersion = originalUserAnswers.get(VersionInfoPage).get.version.toString
-              val updatedAnswers = originalUserAnswers.setOrException(DeclarationPspPage, value)
-              userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
-                declarationData(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, authorisingPsaId) match {
-                  case Some(data) =>
-                    erConnector.submitReport(request.pstr, UserAnswers(data), reportVersion).flatMap { _ =>
-                      emailFuture.map { _ =>
-                        Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints))
+        def emailFuture = minimalConnector.getMinimalDetails(
+          request.loggedInUser.idName,
+          request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
+          val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
+          val email = minimalDetails.email
+          val schemeName = request.schemeName
+          sendEmail(minimalDetails.name, email, taxYear, schemeName)
+        }
+
+        schemeDetailsConnector.getPspSchemeDetails(request.loggedInUser.psaIdOrPspId, request.pstr).map(_.authorisingPSAID).flatMap { authorisingPsaId =>
+          minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
+            form(authorisingPsaId = authorisingPsaId)
+              .bindFromRequest().fold(
+              formWithErrors =>
+                Future.successful(BadRequest(view(minimalDetails.name, formWithErrors, waypoints))),
+              value => {
+                val originalUserAnswers = request.userAnswers
+                val reportVersion = originalUserAnswers.get(VersionInfoPage).get.version.toString
+                val updatedAnswers = originalUserAnswers.setOrException(DeclarationPspPage, value)
+                userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
+                  declarationData(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, authorisingPsaId) match {
+                    case Some(data) =>
+                      erConnector.submitReport(request.pstr, UserAnswers(data), reportVersion).flatMap { _ =>
+                        emailFuture.map { _ =>
+                          Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints))
+                        }
                       }
-                    }
-                  case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
+                    case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
+                  }
                 }
               }
-            }
-          )
+            )
+          }
         }
-      }
+      })
   }
 
   private def sendEmail(pspName: String, email: String, taxYear: String, schemeName: String)(

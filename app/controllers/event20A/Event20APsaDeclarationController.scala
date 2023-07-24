@@ -55,16 +55,21 @@ class Event20APsaDeclarationController @Inject()(
     }
   }
 
-  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
+  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
-      declarationDataEvent20A(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, request) match {
-        case Some(data) =>
-          val reportVersion = request.userAnswers.get(VersionInfoPage).get.version.toString
-          eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion).map { _ =>
-            Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
-          }
-        case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
-      }
+
+      request.userAnswers.getOrElse(throw new ExpectationFailedException("User data not available"))
+
+      requireData.invokeBlock(request, { implicit request: DataRequest[_] =>
+        declarationDataEvent20A(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, request) match {
+          case Some(data) =>
+            val reportVersion = request.userAnswers.get(VersionInfoPage).get.version.toString
+            eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion).map { _ =>
+              Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
+            }
+          case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
+        }
+      })
   }
 
   def declarationDataEvent20A(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser, request: DataRequest[AnyContent]): Option[JsObject] = {
