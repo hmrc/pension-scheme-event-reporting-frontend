@@ -363,6 +363,7 @@ doYouHoldSignedMandate.title = Do you hold a signed mandate from the member to d
 doYouHoldSignedMandate.heading = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.checkYourAnswersLabel = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.error.required = Select yes if you hold a signed mandate from the member to deduct tax from their unauthorised payment
+doYouHoldSignedMandate.error.format = Enter yes or no if you hold a signed mandate from the member to deduct tax from their unauthorised payment
 doYouHoldSignedMandate.change.hidden = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 
 valueOfUnauthorisedPayment.title = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
