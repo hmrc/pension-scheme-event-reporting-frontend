@@ -20,7 +20,7 @@ import connectors.EventReportingConnector
 import controllers.actions._
 import forms.common.RemoveEventFormProvider
 import models.enumeration.EventType
-import pages.Waypoints
+import pages.{VersionInfoPage, Waypoints}
 import pages.common.RemoveEventPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -54,7 +54,7 @@ class RemoveEventController @Inject()(
         value => {
           val originalUserAnswers = request.userAnswers
           if (value) {
-            eventReportingConnector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(eventType), delete = true).flatMap { - =>
+            eventReportingConnector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(eventType), currentVersion = request.userAnswers.get(VersionInfoPage).map(_.version).getOrElse(0), delete = true).flatMap { - =>
               Future.successful(Redirect(RemoveEventPage(eventType).navigate(waypoints, originalUserAnswers, originalUserAnswers).route))
             }
           } else {

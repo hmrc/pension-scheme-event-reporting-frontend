@@ -181,34 +181,6 @@ class EventReportingConnectorSpec
     }
   }
 
-  "deleteEvent" must {
-    "return unit for successful post" in {
-      server.stubFor(
-        post(urlEqualTo(deleteEventUrl))
-          .willReturn(
-            noContent
-          )
-      )
-      connector.deleteEvent(pstr, EventDataIdentifier(eventType, "2020", "1")).map {
-        _ mustBe()
-      }
-    }
-
-    "return BadRequestException when the backend has returned bad request response" in {
-      server.stubFor(
-        post(urlEqualTo(deleteEventUrl))
-          .willReturn(
-            badRequest
-              .withHeader("Content-Type", "application/json")
-          )
-      )
-
-      recoverToSucceededIf[HttpException] {
-        connector.deleteEvent(pstr, EventDataIdentifier(eventType, "2020", "1"))
-      }
-    }
-  }
-
   "submitReport" must {
     "return unit for successful post" in {
       server.stubFor(
