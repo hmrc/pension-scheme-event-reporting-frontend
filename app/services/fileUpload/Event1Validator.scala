@@ -166,6 +166,7 @@ class Event1Validator @Inject()(
 
   private def genericBooleanFieldValidation[Boolean](index: Int, chargeFields: Seq[String], fieldInfoForValidation: FieldInfoForValidation[Boolean]): Validated[Seq[ValidationError], Boolean] = {
     val mappedBoolean = toBoolean(chargeFields(fieldInfoForValidation.fieldNum))
+    println(s"\n\n mappedBoolean is: ${mappedBoolean}\n\n")
     val fields = Seq(Field(valueFormField, mappedBoolean, fieldInfoForValidation.description, fieldInfoForValidation.fieldNum))
     fieldInfoForValidation.form.bind(
       Field.seqToMap(fields)
@@ -476,6 +477,9 @@ class Event1Validator @Inject()(
                                    valueOfUnauthorisedPayment: String,
                                    schemeUnAuthPaySurcharge: String): Result = {
 
+    println(s"\n\n valueOfUnauthorisedPayment is: ${valueOfUnauthorisedPayment}\n\n")
+    println(s"\n\n schemeUnAuthPaySurcharge is: ${schemeUnAuthPaySurcharge}\n\n")
+
     (valueOfUnauthorisedPayment, schemeUnAuthPaySurcharge) match {
       case ("YES", _) =>
         val d = resultFromFormValidationResult[Boolean](
@@ -490,7 +494,9 @@ class Event1Validator @Inject()(
 
         Seq(d, e).combineAll
 
-      case _ =>
+      case (e, f) =>
+        println(s"\n\n e is: ${e}\n\n")
+        println(s"\n\n f is: ${f}\n\n")
         val d = resultFromFormValidationResult[Boolean](
           genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoValueOfUnauthorisedPayment, valueOfUnauthorisedPayment, valueOfUnauthorisedPaymentFormProvider())),
           createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply)
