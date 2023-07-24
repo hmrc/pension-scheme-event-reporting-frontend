@@ -121,7 +121,7 @@ trait Constraints {
       case str if str.matches(regex) =>
         Valid
       case _ =>
-        Invalid(errorKey)
+        Invalid(errorKey, regex)
     }
 
   protected def maxLength(maximum: Int, errorKey: String): Constraint[String] =

@@ -234,7 +234,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       result mustBe Invalid(Seq(
         ValidationError(1, 0, "whoReceivedUnauthPayment.error.format", "memberOrEmployer"),
         ValidationError(2, 1, "membersDetails.error.firstName.required", "firstName"),
-        ValidationError(2, 2, "membersDetails.error.lastName.invalid", "lastName"),
+        ValidationError(2, 2, "membersDetails.error.lastName.invalid", "lastName", ArraySeq("""^[a-zA-Z &`\-\'\.^]{1,35}$""")),
         ValidationError(2, 3, "membersDetails.error.nino.invalid", "nino"),
         ValidationError(3, 4, "doYouHoldSignedMandate.error.required", "doYouHoldSignedMandate"),
         ValidationError(3, 5, "valueOfUnauthorisedPayment.error.required", "valueOfUnauthorisedPayment"),
