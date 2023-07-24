@@ -283,6 +283,29 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       ))
     }
 
+    "return validation errors when present for the date field" in {
+      DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
+      val csvFile = CSVParser.split(
+        s"""$header
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1000.00,
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1000.00,/11/2022
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1000.00,08//
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1000.00,08/11/2025
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1000.00,08/11/s"""
+
+      )
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+
+      val result = validator.validate(csvFile, ua)
+      result mustBe Invalid(Seq(
+        ValidationError(1, 25, "paymentValueAndDate.date.error.nothingEntered", "paymentDate"),
+        ValidationError(2, 25, "paymentValueAndDate.date.error.noDayMonthOrYear", "paymentDate", List("day")),
+        ValidationError(3, 25, "paymentValueAndDate.date.error.noDayMonthOrYear", "paymentDate", List("month", "year")),
+        ValidationError(4, 25, "Date must be between 6 April 2022 and 5 April 2023", "paymentDate"),
+        ValidationError(5, 25, "paymentValueAndDate.date.error.outsideDateRanges", "paymentDate")
+      ))
+    }
+
   }
 
 }
