@@ -17,7 +17,7 @@
 package controllers.common
 
 import base.SpecBase
-import connectors.UserAnswersCacheConnector
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import data.SampleData.{sampleMemberJourneyDataEvent1, sampleMemberJourneyDataEvent3and4and5}
 import forms.common.RemoveMemberFormProvider
 import models.enumeration.EventType.{Event1, Event5}
@@ -43,8 +43,6 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val formEvent1 = formProvider("unauthorised payment")
   private val formEvent5 = formProvider("cessation of ill-health pension")
 
-  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-
   private def getRouteForEvent1: String = routes.RemoveMemberController.onPageLoad(waypoints, Event1, 0).url
 
   private def getRoute: String = routes.RemoveMemberController.onPageLoad(waypoints, Event5, 0).url
@@ -53,13 +51,15 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private def postRoute: String = routes.RemoveMemberController.onSubmit(waypoints, Event5, 0).url
 
+  private val mockEventReportingConnector = mock[EventReportingConnector]
+
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
+    bind[EventReportingConnector].toInstance(mockEventReportingConnector)
   )
 
   override def beforeEach(): Unit = {
     super.beforeEach
-    reset(mockUserAnswersCacheConnector)
+    reset(mockEventReportingConnector)
   }
 
   "RemoveMember Controller" - {
@@ -135,9 +135,8 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must save the answer and redirect to the next page when valid data is submitted  for event 1" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
 
+      when(mockEventReportingConnector.deleteMember(any(), any(), any())(any(), any())).thenReturn(Future.successful())
       val application =
         applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent1), extraModules)
           .build()
@@ -151,14 +150,12 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveMemberPage(Event1, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
     "must save the answer and redirect to the next page when valid data is submitted in an event that isn't event 1" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
 
+      when(mockEventReportingConnector.deleteMember(any(), any(), any())(any(), any())).thenReturn(Future.successful())
       val application =
         applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent3and4and5(Event5)), extraModules)
           .build()
@@ -172,7 +169,6 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveMemberPage(Event5, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
 
@@ -192,7 +188,6 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, waypoints, Event1, "unauthorised payment", 0)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
 
@@ -212,7 +207,6 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, waypoints, Event5, "cessation of ill-health pension", 0)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
   }
