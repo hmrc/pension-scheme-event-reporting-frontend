@@ -54,7 +54,7 @@ object MembersOrEmployersSummary {
     (
       (JsPath \ s"event${Event1.toString}" \ "companyDetails" \ "companyName").readNullable[String] and
         readsMemberOrEmployerValue and
-        (JsPath \ s"event${Event1.toString}" \ "memberStatus").readNullable[String]
+        (JsPath \ "memberStatus").readNullable[String]
       ) (
       (companyName, paymentValue, memberStatus) => {
         (companyName, paymentValue) match {
