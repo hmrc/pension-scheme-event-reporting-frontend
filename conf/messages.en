@@ -496,6 +496,7 @@ whoWasTheTransferMade.nonRecognisedScheme = A non-recognised pension scheme whic
 whoWasTheTransferMade.other = Other
 whoWasTheTransferMade.checkYourAnswersLabel = Who was the transfer made to?
 whoWasTheTransferMade.error.required = Select who the transfer was made to
+whoWasTheTransferMade.error.format = Enter who the transfer was made to according to the instructions provided
 whoWasTheTransferMade.change.hidden = Who was the transfer made to?
 
 schemeDetails.title = Scheme details

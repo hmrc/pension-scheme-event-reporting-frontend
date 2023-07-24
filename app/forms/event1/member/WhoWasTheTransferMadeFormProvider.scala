@@ -26,6 +26,6 @@ class WhoWasTheTransferMadeFormProvider @Inject() extends Mappings {
 
   def apply(): Form[WhoWasTheTransferMade] =
     Form(
-      "value" -> enumerable[WhoWasTheTransferMade]("whoWasTheTransferMade.error.required")
+      "value" -> enumerable[WhoWasTheTransferMade]("whoWasTheTransferMade.error.required", invalidKey = "whoWasTheTransferMade.error.format")
     )
 }
