@@ -205,7 +205,7 @@ class EventReportingConnector @Inject()(
       }
   }
 
-  def deleteMember(pstr: String, edi: EventDataIdentifier, memberIdToDelete: String)
+  def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion:Int, memberIdToDelete: String)
                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -213,6 +213,7 @@ class EventReportingConnector @Inject()(
       "eventType" -> edi.eventType.toString,
       "year" -> edi.year,
       "version" -> edi.version,
+      "currentVersion" -> currentVersion.toString,
       "memberIdToDelete" -> memberIdToDelete
     )
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)

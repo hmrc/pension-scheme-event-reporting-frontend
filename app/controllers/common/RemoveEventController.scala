@@ -16,14 +16,14 @@
 
 package controllers.common
 
-import connectors.EventReportingConnector
 import controllers.actions._
 import forms.common.RemoveEventFormProvider
 import models.enumeration.EventType
-import pages.{VersionInfoPage, Waypoints}
+import pages.Waypoints
 import pages.common.RemoveEventPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.CompileService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.common.RemoveEventView
 
@@ -36,7 +36,7 @@ class RemoveEventController @Inject()(
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: RemoveEventFormProvider,
-                                       eventReportingConnector: EventReportingConnector,
+                                       compileService: CompileService,
                                        view: RemoveEventView
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -54,7 +54,7 @@ class RemoveEventController @Inject()(
         value => {
           val originalUserAnswers = request.userAnswers
           if (value) {
-            eventReportingConnector.compileEvent(request.pstr, request.userAnswers.eventDataIdentifier(eventType), currentVersion = request.userAnswers.get(VersionInfoPage).map(_.version).getOrElse(0), delete = true).flatMap { _ =>
+            compileService.compileEvent(eventType, request.pstr, request.userAnswers).flatMap { _ =>
               Future.successful(Redirect(RemoveEventPage(eventType).navigate(waypoints, originalUserAnswers, originalUserAnswers).route))
             }
           } else {
