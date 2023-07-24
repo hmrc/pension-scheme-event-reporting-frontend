@@ -96,7 +96,7 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
       })
   }
 
-  def declarationDataEvent20A(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser, optAuthorisingPsaId: Option[String], request: DataRequest[AnyContent]): Option[JsObject] = {
+  def declarationDataEvent20A(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser, optAuthorisingPsaId: Option[String], request: DataRequest[_]): Option[JsObject] = {
     val optCeaseDateOrStartDateNode = (request.userAnswers.get(WhatChangePage), request.userAnswers.get(BecameDatePage), request.userAnswers.get(CeasedDatePage)) match {
       case (Some(BecameMasterTrust), Some(becameDate), _) => Some(Json.obj("schemeMasterTrustStartDate" -> becameDate))
       case (Some(CeasedMasterTrust), _, Some(ceasedDate)) => Some(Json.obj("schemeMasterTrustCeaseDate" -> ceasedDate))

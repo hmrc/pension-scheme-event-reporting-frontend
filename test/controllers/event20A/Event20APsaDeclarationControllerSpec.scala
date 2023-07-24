@@ -60,6 +60,7 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
       val testEmail = "test@test.com"
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
+      val applicationNoUA = applicationBuilder(userAnswers = None, extraModules).build()
       val minimalDetails = {
         MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None,  lastName = "Smith")), false, false)
       }

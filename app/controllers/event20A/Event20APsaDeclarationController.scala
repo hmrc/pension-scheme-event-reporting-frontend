@@ -72,7 +72,7 @@ class Event20APsaDeclarationController @Inject()(
       })
   }
 
-  def declarationDataEvent20A(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser, request: DataRequest[AnyContent]): Option[JsObject] = {
+  def declarationDataEvent20A(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser, request: DataRequest[_]): Option[JsObject] = {
     val optCeaseDateOrStartDateNode =
       (request.userAnswers.get(WhatChangePage), request.userAnswers.get(BecameDatePage), request.userAnswers.get(CeasedDatePage)) match {
         case (Some(BecameMasterTrust), Some(becameDate), _) => Some(Json.obj("schemeMasterTrustStartDate" -> becameDate))
