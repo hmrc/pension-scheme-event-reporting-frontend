@@ -232,7 +232,15 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
                         member,Joe,Bloggs,AA234567D,YES,YES,sdf,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
                         member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefitadfadf,Description,,,,,,,,,,,,,1000.00,08/11/2022
                         member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,sfasdf!2,"SchemeName,SchemeReference",1000.00,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"$moreThanMax,$moreThanMax",1000.00,08/11/2022"""
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"$moreThanMax,$moreThanMax",1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,NO,,,,,Error,,,,$moreThanMax,,,,,,,,,,1000.00,08/11/2022
+                        member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,Tangible,,,,,,,,,,,$moreThanMax,,,1000.00,08/11/2022
+                        member,Steven,Bloggs,AA123456C,YES,NO,,,,,Other,,,,,,,$moreThanMax,,,,,,,1000.00,08/11/2022
+
+                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Refund,,,,,,,,,WIDOW/ORPHAN,,,,,1000.00,08/11/2022
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Overpayment,,,,,,,,NO LONGER QUALIFIED,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Court,,John,,,,,,,,,,,,1000.00,08/11/2022"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -256,7 +264,10 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         ValidationError(11, 10, "paymentNature.error.format", "natureOfPayment"),
         ValidationError(12, 22, "whoWasTheTransferMade.error.format", "transferMadeTo"),
         ValidationError(13, 23, "schemeDetails.error.name.length", "schemeName", ArraySeq(150)),
-        ValidationError(13, 23, "schemeDetails.error.ref.length", "reference", ArraySeq(150))
+        ValidationError(13, 23, "schemeDetails.error.ref.length", "reference", ArraySeq(150)),
+        ValidationError(14, 14, "errorDescription.error.length", "errorDescription", ArraySeq(150)),
+        ValidationError(15, 21, "memberTangibleMoveableProperty.error.length", "tangibleDescription", ArraySeq(150)),
+        ValidationError(16, 17, "memberPaymentNatureDescription.error.length", "otherDescription", ArraySeq(150))
       ))
     }
 
