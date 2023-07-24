@@ -60,7 +60,6 @@ class EventReportingConnectorSpec
   private val eventReportCompileUrl = "/pension-scheme-event-reporting/compile"
   private val eventReportSubmitUrl = "/pension-scheme-event-reporting/submit-event-declaration-report"
   private val deleteMemberUrl = "/pension-scheme-event-reporting/delete-member"
-  private val deleteEventUrl = "/pension-scheme-event-reporting/delete-event"
 
   private def event20AReportSubmitUrl = "/pension-scheme-event-reporting/submit-event20a-declaration-report"
 

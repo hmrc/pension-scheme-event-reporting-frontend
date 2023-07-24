@@ -18,7 +18,6 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import models.enumeration.EventType
 import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
 import play.api.http.Status._
 import play.api.libs.json._
@@ -47,8 +46,6 @@ class EventReportingConnector @Inject()(
   private def eventOverviewUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/overview"
 
   private def deleteMemberUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/delete-member"
-
-  private def deleteEventUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/delete-event"
 
 
   def getEventReportSummary(pstr: String, reportStartDate: String, version: Int)
