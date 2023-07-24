@@ -133,28 +133,39 @@ class Event1Validator @Inject()(
     )
   }
 
-  private val mapOverpayment: Map[String, String] = {
-    Map(
-      "DEATH OF MEMBER" -> "deathOfMember",
-      "DEATH OF DEPENDENT" -> "deathOfDependent",
-      "NO LONGER QUALIFIED" -> "dependentNoLongerQualifiedForPension",
-      "OTHER" -> "other"
-    )
+  //  private def mapPaymentNatureMember(paymentNatureMember: String): String = paymentNatureMember match {
+  //    case "Benefit" => "benefitInKind"
+  //    case "Transfer" => "transferToNonRegPensionScheme"
+  //    case "Error" => "errorCalcTaxFreeLumpSums"
+  //    case "Early" => "benefitsPaidEarly"
+  //    case "Refund" => "refundOfContributions"
+  //    case "Overpayment" => "overpaymentOrWriteOff"
+  //    case "Residential" => "residentialPropertyHeld"
+  //    case "Tangible" => "tangibleMoveablePropertyHeld"
+  //    case "Court" => "courtOrConfiscationOrder"
+  //    case "Other" => "memberOther"
+  //    case _ => paymentNatureMember
+  //  }
+
+  private def mapOverpayment(overpayment: String): String = overpayment match {
+    case "DEATH OF MEMBER" => "deathOfMember"
+    case "DEATH OF DEPENDENT" => "deathOfDependent"
+    case "NO LONGER QUALIFIED" => "dependentNoLongerQualifiedForPension"
+    case "OTHER" => "other"
+    case _ => overpayment
   }
 
-  private val mapRefund: Map[String, String] = {
-    Map(
-      "WIDOW/ORPHAN" -> "widowOrOrphan",
-      "OTHER" -> "other"
-    )
+  private def mapRefund(refund: String): String = refund match {
+    case "WIDOW/ORPHAN" => "widowOrOrphan"
+    case "OTHER" => "other"
+    case _ => refund
   }
 
-  private val mapTransferMadeTo: Map[String, String] = {
-    Map(
-      "EMPLOYER" -> "anEmployerFinanced",
-      "NON RECOGNISED PENSION SCHEME" -> "nonRecognisedScheme",
-      "OTHER" -> "other"
-    )
+  private def mapTransferMadeTo(transferMadeTo: String): String = transferMadeTo match {
+    case "EMPLOYER" => "anEmployerFinanced"
+    case "NON RECOGNISED PENSION SCHEME" => "nonRecognisedScheme"
+    case "OTHER" => "other"
+    case _ => transferMadeTo
   }
 
   private def toBoolean(s: String): String = s match {
@@ -204,8 +215,7 @@ class Event1Validator @Inject()(
 
   private def whoWasTheTransferMadeValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], WhoWasTheTransferMade] = {
 
-    val mappedTransferMadeTo = mapTransferMadeTo.applyOrElse[String, String](chargeFields(fieldNoTransferMadeTo),
-      (_: String) => "")
+    val mappedTransferMadeTo = mapTransferMadeTo(chargeFields(fieldNoTransferMadeTo))
     val fields = Seq(
       Field(valueFormField, mappedTransferMadeTo, transferMadeTo, fieldNoTransferMadeTo)
     )
@@ -220,8 +230,7 @@ class Event1Validator @Inject()(
 
   private def refundOfContributionsValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], RefundOfContributions] = {
 
-    val mappedRefundReason = mapRefund.applyOrElse[String, String](chargeFields(fieldNoWhoReceivedRefund),
-      (_: String) => "Reason of the refund is not found or doesn't exist")
+    val mappedRefundReason = mapRefund(chargeFields(fieldNoWhoReceivedRefund))
 
     val fields = Seq(
       Field(valueFormField, mappedRefundReason, whoReceivedRefund, fieldNoWhoReceivedRefund)
@@ -238,8 +247,7 @@ class Event1Validator @Inject()(
   private def reasonForTheOverpaymentOrWriteOffValidation(index: Int,
                                                           chargeFields: Seq[String]): Validated[Seq[ValidationError], ReasonForTheOverpaymentOrWriteOff] = {
 
-    val mappedOverpayment = mapOverpayment.applyOrElse[String, String](chargeFields(fieldNoOverpaymentReason),
-      (_: String) => "Reason for the overpayment is not found or doesn't exist")
+    val mappedOverpayment = mapOverpayment(chargeFields(fieldNoOverpaymentReason))
 
     val fields = Seq(
       Field(valueFormField, mappedOverpayment, overpaymentReason, fieldNoOverpaymentReason)
