@@ -278,15 +278,20 @@ class Event1Validator @Inject()(
   private def schemeDetailsValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], SchemeDetails] = {
     val parsedSchemeDetails = splitSchemeDetails(chargeFields(fieldNoTransferSchemeDetails))
 
+    println(s"\n\n parsedSchemeDetails is: ${parsedSchemeDetails.schemeName}\n\n")
+    println(s"\n\n parsedSchemeDetails is: ${parsedSchemeDetails.schemeReference}\n\n")
     val fields = Seq(
-      Field(schemeName, parsedSchemeDetails.schemeName, schemeDetails, fieldNoTransferSchemeDetails, Some(Event1FieldNames.schemeDetails)),
-      Field(schemeReference, parsedSchemeDetails.schemeReference, schemeDetails, fieldNoTransferSchemeDetails, Some(Event1FieldNames.schemeReference))
+      Field(schemeName, parsedSchemeDetails.schemeName, schemeName, fieldNoTransferSchemeDetails, Some(Event1FieldNames.schemeDetails)),
+      Field(schemeReference, parsedSchemeDetails.schemeReference, schemeReference, fieldNoTransferSchemeDetails, Some(Event1FieldNames.schemeReference))
     )
     val form: Form[SchemeDetails] = schemeDetailsFormProvider()
     form.bind(
       Field.seqToMap(fields)
     ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      formWithErrors => {
+        println(s"\n\n formWithErrors is: ${formWithErrors}\n\n")
+        Invalid(errorsFromForm(formWithErrors, fields, index))
+      },
       value => Valid(value)
     )
   }
