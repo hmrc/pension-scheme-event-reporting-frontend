@@ -26,6 +26,7 @@ import models.{LoggedInUser, TaxYear, UserAnswers}
 import pages.event20A.{BecameDatePage, CeasedDatePage, WhatChangePage}
 import pages.{VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import uk.gov.hmrc.http.ExpectationFailedException
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
