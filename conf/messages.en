@@ -370,6 +370,7 @@ valueOfUnauthorisedPayment.title = Is the value of the unauthorised payment more
 valueOfUnauthorisedPayment.heading = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
 valueOfUnauthorisedPayment.checkYourAnswersLabel = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
 valueOfUnauthorisedPayment.error.required = Select yes if the value of the unauthorised payment is more than 25% of the pension fund for the individual
+valueOfUnauthorisedPayment.error.format = Enter yes or no if the value of the unauthorised payment is more than 25% of the pension fund for the individual
 valueOfUnauthorisedPayment.change.hidden = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
 
 employer.whatYouWillNeed.title = What you will need
