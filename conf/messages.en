@@ -464,6 +464,7 @@ schemeUnAuthPaySurchargeMember.title = Is the scheme paying the unauthorised pay
 schemeUnAuthPaySurchargeMember.heading = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
 schemeUnAuthPaySurchargeMember.checkYourAnswersLabel = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
 schemeUnAuthPaySurchargeMember.error.required = Select yes if Is the scheme paying the unauthorised payment surcharge on behalf of the member?
+schemeUnAuthPaySurchargeMember.error.format = Enter yes or no if the scheme is paying the unauthorised payment surcharge on behalf of the member
 schemeUnAuthPaySurchargeMember.change.hidden = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
 
 errorDescription.title = Give a brief description of the error

@@ -227,7 +227,8 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
                         member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,,Description,,,,,,,,,,,,,1000.00,08/11/2022
                         member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription,,,,,,,,,,,,,1000.00,08/11/2022
                         member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,,"SchemeName,SchemeReference",1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YESasdf,YESasdf,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022"""
+                        member,Joe,Bloggs,AA234567D,YESasdf,YESasdf,NO,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,sdf,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -246,7 +247,8 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         ValidationError(7, 11, "benefitInKindBriefDescription.error.length", "benefitDescription", ArraySeq(150)),
         ValidationError(8, 22, "whoWasTheTransferMade.error.required", "transferMadeTo"),
         ValidationError(9, 4, "doYouHoldSignedMandate.error.format", "doYouHoldSignedMandate"),
-        ValidationError(9, 5, "valueOfUnauthorisedPayment.error.format", "valueOfUnauthorisedPayment")
+        ValidationError(9, 5, "valueOfUnauthorisedPayment.error.format", "valueOfUnauthorisedPayment"),
+        ValidationError(10, 6, "schemeUnAuthPaySurchargeMember.error.format", "schemeUnAuthPaySurcharge")
 
 
         //TODO: Come back to payment nature validation showing paymentNature.error.required instead of paymentNature.error.format
