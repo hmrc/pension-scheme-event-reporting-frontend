@@ -45,7 +45,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
   private val seqOfEvents = Seq(Event1, Event3, Event4, Event5, Event6, Event7, Event8, Event8A, Event22, Event23)
 
   private val formProvider = new MembersDetailsFormProvider()
-  private def form(eventType: EventType): Form[MembersDetails] = formProvider(eventType)
+  private def form(eventType: EventType): Form[MembersDetails] = formProvider(eventType, Nil)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 

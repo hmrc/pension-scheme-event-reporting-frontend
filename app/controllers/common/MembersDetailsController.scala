@@ -24,7 +24,7 @@ import models.enumeration.EventType
 import models.requests.OptionalDataRequest
 import models.{Index, UserAnswers}
 import pages.Waypoints
-import pages.common.MembersDetailsPage
+import pages.common.{MembersDetailsPage, MembersPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -44,7 +44,7 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index, memberPageNo: Int): Action[AnyContent] =
     (identify andThen getData(eventType)) { implicit request =>
-    val form = formProvider(eventType, memberPageNo)
+    val form = formProvider(eventType, Nil, memberPageNo)
     val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, indexToInt(index), memberPageNo))).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, eventType, memberPageNo, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index, memberPageNo)))
   }
@@ -66,7 +66,10 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
                          postCall: => Call,
                          memberPageNo: Int
                         )(implicit request: OptionalDataRequest[_]): Future[Result] = {
-    val form = formProvider(eventType,memberPageNo)
+//    request.userAnswers.map{ x =>
+//      val seqNinos = x.getAll(MembersPage(eventType)).map(_.nINumber)
+//    }
+    val form = formProvider(eventType, Nil, memberPageNo)
     form.bindFromRequest().fold(
       formWithErrors =>
         Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, memberPageNo, postCall))),

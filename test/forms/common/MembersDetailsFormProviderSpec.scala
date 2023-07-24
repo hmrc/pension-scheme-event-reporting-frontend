@@ -16,6 +16,7 @@
 
 package forms.common
 
+import data.SampleData.{memberDetails, memberDetails2}
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
 import models.common.MembersDetails
@@ -23,13 +24,17 @@ import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event22, Event23}
 import play.api.data.FormError
 import wolfendale.scalacheck.regexp.RegexpGen
+
 import scala.util.Random
 
 class MembersDetailsFormProviderSpec extends StringFieldBehaviours with Constraints {
 
+  private val memberNinos: Seq[String] = Seq(
+    ""
+  )
   val listOfEvents: Seq[EventType] = Seq(Event1, Event22, Event23)
   val event: EventType = Random.shuffle(listOfEvents).head
-  val form = new MembersDetailsFormProvider()(event)
+  val form = new MembersDetailsFormProvider()(event, Nil)
 
   ".firstName" - {
 
