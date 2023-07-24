@@ -83,7 +83,7 @@ class UnauthPaymentSummaryController @Inject()(
             content = Text(memberOrEmployerSummary.name)
           ),
           value = value,
-          actions = Some(Actions(s
+          actions = Some(Actions(
             items = Seq(
               ActionItem(
                 content = Text(Message("site.view")),
