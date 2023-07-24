@@ -95,6 +95,7 @@ class MembersSummaryController @Inject()(
   private def getMappedMembers(userAnswers: UserAnswers, eventType: EventType)(implicit messages: Messages): Seq[SummaryListRowWithTwoValues] = {
     userAnswers.getAll(MembersPage(eventType))(MembersSummary.readsMember(eventType)).zipWithIndex.collect {
       case (memberSummary, index) if !memberSummary.memberStatus.contains("Deleted") =>
+        //TODO: Remove front-end filter. Values should be filtered via MongoDB with an index. -Pavel Vjalicin
         SummaryListRowWithTwoValues(
           key = memberSummary.name,
           firstValue = memberSummary.nINumber,
