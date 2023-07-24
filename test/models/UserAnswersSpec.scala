@@ -47,8 +47,8 @@ class UserAnswersSpec extends SpecBase with Matchers {
   "getAll" - {
     "must return the list of members or employers" in {
       userAnswersWithOneMemberAndEmployerEvent1.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
-        Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00)),
-          MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00)))
+        Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00), None),
+          MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00), None))
     }
 
     "must return empty list if nothing present" in {
@@ -62,8 +62,8 @@ class UserAnswersSpec extends SpecBase with Matchers {
         .setOrException(PaymentValueAndDatePage(1), PaymentDetails(BigDecimal(7687.00), LocalDate.of(2022, 11, 9)))
         .setOrException(CompanyDetailsPage(1), companyDetails)
       userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
-        Seq(MembersOrEmployersSummary("Not entered", BigDecimal(0.00)),
-          MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00)))
+        Seq(MembersOrEmployersSummary("Not entered", BigDecimal(0.00), None),
+          MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00), None))
     }
 
     "must return the list of members or employers where employer value and employer details missing" in {
@@ -73,15 +73,15 @@ class UserAnswersSpec extends SpecBase with Matchers {
         .setOrException(MembersDetailsPage(Event1, 0), memberDetails)
         .setOrException(WhoReceivedUnauthPaymentPage(1), Employer)
       userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
-        Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00)),
-          MembersOrEmployersSummary("Not entered", BigDecimal(0.00)))
+        Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00), None),
+          MembersOrEmployersSummary("Not entered", BigDecimal(0.00), None))
     }
     "must return the list of members or employers if only first question answered" in {
       val userAnswersWithOnlyManualOrUpload: UserAnswers = UserAnswers()
         .setOrException(ManualOrUploadPage(Event1, 0), Manual)
 
       userAnswersWithOnlyManualOrUpload.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
-        Seq(MembersOrEmployersSummary("Not entered", BigDecimal(0.00)))
+        Seq(MembersOrEmployersSummary("Not entered", BigDecimal(0.00), Some("Any")))
     }
   }
 
@@ -109,7 +109,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
     "getAll" - {
       "must return the list of members" in {
         sampleMemberJourneyDataEvent22and23(Event22).getAll(MembersPage(Event22))(MembersSummary.readsMember(Event22)) mustBe
-          Seq(MembersSummary(SampleData.memberDetails.fullName, BigDecimal(10.00), SampleData.memberDetails.nino))
+          Seq(MembersSummary(SampleData.memberDetails.fullName, BigDecimal(10.00), SampleData.memberDetails.nino, None))
       }
 
       "must return empty list if nothing present" in {
@@ -121,7 +121,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
           .setOrException(ChooseTaxYearPage(Event22, 0), taxYear)(writesTaxYear)
 
         userAnswersWithOneMember.getAll(MembersPage(Event22))(MembersSummary.readsMember(Event22)) mustBe
-          Seq(MembersSummary("Not entered", BigDecimal(0.00), "Not entered"))
+          Seq(MembersSummary("Not entered", BigDecimal(0.00), "Not entered", None))
       }
 
     }

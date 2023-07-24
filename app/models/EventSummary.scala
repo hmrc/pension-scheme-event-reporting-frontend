@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package pages.event18
+package models
 
-import pages.behaviours.PageBehaviours
+import models.enumeration.EventType
+import play.api.libs.json.{Format, Json}
 
-class RemoveEvent18PageSpec extends PageBehaviours {
+case class EventSummary(eventType: EventType, recordVersion: Int)
 
-  "RemoveEvent18Page" - {
-
-    beRetrievable[Boolean](RemoveEvent18Page)
-
-    beSettable[Boolean](RemoveEvent18Page)
-
-    beRemovable[Boolean](RemoveEvent18Page)
-  }
+object EventSummary {
+  implicit val formats: Format[EventSummary] = Json.format[EventSummary]
 }

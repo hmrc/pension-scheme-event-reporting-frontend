@@ -21,7 +21,7 @@ import models.address.{Address, TolerantAddress}
 import models.common.ManualOrUpload.Manual
 import models.common.{ChooseTaxYear, MembersDetails, PaymentDetails => CommonPaymentDetails}
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
-import models.enumeration.EventType
+import models.enumeration.{EventType, VersionStatus}
 import models.enumeration.EventType.{Event1, Event2, Event6, Event7, Event8, Event8A}
 import models.enumeration.VersionStatus.Compiled
 import models.event1.PaymentNature.BenefitInKind
@@ -164,6 +164,8 @@ object SampleData extends SpecBase {
     .setOrException(MemberPaymentNaturePage(0), BenefitInKind)
     .setOrException(BenefitInKindBriefDescriptionPage(0), "Test description")
     .setOrException(PaymentValueAndDatePage(0), paymentDetails)
+    .setOrException(TaxYearPage, TaxYear("2022"), true)
+    .setOrException(VersionInfoPage, VersionInfo(1, VersionStatus.Compiled), true)
 
   val sampleEmployerJourneyDataEvent1: UserAnswers = UserAnswers()
     .setOrException(ManualOrUploadPage(Event1, 0), Manual)
@@ -190,7 +192,8 @@ object SampleData extends SpecBase {
     }
 
   def sampleMemberJourneyDataEvent3and4and5(eventType: EventType): UserAnswers = UserAnswers()
-    .setOrException(TaxYearPage, TaxYear("2022"))
+    .setOrException(TaxYearPage, TaxYear("2022"), true)
+    .setOrException(VersionInfoPage, VersionInfo(1, VersionStatus.Compiled), true)
     .setOrException(MembersDetailsPage(eventType, 0), memberDetails)
     .setOrException(PaymentDetailsPage(eventType, 0), paymentDetailsCommon)
 
@@ -324,4 +327,8 @@ object SampleData extends SpecBase {
     emptyUserAnswersWithTaxYear
       .setOrException(pages.event20A.WhatChangePage, CeasedMasterTrust)
       .setOrException(pages.event20A.CeasedDatePage, LocalDate.of(2023, 1, 12))
+
+  def sampleEvent18JourneyData: UserAnswers =
+    emptyUserAnswersWithTaxYear
+      .setOrException(pages.event18.Event18ConfirmationPage, true)
 }
