@@ -205,7 +205,7 @@ class Event1Validator @Inject()(
   private def whoWasTheTransferMadeValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], WhoWasTheTransferMade] = {
 
     val mappedTransferMadeTo = mapTransferMadeTo.applyOrElse[String, String](chargeFields(fieldNoTransferMadeTo),
-      (_: String) => "Option is not found or doesn't exist")
+      (_: String) => "")
     val fields = Seq(
       Field(valueFormField, mappedTransferMadeTo, transferMadeTo, fieldNoTransferMadeTo)
     )
