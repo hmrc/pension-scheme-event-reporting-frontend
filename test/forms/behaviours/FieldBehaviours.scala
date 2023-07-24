@@ -44,7 +44,12 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
 
     "not bind when key is not present at all" in {
 
+
+
       val result = form.bind(emptyForm).apply(fieldName)
+
+      println("\n>>>>ERR:" + form.bind(emptyForm))
+
       result.errors mustEqual Seq(requiredError)
     }
 

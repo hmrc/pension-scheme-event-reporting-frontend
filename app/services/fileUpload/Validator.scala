@@ -111,6 +111,7 @@ trait Validator {
       Field(MemberDetailsFieldNames.lastName, fieldValue(columns, fieldNoLastName), MemberDetailsFieldNames.lastName, fieldNoLastName),
       Field(MemberDetailsFieldNames.nino, fieldValue(columns, fieldNoNino), MemberDetailsFieldNames.nino, fieldNoNino)
     )
+    println("\n FIELDS IN VALIDATOR=" + fields)
     val toMap = Field.seqToMap(fields)
 
     val bind = memberDetailsForm.bind(toMap)
@@ -127,6 +128,17 @@ trait Validator {
       field <- fields.find(_.getFormValidationFullFieldName == formError.key)
     }
     yield {
+//      Field.apply()
+//      /*
+//      formValidationFieldName: String,
+//                                 fieldValue: String,
+//                                 columnName: String,
+//                                 columnNo: Int,
+//                                 private val formValidationFullFieldName:
+//       */
+//      //Field(value,,,5,None)
+      println("\nFIELDS=" + fields)
+      println("\nAAAA:" + field)
       ValidationError(index, field.columnNo, formError.message, field.columnName, formError.args)
     }
   }

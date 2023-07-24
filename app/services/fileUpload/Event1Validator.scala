@@ -36,6 +36,7 @@ import models.enumeration.EventType.Event1
 import models.event1.employer.{CompanyDetails, LoanDetails, PaymentNature => EmployerPaymentNature}
 import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, SchemeDetails, WhoWasTheTransferMade}
 import models.event1.{PaymentDetails, WhoReceivedUnauthPayment, PaymentNature => MemberPaymentNature}
+import models.fileUpload.FileUploadHeaders
 import models.fileUpload.FileUploadHeaders.Event1FieldNames._
 import models.fileUpload.FileUploadHeaders.{Event1FieldNames, valueFormField}
 import pages.address.ManualAddressPage
@@ -171,7 +172,14 @@ class Event1Validator @Inject()(
     fieldInfoForValidation.form.bind(
       Field.seqToMap(fields)
     ).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+      formWithErrors => {
+
+        println("\n>>>>ERR:" + formWithErrors)
+
+        Invalid(errorsFromForm(formWithErrors, fields, index))
+      }
+        ,
+
       value => Valid(value)
     )
   }
@@ -475,7 +483,8 @@ class Event1Validator @Inject()(
   private def validateTwoQuestions(index: Int,
                                    columns: Seq[String],
                                    valueOfUnauthorisedPayment: String,
-                                   schemeUnAuthPaySurcharge: String): Result = {
+                                   schemeUnAuthPaySurcharge: String
+                                  ): Result = {
 
     println(s"\n\n valueOfUnauthorisedPayment is: ${valueOfUnauthorisedPayment}\n\n")
     println(s"\n\n schemeUnAuthPaySurcharge is: ${schemeUnAuthPaySurcharge}\n\n")
@@ -498,7 +507,11 @@ class Event1Validator @Inject()(
         println(s"\n\n e is: ${e}\n\n")
         println(s"\n\n f is: ${f}\n\n")
         val d = resultFromFormValidationResult[Boolean](
-          genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoValueOfUnauthorisedPayment, valueOfUnauthorisedPayment, valueOfUnauthorisedPaymentFormProvider())),
+          genericBooleanFieldValidation(index, columns,
+            FieldInfoForValidation(fieldNoValueOfUnauthorisedPayment,
+              FileUploadHeaders.Event1FieldNames.valueOfUnauthorisedPayment,
+              valueOfUnauthorisedPaymentFormProvider()
+            )),
           createCommitItem(index, ValueOfUnauthorisedPaymentPage.apply)
         )
         d
