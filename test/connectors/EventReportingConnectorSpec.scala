@@ -133,7 +133,7 @@ class EventReportingConnectorSpec
             noContent
           )
       )
-      connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1")).map {
+      connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1"), 1).map {
         _ mustBe()
       }
     }
@@ -148,7 +148,7 @@ class EventReportingConnectorSpec
       )
 
       recoverToSucceededIf[HttpException] {
-        connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1"))
+        connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1"), 1)
       }
     }
   }
