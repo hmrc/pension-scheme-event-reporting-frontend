@@ -281,8 +281,8 @@ class Event1Validator @Inject()(
     println(s"\n\n parsedSchemeDetails is: ${parsedSchemeDetails.schemeName}\n\n")
     println(s"\n\n parsedSchemeDetails is: ${parsedSchemeDetails.schemeReference}\n\n")
     val fields = Seq(
-      Field(schemeName, parsedSchemeDetails.schemeName, schemeName, fieldNoTransferSchemeDetails, Some(Event1FieldNames.schemeDetails)),
-      Field(schemeReference, parsedSchemeDetails.schemeReference, schemeReference, fieldNoTransferSchemeDetails, Some(Event1FieldNames.schemeReference))
+      Field(schemeName, parsedSchemeDetails.schemeName, schemeName, fieldNoTransferSchemeDetails),
+      Field(schemeReference, parsedSchemeDetails.schemeReference, schemeReference, fieldNoTransferSchemeDetails)
     )
     val form: Form[SchemeDetails] = schemeDetailsFormProvider()
     form.bind(

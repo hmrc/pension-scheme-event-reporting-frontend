@@ -131,6 +131,7 @@ trait Validator {
       field <- fields.find(_.getFormValidationFullFieldName == formError.key)
     }
     yield {
+      println( "\n>>>>" + formError.message)
       ValidationError(index, field.columnNo, formError.message, field.columnName, formError.args)
     }
   }
