@@ -218,7 +218,8 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
-                        member,Joe,Bloggs,AA234567D,YES,,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022"""
+                        member,Joe,Bloggs,AA234567D,YES,,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        ,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022"""
 
       )
 
