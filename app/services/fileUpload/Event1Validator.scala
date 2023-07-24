@@ -108,44 +108,28 @@ class Event1Validator @Inject()(
   private val fieldNoPaymentAmount = 24
   private val fieldNoPaymentDate = 25
 
-  private val mapPaymentNatureEmployer: Map[String, String] = {
-    Map(
-      "Loans" -> "loansExceeding50PercentOfFundValue",
-      "Residential" -> "residentialProperty",
-      "Tangible" -> "tangibleMoveableProperty",
-      "Court" -> "courtOrder",
-      "Other" -> "employerOther"
-    )
+  private def mapPaymentNatureEmployer(paymentNatureEmployer: String): String = paymentNatureEmployer match {
+    case "Loans" => "loansExceeding50PercentOfFundValue"
+    case "Residential" => "residentialProperty"
+    case "Tangible" => "tangibleMoveableProperty"
+    case "Court" => "courtOrder"
+    case "Other" => "employerOther"
+    case _ => paymentNatureEmployer
   }
 
-  private val mapPaymentNatureMember: Map[String, String] = {
-    Map(
-      "Benefit" -> "benefitInKind",
-      "Transfer" -> "transferToNonRegPensionScheme",
-      "Error" -> "errorCalcTaxFreeLumpSums",
-      "Early" -> "benefitsPaidEarly",
-      "Refund" -> "refundOfContributions",
-      "Overpayment" -> "overpaymentOrWriteOff",
-      "Residential" -> "residentialPropertyHeld",
-      "Tangible" -> "tangibleMoveablePropertyHeld",
-      "Court" -> "courtOrConfiscationOrder",
-      "Other" -> "memberOther"
-    )
+  private def mapPaymentNatureMember(paymentNatureMember: String): String = paymentNatureMember match {
+    case "Benefit" => "benefitInKind"
+    case "Transfer" => "transferToNonRegPensionScheme"
+    case "Error" => "errorCalcTaxFreeLumpSums"
+    case "Early" => "benefitsPaidEarly"
+    case "Refund" => "refundOfContributions"
+    case "Overpayment" => "overpaymentOrWriteOff"
+    case "Residential" => "residentialPropertyHeld"
+    case "Tangible" => "tangibleMoveablePropertyHeld"
+    case "Court" => "courtOrConfiscationOrder"
+    case "Other" => "memberOther"
+    case _ => paymentNatureMember
   }
-
-  //  private def mapPaymentNatureMember(paymentNatureMember: String): String = paymentNatureMember match {
-  //    case "Benefit" => "benefitInKind"
-  //    case "Transfer" => "transferToNonRegPensionScheme"
-  //    case "Error" => "errorCalcTaxFreeLumpSums"
-  //    case "Early" => "benefitsPaidEarly"
-  //    case "Refund" => "refundOfContributions"
-  //    case "Overpayment" => "overpaymentOrWriteOff"
-  //    case "Residential" => "residentialPropertyHeld"
-  //    case "Tangible" => "tangibleMoveablePropertyHeld"
-  //    case "Court" => "courtOrConfiscationOrder"
-  //    case "Other" => "memberOther"
-  //    case _ => paymentNatureMember
-  //  }
 
   private def mapOverpayment(overpayment: String): String = overpayment match {
     case "DEATH OF MEMBER" => "deathOfMember"
@@ -190,11 +174,8 @@ class Event1Validator @Inject()(
   private def genericPaymentNatureFieldValidation[A](index: Int,
                                                      chargeFields: Seq[String],
                                                      fieldInfoForValidation: FieldInfoForValidation[A],
-                                                     mapPaymentNature: Map[String, String]): Validated[Seq[ValidationError], A] = {
-
-    val mappedNatureOfPayment = mapPaymentNature.applyOrElse[String, String](chargeFields(fieldInfoForValidation.fieldNum),
-      (_: String) => "")
-    val fields = Seq(Field(valueFormField, mappedNatureOfPayment, fieldInfoForValidation.description, fieldInfoForValidation.fieldNum))
+                                                     paymentNature: String): Validated[Seq[ValidationError], A] = {
+    val fields = Seq(Field(valueFormField, paymentNature, fieldInfoForValidation.description, fieldInfoForValidation.fieldNum))
     fieldInfoForValidation.form.bind(
       Field.seqToMap(fields)
     ).fold(
@@ -375,7 +356,8 @@ class Event1Validator @Inject()(
   private def validatePaymentNatureMemberJourney(index: Int, columns: Seq[String]): Result = {
 
     val k = resultFromFormValidationResult[MemberPaymentNature](
-      genericPaymentNatureFieldValidation(index, columns, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, memberPaymentNatureFormProvider()), mapPaymentNatureMember),
+      genericPaymentNatureFieldValidation(index, columns, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, memberPaymentNatureFormProvider()),
+        mapPaymentNatureMember(columns(10))),
       createCommitItem(index, MemberPaymentNaturePage.apply)
     )
 
@@ -442,7 +424,7 @@ class Event1Validator @Inject()(
   private def validatePaymentNatureEmployerJourney(index: Int, columns: Seq[String]): Result = {
 
     val k = resultFromFormValidationResult[EmployerPaymentNature](
-      genericPaymentNatureFieldValidation(index, columns, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, employerPaymentNatureFormProvider()), mapPaymentNatureEmployer),
+      genericPaymentNatureFieldValidation(index, columns, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, employerPaymentNatureFormProvider()), mapPaymentNatureEmployer(columns(10))),
       createCommitItem(index, EmployerPaymentNaturePage.apply)
     )
 
