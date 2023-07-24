@@ -260,6 +260,29 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       ))
     }
 
+    "return validation errors when present for the payment amount field" in {
+      DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
+      val csvFile = CSVParser.split(
+        s"""$header
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",,08/11/2022
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1.1.0,08/11/2022
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1000,08/11/2022
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",-1000.00,08/11/2022
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",9999999999.99,08/11/2022"""
+
+      )
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+
+      val result = validator.validate(csvFile, ua)
+      result mustBe Invalid(Seq(
+        ValidationError(1, 24, "paymentValueAndDate.value.error.nothingEntered", "paymentValue"),
+        ValidationError(2, 24, "paymentValueAndDate.value.error.notANumber", "paymentValue"),
+        ValidationError(3, 24, "paymentValueAndDate.value.error.noDecimals", "paymentValue"),
+        ValidationError(4, 24, "paymentValueAndDate.value.error.negative", "paymentValue", ArraySeq(0)),
+        ValidationError(5, 24, "paymentValueAndDate.value.error.amountTooHigh", "paymentValue", ArraySeq(999999999.99))
+      ))
+    }
+
   }
 
 }
