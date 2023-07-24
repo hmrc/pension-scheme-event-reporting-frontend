@@ -486,7 +486,7 @@ class Event1Validator @Inject()(
         )
 
         val e = resultFromFormValidationResult[Boolean](
-          genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoSchemeUnAuthPaySurcharge, schemeUnAuthPaySurcharge, schemeUnAuthPaySurchargeMemberFormProvider())),
+          genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoSchemeUnAuthPaySurcharge, FileUploadHeaders.Event1FieldNames.schemeUnAuthPaySurcharge, schemeUnAuthPaySurchargeMemberFormProvider())),
           createCommitItem(index, SchemeUnAuthPaySurchargeMemberPage.apply)
         )
 
