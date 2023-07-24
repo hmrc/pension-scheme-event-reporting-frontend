@@ -129,7 +129,7 @@ trait Constraints {
       case str if str.length <= maximum =>
         Valid
       case _ =>
-        Invalid(errorKey)
+        Invalid(errorKey, maximum)
     }
 
   protected def minLength(minimum: Int, errorKey: String): Constraint[String] =
