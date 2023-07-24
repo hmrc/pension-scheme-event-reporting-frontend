@@ -33,7 +33,7 @@ object MembersSummary {
     case _ => "membersDetails"
   }
 
-  private def readsNINumber(eventType: EventType)(implicit messages: Messages): Reads[String] =
+ private def readsNINumber(eventType: EventType)(implicit messages: Messages): Reads[String] =
     (JsPath \ membersDetailsNodeName(eventType) \ "nino").readNullable[String]
       .map(_.getOrElse(messages("site.notEntered")))
 

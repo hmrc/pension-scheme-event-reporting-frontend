@@ -1637,3 +1637,5 @@ removeMember.title = Are you sure you want to remove the {0} charge for this mem
 removeMember.heading = Are you sure you want to remove the {0} charge for this member?
 removeMember.error.required = Select yes if you want to remove the {0} charge for this member
 removeMember.change.hidden = Are you sure you want to remove the {0} charge for this member?
+
+membersDetails.error.nino.notUnique = National insurance number is not unique
