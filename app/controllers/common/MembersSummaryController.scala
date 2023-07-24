@@ -24,7 +24,7 @@ import models.common.MembersSummary
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event2, Event22, Event23, Event3, Event4, Event5, Event6, Event8, Event8A}
 import models.{Index, UserAnswers}
-import pages.Waypoints
+import pages.{EmptyWaypoints, Waypoints}
 import pages.common.{MembersPage, MembersSummaryPage}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -93,8 +93,9 @@ class MembersSummaryController @Inject()(
   }
 
   private def getMappedMembers(userAnswers: UserAnswers, eventType: EventType)(implicit messages: Messages): Seq[SummaryListRowWithTwoValues] = {
-    userAnswers.getAll(MembersPage(eventType))(MembersSummary.readsMember(eventType)).zipWithIndex.map {
-      case (memberSummary, index) =>
+    userAnswers.getAll(MembersPage(eventType))(MembersSummary.readsMember(eventType)).zipWithIndex.collect {
+      case (memberSummary, index) if !memberSummary.memberStatus.contains("Deleted") =>
+        //TODO: Remove front-end filter. Values should be filtered via MongoDB with an index. -Pavel Vjalicin
         SummaryListRowWithTwoValues(
           key = memberSummary.name,
           firstValue = memberSummary.nINumber,
@@ -118,7 +119,7 @@ class MembersSummaryController @Inject()(
               ),
               ActionItem(
                 content = Text(Message("site.remove")),
-                href = "#"
+                href = controllers.common.routes.RemoveMemberController.onPageLoad(EmptyWaypoints, eventType, index).url
               )
             )
           ))

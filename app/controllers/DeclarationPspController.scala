@@ -115,7 +115,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
     val requestId = hc.requestId.map(_.value).getOrElse(request.headers.get("X-Session-ID").getOrElse(""))
 
     val submittedDate = formatSubmittedDate(ZonedDateTime.now(ZoneId.of("Europe/London")))
-    val schemeAdministratorType = AdministratorOrPractitioner.Administrator
+    val schemeAdministratorType = AdministratorOrPractitioner.Practitioner
 
     val templateParams = Map(
       "pspName" -> pspName,
@@ -128,14 +128,16 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
 
     emailConnector.sendEmail(schemeAdministratorType,
       requestId,
-      request.loggedInUser.idName,
+      request.loggedInUser.psaIdOrPspId,
+      request.pstr,
       email,
       config.fileReturnTemplateId,
       templateParams,
       reportVersion).map { emailStatus =>
       auditService.sendEvent(
         EventReportingSubmissionEmailAuditEvent(
-          request.loggedInUser.idName,
+          request.loggedInUser.psaIdOrPspId,
+          request.pstr,
           schemeAdministratorType,
           email,
           reportVersion,

@@ -18,8 +18,7 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import models.enumeration.EventType
-import models.{EROverview, EventDataIdentifier, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
+import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
 import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -46,9 +45,11 @@ class EventReportingConnector @Inject()(
 
   private def eventOverviewUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/overview"
 
+  private def deleteMemberUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/delete-member"
+
 
   def getEventReportSummary(pstr: String, reportStartDate: String, version: Int)
-                           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventType]] = {
+                           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventSummary]] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -64,7 +65,7 @@ class EventReportingConnector @Inject()(
         response.status match {
           case NOT_FOUND => Nil
           case OK =>
-            response.json.as[Seq[EventType]]
+            response.json.as[Seq[EventSummary]]
           case _ =>
             throw new HttpException(response.body, response.status)
         }
@@ -76,15 +77,16 @@ class EventReportingConnector @Inject()(
       Future.successful(HttpResponse(NOT_FOUND, "Not found"))
   }
 
-  def compileEvent(pstr: String, edi: EventDataIdentifier)
+  def compileEvent(pstr: String, edi: EventDataIdentifier, currentVersion: Int, delete: Boolean = false)
                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
       "eventType" -> edi.eventType.toString,
       "year" -> edi.year,
+      "currentVersion" -> currentVersion.toString,
       "version" -> edi.version
-    )
+    ) ++ (if(delete) Seq(("delete", "true")) else Seq())
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
     http.POST[JsValue, HttpResponse](eventCompileUrl, Json.obj())(implicitly, implicitly, hc, implicitly)
@@ -201,6 +203,28 @@ class EventReportingConnector @Inject()(
               case JsError(errors) => throw JsResultException(errors)
             }
           case _ => throw new HttpException(response.body, response.status)
+        }
+      }
+  }
+
+  def deleteMember(pstr: String, edi: EventDataIdentifier, memberIdToDelete: String)
+                  (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+    val headers: Seq[(String, String)] = Seq(
+      "Content-Type" -> "application/json",
+      "pstr" -> pstr,
+      "eventType" -> edi.eventType.toString,
+      "year" -> edi.year,
+      "version" -> edi.version,
+      "memberIdToDelete" -> memberIdToDelete
+    )
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.POST[JsValue, HttpResponse](deleteMemberUrl, Json.obj())(implicitly, implicitly, hc, implicitly)
+      .map { response =>
+        response.status match {
+          case NO_CONTENT => ()
+          case _ =>
+            throw new HttpException(response.body, response.status)
         }
       }
   }

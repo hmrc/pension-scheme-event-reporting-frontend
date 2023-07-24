@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package pages.event18
+package pages.common
 
+import models.enumeration.EventType.{Event1, Event18, Event22}
 import pages.behaviours.PageBehaviours
 
-class RemoveEvent18PageSpec extends PageBehaviours {
+class RemoveEventPageSpec extends PageBehaviours {
 
-  "RemoveEvent18Page" - {
+  "RemoveEventPage" - {
 
-    beRetrievable[Boolean](RemoveEvent18Page)
+    beRetrievable[Boolean](RemoveEventPage(Event1))
 
-    beSettable[Boolean](RemoveEvent18Page)
+    beSettable[Boolean](RemoveEventPage(Event18))
 
-    beRemovable[Boolean](RemoveEvent18Page)
+    beRemovable[Boolean](RemoveEventPage(Event22))
   }
 }

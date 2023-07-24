@@ -14,6 +14,10 @@
  * limitations under the License.
  *@
 
+@import controllers.common.routes
+@import viewmodels.LegendSize
+@import models.enumeration.EventType
+
 @this(
     layout: templates.SchemeLayout,
     formHelper: FormWithCSRF,
@@ -22,30 +26,20 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, events: Seq[SummaryListRow], selectedTaxYear: String, schemeName: String, version: Option[Int])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("eventSummary.title", selectedTaxYear))) {
+@layout(pageTitle = title(form, messages("removeEvent.title", messages(s"eventSummary.event$eventType")))) {
 
-    @formHelper(action = routes.EventSummaryController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.RemoveEventController.onSubmit(waypoints, eventType), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <span class="govuk-caption-xl">@schemeName</span>
-
-        @version.map{v => <span class="govuk-caption-xl">@{s"Version $v"}</span>}
-
-        <h1 class="govuk-heading-xl">@messages("eventSummary.heading", selectedTaxYear)</h1>
-
-
-
-        @components.entity_list(events)
-
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("eventSummary.yesno.legend")).withCssClass("govuk-fieldset__legend--m"),
+                legend = LegendViewModel(messages("removeEvent.heading", messages(s"eventSummary.event$eventType"))).asPageHeading(LegendSize.Large)
             )
         )
 

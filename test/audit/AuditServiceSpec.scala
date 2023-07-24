@@ -71,7 +71,7 @@ class AuditServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with 
           auditType mustBe "EventReportingStart"
           detail mustBe Map("PensionSchemeAdministratorOrPensionSchemePractitionerId" -> "test-psa",
                             "PensionSchemeTaxReference" -> "test-pstr",
-                            "taxYear" -> "2022 to 2023",
+                            "taxYear" -> "2022-2023",
                             "eventNumber" -> "22",
                             "reportVersion" -> "1")
       }

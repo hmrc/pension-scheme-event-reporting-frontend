@@ -22,8 +22,9 @@ import forms.event1.UnauthPaymentSummaryFormProvider
 import forms.mappings.Formatters
 import models.UserAnswers
 import models.enumeration.EventType
+import models.enumeration.EventType.Event1
 import models.event1.MembersOrEmployersSummary
-import pages.Waypoints
+import pages.{EmptyWaypoints, Waypoints}
 import pages.common.MembersOrEmployersPage
 import pages.event1.UnauthPaymentSummaryPage
 import play.api.i18n.{I18nSupport, Messages}
@@ -73,8 +74,9 @@ class UnauthPaymentSummaryController @Inject()(
   }
 
   private def getMappedMemberOrEmployer(userAnswers: UserAnswers)  (implicit messages: Messages)  : Seq[SummaryListRow] = {
-    userAnswers.getAll(MembersOrEmployersPage(EventType.Event1))(MembersOrEmployersSummary.readsMemberOrEmployer).zipWithIndex.map {
-      case (memberOrEmployerSummary, index) =>
+    userAnswers.getAll(MembersOrEmployersPage(EventType.Event1))(MembersOrEmployersSummary.readsMemberOrEmployer).zipWithIndex.collect {
+      case (memberOrEmployerSummary, index) if !memberOrEmployerSummary.memberStatus.contains("Deleted") =>
+        //TODO: Remove front-end filter. Values should be filtered via MongoDB with an index. -Pavel Vjalicin
         val value = ValueViewModel(HtmlFormat.escape(currencyFormatter.format(memberOrEmployerSummary.unauthorisedPaymentValue)).toString)
         SummaryListRow(
           key = Key(
@@ -89,7 +91,7 @@ class UnauthPaymentSummaryController @Inject()(
               ),
               ActionItem(
                 content = Text(Message("site.remove")),
-                href = "#"
+                href = controllers.common.routes.RemoveMemberController.onPageLoad(EmptyWaypoints, Event1, index).url
               )
             )
           ))

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
- layout: templates.Layout,
-)
+package forms.common
 
-@(continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+import forms.mappings.Mappings
+import models.enumeration.EventType
+import play.api.data.Form
+import play.api.i18n.Messages
 
-@layout(pageTitle = titleNoForm(messages("fileUpload.processingRequest.title"))) {
+import javax.inject.Inject
 
- <noscript>
-  <meta http-equiv="refresh" content="2" />
- </noscript>
+class RemoveEventFormProvider @Inject() extends Mappings {
 
- <div id="processing-status">
-  <h1 class="govuk-heading-xl">@messages("fileUpload.processingRequest.heading")</h1>
-  <p class="govuk-body">@messages("fileUpload.processingRequest.p1")</p>
- </div>
-
+  def apply(eventType: EventType)(implicit messages: Messages): Form[Boolean] =
+    Form(
+      "value" -> boolean(messages("removeEvent.error.required", messages(s"eventSelection.event$eventType")))
+    )
 }

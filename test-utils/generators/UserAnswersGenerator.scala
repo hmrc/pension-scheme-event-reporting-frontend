@@ -51,7 +51,6 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(event13.ChangeDatePage.type, JsValue)] ::
     arbitrary[(SchemeStructurePage.type, JsValue)] ::
     arbitrary[(TaxYearPage.type, JsValue)] ::
-    arbitrary[(event18.RemoveEvent18Page.type, JsValue)] ::
     arbitrary[(event14.HowManySchemeMembersPage.type, JsValue)] ::
     arbitrary[(event12.DateOfChangePage.type, JsValue)] ::
       arbitrary[(event12.HasSchemeChangedRulesPage.type, JsValue)] ::
