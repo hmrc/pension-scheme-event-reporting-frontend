@@ -23,7 +23,7 @@ import forms.common.RemoveMemberFormProvider
 import models.Index
 import models.enumeration.EventType
 import models.enumeration.EventType._
-import pages.Waypoints
+import pages.{VersionInfoPage, Waypoints}
 import pages.common.RemoveMemberPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -58,7 +58,7 @@ class RemoveMemberController @Inject()(
 
       def deleteMember(delete:Boolean) = {
         val ua = if (delete) {
-          eventReportingConnector.deleteMember(request.pstr, request.userAnswers.eventDataIdentifier(eventType), index.id.toString)
+          eventReportingConnector.deleteMember(request.pstr, request.userAnswers.eventDataIdentifier(eventType), request.userAnswers.get(VersionInfoPage).map(_.version).getOrElse(0), index.id.toString )
             .map(_ => request.userAnswers)
         } else {
           Future.successful(request.userAnswers)

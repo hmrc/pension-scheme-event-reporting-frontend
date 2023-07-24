@@ -160,7 +160,7 @@ class EventReportingConnectorSpec
             noContent
           )
       )
-      connector.deleteMember(pstr, EventDataIdentifier(eventType, "2020", "1"), "0").map {
+      connector.deleteMember(pstr, EventDataIdentifier(eventType, "2020", "1"), 0, "0").map {
         _ mustBe()
       }
     }
@@ -175,7 +175,7 @@ class EventReportingConnectorSpec
       )
 
       recoverToSucceededIf[HttpException] {
-        connector.deleteMember(pstr, EventDataIdentifier(eventType, "2020", "1"), "0")
+        connector.deleteMember(pstr, EventDataIdentifier(eventType, "2020", "1"), 0,"0")
       }
     }
   }
