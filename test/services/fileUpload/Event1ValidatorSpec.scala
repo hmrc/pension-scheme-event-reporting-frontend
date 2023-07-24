@@ -215,7 +215,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       ))
     }
 
-    "return validation errors when present, including tax year in future" in {
+    "return validation errors when present" in {
       val moreThanMax = "a" * 151
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
@@ -283,7 +283,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       ))
     }
 
-    "return validation errors when present for the date field" in {
+    "return validation errors when present for the date field, including tax year in future" in {
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
