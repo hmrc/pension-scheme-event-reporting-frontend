@@ -171,6 +171,13 @@ trait Constraints {
     }
   }
 
+  protected def nonUniqueNino(notUniqueKey: String, ninos: Seq[String]): Constraint[String] = {
+    Constraint {
+      case nino if ninos.contains(nino) => Invalid(notUniqueKey)
+      case _ => Valid
+    }
+  }
+
   protected def yearHas4Digits(errorKey: String): Constraint[LocalDate] =
     Constraint {
       case date if date.getYear >= 1000 => Valid

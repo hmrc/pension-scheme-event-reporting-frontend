@@ -83,7 +83,7 @@ class Event23Validator @Inject()(
                                         memberNinos: Seq[String])
                                        (implicit messages: Messages): Result = {
     val a = resultFromFormValidationResultForMembersDetails(
-      memberDetailsValidation(index, columns, membersDetailsFormProvider(Event23, Nil, index)),
+      memberDetailsValidation(index, columns, membersDetailsFormProvider(Event23, memberNinos, index)),
       createCommitItem(index, MembersDetailsPage.apply(Event23, _)),
       memberNinos
     )

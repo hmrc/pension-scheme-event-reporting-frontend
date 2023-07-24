@@ -29,12 +29,10 @@ import scala.util.Random
 
 class MembersDetailsFormProviderSpec extends StringFieldBehaviours with Constraints {
 
-  private val memberNinos: Seq[String] = Seq(
-    ""
-  )
+  private val memberNinos: Seq[String] = Seq("CS121212C", "CS121212B")
   val listOfEvents: Seq[EventType] = Seq(Event1, Event22, Event23)
   val event: EventType = Random.shuffle(listOfEvents).head
-  val form = new MembersDetailsFormProvider()(event, Nil)
+  val form = new MembersDetailsFormProvider()(event, memberNinos)
 
   ".firstName" - {
 
@@ -110,6 +108,7 @@ class MembersDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
 
     val requiredKey = "membersDetails.error.nino.required"
     val invalidKey = "membersDetails.error.nino.invalid"
+    val notUniqueKey = "membersDetails.error.nino.notUnique"
     val fieldName = "nino"
 
     Seq("aB020202A", "Ab020202A", "AB020202a", "AB020202A", "ab020202a").foreach { nino =>
@@ -136,5 +135,13 @@ class MembersDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+
+    Seq("CS121212C", "CS121212B").foreach { nino =>
+      s"fail to bind when NINO $nino is not unique" in {
+        val result = form.bind(Map("firstName" -> "validFirstName", "lastName" -> "validLastName", "nino" -> nino))
+        result.errors mustBe Seq(FormError("nino", notUniqueKey))
+      }
+    }
   }
 }

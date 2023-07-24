@@ -50,7 +50,8 @@ class MembersDetailsFormProvider @Inject() extends Mappings with Transforms {
           text(s"${detailsType}.error.nino.required")
             .transform(noSpaceWithUpperCaseTransform, noTransform)
             .verifying(
-              validNino(s"${detailsType}.error.nino.invalid")
+              validNino(s"${detailsType}.error.nino.invalid"),
+              nonUniqueNino(s"${detailsType}.error.nino.notUnique", memberNinos)
             ))(MembersDetails.apply)(MembersDetails.unapply)
     )
   }
