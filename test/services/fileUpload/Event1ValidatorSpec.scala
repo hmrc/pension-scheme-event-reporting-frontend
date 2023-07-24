@@ -95,183 +95,168 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
   }
 
   "Event 1 validator" - {
-//    "must return items in user answers when there are no validation errors for Member" in {
-//      val validCSVFile = CSVParser.split(
-//        s"""$header
-//                                member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
-//                                member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1000.00,08/11/2022
-//                                member,Joe,Bloggs,AA234567D,YES,NO,,,,,Error,,,,Description,,,,,,,,,,1000.00,08/11/2022
-//                                member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Early,,,Description,,,,,,,,,,,1000.00,08/11/2022
-//                                member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Refund,,,,,,,,,WIDOW/ORPHAN,,,,,1000.00,08/11/2022
-//                                member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Overpayment,,,,,,,,NO LONGER QUALIFIED,,,,,,1000.00,08/11/2022
-//                                member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022
-//                                member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,Tangible,,,,,,,,,,,Description,,,1000.00,08/11/2022
-//                                member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Court,,John,,,,,,,,,,,,1000.00,08/11/2022
-//                                member,Steven,Bloggs,AA123456C,YES,NO,,,,,Other,,,,,,,Description,,,,,,,1000.00,08/11/2022"""
-//      )
-//      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
-//      val result = validator.validate(validCSVFile, ua)
-//      result mustBe Valid(ua
-//        .pipe(chainUaMembers(_, 0, SampleData.memberDetails, true, true, true))
-//        .setOrException(PaymentNaturePage(0).path, Json.toJson(BenefitInKind.toString))
-//        .setOrException(BenefitInKindBriefDescriptionPage(0).path, Json.toJson("Description"))
-//        .setOrException(PaymentValueAndDatePage(0).path, Json.toJson(SampleData.paymentDetails))
-//
-//        .pipe(chainUaMembers(_, 1, SampleData.memberDetails2, true, true, false))
-//        .setOrException(PaymentNaturePage(1).path, Json.toJson(TransferToNonRegPensionScheme.toString))
-//        .setOrException(WhoWasTheTransferMadePage(1).path, Json.toJson(AnEmployerFinanced.toString))
-//        .setOrException(SchemeDetailsPage(1).path, Json.toJson(SampleData.schemeDetails))
-//        .setOrException(PaymentValueAndDatePage(1).path, Json.toJson(SampleData.paymentDetails))
-//
-//        .pipe(chainUaMembers(_, 2, SampleData.memberDetails, true, false, true))
-//        .setOrException(PaymentNaturePage(2).path, Json.toJson(ErrorCalcTaxFreeLumpSums.toString))
-//        .setOrException(ErrorDescriptionPage(2).path, Json.toJson("Description"))
-//        .setOrException(PaymentValueAndDatePage(2).path, Json.toJson(SampleData.paymentDetails))
-//
-//        .pipe(chainUaMembers(_, 3, SampleData.memberDetails2, true, true, false))
-//        .setOrException(PaymentNaturePage(3).path, Json.toJson(BenefitsPaidEarly.toString))
-//        .setOrException(BenefitsPaidEarlyPage(3).path, Json.toJson("Description"))
-//        .setOrException(PaymentValueAndDatePage(3).path, Json.toJson(SampleData.paymentDetails))
-//
-//        .pipe(chainUaMembers(_, 4, SampleData.memberDetails, true, true, true))
-//        .setOrException(PaymentNaturePage(4).path, Json.toJson(RefundOfContributions.toString))
-//        .setOrException(RefundOfContributionsPage(4).path, Json.toJson(RefundOfContributionsObject.WidowOrOrphan.toString))
-//        .setOrException(PaymentValueAndDatePage(4).path, Json.toJson(SampleData.paymentDetails))
-//
-//        .pipe(chainUaMembers(_, 5, SampleData.memberDetails2, true, true, false))
-//        .setOrException(PaymentNaturePage(5).path, Json.toJson(OverpaymentOrWriteOff.toString))
-//        .setOrException(ReasonForTheOverpaymentOrWriteOffPage(5).path, Json.toJson(ReasonForTheOverpaymentOrWriteOff.DependentNoLongerQualifiedForPension.toString))
-//        .setOrException(PaymentValueAndDatePage(5).path, Json.toJson(SampleData.paymentDetails))
-//
-//        .pipe(chainUaMembers(_, 6, SampleData.memberDetails, true, true, false))
-//        .setOrException(PaymentNaturePage(6).path, Json.toJson(ResidentialPropertyHeld.toString))
-//        .setOrException(ManualAddressPage(Event1MemberPropertyAddressJourney, 6).path, Json.toJson(SampleData.memberAddress))
-//        .setOrException(PaymentValueAndDatePage(6).path, Json.toJson(SampleData.paymentDetails))
-//
-//        .pipe(chainUaMembers(_, 7, SampleData.memberDetails2, true, true, true))
-//        .setOrException(PaymentNaturePage(7).path, Json.toJson(TangibleMoveablePropertyHeld.toString))
-//        .setOrException(MemberTangibleMoveablePropertyPage(7).path, Json.toJson("Description"))
-//        .setOrException(PaymentValueAndDatePage(7).path, Json.toJson(SampleData.paymentDetails))
-//
-//        .pipe(chainUaMembers(_, 8, SampleData.memberDetails, true, true, true))
-//        .setOrException(PaymentNaturePage(8).path, Json.toJson(CourtOrConfiscationOrder.toString))
-//        .setOrException(UnauthorisedPaymentRecipientNamePage(8).path, Json.toJson("John"))
-//        .setOrException(PaymentValueAndDatePage(8).path, Json.toJson(SampleData.paymentDetails))
-//
-//        .pipe(chainUaMembers(_, 9, SampleData.memberDetails2, true, false, true))
-//        .setOrException(PaymentNaturePage(9).path, Json.toJson(MemberOther.toString))
-//        .setOrException(MemberPaymentNatureDescriptionPage(9).path, Json.toJson("Description"))
-//        .setOrException(PaymentValueAndDatePage(9).path, Json.toJson(SampleData.paymentDetails))
-//      )
-//    }
-//
-//    "must return items in user answers when there are no validation errors for Employer" in {
-//      //      val commonUaEmployer = """employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB"""
-//      val validCSVFile = CSVParser.split(
-//        s"""$header
-//                                employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
-//                                employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Residential,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022
-//                                employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Tangible,,,,,,,,,,,,,,1000.00,08/11/2022
-//                                employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Court,,Organisation Name,,,,,,,,,,,,1000.00,08/11/2022
-//                                employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Other,,,,,,,Description,,,,,,,1000.00,08/11/2022"""
-//      )
-//      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
-//      val result = validator.validate(validCSVFile, ua)
-//      result mustBe Valid(ua
-//        .pipe(chainUaEmployers(_, 0))
-//        .setOrException(EmployerPaymentNaturePage(0).path, Json.toJson(LoansExceeding50PercentOfFundValue.toString))
-//        .setOrException(LoanDetailsPage(0).path, Json.toJson(SampleData.loanDetails))
-//
-//        .pipe(chainUaEmployers(_, 1))
-//        .setOrException(EmployerPaymentNaturePage(1).path, Json.toJson(ResidentialProperty.toString))
-//        .setOrException(ManualAddressPage(Event1EmployerPropertyAddressJourney, 1).path, Json.toJson(SampleData.event1EmployerAddress))
-//
-//        .pipe(chainUaEmployers(_, 2))
-//        .setOrException(EmployerPaymentNaturePage(2).path, Json.toJson(TangibleMoveableProperty.toString))
-//        .setOrException(EmployerTangibleMoveablePropertyPage(2).path, Json.toJson(None))
-//
-//        .pipe(chainUaEmployers(_, 3))
-//        .setOrException(EmployerPaymentNaturePage(3).path, Json.toJson(CourtOrder.toString))
-//        .setOrException(EmployerUnauthorisedPaymentRecipientNamePage(3).path, Json.toJson("Organisation Name"))
-//
-//        .pipe(chainUaEmployers(_, 4))
-//        .setOrException(EmployerPaymentNaturePage(4).path, Json.toJson(EmployerOther.toString))
-//        .setOrException(EmployerPaymentNatureDescriptionPage(4).path, Json.toJson("Description"))
-//      )
-//    }
-//
-//    "return validation error for incorrect header" in {
-//      val csvFile = CSVParser.split("""test""")
-//      val result = validator.validate(csvFile, UserAnswers())
-//      result mustBe Invalid(Seq(
-//        ValidationError(0, 0, HeaderInvalidOrFileIsEmpty)
-//      ))
-//    }
-//
-//    "return validation error for empty file" in {
-//      val result = validator.validate(Nil, UserAnswers())
-//      result mustBe Invalid(Seq(
-//        ValidationError(0, 0, HeaderInvalidOrFileIsEmpty)
-//      ))
-//    }
-//
-//    "return validation errors when present, including tax year in future" in {
-//      val moreThanMax = "a" * 151
-//      DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
-//      val csvFile = CSVParser.split(
-//        s"""$header
-//                        dsfgsd*,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
-//                        member,,Bloggs12213,AA234567Dasdfsdf,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
-//                        member,Joe,Bloggs,AA234567D,,,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
-//                        member,Joe,Bloggs,AA234567D,YES,YES,,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
-//                        ,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
-//                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,,Description,,,,,,,,,,,,,1000.00,08/11/2022
-//                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,$moreThanMax,,,,,,,,,,,,,1000.00,08/11/2022
-//                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,,"SchemeName,SchemeReference",1000.00,08/11/2022
-//                        member,Joe,Bloggs,AA234567D,YESasdf,YESasdf,NO,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
-//                        member,Joe,Bloggs,AA234567D,YES,YES,sdf,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
-//                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefitadfadf,Description,,,,,,,,,,,,,1000.00,08/11/2022
-//                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,sfasdf!2,"SchemeName,SchemeReference",1000.00,08/11/2022"""
-//
-//      )
-//      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
-//
-//      val result = validator.validate(csvFile, ua)
-//      result mustBe Invalid(Seq(
-//        ValidationError(1, 0, "whoReceivedUnauthPayment.error.format", "memberOrEmployer"),
-//        ValidationError(2, 1, "membersDetails.error.firstName.required", "firstName"),
-//        ValidationError(2, 2, "membersDetails.error.lastName.invalid", "lastName", ArraySeq("""^[a-zA-Z &`\-\'\.^]{1,35}$""")),
-//        ValidationError(2, 3, "membersDetails.error.nino.invalid", "nino"),
-//        ValidationError(3, 4, "doYouHoldSignedMandate.error.required", "doYouHoldSignedMandate"),
-//        ValidationError(3, 5, "valueOfUnauthorisedPayment.error.required", "valueOfUnauthorisedPayment"),
-//        ValidationError(4, 6, "schemeUnAuthPaySurchargeMember.error.required", "schemeUnAuthPaySurcharge"),
-//        ValidationError(5, 0, "whoReceivedUnauthPayment.error.required", "memberOrEmployer"),
-//        ValidationError(6, 10, "paymentNature.error.required", "natureOfPayment"),
-//        ValidationError(7, 11, "benefitInKindBriefDescription.error.length", "benefitDescription", ArraySeq(150)),
-//        ValidationError(8, 22, "whoWasTheTransferMade.error.required", "transferMadeTo"),
-//        ValidationError(9, 4, "doYouHoldSignedMandate.error.format", "doYouHoldSignedMandate"),
-//        ValidationError(9, 5, "valueOfUnauthorisedPayment.error.format", "valueOfUnauthorisedPayment"),
-//        ValidationError(10, 6, "schemeUnAuthPaySurchargeMember.error.format", "schemeUnAuthPaySurcharge"),
-//        ValidationError(11, 10, "paymentNature.error.format", "natureOfPayment"),
-//        ValidationError(12, 22, "whoWasTheTransferMade.error.format", "transferMadeTo"),
-////        ValidationError(13, 23, "schemeDetails.error.name.length", "schemeName")
-//        //        ValidationError(14, 23, "schemeDetails.error.ref.length", "reference")
-//      ))
-//    }
+    "must return items in user answers when there are no validation errors for Member" in {
+      val validCSVFile = CSVParser.split(
+        s"""$header
+                                member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                                member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1000.00,08/11/2022
+                                member,Joe,Bloggs,AA234567D,YES,NO,,,,,Error,,,,Description,,,,,,,,,,1000.00,08/11/2022
+                                member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Early,,,Description,,,,,,,,,,,1000.00,08/11/2022
+                                member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Refund,,,,,,,,,WIDOW/ORPHAN,,,,,1000.00,08/11/2022
+                                member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Overpayment,,,,,,,,NO LONGER QUALIFIED,,,,,,1000.00,08/11/2022
+                                member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022
+                                member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,Tangible,,,,,,,,,,,Description,,,1000.00,08/11/2022
+                                member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Court,,John,,,,,,,,,,,,1000.00,08/11/2022
+                                member,Steven,Bloggs,AA123456C,YES,NO,,,,,Other,,,,,,,Description,,,,,,,1000.00,08/11/2022"""
+      )
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+      val result = validator.validate(validCSVFile, ua)
+      result mustBe Valid(ua
+        .pipe(chainUaMembers(_, 0, SampleData.memberDetails, true, true, true))
+        .setOrException(PaymentNaturePage(0).path, Json.toJson(BenefitInKind.toString))
+        .setOrException(BenefitInKindBriefDescriptionPage(0).path, Json.toJson("Description"))
+        .setOrException(PaymentValueAndDatePage(0).path, Json.toJson(SampleData.paymentDetails))
 
-    "return validation errors when present, including tax year in future test" in {
-      val moreThanMax = "a"*151
+        .pipe(chainUaMembers(_, 1, SampleData.memberDetails2, true, true, false))
+        .setOrException(PaymentNaturePage(1).path, Json.toJson(TransferToNonRegPensionScheme.toString))
+        .setOrException(WhoWasTheTransferMadePage(1).path, Json.toJson(AnEmployerFinanced.toString))
+        .setOrException(SchemeDetailsPage(1).path, Json.toJson(SampleData.schemeDetails))
+        .setOrException(PaymentValueAndDatePage(1).path, Json.toJson(SampleData.paymentDetails))
+
+        .pipe(chainUaMembers(_, 2, SampleData.memberDetails, true, false, true))
+        .setOrException(PaymentNaturePage(2).path, Json.toJson(ErrorCalcTaxFreeLumpSums.toString))
+        .setOrException(ErrorDescriptionPage(2).path, Json.toJson("Description"))
+        .setOrException(PaymentValueAndDatePage(2).path, Json.toJson(SampleData.paymentDetails))
+
+        .pipe(chainUaMembers(_, 3, SampleData.memberDetails2, true, true, false))
+        .setOrException(PaymentNaturePage(3).path, Json.toJson(BenefitsPaidEarly.toString))
+        .setOrException(BenefitsPaidEarlyPage(3).path, Json.toJson("Description"))
+        .setOrException(PaymentValueAndDatePage(3).path, Json.toJson(SampleData.paymentDetails))
+
+        .pipe(chainUaMembers(_, 4, SampleData.memberDetails, true, true, true))
+        .setOrException(PaymentNaturePage(4).path, Json.toJson(RefundOfContributions.toString))
+        .setOrException(RefundOfContributionsPage(4).path, Json.toJson(RefundOfContributionsObject.WidowOrOrphan.toString))
+        .setOrException(PaymentValueAndDatePage(4).path, Json.toJson(SampleData.paymentDetails))
+
+        .pipe(chainUaMembers(_, 5, SampleData.memberDetails2, true, true, false))
+        .setOrException(PaymentNaturePage(5).path, Json.toJson(OverpaymentOrWriteOff.toString))
+        .setOrException(ReasonForTheOverpaymentOrWriteOffPage(5).path, Json.toJson(ReasonForTheOverpaymentOrWriteOff.DependentNoLongerQualifiedForPension.toString))
+        .setOrException(PaymentValueAndDatePage(5).path, Json.toJson(SampleData.paymentDetails))
+
+        .pipe(chainUaMembers(_, 6, SampleData.memberDetails, true, true, false))
+        .setOrException(PaymentNaturePage(6).path, Json.toJson(ResidentialPropertyHeld.toString))
+        .setOrException(ManualAddressPage(Event1MemberPropertyAddressJourney, 6).path, Json.toJson(SampleData.memberAddress))
+        .setOrException(PaymentValueAndDatePage(6).path, Json.toJson(SampleData.paymentDetails))
+
+        .pipe(chainUaMembers(_, 7, SampleData.memberDetails2, true, true, true))
+        .setOrException(PaymentNaturePage(7).path, Json.toJson(TangibleMoveablePropertyHeld.toString))
+        .setOrException(MemberTangibleMoveablePropertyPage(7).path, Json.toJson("Description"))
+        .setOrException(PaymentValueAndDatePage(7).path, Json.toJson(SampleData.paymentDetails))
+
+        .pipe(chainUaMembers(_, 8, SampleData.memberDetails, true, true, true))
+        .setOrException(PaymentNaturePage(8).path, Json.toJson(CourtOrConfiscationOrder.toString))
+        .setOrException(UnauthorisedPaymentRecipientNamePage(8).path, Json.toJson("John"))
+        .setOrException(PaymentValueAndDatePage(8).path, Json.toJson(SampleData.paymentDetails))
+
+        .pipe(chainUaMembers(_, 9, SampleData.memberDetails2, true, false, true))
+        .setOrException(PaymentNaturePage(9).path, Json.toJson(MemberOther.toString))
+        .setOrException(MemberPaymentNatureDescriptionPage(9).path, Json.toJson("Description"))
+        .setOrException(PaymentValueAndDatePage(9).path, Json.toJson(SampleData.paymentDetails))
+      )
+    }
+
+    "must return items in user answers when there are no validation errors for Employer" in {
+      //      val commonUaEmployer = """employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB"""
+      val validCSVFile = CSVParser.split(
+        s"""$header
+                                employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
+                                employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Residential,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022
+                                employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Tangible,,,,,,,,,,,,,,1000.00,08/11/2022
+                                employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Court,,Organisation Name,,,,,,,,,,,,1000.00,08/11/2022
+                                employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Other,,,,,,,Description,,,,,,,1000.00,08/11/2022"""
+      )
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+      val result = validator.validate(validCSVFile, ua)
+      result mustBe Valid(ua
+        .pipe(chainUaEmployers(_, 0))
+        .setOrException(EmployerPaymentNaturePage(0).path, Json.toJson(LoansExceeding50PercentOfFundValue.toString))
+        .setOrException(LoanDetailsPage(0).path, Json.toJson(SampleData.loanDetails))
+
+        .pipe(chainUaEmployers(_, 1))
+        .setOrException(EmployerPaymentNaturePage(1).path, Json.toJson(ResidentialProperty.toString))
+        .setOrException(ManualAddressPage(Event1EmployerPropertyAddressJourney, 1).path, Json.toJson(SampleData.event1EmployerAddress))
+
+        .pipe(chainUaEmployers(_, 2))
+        .setOrException(EmployerPaymentNaturePage(2).path, Json.toJson(TangibleMoveableProperty.toString))
+        .setOrException(EmployerTangibleMoveablePropertyPage(2).path, Json.toJson(None))
+
+        .pipe(chainUaEmployers(_, 3))
+        .setOrException(EmployerPaymentNaturePage(3).path, Json.toJson(CourtOrder.toString))
+        .setOrException(EmployerUnauthorisedPaymentRecipientNamePage(3).path, Json.toJson("Organisation Name"))
+
+        .pipe(chainUaEmployers(_, 4))
+        .setOrException(EmployerPaymentNaturePage(4).path, Json.toJson(EmployerOther.toString))
+        .setOrException(EmployerPaymentNatureDescriptionPage(4).path, Json.toJson("Description"))
+      )
+    }
+
+    "return validation error for incorrect header" in {
+      val csvFile = CSVParser.split("""test""")
+      val result = validator.validate(csvFile, UserAnswers())
+      result mustBe Invalid(Seq(
+        ValidationError(0, 0, HeaderInvalidOrFileIsEmpty)
+      ))
+    }
+
+    "return validation error for empty file" in {
+      val result = validator.validate(Nil, UserAnswers())
+      result mustBe Invalid(Seq(
+        ValidationError(0, 0, HeaderInvalidOrFileIsEmpty)
+      ))
+    }
+
+    "return validation errors when present, including tax year in future" in {
+      val moreThanMax = "a" * 151
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"$moreThanMax,SchemeReference",1000.00,08/11/2022"""
+                        dsfgsd*,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,,Bloggs12213,AA234567Dasdfsdf,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,,,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        ,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,$moreThanMax,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,,"SchemeName,SchemeReference",1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YESasdf,YESasdf,NO,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,sdf,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefitadfadf,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,sfasdf!2,"SchemeName,SchemeReference",1000.00,08/11/2022
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"$moreThanMax,$moreThanMax",1000.00,08/11/2022"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
 
       val result = validator.validate(csvFile, ua)
       result mustBe Invalid(Seq(
-        ValidationError(13, 23, "schemeDetails.error.name.length", "schemeName")
+        ValidationError(1, 0, "whoReceivedUnauthPayment.error.format", "memberOrEmployer"),
+        ValidationError(2, 1, "membersDetails.error.firstName.required", "firstName"),
+        ValidationError(2, 2, "membersDetails.error.lastName.invalid", "lastName", ArraySeq("""^[a-zA-Z &`\-\'\.^]{1,35}$""")),
+        ValidationError(2, 3, "membersDetails.error.nino.invalid", "nino"),
+        ValidationError(3, 4, "doYouHoldSignedMandate.error.required", "doYouHoldSignedMandate"),
+        ValidationError(3, 5, "valueOfUnauthorisedPayment.error.required", "valueOfUnauthorisedPayment"),
+        ValidationError(4, 6, "schemeUnAuthPaySurchargeMember.error.required", "schemeUnAuthPaySurcharge"),
+        ValidationError(5, 0, "whoReceivedUnauthPayment.error.required", "memberOrEmployer"),
+        ValidationError(6, 10, "paymentNature.error.required", "natureOfPayment"),
+        ValidationError(7, 11, "benefitInKindBriefDescription.error.length", "benefitDescription", ArraySeq(150)),
+        ValidationError(8, 22, "whoWasTheTransferMade.error.required", "transferMadeTo"),
+        ValidationError(9, 4, "doYouHoldSignedMandate.error.format", "doYouHoldSignedMandate"),
+        ValidationError(9, 5, "valueOfUnauthorisedPayment.error.format", "valueOfUnauthorisedPayment"),
+        ValidationError(10, 6, "schemeUnAuthPaySurchargeMember.error.format", "schemeUnAuthPaySurcharge"),
+        ValidationError(11, 10, "paymentNature.error.format", "natureOfPayment"),
+        ValidationError(12, 22, "whoWasTheTransferMade.error.format", "transferMadeTo"),
+        ValidationError(13, 23, "schemeDetails.error.name.length", "schemeName", ArraySeq(150)),
+        ValidationError(13, 23, "schemeDetails.error.ref.length", "reference", ArraySeq(150))
       ))
     }
 

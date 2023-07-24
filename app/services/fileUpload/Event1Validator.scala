@@ -278,8 +278,6 @@ class Event1Validator @Inject()(
   private def schemeDetailsValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], SchemeDetails] = {
     val parsedSchemeDetails = splitSchemeDetails(chargeFields(fieldNoTransferSchemeDetails))
 
-    println(s"\n\n parsedSchemeDetails is: ${parsedSchemeDetails.schemeName}\n\n")
-    println(s"\n\n parsedSchemeDetails is: ${parsedSchemeDetails.schemeReference}\n\n")
     val fields = Seq(
       Field(schemeName, parsedSchemeDetails.schemeName, schemeName, fieldNoTransferSchemeDetails),
       Field(schemeReference, parsedSchemeDetails.schemeReference, schemeReference, fieldNoTransferSchemeDetails)
@@ -288,10 +286,7 @@ class Event1Validator @Inject()(
     form.bind(
       Field.seqToMap(fields)
     ).fold(
-      formWithErrors => {
-        println(s"\n\n formWithErrors is: ${formWithErrors}\n\n")
-        Invalid(errorsFromForm(formWithErrors, fields, index))
-      },
+      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
       value => Valid(value)
     )
   }
