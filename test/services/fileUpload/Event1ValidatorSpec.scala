@@ -221,7 +221,9 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
                         dsfgsd*,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
                         member,,Bloggs12213,AA234567Dasdfsdf,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
                         member,Joe,Bloggs,AA234567D,,,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022"""
+                        member,Joe,Bloggs,AA234567D,YES,YES,,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        ,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,,Description,,,,,,,,,,,,,1000.00,08/11/2022"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -234,10 +236,12 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         ValidationError(2, 3, "membersDetails.error.nino.invalid", "nino"),
         ValidationError(3, 4, "doYouHoldSignedMandate.error.required", "doYouHoldSignedMandate"),
         ValidationError(3, 5, "valueOfUnauthorisedPayment.error.required", "valueOfUnauthorisedPayment"),
-        ValidationError(4, 6, "schemeUnAuthPaySurchargeMember.error.required", "schemeUnAuthPaySurcharge")
+        ValidationError(4, 6, "schemeUnAuthPaySurchargeMember.error.required", "schemeUnAuthPaySurcharge"),
+        ValidationError(5, 0, "whoReceivedUnauthPayment.error.required", "memberOrEmployer"),
+        ValidationError(6, 10, "paymentNature.error.required", "natureOfPayment")
 
-        //TODO: Come back to payment nature validation showing error.invalid instead of paymentNature.error.required
-        //ValidationError(4, 10, "paymentNature.error.required", "natureOfPayment")
+        //TODO: Come back to payment nature validation showing paymentNature.error.required instead of paymentNature.error.format
+        //ValidationError(7, 10, "paymentNature.error.format", "natureOfPayment")
       ))
     }
 

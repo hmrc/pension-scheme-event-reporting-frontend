@@ -248,6 +248,7 @@ paymentNature.courtOrConfiscationOrder = Court order payment/confiscation order
 paymentNature.memberOther = Other
 paymentNature.checkYourAnswersLabel = Nature of the payment or deemed payment
 paymentNature.error.required = Select the nature of the payment or deemed payment
+paymentNature.error.format = Enter the nature of the payment or deemed payment as described in the instructions sheet provided
 paymentNature.change.hidden = Nature of the payment or deemed payment
 
 whatYouWillNeed.title = What you will need

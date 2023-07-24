@@ -182,7 +182,7 @@ class Event1Validator @Inject()(
                                                      mapPaymentNature: Map[String, String]): Validated[Seq[ValidationError], A] = {
 
     val mappedNatureOfPayment = mapPaymentNature.applyOrElse[String, String](chargeFields(fieldInfoForValidation.fieldNum),
-      (_: String) => "Nature of the payment is not found or doesn't exist")
+      (_: String) => "")
     val fields = Seq(Field(valueFormField, mappedNatureOfPayment, fieldInfoForValidation.description, fieldInfoForValidation.fieldNum))
     fieldInfoForValidation.form.bind(
       Field.seqToMap(fields)
