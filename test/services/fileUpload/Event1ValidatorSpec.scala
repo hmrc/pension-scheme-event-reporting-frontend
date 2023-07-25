@@ -102,16 +102,16 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
     "must return items in user answers when there are no validation errors for Member" in {
       val validCSVFile = CSVParser.split(
         s"""$header
-                                member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                                member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1000.00,08/11/2022
-                                member,Joe,Bloggs,AA234567D,YES,NO,,,,,Error,,,,Description,,,,,,,,,,1000.00,08/11/2022
-                                member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Early,,,Description,,,,,,,,,,,1000.00,08/11/2022
-                                member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Refund,,,,,,,,,WIDOW/ORPHAN,,,,,1000.00,08/11/2022
-                                member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Overpayment,,,,,,,,NO LONGER QUALIFIED,,,,,,1000.00,08/11/2022
-                                member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,"$validAddress",,,,1000.00,08/11/2022
-                                member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,Tangible,,,,,,,,,,,Description,,,1000.00,08/11/2022
-                                member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Court,,John,,,,,,,,,,,,1000.00,08/11/2022
-                                member,Steven,Bloggs,AA123456C,YES,NO,,,,,Other,,,,,,,Description,,,,,,,1000.00,08/11/2022"""
+                                member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                                member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,08/11/2022
+                                member,Joe,Bloggs,AA234567D,YES,NO,,,,,ERROR,,,,Description,,,,,,,,,,1000.00,08/11/2022
+                                member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,EARLY,,,Description,,,,,,,,,,,1000.00,08/11/2022
+                                member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,REFUND,,,,,,,,,WIDOW/ORPHAN,,,,,1000.00,08/11/2022
+                                member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,OVERPAYMENT,,,,,,,,NO LONGER QUALIFIED,,,,,,1000.00,08/11/2022
+                                member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,"$validAddress",,,,1000.00,08/11/2022
+                                member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,TANGIBLE,,,,,,,,,,,Description,,,1000.00,08/11/2022
+                                member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,COURT,,John,,,,,,,,,,,,1000.00,08/11/2022
+                                member,Steven,Bloggs,AA123456C,YES,NO,,,,,OTHER,,,,,,,Description,,,,,,,1000.00,08/11/2022"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
       val result = validator.validate(validCSVFile, ua)
@@ -173,11 +173,11 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
 
       val validCSVFile = CSVParser.split(
         s"""$header
-                                $commonUaEmployer,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
-                                $commonUaEmployer,"$validAddress",Residential,,,,,,,,,,"$validAddress",,,,1000.00,08/11/2022
-                                $commonUaEmployer,"$validAddress",Tangible,,,,,,,,,,,,,,1000.00,08/11/2022
-                                $commonUaEmployer,"$validAddress",Court,,Organisation Name,,,,,,,,,,,,1000.00,08/11/2022
-                                $commonUaEmployer,"$validAddress",Other,,,,,,,Description,,,,,,,1000.00,08/11/2022"""
+                                $commonUaEmployer,"$validAddress",LOANS,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
+                                $commonUaEmployer,"$validAddress",RESIDENTIAL,,,,,,,,,,"$validAddress",,,,1000.00,08/11/2022
+                                $commonUaEmployer,"$validAddress",TANGIBLE,,,,,,,,,,,,,,1000.00,08/11/2022
+                                $commonUaEmployer,"$validAddress",COURT,,Organisation Name,,,,,,,,,,,,1000.00,08/11/2022
+                                $commonUaEmployer,"$validAddress",OTHER,,,,,,,Description,,,,,,,1000.00,08/11/2022"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
       val result = validator.validate(validCSVFile, ua)
@@ -224,28 +224,28 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
-                        dsfgsd*,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,,Bloggs12213,AA234567Dasdfsdf,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,,,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                        ,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        dsfgsd*,Joe,Bloggs,AA234567D,YES,YES,YES,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,,Bloggs12213,AA234567Dasdfsdf,YES,YES,YES,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,,,YES,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        ,Joe,Bloggs,AA234567D,YES,YES,YES,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
                         member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefit,$moreThanMax,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,,"SchemeName,SchemeReference",1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YESasdf,YESasdf,NO,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,sdf,,,,Benefit,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,BENEFIT,$moreThanMax,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,,"SchemeName,SchemeReference",1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YESasdf,YESasdf,NO,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,sdf,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
                         member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefitadfadf,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,sfasdf!2,"SchemeName,SchemeReference",1000.00,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"$moreThanMax,$moreThanMax",1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,NO,,,,,Error,,,,$moreThanMax,,,,,,,,,,1000.00,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,Tangible,,,,,,,,,,,$moreThanMax,,,1000.00,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,NO,,,,,Other,,,,,,,$moreThanMax,,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Refund,,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Refund,,,,,,,,,WIDOW/ORPHANsdfgsdf,,,,,1000.00,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Overpayment,,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Overpayment,,,,,,,,ajsf%245,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Court,,$moreThanMax,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Court,,John12&,,,,,,,,,,,,1000.00,08/11/2022"""
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,sfasdf!2,"SchemeName,SchemeReference",1000.00,08/11/2022
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"$moreThanMax,$moreThanMax",1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,NO,,,,,ERROR,,,,$moreThanMax,,,,,,,,,,1000.00,08/11/2022
+                        member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,TANGIBLE,,,,,,,,,,,$moreThanMax,,,1000.00,08/11/2022
+                        member,Steven,Bloggs,AA123456C,YES,NO,,,,,OTHER,,,,,,,$moreThanMax,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,REFUND,,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,REFUND,,,,,,,,,WIDOW/ORPHANsdfgsdf,,,,,1000.00,08/11/2022
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,OVERPAYMENT,,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,OVERPAYMENT,,,,,,,,ajsf%245,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,COURT,,$moreThanMax,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,COURT,,John12&,,,,,,,,,,,,1000.00,08/11/2022"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -287,11 +287,11 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1.1.0,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1000,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",-1000.00,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",9999999999.99,08/11/2022"""
+                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",,08/11/2022
+                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1.1.0,08/11/2022
+                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000,08/11/2022
+                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",-1000.00,08/11/2022
+                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",9999999999.99,08/11/2022"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -310,11 +310,11 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1000.00,
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1000.00,/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1000.00,08//
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1000.00,08/11/2025
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Transfer,,,,,,,,,,,,EMPLOYER,"SchemeName,SchemeReference",1000.00,08/11/s"""
+                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,
+                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,/11/2022
+                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,08//
+                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,08/11/2025
+                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,08/11/s"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -335,10 +335,10 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
-          member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,,,,,1000.00,08/11/2022
-          member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,"$overMaxAddLength,$overMaxAddLength,$overMaxAddLength,$overMaxAddLength,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022
-          member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,"%123Sgdfg,*&^%wfdg,25*sgsd4,!£@qfqdt,345DFG2452,GB",,,,1000.00,08/11/2022
-          member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GIBBERISH",,,,1000.00,08/11/2022"""
+              member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,,,,,1000.00,08/11/2022
+              member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,"$overMaxAddLength,$overMaxAddLength,$overMaxAddLength,$overMaxAddLength,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022
+              member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,"%123Sgdfg,*&^%wfdg,25*sgsd4,!£@qfqdt,345DFG2452,GB",,,,1000.00,08/11/2022
+              member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GIBBERISH",,,,1000.00,08/11/2022"""
       )
 
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -365,10 +365,10 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
-                        employer,,,,,,,,,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
-                        employer,,,,,,,$moreThanMax,123456789,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
-                        employer,,,,,,,{invalid},AB12£212,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
-                        employer,,,,,,,Company Name,12,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022"""
+                            employer,,,,,,,,,"$validAddress",LOANS,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
+                            employer,,,,,,,$moreThanMax,123456789,"$validAddress",LOANS,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
+                            employer,,,,,,,{invalid},AB12£212,"$validAddress",LOANS,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
+                            employer,,,,,,,Company Name,12,"$validAddress",LOANS,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -390,12 +390,12 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
-                        $commonUaEmployer,"$validAddress",,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
-                        $commonUaEmployer,"$validAddress",Loansdfass,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
-                        $commonUaEmployer,"$validAddress",Tangible,,,,,,,,,,,$moreThanMax,,,1000.00,08/11/2022
-                        $commonUaEmployer,"$validAddress",Court,,$moreThanMax,,,,,,,,,,,,1000.00,08/11/2022
-                        $commonUaEmployer,"$validAddress",Court,,Organisation£# Name,,,,,,,,,,,,1000.00,08/11/2022
-                        $commonUaEmployer,"$validAddress",Other,,,,,,,$moreThanMax,,,,,,,1000.00,08/11/2022"""
+                            $commonUaEmployer,"$validAddress",,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
+                            $commonUaEmployer,"$validAddress",Loansdfass,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
+                            $commonUaEmployer,"$validAddress",TANGIBLE,,,,,,,,,,,$moreThanMax,,,1000.00,08/11/2022
+                            $commonUaEmployer,"$validAddress",COURT,,$moreThanMax,,,,,,,,,,,,1000.00,08/11/2022
+                            $commonUaEmployer,"$validAddress",COURT,,Organisation£# Name,,,,,,,,,,,,1000.00,08/11/2022
+                            $commonUaEmployer,"$validAddress",OTHER,,,,,,,$moreThanMax,,,,,,,1000.00,08/11/2022"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)

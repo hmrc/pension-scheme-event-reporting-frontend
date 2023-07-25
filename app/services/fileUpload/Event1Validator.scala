@@ -109,25 +109,25 @@ class Event1Validator @Inject()(
   private val fieldNoPaymentDate = 25
 
   private def mapPaymentNatureEmployer(paymentNatureEmployer: String): String = paymentNatureEmployer match {
-    case "Loans" => "loansExceeding50PercentOfFundValue"
-    case "Residential" => "residentialProperty"
-    case "Tangible" => "tangibleMoveableProperty"
-    case "Court" => "courtOrder"
-    case "Other" => "employerOther"
+    case "LOANS" => "loansExceeding50PercentOfFundValue"
+    case "RESIDENTIAL" => "residentialProperty"
+    case "TANGIBLE" => "tangibleMoveableProperty"
+    case "COURT" => "courtOrder"
+    case "OTHER" => "employerOther"
     case _ => paymentNatureEmployer
   }
 
   private def mapPaymentNatureMember(paymentNatureMember: String): String = paymentNatureMember match {
-    case "Benefit" => "benefitInKind"
-    case "Transfer" => "transferToNonRegPensionScheme"
-    case "Error" => "errorCalcTaxFreeLumpSums"
-    case "Early" => "benefitsPaidEarly"
-    case "Refund" => "refundOfContributions"
-    case "Overpayment" => "overpaymentOrWriteOff"
-    case "Residential" => "residentialPropertyHeld"
-    case "Tangible" => "tangibleMoveablePropertyHeld"
-    case "Court" => "courtOrConfiscationOrder"
-    case "Other" => "memberOther"
+    case "BENEFIT" => "benefitInKind"
+    case "TRANSFER" => "transferToNonRegPensionScheme"
+    case "ERROR" => "errorCalcTaxFreeLumpSums"
+    case "EARLY" => "benefitsPaidEarly"
+    case "REFUND" => "refundOfContributions"
+    case "OVERPAYMENT" => "overpaymentOrWriteOff"
+    case "RESIDENTIAL" => "residentialPropertyHeld"
+    case "TANGIBLE" => "tangibleMoveablePropertyHeld"
+    case "COURT" => "courtOrConfiscationOrder"
+    case "OTHER" => "memberOther"
     case _ => paymentNatureMember
   }
 
@@ -146,8 +146,8 @@ class Event1Validator @Inject()(
   }
 
   private def mapTransferMadeTo(transferMadeTo: String): String = transferMadeTo match {
-    case "EMPLOYER" => "anEmployerFinanced"
-    case "NON RECOGNISED PENSION SCHEME" => "nonRecognisedScheme"
+    case "EFRBS" => "anEmployerFinanced"
+    case "OVERSEAS" => "nonRecognisedScheme"
     case "OTHER" => "other"
     case _ => transferMadeTo
   }
