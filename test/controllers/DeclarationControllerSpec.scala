@@ -83,8 +83,6 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       }
     }
 
-    //TODO - update tests and json data for submitting event report/ connector once sufficient data is captured in the FE (separate ticket being raised)
-
     "must redirect to the correct page for method onClick" in {
 
       val testEmail = "test@test.com"
