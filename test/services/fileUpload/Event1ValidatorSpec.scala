@@ -366,17 +366,20 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       val csvFile = CSVParser.split(
         s"""$header
                         employer,,,,,,,,,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
-                        employer,,,,,,,$moreThanMax,123456789,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022"""
+                        employer,,,,,,,$moreThanMax,123456789,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
+                        employer,,,,,,,{invalid},12345678,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+      val invalidRegex = """^[a-zA-Z0-9À-ÿ !#$%&'‘’"“”«»()*+,./:;=?@\\\[\]|~£€¥\—–‐_^`-]{1,160}$"""
 
       val result = validator.validate(csvFile, ua)
       result mustBe Invalid(Seq(
         ValidationError(1, 7, "companyDetails.companyName.error.required", "companyName"),
         ValidationError(1, 8, "companyDetails.companyNumber.error.required", "companyNumber"),
         ValidationError(2, 7, "companyDetails.companyName.error.length", "companyName", ArraySeq(160)),
-        ValidationError(2, 8, "companyDetails.companyNumber.error.length", "companyNumber", ArraySeq(8))
+        ValidationError(2, 8, "companyDetails.companyNumber.error.length", "companyNumber", ArraySeq(8)),
+        ValidationError(3, 7, "companyDetails.companyName.error.invalidCharacters", "companyName", ArraySeq(invalidRegex))
       ))
     }
 
