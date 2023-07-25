@@ -333,7 +333,8 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         s"""$header
           member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,,,,,1000.00,08/11/2022
           member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,"$overMaxAddLength,$overMaxAddLength,$overMaxAddLength,$overMaxAddLength,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022
-          member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,"%123Sgdfg,*&^%wfdg,25*sgsd4,!£@qfqdt,345DFG2452,GB",,,,1000.00,08/11/2022"""
+          member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,"%123Sgdfg,*&^%wfdg,25*sgsd4,!£@qfqdt,345DFG2452,GB",,,,1000.00,08/11/2022
+          member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GIBBERISH",,,,1000.00,08/11/2022"""
       )
 
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -351,7 +352,8 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         ValidationError(3, 20, "address.addressLine2.error.invalid", "addressLine2", ArraySeq("^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$")),
         ValidationError(3, 20, "address.addressLine3.error.invalid", "addressLine3", ArraySeq("^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$")),
         ValidationError(3, 20, "address.addressLine4.error.invalid", "addressLine4", ArraySeq("^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$")),
-        ValidationError(3, 20, "enterPostcode.error.invalid", "postCode")
+        ValidationError(3, 20, "enterPostcode.error.invalid", "postCode"),
+        ValidationError(4, 20, "address.country.error.invalid", "country")
       ))
     }
 
