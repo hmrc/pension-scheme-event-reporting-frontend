@@ -240,8 +240,8 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
                         member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Refund,,,,,,,,,WIDOW/ORPHANsdfgsdf,,,,,1000.00,08/11/2022
                         member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Overpayment,,,,,,,,,,,,,,1000.00,08/11/2022
                         member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Overpayment,,,,,,,,ajsf%245,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Court,,John,,,,,,,,,,,,1000.00,08/11/2022"""
+                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Court,,$moreThanMax,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Court,,John12&,,,,,,,,,,,,1000.00,08/11/2022"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -272,7 +272,10 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         ValidationError(17, 19, "refundOfContributions.error.required", "whoReceivedRefund"),
         ValidationError(18, 19, "refundOfContributions.error.format", "whoReceivedRefund"),
         ValidationError(19, 18, "reasonForTheOverpaymentOrWriteOff.error.required", "overpaymentReason"),
-        ValidationError(20, 18, "reasonForTheOverpaymentOrWriteOff.error.format", "overpaymentReason")
+        ValidationError(20, 18, "reasonForTheOverpaymentOrWriteOff.error.format", "overpaymentReason"),
+        ValidationError(21, 12, "unauthorisedPaymentRecipientName.member.error.length", "courtNameOfPersonOrOrg", ArraySeq(150)),
+        ValidationError(22, 12, "unauthorisedPaymentRecipientName.member.error.invalid",
+          "courtNameOfPersonOrOrg", ArraySeq("""^[a-zA-Z &`\\\-\'\.^]{0,150}$"""))
       ))
     }
 
