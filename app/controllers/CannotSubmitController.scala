@@ -17,7 +17,6 @@
 package controllers
 
 import controllers.actions._
-import models.enumeration.EventType
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,8 +28,6 @@ import javax.inject.Inject
 class CannotSubmitController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            identify: IdentifierAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: CannotSubmitView
                                          ) extends FrontendBaseController with I18nSupport {

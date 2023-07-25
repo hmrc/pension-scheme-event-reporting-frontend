@@ -25,5 +25,13 @@
 
     <h1 class="govuk-heading-xl">@messages("cannotSubmitEvents.heading")</h1>
     <p class="govuk-body">@messages("cannotSubmitEvents.p1")</p>
-    <a href=@returnUrl class="govuk-button">@messages("site.returnTo", "summary page")</a>
+
+
+    <p class="govuk-body">
+        @govukButton(
+        ButtonViewModel(messages("site.returnTo", "summary page"))
+        .asLink(returnUrl)
+        .withAttribute(("id", "submit"))
+        )
+    </p>
 }

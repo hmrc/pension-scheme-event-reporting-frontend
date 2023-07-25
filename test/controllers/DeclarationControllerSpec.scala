@@ -1,4 +1,9 @@
-/*
+/"eventDetails": {
+    "eventWindUp": {
+      "recordVersion": "001",
+      "dateOfWindUp": "2022-04-06"
+    }
+  },*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

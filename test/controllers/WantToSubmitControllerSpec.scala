@@ -19,9 +19,9 @@ package controllers
 import base.SpecBase
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import forms.WantToSubmitFormProvider
-import models.{EventSummary, TaxYear, UserAnswers, VersionInfo}
 import models.enumeration.EventType
 import models.enumeration.VersionStatus.Compiled
+import models.{EventSummary, TaxYear, UserAnswers, VersionInfo}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
