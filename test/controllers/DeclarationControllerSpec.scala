@@ -118,16 +118,22 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
     }
 
     "must return an exception and error screen when no data is able to be submitted" in {
-
-      val testEmail = "test@test.com"
+      val testEmail = ""
       val applicationNoUA = applicationBuilder(userAnswers = None, extraModules).build()
       val minimalDetails = {
-        MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None, lastName = "Smith")), false, false)
+        MinimalDetails(
+          testEmail,
+          isPsaSuspended = false,
+          None,
+          None,
+          rlsFlag = false,
+          deceasedFlag = false
+        )
       }
 
       running(applicationNoUA) {
         when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
-        val request = FakeRequest(GET, controllers.routes.DeclarationController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.DeclarationController.onPageLoad(waypoints).url)
 
         val result = route(applicationNoUA, request).value
 
