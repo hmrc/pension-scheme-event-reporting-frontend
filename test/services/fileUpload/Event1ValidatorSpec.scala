@@ -391,7 +391,11 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       val csvFile = CSVParser.split(
         s"""$header
                         $commonUaEmployer,"$validAddress",,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
-                        $commonUaEmployer,"$validAddress",Loansdfass,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022"""
+                        $commonUaEmployer,"$validAddress",Loansdfass,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
+                        $commonUaEmployer,"$validAddress",Tangible,,,,,,,,,,,$moreThanMax,,,1000.00,08/11/2022
+                        $commonUaEmployer,"$validAddress",Court,,$moreThanMax,,,,,,,,,,,,1000.00,08/11/2022
+                        $commonUaEmployer,"$validAddress",Court,,Organisation£# Name,,,,,,,,,,,,1000.00,08/11/2022
+                        $commonUaEmployer,"$validAddress",Other,,,,,,,$moreThanMax,,,,,,,1000.00,08/11/2022"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -399,7 +403,12 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       val result = validator.validate(csvFile, ua)
       result mustBe Invalid(Seq(
         ValidationError(1, 10, "paymentNature.error.required", "natureOfPayment"),
-        ValidationError(2, 10, "paymentNature.error.format", "natureOfPayment")
+        ValidationError(2, 10, "paymentNature.error.format", "natureOfPayment"),
+        ValidationError(3, 21, "employerTangibleMoveableProperty.error.length", "tangibleDescription", ArraySeq(150)),
+        ValidationError(4, 12, "unauthorisedPaymentRecipientName.employer.error.length", "courtNameOfPersonOrOrg", ArraySeq(160)),
+        ValidationError(5, 12, "unauthorisedPaymentRecipientName.employer.error.invalid", "courtNameOfPersonOrOrg",
+          ArraySeq("""^[a-zA-Z &`\'\.^\\]{0,160}$""")),
+        ValidationError(6, 17, "employerPaymentNatureDescription.error.length", "otherDescription", ArraySeq(150))
       ))
     }
 
