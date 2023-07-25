@@ -596,6 +596,7 @@ reasonForTheOverpaymentOrWriteOff.dependentNoLongerQualifiedForPension = Depende
 reasonForTheOverpaymentOrWriteOff.other = Other
 reasonForTheOverpaymentOrWriteOff.checkYourAnswersLabel = What is the reason for the overpayment/write off?
 reasonForTheOverpaymentOrWriteOff.error.required = Select the reason for the overpayment/write off
+reasonForTheOverpaymentOrWriteOff.error.format = Enter the reason for the overpayment/write off according to the instructions provided
 reasonForTheOverpaymentOrWriteOff.change.hidden = What is the reason for the overpayment/write off?
 
 refundOfContributions.title = Who received the refund?
