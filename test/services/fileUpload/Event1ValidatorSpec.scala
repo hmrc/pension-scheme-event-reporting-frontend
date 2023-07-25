@@ -326,11 +326,13 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
     }
 
     "return validation errors when present for the address field(s)" in {
+      val overMaxAddLength = "a" * 36
+
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
           member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,,,,,1000.00,08/11/2022
-          member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,",Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022"""
+          member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,"$overMaxAddLength,$overMaxAddLength,$overMaxAddLength,$overMaxAddLength,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022"""
       )
 
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -340,7 +342,10 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         ValidationError(1, 20, "address.addressLine1.error.required", "addressLine1"),
         ValidationError(1, 20, "address.addressLine2.error.required", "addressLine2"),
         ValidationError(1, 20, "address.country.error.required", "country"),
-        ValidationError(2, 20, "address.addressLine1.error.required", "addressLine1")
+        ValidationError(2, 20, "address.addressLine1.error.length", "addressLine1", ArraySeq(35)),
+        ValidationError(2, 20, "address.addressLine2.error.length", "addressLine2", ArraySeq(35)),
+        ValidationError(2, 20, "address.addressLine3.error.length", "addressLine3", ArraySeq(35)),
+        ValidationError(2, 20, "address.addressLine4.error.length", "addressLine4", ArraySeq(35))
       ))
     }
 
