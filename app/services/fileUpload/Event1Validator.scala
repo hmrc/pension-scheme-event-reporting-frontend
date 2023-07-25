@@ -172,7 +172,6 @@ class Event1Validator @Inject()(
   }
 
   private def genericPaymentNatureFieldValidation[A](index: Int,
-                                                     chargeFields: Seq[String],
                                                      fieldInfoForValidation: FieldInfoForValidation[A],
                                                      paymentNature: String): Validated[Seq[ValidationError], A] = {
     val fields = Seq(Field(valueFormField, paymentNature, fieldInfoForValidation.description, fieldInfoForValidation.fieldNum))
@@ -356,7 +355,7 @@ class Event1Validator @Inject()(
   private def validatePaymentNatureMemberJourney(index: Int, columns: Seq[String]): Result = {
 
     val k = resultFromFormValidationResult[MemberPaymentNature](
-      genericPaymentNatureFieldValidation(index, columns, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, memberPaymentNatureFormProvider()),
+      genericPaymentNatureFieldValidation(index, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, memberPaymentNatureFormProvider()),
         mapPaymentNatureMember(columns(10))),
       createCommitItem(index, MemberPaymentNaturePage.apply)
     )
@@ -424,7 +423,7 @@ class Event1Validator @Inject()(
   private def validatePaymentNatureEmployerJourney(index: Int, columns: Seq[String]): Result = {
 
     val k = resultFromFormValidationResult[EmployerPaymentNature](
-      genericPaymentNatureFieldValidation(index, columns, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, employerPaymentNatureFormProvider()), mapPaymentNatureEmployer(columns(10))),
+      genericPaymentNatureFieldValidation(index, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, employerPaymentNatureFormProvider()), mapPaymentNatureEmployer(columns(10))),
       createCommitItem(index, EmployerPaymentNaturePage.apply)
     )
 

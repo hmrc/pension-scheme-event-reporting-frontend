@@ -67,7 +67,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
 
   private val validAddress = "10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB"
   private val commonUaEmployer = "employer,,,,,,,Company Name,12345678"
-  val moreThanMax = "a" * 161
+  val moreThanMax: String = "a" * 161
 
   private val chainUaMembers: (UserAnswers, Int, MembersDetails, Boolean, Boolean, Boolean) =>
     UserAnswers = (ua, index, membersDetails, doYouHoldSignedMandate, valueOfUnauthorisedPayment, schemeUnAuthPaySurcharge) => {
