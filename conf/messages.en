@@ -604,6 +604,7 @@ refundOfContributions.widowOrOrphan = A widow and/or orphan
 refundOfContributions.other = Other
 refundOfContributions.checkYourAnswersLabel = Who received the refund?
 refundOfContributions.error.required = Select who received the refund
+refundOfContributions.error.format = Enter who received the refund according to the instructions provided
 refundOfContributions.change.hidden = Who received the refund?
 
 loanDetails.title = Loan details
