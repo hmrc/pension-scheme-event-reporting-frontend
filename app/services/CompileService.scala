@@ -64,7 +64,7 @@ class CompileService @Inject()(
 
 
 
-  def compileEvent(eventType: EventType, pstr: String, userAnswers: UserAnswers)(implicit ec: ExecutionContext,
+  def compileEvent(eventType: EventType, pstr: String, userAnswers: UserAnswers, delete: Boolean = false)(implicit ec: ExecutionContext,
                                                                                  headerCarrier: HeaderCarrier): Future[Unit] = {
 
     def doCompile(currentVersionInfo: VersionInfo, newVersionInfo: VersionInfo): Future[Unit] = {
@@ -83,7 +83,7 @@ class CompileService @Inject()(
         }
         userAnswersCacheConnector.save(pstr, updatedUA).map { _ =>
           eventReportingConnector
-            .compileEvent(pstr, userAnswers.eventDataIdentifier(eventType, Some(newVersionInfo)), currentVersionInfo.version)
+            .compileEvent(pstr, userAnswers.eventDataIdentifier(eventType, Some(newVersionInfo)), currentVersionInfo.version, delete)
         }
       }
     }
