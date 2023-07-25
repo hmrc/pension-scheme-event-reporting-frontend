@@ -65,6 +65,8 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
     when(mockFrontendAppConfig.validEvent1Header).thenReturn(header)
   }
 
+  private val validAddress = "10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB"
+
   private val chainUaMembers: (UserAnswers, Int, MembersDetails, Boolean, Boolean, Boolean) =>
     UserAnswers = (ua, index, membersDetails, doYouHoldSignedMandate, valueOfUnauthorisedPayment, schemeUnAuthPaySurcharge) => {
 
@@ -104,7 +106,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
                                 member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Early,,,Description,,,,,,,,,,,1000.00,08/11/2022
                                 member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Refund,,,,,,,,,WIDOW/ORPHAN,,,,,1000.00,08/11/2022
                                 member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,Overpayment,,,,,,,,NO LONGER QUALIFIED,,,,,,1000.00,08/11/2022
-                                member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022
+                                member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,Residential,,,,,,,,,,"$validAddress",,,,1000.00,08/11/2022
                                 member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,Tangible,,,,,,,,,,,Description,,,1000.00,08/11/2022
                                 member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Court,,John,,,,,,,,,,,,1000.00,08/11/2022
                                 member,Steven,Bloggs,AA123456C,YES,NO,,,,,Other,,,,,,,Description,,,,,,,1000.00,08/11/2022"""
@@ -166,14 +168,14 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
     }
 
     "must return items in user answers when there are no validation errors for Employer" in {
-      //      val commonUaEmployer = """employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB"""
+            val commonUaEmployer = "employer,,,,,,,Company Name,12345678"
       val validCSVFile = CSVParser.split(
         s"""$header
-                                employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
-                                employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Residential,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022
-                                employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Tangible,,,,,,,,,,,,,,1000.00,08/11/2022
-                                employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Court,,Organisation Name,,,,,,,,,,,,1000.00,08/11/2022
-                                employer,,,,,,,Company Name,12345678,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB",Other,,,,,,,Description,,,,,,,1000.00,08/11/2022"""
+                                $commonUaEmployer,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
+                                $commonUaEmployer,"$validAddress",Residential,,,,,,,,,,"$validAddress",,,,1000.00,08/11/2022
+                                $commonUaEmployer,"$validAddress",Tangible,,,,,,,,,,,,,,1000.00,08/11/2022
+                                $commonUaEmployer,"$validAddress",Court,,Organisation Name,,,,,,,,,,,,1000.00,08/11/2022
+                                $commonUaEmployer,"$validAddress",Other,,,,,,,Description,,,,,,,1000.00,08/11/2022"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
       val result = validator.validate(validCSVFile, ua)
