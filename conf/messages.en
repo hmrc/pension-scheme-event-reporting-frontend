@@ -229,7 +229,7 @@ whoReceivedUnauthPayment.heading = Who received the unauthorised payment or deem
 whoReceivedUnauthPayment.member = Member or someone in respect of the member
 whoReceivedUnauthPayment.employer = Employer or someone in respect of the employer
 whoReceivedUnauthPayment.checkYourAnswersLabel = Who received the unauthorised payment or deemed unauthorised payment?
-whoReceivedUnauthPayment.error.required = Select who received the unauthorised payment or deemed unauthorised payment?
+whoReceivedUnauthPayment.error.required = Select who received the unauthorised payment or deemed unauthorised payment
 whoReceivedUnauthPayment.error.format = Enter who received the unauthorised payment in the correct format according to the instructions provided
 whoReceivedUnauthPayment.change.hidden = Who received the unauthorised payment or deemed unauthorised payment?
 whoReceivedUnauthPayment.member.hint = If a deemed unauthorised payment is being reported, you must select this option
@@ -1584,12 +1584,12 @@ event20A.pspDeclaration.p = I, {0} declare that the:
 event20A.pspDeclaration.item1 =  content of this report has been approved by the scheme administrator
 event20A.pspDeclaration.item2 = scheme administrator named below has authorised me to submit this report
 
-fileUpload.memberDetails.generic.error.firstName = member’s first name is missing or in the wrong format
-fileUpload.memberDetails.generic.error.lastName = member’s last name is missing or in the wrong format
-fileUpload.memberDetails.generic.error.nino = member’s National Insurance number is missing or in the wrong format
+fileUpload.memberDetails.generic.error.firstName = Member’s first name is missing or in the wrong format
+fileUpload.memberDetails.generic.error.lastName = Member’s last name is missing or in the wrong format
+fileUpload.memberDetails.generic.error.nino = Member’s National Insurance number is missing or in the wrong format
 
-fileUpload.taxYear.generic.error = tax year is missing, invalid or in the wrong format
-fileUpload.totalAmounts.generic.error = the total of the member’s pension input amounts is missing, invalid or in the wrong format
+fileUpload.taxYear.generic.error = The tax year is missing, invalid or in the wrong format
+fileUpload.totalAmounts.generic.error = The total of the member’s pension input amounts is missing, invalid or in the wrong format
 
 fileUpload.typeOfProtection.generic.error = "Error for type of protection needs to be confirmed"
 fileUpload.typeOfProtectionReference.generic.error = The protection reference is a maximum of 15 characters and a combination of numbers and letters
