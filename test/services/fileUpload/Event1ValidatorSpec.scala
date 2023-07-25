@@ -66,6 +66,8 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
   }
 
   private val validAddress = "10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB"
+  private val commonUaEmployer = "employer,,,,,,,Company Name,12345678"
+  val moreThanMax = "a" * 161
 
   private val chainUaMembers: (UserAnswers, Int, MembersDetails, Boolean, Boolean, Boolean) =>
     UserAnswers = (ua, index, membersDetails, doYouHoldSignedMandate, valueOfUnauthorisedPayment, schemeUnAuthPaySurcharge) => {
@@ -168,7 +170,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
     }
 
     "must return items in user answers when there are no validation errors for Employer" in {
-            val commonUaEmployer = "employer,,,,,,,Company Name,12345678"
+
       val validCSVFile = CSVParser.split(
         s"""$header
                                 $commonUaEmployer,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
@@ -218,7 +220,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
     }
 
     "return validation errors when present (Member)" in {
-      val moreThanMax = "a" * 151
+
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
@@ -356,6 +358,24 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         ValidationError(3, 20, "address.addressLine4.error.invalid", "addressLine4", ArraySeq("^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$")),
         ValidationError(3, 20, "enterPostcode.error.invalid", "postCode"),
         ValidationError(4, 20, "address.country.error.invalid", "country")
+      ))
+    }
+
+    "return validation errors when present (Employer)" in {
+      DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
+      val csvFile = CSVParser.split(
+        s"""$header
+                        employer,,,,,,,,,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
+                        employer,,,,,,,$moreThanMax,12345678,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022"""
+
+      )
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+
+      val result = validator.validate(csvFile, ua)
+      result mustBe Invalid(Seq(
+        ValidationError(1, 7, "companyDetails.companyName.error.required", "companyName"),
+        ValidationError(1, 8, "companyDetails.companyNumber.error.required", "companyNumber"),
+        ValidationError(2, 7, "companyDetails.companyName.error.length", "companyName", ArraySeq(160))
       ))
     }
 
