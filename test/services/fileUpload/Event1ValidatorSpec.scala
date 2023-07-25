@@ -386,6 +386,23 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       ))
     }
 
+    "return validation errors when present for the Payment Nature fields (Employer)" in {
+      DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
+      val csvFile = CSVParser.split(
+        s"""$header
+                        $commonUaEmployer,"$validAddress",,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
+                        $commonUaEmployer,"$validAddress",Loansdfass,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022"""
+
+      )
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+
+      val result = validator.validate(csvFile, ua)
+      result mustBe Invalid(Seq(
+        ValidationError(1, 10, "paymentNature.error.required", "natureOfPayment"),
+        ValidationError(2, 10, "paymentNature.error.format", "natureOfPayment")
+      ))
+    }
+
   }
 
 }
