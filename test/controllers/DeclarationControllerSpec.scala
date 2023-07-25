@@ -18,7 +18,7 @@ package controllers
 
 import audit.AuditService
 import base.SpecBase
-import connectors.MinimalConnector.MinimalDetails
+import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
 import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector}
 import models.VersionInfo
 import models.enumeration.AdministratorOrPractitioner.Administrator
@@ -35,7 +35,7 @@ import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SubmitService
-import views.html.DeclarationView
+import views.html.{DeclarationView, NoDataEnteredErrorView}
 
 import scala.concurrent.Future
 
@@ -116,6 +116,28 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.ReturnSubmittedController.onPageLoad(waypoints).url
+      }
+    }
+
+    "must return an exception and error screen when no data is able to be submitted" in {
+
+      val testEmail = "test@test.com"
+      val applicationNoUA = applicationBuilder(userAnswers = None, extraModules).build()
+      val minimalDetails = {
+        MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None, lastName = "Smith")), false, false)
+      }
+
+      running(applicationNoUA) {
+        when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+        val request = FakeRequest(GET, controllers.routes.DeclarationController.onPageLoad().url)
+
+        val result = route(applicationNoUA, request).value
+
+        val view = applicationNoUA.injector.instanceOf[NoDataEnteredErrorView]
+
+        status(result) mustEqual EXPECTATION_FAILED
+        contentAsString(result) mustEqual view(yourPensionSchemesUrl = "")(request, messages(applicationNoUA)
+        ).toString
       }
     }
   }

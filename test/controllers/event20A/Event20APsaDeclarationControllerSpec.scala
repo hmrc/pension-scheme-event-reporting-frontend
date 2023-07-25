@@ -80,29 +80,6 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       }
     }
 
-//    "must return error when ???" in {
-//
-//      val testEmail = "test@test.com"
-//      val applicationNoUA = applicationBuilder(userAnswers = None, extraModules).build()
-//      val minimalDetails = {
-//        MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None, lastName = "Smith")), false, false)
-//      }
-//
-//      running(applicationNoUA) {
-//        when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
-//        val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onPageLoad().url)
-//
-//        val result = route(applicationNoUA, request).value
-//
-//        val view = applicationNoUA.injector.instanceOf[NoDataEnteredErrorView]
-//
-//        status(result) mustEqual OK
-//        contentAsString(result) mustEqual view(
-//          schemeName, pstr, taxYear, adminName, controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url)(request, messages(applicationNoUA)
-//        ).toString
-//      }
-//    }
-
     "must redirect to the correct page for method onClick" in {
 
       val testEmail = "test@test.com"
