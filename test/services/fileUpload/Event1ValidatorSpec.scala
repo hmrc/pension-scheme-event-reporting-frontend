@@ -361,12 +361,12 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       ))
     }
 
-    "return validation errors when present (Employer)" in {
+    "return validation errors when present for the Company details fields (Employer)" in {
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
                         employer,,,,,,,,,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
-                        employer,,,,,,,$moreThanMax,12345678,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022"""
+                        employer,,,,,,,$moreThanMax,123456789,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -375,7 +375,8 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       result mustBe Invalid(Seq(
         ValidationError(1, 7, "companyDetails.companyName.error.required", "companyName"),
         ValidationError(1, 8, "companyDetails.companyNumber.error.required", "companyNumber"),
-        ValidationError(2, 7, "companyDetails.companyName.error.length", "companyName", ArraySeq(160))
+        ValidationError(2, 7, "companyDetails.companyName.error.length", "companyName", ArraySeq(160)),
+        ValidationError(2, 8, "companyDetails.companyNumber.error.length", "companyNumber", ArraySeq(8))
       ))
     }
 
