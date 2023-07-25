@@ -367,7 +367,8 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         s"""$header
                         employer,,,,,,,,,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
                         employer,,,,,,,$moreThanMax,123456789,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
-                        employer,,,,,,,{invalid},AB12£212,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022"""
+                        employer,,,,,,,{invalid},AB12£212,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
+                        employer,,,,,,,Company Name,12,"$validAddress",Loans,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -380,7 +381,8 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         ValidationError(2, 7, "companyDetails.companyName.error.length", "companyName", ArraySeq(160)),
         ValidationError(2, 8, "companyDetails.companyNumber.error.length", "companyNumber", ArraySeq(8)),
         ValidationError(3, 7, "companyDetails.companyName.error.invalidCharacters", "companyName", ArraySeq(invalidRegex)),
-        ValidationError(3, 8, "companyDetails.companyNumber.error.invalidCharacters", "companyNumber", ArraySeq("^[A-Za-z0-9 -]{7,8}$"))
+        ValidationError(3, 8, "companyDetails.companyNumber.error.invalidCharacters", "companyNumber", ArraySeq("^[A-Za-z0-9 -]{7,8}$")),
+        ValidationError(4, 8, "companyDetails.companyNumber.error.length", "companyNumber", ArraySeq(6))
       ))
     }
 
