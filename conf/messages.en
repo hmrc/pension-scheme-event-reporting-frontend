@@ -1637,3 +1637,9 @@ removeMember.title = Are you sure you want to remove the {0} charge for this mem
 removeMember.heading = Are you sure you want to remove the {0} charge for this member?
 removeMember.error.required = Select yes if you want to remove the {0} charge for this member
 removeMember.change.hidden = Are you sure you want to remove the {0} charge for this member?
+
+fileUpload.companyOrOrgName.generic.error = The company or organisation name is missing or in the wrong format
+fileUpload.companyNo.generic.error = The company or organisation number is missing or in the wrong format
+fileUpload.postCode.generic.error = The postcode is missing or in the wrong format
+fileUpload.schemeName.loanAmount.generic.error = The scheme name is missing or in the wrong format
+fileUpload.paymentDate.generic.error = The date is missing or in the wrong format
