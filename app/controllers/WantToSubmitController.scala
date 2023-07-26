@@ -65,7 +65,7 @@ class WantToSubmitController @Inject()(
                 userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
                   if(value) {
                     (currentCompileEventTypes.contains(WindUp), currentCompileEventTypes.contains(Event20A), TaxYear.isCurrentTaxYear(updatedAnswers)) match {
-                      case (true, _, _) | (false, false, false) | (_, true, true) =>
+                      case (true, false, _) | (false, false, false) | (false, true, _) | (true, true, _) =>
                         request.loggedInUser.administratorOrPractitioner match {
                           case Administrator => Future.successful(Redirect(routes.DeclarationController.onPageLoad(waypoints)))
                           case Practitioner => Future.successful(Redirect(routes.DeclarationPspController.onPageLoad(waypoints)))
