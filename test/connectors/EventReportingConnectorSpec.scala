@@ -18,8 +18,9 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
+import models.enumeration.EventType.{Event1, Event2}
 import models.enumeration.{Enumerable, EventType}
-import models.{EROverview, EROverviewVersion, EventDataIdentifier, FileUploadOutcomeResponse, TaxYear, UserAnswers}
+import models.{EROverview, EROverviewVersion, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, TaxYear, UserAnswers}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import play.api.libs.json.{JsArray, Json}
@@ -36,19 +37,18 @@ class EventReportingConnectorSpec
 
   private val pstr = "87219363YN"
   private val eventType: EventType = EventType.Event1
-  private val eventType2: EventType = EventType.Event2
   private val referenceStub: String = "123"
   private val reportVersion: String = "reportVersion"
   private val userAnswers = UserAnswers()
 
   private val validResponse = Seq(
-    eventType, eventType2
+    EventSummary(Event1, 2),
+    EventSummary(Event2, 1)
   )
 
-  import EventType.enumerable
-
   private val validResponseJson = Json.arr(
-    eventType, eventType2
+    Json.obj("eventType" -> "1", "recordVersion" -> 2),
+    Json.obj("eventType" -> "2", "recordVersion" -> 1)
   )
 
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
@@ -59,6 +59,7 @@ class EventReportingConnectorSpec
   private val eventReportSummaryCacheUrl = "/pension-scheme-event-reporting/event-summary"
   private val eventReportCompileUrl = "/pension-scheme-event-reporting/compile"
   private val eventReportSubmitUrl = "/pension-scheme-event-reporting/submit-event-declaration-report"
+  private val deleteMemberUrl = "/pension-scheme-event-reporting/delete-member"
 
   private def event20AReportSubmitUrl = "/pension-scheme-event-reporting/submit-event20a-declaration-report"
 
@@ -131,7 +132,7 @@ class EventReportingConnectorSpec
             noContent
           )
       )
-      connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1")).map {
+      connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1"), 1).map {
         _ mustBe()
       }
     }
@@ -146,7 +147,35 @@ class EventReportingConnectorSpec
       )
 
       recoverToSucceededIf[HttpException] {
-        connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1"))
+        connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1"), 1)
+      }
+    }
+  }
+
+  "deleteMember" must {
+    "return unit for successful post" in {
+      server.stubFor(
+        post(urlEqualTo(deleteMemberUrl))
+          .willReturn(
+            noContent
+          )
+      )
+      connector.deleteMember(pstr, EventDataIdentifier(eventType, "2020", "1"), 0, "0").map {
+        _ mustBe()
+      }
+    }
+
+    "return BadRequestException when the backend has returned bad request response" in {
+      server.stubFor(
+        post(urlEqualTo(deleteMemberUrl))
+          .willReturn(
+            badRequest
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      recoverToSucceededIf[HttpException] {
+        connector.deleteMember(pstr, EventDataIdentifier(eventType, "2020", "1"), 0,"0")
       }
     }
   }

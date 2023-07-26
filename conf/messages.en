@@ -121,6 +121,7 @@ eventSelection.event7.hint = Pension commencement lump sum more than 25% of the 
 eventSelection.event8 = Event 8
 eventSelection.event8.hint = Pension commencement lump sum with primary/enhanced protection
 eventSelection.event8a = Event 8A
+eventSelection.event8A = Event 8A
 eventSelection.event8a.hint = Stand-alone lump sums
 eventSelection.event10 = Event 10
 eventSelection.event10.hint = The scheme becomes or ceases to be an investment regulated pension scheme
@@ -145,6 +146,7 @@ eventSelection.event22.hint = Annual allowance
 eventSelection.event23 = Event 23
 eventSelection.event23.hint = Dual annual allowances (money purchase pension savings statement)
 eventSelection.eventWoundUp = Scheme has wound up
+eventSelection.eventWindUp = this wind up event and reinstate the scheme
 eventSelection.checkYourAnswersLabel = Check your answers
 eventSelection.error.required = Select the event you want to add to the event report
 eventSelection.change.hidden = eventSelection
@@ -1040,6 +1042,12 @@ removeEvent18.checkYourAnswersLabel = Are you sure you want to remove Event 18: 
 removeEvent18.error.required = Select if you want to remove Event 18
 removeEvent18.change.hidden = Are you sure you want to remove Event 18: Scheme chargeable payment?
 
+removeEvent.title = Are you sure you want to remove {0}?
+removeEvent.heading = Are you sure you want to remove {0}?
+removeEvent.checkYourAnswersLabel = Are you sure you want to remove {0}?
+removeEvent.error.required = Select yes if you want to remove {0}
+removeEvent.change.hidden = Are you sure you want to remove {0}?
+
 taxYear.title = Which tax year are you submitting an event report for?
 taxYear.heading = Which tax year are you submitting an event report for?
 taxYear.checkYourAnswersLabel = Which tax year are you submitting an event report for?
@@ -1589,7 +1597,7 @@ fileUpload.memberDetails.generic.error.lastName = member’s last name is missin
 fileUpload.memberDetails.generic.error.nino = member’s National Insurance number is missing or in the wrong format
 
 fileUpload.taxYear.generic.error = tax year is missing, invalid or in the wrong format
-fileUpload.totalAmounts.generic.error = total of the member’s pension input amounts is missing, invalid or in the wrong format
+fileUpload.totalAmounts.generic.error = the total of the member’s pension input amounts is missing, invalid or in the wrong format
 
 fileUpload.typeOfProtection.generic.error = "Error for type of protection needs to be confirmed"
 fileUpload.typeOfProtectionReference.generic.error = The protection reference is a maximum of 15 characters and a combination of numbers and letters
@@ -1637,6 +1645,8 @@ removeMember.title = Are you sure you want to remove the {0} charge for this mem
 removeMember.heading = Are you sure you want to remove the {0} charge for this member?
 removeMember.error.required = Select yes if you want to remove the {0} charge for this member
 removeMember.change.hidden = Are you sure you want to remove the {0} charge for this member?
+
+membersDetails.error.nino.notUnique = This National Insurance number is already in use for this event and cannot be duplicated
 
 fileUpload.companyOrOrgName.generic.error = company or organisation name is missing or in the wrong format
 fileUpload.companyNo.generic.error = company or organisation number is missing or in the wrong format

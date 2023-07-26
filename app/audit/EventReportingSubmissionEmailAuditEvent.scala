@@ -21,6 +21,7 @@ import models.enumeration.AdministratorOrPractitioner
 
 case class EventReportingSubmissionEmailAuditEvent(
                                                     psaOrPspId: String,
+                                                    pstr: String,
                                                     schemeAdministratorType: AdministratorOrPractitioner,
                                                     emailAddress: String,
                                                     reportVersion: String,
@@ -33,13 +34,14 @@ case class EventReportingSubmissionEmailAuditEvent(
     val psaOrPspIdJson = schemeAdministratorType match {
       case AdministratorOrPractitioner.Administrator =>
         Map("PensionSchemeAdministratorId" -> psaOrPspId)
-      case _ => Map("PensionSchemeAdministratorId" -> psaOrPspId)
+      case _ => Map("PensionSchemePractitionerId" -> psaOrPspId)
     }
     Map(
       "emailAddress" -> emailAddress,
       "submittedBy" -> schemeAdministratorType.toString,
       "reportVersion" -> reportVersion,
-      "event" -> emailStatus.toString
+      "event" -> emailStatus.toString,
+      "PensionSchemeTaxReference" -> pstr
     ) ++ psaOrPspIdJson
   }
 }

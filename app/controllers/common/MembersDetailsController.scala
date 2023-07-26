@@ -21,11 +21,13 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.common.MembersDetailsFormProvider
 import models.Index.indexToInt
 import models.enumeration.EventType
+import models.enumeration.EventType.Event1
 import models.requests.OptionalDataRequest
 import models.{Index, UserAnswers}
 import pages.Waypoints
-import pages.common.MembersDetailsPage
+import pages.common.{MembersDetailsPage, MembersOrEmployersPage, MembersPage}
 import play.api.i18n.I18nSupport
+import play.api.libs.json.{JsPath, Reads}
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.common.MembersDetailsView
@@ -40,14 +42,21 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
                                          formProvider: MembersDetailsFormProvider,
                                          view: MembersDetailsView
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-
+  private def memberNinos(eventType: EventType)(implicit request: OptionalDataRequest[_]): Seq[String] = {
+    val readsNINumber: Reads[Option[String]] = (JsPath \ "membersDetails" \ "nino").readNullable[String]
+    val pg = eventType match {
+      case Event1 => MembersOrEmployersPage(eventType)
+      case _ => MembersPage(eventType)
+    }
+    request.userAnswers.map(_.getAll(pg.path)(readsNINumber.map(_.toSeq))).toSeq.flatten.flatten
+  }
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index, memberPageNo: Int): Action[AnyContent] =
     (identify andThen getData(eventType)) { implicit request =>
-    val form = formProvider(eventType, memberPageNo)
-    val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, indexToInt(index), memberPageNo))).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, eventType, memberPageNo, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index, memberPageNo)))
-  }
+      val form = formProvider(eventType, memberNinos(eventType), memberPageNo)
+      val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, indexToInt(index), memberPageNo))).fold(form)(form.fill)
+      Ok(view(preparedForm, waypoints, eventType, memberPageNo, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index, memberPageNo)))
+    }
 
   def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index, memberPageNo: Int): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
@@ -66,7 +75,7 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
                          postCall: => Call,
                          memberPageNo: Int
                         )(implicit request: OptionalDataRequest[_]): Future[Result] = {
-    val form = formProvider(eventType,memberPageNo)
+    val form = formProvider(eventType, memberNinos(eventType), memberPageNo)
     form.bindFromRequest().fold(
       formWithErrors =>
         Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, memberPageNo, postCall))),

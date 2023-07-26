@@ -64,13 +64,13 @@ class CompileService @Inject()(
 
 
 
-  def compileEvent(eventType: EventType, pstr: String, userAnswers: UserAnswers)(implicit ec: ExecutionContext,
+  def compileEvent(eventType: EventType, pstr: String, userAnswers: UserAnswers, delete: Boolean = false)(implicit ec: ExecutionContext,
                                                                                  headerCarrier: HeaderCarrier): Future[Unit] = {
 
-    def doCompile(oldVersionInfo: VersionInfo, newVersionInfo: VersionInfo): Future[Unit] = {
+    def doCompile(currentVersionInfo: VersionInfo, newVersionInfo: VersionInfo): Future[Unit] = {
 
-      val futureOptChangedOverviewSeq = if (newVersionInfo.version > oldVersionInfo.version) {
-        updateUAVersionAndOverview(pstr, userAnswers, oldVersionInfo.version, newVersionInfo.version)
+      val futureOptChangedOverviewSeq = if (newVersionInfo.version > currentVersionInfo.version) {
+        updateUAVersionAndOverview(pstr, userAnswers, currentVersionInfo.version, newVersionInfo.version)
       } else {
         Future.successful(None)
       }
@@ -82,7 +82,8 @@ class CompileService @Inject()(
           case _ => uaNonEventTypeVersionUpdated
         }
         userAnswersCacheConnector.save(pstr, updatedUA).map { _ =>
-          eventReportingConnector.compileEvent(pstr, userAnswers.eventDataIdentifier(eventType, Some(newVersionInfo)))
+          eventReportingConnector
+            .compileEvent(pstr, userAnswers.eventDataIdentifier(eventType, Some(newVersionInfo)), currentVersionInfo.version, delete)
         }
       }
     }

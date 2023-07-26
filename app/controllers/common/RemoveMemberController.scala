@@ -16,19 +16,16 @@
 
 package controllers.common
 
-import connectors.UserAnswersCacheConnector
+import connectors.EventReportingConnector
 import controllers.actions._
 import controllers.common.RemoveMemberController.eventTypeMessage
 import forms.common.RemoveMemberFormProvider
-import models.Index.indexToInt
-import models.common.MembersSummary
+import models.Index
 import models.enumeration.EventType
 import models.enumeration.EventType._
-import models.event1.MembersOrEmployersSummary
-import models.{Index, UserAnswers}
-import pages.Waypoints
-import pages.common.{MembersOrEmployersPage, MembersPage, RemoveMemberPage}
-import play.api.i18n.{I18nSupport, Messages}
+import pages.{VersionInfoPage, Waypoints}
+import pages.common.RemoveMemberPage
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.common.RemoveMemberView
@@ -41,11 +38,10 @@ class RemoveMemberController @Inject()(
                                         identify: IdentifierAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
-                                        userAnswersCacheConnector: UserAnswersCacheConnector,
+                                        eventReportingConnector: EventReportingConnector,
                                         formProvider: RemoveMemberFormProvider,
                                         view: RemoveMemberView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-
 
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
@@ -60,31 +56,33 @@ class RemoveMemberController @Inject()(
     implicit request =>
       val form = formProvider(eventTypeMessage(eventType))
 
+      def deleteMember(delete:Boolean) = {
+        val ua = if (delete) {
+          eventReportingConnector.deleteMember(request.pstr, request.userAnswers.eventDataIdentifier(eventType), request.userAnswers.get(VersionInfoPage).map(_.version).getOrElse(0), index.id.toString )
+            .map(_ => request.userAnswers)
+        } else {
+          Future.successful(request.userAnswers)
+        }
+
+        ua.map { ua =>
+          Redirect(RemoveMemberPage(eventType, index).navigate(waypoints, ua, ua).route)
+        }
+      }
+
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(
             view(formWithErrors, waypoints, eventType, eventTypeMessage(eventType), index))
           ),
-        value => {
-          val maybeUserAnswersWithRemovedMember: UserAnswers = if (value) {
-            eventType match {
-              case Event1 => request.userAnswers.removeWithPath(MembersOrEmployersPage(eventType).apply(index))
-              case _ => request.userAnswers.removeWithPath(MembersPage(eventType).apply(index))
-            }
-          } else {
-            request.userAnswers
-          }
-          val updatedAnswers = maybeUserAnswersWithRemovedMember.setOrException(RemoveMemberPage(eventType, index), value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(RemoveMemberPage(eventType, index).navigate(waypoints, maybeUserAnswersWithRemovedMember, updatedAnswers).route)
-          }
-        }
+        deleteMember
       )
   }
+
 }
 
 object RemoveMemberController {
   def eventTypeMessage(eventType: EventType): String = {
+    //TODO: Replace with messages. -Pavel Vjalicin
     eventType match {
       case Event1 => "unauthorised payment"
       case Event2 => "lump sum death benefit payment"

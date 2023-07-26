@@ -20,8 +20,9 @@ import base.SpecBase
 import connectors.EventReportingConnector
 import forms.EventSummaryFormProvider
 import models.enumeration.EventType
+import models.enumeration.EventType.{Event1, Event18}
 import models.enumeration.VersionStatus.Compiled
-import models.{TaxYear, UserAnswers, VersionInfo}
+import models.{EventSummary, TaxYear, UserAnswers, VersionInfo}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -62,7 +63,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
         .setOrException(TaxYearPage, TaxYear("2022"))
         .setOrException(VersionInfoPage, VersionInfo(1, Compiled))
 
-      val seqOfEvents = Seq(EventType.Event1, EventType.Event18)
+      val seqOfEvents = Seq(EventSummary(EventType.Event1, 1), EventSummary(EventType.Event18, 1))
 
       when(mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
         Future.successful(seqOfEvents)
@@ -95,7 +96,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
                 ),
                 ActionItem(
                   content = Text(Message("site.remove")),
-                  href = "#"
+                  href = common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, Event1).url
                 )
               )
             ))
@@ -111,7 +112,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
               items = Seq(
                 ActionItem(
                   content = Text(Message("site.remove")),
-                  href = event18.routes.RemoveEvent18Controller.onPageLoad(EmptyWaypoints).url
+                  href = common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, Event18).url
                 )
               )
             ))
@@ -119,7 +120,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
         })
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, mappedEvents, "2023", schemeName)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, mappedEvents, "2023", schemeName, Some(1))(request, messages(application)).toString
       }
     }
 

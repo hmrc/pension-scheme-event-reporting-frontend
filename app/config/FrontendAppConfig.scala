@@ -94,6 +94,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
                                    requestId: String,
                                    encryptedEmail: String,
                                    encryptedPsaId: String,
+                                   encryptedPstr: String,
                                    reportVersion: String
                                  ) = s"$eventReportingUrl${
     configuration.get[String](path = "urls.emailCallback")
@@ -102,6 +103,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
         requestId,
         encryptedEmail,
         encryptedPsaId,
+        encryptedPstr,
         reportVersion
       )
   }"

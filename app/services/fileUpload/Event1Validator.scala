@@ -29,7 +29,6 @@ import forms.event1.employer.{CompanyDetailsFormProvider, LoanDetailsFormProvide
 import forms.event1.member._
 import forms.event1.{PaymentNatureFormProvider => MemberPaymentNatureFormProvider, _}
 import models.address.Address
-import models.common.MembersDetails
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.enumeration.EventType
 import models.enumeration.EventType.Event1
@@ -331,7 +330,7 @@ class Event1Validator @Inject()(
   override protected def validateFields(index: Int,
                                         columns: Seq[String],
                                         taxYear: Int,
-                                        members: Seq[MembersDetails])
+                                        memberNinos: Seq[String])
                                        (implicit messages: Messages): Result = {
 
     val a = resultFromFormValidationResult[WhoReceivedUnauthPayment](
@@ -343,7 +342,7 @@ class Event1Validator @Inject()(
       case Result(_, Valid(seqCommitItems)) =>
         seqCommitItems.headOption match {
           case Some(ci) => ci.value.as[JsString].value match {
-            case "member" => memberValidation(a, index, columns, taxYear, members)
+            case "member" => memberValidation(a, index, columns, taxYear, memberNinos)
             case "employer" => employerValidation(a, index, columns, taxYear)
           }
           case _ => throw new RuntimeException("Something went wrong: member or employer not entered/found")
@@ -495,12 +494,12 @@ class Event1Validator @Inject()(
                                index: Int,
                                columns: Seq[String],
                                taxYear: Int,
-                               members: Seq[MembersDetails])
+                               memberNinos: Seq[String])
                               (implicit messages: Messages): Result = {
     val b = resultFromFormValidationResultForMembersDetails(
-      memberDetailsValidation(index, columns, membersDetailsFormProvider(Event1, index)),
+      memberDetailsValidation(index, columns, membersDetailsFormProvider(Event1, memberNinos, index)),
       createCommitItem(index, MembersDetailsPage.apply(Event1, _)),
-      members
+      memberNinos
     )
 
     val c = resultFromFormValidationResult[Boolean](
