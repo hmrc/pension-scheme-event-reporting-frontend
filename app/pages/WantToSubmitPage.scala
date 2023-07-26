@@ -29,8 +29,6 @@ case object WantToSubmitPage extends QuestionPage[Boolean] {
 
   override def route(waypoints: Waypoints): Call =
     routes.WantToSubmitController.onPageLoad(waypoints)
-
-  //TODO change next normal page???
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     DeclarationPage
   }
