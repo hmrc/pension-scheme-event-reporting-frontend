@@ -23,7 +23,6 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import forms.common.MembersDetailsFormProvider
 import forms.event6.{AmountCrystallisedAndDateFormProvider, InputProtectionTypeFormProvider, TypeOfProtectionFormProvider}
-import models.common.MembersDetails
 import models.enumeration.EventType
 import models.enumeration.EventType.Event6
 import models.event6.{CrystallisedDetails, TypeOfProtection}
@@ -126,12 +125,13 @@ class Event6Validator @Inject()(
   override protected def validateFields(index: Int,
                                         columns: Seq[String],
                                         taxYear: Int,
-                                        members: Seq[MembersDetails])
+                                        memberNinos: Seq[String])
                                        (implicit messages: Messages): Result = {
+
     val a = resultFromFormValidationResultForMembersDetails(
-      memberDetailsValidation(index, columns, membersDetailsFormProvider(Event6, index)),
+      memberDetailsValidation(index, columns, membersDetailsFormProvider(Event6, memberNinos, index)),
       createCommitItem(index, MembersDetailsPage.apply(Event6, _)),
-      members
+      memberNinos
     )
 
     val b = resultFromFormValidationResult[TypeOfProtection](

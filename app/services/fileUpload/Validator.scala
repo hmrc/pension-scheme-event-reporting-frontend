@@ -37,14 +37,14 @@ object ValidatorErrorMessages {
 }
 
 object Validator {
-  case class Result(members: Seq[MembersDetails], validated: Validated[Seq[ValidationError], Seq[CommitItem]])
+  case class Result(memberNinos: Seq[String], validated: Validated[Seq[ValidationError], Seq[CommitItem]])
 
   implicit def monoidResult: Monoid[Result] = new Monoid[Result] {
     override def empty: Result = Result(Nil, Valid(Nil))
 
     override def combine(x: Result, y: Result): Result = {
       Result(
-        members = x.members ++ y.members,
+        memberNinos = x.memberNinos ++ y.memberNinos,
         validated = x.validated.combine(y.validated)
       )
     }
@@ -94,14 +94,14 @@ trait Validator {
                               (implicit messages: Messages): Result = {
     rows.zipWithIndex.foldLeft[Result](monoidResult.empty) {
       case (acc, Tuple2(_, 0)) => acc
-      case (acc, Tuple2(row, index)) => Seq(acc, validateFields(index, row.toIndexedSeq, taxYear, acc.members)).combineAll
+      case (acc, Tuple2(row, index)) => Seq(acc, validateFields(index, row.toIndexedSeq, taxYear, acc.memberNinos)).combineAll
     }
   }
 
   protected def validateFields(index: Int,
                                columns: Seq[String],
                                taxYear: Int,
-                               members: Seq[MembersDetails]
+                               memberNinos: Seq[String]
                               )(implicit messages: Messages): Result
 
   protected def memberDetailsValidation(index: Int, columns: Seq[String],
@@ -144,11 +144,11 @@ trait Validator {
 
   protected def resultFromFormValidationResultForMembersDetails(formValidationResult: Validated[Seq[ValidationError], MembersDetails],
                                                                 generateCommitItem: MembersDetails => CommitItem,
-                                                                members: Seq[MembersDetails]): Result = {
+                                                                memberNinos: Seq[String]): Result = {
     formValidationResult match {
-      case Invalid(resultAErrors) => Result(members, Invalid(resultAErrors))
+      case Invalid(resultAErrors) => Result(memberNinos, Invalid(resultAErrors))
       case Valid(resultAObject) => Result(
-        members = members ++ Seq(resultAObject),
+        memberNinos = memberNinos ++ Seq(resultAObject.nino),
         validated = Valid(Seq(generateCommitItem(resultAObject))))
     }
   }
