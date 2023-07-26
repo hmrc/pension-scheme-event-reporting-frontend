@@ -283,6 +283,23 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       ))
     }
 
+    "return validation errors when present for a duplicate nino (Member)" in {
+
+      DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
+      val csvFile = CSVParser.split(
+        s"""$header
+                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022"""
+
+      )
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+
+      val result = validator.validate(csvFile, ua)
+      result mustBe Invalid(Seq(
+        ValidationError(2, 3, "membersDetails.error.nino.notUnique", "nino")
+      ))
+    }
+
     "return validation errors when present for the payment amount field (Member)" in {
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
