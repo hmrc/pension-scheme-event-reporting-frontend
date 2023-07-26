@@ -67,7 +67,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
 
   private val validAddress = "10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB"
   private val commonUaEmployer = "employer,,,,,,,Company Name,12345678"
-  val moreThanMax: String = "a" * 161
+  private val moreThanMax: String = "a" * 161
 
   private val chainUaMembers: (UserAnswers, Int, MembersDetails, Boolean, Boolean, Boolean) =>
     UserAnswers = (ua, index, membersDetails, doYouHoldSignedMandate, valueOfUnauthorisedPayment, schemeUnAuthPaySurcharge) => {
@@ -102,67 +102,67 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
     "must return items in user answers when there are no validation errors for Member" in {
       val validCSVFile = CSVParser.split(
         s"""$header
-                                member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                                member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,08/11/2022
-                                member,Joe,Bloggs,AA234567D,YES,NO,,,,,ERROR,,,,Description,,,,,,,,,,1000.00,08/11/2022
-                                member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,EARLY,,,Description,,,,,,,,,,,1000.00,08/11/2022
-                                member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,REFUND,,,,,,,,,WIDOW/ORPHAN,,,,,1000.00,08/11/2022
-                                member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,OVERPAYMENT,,,,,,,,NO LONGER QUALIFIED,,,,,,1000.00,08/11/2022
-                                member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,"$validAddress",,,,1000.00,08/11/2022
-                                member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,TANGIBLE,,,,,,,,,,,Description,,,1000.00,08/11/2022
-                                member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,COURT,,John,,,,,,,,,,,,1000.00,08/11/2022
-                                member,Steven,Bloggs,AA123456C,YES,NO,,,,,OTHER,,,,,,,Description,,,,,,,1000.00,08/11/2022"""
+                                member,Joe,Bloggs,AA123456A,YES,YES,YES,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                                member,Joe,Bloggs,AA123456B,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,08/11/2022
+                                member,Joe,Bloggs,AA123456C,YES,NO,,,,,ERROR,,,,Description,,,,,,,,,,1000.00,08/11/2022
+                                member,Joe,Bloggs,AA123456D,YES,YES,NO,,,,EARLY,,,Description,,,,,,,,,,,1000.00,08/11/2022
+                                member,Joe,Bloggs,AA234567A,YES,YES,YES,,,,REFUND,,,,,,,,,WIDOW/ORPHAN,,,,,1000.00,08/11/2022
+                                member,Joe,Bloggs,AA234567B,YES,YES,NO,,,,OVERPAYMENT,,,,,,,,NO LONGER QUALIFIED,,,,,,1000.00,08/11/2022
+                                member,Joe,Bloggs,AA234567C,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,"$validAddress",,,,1000.00,08/11/2022
+                                member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,TANGIBLE,,,,,,,,,,,Description,,,1000.00,08/11/2022
+                                member,Joe,Bloggs,AA345678A,YES,YES,YES,,,,COURT,,John,,,,,,,,,,,,1000.00,08/11/2022
+                                member,Joe,Bloggs,AA345678B,YES,NO,,,,,OTHER,,,,,,,Description,,,,,,,1000.00,08/11/2022"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
       val result = validator.validate(validCSVFile, ua)
       result mustBe Valid(ua
-        .pipe(chainUaMembers(_, 0, SampleData.memberDetails, true, true, true))
+        .pipe(chainUaMembers(_, 0, SampleData.memberDetailsEr1, true, true, true))
         .setOrException(PaymentNaturePage(0).path, Json.toJson(BenefitInKind.toString))
         .setOrException(BenefitInKindBriefDescriptionPage(0).path, Json.toJson("Description"))
         .setOrException(PaymentValueAndDatePage(0).path, Json.toJson(SampleData.paymentDetails))
 
-        .pipe(chainUaMembers(_, 1, SampleData.memberDetails2, true, true, false))
+        .pipe(chainUaMembers(_, 1, SampleData.memberDetailsEr2, true, true, false))
         .setOrException(PaymentNaturePage(1).path, Json.toJson(TransferToNonRegPensionScheme.toString))
         .setOrException(WhoWasTheTransferMadePage(1).path, Json.toJson(AnEmployerFinanced.toString))
         .setOrException(SchemeDetailsPage(1).path, Json.toJson(SampleData.schemeDetails))
         .setOrException(PaymentValueAndDatePage(1).path, Json.toJson(SampleData.paymentDetails))
 
-        .pipe(chainUaMembers(_, 2, SampleData.memberDetails, true, false, true))
+        .pipe(chainUaMembers(_, 2, SampleData.memberDetails3, true, false, true))
         .setOrException(PaymentNaturePage(2).path, Json.toJson(ErrorCalcTaxFreeLumpSums.toString))
         .setOrException(ErrorDescriptionPage(2).path, Json.toJson("Description"))
         .setOrException(PaymentValueAndDatePage(2).path, Json.toJson(SampleData.paymentDetails))
 
-        .pipe(chainUaMembers(_, 3, SampleData.memberDetails2, true, true, false))
+        .pipe(chainUaMembers(_, 3, SampleData.memberDetails4, true, true, false))
         .setOrException(PaymentNaturePage(3).path, Json.toJson(BenefitsPaidEarly.toString))
         .setOrException(BenefitsPaidEarlyPage(3).path, Json.toJson("Description"))
         .setOrException(PaymentValueAndDatePage(3).path, Json.toJson(SampleData.paymentDetails))
 
-        .pipe(chainUaMembers(_, 4, SampleData.memberDetails, true, true, true))
+        .pipe(chainUaMembers(_, 4, SampleData.memberDetails5, true, true, true))
         .setOrException(PaymentNaturePage(4).path, Json.toJson(RefundOfContributions.toString))
         .setOrException(RefundOfContributionsPage(4).path, Json.toJson(RefundOfContributionsObject.WidowOrOrphan.toString))
         .setOrException(PaymentValueAndDatePage(4).path, Json.toJson(SampleData.paymentDetails))
 
-        .pipe(chainUaMembers(_, 5, SampleData.memberDetails2, true, true, false))
+        .pipe(chainUaMembers(_, 5, SampleData.memberDetails6, true, true, false))
         .setOrException(PaymentNaturePage(5).path, Json.toJson(OverpaymentOrWriteOff.toString))
         .setOrException(ReasonForTheOverpaymentOrWriteOffPage(5).path, Json.toJson(ReasonForTheOverpaymentOrWriteOff.DependentNoLongerQualifiedForPension.toString))
         .setOrException(PaymentValueAndDatePage(5).path, Json.toJson(SampleData.paymentDetails))
 
-        .pipe(chainUaMembers(_, 6, SampleData.memberDetails, true, true, false))
+        .pipe(chainUaMembers(_, 6, SampleData.memberDetails7, true, true, false))
         .setOrException(PaymentNaturePage(6).path, Json.toJson(ResidentialPropertyHeld.toString))
         .setOrException(ManualAddressPage(Event1MemberPropertyAddressJourney, 6).path, Json.toJson(SampleData.memberAddress))
         .setOrException(PaymentValueAndDatePage(6).path, Json.toJson(SampleData.paymentDetails))
 
-        .pipe(chainUaMembers(_, 7, SampleData.memberDetails2, true, true, true))
+        .pipe(chainUaMembers(_, 7, SampleData.memberDetails8, true, true, true))
         .setOrException(PaymentNaturePage(7).path, Json.toJson(TangibleMoveablePropertyHeld.toString))
         .setOrException(MemberTangibleMoveablePropertyPage(7).path, Json.toJson("Description"))
         .setOrException(PaymentValueAndDatePage(7).path, Json.toJson(SampleData.paymentDetails))
 
-        .pipe(chainUaMembers(_, 8, SampleData.memberDetails, true, true, true))
+        .pipe(chainUaMembers(_, 8, SampleData.memberDetails9, true, true, true))
         .setOrException(PaymentNaturePage(8).path, Json.toJson(CourtOrConfiscationOrder.toString))
         .setOrException(UnauthorisedPaymentRecipientNamePage(8).path, Json.toJson("John"))
         .setOrException(PaymentValueAndDatePage(8).path, Json.toJson(SampleData.paymentDetails))
 
-        .pipe(chainUaMembers(_, 9, SampleData.memberDetails2, true, false, true))
+        .pipe(chainUaMembers(_, 9, SampleData.memberDetails10, true, false, true))
         .setOrException(PaymentNaturePage(9).path, Json.toJson(MemberOther.toString))
         .setOrException(MemberPaymentNatureDescriptionPage(9).path, Json.toJson("Description"))
         .setOrException(PaymentValueAndDatePage(9).path, Json.toJson(SampleData.paymentDetails))
@@ -226,26 +226,26 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         s"""$header
                         dsfgsd*,Joe,Bloggs,AA234567D,YES,YES,YES,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
                         member,,Bloggs12213,AA234567Dasdfsdf,YES,YES,YES,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,,,YES,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                        ,Joe,Bloggs,AA234567D,YES,YES,YES,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,BENEFIT,$moreThanMax,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,,"SchemeName,SchemeReference",1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YESasdf,YESasdf,NO,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,sdf,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,Benefitadfadf,Description,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,sfasdf!2,"SchemeName,SchemeReference",1000.00,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"$moreThanMax,$moreThanMax",1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,NO,,,,,ERROR,,,,$moreThanMax,,,,,,,,,,1000.00,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,YES,,,,TANGIBLE,,,,,,,,,,,$moreThanMax,,,1000.00,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,NO,,,,,OTHER,,,,,,,$moreThanMax,,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,REFUND,,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,REFUND,,,,,,,,,WIDOW/ORPHANsdfgsdf,,,,,1000.00,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,OVERPAYMENT,,,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,OVERPAYMENT,,,,,,,,ajsf%245,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,COURT,,$moreThanMax,,,,,,,,,,,,1000.00,08/11/2022
-                        member,Joe,Bloggs,AA234567D,YES,YES,YES,,,,COURT,,John12&,,,,,,,,,,,,1000.00,08/11/2022"""
+                        member,Joe,Bloggs,AA234567A,,,YES,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA234567B,YES,YES,,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        ,Joe,Bloggs,AA234567C,YES,YES,YES,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA123456A,YES,YES,YES,,,,,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA123456B,YES,YES,YES,,,,BENEFIT,$moreThanMax,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Steven,Bloggs,AA394821C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,,"SchemeName,SchemeReference",1000.00,08/11/2022
+                        member,Joe,Bloggs,AA910792D,YESasdf,YESasdf,NO,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA911842D,YES,YES,sdf,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA810238D,YES,YES,YES,,,,Benefitadfadf,Description,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Steven,Bloggs,AA995196C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,sfasdf!2,"SchemeName,SchemeReference",1000.00,08/11/2022
+                        member,Steven,Bloggs,AA819927C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"$moreThanMax,$moreThanMax",1000.00,08/11/2022
+                        member,Joe,Bloggs,AA882118D,YES,NO,,,,,ERROR,,,,$moreThanMax,,,,,,,,,,1000.00,08/11/2022
+                        member,Steven,Bloggs,AA881753C,YES,YES,YES,,,,TANGIBLE,,,,,,,,,,,$moreThanMax,,,1000.00,08/11/2022
+                        member,Steven,Bloggs,AA911736C,YES,NO,,,,,OTHER,,,,,,,$moreThanMax,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA911058D,YES,YES,YES,,,,REFUND,,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA388401D,YES,YES,YES,,,,REFUND,,,,,,,,,WIDOW/ORPHANsdfgsdf,,,,,1000.00,08/11/2022
+                        member,Steven,Bloggs,AA488195C,YES,YES,NO,,,,OVERPAYMENT,,,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Steven,Bloggs,AA711924C,YES,YES,NO,,,,OVERPAYMENT,,,,,,,,ajsf%245,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA833964D,YES,YES,YES,,,,COURT,,$moreThanMax,,,,,,,,,,,,1000.00,08/11/2022
+                        member,Joe,Bloggs,AA901167D,YES,YES,YES,,,,COURT,,John12&,,,,,,,,,,,,1000.00,08/11/2022"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -287,11 +287,11 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
-                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",,08/11/2022
-                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1.1.0,08/11/2022
+                            member,Steven,Bloggs,AA123456A,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",,08/11/2022
+                            member,Steven,Bloggs,AA123456B,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1.1.0,08/11/2022
                             member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000,08/11/2022
-                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",-1000.00,08/11/2022
-                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",9999999999.99,08/11/2022"""
+                            member,Steven,Bloggs,AA123456D,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",-1000.00,08/11/2022
+                            member,Steven,Bloggs,AA223456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",9999999999.99,08/11/2022"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -310,11 +310,11 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
-                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,
-                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,/11/2022
+                            member,Steven,Bloggs,AA123456A,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,
+                            member,Steven,Bloggs,AA123456B,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,/11/2022
                             member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,08//
-                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,08/11/2025
-                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,08/11/s"""
+                            member,Steven,Bloggs,AA123456D,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,08/11/2025
+                            member,Steven,Bloggs,AA123457C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,08/11/s"""
 
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -335,9 +335,9 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
-              member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,,,,,1000.00,08/11/2022
-              member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,"$overMaxAddLength,$overMaxAddLength,$overMaxAddLength,$overMaxAddLength,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022
-              member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,"%123Sgdfg,*&^%wfdg,25*sgsd4,!£@qfqdt,345DFG2452,GB",,,,1000.00,08/11/2022
+              member,Joe,Bloggs,AA234567A,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,,,,,1000.00,08/11/2022
+              member,Joe,Bloggs,AA234567B,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,"$overMaxAddLength,$overMaxAddLength,$overMaxAddLength,$overMaxAddLength,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022
+              member,Joe,Bloggs,AA234567C,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,"%123Sgdfg,*&^%wfdg,25*sgsd4,!£@qfqdt,345DFG2452,GB",,,,1000.00,08/11/2022
               member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GIBBERISH",,,,1000.00,08/11/2022"""
       )
 
