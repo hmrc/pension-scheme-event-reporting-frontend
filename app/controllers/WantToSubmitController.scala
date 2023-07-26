@@ -62,16 +62,16 @@ class WantToSubmitController @Inject()(
 
                 userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
                   if(value) {
-                    (currentCompileEventTypes.contains(WindUp), currentCompileEventTypes.contains(Event20A), TaxYear.isCurrentTaxYear(updatedAnswers)) match {
-                      case (true, _, _) | (false, false, false) | (_, true, _) =>
-                        request.loggedInUser.administratorOrPractitioner match {
-                          case Administrator => Future.successful(Redirect(routes.DeclarationController.onPageLoad(waypoints)))
-                          case Practitioner => Future.successful(Redirect(routes.DeclarationPspController.onPageLoad(waypoints)))
-                        }
-                      case (false, false, true) =>
-                        Future.successful(Redirect(controllers.routes.CannotSubmitController.onPageLoad(waypoints).url))
-                      case _ =>
-                        Future.successful(Redirect(request.returnUrl))
+                    lazy val isCurrentTaxYear = TaxYear.isCurrentTaxYear(updatedAnswers)
+                    if (currentCompileEventTypes.contains(WindUp) || currentCompileEventTypes.contains(Event20A) || !isCurrentTaxYear) {
+                      request.loggedInUser.administratorOrPractitioner match {
+                        case Administrator => Future.successful(Redirect(routes.DeclarationController.onPageLoad(waypoints)))
+                        case Practitioner => Future.successful(Redirect(routes.DeclarationPspController.onPageLoad(waypoints)))
+                      }
+                    } else if (isCurrentTaxYear) {
+                      Future.successful(Redirect(controllers.routes.CannotSubmitController.onPageLoad(waypoints).url))
+                    } else {
+                      Future.successful(Redirect(request.returnUrl))
                     }
                   } else {
                     Future.successful(Redirect(request.returnUrl))
