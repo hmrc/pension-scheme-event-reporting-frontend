@@ -81,7 +81,7 @@ class UpscanInitiateConnector @Inject()(httpClient: HttpClient, appConfig: Front
                 (implicit request: DataRequest[AnyContent], headerCarrier: HeaderCarrier): Future[UpscanInitiateResponse] = {
 
     val upscanCallbackURL = s"${appConfig.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/save"
-    logger.warn(s"Upscan initiation: callback URL is $upscanCallbackURL")
+    logger.info(s"Upscan initiation: callback URL is $upscanCallbackURL")
     val req = UpscanInitiateRequestV2(
       callbackUrl = upscanCallbackURL,
       successRedirect = redirectOnSuccess,

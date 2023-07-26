@@ -37,14 +37,10 @@ class DataRetrievalImpl(eventType: EventType,
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-    val result = for {
+    for {
       data <- userAnswersCacheConnector.get(request.pstr, eventType)
     } yield {
       OptionalDataRequest[A](request.pstr, request.schemeName, request.returnUrl, request, request.loggedInUser, data)
-    }
-    result andThen {
-      case Success(v) => logger.info("Successful response to data retrieval:" + v)
-      case Failure(t: Throwable) => logger.warn("Unable to complete data retrieval", t)
     }
   }
 }
@@ -58,14 +54,10 @@ class DataRetrievalNoEventTypeImpl(userAnswersCacheConnector: UserAnswersCacheCo
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    val result = for {
+    for {
       data <- userAnswersCacheConnector.get(request.pstr)
     } yield {
       OptionalDataRequest[A](request.pstr, request.schemeName, request.returnUrl, request, request.loggedInUser, data)
-    }
-    result andThen {
-      case Success(v) => logger.info("Successful response to data retrieval:" + v)
-      case Failure(t: Throwable) => logger.warn("Unable to complete data retrieval", t)
     }
   }
 }
