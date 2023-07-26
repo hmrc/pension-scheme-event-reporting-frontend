@@ -20,7 +20,7 @@ import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.WantToSubmitFormProvider
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
-import models.enumeration.EventType.WindUp
+import models.enumeration.EventType.{Event20A, WindUp}
 import models.{TaxYear, UserAnswers}
 import pages.{VersionInfoPage, WantToSubmitPage, Waypoints}
 import play.api.i18n.I18nSupport
@@ -64,13 +64,13 @@ class WantToSubmitController @Inject()(
 
                 userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
                   if(value) {
-                    (currentCompileEventTypes.contains(WindUp), TaxYear.isCurrentTaxYear(updatedAnswers)) match {
-                      case (true, _) | (false, false) =>
+                    (currentCompileEventTypes.contains(WindUp), currentCompileEventTypes.contains(Event20A), TaxYear.isCurrentTaxYear(updatedAnswers)) match {
+                      case (true, false, _) | (false, false, false) | (false, true, true) =>
                         request.loggedInUser.administratorOrPractitioner match {
                           case Administrator => Future.successful(Redirect(routes.DeclarationController.onPageLoad(waypoints)))
                           case Practitioner => Future.successful(Redirect(routes.DeclarationPspController.onPageLoad(waypoints)))
                         }
-                      case (false, true) =>
+                      case (false, false, true) =>
                         Future.successful(Redirect(controllers.routes.CannotSubmitController.onPageLoad(waypoints).url))
                       case _ =>
                         Future.successful(Redirect(request.returnUrl))

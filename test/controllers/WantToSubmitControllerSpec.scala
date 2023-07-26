@@ -69,6 +69,7 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
 
   private val seqOfEvents = Seq(EventSummary(EventType.Event1, 1), EventSummary(EventType.Event18, 1))
   private val seqOfEventsWithWindUp = Seq(EventSummary(EventType.Event1, 1), EventSummary(EventType.Event18, 1), EventSummary(EventType.WindUp, 1))
+  private val seqOfEventsWithEvent20A = Seq(EventSummary(EventType.Event1, 1), EventSummary(EventType.Event18, 1), EventSummary(EventType.Event20A, 1))
   override def beforeEach(): Unit = {
     super.beforeEach()
     DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
@@ -133,11 +134,33 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
       }
     }
 
-    "must save the answer and redirect to declaration page on submit (when selecting YES) with correct year/events for a PSA" in {
+    "must save the answer and redirect to declaration page on submit (when selecting YES) with correct year and Wind Up for a PSA" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
       when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
         Future.successful(seqOfEventsWithWindUp))
+
+      val application =
+        applicationBuilder(userAnswers = Some(ua), extraModules)
+          .build()
+
+      running(application) {
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+        val userAnswerUpdated = UserAnswers().setOrException(WantToSubmitPage, true)
+
+        status(result) mustEqual SEE_OTHER
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
+        redirectLocation(result).value mustEqual WantToSubmitPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).url
+      }
+    }
+
+    "must save the answer and redirect to declaration page on submit (when selecting YES) with correct year and event20A for a PSA" in {
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
+        Future.successful(seqOfEventsWithEvent20A))
 
       val application =
         applicationBuilder(userAnswers = Some(ua), extraModules)
