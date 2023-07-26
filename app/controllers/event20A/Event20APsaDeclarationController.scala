@@ -26,7 +26,6 @@ import models.{LoggedInUser, TaxYear, UserAnswers}
 import pages.event20A.{BecameDatePage, CeasedDatePage, WhatChangePage}
 import pages.{VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.http.ExpectationFailedException
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -55,24 +54,19 @@ class Event20APsaDeclarationController @Inject()(
     }
   }
 
-  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
-
-      request.userAnswers.getOrElse(throw new ExpectationFailedException("User data not available"))
-
-      requireData.invokeBlock(request, { implicit request: DataRequest[_] =>
-        declarationDataEvent20A(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, request) match {
-          case Some(data) =>
-            val reportVersion = request.userAnswers.get(VersionInfoPage).get.version.toString
-            eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion).map { _ =>
-              Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
-            }
-          case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
-        }
-      })
+      declarationDataEvent20A(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, request) match {
+        case Some(data) =>
+          val reportVersion = request.userAnswers.get(VersionInfoPage).get.version.toString
+          eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion).map { _ =>
+            Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
+          }
+        case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
+      }
   }
 
-  def declarationDataEvent20A(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser, request: DataRequest[_]): Option[JsObject] = {
+  def declarationDataEvent20A(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser, request: DataRequest[AnyContent]): Option[JsObject] = {
     val optCeaseDateOrStartDateNode =
       (request.userAnswers.get(WhatChangePage), request.userAnswers.get(BecameDatePage), request.userAnswers.get(CeasedDatePage)) match {
         case (Some(BecameMasterTrust), Some(becameDate), _) => Some(Json.obj("schemeMasterTrustStartDate" -> becameDate))
