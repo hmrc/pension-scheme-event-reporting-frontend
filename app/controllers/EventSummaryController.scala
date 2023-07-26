@@ -153,7 +153,7 @@ class EventSummaryController @Inject()(
       case EventType.Event23 => Some(controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url)
       case EventType.WindUp => Some(controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url)
       case _ =>
-        logger.error(s"Missing event type $eventType")
+        logger.info(s"Missing event type $eventType")
         None
     }
   }
