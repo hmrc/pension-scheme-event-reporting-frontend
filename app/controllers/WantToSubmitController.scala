@@ -58,14 +58,12 @@ class WantToSubmitController @Inject()(
             val startYear = s"${TaxYear.getSelectedTaxYear(updatedAnswers).startYear}-04-06"
             eventReportingConnector.getEventReportSummary(request.pstr, startYear, version)
               .flatMap { seqEventSummaries =>
-                val currentCompileEventTypes = seqEventSummaries.filter { eventSummary =>
-                  eventSummary.recordVersion == version
-                }.map(_.eventType)
+                val currentCompileEventTypes = seqEventSummaries.filter { _.recordVersion == version }.map(_.eventType)
 
                 userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
                   if(value) {
                     (currentCompileEventTypes.contains(WindUp), currentCompileEventTypes.contains(Event20A), TaxYear.isCurrentTaxYear(updatedAnswers)) match {
-                      case (true, false, _) | (false, false, false) | (false, true, _) | (true, true, _) =>
+                      case (true, _, _) | (false, false, false) | (_, true, _) =>
                         request.loggedInUser.administratorOrPractitioner match {
                           case Administrator => Future.successful(Redirect(routes.DeclarationController.onPageLoad(waypoints)))
                           case Practitioner => Future.successful(Redirect(routes.DeclarationPspController.onPageLoad(waypoints)))
