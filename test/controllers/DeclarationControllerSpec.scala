@@ -18,7 +18,7 @@ package controllers
 
 import audit.AuditService
 import base.SpecBase
-import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
+import connectors.MinimalConnector.MinimalDetails
 import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector}
 import models.VersionInfo
 import models.enumeration.AdministratorOrPractitioner.Administrator
@@ -117,26 +117,23 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       }
     }
 
-//    "must return an exception and error screen when no data is able to be submitted" in {
-//      val testEmail = ""
-//      val applicationNoUA = applicationBuilder(userAnswers = None, extraModules).build()
-//      val minimalDetails = {
-//        MinimalDetails(testEmail, isPsaSuspended = false, None, None, rlsFlag = false, deceasedFlag = false
-//        )
-//      }
-//
-//      running(applicationNoUA) {
-//        when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
-//        val request = FakeRequest(GET, routes.DeclarationController.onPageLoad(waypoints).url)
-//
-//        val result = route(applicationNoUA, request).value
-//
-//        val view = applicationNoUA.injector.instanceOf[NoDataEnteredErrorView]
-//
-//        status(result) mustEqual EXPECTATION_FAILED
-//        contentAsString(result) mustEqual view(yourPensionSchemesUrl = "")(request, messages(applicationNoUA)
-//        ).toString
-//      }
-//    }
+    "must return an exception and error screen when no data is able to be submitted" in {
+      val testEmail = ""
+      val applicationNoUA = applicationBuilder(userAnswers = None, extraModules).build()
+      val minimalDetails = MinimalDetails(testEmail, isPsaSuspended = false, None, None, rlsFlag = false, deceasedFlag = false)
+
+      running(applicationNoUA) {
+        when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+        val request = FakeRequest(GET, routes.DeclarationController.onPageLoad(waypoints).url)
+
+        val result = route(applicationNoUA, request).value
+
+        val view = applicationNoUA.injector.instanceOf[NoDataEnteredErrorView]
+
+        status(result) mustEqual EXPECTATION_FAILED
+        contentAsString(result) mustEqual view(yourPensionSchemesUrl = "")(request, messages(applicationNoUA)
+        ).toString
+      }
+    }
   }
 }
