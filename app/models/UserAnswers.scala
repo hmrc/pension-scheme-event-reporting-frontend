@@ -153,6 +153,9 @@ final case class UserAnswers(
   def getAll[A](page: Gettable[Seq[A]])(implicit reads: Reads[A]): Seq[A] =
     data.as[Option[Seq[A]]](page.path.readNullable[Seq[A]]).toSeq.flatten
 
+  def getAll[A](path: JsPath)(implicit reads: Reads[A]): Seq[A] =
+    data.as[Option[Seq[A]]](path.readNullable[Seq[A]]).toSeq.flatten
+
   def countAll(page: Query): Int =
     page.path.readNullable[JsArray].reads(data).asOpt.flatten.map(_.value.size).getOrElse(0)
 

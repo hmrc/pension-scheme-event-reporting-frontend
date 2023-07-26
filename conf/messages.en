@@ -1638,6 +1638,8 @@ removeMember.heading = Are you sure you want to remove the {0} charge for this m
 removeMember.error.required = Select yes if you want to remove the {0} charge for this member
 removeMember.change.hidden = Are you sure you want to remove the {0} charge for this member?
 
+membersDetails.error.nino.notUnique = This National Insurance number is already in use for this event and cannot be duplicated
+
 noDataEnteredError.title = This report cannot be submitted
 noDataEnteredError.heading = This report cannot be submitted
 noDataEnteredError.p1 = No data has been entered

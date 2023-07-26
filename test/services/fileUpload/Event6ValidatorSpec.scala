@@ -91,8 +91,9 @@ class Event6ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       val csvFile = CSVParser.split(
         s"""$header
         Joe,,AA234567D,enhanced lifetime allowance,,12.20,08/11/2022
-        Joe,Bloggs,,Enhanced lifetime allowance,12345678,12.20,08/11/2026"""
-
+        Joe,Bloggs,,Enhanced lifetime allowance,12345678,12.20,08/11/2026
+        Steven,Bloggs,AA234567D,fixed protection 2014,1234567A,10.00,12/08/2022
+        Steven,Bloggs,AA234567D,fixed protection 2014,1234567A,10.00,12/08/2022"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
 
@@ -102,7 +103,8 @@ class Event6ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         ValidationError(1, 4, "inputProtectionType.error.required", "typeOfProtectionReference"),
         ValidationError(2, 2, "membersDetails.error.nino.required", "nino"),
         ValidationError(2, 3, "typeOfProtection.error.format", "typeOfProtection"),
-        ValidationError(2, 6, "Date must be between 06 April 2006 and 05 April 2024", "crystallisedDate")
+        ValidationError(2, 6, "Date must be between 06 April 2006 and 05 April 2024", "crystallisedDate"),
+        ValidationError(4, 2, "membersDetails.error.nino.notUnique", "nino")
       ))
     }
   }

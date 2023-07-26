@@ -54,7 +54,7 @@ class RemoveEventController @Inject()(
         value => {
           val originalUserAnswers = request.userAnswers
           if (value) {
-            compileService.compileEvent(eventType, request.pstr, request.userAnswers).flatMap { _ =>
+            compileService.compileEvent(eventType, request.pstr, request.userAnswers, delete = true).flatMap { _ =>
               Future.successful(Redirect(RemoveEventPage(eventType).navigate(waypoints, originalUserAnswers, originalUserAnswers).route))
             }
           } else {

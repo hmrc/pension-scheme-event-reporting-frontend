@@ -87,7 +87,9 @@ class Event23ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
       val csvFile = CSVParser.split(
         s"""$header
 ,Bloggs,AA234567D,2024,12.20
-Steven,,xyz,,"""
+Steven,,xyz,,
+Steven,Bloggs,AA123456C,2022 to 2023,13.20
+Steven,Bloggs,AA123456C,2022 to 2023,13.20"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
 
@@ -98,7 +100,8 @@ Steven,,xyz,,"""
         ValidationError(2, 1, "membersDetails.error.lastName.required", "lastName"),
         ValidationError(2, 2, "membersDetails.error.nino.invalid", "nino"),
         ValidationError(2, 3, "chooseTaxYear.event23.error.required", "taxYear", Seq("2013", "2023")),
-        ValidationError(2, 4, "totalPensionAmounts.value.error.nothingEntered", "totalAmounts")
+        ValidationError(2, 4, "totalPensionAmounts.value.error.nothingEntered", "totalAmounts"),
+        ValidationError(4, 2, "membersDetails.error.nino.notUnique", "nino")
       ))
     }
 
