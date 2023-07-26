@@ -59,7 +59,7 @@ object FileUploadGenericErrorReporter {
             Event1FieldNames.addressLine3 -> "fileUpload.addressLine3.generic.error",
             Event1FieldNames.addressLine4 -> "fileUpload.addressLine4.generic.error",
             Event1FieldNames.postCode -> "fileUpload.postCode.generic.error",
-            Event1FieldNames.country -> "fileUpload.schemeName.country.generic.error",
+            Event1FieldNames.country -> "fileUpload.country.generic.error",
             Event1FieldNames.tangibleDescription -> "fileUpload.tangibleDescription.generic.error",
             Event1FieldNames.courtNameOfPersonOrOrg -> "fileUpload.courtNameOfPersonOrOrg.generic.error",
             Event1FieldNames.otherDescription -> "fileUpload.otherDescription.generic.error",
@@ -67,7 +67,7 @@ object FileUploadGenericErrorReporter {
             Event1FieldNames.earlyDescription -> "fileUpload.earlyDescription.generic.error",
             Event1FieldNames.companyOrOrgName -> "fileUpload.companyOrOrgName.generic.error",
             Event1FieldNames.companyNo -> "fileUpload.companyNo.generic.error",
-            Event1FieldNames.loanAmount -> "fileUpload.schemeName.loanAmount.generic.error",
+            Event1FieldNames.loanAmount -> "fileUpload.loanAmount.generic.error",
             Event1FieldNames.valueOfFund -> "fileUpload.valueOfFund.generic.error",
             Event1FieldNames.paymentAmount -> "fileUpload.paymentAmount.generic.error",
             Event1FieldNames.paymentDate -> "fileUpload.paymentDate.generic.error"
