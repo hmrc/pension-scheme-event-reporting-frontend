@@ -77,8 +77,9 @@ class DeclarationController @Inject()(
       }
 
       submitService.submitReport(request.pstr, data).flatMap { result =>
-        result.header.status match {
-          case OK => emailFuture.map(_ =>Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
+        (result.header.status) match {
+          case OK =>
+            emailFuture.map(_ =>Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
           case NOT_FOUND =>
             logger.warn(s"Unable to submit declaration because there is nothing to submit (nothing in compile state)")
             Future.successful(Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url))
