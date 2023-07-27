@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import java.time.format.DateTimeFormatter
 @import models.amend.VersionsWithSubmitter
 
 @(rows :Seq[VersionsWithSubmitter], colOne: String, colTwo: String, colThree: String)(implicit messages: Messages)
@@ -31,7 +32,7 @@
     @rows.map { summaryListRow =>
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">@summaryListRow.versionDetails.version</th>
-            <td class="govuk-table__cell">@summaryListRow.versionDetails.status</td>
+            <td class="govuk-table__cell">@summaryListRow.versionDetails.status.toString.capitalize on @summaryListRow.submittedDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))</td>
             <td class="govuk-table__cell">@summaryListRow.submitterName</td>
         </tr>
     }

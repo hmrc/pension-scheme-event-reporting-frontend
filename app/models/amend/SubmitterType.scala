@@ -18,10 +18,12 @@ package models.amend
 
 import models.VersionInfo
 import play.api.libs.json.{Format, Json}
+import java.time.LocalDate
+
 
 sealed trait SubmitterType
 
-case class VersionsWithSubmitter(versionDetails: VersionInfo, submitterName: Option[String])
+case class VersionsWithSubmitter(versionDetails: VersionInfo, submitterName: Option[String], submittedDate: LocalDate)
 
 object VersionsWithSubmitter {
   implicit val formats: Format[VersionsWithSubmitter] = Json.format[VersionsWithSubmitter]

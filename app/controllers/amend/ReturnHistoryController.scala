@@ -19,12 +19,10 @@ package controllers.amend
 import connectors.EventReportingConnector
 import controllers.actions._
 import models.TaxYear.getTaxYearFromOption
-import pages.{EmptyWaypoints, Waypoints}
+import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Text}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.Message
 import views.html.amend.ReturnHistoryView
 
 import javax.inject.Inject
