@@ -45,6 +45,10 @@ class ReturnSubmittedController @Inject()(
     minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map { minimalDetails =>
       val schemeName = request.schemeName
 
+      val isPsa: Boolean = if (request.loggedInUser.administratorOrPractitioner.toString == "administrator") true else false
+      val yourPensionSchemesUrl: String = config.yourPensionSchemesUrl
+      val listPspUrl: String = config.listPspUrl
+
       val taxYear = request.userAnswers.get(TaxYearPage) match {
         case Some(taxYear) => s"${taxYear.startYear} ${Messages("confirmation.taxYear.to")} ${taxYear.endYear}"
         case _ => throw new RuntimeException("Tax year not available on Return Submitted Controller")
@@ -53,8 +57,8 @@ class ReturnSubmittedController @Inject()(
       val dateHelper = new DateHelper
       val dateSubmitted: String = dateHelper.now.format(dateFormatter)
 
-      Ok(view(controllers.routes.ReturnSubmittedController
-        .onPageLoad(waypoints).url, config.yourPensionSchemesUrl, schemeName, taxYear, dateSubmitted, minimalDetails.email))
+      Ok(view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url,
+        isPsa, yourPensionSchemesUrl, listPspUrl, schemeName, taxYear, dateSubmitted, minimalDetails.email))
     }
   }
 }

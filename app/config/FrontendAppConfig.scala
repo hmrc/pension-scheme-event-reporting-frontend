@@ -60,6 +60,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   def yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
 
+  def listPspUrl: String = loadConfig("urls.listPsp")
+
   def successEndPointTarget(eventType: EventType): String = loadConfig("upscan.success-endpoint").format(toRoute(eventType))
 
   def failureEndPointTarget(eventType: EventType): String = loadConfig("upscan.failure-endpoint").format(toRoute(eventType))

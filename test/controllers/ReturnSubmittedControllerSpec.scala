@@ -38,6 +38,7 @@ class ReturnSubmittedControllerSpec extends SpecBase {
 
   private val waypoints = EmptyWaypoints
   private val yourPensionSchemesUrl: String = "http://localhost:8204/manage-pension-schemes/your-pension-schemes"
+  private val listPspUrl: String = "http://localhost:8204/manage-pension-schemes/list-psp"
   private val schemeName = "schemeName"
   private val taxYear = "2022 to 2023"
   private val dateHelper = new DateHelper
@@ -72,7 +73,9 @@ class ReturnSubmittedControllerSpec extends SpecBase {
         contentAsString(result) mustEqual
           view(
             routes.ReturnSubmittedController.onPageLoad(waypoints).url,
+            isPsa = true,
             yourPensionSchemesUrl,
+            listPspUrl,
             schemeName,
             taxYear,
             dateSubmitted,
