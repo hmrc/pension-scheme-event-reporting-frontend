@@ -14,57 +14,20 @@
  * limitations under the License.
  *@
 
+@import models.amend.VersionsWithSubmitter
+
 @this(
         layout: templates.SchemeLayout,
         govukButton: GovukButton,
         govukTable: GovukTable
 )
 
-@(taxYearStart: String, taxYearEnd: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(seqOfVersionsAndSubmitter :Seq[VersionsWithSubmitter], taxYearStart: String, taxYearEnd: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("returnHistory.title", taxYearStart, taxYearEnd))) {
 
     <h1 class="govuk-heading-l">@messages("returnHistory.heading", taxYearStart, taxYearEnd)</h1>
 
-
-    @govukTable(Table(
-        rows = Seq(
-            Seq(
-                TableRow(
-                    content = Text("First 6 weeks")
-                ),
-                TableRow(
-                    content = Text("£109.80 per week")
-                )
-            ),
-            Seq(
-                TableRow(
-                    content = Text("Next 33 weeks")
-                ),
-                TableRow(
-                    content = Text("£109.80 per week")
-                )
-            ),
-            Seq(
-                TableRow(
-                    content = Text("Total estimated pay")
-                ),
-                TableRow(
-                    content = Text("£4,282.20")
-                )
-            )
-        ),
-        head = Some(Seq(
-            HeadCell(
-                content = Text("Submission")
-            ),
-            HeadCell(
-                content = Text("Status")
-            ),
-            HeadCell(
-                content = Text("Submitted by")
-            )
-        )),
-    ))
+ @components.entity_returnHistory_table_list(seqOfVersionsAndSubmitter,"Submission", "Status", "Submitted by")
 
 }

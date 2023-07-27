@@ -19,7 +19,7 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.amend.VersionsWithSubmitter
-import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
+import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers, VersionInfo}
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json._
@@ -48,6 +48,8 @@ class EventReportingConnector @Inject()(
   private def eventReportingToggleUrl(toggleName: String) = s"${config.eventReportingUrl}/admin/get-toggle/$toggleName"
 
   private def eventOverviewUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/overview"
+
+  private def erListOfVersionsUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/versions"
 
 
   def getEventReportSummary(pstr: String, reportStartDate: String, version: Int)
@@ -209,17 +211,19 @@ class EventReportingConnector @Inject()(
 
   def getListOfVersions(pstr: String, startDate: String)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Seq[VersionsWithSubmitter]] = {
     val logger = Logger(classOf[EventReportingConnector])
-    val url = config.erListOfVersionsUrl
     val hc = headerCarrier.withExtraHeaders("pstr" -> pstr, "startDate" -> startDate)
-    http.GET[HttpResponse](url)(implicitly, hc, implicitly).map { response =>
+    http.GET[HttpResponse](erListOfVersionsUrl)(implicitly, hc, implicitly).map { response =>
+      println("\n\n\n\nresponse: " + response.body)
       response.status match {
         case OK =>
           Json.parse(response.body).validate[Seq[VersionsWithSubmitter]] match {
-            case JsSuccess(value, _) => value
+            case JsSuccess(value, _) =>
+              println("\n\n\n\nvalue: " + value)
+              value
             case JsError(errors) => throw JsResultException(errors)
           }
         case NOT_FOUND => Seq.empty
-        case _ => handleErrorResponse("GET", url)(response)
+        case _ => handleErrorResponse("GET", erListOfVersionsUrl)(response)
       }
     } andThen {
       case Failure(t: Throwable) => logger.warn("Unable to get list of versions", t)

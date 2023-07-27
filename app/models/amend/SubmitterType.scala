@@ -16,34 +16,12 @@
 
 package models.amend
 
-import models.{Enumerable, VersionInfo, WithName}
+import models.VersionInfo
 import play.api.libs.json.{Format, Json}
-
-import java.time.LocalDate
 
 sealed trait SubmitterType
 
-object SubmitterType extends Enumerable.Implicits {
-
-  case object PSA extends WithName("PSA") with SubmitterType
-
-  case object PSP extends WithName("PSP") with SubmitterType
-
-  val values: Seq[SubmitterType] = Seq(PSA, PSP)
-
-  implicit val enumerable: Enumerable[SubmitterType] =
-    Enumerable(values.map(v => v.toString -> v): _*)
-}
-
-
-case class SubmitterDetails(submitterType: SubmitterType, submitterName: String, submitterID: String, authorisingPsaId: Option[String], receiptDate: LocalDate)
-
-object SubmitterDetails {
-  implicit val formats: Format[SubmitterDetails] = Json.format[SubmitterDetails]
-}
-
-
-case class VersionsWithSubmitter(versionDetails: VersionInfo, submitterDetails: Option[SubmitterDetails])
+case class VersionsWithSubmitter(versionDetails: VersionInfo, submitterName: Option[String])
 
 object VersionsWithSubmitter {
   implicit val formats: Format[VersionsWithSubmitter] = Json.format[VersionsWithSubmitter]

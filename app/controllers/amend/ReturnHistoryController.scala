@@ -16,27 +16,35 @@
 
 package controllers.amend
 
+import connectors.EventReportingConnector
 import controllers.actions._
 import models.TaxYear.getTaxYearFromOption
-import pages.Waypoints
+import pages.{EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Text}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.Message
 import views.html.amend.ReturnHistoryView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class ReturnHistoryController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            identify: IdentifierAction,
                                            getData: DataRetrievalAction,
+                                           erConnector: EventReportingConnector,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: ReturnHistoryView
-                                         ) extends FrontendBaseController with I18nSupport {
+                                         )(implicit ec: ExecutionContext)  extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()) {
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()) async {
     implicit request =>
-      val taxYearRange = (getTaxYearFromOption(request.userAnswers).toString, (getTaxYearFromOption(request.userAnswers) + 1).toString)
-      Ok(view(taxYearRange._1, taxYearRange._2))
+      val g = getTaxYearFromOption(request.userAnswers).toString
+      erConnector.getListOfVersions(request.pstr, g + "-04-06").map { g =>
+        val taxYearRange = (getTaxYearFromOption(request.userAnswers).toString, (getTaxYearFromOption(request.userAnswers) + 1).toString)
+        Ok(view(g, taxYearRange._1, taxYearRange._2))
+      }
   }
 }
