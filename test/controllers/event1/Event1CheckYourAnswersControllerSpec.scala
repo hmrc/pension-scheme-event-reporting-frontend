@@ -52,7 +52,7 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(list,
-          "/manage-pension-scheme-event-report/new-report/event-1-click")(request, messages(application)).toString
+          "/manage-pension-scheme-event-report/report/event-1-click")(request, messages(application)).toString
       }
     }
 
@@ -195,45 +195,45 @@ object Event1CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "membersDetails.checkYourAnswersLabel",
       "Joe Bloggs",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-member-details?waypoints=event-1-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-1-member-details?waypoints=event-1-check-answers-1",
       "membersDetails.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "membersDetails.checkYourAnswersLabel.nino",
       "AA234567D",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-member-details?waypoints=event-1-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-1-member-details?waypoints=event-1-check-answers-1",
       "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithText(
       "doYouHoldSignedMandate.checkYourAnswersLabel",
       "No",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-mandate?waypoints=event-1-check-answers-1"
+      "/manage-pension-scheme-event-report/report/1/event-1-mandate?waypoints=event-1-check-answers-1"
     ),
     fakeSummaryListRowWithText(
       "valueOfUnauthorisedPayment.checkYourAnswersLabel",
       "No",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-payment-value?waypoints=event-1-check-answers-1"
+      "/manage-pension-scheme-event-report/report/1/event-1-payment-value?waypoints=event-1-check-answers-1"
     ),
     fakeSummaryListRowWithHtmlContent(
       "paymentNature.checkYourAnswersLabel",
       "Benefit in kind",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-member-payment-nature?waypoints=event-1-check-answers-1"
+      "/manage-pension-scheme-event-report/report/1/event-1-member-payment-nature?waypoints=event-1-check-answers-1"
     ),
     fakeSummaryListRowWithText(
       "benefitInKindBriefDescription.checkYourAnswersLabel",
       "Test description",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-benefit-in-kind?waypoints=event-1-check-answers-1"
+      "/manage-pension-scheme-event-report/report/1/event-1-benefit-in-kind?waypoints=event-1-check-answers-1"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "paymentValueAndDate.value.checkYourAnswersLabel",
       "£1,000.00",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
       "paymentValueAndDate.value.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "paymentValueAndDate.date.checkYourAnswersLabel",
       "08 November 2022",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
       "paymentValueAndDate.date.change.hidden"
     )
   )
@@ -242,38 +242,38 @@ object Event1CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithText(
       "companyDetails.CYA.companyName",
       "Company Name",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-company-details?waypoints=event-1-check-answers-1"
+      "/manage-pension-scheme-event-report/report/1/event-1-company-details?waypoints=event-1-check-answers-1"
     ),
     fakeSummaryListRowWithText(
       "companyDetails.CYA.companyNumber",
       "12345678",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-company-details?waypoints=event-1-check-answers-1"
+      "/manage-pension-scheme-event-report/report/1/event-1-company-details?waypoints=event-1-check-answers-1"
     ),
     fakeSummaryListRowWithHtmlContent(
       "companyDetails.CYA.companyAddress",
       """<span class="govuk-!-display-block">addr11</span><span class="govuk-!-display-block">addr12</span><span class="govuk-!-display-block">addr13</span><span class="govuk-!-display-block">addr14</span><span class="govuk-!-display-block">zz11zz</span><span class="govuk-!-display-block">United Kingdom</span>""",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-company-postcode?waypoints=event-1-check-answers-1"
+      "/manage-pension-scheme-event-report/report/1/event-1-company-postcode?waypoints=event-1-check-answers-1"
     ),
     fakeSummaryListRowWithHtmlContent(
       "paymentNature.checkYourAnswersLabel",
       "Tangible moveable property held directly or indirectly by an investment-regulated pension scheme",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-employer-payment-nature?waypoints=event-1-check-answers-1"
+      "/manage-pension-scheme-event-report/report/1/event-1-employer-payment-nature?waypoints=event-1-check-answers-1"
     ),
     fakeSummaryListRowWithText(
       "employerTangibleMoveableProperty.checkYourAnswersLabel",
       "Another test description",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-employer-tangible-moveable-property?waypoints=event-1-check-answers-1"
+      "/manage-pension-scheme-event-report/report/1/event-1-employer-tangible-moveable-property?waypoints=event-1-check-answers-1"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "paymentValueAndDate.value.checkYourAnswersLabel",
       "£1,000.00",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
       "paymentValueAndDate.value.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "paymentValueAndDate.date.checkYourAnswersLabel",
       "08 November 2022",
-      "/manage-pension-scheme-event-report/new-report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
       "paymentValueAndDate.date.change.hidden"
     )
   )
