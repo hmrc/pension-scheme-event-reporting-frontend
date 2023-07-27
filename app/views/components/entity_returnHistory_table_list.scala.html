@@ -15,9 +15,10 @@
  *@
 
 @import java.time.format.DateTimeFormatter
+@import viewmodels.ReturnHistorySummary
 @import models.amend.VersionsWithSubmitter
 
-@(rows :Seq[VersionsWithSubmitter], colOne: String, colTwo: String, colThree: String)(implicit messages: Messages)
+@(rows: Seq[ReturnHistorySummary], colOne: String, colTwo: String, colThree: String)(implicit messages: Messages)
 
 <table class="govuk-table" role="table">
     <thead class="govuk-table__head">
@@ -31,9 +32,22 @@
     <tbody class="govuk-table__body">
     @rows.map { summaryListRow =>
         <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">@summaryListRow.versionDetails.version</th>
-            <td class="govuk-table__cell">@summaryListRow.versionDetails.status.toString.capitalize on @summaryListRow.submittedDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))</td>
-            <td class="govuk-table__cell">@summaryListRow.submitterName</td>
+            <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">@summaryListRow.key</th>
+            <td class="govuk-table__cell">@summaryListRow.firstValue</td>
+            <td class="govuk-table__cell">@summaryListRow.secondValue</td>
+            @summaryListRow.actions.map { actions =>
+                <td class="govuk-table__cell govuk-table__cell--numeric whitespace-nowrap">
+                    <ul class="govuk-summary-list__actions-list">
+                        @actions.items.map { item =>
+                            <li class="govuk-summary-list__actions-list-item">
+                                <a class="govuk-link" href="@item.href">
+                                    @item.content.asHtml <span class="govuk-visually-hidden">@summaryListRow.key.content.asHtml</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </td>
+            }
         </tr>
     }
     </tbody>

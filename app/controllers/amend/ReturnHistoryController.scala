@@ -19,10 +19,14 @@ package controllers.amend
 import connectors.EventReportingConnector
 import controllers.actions._
 import models.TaxYear.getTaxYearFromOption
-import pages.Waypoints
-import play.api.i18n.{I18nSupport, MessagesApi}
+import pages.{EmptyWaypoints, Waypoints}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.DateHelper.formatDateDMY
+import viewmodels.{Message, ReturnHistorySummary, SummaryListRowWithThreeValues}
 import views.html.amend.ReturnHistoryView
 
 import javax.inject.Inject
@@ -40,9 +44,24 @@ class ReturnHistoryController @Inject()(
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()) async {
     implicit request =>
       val g = getTaxYearFromOption(request.userAnswers).toString
-      erConnector.getListOfVersions(request.pstr, g + "-04-06").map { g =>
+      erConnector.getListOfVersions(request.pstr, g + "-04-06").map { h =>
+       val m =  h.map { kk =>
+          ReturnHistorySummary(
+            key = kk.versionDetails.version.toString,
+            firstValue = kk.versionDetails.status.toString.capitalize + " on " + formatDateDMY(kk.submittedDate),
+            secondValue = kk.submitterName.getOrElse(""),
+            actions = Some(Actions(
+              items = Seq(
+                ActionItem(
+                  content = Text(Message("site.view")),
+                  href = "#"
+                )
+              )
+            ))
+          )
+        }
         val taxYearRange = (getTaxYearFromOption(request.userAnswers).toString, (getTaxYearFromOption(request.userAnswers) + 1).toString)
-        Ok(view(g, taxYearRange._1, taxYearRange._2))
+        Ok(view(m, taxYearRange._1, taxYearRange._2))
       }
   }
 }

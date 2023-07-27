@@ -15,6 +15,7 @@
  *@
 
 @import models.amend.VersionsWithSubmitter
+@import viewmodels.ReturnHistorySummary
 
 @this(
         layout: templates.SchemeLayout,
@@ -22,12 +23,18 @@
         govukTable: GovukTable
 )
 
-@(seqOfVersionsAndSubmitter :Seq[VersionsWithSubmitter], taxYearStart: String, taxYearEnd: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+
+
+@(seqOfReturnHistorySummary:Seq[ReturnHistorySummary], taxYearStart: String, taxYearEnd: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("returnHistory.title", taxYearStart, taxYearEnd))) {
 
     <h1 class="govuk-heading-l">@messages("returnHistory.heading", taxYearStart, taxYearEnd)</h1>
 
- @components.entity_returnHistory_table_list(seqOfVersionsAndSubmitter,"Submission", "Status", "Submitted by")
-
+ @components.entity_returnHistory_table_list(
+  seqOfReturnHistorySummary,
+  messages("returnHistory.table.header1"),
+  messages("returnHistory.table.header2"),
+  messages("returnHistory.table.header3")
+ )
 }
