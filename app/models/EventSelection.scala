@@ -49,7 +49,7 @@ object EventSelection extends Enumerable.Implicits {
   case object EventWoundUp extends WithName("eventWoundUp") with EventSelection
 
   val values: Seq[EventSelection] = Seq(
-    Event1, Event2, Event3, Event4, Event5, Event6, Event7, Event8, Event8A, Event10,
+    Event1, Event2, Event4, Event5, Event6, Event7, Event8, Event10,
     Event11, Event12, Event13, Event14, Event18, Event19, Event20, Event20A, Event22,
     Event23, Or, EventWoundUp
   )
