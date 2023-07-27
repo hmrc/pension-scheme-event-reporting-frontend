@@ -21,6 +21,7 @@ import connectors.MinimalConnector
 import controllers.actions._
 import helpers.DateHelper
 import helpers.DateHelper.dateFormatter
+import models.enumeration.AdministratorOrPractitioner.Administrator
 import pages.{TaxYearPage, Waypoints}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -45,7 +46,11 @@ class ReturnSubmittedController @Inject()(
     minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map { minimalDetails =>
       val schemeName = request.schemeName
 
-      val isPsa: Boolean = if (request.loggedInUser.administratorOrPractitioner.toString == "administrator") true else false
+      val isPsa: Boolean = request.loggedInUser.administratorOrPractitioner match {
+        case Administrator => true
+        case _ => false
+      }
+
       val yourPensionSchemesUrl: String = config.yourPensionSchemesUrl
       val listPspUrl: String = config.listPspUrl
 

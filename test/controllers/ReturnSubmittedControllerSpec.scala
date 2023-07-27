@@ -52,7 +52,7 @@ class ReturnSubmittedControllerSpec extends SpecBase {
 
   "Return Submitted Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET (PSA)" in {
       val minimalDetails = MinimalDetails(email = email, isPsaSuspended = false,
         organisationName = None, individualDetails = None, rlsFlag = false, deceasedFlag = false)
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
@@ -74,6 +74,37 @@ class ReturnSubmittedControllerSpec extends SpecBase {
           view(
             routes.ReturnSubmittedController.onPageLoad(waypoints).url,
             isPsa = true,
+            yourPensionSchemesUrl,
+            listPspUrl,
+            schemeName,
+            taxYear,
+            dateSubmitted,
+            email)(request, messages(application)).toString
+      }
+    }
+
+    "must return OK and the correct view for a GET (PSP)" in {
+      val minimalDetails = MinimalDetails(email = email, isPsaSuspended = false,
+        organisationName = None, individualDetails = None, rlsFlag = false, deceasedFlag = false)
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"))
+      val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
+
+      running(application) {
+
+        val request = FakeRequest(GET, routes.ReturnSubmittedController.onPageLoad(waypoints).url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[ReturnSubmittedView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(
+            routes.ReturnSubmittedController.onPageLoad(waypoints).url,
+            isPsa = false,
             yourPensionSchemesUrl,
             listPspUrl,
             schemeName,
