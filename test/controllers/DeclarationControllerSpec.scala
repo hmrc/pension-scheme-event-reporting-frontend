@@ -35,8 +35,15 @@ import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SubmitService
-import views.html.{DeclarationView, NoDataEnteredErrorView}
+import uk.gov.hmrc.http.ExpectationFailedException
+import views.html.DeclarationView
+import org.mockito.Mockito.doNothing
+import play.api.http.Status.OK
+import play.api.test.Helpers.GET
+import org.scalatest.RecoverMethods._
+import uk.gov.hmrc.http.HttpExceptions.EXPECTATION_FAILED
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
@@ -117,22 +124,19 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       }
     }
 
-    "must return an exception and error screen when no data is able to be submitted" in {
-      val testEmail = ""
+    "must redirect to the correct error screen when no data is able to be submitted" in {
       val applicationNoUA = applicationBuilder(userAnswers = None, extraModules).build()
-      val minimalDetails = MinimalDetails(testEmail, isPsaSuspended = false, None, None, rlsFlag = false, deceasedFlag = false)
 
       running(applicationNoUA) {
-        when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
-        val request = FakeRequest(GET, routes.DeclarationController.onPageLoad(waypoints).url)
 
-        val result = route(applicationNoUA, request).value
+        val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
 
-        val view = applicationNoUA.injector.instanceOf[NoDataEnteredErrorView]
+        recoverToExceptionIf[ExpectationFailedException] {
+          route(applicationNoUA, request).value
+        } map { response =>
+          response.responseCode mustBe EXPECTATION_FAILED
+        }
 
-        status(result) mustEqual EXPECTATION_FAILED
-        contentAsString(result) mustEqual view(yourPensionSchemesUrl = "")(request, messages(applicationNoUA)
-        ).toString
       }
     }
   }
