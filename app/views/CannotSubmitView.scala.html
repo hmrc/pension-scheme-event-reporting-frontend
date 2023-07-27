@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package pages
+@this(
+        layout: templates.Layout,
+        govukButton: GovukButton
+)
 
-import controllers.routes
-import models.UserAnswers
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+@(returnUrl: String)(implicit request: Request[_], messages: Messages)
 
-case object WantToSubmitPage extends QuestionPage[Boolean] {
+@layout(pageTitle = titleNoForm(messages("cannotSubmitEvents.title"))) {
 
-  override def path: JsPath = JsPath \ toString
+    <h1 class="govuk-heading-xl">@messages("cannotSubmitEvents.heading")</h1>
+    <p class="govuk-body">@messages("cannotSubmitEvents.p1")</p>
 
-  override def toString: String = "wantToSubmit"
 
-  override def route(waypoints: Waypoints): Call =
-    routes.WantToSubmitController.onPageLoad(waypoints)
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    DeclarationPage
-  }
+    <p class="govuk-body">
+        @govukButton(
+        ButtonViewModel(messages("site.returnTo", "summary page"))
+        .asLink(returnUrl)
+        .withAttribute(("id", "submit"))
+        )
+    </p>
 }

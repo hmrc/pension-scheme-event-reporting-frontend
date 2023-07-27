@@ -1633,6 +1633,10 @@ whatYouWillNeed.event6.item2 = details of the type of protection held for the cr
 whatYouWillNeed.event6.item3 = amount that was crystallised
 whatYouWillNeed.event6.item4 = date of the benefit crystallisation
 
+cannotSubmitEvents.title = You are unable to submit the event report yet
+cannotSubmitEvents.heading = You are unable to submit the event report yet
+cannotSubmitEvents.p1 = You cannot submit an event return in the current tax year unless you have wound up the scheme.
+
 removeMember.title = Are you sure you want to remove the {0} charge for this member?
 removeMember.heading = Are you sure you want to remove the {0} charge for this member?
 removeMember.error.required = Select yes if you want to remove the {0} charge for this member

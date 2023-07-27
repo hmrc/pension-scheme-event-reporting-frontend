@@ -31,6 +31,8 @@ GET        /new-report/declaration-on-click                                     
 GET        /new-report/declaration-psp                                           controllers.DeclarationPspController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /new-report/declaration-psp                                           controllers.DeclarationPspController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
+GET         /cannot-submit                                                        controllers.CannotSubmitController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
 GET         /new-report/done-page                                                 controllers.ReturnSubmittedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /new-report/event-18-confirmation                                     controllers.event18.Event18ConfirmationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
