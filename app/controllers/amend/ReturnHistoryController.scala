@@ -19,6 +19,7 @@ package controllers.amend
 import connectors.EventReportingConnector
 import controllers.actions._
 import models.TaxYear.getTaxYearFromOption
+import models.enumeration.VersionStatus.Compiled
 import pages.{EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,9 +47,15 @@ class ReturnHistoryController @Inject()(
       val g = getTaxYearFromOption(request.userAnswers).toString
       erConnector.getListOfVersions(request.pstr, g + "-04-06").map { h =>
        val m =  h.map { kk =>
+
+         val (compileStatus, version) = kk.versionDetails.status match {
+           case Compiled => ("In progress", "Draft")
+           case _ => (kk.versionDetails.status.toString.capitalize + " on " + formatDateDMY(kk.submittedDate), kk.versionDetails.version.toString )
+         }
+
           ReturnHistorySummary(
-            key = kk.versionDetails.version.toString,
-            firstValue = kk.versionDetails.status.toString.capitalize + " on " + formatDateDMY(kk.submittedDate),
+            key = version,
+            firstValue = compileStatus,
             secondValue = kk.submitterName.getOrElse(""),
             actions = Some(Actions(
               items = Seq(
