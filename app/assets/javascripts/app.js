@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     // handle back click
     var backLink = document.querySelector('.govuk-back-link');
     if (backLink !== null) {
+        backLink.classList.add("js-enabled");
         backLink.addEventListener('click', function(e){
             e.preventDefault();
             e.stopPropagation();
