@@ -16,20 +16,11 @@
 
 package pages
 
-import controllers.routes
-import models.UserAnswers
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import controllers.routes
 
-case object WantToSubmitPage extends QuestionPage[Boolean] {
-
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "wantToSubmit"
+case object CannotSubmitPage extends Page {
 
   override def route(waypoints: Waypoints): Call =
-    routes.WantToSubmitController.onPageLoad(waypoints)
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    DeclarationPage
-  }
+    routes.CannotSubmitController.onPageLoad(waypoints)
 }

@@ -16,12 +16,13 @@
 
 package controllers
 
-import connectors.UserAnswersCacheConnector
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.WantToSubmitFormProvider
-import models.UserAnswers
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
-import pages.{WantToSubmitPage, Waypoints}
+import models.enumeration.EventType.{Event20A, WindUp}
+import models.{TaxYear, UserAnswers}
+import pages.{VersionInfoPage, WantToSubmitPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -36,6 +37,7 @@ class WantToSubmitController @Inject()(
                                         getData: DataRetrievalAction,
                                         formProvider: WantToSubmitFormProvider,
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
+                                        eventReportingConnector: EventReportingConnector,
                                         view: WantToSubmitView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -45,25 +47,36 @@ class WantToSubmitController @Inject()(
     val preparedForm = request.userAnswers.flatMap(_.get(WantToSubmitPage)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
-
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
-          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(WantToSubmitPage, value)
-          userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
-            if (value) {
-              Redirect(
-                request.loggedInUser.administratorOrPractitioner match {
-                  case Administrator => routes.DeclarationController.onPageLoad(waypoints)
-                  case Practitioner => routes.DeclarationPspController.onPageLoad(waypoints)
+            val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+            val updatedAnswers = originalUserAnswers.setOrException(WantToSubmitPage, value)
+            val version = updatedAnswers.get(VersionInfoPage).get.version
+            val startYear = s"${TaxYear.getSelectedTaxYear(updatedAnswers).startYear}-04-06"
+            eventReportingConnector.getEventReportSummary(request.pstr, startYear, version)
+              .flatMap { seqEventSummaries =>
+                val currentCompileEventTypes = seqEventSummaries.filter { _.recordVersion == version }.map(_.eventType)
+
+                userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
+                  if(value) {
+                    lazy val isCurrentTaxYear = TaxYear.isCurrentTaxYear(updatedAnswers)
+                    if (currentCompileEventTypes.contains(WindUp) || currentCompileEventTypes.contains(Event20A) || !isCurrentTaxYear) {
+                      request.loggedInUser.administratorOrPractitioner match {
+                        case Administrator => Future.successful(Redirect(routes.DeclarationController.onPageLoad(waypoints)))
+                        case Practitioner => Future.successful(Redirect(routes.DeclarationPspController.onPageLoad(waypoints)))
+                      }
+                    } else if (isCurrentTaxYear) {
+                      Future.successful(Redirect(controllers.routes.CannotSubmitController.onPageLoad(waypoints).url))
+                    } else {
+                      Future.successful(Redirect(request.returnUrl))
+                    }
+                  } else {
+                    Future.successful(Redirect(request.returnUrl))
+                  }
                 }
-              )
-            } else {
-              Redirect(request.returnUrl)
-            }
           }
         }
       )
