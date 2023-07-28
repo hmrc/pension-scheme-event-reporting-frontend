@@ -17,6 +17,7 @@
 package services
 
 import com.google.inject.Inject
+import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.enumeration.EventType
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
@@ -28,7 +29,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CompileService @Inject()(
                                 eventReportingConnector: EventReportingConnector,
-                                userAnswersCacheConnector: UserAnswersCacheConnector
+                                userAnswersCacheConnector: UserAnswersCacheConnector,
+                                appConfig: FrontendAppConfig
                               ) {
 
 
@@ -82,8 +84,15 @@ class CompileService @Inject()(
           case _ => uaNonEventTypeVersionUpdated
         }
         userAnswersCacheConnector.save(pstr, updatedUA).map { _ =>
-          eventReportingConnector
+          val response = eventReportingConnector
             .compileEvent(pstr, userAnswers.eventDataIdentifier(eventType, Some(newVersionInfo)), currentVersionInfo.version, delete)
+
+          appConfig.compileDelayInSeconds match {
+            case v if v > 0 => Thread.sleep(appConfig.compileDelayInSeconds * 1000)
+            case _ => ():Unit
+          }
+
+          response
         }
       }
     }
