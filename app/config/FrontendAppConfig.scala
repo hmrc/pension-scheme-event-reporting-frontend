@@ -80,6 +80,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
   lazy val minimumYear: Int = configuration.get[Int]("minimumYear")
 
+  lazy val compileDelayInSeconds: Int = configuration.get[Int]("compileDelayInSeconds")
+
   lazy val minimalDetailsUrl: String = s"$pensionsAdministratorUrl${configuration.get[String](path = "urls.minimalDetails")}"
   lazy val parsingAndValidationUrl: String = s"$eventReportingUrl${configuration.get[String](path = "urls.parsingAndValidation")}"
   lazy val schemeDetailsUrl: String = s"$pensionSchemeUrl${configuration.get[String](path = "urls.schemeDetails")}"
