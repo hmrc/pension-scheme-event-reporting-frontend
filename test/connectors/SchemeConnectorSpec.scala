@@ -20,10 +20,13 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import models.SchemeDetails
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
+import play.api.http.Status.OK
 import uk.gov.hmrc.http._
 import utils.WireMockHelper
 
-class SchemeDetailsConnectorSpec
+import java.time.LocalDate
+
+class SchemeConnectorSpec
   extends AsyncWordSpec
     with Matchers
     with WireMockHelper {
@@ -31,7 +34,50 @@ class SchemeDetailsConnectorSpec
 
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
   private val psaId = "0000"
+  private val pstr = "pstr"
   private val idNumber = "00000000AA"
+
+
+  "getOpenDate" must {
+    val openDateUrl = "/pensions-scheme/open-date"
+    "return the openDate for a valid request/response" in {
+      server.stubFor(
+        get(urlEqualTo(openDateUrl))
+          .withHeader("idType", equalTo("psaid"))
+          .withHeader("idValue", equalTo(psaId))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withHeader("Content-Type", "application/json")
+              .withBody("2017-12-17")
+          )
+      )
+
+      val connector = injector.instanceOf[SchemeConnector]
+
+      connector.getOpenDate(psaId, pstr).map { openDate =>
+        openDate mustBe LocalDate.parse("2017-12-17")
+      }
+    }
+
+    "throw BadRequestException for a 400 Bad Request response" in {
+      server.stubFor(
+        get(urlEqualTo(openDateUrl))
+          .withHeader("idType", equalTo("psaid"))
+          .withHeader("idValue", equalTo(psaId))
+          .willReturn(
+            badRequest
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      val connector = injector.instanceOf[SchemeConnector]
+
+      recoverToSucceededIf[BadRequestException] {
+        connector.getOpenDate(psaId, pstr)
+      }
+    }
+  }
 
   "getSchemeDetails" must {
     val schemeDetailsUrl = s"/pensions-scheme/scheme"
@@ -47,7 +93,7 @@ class SchemeDetailsConnectorSpec
           )
       )
 
-      val connector = injector.instanceOf[SchemeDetailsConnector]
+      val connector = injector.instanceOf[SchemeConnector]
 
       connector.getSchemeDetails(psaId, idNumber, "pstr").map(schemeDetails =>
         schemeDetails mustBe SchemeDetails("test scheme", "test pstr", "test status", None)
@@ -65,7 +111,7 @@ class SchemeDetailsConnectorSpec
           )
       )
 
-      val connector = injector.instanceOf[SchemeDetailsConnector]
+      val connector = injector.instanceOf[SchemeConnector]
 
       recoverToSucceededIf[BadRequestException] {
         connector.getSchemeDetails(psaId, idNumber, "srn")

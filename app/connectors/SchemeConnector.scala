@@ -20,16 +20,70 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.SchemeDetails
 import play.api.http.Status._
-import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json}
+import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HttpClient, _}
 import utils.HttpResponseHelper
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class SchemeDetailsConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
+class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
   extends HttpResponseHelper {
+  def getOpenDate(psaId: String, pstr: String)
+                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
+      val (url, schemeHc) = (config.openDateUrl, hc.withExtraHeaders("idType" -> "psaid", "idValue" -> psaId, "pstr" -> pstr))
+    openDate(url)(schemeHc, ec)
+  }
 
+  def getOpenDateForPsp(pspId: String, pstr: String)
+                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
+    val schemeHc = hc.withExtraHeaders("idType" -> "pspid", "idValue" -> pspId, "pstr" -> pstr)
+    openDate(config.openDateUrl)(schemeHc, ec)
+  }
+
+  private def openDate(url: String)
+                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
+    http.GET[HttpResponse](url).map { response =>
+      response.status match {
+        case OK =>
+          val openDate = response.body
+          LocalDate.parse(openDate)
+        case _ =>
+          handleErrorResponse("GET", url)(response)
+      }
+    }
+  }
+
+//  def getOpenDate(psaId: String, idNumber: String, schemeIdType: String, pstr: String)
+//                      (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[SchemeDetails] = {
+//
+//    val url = config.openDateUrl
+//
+//    val headers: Seq[(String, String)] =
+//      Seq(
+//        ("idType", idNumber),
+//        ("idValue", psaId),
+//        ("pstr", pstr)
+//      )
+//val json =
+//    implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+//
+//    http.GET[HttpResponse](url)(implicitly, hc, implicitly) map {
+//      response =>
+//        response.status match {
+//          case OK =>
+//            val x = response.json.as[JsString].value
+//
+//            Json.parse(response.body).validate[SchemeDetails](SchemeDetails.readsPsa) match {
+//              case JsSuccess(value, _) => value
+//              case JsError(errors) => throw JsResultException(errors)
+//            }
+//          case _ =>
+//            handleErrorResponse("GET", url)(response)
+//        }
+//    }
+//  }
   def getSchemeDetails(psaId: String, idNumber: String, schemeIdType: String)
                       (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[SchemeDetails] = {
 
