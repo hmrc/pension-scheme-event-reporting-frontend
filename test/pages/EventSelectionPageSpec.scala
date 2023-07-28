@@ -35,6 +35,7 @@ class EventSelectionPageSpec extends PageBehaviours {
     testGetCorrectPageWithIndexManualOrUpload(Event6, models.EventSelection.Event6, ManualOrUploadPage(Event6, 2))
     testGetCorrectPageWithIndexMemberDetails(Event7, models.EventSelection.Event7, MembersDetailsPage(Event7, 2))
     testGetCorrectPageWithIndexMemberDetails(Event8, models.EventSelection.Event8, MembersDetailsPage(Event8, 2))
+    testGetCorrectPageWithIndexMemberDetails(Event8A, models.EventSelection.Event8A, MembersDetailsPage(Event8A, 2))
     testGetCorrectPageWithIndexManualOrUpload(Event22, models.EventSelection.Event22, ManualOrUploadPage(Event22, 2))
     testGetCorrectPageWithIndexManualOrUpload(Event23, models.EventSelection.Event23, ManualOrUploadPage(Event23, 2))
     testGetCorrectPageEvent10()
