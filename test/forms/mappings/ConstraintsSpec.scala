@@ -201,4 +201,14 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
       }
     }
   }
+//  "isBeforeOpenDate" - {
+//    "must return invalid for a date before the open date" in {
+//      val gen: Gen[(Localdate)] = for {
+//        openDate <- LocalDate.of(2022, 5, 1)
+//      } yield openDate
+//      forAll(gen) {
+//        case
+//      }
+//    }
+//  }
 }

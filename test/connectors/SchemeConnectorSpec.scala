@@ -34,6 +34,7 @@ class SchemeConnectorSpec
 
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
   private val psaId = "0000"
+  private val pspId = "000012"
   private val pstr = "pstr"
   private val idNumber = "00000000AA"
 
@@ -55,7 +56,27 @@ class SchemeConnectorSpec
 
       val connector = injector.instanceOf[SchemeConnector]
 
-      connector.getOpenDate(psaId, pstr).map { openDate =>
+      connector.getOpenDate("psaid", psaId, pstr).map { openDate =>
+        openDate mustBe LocalDate.parse("2017-12-17")
+      }
+    }
+
+    "return the openDate for psp for a valid request/response" in {
+      server.stubFor(
+        get(urlEqualTo(openDateUrl))
+          .withHeader("idType", equalTo("pspid"))
+          .withHeader("idValue", equalTo(pspId))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withHeader("Content-Type", "application/json")
+              .withBody("2017-12-17")
+          )
+      )
+
+      val connector = injector.instanceOf[SchemeConnector]
+
+      connector.getOpenDate("pspid", pspId, pstr).map { openDate =>
         openDate mustBe LocalDate.parse("2017-12-17")
       }
     }
@@ -74,7 +95,7 @@ class SchemeConnectorSpec
       val connector = injector.instanceOf[SchemeConnector]
 
       recoverToSucceededIf[BadRequestException] {
-        connector.getOpenDate(psaId, pstr)
+        connector.getOpenDate("psaid", psaId, pstr)
       }
     }
   }

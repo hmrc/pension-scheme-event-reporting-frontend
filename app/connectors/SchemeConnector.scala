@@ -30,60 +30,32 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
   extends HttpResponseHelper {
-  def getOpenDate(psaId: String, pstr: String)
-                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
-      val (url, schemeHc) = (config.openDateUrl, hc.withExtraHeaders("idType" -> "psaid", "idValue" -> psaId, "pstr" -> pstr))
-    openDate(url)(schemeHc, ec)
+  def getOpenDate(idType: String, idValue: String, pstr: String)
+                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
+    if (idType == "pspId") {
+      val schemeHc = hc.withExtraHeaders("idType" -> "pspId", "idValue" -> idValue, "pstr" -> pstr)
+      openDate(config.openDateUrl)(schemeHc, ec)
+    } else if (idType == "psaId") {
+      val schemeHc = hc.withExtraHeaders("idType" -> "psaId", "idValue" -> idValue, "pstr" -> pstr)
+      openDate(config.openDateUrl)(schemeHc, ec)
+    } else {
+      Future.failed(new IllegalArgumentException("Invalid idType"))
+    }
   }
-
-  def getOpenDateForPsp(pspId: String, pstr: String)
-                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
-    val schemeHc = hc.withExtraHeaders("idType" -> "pspid", "idValue" -> pspId, "pstr" -> pstr)
-    openDate(config.openDateUrl)(schemeHc, ec)
-  }
-
   private def openDate(url: String)
                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
     http.GET[HttpResponse](url).map { response =>
       response.status match {
         case OK =>
           val openDate = response.body
-          LocalDate.parse(openDate)
+          val y = LocalDate.parse(openDate)
+          println(s"\n\n\n PARSED OPEN DATE CONNECTOR === ${y}")
+          y
         case _ =>
           handleErrorResponse("GET", url)(response)
       }
     }
   }
-
-//  def getOpenDate(psaId: String, idNumber: String, schemeIdType: String, pstr: String)
-//                      (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[SchemeDetails] = {
-//
-//    val url = config.openDateUrl
-//
-//    val headers: Seq[(String, String)] =
-//      Seq(
-//        ("idType", idNumber),
-//        ("idValue", psaId),
-//        ("pstr", pstr)
-//      )
-//val json =
-//    implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-//
-//    http.GET[HttpResponse](url)(implicitly, hc, implicitly) map {
-//      response =>
-//        response.status match {
-//          case OK =>
-//            val x = response.json.as[JsString].value
-//
-//            Json.parse(response.body).validate[SchemeDetails](SchemeDetails.readsPsa) match {
-//              case JsSuccess(value, _) => value
-//              case JsError(errors) => throw JsResultException(errors)
-//            }
-//          case _ =>
-//            handleErrorResponse("GET", url)(response)
-//        }
-//    }
-//  }
   def getSchemeDetails(psaId: String, idNumber: String, schemeIdType: String)
                       (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[SchemeDetails] = {
 
@@ -111,7 +83,6 @@ class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
         }
     }
   }
-
   def getPspSchemeDetails(pspId: String, pstr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SchemeDetails] = {
 
     val url = config.pspSchemeDetailsUrl

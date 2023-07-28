@@ -29,6 +29,7 @@ class SchemeWindUpDateFormProviderSpec extends DateBehaviours with SpecBase {
     min = LocalDate.of(2022, 4, 6),
     max = LocalDate.of(2023, 4, 5)
   )
+  private val openDate = LocalDate.of(2022, 5, 1)
 
   ".value must" - {
 
@@ -50,5 +51,8 @@ class SchemeWindUpDateFormProviderSpec extends DateBehaviours with SpecBase {
       formError = FormError("value", "schemeWindUpDate.error.outside.taxYear", Seq("2022", "2023"))
     )
 
+    "not allow dates before the open date" in {
+      ???
+    }
   }
 }
