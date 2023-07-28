@@ -5,6 +5,7 @@ site.notEntered = Not entered
 site.remove = Remove
 site.change = Change
 site.view = View
+site.viewOrChange = View or change
 site.no = No
 site.yes = Yes
 site.continue = Continue

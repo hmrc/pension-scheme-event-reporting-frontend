@@ -48,19 +48,31 @@ class ReturnHistoryController @Inject()(
       erConnector.getListOfVersions(request.pstr, g + "-04-06").map { h =>
        val m =  h.map { kk =>
 
-         val (compileStatus, version) = kk.versionDetails.status match {
-           case Compiled => ("In progress", "Draft")
-           case _ => (kk.versionDetails.status.toString.capitalize + " on " + formatDateDMY(kk.submittedDate), kk.versionDetails.version.toString )
+         val (compileStatus, version, submitterName) = kk.versionDetails.status match {
+           case Compiled => ("In progress", "Draft", "")
+           case _ => (kk.versionDetails.status.toString.capitalize + " on " + formatDateDMY(kk.submittedDate), kk.versionDetails.version.toString, kk.submitterName.getOrElse(""))
          }
+
+         def changeOrViewLink = {
+           val finalVersion = h.length
+           if (kk.versionDetails.version == finalVersion) "site.viewOrChange" else "site.view"
+         }
+
+         val viewOrChangeLink = kk.versionDetails.status match {
+           case Compiled => "site.change"
+           case _ => changeOrViewLink
+         }
+
+         //view (for all other cases), view or change (when its the most recent version), change (when in compile)
 
           ReturnHistorySummary(
             key = version,
             firstValue = compileStatus,
-            secondValue = kk.submitterName.getOrElse(""),
+            secondValue = submitterName,
             actions = Some(Actions(
               items = Seq(
                 ActionItem(
-                  content = Text(Message("site.view")),
+                  content = Text(Message(viewOrChangeLink)),
                   href = "#"
                 )
               )
