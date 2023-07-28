@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.enumeration.EventType.Event1
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
@@ -48,13 +49,17 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockEventReportingConnector = mock[EventReportingConnector]
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val compileService = new CompileService(mockEventReportingConnector, mockUserAnswersCacheConnector)
+  private val mockAppConfig = mock[FrontendAppConfig]
+
+  private val compileService = new CompileService(mockEventReportingConnector, mockUserAnswersCacheConnector, mockAppConfig)
 
   override def beforeEach(): Unit = {
     reset(mockEventReportingConnector)
     reset(mockUserAnswersCacheConnector)
+    reset(mockAppConfig)
     when(mockUserAnswersCacheConnector.save(ArgumentMatchers.eq(pstr), any())(any(), any()))
       .thenReturn(Future.successful((): Unit))
+    when(mockAppConfig.compileDelayInSeconds).thenReturn(0)
   }
 
   "compileEvent" - {
