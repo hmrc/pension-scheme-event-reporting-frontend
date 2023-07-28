@@ -46,13 +46,10 @@ class ReturnSubmittedController @Inject()(
     minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map { minimalDetails =>
       val schemeName = request.schemeName
 
-      val isPsa: Boolean = request.loggedInUser.administratorOrPractitioner match {
-        case Administrator => true
-        case _ => false
+      val viewOtherPensionSchemesUrl: String = request.loggedInUser.administratorOrPractitioner match {
+        case Administrator => config.yourPensionSchemesUrl
+        case _ => config.listPspUrl
       }
-
-      val yourPensionSchemesUrl: String = config.yourPensionSchemesUrl
-      val listPspUrl: String = config.listPspUrl
 
       val taxYear = request.userAnswers.get(TaxYearPage) match {
         case Some(taxYear) => s"${taxYear.startYear} ${Messages("confirmation.taxYear.to")} ${taxYear.endYear}"
@@ -63,7 +60,7 @@ class ReturnSubmittedController @Inject()(
       val dateSubmitted: String = dateHelper.now.format(dateFormatter)
 
       Ok(view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url,
-        isPsa, yourPensionSchemesUrl, listPspUrl, schemeName, taxYear, dateSubmitted, minimalDetails.email))
+        viewOtherPensionSchemesUrl, schemeName, taxYear, dateSubmitted, minimalDetails.email))
     }
   }
 }

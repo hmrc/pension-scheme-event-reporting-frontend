@@ -73,9 +73,7 @@ class ReturnSubmittedControllerSpec extends SpecBase {
         contentAsString(result) mustEqual
           view(
             routes.ReturnSubmittedController.onPageLoad(waypoints).url,
-            isPsa = true,
             yourPensionSchemesUrl,
-            listPspUrl,
             schemeName,
             taxYear,
             dateSubmitted,
@@ -89,7 +87,7 @@ class ReturnSubmittedControllerSpec extends SpecBase {
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
 
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"))
-      val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
+      val application = applicationBuilderForPSP(userAnswers = Some(ua), extraModules).build()
 
       running(application) {
 
@@ -104,8 +102,6 @@ class ReturnSubmittedControllerSpec extends SpecBase {
         contentAsString(result) mustEqual
           view(
             routes.ReturnSubmittedController.onPageLoad(waypoints).url,
-            isPsa = false,
-            yourPensionSchemesUrl,
             listPspUrl,
             schemeName,
             taxYear,
