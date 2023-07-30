@@ -42,7 +42,7 @@ class ErrorHandler @Inject()(
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
     exception match {
       case _: ExpectationFailedException =>
-        Future.successful(Ok(noDataEnteredView(config.yourPensionSchemesUrl)(Request(request, ""), request2Messages(request))))
+        Future.successful(Ok(noDataEnteredView(config.manageOverviewDashboardUrl)(Request(request, ""), request2Messages(request))))
       case _ => super.onServerError(request, exception)
     }
   }

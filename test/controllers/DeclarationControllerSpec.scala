@@ -41,7 +41,6 @@ import org.mockito.Mockito.doNothing
 import play.api.http.Status.OK
 import play.api.test.Helpers.GET
 import org.scalatest.RecoverMethods._
-import uk.gov.hmrc.http.HttpExceptions.EXPECTATION_FAILED
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -126,18 +125,15 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
 
     "must redirect to the correct error screen when no data is able to be submitted" in {
       val applicationNoUA = applicationBuilder(userAnswers = None, extraModules).build()
-
-      running(applicationNoUA) {
+      val controller: DeclarationController = applicationNoUA.injector.instanceOf[DeclarationController]
 
         val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
 
         recoverToExceptionIf[ExpectationFailedException] {
-          route(applicationNoUA, request).value
+          controller.onClick(waypoints)(request)
         } map { response =>
           response.responseCode mustBe EXPECTATION_FAILED
         }
-
-      }
     }
   }
 }

@@ -614,6 +614,3 @@ POST       /new-report/:index/remove-event-22                      controllers.c
 
 GET        /new-report/:index/remove-event-23                    controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
 POST       /new-report/:index/remove-event-23                      controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
-
-# No Data Entered Error
-GET         /no-data-entered                                    controllers.NoDataEnteredErrorController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)

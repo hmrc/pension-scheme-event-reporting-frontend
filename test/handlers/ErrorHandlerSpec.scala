@@ -17,6 +17,7 @@
 package handlers
 
 import base.SpecBase
+import controllers.routes
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
@@ -29,15 +30,13 @@ class ErrorHandlerSpec extends SpecBase with BeforeAndAfterEach with MockitoSuga
 
   private val waypoints = EmptyWaypoints
 
-
   "ErrorHandlerSpec" - {
 
     "must catch ExpectationFailedExceptions and return the correct view" in {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-
-        val request = FakeRequest(GET, routes.???.onClick(waypoints).url)
+        val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
 
         val result = route(application, request).value
 
