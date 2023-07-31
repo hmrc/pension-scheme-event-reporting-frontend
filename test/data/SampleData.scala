@@ -21,9 +21,9 @@ import models.address.{Address, TolerantAddress}
 import models.common.ManualOrUpload.Manual
 import models.common.{ChooseTaxYear, MembersDetails, PaymentDetails => CommonPaymentDetails}
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
-import models.enumeration.{EventType, VersionStatus}
 import models.enumeration.EventType.{Event1, Event2, Event6, Event7, Event8, Event8A}
 import models.enumeration.VersionStatus.Compiled
+import models.enumeration.{EventType, VersionStatus}
 import models.event1.PaymentNature.BenefitInKind
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.employer.PaymentNature.TangibleMoveableProperty
@@ -179,6 +179,7 @@ object SampleData extends SpecBase {
 
 
   val userAnswersWithOneMemberAndEmployerEvent1: UserAnswers = UserAnswers()
+    .setOrException(TaxYearPage, TaxYear("2022"), true)
     .setOrException(WhoReceivedUnauthPaymentPage(0), Member)
     .setOrException(PaymentValueAndDatePage(0), Event1PaymentDetails(BigDecimal(857.00), LocalDate.of(2022, 11, 9)))
     .setOrException(MembersDetailsPage(Event1, 0), memberDetails)
