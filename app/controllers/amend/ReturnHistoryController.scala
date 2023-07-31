@@ -21,7 +21,7 @@ import controllers.actions._
 import models.TaxYear.getTaxYearFromOption
 import models.VersionInfo
 import models.enumeration.VersionStatus.{Compiled, Submitted}
-import pages.{EventSummaryPage, VersionInfoPage, Waypoints}
+import pages.{VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
@@ -51,6 +51,7 @@ class ReturnHistoryController @Inject()(
         val t = h.filter(x => x.versionDetails.status == Submitted)
         val m = t.map { kk =>
 
+          //remove draft/ in progress stuff - question if that link is supposed to be for viewing and ameding - surely you want to know what's in progress atm? which is why the draft was available
           val (compileStatus, version, submitterName) = kk.versionDetails.status match {
             case Compiled => ("In progress", "Draft", "")
             case _ => (kk.versionDetails.status.toString.capitalize + " on " + formatDateDMY(kk.submittedDate), kk.versionDetails.version.toString, kk.submitterName.getOrElse(""))
@@ -59,6 +60,7 @@ class ReturnHistoryController @Inject()(
           def changeOrViewLink = {
             val finalVersion = h.length
             if (kk.versionDetails.version == finalVersion) "site.viewOrChange" else "site.view"
+//            if (kk.versionDetails.version == finalVersion) "site.viewOrChange" else "site.view"
           }
 
           val viewOrChangeLink = kk.versionDetails.status match {

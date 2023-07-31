@@ -17,20 +17,48 @@
 package controllers.amend
 
 import base.SpecBase
-import controllers.amend.ReturnHistoryControllerSpec.h
+import connectors.EventReportingConnector
+import controllers.amend.ReturnHistoryControllerSpec.{h, v}
+import models.VersionInfo
+import models.amend.VersionsWithSubmitter
+import models.enumeration.VersionStatus.Submitted
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.EmptyWaypoints
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import viewmodels.ReturnHistorySummary
 import views.html.amend.ReturnHistoryView
 
-class ReturnHistoryControllerSpec extends SpecBase {
+import java.time.LocalDate
+import scala.concurrent.Future
+
+class ReturnHistoryControllerSpec extends SpecBase with BeforeAndAfterEach {
+
+  val mockErConnector: EventReportingConnector = mock[EventReportingConnector]
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[EventReportingConnector].toInstance(mockErConnector)
+  )
+
+  override def beforeEach(): Unit = {
+    reset(mockErConnector)
+  }
 
   "ReturnHistory Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
+
+      when(mockErConnector.getListOfVersions(ArgumentMatchers.eq("87219363YN"), ArgumentMatchers.eq("2022-04-06"))(any(), any()))
+        .thenReturn(Future.successful(Seq(v)))
 
       running(application) {
 
@@ -41,7 +69,7 @@ class ReturnHistoryControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[ReturnHistoryView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(h, "2021-04-06", "2022-04-05")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(h, "2022", "2023")(request, messages(application)).toString
       }
     }
   }
@@ -49,15 +77,18 @@ class ReturnHistoryControllerSpec extends SpecBase {
 
 object ReturnHistoryControllerSpec {
 
+  val v: VersionsWithSubmitter =
+    VersionsWithSubmitter(VersionInfo(1, Submitted), Some("John Smith"), LocalDate.of(2022, 6, 9))
+
   val h = Seq(ReturnHistorySummary(
     key = "1",
-    firstValue = "SubmittedAndInProgress",
-    secondValue = "submitterName",
+    firstValue = "Submitted on 09 June 2022",
+    secondValue = "John Smith",
     actions = Some(Actions(
       items = Seq(
         ActionItem(
           content = Text("View or change"),
-          href = "#"
+          href = controllers.amend.routes.ReturnHistoryController.onClick(EmptyWaypoints, "1").url
         )
       )
     ))
