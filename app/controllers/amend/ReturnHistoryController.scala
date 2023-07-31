@@ -46,24 +46,28 @@ class ReturnHistoryController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()) async {
     implicit request =>
-      val g = getTaxYearFromOption(request.userAnswers).toString
-      erConnector.getListOfVersions(request.pstr, g + "-04-06").map { h =>
-        val t = h.filter(x => x.versionDetails.status == Submitted)
-        val m = t.map { kk =>
+      val currentTaxYear = getTaxYearFromOption(request.userAnswers)
+      erConnector.getListOfVersions(request.pstr, currentTaxYear.toString + "-04-06").map { seqVersionsWithSubmitter =>
+        val seqVersionsSubmitted = seqVersionsWithSubmitter.filter(versions => versions.versionDetails.status == Submitted)
+        val seqRetHistorySummary = seqVersionsSubmitted.map { versionWithSubmitter =>
 
-          //remove draft/ in progress stuff - question if that link is supposed to be for viewing and ameding - surely you want to know what's in progress atm? which is why the draft was available
-          val (compileStatus, version, submitterName) = kk.versionDetails.status match {
-            case Compiled => ("In progress", "Draft", "")
-            case _ => (kk.versionDetails.status.toString.capitalize + " on " + formatDateDMY(kk.submittedDate), kk.versionDetails.version.toString, kk.submitterName.getOrElse(""))
+          //remove draft/ in progress stuff - question if that link is supposed to be for viewing and amending - surely
+          // we want to know what's in progress atm?
+          val (compileStatus, version, submitterName) = versionWithSubmitter.versionDetails.status match {
+//            case Compiled => ("In progress", "Draft", "")
+            case Submitted =>
+              (versionWithSubmitter.versionDetails.status.toString.capitalize + " on " + formatDateDMY(versionWithSubmitter.submittedDate),
+                versionWithSubmitter.versionDetails.version.toString,
+                versionWithSubmitter.submitterName.getOrElse(""))
           }
 
           def changeOrViewLink = {
-            val finalVersion = h.length
-            if (kk.versionDetails.version == finalVersion) "site.viewOrChange" else "site.view"
+            val finalVersion = seqVersionsSubmitted.length
+            if (versionWithSubmitter.versionDetails.version == finalVersion) "site.viewOrChange" else "site.view"
 //            if (kk.versionDetails.version == finalVersion) "site.viewOrChange" else "site.view"
           }
 
-          val viewOrChangeLink = kk.versionDetails.status match {
+          val viewOrChangeLink = versionWithSubmitter.versionDetails.status match {
             case Compiled => "site.change"
             case _ => changeOrViewLink
           }
@@ -84,15 +88,15 @@ class ReturnHistoryController @Inject()(
             ))
           )
         }
-        val taxYearRange = (getTaxYearFromOption(request.userAnswers).toString, (getTaxYearFromOption(request.userAnswers) + 1).toString)
-        Ok(view(m, taxYearRange._1, taxYearRange._2))
+        val taxYearRange = (currentTaxYear.toString, (currentTaxYear + 1).toString)
+        Ok(view(seqRetHistorySummary, taxYearRange._1, taxYearRange._2))
       }
   }
 
       def onClick(waypoints: Waypoints, version: String): Action[AnyContent] = (identify andThen getData() andThen requireData) async {
         implicit request =>
-          val versionObj = VersionInfo(version.toInt, Submitted)
-            val updateUA = request.userAnswers.setOrException(VersionInfoPage, versionObj, nonEventTypeData = true)
+          val versionInfo = VersionInfo(version.toInt, Submitted)
+            val updateUA = request.userAnswers.setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
           userAnswersCacheConnector.save(request.pstr, updateUA).map {
             _ => Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints))
           }

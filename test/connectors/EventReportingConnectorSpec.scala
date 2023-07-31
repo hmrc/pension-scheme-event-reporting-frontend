@@ -18,9 +18,11 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
+import models.amend.VersionsWithSubmitter
 import models.enumeration.EventType.{Event1, Event2}
+import models.enumeration.VersionStatus.Submitted
 import models.enumeration.{Enumerable, EventType}
-import models.{EROverview, EROverviewVersion, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, TaxYear, UserAnswers}
+import models.{EROverview, EROverviewVersion, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, TaxYear, UserAnswers, VersionInfo}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import play.api.libs.json.{JsArray, Json}
@@ -65,6 +67,7 @@ class EventReportingConnectorSpec
 
   private val getFileUploadResponseUrl = "/pension-scheme-event-reporting/file-upload-response/get"
   private val getOverviewUrl = "/pension-scheme-event-reporting/overview"
+  private val getVersionUrl = "/pension-scheme-event-reporting/versions"
 
   private val failureOutcome = FileUploadOutcomeResponse(fileName = None, FAILURE, None, referenceStub, None)
   private val failureOutcomeJson = Json.obj("fileStatus" -> "ERROR")
@@ -342,6 +345,37 @@ class EventReportingConnectorSpec
       connector.getOverview(pstr, "ER", "2022-04-06", "2023-04-05").map { response =>
         response mustBe erOverview
       }
+    }
+  }
+
+  "getListOfVersions" must {
+    "return the seq of VersionsWithSubmitter returned from BE" in {
+
+      val versionWithSubmitterResponse =
+        Seq(VersionsWithSubmitter(VersionInfo(1, Submitted), Some("John Smith"), LocalDate.of(2022, 6, 9)))
+
+      val versionWithSubmitterResponseJson = {
+        Json.arr(
+          Json.obj("versionDetails" -> Json.obj(
+            "version" -> 1,
+            "status" -> "submitted"),
+            "submitterName" -> "John Smith",
+            "submittedDate" -> "2022-06-09")
+        )
+      }
+
+      server.stubFor(
+        get(urlEqualTo(getVersionUrl))
+          .willReturn(
+            ok
+              .withHeader("Content-Type", "application/json")
+              .withBody(versionWithSubmitterResponseJson.toString())
+          )
+      )
+      connector.getListOfVersions(pstr, "2022-04-06").map { response =>
+        response mustBe versionWithSubmitterResponse
+      }
+
     }
   }
 }

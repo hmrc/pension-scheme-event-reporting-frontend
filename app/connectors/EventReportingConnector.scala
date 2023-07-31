@@ -18,9 +18,8 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
 import models.amend.VersionsWithSubmitter
-import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers, VersionInfo}
+import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json._
@@ -239,13 +238,10 @@ class EventReportingConnector @Inject()(
     val logger = Logger(classOf[EventReportingConnector])
     val hc = headerCarrier.withExtraHeaders("pstr" -> pstr, "startDate" -> startDate)
     http.GET[HttpResponse](erListOfVersionsUrl)(implicitly, hc, implicitly).map { response =>
-      println("\n\n\n\nresponse: " + response.body)
       response.status match {
         case OK =>
           Json.parse(response.body).validate[Seq[VersionsWithSubmitter]] match {
-            case JsSuccess(value, _) =>
-              println("\n\n\n\nvalue: " + value)
-              value
+            case JsSuccess(value, _) => value
             case JsError(errors) => throw JsResultException(errors)
           }
         case NOT_FOUND => Seq.empty
