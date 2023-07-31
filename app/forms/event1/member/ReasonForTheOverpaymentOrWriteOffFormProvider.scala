@@ -26,6 +26,7 @@ class ReasonForTheOverpaymentOrWriteOffFormProvider @Inject() extends Mappings {
 
   def apply(): Form[ReasonForTheOverpaymentOrWriteOff] =
     Form(
-      "value" -> enumerable[ReasonForTheOverpaymentOrWriteOff]("reasonForTheOverpaymentOrWriteOff.error.required")
+      "value" -> enumerable[ReasonForTheOverpaymentOrWriteOff]("reasonForTheOverpaymentOrWriteOff.error.required",
+        invalidKey = "reasonForTheOverpaymentOrWriteOff.error.format")
     )
 }

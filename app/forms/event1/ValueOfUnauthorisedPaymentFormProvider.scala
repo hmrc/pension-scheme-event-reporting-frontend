@@ -25,6 +25,6 @@ class ValueOfUnauthorisedPaymentFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("valueOfUnauthorisedPayment.error.required")
+      "value" -> boolean("valueOfUnauthorisedPayment.error.required", invalidKey = "valueOfUnauthorisedPayment.error.format")
     )
 }
