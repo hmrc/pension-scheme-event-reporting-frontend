@@ -19,7 +19,7 @@ package controllers.fileUpload
 import base.SpecBase
 import connectors.ParsingAndValidationOutcomeCacheConnector
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23, Event6}
+import models.enumeration.EventType.{Event1, Event22, Event23, Event6}
 import models.fileUpload.ParsingAndValidationOutcome
 import models.fileUpload.ParsingAndValidationOutcomeStatus.Success
 import org.mockito.ArgumentMatchers.any
@@ -41,7 +41,7 @@ class FileUploadSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
   private def continueUrl(eventType: EventType) = s"/manage-pension-scheme-event-report/new-report/event-${eventType.toString}-summary"
 
   private val mockParsingAndValidationOutcomeCacheConnector = mock[ParsingAndValidationOutcomeCacheConnector]
-  private val seqOfEvents = Seq(Event6, Event22, Event23)
+  private val seqOfEvents = Seq(Event1, Event6, Event22, Event23)
 
   private val expectedOutcome = ParsingAndValidationOutcome(
     status = Success,

@@ -28,12 +28,13 @@ class RefundOfContributionsFormProviderSpec extends OptionFieldBehaviours {
 
     val fieldName = "value"
     val requiredKey = "refundOfContributions.error.required"
+    val invalidKey = "refundOfContributions.error.format"
 
     behave like optionsField[RefundOfContributions](
       form,
       fieldName,
       validValues  = RefundOfContributions.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      invalidError = FormError(fieldName, invalidKey)
     )
 
     behave like mandatoryField(

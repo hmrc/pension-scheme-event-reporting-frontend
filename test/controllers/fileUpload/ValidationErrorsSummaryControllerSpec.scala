@@ -19,7 +19,7 @@ package controllers.fileUpload
 import base.SpecBase
 import connectors.ParsingAndValidationOutcomeCacheConnector
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23, Event6}
+import models.enumeration.EventType.{Event1, Event22, Event23, Event6}
 import models.fileUpload.ParsingAndValidationOutcome
 import models.fileUpload.ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10
 import org.mockito.ArgumentMatchers.any
@@ -37,7 +37,7 @@ import views.html.fileUpload.ValidationErrorsSummaryView
 import scala.concurrent.Future
 
 class ValidationErrorsSummaryControllerSpec extends SpecBase with BeforeAndAfterEach {
-  private val seqOfEvents = Seq(Event6, Event22, Event23)
+  private val seqOfEvents = Seq(Event1, Event6, Event22, Event23)
   private val mockParsingAndValidationOutcomeCacheConnector = mock[ParsingAndValidationOutcomeCacheConnector]
   private val dummyErrors: Seq[String] = Seq("Error1", "Error2", "Error3")
 
