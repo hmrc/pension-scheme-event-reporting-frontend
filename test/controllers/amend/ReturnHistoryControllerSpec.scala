@@ -17,10 +17,12 @@
 package controllers.amend
 
 import base.SpecBase
+import controllers.amend.ReturnHistoryControllerSpec.h
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
+import viewmodels.ReturnHistorySummary
 import views.html.amend.ReturnHistoryView
-import controllers.amend.routes._
 
 class ReturnHistoryControllerSpec extends SpecBase {
 
@@ -39,8 +41,25 @@ class ReturnHistoryControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[ReturnHistoryView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(request, messages(application)).toString
+        contentAsString(result) mustEqual view(h, "2021-04-06", "2022-04-05")(request, messages(application)).toString
       }
     }
   }
+}
+
+object ReturnHistoryControllerSpec {
+
+  val h = Seq(ReturnHistorySummary(
+    key = "1",
+    firstValue = "SubmittedAndInProgress",
+    secondValue = "submitterName",
+    actions = Some(Actions(
+      items = Seq(
+        ActionItem(
+          content = Text("View or change"),
+          href = "#"
+        )
+      )
+    ))
+  ))
 }
