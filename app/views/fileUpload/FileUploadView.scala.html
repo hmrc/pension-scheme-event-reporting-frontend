@@ -17,7 +17,7 @@
 @import models.enumeration.EventType
 
 @this(
-    layout: templates.Layout,
+    layout: templates.SchemeLayout,
     formHelper: FormWithCSRF,
     govukDetails: GovukDetails,
     govukInsetText: GovukInsetText,
@@ -26,7 +26,7 @@
     govukButton: GovukButton
 )
 
-@(waypoints: Waypoints, eventByName: String, eventType: EventType, submitUrl: Call, upscanFields: Map[String, String], errorMessage: Option[ErrorMessage])(implicit request: Request[_], messages: Messages)
+@(waypoints: Waypoints, eventByName: String, eventType: EventType, submitUrl: Call, upscanFields: Map[String, String], errorMessage: Option[ErrorMessage])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleWithErrors(errorMessage, messages("fileUpload.title", eventByName))) {
 
@@ -45,7 +45,25 @@
                 </span>
             </summary>
             <div class="govuk-details__text">
-                @if(eventType.toString == "6") {
+                @if(eventType.toString == "1") {
+                    <p>@messages("fileUploadWhatYouWillNeed.event1.p1")</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>@messages("fileUploadWhatYouWillNeed.event1.item1")</li>
+                        <li>@messages("fileUploadWhatYouWillNeed.event1.item2")</li>
+                        <li>@messages("fileUploadWhatYouWillNeed.event1.item3")</li>
+                        <li>@messages("fileUploadWhatYouWillNeed.event1.item4")</li>
+                        <li>@messages("fileUploadWhatYouWillNeed.event1.item5")</li>
+                        <li>@messages("fileUploadWhatYouWillNeed.event1.item6")</li>
+                    </ul>
+                    <p>@messages("fileUploadWhatYouWillNeed.event1.p2")</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>@messages("fileUploadWhatYouWillNeed.event1.item7")</li>
+                        <li>@messages("fileUploadWhatYouWillNeed.event1.item8")</li>
+                        <li>@messages("fileUploadWhatYouWillNeed.event1.item9")</li>
+                        <li>@messages("fileUploadWhatYouWillNeed.event1.item5")</li>
+                        <li>@messages("fileUploadWhatYouWillNeed.event1.item6")</li>
+                    </ul>
+                } else if(eventType.toString == "6") {
                     <p>@messages("whatYouWillNeed.event6.p")</p>
                     <ul class="govuk-list govuk-list--bullet">
                         <li>@messages("whatYouWillNeed.event6.item1")</li>

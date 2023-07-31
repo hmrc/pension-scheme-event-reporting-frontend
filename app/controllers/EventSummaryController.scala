@@ -52,19 +52,20 @@ class EventSummaryController @Inject()(
     (request.userAnswers.get(TaxYearPage), request.userAnswers.get(VersionInfoPage)) match {
       case (Some(taxYear), Some(versionInfo)) =>
         val startYear = s"${taxYear.startYear}-04-06"
-        connector.getEventReportSummary(request.pstr, startYear, versionInfo.version).map { seqOfEventTypes =>
-          seqOfEventTypes.map { es =>
+        connector.getEventReportSummary(request.pstr, startYear, versionInfo.version)
+          .map { seqOfEventTypes =>
+          seqOfEventTypes.collect { case eventSummary if !eventSummary.numberOfMembers.contains(0) =>
             SummaryListRow(
               key = Key(
-                content = Text(Message(s"eventSummary.event${es.eventType.toString}"))
+                content = Text(Message(s"eventSummary.event${eventSummary.eventType.toString}"))
               ),
               actions = Some(Actions(
                 items = Seq(
-                  changeLinkForEvent(es.eventType).map { link =>  ActionItem(
+                  changeLinkForEvent(eventSummary.eventType).map { link =>  ActionItem(
                     content = Text(Message("site.change")),
                     href = link
                   )},
-                  removeLinkForEvent(es.eventType).map{ link =>  ActionItem(
+                  removeLinkForEvent(eventSummary.eventType).map{ link =>  ActionItem(
                       content = Text(Message("site.remove")),
                       href = link
                     )
@@ -118,11 +119,11 @@ class EventSummaryController @Inject()(
       case EventType.Event11 => Some(controllers.event11.routes.Event11CheckYourAnswersController.onPageLoad.url)
       case EventType.Event12 => Some(controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
       case EventType.Event13 => Some(controllers.event13.routes.Event13CheckYourAnswersController.onPageLoad.url)
-      case EventType.Event14 => Some(controllers.event14.routes.Event14CheckYourAnswersController.onPageLoad().url)
+      case EventType.Event14 => None
       case EventType.Event18 => None
       case EventType.Event19 => Some(controllers.event19.routes.Event19CheckYourAnswersController.onPageLoad.url)
       case EventType.Event20 => Some(controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
-      case EventType.WindUp => Some(controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onPageLoad.url)
+      case EventType.WindUp => None
       case _ =>
         logger.error(s"Missing event type $eventType")
         None

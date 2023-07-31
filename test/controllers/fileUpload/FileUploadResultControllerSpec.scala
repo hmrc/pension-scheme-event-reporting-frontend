@@ -22,7 +22,7 @@ import forms.fileUpload.FileUploadResultFormProvider
 import models.FileUploadOutcomeResponse
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23, Event6, getEventTypeByName}
+import models.enumeration.EventType.{Event1, Event22, Event23, Event6, getEventTypeByName}
 import models.fileUpload.FileUploadResult
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -46,7 +46,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val formProvider = new FileUploadResultFormProvider()
   private val form = formProvider()
-  private val seqOfEvents = Seq(Event6, Event22, Event23)
+  private val seqOfEvents = Seq(Event1, Event6, Event22, Event23)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockERConnector = mock[EventReportingConnector]
