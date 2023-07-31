@@ -18,6 +18,7 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
 import models.amend.VersionsWithSubmitter
 import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers, VersionInfo}
 import play.api.Logger
@@ -51,6 +52,8 @@ class EventReportingConnector @Inject()(
 
   private def erListOfVersionsUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/versions"
 
+  private def deleteMemberUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/delete-member"
+
 
   def getEventReportSummary(pstr: String, reportStartDate: String, version: Int)
                            (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventSummary]] = {
@@ -81,7 +84,7 @@ class EventReportingConnector @Inject()(
       Future.successful(HttpResponse(NOT_FOUND, "Not found"))
   }
 
-  def compileEvent(pstr: String, edi: EventDataIdentifier, currentVersion: Int)
+  def compileEvent(pstr: String, edi: EventDataIdentifier, currentVersion: Int, delete: Boolean = false)
                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -90,7 +93,7 @@ class EventReportingConnector @Inject()(
       "year" -> edi.year,
       "currentVersion" -> currentVersion.toString,
       "version" -> edi.version
-    )
+    ) ++ (if(delete) Seq(("delete", "true")) else Seq())
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
     http.POST[JsValue, HttpResponse](eventCompileUrl, Json.obj())(implicitly, implicitly, hc, implicitly)
@@ -205,6 +208,29 @@ class EventReportingConnector @Inject()(
               case JsError(errors) => throw JsResultException(errors)
             }
           case _ => throw new HttpException(response.body, response.status)
+        }
+      }
+  }
+
+  def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion:Int, memberIdToDelete: String)
+                  (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+    val headers: Seq[(String, String)] = Seq(
+      "Content-Type" -> "application/json",
+      "pstr" -> pstr,
+      "eventType" -> edi.eventType.toString,
+      "year" -> edi.year,
+      "version" -> edi.version,
+      "currentVersion" -> currentVersion.toString,
+      "memberIdToDelete" -> memberIdToDelete
+    )
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.POST[JsValue, HttpResponse](deleteMemberUrl, Json.obj())(implicitly, implicitly, hc, implicitly)
+      .map { response =>
+        response.status match {
+          case NO_CONTENT => ()
+          case _ =>
+            throw new HttpException(response.body, response.status)
         }
       }
   }

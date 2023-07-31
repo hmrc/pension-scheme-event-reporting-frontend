@@ -16,17 +16,16 @@
 
 package controllers.event1
 
-import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.event1.UnauthPaymentSummaryFormProvider
 import forms.mappings.Formatters
-import models.UserAnswers
 import models.enumeration.EventType
 import models.enumeration.EventType.Event1
 import models.event1.MembersOrEmployersSummary
-import pages.{EmptyWaypoints, Waypoints}
+import models.{TaxYear, UserAnswers}
 import pages.common.MembersOrEmployersPage
 import pages.event1.UnauthPaymentSummaryPage
+import pages.{EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
@@ -45,7 +44,6 @@ class UnauthPaymentSummaryController @Inject()(
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
-                                                userAnswersCacheConnector: UserAnswersCacheConnector,
                                                 formProvider: UnauthPaymentSummaryFormProvider,
                                                 view: UnauthPaymentSummaryView
                                               ) extends FrontendBaseController with I18nSupport with Formatters {
@@ -53,29 +51,33 @@ class UnauthPaymentSummaryController @Inject()(
   private val form = formProvider()
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(EventType.Event1) andThen requireData) { implicit request =>
+    val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
     val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers)
-    Ok(view(form, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers)))
+    Ok(view(form, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers), taxYear))
   }
 
-  private def sumValue(userAnswers: UserAnswers) =
+  private def sumValue(userAnswers: UserAnswers): String =
     currencyFormatter.format(userAnswers.sumAll(MembersOrEmployersPage(EventType.Event1), MembersOrEmployersSummary.readsMemberOrEmployerValue))
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(EventType.Event1) andThen requireData) {
     implicit request =>
+      val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
       form.bindFromRequest().fold(
         formWithErrors => {
           val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers)
-          BadRequest(view(formWithErrors, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers)))
+          BadRequest(view(formWithErrors, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers), taxYear))
         },
         value => {
           val userAnswerUpdated = request.userAnswers.setOrException(UnauthPaymentSummaryPage, value)
-          Redirect(UnauthPaymentSummaryPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)}
+          Redirect(UnauthPaymentSummaryPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)
+        }
       )
   }
 
-  private def getMappedMemberOrEmployer(userAnswers: UserAnswers)  (implicit messages: Messages)  : Seq[SummaryListRow] = {
-    userAnswers.getAll(MembersOrEmployersPage(EventType.Event1))(MembersOrEmployersSummary.readsMemberOrEmployer).zipWithIndex.map {
-      case (memberOrEmployerSummary, index) =>
+  private def getMappedMemberOrEmployer(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
+    userAnswers.getAll(MembersOrEmployersPage(EventType.Event1))(MembersOrEmployersSummary.readsMemberOrEmployer).zipWithIndex.collect {
+      case (memberOrEmployerSummary, index) if !memberOrEmployerSummary.memberStatus.contains("Deleted") =>
+        //TODO: Remove front-end filter. Values should be filtered via MongoDB with an index. -Pavel Vjalicin
         val value = ValueViewModel(HtmlFormat.escape(currencyFormatter.format(memberOrEmployerSummary.unauthorisedPaymentValue)).toString)
         SummaryListRow(
           key = Key(

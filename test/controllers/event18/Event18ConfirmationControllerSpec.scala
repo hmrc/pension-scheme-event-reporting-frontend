@@ -85,7 +85,7 @@ class Event18ConfirmationControllerSpec extends SpecBase with BeforeAndAfterEach
       val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockCompileService.compileEvent(ArgumentMatchers.eq(Event18), ArgumentMatchers.eq("87219363YN"), any())(any(), any()))
+      when(mockCompileService.compileEvent(ArgumentMatchers.eq(Event18), ArgumentMatchers.eq("87219363YN"), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
       val ua = emptyUserAnswers

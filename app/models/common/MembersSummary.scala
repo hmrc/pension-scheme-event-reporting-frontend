@@ -23,7 +23,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json.{Format, JsPath, Json, Reads}
 
-case class MembersSummary(name: String, PaymentValue: BigDecimal, nINumber: String)
+case class MembersSummary(name: String, PaymentValue: BigDecimal, nINumber: String, memberStatus: Option[String])
 
 object MembersSummary {
   implicit lazy val formats: Format[MembersSummary] = Json.format[MembersSummary]
@@ -33,7 +33,7 @@ object MembersSummary {
     case _ => "membersDetails"
   }
 
-  private def readsNINumber(eventType: EventType)(implicit messages: Messages): Reads[String] =
+ private def readsNINumber(eventType: EventType)(implicit messages: Messages): Reads[String] =
     (JsPath \ membersDetailsNodeName(eventType) \ "nino").readNullable[String]
       .map(_.getOrElse(messages("site.notEntered")))
 
@@ -46,14 +46,15 @@ object MembersSummary {
       (JsPath \ membersDetailsNodeName(eventType) \ "firstName").readNullable[String] and
         (JsPath \ membersDetailsNodeName(eventType) \ "lastName").readNullable[String] and
         readsMemberValue(eventType) and
-        readsNINumber(eventType)
+        readsNINumber(eventType) and
+        (JsPath  \ "memberStatus").readNullable[String]
       )(
-      (firstName, lastName, paymentValue, nINumber) => {
+      (firstName, lastName, paymentValue, nINumber, memberStatus) => {
         (firstName, lastName, paymentValue, nINumber) match {
-          case (Some(fn), Some(ln), _, _) => MembersSummary(fn + " " + ln, paymentValue, nINumber)
-          case (None, Some(ln), _, _) => MembersSummary(ln, paymentValue, nINumber)
-          case (Some(fn), None, _, _) => MembersSummary(fn, paymentValue, nINumber)
-          case (None, None, _, _) => MembersSummary(messages("site.notEntered"), paymentValue, nINumber)
+          case (Some(fn), Some(ln), _, _) => MembersSummary(fn + " " + ln, paymentValue, nINumber, memberStatus)
+          case (None, Some(ln), _, _) => MembersSummary(ln, paymentValue, nINumber, memberStatus)
+          case (Some(fn), None, _, _) => MembersSummary(fn, paymentValue, nINumber, memberStatus)
+          case (None, None, _, _) => MembersSummary(messages("site.notEntered"), paymentValue, nINumber, memberStatus)
         }
       }
     )

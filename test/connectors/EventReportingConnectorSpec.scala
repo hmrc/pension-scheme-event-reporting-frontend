@@ -59,6 +59,7 @@ class EventReportingConnectorSpec
   private val eventReportSummaryCacheUrl = "/pension-scheme-event-reporting/event-summary"
   private val eventReportCompileUrl = "/pension-scheme-event-reporting/compile"
   private val eventReportSubmitUrl = "/pension-scheme-event-reporting/submit-event-declaration-report"
+  private val deleteMemberUrl = "/pension-scheme-event-reporting/delete-member"
 
   private def event20AReportSubmitUrl = "/pension-scheme-event-reporting/submit-event20a-declaration-report"
 
@@ -147,6 +148,34 @@ class EventReportingConnectorSpec
 
       recoverToSucceededIf[HttpException] {
         connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1"), 1)
+      }
+    }
+  }
+
+  "deleteMember" must {
+    "return unit for successful post" in {
+      server.stubFor(
+        post(urlEqualTo(deleteMemberUrl))
+          .willReturn(
+            noContent
+          )
+      )
+      connector.deleteMember(pstr, EventDataIdentifier(eventType, "2020", "1"), 0, "0").map {
+        _ mustBe()
+      }
+    }
+
+    "return BadRequestException when the backend has returned bad request response" in {
+      server.stubFor(
+        post(urlEqualTo(deleteMemberUrl))
+          .willReturn(
+            badRequest
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      recoverToSucceededIf[HttpException] {
+        connector.deleteMember(pstr, EventDataIdentifier(eventType, "2020", "1"), 0,"0")
       }
     }
   }
