@@ -43,7 +43,8 @@ import play.api.test.Helpers.GET
 import org.scalatest.RecoverMethods._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
 
 class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
@@ -127,13 +128,15 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       val applicationNoUA = applicationBuilder(userAnswers = None, extraModules).build()
       val controller: DeclarationController = applicationNoUA.injector.instanceOf[DeclarationController]
 
-        val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
+      val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
 
-        recoverToExceptionIf[ExpectationFailedException] {
-          controller.onClick(waypoints)(request)
-        } map { response =>
-          response.responseCode mustBe EXPECTATION_FAILED
-        }
+      val futureResult: Future[ExpectationFailedException] = recoverToExceptionIf[ExpectationFailedException] {
+        controller.onClick(waypoints)(request)
+      }
+
+      val result: ExpectationFailedException = Await.result(futureResult, Duration(5, SECONDS))
+
+      result.responseCode mustBe EXPECTATION_FAILED
     }
   }
 }
