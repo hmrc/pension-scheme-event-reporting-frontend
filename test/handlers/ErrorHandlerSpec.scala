@@ -17,6 +17,7 @@
 package handlers
 
 import base.SpecBase
+import config.FrontendAppConfig
 import controllers.routes
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -24,6 +25,7 @@ import pages.EmptyWaypoints
 import play.api.http.Status.OK
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, _}
+import uk.gov.hmrc.http.ExpectationFailedException
 import views.html.NoDataEnteredErrorView
 
 class ErrorHandlerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
@@ -33,19 +35,22 @@ class ErrorHandlerSpec extends SpecBase with BeforeAndAfterEach with MockitoSuga
   "ErrorHandlerSpec" - {
 
     "must catch ExpectationFailedExceptions and return the correct view" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = None).build()
 
-      running(application) {
-        val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
+      val config = application.injector.instanceOf[FrontendAppConfig]
 
-        val result = route(application, request).value
+      val errorHandler = application.injector.instanceOf[ErrorHandler]
 
-        val view = application.injector.instanceOf[NoDataEnteredErrorView]
+      val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view("")(request, messages(application)).toString
+      val exception = new ExpectationFailedException("User data not available")
 
-      }
+      val result = errorHandler.onServerError(request, exception)
+
+      val view = application.injector.instanceOf[NoDataEnteredErrorView]
+
+      status(result) mustEqual OK
+      contentAsString(result) mustEqual view(config.manageOverviewDashboardUrl)(request, messages(application)).toString
     }
   }
 }
