@@ -29,7 +29,7 @@ class LumpSumAmountFormProvider @Inject() extends Mappings {
       "lumpSumAmount" -> bigDecimal2DP(
         "lumpSumAmount.value.error.nothingEntered",
         "amounts.value.error.notANumber",
-        "amounts.value.error.noDecimals")
+        "amounts.value.error.tooManyDecimals")
         .verifying(
           maximumValue[BigDecimal](maxLumpSumAmount, "amounts.value.error.amountTooHigh"),
           minimumValue[BigDecimal](0, "amounts.value.error.negative"),
