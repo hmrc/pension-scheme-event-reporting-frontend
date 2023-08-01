@@ -28,12 +28,13 @@ class WhoWasTheTransferMadeFormProviderSpec extends OptionFieldBehaviours {
 
     val fieldName = "value"
     val requiredKey = "whoWasTheTransferMade.error.required"
+    val invalidKey = "whoWasTheTransferMade.error.format"
 
     behave like optionsField[WhoWasTheTransferMade](
       form,
       fieldName,
-      validValues  = WhoWasTheTransferMade.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      validValues = WhoWasTheTransferMade.values,
+      invalidError = FormError(fieldName, invalidKey)
     )
 
     behave like mandatoryField(
