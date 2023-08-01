@@ -60,6 +60,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   def yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
 
+  def listPspUrl: String = loadConfig("urls.listPsp")
+
   def successEndPointTarget(eventType: EventType): String = loadConfig("upscan.success-endpoint").format(toRoute(eventType))
 
   def failureEndPointTarget(eventType: EventType): String = loadConfig("upscan.failure-endpoint").format(toRoute(eventType))
@@ -111,6 +113,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
       )
   }"
 
+  lazy val validEvent1Header: String = configuration.get[String]("validEvent1Header")
   lazy val validEvent6Header: String = configuration.get[String]("validEvent6Header")
   lazy val validEvent22Header: String = configuration.get[String]("validEvent22Header")
   lazy val validEvent23Header: String = configuration.get[String]("validEvent23Header")

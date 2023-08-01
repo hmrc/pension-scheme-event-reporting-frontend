@@ -22,7 +22,7 @@ import play.api.data.FormError
 class DoYouHoldSignedMandateFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "doYouHoldSignedMandate.error.required"
-  val invalidKey = "error.boolean"
+  val invalidKey = "doYouHoldSignedMandate.error.format"
 
   val form = new DoYouHoldSignedMandateFormProvider()()
 

@@ -28,12 +28,13 @@ class ReasonForTheOverpaymentOrWriteOffFormProviderSpec extends OptionFieldBehav
 
     val fieldName = "value"
     val requiredKey = "reasonForTheOverpaymentOrWriteOff.error.required"
+    val invalidKey = "reasonForTheOverpaymentOrWriteOff.error.format"
 
     behave like optionsField[ReasonForTheOverpaymentOrWriteOff](
       form,
       fieldName,
       validValues = ReasonForTheOverpaymentOrWriteOff.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      invalidError = FormError(fieldName, invalidKey)
     )
 
     behave like mandatoryField(

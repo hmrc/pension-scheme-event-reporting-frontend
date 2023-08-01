@@ -96,6 +96,24 @@ object SampleData extends SpecBase {
     country = "GB"
   )
 
+  val event1EmployerAddress: Address = Address(
+    addressLine1 = "10 Other Place",
+    addressLine2 = "Some District",
+    addressLine3 = Some("Anytown"),
+    addressLine4 = Some("Anyplace"),
+    postcode = Some("ZZ1 1ZZ"),
+    country = "GB"
+  )
+
+  val memberAddress: Address = Address(
+    addressLine1 = "10 Other Place",
+    addressLine2 = "Some District",
+    addressLine3 = Some("Anytown"),
+    addressLine4 = Some("Anyplace"),
+    postcode = Some("ZZ1 1ZZ"),
+    country = "GB"
+  )
+
   val seqTolerantAddresses: Seq[TolerantAddress] = Seq[TolerantAddress](
     TolerantAddress(
       addressLine1 = Some("addr11"),
@@ -120,6 +138,19 @@ object SampleData extends SpecBase {
 
   val memberDetails: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567D")
   val memberDetails2: MembersDetails = MembersDetails("Steven", "Bloggs", "AA123456C")
+
+  val memberDetailsEr1: MembersDetails = MembersDetails("Joe", "Bloggs", "AA123456A")
+  val memberDetailsEr2: MembersDetails = MembersDetails("Joe", "Bloggs", "AA123456B")
+  val memberDetails3: MembersDetails = MembersDetails("Joe", "Bloggs", "AA123456C")
+  val memberDetails4: MembersDetails = MembersDetails("Joe", "Bloggs", "AA123456D")
+
+  val memberDetails5: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567A")
+  val memberDetails6: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567B")
+  val memberDetails7: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567C")
+  val memberDetails8: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567D")
+
+  val memberDetails9: MembersDetails = MembersDetails("Joe", "Bloggs", "AA345678A")
+  val memberDetails10: MembersDetails = MembersDetails("Joe", "Bloggs", "AA345678B")
 
   private val writesTaxYear: Writes[ChooseTaxYear] = ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
 

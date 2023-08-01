@@ -28,12 +28,13 @@ class WhoReceivedUnauthPaymentFormProviderSpec extends OptionFieldBehaviours {
 
     val fieldName = "value"
     val requiredKey = "whoReceivedUnauthPayment.error.required"
+    val formatKey = "whoReceivedUnauthPayment.error.format"
 
     behave like optionsField[WhoReceivedUnauthPayment](
       form,
       fieldName,
       validValues  = WhoReceivedUnauthPayment.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      invalidError = FormError(fieldName, formatKey)
     )
 
     behave like mandatoryField(

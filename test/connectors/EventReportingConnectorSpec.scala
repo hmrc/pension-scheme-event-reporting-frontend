@@ -44,8 +44,8 @@ class EventReportingConnectorSpec
   private val userAnswers = UserAnswers()
 
   private val validResponse = Seq(
-    EventSummary(Event1, 2),
-    EventSummary(Event2, 1)
+    EventSummary(Event1, 2, None),
+    EventSummary(Event2, 1, None)
   )
 
   private val validResponseJson = Json.arr(
