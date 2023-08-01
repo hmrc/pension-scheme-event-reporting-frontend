@@ -63,7 +63,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
         .setOrException(TaxYearPage, TaxYear("2022"))
         .setOrException(VersionInfoPage, VersionInfo(1, Compiled))
 
-      val seqOfEvents = Seq(EventSummary(EventType.Event1, 1), EventSummary(EventType.Event18, 1), EventSummary(EventType.Event8, 1))
+      val seqOfEvents = Seq(EventSummary(EventType.Event1, 1), EventSummary(EventType.Event18, 1))
 
       when(mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
         Future.successful(seqOfEvents)
