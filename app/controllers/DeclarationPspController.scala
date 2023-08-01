@@ -114,7 +114,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
     val schemeAdministratorType = AdministratorOrPractitioner.Practitioner
 
     val templateParams = Map(
-      "pspName" -> pspName,
+      "psaName" -> pspName,
       "schemeName" -> schemeName,
       "taxYear" -> taxYear,
       "dateSubmitted" -> submittedDate
