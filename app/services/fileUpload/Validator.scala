@@ -107,10 +107,11 @@ trait Validator {
   protected def memberDetailsValidation(index: Int, columns: Seq[String],
                                         memberDetailsForm: Form[MembersDetails]): Validated[Seq[ValidationError], MembersDetails] = {
     val fields = Seq(
-      Field(MemberDetailsFieldNames.firstName, fieldValue(columns, fieldNoFirstName), MemberDetailsFieldNames.firstName, 0),
-      Field(MemberDetailsFieldNames.lastName, fieldValue(columns, fieldNoLastName), MemberDetailsFieldNames.lastName, 1),
-      Field(MemberDetailsFieldNames.nino, fieldValue(columns, fieldNoNino), MemberDetailsFieldNames.nino, 2)
+      Field(MemberDetailsFieldNames.firstName, fieldValue(columns, fieldNoFirstName), MemberDetailsFieldNames.firstName, fieldNoFirstName),
+      Field(MemberDetailsFieldNames.lastName, fieldValue(columns, fieldNoLastName), MemberDetailsFieldNames.lastName, fieldNoLastName),
+      Field(MemberDetailsFieldNames.nino, fieldValue(columns, fieldNoNino), MemberDetailsFieldNames.nino, fieldNoNino)
     )
+
     val toMap = Field.seqToMap(fields)
 
     val bind = memberDetailsForm.bind(toMap)
@@ -121,7 +122,6 @@ trait Validator {
   }
 
   protected final def errorsFromForm[A](formWithErrors: Form[A], fields: Seq[Field], index: Int): Seq[ValidationError] = {
-
     for {
       formError <- formWithErrors.errors
       field <- fields.find(_.getFormValidationFullFieldName == formError.key)
@@ -162,6 +162,26 @@ trait Validator {
     }
   }
 
+  protected final def splitSchemeDetails(schemeDetails: String): ParsedDetails = {
+    schemeDetails.split(",").toSeq match {
+      case Seq(name, ref) => ParsedDetails(name, ref)
+      case Seq(name) => ParsedDetails(name, EMPTY)
+      case _ => ParsedDetails(EMPTY, EMPTY)
+    }
+  }
+
+  protected final def splitAddress(address: String): ParsedAddress = {
+    address.split(",").toSeq match {
+      case Seq(add1, add2, add3, add4, postCode, country) => ParsedAddress(add1, add2, add3, add4, postCode, country)
+      case Seq(add1, add2, add3, add4, postCode) => ParsedAddress(add1, add2, add3, add4, postCode, EMPTY)
+      case Seq(add1, add2, add3, add4) => ParsedAddress(add1, add2, add3, add4, EMPTY, EMPTY)
+      case Seq(add1, add2, add3) => ParsedAddress(add1, add2, add3, EMPTY, EMPTY, EMPTY)
+      case Seq(add1, add2) => ParsedAddress(add1, add2, EMPTY, EMPTY, EMPTY, EMPTY)
+      case Seq(add1) => ParsedAddress(add1, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)
+      case _ => ParsedAddress(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)
+    }
+  }
+
   protected final def stringToBoolean(s: String): String =
     s.toLowerCase match {
       case "yes" => "true"
@@ -186,7 +206,16 @@ protected case class Field(formValidationFieldName: String,
   }
 }
 
+protected case class ParsedAddress(addressLine1: String,
+                                   addressLine2: String,
+                                   addressLine3: String,
+                                   addressLine4: String,
+                                   postCode: String,
+                                   country: String)
+
 protected case class ParsedDate(day: String, month: String, year: String)
+
+protected case class ParsedDetails(schemeName: String, schemeReference: String)
 
 protected object Field {
   def seqToMap(s: Seq[Field]): Map[String, String] = {
