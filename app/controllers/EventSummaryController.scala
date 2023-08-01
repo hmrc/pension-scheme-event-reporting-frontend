@@ -20,8 +20,9 @@ import connectors.EventReportingConnector
 import controllers.actions._
 import forms.EventSummaryFormProvider
 import models.TaxYear.getSelectedTaxYearAsString
-import models.UserAnswers
+import models.{EventSummary, UserAnswers}
 import models.enumeration.EventType
+import models.enumeration.EventType.{Event20A, Event8A, WindUp}
 import models.requests.DataRequest
 import pages.{EmptyWaypoints, EventSummaryPage, TaxYearPage, VersionInfoPage, Waypoints}
 import play.api.Logger
@@ -48,13 +49,22 @@ class EventSummaryController @Inject()(
   private val form = formProvider()
   private val logger = Logger(classOf[EventSummaryController])
 
+  private val sortExpr: EventSummary => Int = es => {
+    es.eventType match {
+      case WindUp => 99
+      case Event8A => 9
+      case Event20A => 21
+      case e => e.toString.toInt
+    }
+  }
+
   private def summaryListRows(implicit request: DataRequest[AnyContent]): Future[Seq[SummaryListRow]] = {
     (request.userAnswers.get(TaxYearPage), request.userAnswers.get(VersionInfoPage)) match {
       case (Some(taxYear), Some(versionInfo)) =>
         val startYear = s"${taxYear.startYear}-04-06"
         connector.getEventReportSummary(request.pstr, startYear, versionInfo.version)
           .map { seqOfEventTypes =>
-          seqOfEventTypes.map{ eventSummary  =>
+          seqOfEventTypes.sortBy(sortExpr).map{ eventSummary  =>
             SummaryListRow(
               key = Key(
                 content = Text(Message(s"eventSummary.event${eventSummary.eventType.toString}"))
