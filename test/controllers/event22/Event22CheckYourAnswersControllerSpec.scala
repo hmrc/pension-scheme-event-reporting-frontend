@@ -52,7 +52,7 @@ class Event22CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-22-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-22-click")(request, messages(application)).toString
       }
     }
 
@@ -132,26 +132,26 @@ object Event22CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "membersDetails.checkYourAnswersLabel",
       "Joe Bloggs",
-      "/manage-pension-scheme-event-report/new-report/1/event-22-member-details?waypoints=event-22-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-22-member-details?waypoints=event-22-check-answers-1",
       "membersDetails.change.hidden"
 
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "membersDetails.checkYourAnswersLabel.nino",
       "AA234567D",
-      "/manage-pension-scheme-event-report/new-report/1/event-22-member-details?waypoints=event-22-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-22-member-details?waypoints=event-22-check-answers-1",
       "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "chooseTaxYear.event22.checkYourAnswersLabel",
       "2015 to 2016",
-      "/manage-pension-scheme-event-report/new-report/1/event-22-tax-year?waypoints=event-22-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-22-tax-year?waypoints=event-22-check-answers-1",
       "chooseTaxYear.event22.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "totalPensionAmounts.event22.checkYourAnswersLabel",
       "£10.00",
-      "/manage-pension-scheme-event-report/new-report/1/event-22-total-input-amount?waypoints=event-22-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-22-total-input-amount?waypoints=event-22-check-answers-1",
       "totalPensionAmounts.event22.change.hidden"
     )
   )

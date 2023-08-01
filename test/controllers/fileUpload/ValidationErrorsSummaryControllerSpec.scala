@@ -59,7 +59,7 @@ class ValidationErrorsSummaryControllerSpec extends SpecBase with BeforeAndAfter
 
   private def fileDownloadInstructionLink(eventType: EventType) = s"/manage-pension-scheme-event-report/event-${eventType.toString}-upload-format-instructions"
 
-  private def returnUrl(eventType: EventType) = s"/manage-pension-scheme-event-report/new-report/event-${eventType.toString}-upload"
+  private def returnUrl(eventType: EventType) = s"/manage-pension-scheme-event-report/report/event-${eventType.toString}-upload"
 
   override def beforeEach(): Unit = {
     super.beforeEach()
