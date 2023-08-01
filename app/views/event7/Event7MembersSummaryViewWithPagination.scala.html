@@ -50,7 +50,8 @@
             colThree = "membersSummary.event7.table.header3",
             colFour = "membersSummary.event7.table.header4",
             total,
-            "membersSummary.event7.table.totalTitle"
+            "membersSummary.event7.table.totalTitle",
+            caption = messages(s"membersSummary.event${eventType.toString}.heading", selectedTaxYear)
         )
 
         @if(paginationStats.pagerSeq) {
