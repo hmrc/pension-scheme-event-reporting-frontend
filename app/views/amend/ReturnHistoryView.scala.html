@@ -31,10 +31,11 @@
 
     <h1 class="govuk-heading-l">@messages("returnHistory.heading", taxYearStart, taxYearEnd)</h1>
 
- @components.entity_returnHistory_table_list(
-  seqOfReturnHistorySummary,
-  messages("returnHistory.table.header1"),
-  messages("returnHistory.table.header2"),
-  messages("returnHistory.table.header3")
- )
+    @components.entity_returnHistory_table_list(
+        seqOfReturnHistorySummary,
+        messages("returnHistory.table.header1"),
+        messages("returnHistory.table.header2"),
+        messages("returnHistory.table.header3"),
+        caption = messages("returnHistory.heading", taxYearStart, taxYearEnd)
+    )
 }
