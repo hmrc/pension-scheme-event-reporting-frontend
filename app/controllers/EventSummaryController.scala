@@ -54,7 +54,7 @@ class EventSummaryController @Inject()(
         val startYear = s"${taxYear.startYear}-04-06"
         connector.getEventReportSummary(request.pstr, startYear, versionInfo.version)
           .map { seqOfEventTypes =>
-          seqOfEventTypes.collect { case eventSummary if !eventSummary.numberOfMembers.contains(0) =>
+          seqOfEventTypes.map{ eventSummary  =>
             SummaryListRow(
               key = Key(
                 content = Text(Message(s"eventSummary.event${eventSummary.eventType.toString}"))
