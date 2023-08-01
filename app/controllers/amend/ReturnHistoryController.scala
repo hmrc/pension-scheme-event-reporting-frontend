@@ -34,15 +34,15 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ReturnHistoryController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           identify: IdentifierAction,
-                                           getData: DataRetrievalAction,
-                                           erConnector: EventReportingConnector,
-                                           requireData: DataRequiredAction,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           userAnswersCacheConnector: UserAnswersCacheConnector,
-                                           view: ReturnHistoryView
-                                         )(implicit ec: ExecutionContext)  extends FrontendBaseController with I18nSupport {
+                                         override val messagesApi: MessagesApi,
+                                         identify: IdentifierAction,
+                                         getData: DataRetrievalAction,
+                                         erConnector: EventReportingConnector,
+                                         requireData: DataRequiredAction,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         userAnswersCacheConnector: UserAnswersCacheConnector,
+                                         view: ReturnHistoryView
+                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()) async {
     implicit request =>
@@ -51,37 +51,21 @@ class ReturnHistoryController @Inject()(
         val seqVersionsSubmitted = seqVersionsWithSubmitter.filter(versions => versions.versionDetails.status == Submitted)
         val seqRetHistorySummary = seqVersionsSubmitted.map { versionWithSubmitter =>
 
-          //remove draft/ in progress stuff - question if that link is supposed to be for viewing and amending - surely
-          // we want to know what's in progress atm?
-          val (compileStatus, version, submitterName) = versionWithSubmitter.versionDetails.status match {
-//            case Compiled => ("In progress", "Draft", "")
-            case Submitted =>
-              (versionWithSubmitter.versionDetails.status.toString.capitalize + " on " + formatDateDMY(versionWithSubmitter.submittedDate),
-                versionWithSubmitter.versionDetails.version.toString,
-                versionWithSubmitter.submitterName.getOrElse(""))
-          }
-
           def changeOrViewLink = {
-            val finalVersion = seqVersionsSubmitted.length
-            if (versionWithSubmitter.versionDetails.version == finalVersion) "site.viewOrChange" else "site.view"
-//            if (kk.versionDetails.version == finalVersion) "site.viewOrChange" else "site.view"
+            val recentSubmittedVersion = seqVersionsSubmitted.length
+            if (versionWithSubmitter.versionDetails.version == recentSubmittedVersion) "site.viewOrChange" else "site.view"
           }
 
-          val viewOrChangeLink = versionWithSubmitter.versionDetails.status match {
-            case Compiled => "site.change"
-            case _ => changeOrViewLink
-          }
-
-          //view (for all other cases), view or change (when its the most recent version), change (when in compile)
+          val version = versionWithSubmitter.versionDetails.version.toString
 
           ReturnHistorySummary(
             key = version,
-            firstValue = compileStatus,
-            secondValue = submitterName,
+            firstValue = versionWithSubmitter.versionDetails.status.toString.capitalize + " on " + formatDateDMY(versionWithSubmitter.submittedDate),
+            secondValue = versionWithSubmitter.submitterName.getOrElse(""),
             actions = Some(Actions(
               items = Seq(
                 ActionItem(
-                  content = Text(Message(viewOrChangeLink)),
+                  content = Text(Message(changeOrViewLink)),
                   href = controllers.amend.routes.ReturnHistoryController.onClick(waypoints, version).url
                 )
               )
@@ -93,13 +77,13 @@ class ReturnHistoryController @Inject()(
       }
   }
 
-      def onClick(waypoints: Waypoints, version: String): Action[AnyContent] = (identify andThen getData() andThen requireData) async {
-        implicit request =>
-          val versionInfo = VersionInfo(version.toInt, Submitted)
-            val updateUA = request.userAnswers.setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
-          userAnswersCacheConnector.save(request.pstr, updateUA).map {
-            _ => Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints))
-          }
+  def onClick(waypoints: Waypoints, version: String): Action[AnyContent] = (identify andThen getData() andThen requireData) async {
+    implicit request =>
+      val versionInfo = VersionInfo(version.toInt, Submitted)
+      val updateUA = request.userAnswers.setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
+      userAnswersCacheConnector.save(request.pstr, updateUA).map {
+        _ => Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints))
       }
-
   }
+
+}

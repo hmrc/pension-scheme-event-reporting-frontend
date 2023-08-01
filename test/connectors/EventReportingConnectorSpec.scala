@@ -377,5 +377,19 @@ class EventReportingConnectorSpec
       }
 
     }
+
+    "return not found if data hasn't been returned" in {
+      server.stubFor(
+        get(urlEqualTo(getVersionUrl))
+          .willReturn(
+            notFound
+          )
+      )
+
+      connector.getListOfVersions(pstr, "2022-04-06") map {
+        result =>
+          result mustEqual Nil
+      }
+    }
   }
 }

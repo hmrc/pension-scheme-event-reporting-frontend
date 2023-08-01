@@ -17,17 +17,17 @@
 package controllers.amend
 
 import base.SpecBase
-import connectors.EventReportingConnector
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.amend.ReturnHistoryControllerSpec.{h, v}
 import models.VersionInfo
 import models.amend.VersionsWithSubmitter
 import models.enumeration.VersionStatus.Submitted
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints, VersionInfoPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -42,13 +42,16 @@ import scala.concurrent.Future
 class ReturnHistoryControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   val mockErConnector: EventReportingConnector = mock[EventReportingConnector]
+  val mockUACacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[EventReportingConnector].toInstance(mockErConnector)
+    bind[EventReportingConnector].toInstance(mockErConnector),
+    bind[UserAnswersCacheConnector].toInstance(mockUACacheConnector)
   )
 
   override def beforeEach(): Unit = {
     reset(mockErConnector)
+    reset(mockUACacheConnector)
   }
 
   "ReturnHistory Controller" - {
@@ -70,6 +73,24 @@ class ReturnHistoryControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(h, "2022", "2023")(request, messages(application)).toString
+      }
+    }
+
+    "onClick must redirect to the correct page and save correct version in mongo" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
+
+      when(mockUACacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful())
+
+      running(application) {
+
+        val request = FakeRequest(GET, routes.ReturnHistoryController.onClick(EmptyWaypoints, "1").url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url
+        verify(mockUACacheConnector, times(1)).save(any(), any())(any(), any())
       }
     }
   }
