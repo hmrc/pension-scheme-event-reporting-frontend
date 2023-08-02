@@ -31,7 +31,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Key, SummaryListRow, Text, Value}
+import uk.gov.hmrc.govukfrontend.views.Aliases._
 import views.html.event1.UnauthPaymentSummaryView
 
 import scala.concurrent.Future
@@ -39,11 +39,10 @@ import scala.concurrent.Future
 class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
-
   private val formProvider = new UnauthPaymentSummaryFormProvider()
   private val form = formProvider()
-
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val taxYear = "2023"
 
   private def getRoute: String = routes.UnauthPaymentSummaryController.onPageLoad(waypoints).url
 
@@ -78,13 +77,13 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
           actions = Some(Actions(
             items = List(
               ActionItem(
-                href = "/manage-pension-scheme-event-report/new-report/1/event-1-check-your-answers",
+                href = "/manage-pension-scheme-event-report/report/1/event-1-check-your-answers",
                 content = Text(Messages("site.view")),
                 visuallyHiddenText = None,
                 attributes = Map()
               ),
               ActionItem(
-                href = "/manage-pension-scheme-event-report/new-report/1/remove-event-1",
+                href = "/manage-pension-scheme-event-report/report/1/remove-event-1",
                 content = Text(Messages("site.remove")),
                 visuallyHiddenText = None,
                 attributes = Map()
@@ -98,12 +97,12 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
             actions = Some(Actions(
               items = List(
                 ActionItem(
-                  href = "/manage-pension-scheme-event-report/new-report/2/event-1-check-your-answers",
+                  href = "/manage-pension-scheme-event-report/report/2/event-1-check-your-answers",
                   content = Text(Messages("site.view")),
                   visuallyHiddenText = None,
                   attributes = Map()
                 ),
-                ActionItem(href = "/manage-pension-scheme-event-report/new-report/2/remove-event-1", content = Text(Messages("site.remove")),
+                ActionItem(href = "/manage-pension-scheme-event-report/report/2/remove-event-1", content = Text(Messages("site.remove")),
                   visuallyHiddenText = None,
                   attributes = Map()
                 )
@@ -113,7 +112,7 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, expectedSeq, "8,544.00")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, expectedSeq, "8,544.00", taxYear)(request, messages(application)).toString
       }
     }
 
@@ -122,7 +121,7 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
         .thenReturn(Future.successful(()))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
 
       running(application) {
@@ -132,8 +131,8 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(UnauthPaymentSummaryPage, true).success.value
 
-          status (result) mustEqual SEE_OTHER
-          redirectLocation (result).value mustEqual UnauthPaymentSummaryPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual UnauthPaymentSummaryPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
       }
     }
 
@@ -142,7 +141,7 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
         .thenReturn(Future.successful(()))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
 
       running(application) {
@@ -155,7 +154,7 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, Nil, "0.00")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, Nil, "0.00", taxYear)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
       }
     }

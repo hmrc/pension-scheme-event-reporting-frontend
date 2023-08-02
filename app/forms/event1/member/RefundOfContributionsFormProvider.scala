@@ -26,6 +26,6 @@ class RefundOfContributionsFormProvider @Inject() extends Mappings {
 
   def apply(): Form[RefundOfContributions] =
     Form(
-      "value" -> enumerable[RefundOfContributions]("refundOfContributions.error.required")
+      "value" -> enumerable[RefundOfContributions]("refundOfContributions.error.required", invalidKey = "refundOfContributions.error.format")
     )
 }

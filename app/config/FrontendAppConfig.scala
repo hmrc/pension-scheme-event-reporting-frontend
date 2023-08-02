@@ -60,6 +60,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   def yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
 
+  def listPspUrl: String = loadConfig("urls.listPsp")
+
   def successEndPointTarget(eventType: EventType): String = loadConfig("upscan.success-endpoint").format(toRoute(eventType))
 
   def failureEndPointTarget(eventType: EventType): String = loadConfig("upscan.failure-endpoint").format(toRoute(eventType))
@@ -79,6 +81,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   val timeout: Int = configuration.get[Int]("timeout-dialog.timeout")
   val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
   lazy val minimumYear: Int = configuration.get[Int]("minimumYear")
+
+  lazy val compileDelayInSeconds: Int = configuration.get[Int]("compileDelayInSeconds")
 
   lazy val minimalDetailsUrl: String = s"$pensionsAdministratorUrl${configuration.get[String](path = "urls.minimalDetails")}"
   lazy val parsingAndValidationUrl: String = s"$eventReportingUrl${configuration.get[String](path = "urls.parsingAndValidation")}"
@@ -109,6 +113,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
       )
   }"
 
+  lazy val validEvent1Header: String = configuration.get[String]("validEvent1Header")
   lazy val validEvent6Header: String = configuration.get[String]("validEvent6Header")
   lazy val validEvent22Header: String = configuration.get[String]("validEvent22Header")
   lazy val validEvent23Header: String = configuration.get[String]("validEvent23Header")
