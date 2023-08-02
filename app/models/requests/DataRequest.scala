@@ -16,7 +16,9 @@
 
 package models.requests
 
+import models.TaxYear.{getSelectedTaxYear, values}
 import models.{LoggedInUser, UserAnswers}
+import pages.{EventReportingOverviewPage, VersionInfoPage}
 import play.api.mvc.{Request, WrappedRequest}
 
 abstract class RequiredSchemeDataRequest[A](request: Request[A]) extends WrappedRequest[A](request) {
@@ -33,7 +35,9 @@ case class OptionalDataRequest[A](
                                    request: Request[A],
                                    loggedInUser: LoggedInUser,
                                    userAnswers: Option[UserAnswers]
-                                 ) extends RequiredSchemeDataRequest[A](request)
+                                 ) extends RequiredSchemeDataRequest[A](request) {
+  def readOnly = true
+}
 
 case class DataRequest[A](pstr: String,
                           schemeName: String,
@@ -41,4 +45,24 @@ case class DataRequest[A](pstr: String,
                           request: Request[A],
                           loggedInUser: LoggedInUser,
                           userAnswers: UserAnswers
-                         ) extends RequiredSchemeDataRequest[A](request)
+                         ) extends RequiredSchemeDataRequest[A](request) {
+
+  // read only is true if the version selected is less than the current report version:
+  def readOnly(): Boolean = {
+    val versionSelected: Int = userAnswers.get(VersionInfoPage).map(g => g.version) match {
+      case Some(value) => value
+      case _ => throw new RuntimeException("No version selected")
+    }
+
+    val taxYear = getSelectedTaxYear(userAnswers)
+    userAnswers.get(EventReportingOverviewPage) match {
+      case Some(value) => value.find(_.taxYear.equals(taxYear)) match {
+        case Some(erOverview) =>
+          val reportVersion = erOverview.versionDetails.map(_.numberOfVersions).getOrElse(1)
+          versionSelected < reportVersion
+        case None => false
+      }
+      case _ => throw new RuntimeException("No Event Report Overview information")
+    }
+  }
+}
