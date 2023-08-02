@@ -51,7 +51,7 @@ class Event12CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-12-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-12-click")(request, messages(application)).toString
       }
     }
 
@@ -118,13 +118,13 @@ object Event12CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithTextWithHiddenContent(
       "hasSchemeChangedRules.checkYourAnswersLabel",
       "Yes",
-      "/manage-pension-scheme-event-report/new-report/event-12-scheme-treated-as-2-or-more?waypoints=event-12-check-answers",
+      "/manage-pension-scheme-event-report/report/event-12-scheme-treated-as-2-or-more?waypoints=event-12-check-answers",
       "hasSchemeChangedRules.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "dateOfChange.checkYourAnswersLabel",
       "22 March 2022",
-      "/manage-pension-scheme-event-report/new-report/event-12-when-change-took-effect?waypoints=event-12-check-answers",
+      "/manage-pension-scheme-event-report/report/event-12-when-change-took-effect?waypoints=event-12-check-answers",
       "dateOfChange.change.hidden"
     )
   )

@@ -53,7 +53,7 @@ class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-2-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-2-click")(request, messages(application)).toString
       }
     }
 
@@ -134,34 +134,34 @@ object Event2CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "deceasedMembersDetails.checkYourAnswersLabel",
       "Joe Bloggs",
-      "/manage-pension-scheme-event-report/new-report/1/event-2-deceased-member-details?waypoints=event-2-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-2-deceased-member-details?waypoints=event-2-check-answers-1",
       "deceasedMembersDetails.change.hidden"
 
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "deceasedMembersDetails.checkYourAnswersLabel.nino",
       "AA234567D",
-      "/manage-pension-scheme-event-report/new-report/1/event-2-deceased-member-details?waypoints=event-2-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-2-deceased-member-details?waypoints=event-2-check-answers-1",
       "deceasedMembersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "beneficiaryDetails.checkYourAnswersLabel",
       "Joe Bloggs",
-      "/manage-pension-scheme-event-report/new-report/1/event-2-person-who-was-paid?waypoints=event-2-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-2-person-who-was-paid?waypoints=event-2-check-answers-1",
       "beneficiaryDetails.change.hidden"
 
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "beneficiaryDetails.checkYourAnswersLabel.nino",
       "AA234567D",
-      "/manage-pension-scheme-event-report/new-report/1/event-2-person-who-was-paid?waypoints=event-2-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-2-person-who-was-paid?waypoints=event-2-check-answers-1",
       "beneficiaryDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "amountPaid.event2.checkYourAnswersLabel",
       "Joe Bloggs",
       "£999.11",
-      "/manage-pension-scheme-event-report/new-report/1/event-2-how-much-was-paid?waypoints=event-2-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-2-how-much-was-paid?waypoints=event-2-check-answers-1",
       "amountPaid.event2.change.hidden",
       "Joe Bloggs"
     ),
@@ -169,7 +169,7 @@ object Event2CheckYourAnswersControllerSpec {
       "datePaid.event2.checkYourAnswersLabel",
       messageInterpolation = "Joe Bloggs",
       htmlContent = "22 March 2022",
-      changeLink = "/manage-pension-scheme-event-report/new-report/1/event-2-when-was-payment-made?waypoints=event-2-check-answers-1",
+      changeLink = "/manage-pension-scheme-event-report/report/1/event-2-when-was-payment-made?waypoints=event-2-check-answers-1",
       hiddenContentChangeLink = "datePaid.event2.change.hidden"
     )
   )
