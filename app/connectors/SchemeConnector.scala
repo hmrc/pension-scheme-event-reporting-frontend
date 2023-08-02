@@ -26,6 +26,7 @@ import uk.gov.hmrc.http.{HttpClient, _}
 import utils.HttpResponseHelper
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
@@ -33,10 +34,10 @@ class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
   def getOpenDate(idType: String, idValue: String, pstr: String)
                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
     if (idType == "pspId") {
-      val schemeHc = hc.withExtraHeaders("idType" -> "pspId", "idValue" -> idValue, "pstr" -> pstr)
+      val schemeHc = hc.withExtraHeaders("idType" -> idType, "idValue" -> idValue, "pstr" -> pstr)
       openDate(config.openDateUrl)(schemeHc, ec)
     } else if (idType == "psaId") {
-      val schemeHc = hc.withExtraHeaders("idType" -> "psaId", "idValue" -> idValue, "pstr" -> pstr)
+      val schemeHc = hc.withExtraHeaders("idType" -> idType, "idValue" -> idValue, "pstr" -> pstr)
       openDate(config.openDateUrl)(schemeHc, ec)
     } else {
       Future.failed(new IllegalArgumentException("Invalid idType"))
@@ -47,12 +48,9 @@ class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
     http.GET[HttpResponse](url).map { response =>
       response.status match {
         case OK =>
-          val openDate = response.body
-          val y = LocalDate.parse(openDate)
-          println(s"\n\n\n PARSED OPEN DATE CONNECTOR === ${y}")
-          y
+          val openDate = response.body.replace("\"", "")
+          LocalDate.parse(openDate)
         case _ =>
-          println(s"\n\n\nFAILURE HERE\n\n")
           handleErrorResponse("GET", url)(response)
       }
     }

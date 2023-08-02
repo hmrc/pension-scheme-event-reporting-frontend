@@ -19,6 +19,7 @@ package forms.eventWindUp
 import base.SpecBase
 import forms.behaviours.DateBehaviours
 import play.api.data.FormError
+import utils.DateHelper.formatDateDMY
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -53,9 +54,11 @@ class SchemeWindUpDateFormProviderSpec extends DateBehaviours with SpecBase {
       formError = FormError("value", "schemeWindUpDate.error.outside.taxYear", Seq("2022", "2023"))
     )
 
-    s"must fail to bind a date earlier than openDate ${openDate.format(DateTimeFormatter.ISO_LOCAL_DATE)}" in {
+    s"fail to bind a date earlier than openDate ${openDate.format(DateTimeFormatter.ISO_LOCAL_DATE)}" in {
       val formOpenDate = new SchemeWindUpDateFormProvider()(2022, openDate)
-      val date = LocalDate.of(2022, 5, 1)
+      val date = LocalDate.of(2022, 4, 8)
+      val formattedDate = formatDateDMY(openDate)
+      val key = "value"
       val data = Map(
         s"$key.day" -> date.getDayOfMonth.toString,
         s"$key.month" -> date.getMonthValue.toString,
@@ -64,7 +67,7 @@ class SchemeWindUpDateFormProviderSpec extends DateBehaviours with SpecBase {
 
       val result = formOpenDate.bind(data)
 
-      result.errors must contain(FormError("value", "schemeWindUpDate.error.beforeOpenDate", Seq(openDate)))
+      result.errors must contain(FormError.apply("value", "schemeWindUpDate.error.beforeOpenDate", Seq(formattedDate)))
     }
 
       }

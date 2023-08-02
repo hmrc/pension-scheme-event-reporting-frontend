@@ -44,7 +44,7 @@ class SchemeConnectorSpec
     "return the openDate for a valid request/response" in {
       server.stubFor(
         get(urlEqualTo(openDateUrl))
-          .withHeader("idType", equalTo("psaid"))
+          .withHeader("idType", equalTo("psaId"))
           .withHeader("idValue", equalTo(psaId))
           .willReturn(
             aResponse()
@@ -56,7 +56,7 @@ class SchemeConnectorSpec
 
       val connector = injector.instanceOf[SchemeConnector]
 
-      connector.getOpenDate("psaid", psaId, pstr).map { openDate =>
+      connector.getOpenDate("psaId", psaId, pstr).map { openDate =>
         openDate mustBe LocalDate.parse("2017-12-17")
       }
     }
@@ -64,7 +64,7 @@ class SchemeConnectorSpec
     "return the openDate for psp for a valid request/response" in {
       server.stubFor(
         get(urlEqualTo(openDateUrl))
-          .withHeader("idType", equalTo("pspid"))
+          .withHeader("idType", equalTo("pspId"))
           .withHeader("idValue", equalTo(pspId))
           .willReturn(
             aResponse()
@@ -76,7 +76,7 @@ class SchemeConnectorSpec
 
       val connector = injector.instanceOf[SchemeConnector]
 
-      connector.getOpenDate("pspid", pspId, pstr).map { openDate =>
+      connector.getOpenDate("pspId", pspId, pstr).map { openDate =>
         openDate mustBe LocalDate.parse("2017-12-17")
       }
     }
@@ -84,7 +84,7 @@ class SchemeConnectorSpec
     "throw BadRequestException for a 400 Bad Request response" in {
       server.stubFor(
         get(urlEqualTo(openDateUrl))
-          .withHeader("idType", equalTo("psaid"))
+          .withHeader("idType", equalTo("psaId"))
           .withHeader("idValue", equalTo(psaId))
           .willReturn(
             badRequest
@@ -95,7 +95,7 @@ class SchemeConnectorSpec
       val connector = injector.instanceOf[SchemeConnector]
 
       recoverToSucceededIf[BadRequestException] {
-        connector.getOpenDate("psaid", psaId, pstr)
+        connector.getOpenDate("psaId", psaId, pstr)
       }
     }
   }

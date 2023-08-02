@@ -63,8 +63,6 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
       val psaOrPspId = request.loggedInUser.psaIdOrPspId
       val idValue = request.loggedInUser.idName
         schemeConnector.getOpenDate(idValue, psaOrPspId, request.pstr).flatMap { openDate =>
-            println(s"\n\n\n OPENDATE ===== $openDate\n\n")
-            println(s"\n\n\n OPENDATE parsed ===== ${formatDateDMY(openDate)}\n\n")
       def form: Form[LocalDate] = formProvider(getTaxYearFromOption(request.userAnswers), openDate)
       form.bindFromRequest().fold(
         formWithErrors => {
