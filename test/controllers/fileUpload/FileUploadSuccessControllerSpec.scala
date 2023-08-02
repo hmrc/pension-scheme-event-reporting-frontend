@@ -38,7 +38,7 @@ import scala.concurrent.Future
 
 class FileUploadSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
-  private def continueUrl(eventType: EventType) = s"/manage-pension-scheme-event-report/new-report/event-${eventType.toString}-summary"
+  private def continueUrl(eventType: EventType) = s"/manage-pension-scheme-event-report/report/event-${eventType.toString}-summary"
 
   private val mockParsingAndValidationOutcomeCacheConnector = mock[ParsingAndValidationOutcomeCacheConnector]
   private val seqOfEvents = Seq(Event1, Event6, Event22, Event23)
