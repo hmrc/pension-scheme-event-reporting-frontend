@@ -77,10 +77,8 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
   "SchemeWindUpDate Controller" - {
 
 //TODO FIX UNIT TESTS
-    
+
     "must return OK and the correct view for a GET" in {
-      when(mockSchemeConnector.getOpenDate(ArgumentMatchers.eq(idType), ArgumentMatchers.eq(psaId), ArgumentMatchers.eq(pstr))(any(), any()))
-        .thenReturn(Future.successful(openDate))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
 
@@ -111,57 +109,57 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
 //        contentAsString(result) mustEqual view(form.fill(validAnswer), waypoints)(request, messages(application)).toString
 //      }
 //    }
-//
-//    "must save the answer and redirect to the next page when valid data is submitted" in {
-//      val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-//      when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any()))
-//        .thenReturn(Future.successful(()))
-//      when(mockSchemeConnector.getOpenDate(ArgumentMatchers.eq("psaId"), ArgumentMatchers.eq("0000"), ArgumentMatchers.eq("pstr"))(any(), any()))
-//        .thenReturn(Future.successful(openDate))
-//
-//      val application =
-//        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
-//          .build()
-//
-//      running(application) {
-//        val request =
-//          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
-//            "value.day" -> "12",
-//            "value.month" -> "5",
-//            "value.year" -> "2022"
-//          )
-//
-//        val result = route(application, request).value
-//        val updatedAnswers = emptyUserAnswers.set(SchemeWindUpDatePage, validAnswer).success.value
-//
-//        status(result) mustEqual SEE_OTHER
-//        redirectLocation(result).value mustEqual SchemeWindUpDatePage.navigate(waypoints, emptyUserAnswersWithTaxYear, updatedAnswers).url
-//        uaCaptor.getValue.get(SchemeWindUpDatePage) mustBe Some(validAnswer)
-//      }
-//    }
-//
-//    "must return bad request when invalid data is submitted" in {
-//      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-//        .thenReturn(Future.successful(()))
-//      when(mockSchemeConnector.getOpenDate(ArgumentMatchers.eq("psaId"), ArgumentMatchers.eq("0000"), ArgumentMatchers.eq("pstr"))(any(), any()))
-//        .thenReturn(Future.successful(openDate))
-//
-//      val application =
-//        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
-//          .build()
-//
-//      running(application) {
-//        val request =
-//          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
-//
-//        val view = application.injector.instanceOf[SchemeWindUpDateView]
-//        val boundForm = form.bind(Map("value" -> "invalid"))
-//
-//        val result = route(application, request).value
-//
-//        status(result) mustEqual BAD_REQUEST
-//        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
-//      }
-//    }
+
+    "must save the answer and redirect to the next page when valid data is submitted" in {
+      val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any()))
+        .thenReturn(Future.successful(()))
+      when(mockSchemeConnector.getOpenDate(any(), any(), any())(any(), any()))
+              .thenReturn(Future.successful(openDate))
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
+            "value.day" -> "12",
+            "value.month" -> "5",
+            "value.year" -> "2022"
+          )
+
+        val result = route(application, request).value
+        val updatedAnswers = emptyUserAnswers.set(SchemeWindUpDatePage, validAnswer).success.value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual SchemeWindUpDatePage.navigate(waypoints, emptyUserAnswersWithTaxYear, updatedAnswers).url
+        uaCaptor.getValue.get(SchemeWindUpDatePage) mustBe Some(validAnswer)
+      }
+    }
+
+    "must return bad request when invalid data is submitted" in {
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+      when(mockSchemeConnector.getOpenDate(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(openDate))
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
+
+        val view = application.injector.instanceOf[SchemeWindUpDateView]
+        val boundForm = form.bind(Map("value" -> "invalid"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+      }
+    }
   }
 }
