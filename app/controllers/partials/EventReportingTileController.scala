@@ -75,16 +75,16 @@ class EventReportingTileController @Inject()(
 
   private def cardSubheadings(isAnyCompiledReports: Boolean, seqEROverview: Seq[EROverview])(implicit request: OptionalDataRequest[AnyContent]): Seq[CardSubHeading] = {
     if (isAnyCompiledReports) {
-      val noOfOverviewsInProgress = seqEROverview.filter(_.versionDetails.exists(_.compiledVersionAvailable)).size
-      val anyStartAndEndDates = seqEROverview.map { value => (value.periodStartDate, value.periodEndDate) }
+      val overviewsInProgress = seqEROverview.filter(_.versionDetails.exists(_.compiledVersionAvailable))
+      val anyStartAndEndDates = overviewsInProgress.map { value => (value.periodStartDate, value.periodEndDate) }
 
-      val (subHeadingMessage, subHeadingParamMessage) = noOfOverviewsInProgress match {
+      val (subHeadingMessage, subHeadingParamMessage) = overviewsInProgress.size match {
         case 1 =>
           (Messages("eventReportingTile.subHeading", anyStartAndEndDates.head._1, anyStartAndEndDates.head._2),
             Messages("eventReportingTile.subHeading.param"))
         case _ =>
           (Messages("eventReportingTile.subHeading.multiple"),
-            Messages("eventReportingTile.subHeading.param.multiple", noOfOverviewsInProgress))
+            Messages("eventReportingTile.subHeading.param.multiple", overviewsInProgress.size))
       }
 
       Seq(
