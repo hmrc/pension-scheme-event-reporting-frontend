@@ -191,7 +191,7 @@ trait Constraints {
       case _ => Invalid(errorKey)
     }
 
-  protected def isBeforeOpenDate(openDate: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
+  protected def isNotBeforeOpenDate(openDate: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
     Constraint {
       case date if date.isBefore(openDate) =>
         Invalid(errorKey, args: _*)

@@ -38,7 +38,7 @@ class SchemeWindUpDateFormProvider @Inject() extends Mappings {
           taxYear = taxYear
         ))
       ).verifying(
-        isBeforeOpenDate(openDate, "schemeWindUpDate.error.beforeOpenDate", formatDateDMY(openDate))
+        isNotBeforeOpenDate(openDate, "schemeWindUpDate.error.beforeOpenDate", formatDateDMY(openDate))
       )
 
 
