@@ -52,6 +52,7 @@ class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
           println(s"\n\n\n PARSED OPEN DATE CONNECTOR === ${y}")
           y
         case _ =>
+          println(s"\n\n\nFAILURE HERE\n\n")
           handleErrorResponse("GET", url)(response)
       }
     }
