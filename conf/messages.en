@@ -97,7 +97,9 @@ confirmation.li3 = print this page
 
 eventReportingTile.heading = Event Reporting
 eventReportingTile.subHeading = Event report {0} to {1}:
+eventReportingTile.subHeading.multiple = Event reports:
 eventReportingTile.subHeading.param = In progress
+eventReportingTile.subHeading.param.multiple = {0} in progress
 eventReportingTile.link.compiled = View event report in progress
 eventReportingTile.link.new = Start a new event report
 eventReportingTile.link.submitted = View or change past event reports
