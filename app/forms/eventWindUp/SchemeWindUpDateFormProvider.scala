@@ -20,7 +20,6 @@ import forms.mappings.Mappings
 import models.TaxYearValidationDetail
 import play.api.data.Form
 import utils.DateHelper.formatDateDMY
-
 import java.time.LocalDate
 import javax.inject.Inject
 

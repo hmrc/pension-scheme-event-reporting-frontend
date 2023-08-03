@@ -201,16 +201,35 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
       }
     }
   }
-  //TODO finish tests for openDate
 
-//  "isBeforeOpenDate" - {
-//    "must return invalid for a date before the open date" in {
-//      val gen: Gen[(Localdate)] = for {
-//        openDate <- LocalDate.of(2022, 5, 1)
-//      } yield openDate
-//      forAll(gen) {
-//        case
-//      }
-//    }
-//  }
+  "isBeforeOpenDate" - {
+    "must return Valid for a date after or on the open date" in {
+      val gen: Gen[(LocalDate, LocalDate)] = for {
+        openDate <- datesBetween(LocalDate.of(2020, 4, 6), LocalDate.of(2020, 8, 27))
+        date <- datesBetween(openDate, LocalDate.of(2020, 8, 27))
+      } yield (openDate, date)
+
+      forAll(gen) {
+        case (openDate, date) =>
+
+          val result = isNotBeforeOpenDate(openDate, "error.beforeOpenDate", "foo")(date)
+          result mustEqual Valid
+      }
+    }
+    "must return Invalid for a date before the openDate but within the tax year selected" in {
+
+      val gen: Gen[(LocalDate, LocalDate)] = for {
+        openDate <- datesBetween(LocalDate.of(2020, 4, 6), LocalDate.of(2020, 8, 27))
+        date <- datesBetween(LocalDate.of(2020, 4, 6), openDate.minusDays(1))
+
+      } yield (openDate, date)
+
+      forAll(gen) {
+        case (openDate, date) =>
+
+          val result = isNotBeforeOpenDate(openDate, "error.beforeOpenDate", "foo")(date)
+          result mustEqual Invalid("error.beforeOpenDate", "foo")
+      }
+    }
+  }
 }
