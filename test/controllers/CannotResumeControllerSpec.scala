@@ -17,17 +17,37 @@
 package controllers
 
 import base.SpecBase
+import connectors.UserAnswersCacheConnector
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar.mock
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.CannotResumeView
 
-class CannotResumeControllerSpec extends SpecBase {
+import scala.concurrent.Future
+
+class CannotResumeControllerSpec extends SpecBase with BeforeAndAfterEach {
+
+  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+
+  override def beforeEach(): Unit = {
+    reset(mockUserAnswersCacheConnector)
+  }
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
+  )
 
   "CannotResume Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      when(mockUserAnswersCacheConnector.removeAll(any())(any(), any())).thenReturn(Future.successful(()))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
 
       running(application) {
 
