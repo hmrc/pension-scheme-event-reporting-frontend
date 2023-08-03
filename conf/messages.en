@@ -1677,3 +1677,6 @@ fileUpload.valueOfFund.generic.error = value of fund is missing or in the wrong 
 fileUpload.loanAmount.generic.error = loan amount is missing or in the wrong format
 fileUpload.memberOrEmployer.generic.error = entry of who received the unauthorised payment or deemed unauthorised payment is missing or in the wrong format
 
+cannotResume.title = This event report has been submitted and is with HMRC
+cannotResume.heading = This event report has been submitted and is with HMRC
+cannotResume.p1 = You cannot resume this journey.
