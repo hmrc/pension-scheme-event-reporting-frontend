@@ -16,6 +16,7 @@
 
 package controllers
 
+import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -24,17 +25,24 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.CannotResumeView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class CannotResumeController @Inject()(
                                         override val messagesApi: MessagesApi,
                                         identify: IdentifierAction,
+                                        getData: DataRetrievalAction,
                                         val controllerComponents: MessagesControllerComponents,
+                                        userAnswersCacheConnector: UserAnswersCacheConnector,
                                         view: CannotResumeView
-                                      ) extends FrontendBaseController with I18nSupport {
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
-      Ok(view())
+      val futureRemoval = request.userAnswers match {
+        case Some(_) => userAnswersCacheConnector.removeAll(request.pstr)
+        case _ => Future.successful((): Unit)
+      }
+      futureRemoval.map(_ => Ok(view()))
   }
 }

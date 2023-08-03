@@ -16,13 +16,18 @@
 
 package models.requests
 
+import models.enumeration.VersionStatus.Submitted
 import models.{LoggedInUser, UserAnswers}
+import pages.VersionInfoPage
 import play.api.mvc.{Request, WrappedRequest}
 
 abstract class RequiredSchemeDataRequest[A](request: Request[A]) extends WrappedRequest[A](request) {
   def pstr: String
+
   def schemeName: String
+
   def returnUrl: String
+
   def loggedInUser: LoggedInUser
 }
 
@@ -41,4 +46,9 @@ case class DataRequest[A](pstr: String,
                           request: Request[A],
                           loggedInUser: LoggedInUser,
                           userAnswers: UserAnswers
-                         ) extends RequiredSchemeDataRequest[A](request)
+                         ) extends RequiredSchemeDataRequest[A](request) {
+
+  def isReportSubmitted: Boolean = {
+    userAnswers.get(VersionInfoPage).exists(_.status == Submitted)
+  }
+}

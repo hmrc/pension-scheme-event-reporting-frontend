@@ -32,7 +32,7 @@ import services.SubmitService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.DateHelper.formatSubmittedDate
-import views.html.{CannotResumeView, DeclarationView}
+import views.html.DeclarationView
 
 import java.time.{ZoneId, ZonedDateTime}
 import javax.inject.Inject
@@ -49,17 +49,16 @@ class DeclarationController @Inject()(
                                        minimalConnector: MinimalConnector,
                                        auditService: AuditService,
                                        config: FrontendAppConfig,
-                                       declarationView: DeclarationView,
-                                       cannotResumeView: CannotResumeView
+                                       declarationView: DeclarationView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
   private val logger = Logger(classOf[DeclarationController])
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) {
     implicit request =>
-      val isReportSubmitted = request.userAnswers.noEventTypeData.value.get("versionInfo").head.toString().contains("submitted")
-      isReportSubmitted match {
-        case true => Ok(cannotResumeView())
-        case _ => Ok(declarationView(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
+      if (request.isReportSubmitted) {
+        Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
+      } else {
+        Ok(declarationView(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
       }
   }
 
