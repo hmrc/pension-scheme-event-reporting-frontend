@@ -97,7 +97,9 @@ confirmation.li3 = print this page
 
 eventReportingTile.heading = Event Reporting
 eventReportingTile.subHeading = Event report {0} to {1}:
+eventReportingTile.subHeading.multiple = Event reports:
 eventReportingTile.subHeading.param = In progress
+eventReportingTile.subHeading.param.multiple = {0} in progress
 eventReportingTile.link.compiled = View event report in progress
 eventReportingTile.link.new = Start a new event report
 eventReportingTile.link.submitted = View or change past event reports
@@ -231,7 +233,8 @@ whoReceivedUnauthPayment.heading = Who received the unauthorised payment or deem
 whoReceivedUnauthPayment.member = Member or someone in respect of the member
 whoReceivedUnauthPayment.employer = Employer or someone in respect of the employer
 whoReceivedUnauthPayment.checkYourAnswersLabel = Who received the unauthorised payment or deemed unauthorised payment?
-whoReceivedUnauthPayment.error.required = Select who received the unauthorised payment or deemed unauthorised payment?
+whoReceivedUnauthPayment.error.required = Select who received the unauthorised payment or deemed unauthorised payment
+whoReceivedUnauthPayment.error.format = You must enter either "member" or "employer"
 whoReceivedUnauthPayment.change.hidden = Who received the unauthorised payment or deemed unauthorised payment?
 whoReceivedUnauthPayment.member.hint = If a deemed unauthorised payment is being reported, you must select this option
 
@@ -249,6 +252,7 @@ paymentNature.courtOrConfiscationOrder = Court order payment/confiscation order
 paymentNature.memberOther = Other
 paymentNature.checkYourAnswersLabel = Nature of the payment or deemed payment
 paymentNature.error.required = Select the nature of the payment or deemed payment
+paymentNature.error.format = Enter the nature of the payment or deemed payment as described in the instructions sheet provided
 paymentNature.change.hidden = Nature of the payment or deemed payment
 
 whatYouWillNeed.title = What you will need
@@ -363,12 +367,14 @@ doYouHoldSignedMandate.title = Do you hold a signed mandate from the member to d
 doYouHoldSignedMandate.heading = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.checkYourAnswersLabel = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.error.required = Select yes if you hold a signed mandate from the member to deduct tax from their unauthorised payment
+doYouHoldSignedMandate.error.format = Enter yes or no if you hold a signed mandate from the member to deduct tax from their unauthorised payment
 doYouHoldSignedMandate.change.hidden = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 
 valueOfUnauthorisedPayment.title = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
 valueOfUnauthorisedPayment.heading = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
 valueOfUnauthorisedPayment.checkYourAnswersLabel = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
 valueOfUnauthorisedPayment.error.required = Select yes if the value of the unauthorised payment is more than 25% of the pension fund for the individual
+valueOfUnauthorisedPayment.error.format = Enter yes or no if the value of the unauthorised payment is more than 25% of the pension fund for the individual
 valueOfUnauthorisedPayment.change.hidden = Is the value of the unauthorised payment more than 25% of the pension fund for the individual?
 
 employer.whatYouWillNeed.title = What you will need
@@ -462,6 +468,7 @@ schemeUnAuthPaySurchargeMember.title = Is the scheme paying the unauthorised pay
 schemeUnAuthPaySurchargeMember.heading = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
 schemeUnAuthPaySurchargeMember.checkYourAnswersLabel = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
 schemeUnAuthPaySurchargeMember.error.required = Select yes if Is the scheme paying the unauthorised payment surcharge on behalf of the member?
+schemeUnAuthPaySurchargeMember.error.format = Enter yes or no if the scheme is paying the unauthorised payment surcharge on behalf of the member
 schemeUnAuthPaySurchargeMember.change.hidden = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
 
 errorDescription.title = Give a brief description of the error
@@ -493,6 +500,7 @@ whoWasTheTransferMade.nonRecognisedScheme = A non-recognised pension scheme whic
 whoWasTheTransferMade.other = Other
 whoWasTheTransferMade.checkYourAnswersLabel = Who was the transfer made to?
 whoWasTheTransferMade.error.required = Select who the transfer was made to
+whoWasTheTransferMade.error.format = Enter who the transfer was made to according to the instructions provided
 whoWasTheTransferMade.change.hidden = Who was the transfer made to?
 
 schemeDetails.title = Scheme details
@@ -592,6 +600,7 @@ reasonForTheOverpaymentOrWriteOff.dependentNoLongerQualifiedForPension = Depende
 reasonForTheOverpaymentOrWriteOff.other = Other
 reasonForTheOverpaymentOrWriteOff.checkYourAnswersLabel = What is the reason for the overpayment/write off?
 reasonForTheOverpaymentOrWriteOff.error.required = Select the reason for the overpayment/write off
+reasonForTheOverpaymentOrWriteOff.error.format = Enter the reason for the overpayment/write off according to the instructions provided
 reasonForTheOverpaymentOrWriteOff.change.hidden = What is the reason for the overpayment/write off?
 
 refundOfContributions.title = Who received the refund?
@@ -600,6 +609,7 @@ refundOfContributions.widowOrOrphan = A widow and/or orphan
 refundOfContributions.other = Other
 refundOfContributions.checkYourAnswersLabel = Who received the refund?
 refundOfContributions.error.required = Select who received the refund
+refundOfContributions.error.format = Enter who received the refund according to the instructions provided
 refundOfContributions.change.hidden = Who received the refund?
 
 loanDetails.title = Loan details
@@ -1633,6 +1643,10 @@ whatYouWillNeed.event6.item2 = details of the type of protection held for the cr
 whatYouWillNeed.event6.item3 = amount that was crystallised
 whatYouWillNeed.event6.item4 = date of the benefit crystallisation
 
+cannotSubmitEvents.title = You are unable to submit the event report yet
+cannotSubmitEvents.heading = You are unable to submit the event report yet
+cannotSubmitEvents.p1 = You cannot submit an event return in the current tax year unless you have wound up the scheme.
+
 removeMember.title = Are you sure you want to remove the {0} charge for this member?
 removeMember.heading = Are you sure you want to remove the {0} charge for this member?
 removeMember.error.required = Select yes if you want to remove the {0} charge for this member
@@ -1645,3 +1659,29 @@ noDataEnteredError.heading = This report cannot be submitted
 noDataEnteredError.p1 = No data has been entered
 noDataEnteredError.p2 = Return to the pensions dashboard
 noDataEnteredError.p3 = to enter data before submitting
+
+fileUpload.companyOrOrgName.generic.error = company or organisation name is missing or in the wrong format
+fileUpload.companyNo.generic.error = company or organisation number is missing or in the wrong format
+fileUpload.postCode.generic.error = postcode is missing or in the wrong format
+fileUpload.schemeName.generic.error = scheme name is missing or in the wrong format
+fileUpload.schemeReference.generic.error = scheme reference is missing or in the wrong format
+fileUpload.country.generic.error = country is missing or in the wrong format
+fileUpload.paymentDate.generic.error = date of payment or when benefit made available is missing or in the wrong format
+fileUpload.paymentAmount.generic.error = total value or amount of the unauthorised payment is missing or in the wrong format
+fileUpload.overpaymentReason.generic.error = reason for the overpayment/write off is missing or in the wring format
+fileUpload.addressLine1.generic.error = address line 1 is missing or in the wrong format
+fileUpload.addressLine2.generic.error = address line 2 is missing or in the wrong format
+fileUpload.addressLine3.generic.error = address line 3 is missing or in the wrong format
+fileUpload.addressLine4.generic.error = address line 4 is missing or in the wrong format
+fileUpload.postCode.generic.error = postcode is missing or in the wrong format
+fileUpload.tangibleDescription.generic.error = tangible description is too long
+fileUpload.courtNameOfPersonOrOrg.generic.error = court name of person or organisation is missing or in the wrong format
+fileUpload.otherDescription.generic.error = other description is too long
+fileUpload.errorDescription.generic.error = error description is too long
+fileUpload.earlyDescription.generic.error = early description is too long
+fileUpload.companyOrOrgName.generic.error = company or organisation name is missing or in the wrong format
+fileUpload.companyNo.generic.error = company number is missing or in the wrong format
+fileUpload.valueOfFund.generic.error = value of fund is missing or in the wrong format
+fileUpload.loanAmount.generic.error = loan amount is missing or in the wrong format
+fileUpload.memberOrEmployer.generic.error = entry of who received the unauthorised payment or deemed unauthorised payment is missing or in the wrong format
+

@@ -51,7 +51,7 @@ class Event8ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val list = SummaryListViewModel(expectedMemberSummaryListRowsEvent8A)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-8a-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-8a-click")(request, messages(application)).toString
       }
     }
 
@@ -143,44 +143,44 @@ object Event8ACheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel",
       "Joe Bloggs",
-      "/manage-pension-scheme-event-report/new-report/1/event-8a-member-details?waypoints=event-8A-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-8a-member-details?waypoints=event-8A-check-answers-1",
       "membersDetails.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel.nino",
       "AA234567D",
-      "/manage-pension-scheme-event-report/new-report/1/event-8a-member-details?waypoints=event-8A-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-8a-member-details?waypoints=event-8A-check-answers-1",
       "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "paymentType.checkYourAnswersLabel",
       "Payment of a stand-alone lump sum",
-      "/manage-pension-scheme-event-report/new-report/1/event-8a-lump-sum-payment-type?waypoints=event-8A-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-8a-lump-sum-payment-type?waypoints=event-8A-check-answers-1",
       "paymentType.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "event8.typeOfProtection.checkYourAnswersLabel",
       "Primary protection",
-      "/manage-pension-scheme-event-report/new-report/1/event-8a-type-of-protection?waypoints=event-8A-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-8a-type-of-protection?waypoints=event-8A-check-answers-1",
       "event8.typeOfProtection.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithTwoMsgKeys(
       "typeOfProtectionReference.checkYourAnswersLabel",
       "event8.typeOfProtection.primaryProtection",
       "1234567A",
-      "/manage-pension-scheme-event-report/new-report/1/event-8a-protection-reference?waypoints=event-8A-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-8a-protection-reference?waypoints=event-8A-check-answers-1",
       "typeOfProtectionReference.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "lumpSumAmountAndDate.value.checkYourAnswersLabel",
       "£10.00",
-      "/manage-pension-scheme-event-report/new-report/1/event-8a-payment-details?waypoints=event-8A-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-8a-payment-details?waypoints=event-8A-check-answers-1",
       "lumpSumAmountAndDate.value.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "lumpSumAmountAndDate.date.checkYourAnswersLabel",
       "22 March 2022",
-      "/manage-pension-scheme-event-report/new-report/1/event-8a-payment-details?waypoints=event-8A-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-8a-payment-details?waypoints=event-8A-check-answers-1",
       "lumpSumAmountAndDate.date.change.hidden"
     )
   )

@@ -29,7 +29,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SubmitService
-import uk.gov.hmrc.http.{ExpectationFailedException, HeaderCarrier}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.DateHelper.formatSubmittedDate
 import views.html.DeclarationView
@@ -52,44 +52,40 @@ class DeclarationController @Inject()(
                                        view: DeclarationView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
   private val logger = Logger(classOf[DeclarationController])
+
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
     implicit request =>
       Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
   }
 
-  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
-    implicit request =>
+  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
+    implicit request: DataRequest[_] =>
+      val data: UserAnswers = UserAnswers(
+        declarationData(
+          request.pstr,
+          TaxYear.getSelectedTaxYear(request.userAnswers),
+          request.loggedInUser),
+        request.userAnswers.noEventTypeData
+      )
 
-      request.userAnswers.getOrElse(throw new ExpectationFailedException("User data not available"))
+      def emailFuture = minimalConnector.getMinimalDetails(
+        request.loggedInUser.idName,
+        request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
+        val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
+        val email = minimalDetails.email
+        val schemeName = request.schemeName
+        sendEmail(minimalDetails.name, email, taxYear, schemeName)
+      }
 
-      requireData.invokeBlock(request, { implicit request:DataRequest[_] =>
-        val data: UserAnswers = UserAnswers(
-          declarationData(
-            request.pstr,
-            TaxYear.getSelectedTaxYear(request.userAnswers),
-            request.loggedInUser),
-          request.userAnswers.noEventTypeData
-        )
-
-        def emailFuture = minimalConnector.getMinimalDetails(
-          request.loggedInUser.idName,
-          request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
-          val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
-          val email = minimalDetails.email
-          val schemeName = request.schemeName
-          sendEmail(minimalDetails.name, email, taxYear, schemeName)
+      submitService.submitReport(request.pstr, data).flatMap { result =>
+        result.header.status match {
+          case OK => emailFuture.map(_ => Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
+          case NOT_FOUND =>
+            logger.warn(s"Unable to submit declaration because there is nothing to submit (nothing in compile state)")
+            Future.successful(Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url))
+          case _ => throw new RuntimeException(s"Invalid response returned from submit report: ${result.header.status}")
         }
-
-        submitService.submitReport(request.pstr, data).flatMap { result =>
-          result.header.status match {
-            case OK => emailFuture.map(_ => Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
-            case NOT_FOUND =>
-              logger.warn(s"Unable to submit declaration because there is nothing to submit (nothing in compile state)")
-              Future.successful(Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url))
-            case _ => throw new RuntimeException(s"Invalid response returned from submit report: ${result.header.status}")
-          }
-        }
-      })
+      }
   }
 
   private def sendEmail(psaName: String, email: String, taxYear: String, schemeName: String)(

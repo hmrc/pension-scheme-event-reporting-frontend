@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package forms.event1
+package pages
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import play.api.mvc.Call
+import controllers.routes
 
-import javax.inject.Inject
+case object CannotSubmitPage extends Page {
 
-class ValueOfUnauthorisedPaymentFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("valueOfUnauthorisedPayment.error.required", invalidKey = "valueOfUnauthorisedPayment.error.format")
-    )
+  override def route(waypoints: Waypoints): Call =
+    routes.CannotSubmitController.onPageLoad(waypoints)
 }

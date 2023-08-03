@@ -25,6 +25,6 @@ class DoYouHoldSignedMandateFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("doYouHoldSignedMandate.error.required")
+      "value" -> boolean("doYouHoldSignedMandate.error.required", invalidKey = "doYouHoldSignedMandate.error.format")
     )
 }

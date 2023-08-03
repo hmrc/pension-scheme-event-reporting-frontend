@@ -26,6 +26,6 @@ class PaymentNatureFormProvider @Inject() extends Mappings {
 
   def apply(): Form[PaymentNature] =
     Form(
-      "value" -> enumerable[PaymentNature]("paymentNature.error.required")
+      "value" -> enumerable[PaymentNature]("paymentNature.error.required", invalidKey = "paymentNature.error.format")
     )
 }
