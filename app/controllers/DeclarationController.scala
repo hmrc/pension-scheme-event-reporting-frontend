@@ -32,7 +32,7 @@ import services.SubmitService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.DateHelper.formatSubmittedDate
-import views.html.DeclarationView
+import views.html.{CannotResumeView, DeclarationView}
 
 import java.time.{ZoneId, ZonedDateTime}
 import javax.inject.Inject
@@ -49,12 +49,18 @@ class DeclarationController @Inject()(
                                        minimalConnector: MinimalConnector,
                                        auditService: AuditService,
                                        config: FrontendAppConfig,
-                                       view: DeclarationView
+                                       declarationView: DeclarationView,
+                                       cannotResumeView: CannotResumeView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
   private val logger = Logger(classOf[DeclarationController])
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
+
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) {
     implicit request =>
-      Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
+      val isReportSubmitted = request.userAnswers.noEventTypeData.value.get("versionInfo").head.toString().contains("submitted")
+      isReportSubmitted match {
+        case true => Ok(cannotResumeView())
+        case _ => Ok(declarationView(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
+      }
   }
 
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
@@ -79,7 +85,7 @@ class DeclarationController @Inject()(
       submitService.submitReport(request.pstr, data).flatMap { result =>
         (result.header.status) match {
           case OK =>
-            emailFuture.map(_ =>Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
+            emailFuture.map(_ => Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
           case NOT_FOUND =>
             logger.warn(s"Unable to submit declaration because there is nothing to submit (nothing in compile state)")
             Future.successful(Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url))
