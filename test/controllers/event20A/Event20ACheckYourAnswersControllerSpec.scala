@@ -55,10 +55,10 @@ class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFl
         request.loggedInUser.administratorOrPractitioner match {
           case Administrator =>
             contentAsString(result) mustEqual view(
-              list, "/manage-pension-scheme-event-report/new-report/event-20a-declaration-PSA")(request, messages(application)).toString
+              list, "/manage-pension-scheme-event-report/report/event-20a-declaration-PSA")(request, messages(application)).toString
           case Practitioner =>
             contentAsString(result) mustEqual view(
-              list, "/manage-pension-scheme-event-report/new-report/event-20a-declaration-PSP")(request, messages(application)).toString
+              list, "/manage-pension-scheme-event-report/report/event-20a-declaration-PSP")(request, messages(application)).toString
         }
       }
     }
@@ -173,13 +173,13 @@ object Event20ACheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlWithHiddenContent(
       "whatChange.checkYourAnswersLabel",
       "It became a Master Trust",
-      "/manage-pension-scheme-event-report/new-report/event-20A-Master-Trust?waypoints=event-20A-check-answers",
+      "/manage-pension-scheme-event-report/report/event-20A-Master-Trust?waypoints=event-20A-check-answers",
       "whatChange.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "becameDateMasterTrust.checkYourAnswersLabel",
       "12 January 2023",
-      "/manage-pension-scheme-event-report/new-report/event-20A-when-scheme-became-Master-Trust?waypoints=event-20A-check-answers",
+      "/manage-pension-scheme-event-report/report/event-20A-when-scheme-became-Master-Trust?waypoints=event-20A-check-answers",
       "becameDateMasterTrust.change.hidden"
     )
   )
@@ -188,13 +188,13 @@ object Event20ACheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlWithHiddenContent(
       "whatChange.checkYourAnswersLabel",
       "It has ceased to be a Master Trust",
-      "/manage-pension-scheme-event-report/new-report/event-20A-Master-Trust?waypoints=event-20A-check-answers",
+      "/manage-pension-scheme-event-report/report/event-20A-Master-Trust?waypoints=event-20A-check-answers",
       "whatChange.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "ceasedDateMasterTrust.checkYourAnswersLabel",
       "12 January 2023",
-      "/manage-pension-scheme-event-report/new-report/event-20A-when-scheme-ceased-to-be-Master-Trust?waypoints=event-20A-check-answers",
+      "/manage-pension-scheme-event-report/report/event-20A-when-scheme-ceased-to-be-Master-Trust?waypoints=event-20A-check-answers",
       "ceasedDateMasterTrust.change.hidden"
     )
   )
