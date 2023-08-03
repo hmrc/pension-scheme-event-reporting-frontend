@@ -22,13 +22,13 @@ import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, SummaryListRow}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object BecomeOrCeaseSchemeSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isChangeLinkNotPresent: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(BecomeOrCeaseSchemePage).map {
       answer =>
@@ -39,13 +39,16 @@ object BecomeOrCeaseSchemeSummary {
           )
         )
 
-        SummaryListRowViewModel(
-          key = "becomeOrCeaseScheme.checkYourAnswersLabel",
-          value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", BecomeOrCeaseSchemePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("becomeOrCeaseScheme.change.hidden"))
+        if (isChangeLinkNotPresent) SummaryListRow("becomeOrCeaseScheme.checkYourAnswersLabel", value) else {
+          SummaryListRowViewModel(
+            key = "becomeOrCeaseScheme.checkYourAnswersLabel",
+            value = value,
+            actions = Seq(
+                ActionItemViewModel("site.change", BecomeOrCeaseSchemePage.changeLink(waypoints, sourcePage).url)
+                  .withVisuallyHiddenText(messages("becomeOrCeaseScheme.change.hidden"))
+              )
           )
-        )
+        }
+
     }
 }

@@ -60,17 +60,31 @@ class EventSummaryController @Inject()(
                 content = Text(Message(s"eventSummary.event${eventSummary.eventType.toString}"))
               ),
               actions = Some(Actions(
-                items = Seq(
-                  changeLinkForEvent(eventSummary.eventType).map { link =>  ActionItem(
-                    content = Text(Message("site.change")),
-                    href = link
-                  )},
-                  removeLinkForEvent(eventSummary.eventType).map{ link =>  ActionItem(
-                      content = Text(Message("site.remove")),
+                items = if(request.readOnly()) { Seq(
+                  viewOnlyLinkForEvent(eventSummary.eventType).map { link =>
+                    println("\n\n\neven type " + eventSummary.eventType)
+                    ActionItem(
+                      content = Text(Message("site.view")),
                       href = link
                     )
                   }
                 ).flatten
+                } else {
+                  Seq(
+                    changeLinkForEvent(eventSummary.eventType).map { link =>
+                      ActionItem(
+                        content = Text(Message("site.change")),
+                        href = link
+                      )
+                    },
+                    removeLinkForEvent(eventSummary.eventType).map { link =>
+                      ActionItem(
+                        content = Text(Message("site.remove")),
+                        href = link
+                      )
+                    }
+                  ).flatten
+                }
               ))
             )
           }
@@ -155,6 +169,30 @@ class EventSummaryController @Inject()(
       case EventType.WindUp => Some(controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url)
       case _ =>
         logger.info(s"Missing event type $eventType")
+        None
+    }
+  }
+
+  private def viewOnlyLinkForEvent(eventType: EventType): Option[String] = {
+    eventType match {
+      case EventType.Event1 => Some("#")
+      case EventType.Event2 | EventType.Event3 |
+           EventType.Event4 | EventType.Event5 |
+           EventType.Event6 | EventType.Event8 |
+           EventType.Event8A | EventType.Event22 |
+           EventType.Event23 => Some("#")
+      case EventType.Event7 => Some("#")
+      case EventType.Event10 => Some(controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
+      case EventType.Event11 => Some("#")
+      case EventType.Event12 => Some("#")
+      case EventType.Event13 => Some("#")
+      case EventType.Event14 => Some("#")
+      case EventType.Event18 => Some("#")
+      case EventType.Event19 => Some("#")
+      case EventType.Event20 => Some("#")
+      case EventType.WindUp =>  Some("#")
+      case _ =>
+        logger.error(s"Missing event type $eventType")
         None
     }
   }
