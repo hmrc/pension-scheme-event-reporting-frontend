@@ -38,7 +38,14 @@ case class OptionalDataRequest[A](
                                    request: Request[A],
                                    loggedInUser: LoggedInUser,
                                    userAnswers: Option[UserAnswers]
-                                 ) extends RequiredSchemeDataRequest[A](request)
+                                 ) extends RequiredSchemeDataRequest[A](request) {
+  def isReportSubmitted: Boolean = {
+    userAnswers match {
+      case None => false
+      case Some(ua) => ua.get(VersionInfoPage).exists(_.status == Submitted)
+    }
+  }
+}
 
 case class DataRequest[A](pstr: String,
                           schemeName: String,

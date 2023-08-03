@@ -63,7 +63,11 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
     }
     minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map {
       minimalDetails =>
-        Ok(view(minimalDetails.name, preparedForm, waypoints))
+        if (request.isReportSubmitted) {
+          Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
+        } else{
+          Ok(view(minimalDetails.name, preparedForm, waypoints))
+        }
     }
   }
 
