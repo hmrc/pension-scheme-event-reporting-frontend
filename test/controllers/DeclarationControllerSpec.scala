@@ -38,7 +38,7 @@ import connectors.MinimalConnector.MinimalDetails
 import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector}
 import models.VersionInfo
 import models.enumeration.AdministratorOrPractitioner.Administrator
-import models.enumeration.VersionStatus.Compiled
+import models.enumeration.VersionStatus.{Compiled, Submitted}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -83,8 +83,9 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
 
   "Declaration Controller" - {
 
-    "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+    "must return OK and the correct view for a GET when when isReportSubmitted is false" in {
+      val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo)).build()
 
       running(application) {
 
@@ -96,6 +97,21 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(routes.DeclarationController.onClick(waypoints).url)(request, messages(application)).toString
+      }
+    }
+
+    "must redirect to cannot resume page when isReportSubmitted is true" in {
+      val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo)).build()
+
+      running(application) {
+
+        val request = FakeRequest(GET, routes.DeclarationController.onPageLoad(waypoints).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.CannotResumeController.onPageLoad(waypoints).url
       }
     }
 
