@@ -33,10 +33,7 @@ class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
   extends HttpResponseHelper {
   def getOpenDate(idType: String, idValue: String, pstr: String)
                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
-    if (idType == "pspId") {
-      val schemeHc = hc.withExtraHeaders("idType" -> idType, "idValue" -> idValue, "pstr" -> pstr)
-      openDate(config.openDateUrl)(schemeHc, ec)
-    } else if (idType == "psaId") {
+    if (idType == "pspId" || idType == "psaId") {
       val schemeHc = hc.withExtraHeaders("idType" -> idType, "idValue" -> idValue, "pstr" -> pstr)
       openDate(config.openDateUrl)(schemeHc, ec)
     } else {
