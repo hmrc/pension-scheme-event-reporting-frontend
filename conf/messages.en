@@ -1679,3 +1679,14 @@ fileUpload.valueOfFund.generic.error = value of fund is missing or in the wrong 
 fileUpload.loanAmount.generic.error = loan amount is missing or in the wrong format
 fileUpload.memberOrEmployer.generic.error = entry of who received the unauthorised payment or deemed unauthorised payment is missing or in the wrong format
 
+eventDescription.event1 = unauthorised payment
+eventDescription.event2 = lump sum death benefit payment
+eventDescription.event3 = benefits provided before normal minimum pension age
+eventDescription.event4 = payment of serious ill-health lump sum
+eventDescription.event5 = cessation of ill-health pension
+eventDescription.event6 = benefit crystallisation event
+eventDescription.event7 = pension commencement lump sum
+eventDescription.event8 = pension commencement lump sum
+eventDescription.event8A = pension commencement lump sum
+eventDescription.event22 = annual allowance
+eventDescription.event23 = dual annual allowance

@@ -27,13 +27,11 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
 
 class DataRetrievalImpl(eventType: EventType,
                         userAnswersCacheConnector: UserAnswersCacheConnector
                        )(implicit val executionContext: ExecutionContext)
   extends DataRetrieval {
-  private val logger = Logger(classOf[DataRetrievalImpl])
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
