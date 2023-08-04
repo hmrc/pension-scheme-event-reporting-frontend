@@ -26,7 +26,6 @@ import uk.gov.hmrc.http.{HttpClient, _}
 import utils.HttpResponseHelper
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
