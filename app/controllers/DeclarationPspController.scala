@@ -25,10 +25,12 @@ import models.enumeration.AdministratorOrPractitioner
 import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}
 import pages.{DeclarationPspPage, VersionInfoPage, Waypoints}
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SubmitService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.DateHelper.formatSubmittedDate
@@ -44,6 +46,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
                                          userAnswersCacheConnector: UserAnswersCacheConnector,
                                          formProvider: DeclarationPspFormProvider,
                                          requireData: DataRequiredAction,
+                                         submitService: SubmitService,
                                          erConnector: EventReportingConnector,
                                          schemeDetailsConnector: SchemeDetailsConnector,
                                          emailConnector: EmailConnector,
@@ -52,6 +55,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
                                          config: FrontendAppConfig,
                                          view: DeclarationPspView
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+  private val logger = Logger(classOf[DeclarationController])
 
   private def form(authorisingPsaId: Option[String]): Form[String] = formProvider(authorisingPSAID = authorisingPsaId)
 
@@ -63,18 +67,21 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
     }
     minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map {
       minimalDetails =>
+        println(s"\n\n request.userAnswers: ${request.userAnswers}\n\n")
+        println(s"\n\n request.isReportSubmitted: ${request.isReportSubmitted}\n\n")
         if (request.isReportSubmitted) {
           Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
-        } else{
+        } else {
           Ok(view(minimalDetails.name, preparedForm, waypoints))
         }
     }
   }
 
+  //noinspection ScalaStyle
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
 
-      def emailFuture = minimalConnector.getMinimalDetails(
+      def emailFuture: Future[EmailStatus] = minimalConnector.getMinimalDetails(
         request.loggedInUser.idName,
         request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
         val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
@@ -91,14 +98,19 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
               Future.successful(BadRequest(view(minimalDetails.name, formWithErrors, waypoints))),
             value => {
               val originalUserAnswers = request.userAnswers
-              val reportVersion = originalUserAnswers.get(VersionInfoPage).get.version.toString
+              val versionInfo = originalUserAnswers.get(VersionInfoPage).get
               val updatedAnswers = originalUserAnswers.setOrException(DeclarationPspPage, value)
               userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
                 declarationData(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, authorisingPsaId) match {
                   case Some(data) =>
-                    erConnector.submitReport(request.pstr, UserAnswers(data), reportVersion).flatMap { _ =>
-                      emailFuture.map { _ =>
-                        Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints))
+                    submitService.submitReport(request.pstr, UserAnswers(data).setOrException(VersionInfoPage, versionInfo)).flatMap { result =>
+                      result.header.status match {
+                        case OK =>
+                          emailFuture.map(_ => Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
+                        case NOT_FOUND =>
+                          logger.warn(s"Unable to submit declaration because there is nothing to submit (nothing in compile state)")
+                          Future.successful(Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url))
+                        case _ => throw new RuntimeException(s"Invalid response returned from submit report: ${result.header.status}")
                       }
                     }
                   case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
@@ -148,7 +160,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
     }
   }
 
-  private def declarationData(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser, optAuthorisingPsaId: Option[String]) = {
+  private def declarationData(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser, optAuthorisingPsaId: Option[String]): Option[JsObject] = {
     val psaOrPsp = loggedInUser.administratorOrPractitioner match {
       case AdministratorOrPractitioner.Administrator => "PSA"
       case AdministratorOrPractitioner.Practitioner => "PSP"

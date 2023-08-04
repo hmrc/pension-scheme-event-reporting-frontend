@@ -26,7 +26,7 @@ import models.{LoggedInUser, TaxYear, UserAnswers}
 import pages.{VersionInfoPage, Waypoints}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SubmitService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -131,7 +131,7 @@ class DeclarationController @Inject()(
     }
   }
 
-  private def declarationData(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser) = {
+  private def declarationData(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser): JsObject = {
 
     val psaOrPsp = loggedInUser.administratorOrPractitioner match {
       case AdministratorOrPractitioner.Administrator => "PSA"

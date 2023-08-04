@@ -46,6 +46,8 @@ class ReturnSubmittedController @Inject()(
     minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map { minimalDetails =>
       val schemeName = request.schemeName
 
+      println(s"\n\n request.userAnswers in return submitted page: ${request.userAnswers}\n\n")
+
       val viewOtherPensionSchemesUrl: String = request.loggedInUser.administratorOrPractitioner match {
         case Administrator => config.yourPensionSchemesUrl
         case _ => config.listPspUrl

@@ -34,6 +34,8 @@ class SubmitService @Inject()(
 
   def submitReport(pstr: String, ua: UserAnswers)
                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
+    println(s"\n\n ua.get(VersionInfoPage): ${ua.get(VersionInfoPage)}")
+
     ua.get(VersionInfoPage) match {
       case Some(VersionInfo(version, Compiled)) =>
         eventReportingConnector.submitReport(pstr, ua, version.toString).flatMap { _ =>

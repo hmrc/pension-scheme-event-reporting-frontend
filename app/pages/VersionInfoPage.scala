@@ -18,7 +18,7 @@ package pages
 
 import controllers.routes
 import models.{UserAnswers, VersionInfo}
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsPath, JsString, Writes}
 import play.api.mvc.Call
 
 case object VersionInfoPage extends QuestionPage[VersionInfo] {
