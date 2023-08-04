@@ -59,7 +59,11 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
     }
     minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map {
       minimalDetails =>
-        Ok(view(request.schemeName, request.pstr, getTaxYearFromOption(request.userAnswers).toString, minimalDetails.name, preparedForm, waypoints))
+        if (request.isReportSubmitted) {
+          Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
+        } else {
+          Ok(view(request.schemeName, request.pstr, getTaxYearFromOption(request.userAnswers).toString, minimalDetails.name, preparedForm, waypoints))
+        }
     }
   }
 
@@ -70,7 +74,8 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
           form(authorisingPsaId = authorisingPsaId)
             .bindFromRequest().fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(request.schemeName, request.pstr, getTaxYear(request.userAnswers).toString, minimalDetails.name, formWithErrors, waypoints))),
+              Future.successful(BadRequest(view(request.schemeName, request.pstr, getTaxYear(request.userAnswers).toString,
+                minimalDetails.name, formWithErrors, waypoints))),
             value => {
               val originalUserAnswers = request.userAnswers
               val updatedAnswers = originalUserAnswers.setOrException(Event20APspDeclarationPage, value)
@@ -90,8 +95,15 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
       }
   }
 
-  def declarationDataEvent20A(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser, optAuthorisingPsaId: Option[String], request: DataRequest[AnyContent]): Option[JsObject] = {
-    val optCeaseDateOrStartDateNode = (request.userAnswers.get(WhatChangePage), request.userAnswers.get(BecameDatePage), request.userAnswers.get(CeasedDatePage)) match {
+  def declarationDataEvent20A(pstr: String,
+                              taxYear: TaxYear,
+                              loggedInUser: LoggedInUser,
+                              optAuthorisingPsaId: Option[String],
+                              request: DataRequest[AnyContent]): Option[JsObject] = {
+    val optCeaseDateOrStartDateNode = (
+      request.userAnswers.get(WhatChangePage),
+      request.userAnswers.get(BecameDatePage),
+      request.userAnswers.get(CeasedDatePage)) match {
       case (Some(BecameMasterTrust), Some(becameDate), _) => Some(Json.obj("schemeMasterTrustStartDate" -> becameDate))
       case (Some(CeasedMasterTrust), _, Some(ceasedDate)) => Some(Json.obj("schemeMasterTrustCeaseDate" -> ceasedDate))
       case _ => None
