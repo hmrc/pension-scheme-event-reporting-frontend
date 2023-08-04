@@ -47,7 +47,6 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
                                          formProvider: DeclarationPspFormProvider,
                                          requireData: DataRequiredAction,
                                          submitService: SubmitService,
-                                         erConnector: EventReportingConnector,
                                          schemeDetailsConnector: SchemeDetailsConnector,
                                          emailConnector: EmailConnector,
                                          minimalConnector: MinimalConnector,
@@ -67,8 +66,6 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
     }
     minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map {
       minimalDetails =>
-        println(s"\n\n request.userAnswers: ${request.userAnswers}\n\n")
-        println(s"\n\n request.isReportSubmitted: ${request.isReportSubmitted}\n\n")
         if (request.isReportSubmitted) {
           Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
         } else {
@@ -77,7 +74,6 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
     }
   }
 
-  //noinspection ScalaStyle
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
 
@@ -98,12 +94,12 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
               Future.successful(BadRequest(view(minimalDetails.name, formWithErrors, waypoints))),
             value => {
               val originalUserAnswers = request.userAnswers
-              val versionInfo = originalUserAnswers.get(VersionInfoPage).get
               val updatedAnswers = originalUserAnswers.setOrException(DeclarationPspPage, value)
               userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
                 declarationData(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, authorisingPsaId) match {
                   case Some(data) =>
-                    submitService.submitReport(request.pstr, UserAnswers(data).setOrException(VersionInfoPage, versionInfo)).flatMap { result =>
+                    val uaWithData = UserAnswers(data, request.userAnswers.noEventTypeData)
+                    submitService.submitReport(request.pstr, uaWithData).flatMap { result =>
                       result.header.status match {
                         case OK =>
                           emailFuture.map(_ => Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))

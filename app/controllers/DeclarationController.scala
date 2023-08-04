@@ -72,7 +72,7 @@ class DeclarationController @Inject()(
         request.userAnswers.noEventTypeData
       )
 
-      def emailFuture = minimalConnector.getMinimalDetails(
+      def emailFuture: Future[EmailStatus] = minimalConnector.getMinimalDetails(
         request.loggedInUser.idName,
         request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
         val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
@@ -82,7 +82,7 @@ class DeclarationController @Inject()(
       }
 
       submitService.submitReport(request.pstr, data).flatMap { result =>
-        (result.header.status) match {
+        result.header.status match {
           case OK =>
             emailFuture.map(_ => Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
           case NOT_FOUND =>
