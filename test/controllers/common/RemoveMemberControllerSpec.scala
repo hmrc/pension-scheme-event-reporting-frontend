@@ -17,7 +17,7 @@
 package controllers.common
 
 import base.SpecBase
-import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import connectors.EventReportingConnector
 import data.SampleData.{sampleMemberJourneyDataEvent1, sampleMemberJourneyDataEvent3and4and5}
 import forms.common.RemoveMemberFormProvider
 import models.enumeration.EventType.{Event1, Event5}
