@@ -21,12 +21,13 @@ import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
 import connectors.{MinimalConnector, SchemeDetailsConnector, UserAnswersCacheConnector}
 import data.SampleData.sampleEvent20JourneyData
 import forms.DeclarationPspFormProvider
-import models.{SchemeDetails, UserAnswers}
+import models.enumeration.VersionStatus.{Compiled, Submitted}
+import models.{SchemeDetails, UserAnswers, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{DeclarationPspPage, EmptyWaypoints}
+import pages.{DeclarationPspPage, EmptyWaypoints, VersionInfoPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Results.Ok
@@ -43,7 +44,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val authorisingPsaId = Some("A1234567")
   private val formProvider = new DeclarationPspFormProvider()
   private val form = formProvider(authorisingPsaId)
-  val practitionerName = "John Smith"
+  private val practitionerName = "John Smith"
 
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
@@ -53,7 +54,13 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val mockSchemeDetails = SchemeDetails("schemeName", "87219363YN", "Open", authorisingPsaId)
   val testEmail = "test@test.com"
   val mockMinimalDetails: MinimalDetails = {
-    MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None, lastName = "Smith")), false, false)
+    MinimalDetails(
+      testEmail,
+      isPsaSuspended = false,
+      None,
+      Some(IndividualDetails(firstName = "John", None, lastName = "Smith")),
+      rlsFlag = false, deceasedFlag = false
+    )
   }
 
   private def getRoute: String = routes.DeclarationPspController.onPageLoad(waypoints).url
@@ -78,9 +85,9 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   "DeclarationPsp Controller" - {
 
-    "must return OK and the correct view for a GET" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
+    "must return OK and the correct view for a GET when when isReportSubmitted is false" in {
+      val userAnswersWithVersionInfo = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
 
       running(application) {
@@ -92,6 +99,21 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(practitionerName, form, waypoints)(request, messages(application)).toString
+      }
+    }
+
+    "must redirect to cannot resume page when isReportSubmitted is true" in {
+      val userAnswersWithVersionInfo = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.CannotResumeController.onPageLoad(waypoints).url
       }
     }
 
