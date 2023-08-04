@@ -16,6 +16,7 @@ site.signIn = Sign in
 site.govuk = GOV.UK
 site.saveAndContinue = Save and continue
 site.returnTo = Return to {0}
+site.unknown = unknown
 date.day = Day
 date.month = Month
 date.year = Year
@@ -1690,3 +1691,4 @@ eventDescription.event8 = pension commencement lump sum
 eventDescription.event8A = pension commencement lump sum
 eventDescription.event22 = annual allowance
 eventDescription.event23 = dual annual allowance
+

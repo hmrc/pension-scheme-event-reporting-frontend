@@ -41,9 +41,7 @@ class RemoveMemberController @Inject()(
                                         view: RemoveMemberView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def eventTypeMessage(eventType: EventType)(implicit messages: Messages): String = {
-    messages(s"eventDescription.event${eventType.toString}")
-  }
+  private def eventTypeMessage(eventType: EventType)(implicit messages: Messages): String = messages(s"eventDescription.event${eventType.toString}")
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
