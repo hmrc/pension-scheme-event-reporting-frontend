@@ -22,13 +22,13 @@ import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object SchemeStructureSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SchemeStructurePage).map {
       answer =>
@@ -39,13 +39,15 @@ object SchemeStructureSummary  {
           )
         )
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key     = "schemeStructure.checkYourAnswersLabel",
           value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", SchemeStructurePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("schemeStructure.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", SchemeStructurePage.changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("schemeStructure.change.hidden"))
+            )))
+          }
         )
     }
 }

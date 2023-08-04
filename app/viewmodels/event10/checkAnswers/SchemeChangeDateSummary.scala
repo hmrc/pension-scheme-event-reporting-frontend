@@ -29,7 +29,7 @@ import viewmodels.implicits._
 
 object SchemeChangeDateSummary extends Formatters {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isChangeLinkNotPresent: Boolean)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SchemeChangeDatePage).map {
       answer =>
@@ -47,7 +47,7 @@ object SchemeChangeDateSummary extends Formatters {
         SummaryListRow(
           key = dateCYALabel,
           value = ValueViewModel(dateFormatter.format(answer.schemeChangeDate)),
-          actions = if (isChangeLinkNotPresent) None else {
+          actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
               ActionItemViewModel("site.change", SchemeChangeDatePage.changeLink(waypoints, sourcePage).url)
                 .withVisuallyHiddenText(messages(dateCYAHiddenLabel))

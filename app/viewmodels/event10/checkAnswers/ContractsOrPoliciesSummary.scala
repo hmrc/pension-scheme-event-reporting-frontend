@@ -27,7 +27,7 @@ import viewmodels.implicits._
 
 object ContractsOrPoliciesSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isChangeLinkNotPresent: Boolean)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(ContractsOrPoliciesPage).map {
       answer =>
@@ -36,7 +36,7 @@ object ContractsOrPoliciesSummary {
         SummaryListRow(
           key = "contractsOrPolicies.checkYourAnswersLabel",
           value = ValueViewModel(value),
-          actions = if (isChangeLinkNotPresent) None else {
+          actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
               ActionItemViewModel("site.change", ContractsOrPoliciesPage.changeLink(waypoints, sourcePage).url)
                 .withVisuallyHiddenText(messages("contractsOrPolicies.change.hidden"))

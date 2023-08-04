@@ -63,8 +63,8 @@ class Event19CheckYourAnswersController @Inject()(
   private def buildEvent19CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     Seq(
-      countryOrTerritorySummary.row(request.userAnswers, waypoints, sourcePage),
-      DateChangeMadeSummary.row(request.userAnswers, waypoints, sourcePage)
+      countryOrTerritorySummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()),
+      DateChangeMadeSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly())
     ).flatten
   }
 }

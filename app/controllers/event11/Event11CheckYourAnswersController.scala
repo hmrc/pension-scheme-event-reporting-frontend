@@ -72,16 +72,16 @@ class Event11CheckYourAnswersController @Inject()(
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     
     val optRowUnauthPayments = if (answers.get(HasSchemeChangedRulesPage).getOrElse(false)) {
-      UnAuthPaymentsRuleChangeDateSummary.row(request.userAnswers, waypoints, sourcePage)
+      UnAuthPaymentsRuleChangeDateSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly())
     } else Nil
     val optRowInvestmentsInAssets = if (answers.get(HasSchemeChangedRulesInvestmentsInAssetsPage).getOrElse(false)) {
-      InvestmentsInAssetsRuleChangeDateSummary.row(request.userAnswers, waypoints, sourcePage)
+      InvestmentsInAssetsRuleChangeDateSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly())
     } else Nil
 
     Seq(
-      HasSchemeChangedRulesSummary.row(request.userAnswers, waypoints, sourcePage) ++
+      HasSchemeChangedRulesSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()) ++
         optRowUnauthPayments ++
-        HasSchemeChangedRulesInvestmentsInAssetsSummary.row(request.userAnswers, waypoints, sourcePage) ++
+        HasSchemeChangedRulesInvestmentsInAssetsSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()) ++
         optRowInvestmentsInAssets
     ).flatten
   }

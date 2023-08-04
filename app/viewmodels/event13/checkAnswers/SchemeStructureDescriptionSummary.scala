@@ -14,31 +14,33 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event13.checkAnswers
 
 import models.UserAnswers
 import pages.{CheckAnswersPage, Waypoints}
 import pages.event13.SchemeStructureDescriptionPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object SchemeStructureDescriptionSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SchemeStructureDescriptionPage).map {
       answer =>
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key     = "event13.schemeStructureDescription.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", SchemeStructureDescriptionPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("event13.schemeStructureDescription.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", SchemeStructureDescriptionPage.changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("event13.schemeStructureDescription.change.hidden"))
+            )))
+          }
         )
     }
 }

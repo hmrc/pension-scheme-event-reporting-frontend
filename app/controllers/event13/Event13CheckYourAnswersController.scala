@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.{ChangeDateSummary, SchemeStructureDescriptionSummary}
+import viewmodels.event13.checkAnswers.{ChangeDateSummary, SchemeStructureDescriptionSummary}
 import viewmodels.event13.checkAnswers.SchemeStructureSummary
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
@@ -63,9 +63,9 @@ class Event13CheckYourAnswersController @Inject()(
   private def buildEvent13CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     Seq(
-      SchemeStructureSummary.row(request.userAnswers, waypoints, sourcePage),
-      SchemeStructureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage),
-      ChangeDateSummary.row(request.userAnswers, waypoints, sourcePage)
+      SchemeStructureSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()),
+      SchemeStructureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()),
+      ChangeDateSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly())
     ).flatten
   }
 }

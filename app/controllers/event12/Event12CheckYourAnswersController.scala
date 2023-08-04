@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.{DateOfChangeSummary, HasSchemeChangedRulesSummary}
+import viewmodels.event12.checkAnswers.{DateOfChangeSummary, HasSchemeChangedRulesSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -61,7 +61,7 @@ class Event12CheckYourAnswersController @Inject()(
 
   private def buildEvent12CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    HasSchemeChangedRulesSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      DateOfChangeSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+    HasSchemeChangedRulesSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()).toSeq ++
+      DateOfChangeSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()).toSeq
   }
 }

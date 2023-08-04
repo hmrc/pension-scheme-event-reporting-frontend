@@ -183,14 +183,15 @@ class EventSummaryController @Inject()(
            EventType.Event23 => Some("#")
       case EventType.Event7 => Some("#")
       case EventType.Event10 => Some(controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
-      case EventType.Event11 => Some("#")
-      case EventType.Event12 => Some("#")
-      case EventType.Event13 => Some("#")
-      case EventType.Event14 => Some("#")
-      case EventType.Event18 => Some("#")
-      case EventType.Event19 => Some("#")
-      case EventType.Event20 => Some("#")
-      case EventType.WindUp =>  Some("#")
+      case EventType.Event11 => Some(controllers.event11.routes.Event11CheckYourAnswersController.onPageLoad.url)
+      case EventType.Event12 => Some(controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
+      case EventType.Event13 => Some(controllers.event13.routes.Event13CheckYourAnswersController.onPageLoad.url)
+      case EventType.Event14 => Some(controllers.event14.routes.Event14CheckYourAnswersController.onPageLoad().url)
+      case EventType.Event18 => Some("#") //todo
+      case EventType.Event19 => Some(controllers.event19.routes.Event19CheckYourAnswersController.onPageLoad.url)
+      case EventType.Event20 => Some(controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
+//      case EventType.Event20A => Some(controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad.url)
+      case EventType.WindUp =>  Some(controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onPageLoad().url)
       case _ =>
         logger.error(s"Missing event type $eventType")
         None

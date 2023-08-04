@@ -65,11 +65,11 @@ class Event20CheckYourAnswersController @Inject()(
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
 
     val dateRow = answers.get(WhatChangePage) match {
-      case Some(BecameOccupationalScheme) => BecameDateSummary.row(request.userAnswers, waypoints, sourcePage)
-      case Some(CeasedOccupationalScheme) => CeasedDateSummary.row(request.userAnswers, waypoints, sourcePage)
+      case Some(BecameOccupationalScheme) => BecameDateSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly())
+      case Some(CeasedOccupationalScheme) => CeasedDateSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly())
       case _ => Nil
     }
 
-    Seq(WhatChangeSummary.row(request.userAnswers, waypoints, sourcePage) ++ dateRow).flatten
+    Seq(WhatChangeSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()) ++ dateRow).flatten
   }
 }

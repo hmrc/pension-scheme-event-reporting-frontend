@@ -62,5 +62,5 @@ class EventWindUpCheckYourAnswersController @Inject()(
     }
 
     private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
-      SchemeWindUpDateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      SchemeWindUpDateSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()).toSeq
 }

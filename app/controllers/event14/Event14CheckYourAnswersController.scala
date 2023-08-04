@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.HowManySchemeMembersSummary
+import viewmodels.event14.checkAnswers.HowManySchemeMembersSummary
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -62,6 +62,6 @@ class Event14CheckYourAnswersController @Inject()(
 
   private def buildEvent14CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-      HowManySchemeMembersSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      HowManySchemeMembersSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()).toSeq
   }
 }
