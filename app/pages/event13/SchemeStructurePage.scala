@@ -19,7 +19,7 @@ package pages.event13
 import controllers.event13.routes
 import models.UserAnswers
 import models.event13.SchemeStructure
-import pages.{IndexPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{JourneyRecoveryPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -38,7 +38,7 @@ case object SchemeStructurePage extends QuestionPage[SchemeStructure] {
       case Some(SchemeStructure.Group) => ChangeDatePage
       case Some(SchemeStructure.Corporate) => ChangeDatePage
       case Some(SchemeStructure.Other) => SchemeStructureDescriptionPage
-      case _ => IndexPage
+      case _ => JourneyRecoveryPage
     }
   }
 

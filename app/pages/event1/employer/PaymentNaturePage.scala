@@ -23,7 +23,7 @@ import models.enumeration.EventType
 import models.event1.employer.PaymentNature
 import models.event1.employer.PaymentNature.{CourtOrder, EmployerOther, LoansExceeding50PercentOfFundValue, ResidentialProperty, TangibleMoveableProperty}
 import pages.common.MembersOrEmployersPage
-import pages.{IndexPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{JourneyRecoveryPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -43,7 +43,7 @@ case class PaymentNaturePage(index: Int) extends QuestionPage[PaymentNature] {
       case Some(TangibleMoveableProperty) => EmployerTangibleMoveablePropertyPage(index)
       case Some(CourtOrder) => UnauthorisedPaymentRecipientNamePage(index)
       case Some(EmployerOther) => EmployerPaymentNatureDescriptionPage(index)
-      case _ => IndexPage
+      case _ => JourneyRecoveryPage
     }
   }
 
@@ -54,7 +54,7 @@ case class PaymentNaturePage(index: Int) extends QuestionPage[PaymentNature] {
       case Some(TangibleMoveableProperty) => EmployerTangibleMoveablePropertyPage(index)
       case Some(CourtOrder) => UnauthorisedPaymentRecipientNamePage(index)
       case Some(EmployerOther) => EmployerPaymentNatureDescriptionPage(index)
-      case _ => IndexPage
+      case _ => JourneyRecoveryPage
     }
   }
 }

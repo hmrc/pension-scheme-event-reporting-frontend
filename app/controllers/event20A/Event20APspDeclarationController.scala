@@ -81,7 +81,7 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
                     eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion).map { _ =>
                       Redirect(Event20APspDeclarationPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
                     }
-                  case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
+                  case _ => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None).url))
                 }
               }
             }

@@ -192,7 +192,6 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
         val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val userAnswerUpdated = UserAnswers().setOrException(WantToSubmitPage, true)
         status(result) mustEqual SEE_OTHER
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
         redirectLocation(result).value mustEqual routes.CannotSubmitController.onPageLoad(waypoints).url

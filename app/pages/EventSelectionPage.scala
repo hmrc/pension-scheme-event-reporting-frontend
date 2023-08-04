@@ -67,7 +67,7 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
       case Some(Event22) => ManualOrUploadPage(Event22, answers.countAll(MembersPage(Event22)))
       case Some(Event23) => ManualOrUploadPage(Event23, answers.countAll(MembersPage(Event23)))
       case Some(WindUp) => SchemeWindUpDatePage
-      case _ => IndexPage
+      case _ => JourneyRecoveryPage
     }
   }
 }

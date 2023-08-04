@@ -91,8 +91,7 @@ class AuthenticatedIdentifierAction @Inject()(
 
     withAuthInfo {
       case (Some(_), _, None) =>
-        logger.warn("No PSTR information is available")
-        Future.successful(Redirect(config.yourPensionSchemesUrl))
+        Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None)))
       case (Some(externalId), enrolments, Some(er)) if bothPsaAndPspEnrolmentsPresent(enrolments) =>
         actionForBothEnrolments(er, externalId, enrolments, request, block)
       case (Some(externalId), enrolments, Some(er)) if enrolments.getEnrolment(enrolmentPSA).isDefined =>
