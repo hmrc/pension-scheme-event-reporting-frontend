@@ -22,13 +22,14 @@ import models.event10.BecomeOrCeaseScheme
 import pages.event10.{BecomeOrCeaseSchemePage, SchemeChangeDatePage}
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object SchemeChangeDateSummary extends Formatters {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isChangeLinkNotPresent: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SchemeChangeDatePage).map {
       answer =>
@@ -42,13 +43,16 @@ object SchemeChangeDateSummary extends Formatters {
         val dateCYALabel = if (becomeOrCeased == becameRegulatedScheme) "became.schemeChangeDate.checkYourAnswersLabel" else "ceased.schemeChangeDate.checkYourAnswersLabel"
         val dateCYAHiddenLabel = if (becomeOrCeased == becameRegulatedScheme) "became.schemeChangeDate.change.hidden" else "ceased.schemeChangeDate.change.hidden"
 
-        SummaryListRowViewModel(
+
+        SummaryListRow(
           key = dateCYALabel,
           value = ValueViewModel(dateFormatter.format(answer.schemeChangeDate)),
-          actions = Seq(
-            ActionItemViewModel("site.change", SchemeChangeDatePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages(dateCYAHiddenLabel))
-          )
+          actions = if (isChangeLinkNotPresent) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", SchemeChangeDatePage.changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages(dateCYAHiddenLabel))
+            )))
+          }
         )
     }
 }

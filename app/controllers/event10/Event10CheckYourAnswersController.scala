@@ -60,9 +60,9 @@ class Event10CheckYourAnswersController @Inject()(
 
   private def buildEvent10CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    def isChangeLinkPresent = request.readOnly()
-    BecomeOrCeaseSchemeSummary.row(request.userAnswers, waypoints, sourcePage, isChangeLinkPresent).toSeq ++
-      SchemeChangeDateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      ContractsOrPoliciesSummary.row(request.userAnswers, waypoints, sourcePage)
+
+    BecomeOrCeaseSchemeSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()).toSeq ++
+      SchemeChangeDateSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()).toSeq ++
+      ContractsOrPoliciesSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly())
   }
 }

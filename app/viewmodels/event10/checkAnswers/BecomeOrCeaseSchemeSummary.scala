@@ -22,7 +22,7 @@ import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, SummaryListRow}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, SummaryListRow}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
@@ -39,16 +39,16 @@ object BecomeOrCeaseSchemeSummary {
           )
         )
 
-        if (isChangeLinkNotPresent) SummaryListRow("becomeOrCeaseScheme.checkYourAnswersLabel", value) else {
-          SummaryListRowViewModel(
-            key = "becomeOrCeaseScheme.checkYourAnswersLabel",
-            value = value,
-            actions = Seq(
-                ActionItemViewModel("site.change", BecomeOrCeaseSchemePage.changeLink(waypoints, sourcePage).url)
-                  .withVisuallyHiddenText(messages("becomeOrCeaseScheme.change.hidden"))
-              )
-          )
-        }
+        SummaryListRow(
+          key = "becomeOrCeaseScheme.checkYourAnswersLabel",
+          value = value,
+          actions = if (isChangeLinkNotPresent) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", BecomeOrCeaseSchemePage.changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("becomeOrCeaseScheme.change.hidden"))
+            )))
+          }
+        )
 
     }
 }
