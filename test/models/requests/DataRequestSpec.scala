@@ -17,19 +17,14 @@
 package models.requests
 
 import data.SampleData.emptyUserAnswersWithTaxYear
-import models.{EROverview, EROverviewVersion, LoggedInUser, TaxYear, UserAnswers, VersionInfo}
-import models.amend.VersionsWithSubmitter
 import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.enumeration.VersionStatus.Submitted
-import models.event13.SchemeStructure
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
+import models.{EROverview, EROverviewVersion, LoggedInUser, TaxYear, VersionInfo}
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.{EventReportingOverviewPage, VersionInfoPage}
-import play.api.libs.json.{JsError, JsString, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 
@@ -39,7 +34,7 @@ class DataRequestSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
 
   "DataRequest" - {
 
-    val t = Seq(EROverview(
+    val erOverviewSeq = Seq(EROverview(
       LocalDate.of(2022, 4, 6),
       LocalDate.of(2023, 4, 5),
       TaxYear("2022"),
@@ -65,7 +60,7 @@ class DataRequestSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
     "must return read only if version selected is less than current report version" in {
 
       val uA = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
-      .setOrException(EventReportingOverviewPage, t)
+      .setOrException(EventReportingOverviewPage, erOverviewSeq)
 
       val dataReqObj = DataRequest("pstr", "schemeName", "url", FakeRequest(Call("GET", "/")), LoggedInUser("", Administrator, ""), uA)
 
@@ -75,7 +70,7 @@ class DataRequestSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
     "must return false if version selected is equal to current report version" in {
 
       val uA = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(3, Submitted))
-      .setOrException(EventReportingOverviewPage, t)
+      .setOrException(EventReportingOverviewPage, erOverviewSeq)
 
       val dataReqObj = DataRequest("pstr", "schemeName", "url", FakeRequest(Call("GET", "/")), LoggedInUser("", Administrator, ""), uA)
 
