@@ -72,8 +72,9 @@ class ReturnHistoryController @Inject()(
             ))
           )
         }
+        val schemeName = request.schemeName
         val taxYearRange = (currentTaxYear.toString, (currentTaxYear + 1).toString)
-        Ok(view(seqRetHistorySummary, taxYearRange._1, taxYearRange._2))
+        Ok(view(seqRetHistorySummary, taxYearRange._1, taxYearRange._2, schemeName))
       }
   }
 
