@@ -17,18 +17,57 @@
 package controllers.eventWindUp
 
 import base.SpecBase
+import controllers.event19.Event19CheckYourAnswersControllerSpec.expectedMemberSummaryListRowsEvent19ViewOnly
+import data.SampleData.sampleJourneyData19CountryOrTerritory
+import models.enumeration.VersionStatus.Submitted
+import models.{EROverview, EROverviewVersion, TaxYear, VersionInfo}
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
+import play.api.inject
+import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.govukfrontend.views.Aliases
+import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryList, SummaryListRow}
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
+
+import java.time.LocalDate
 
 class EventWindUpCheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
   "Check Your Answers Controller" - {
 
+    val erOverviewSeq = Seq(EROverview(
+      LocalDate.of(2022, 4, 6),
+      LocalDate.of(2023, 4, 5),
+      TaxYear("2022"),
+      tpssReportPresent = true,
+      Some(EROverviewVersion(
+        3,
+        submittedVersionAvailable = true,
+        compiledVersionAvailable = false
+      ))
+    ),
+      EROverview(
+        LocalDate.of(2023, 4, 6),
+        LocalDate.of(2024, 4, 5),
+        TaxYear("2023"),
+        tpssReportPresent = true,
+        Some(EROverviewVersion(
+          2,
+          submittedVersionAvailable = true,
+          compiledVersionAvailable = false
+        ))
+      ))
+
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+        .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onPageLoad().url)
