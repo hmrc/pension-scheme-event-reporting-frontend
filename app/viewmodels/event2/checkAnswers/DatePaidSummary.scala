@@ -38,7 +38,7 @@ object DatePaidSummary {
     answers.get(DatePaidPage(index, Event2)).map {
       answer =>
         val beneficiaryName = answers.get(MembersDetailsPage(Event2, index, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY))
-          .map { g => MembersDetails(g.firstName, g.lastName, g.nino).fullName }
+          .map { membersDetails => MembersDetails(membersDetails.firstName, membersDetails.lastName, membersDetails.nino).fullName }
           .getOrElse(messages("site.unknown"))
         val amountPaidHeadingMessage: String = Message("datePaid.event2.checkYourAnswersLabel", beneficiaryName)
         val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
