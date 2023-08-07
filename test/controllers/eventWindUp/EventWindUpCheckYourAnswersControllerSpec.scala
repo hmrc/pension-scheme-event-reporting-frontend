@@ -17,21 +17,11 @@
 package controllers.eventWindUp
 
 import base.SpecBase
-import controllers.event19.Event19CheckYourAnswersControllerSpec.expectedMemberSummaryListRowsEvent19ViewOnly
-import data.SampleData.sampleJourneyData19CountryOrTerritory
 import models.enumeration.VersionStatus.Submitted
 import models.{EROverview, EROverviewVersion, TaxYear, VersionInfo}
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
-import play.api.inject
-import play.api.inject.guice.GuiceableModule
+import pages.{EventReportingOverviewPage, VersionInfoPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.govukfrontend.views.Aliases
-import uk.gov.hmrc.govukfrontend.views.Aliases.{SummaryList, SummaryListRow}
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
