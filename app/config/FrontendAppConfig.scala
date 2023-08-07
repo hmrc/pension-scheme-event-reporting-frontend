@@ -22,6 +22,7 @@ import models.enumeration.EventType.toRoute
 import models.enumeration.{AdministratorOrPractitioner, EventType}
 import play.api.Configuration
 import play.api.i18n.Lang
+import uk.gov.hmrc.domain.{PsaId, PspId}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
@@ -59,6 +60,16 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   def youNeedToRegisterUrl: String = loadConfig("urls.youNeedToRegisterPage")
 
   def yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
+
+  def schemeDashboardUrl(administratorOrPractitioner: AdministratorOrPractitioner): String =
+    administratorOrPractitioner match {
+      case AdministratorOrPractitioner.Administrator => schemeSummaryPsaUrl
+      case AdministratorOrPractitioner.Practitioner => schemeSummaryPspUrl
+      case _ => schemeSummaryPsaUrl
+    }
+
+  private lazy val schemeSummaryPsaUrl: String = loadConfig("urls.schemeSummaryPsa")
+  private lazy val schemeSummaryPspUrl: String = loadConfig("urls.schemeSummaryPsp")
 
   def listPspUrl: String = loadConfig("urls.listPsp")
 
