@@ -45,7 +45,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
                                          formProvider: DeclarationPspFormProvider,
                                          requireData: DataRequiredAction,
                                          erConnector: EventReportingConnector,
-                                         schemeDetailsConnector: SchemeDetailsConnector,
+                                         schemeDetailsConnector: SchemeConnector,
                                          emailConnector: EmailConnector,
                                          minimalConnector: MinimalConnector,
                                          auditService: AuditService,

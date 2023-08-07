@@ -17,7 +17,7 @@
 package controllers.eventWindUp
 
 import base.SpecBase
-import connectors.UserAnswersCacheConnector
+import connectors.{SchemeConnector, UserAnswersCacheConnector}
 import forms.eventWindUp.SchemeWindUpDateFormProvider
 import helpers.DateHelper
 import models.UserAnswers
@@ -40,19 +40,20 @@ import scala.concurrent.Future
 class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
+  private val openDate = LocalDate.of(2022, 5, 1)
 
-  private val formProvider = new SchemeWindUpDateFormProvider()
-  private val form = formProvider(2022)
+  private val formProvider = new SchemeWindUpDateFormProvider
+  private val form = formProvider(2022, openDate)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val mockSchemeConnector = mock[SchemeConnector]
   private val mockTaxYear = mock[DateHelper]
-
   private def getRoute: String = routes.SchemeWindUpDateController.onPageLoad(waypoints).url
-
   private def postRoute: String = routes.SchemeWindUpDateController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
+    bind[SchemeConnector].toInstance(mockSchemeConnector),
     bind[DateHelper].toInstance(mockTaxYear)
   )
 
@@ -61,15 +62,17 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockUserAnswersCacheConnector)
+    reset(mockSchemeConnector)
     when(mockTaxYear.now).thenReturn(validAnswer)
   }
 
   "SchemeWindUpDate Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      when(mockSchemeConnector.getOpenDate(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(openDate))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
-
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
@@ -83,8 +86,11 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
+      when(mockSchemeConnector.getOpenDate(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(openDate))
+
       val userAnswers = emptyUserAnswersWithTaxYear.set(SchemeWindUpDatePage, validAnswer).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers), extraModules).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -102,6 +108,8 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
       val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any()))
         .thenReturn(Future.successful(()))
+      when(mockSchemeConnector.getOpenDate(any(), any(), any())(any(), any()))
+              .thenReturn(Future.successful(openDate))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
@@ -127,6 +135,8 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
     "must return bad request when invalid data is submitted" in {
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
+      when(mockSchemeConnector.getOpenDate(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(openDate))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)

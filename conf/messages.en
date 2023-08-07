@@ -184,6 +184,7 @@ schemeWindUpDate.error.outside.taxYear = Date must be between 6 April {0} and 5 
 schemeWindUpDate.error.required = The date must include a {0}
 schemeWindUpDate.error.invalid = Enter a real date
 schemeWindUpDate.change.hidden = When was the scheme wound up?
+schemeWindUpDate.error.beforeOpenDate = You have attempted to wind up the scheme before it was created. The date must come on or after {0}
 
 event18Confirmation.title = Scheme chargeable payment
 event18Confirmation.heading = Scheme chargeable payment
