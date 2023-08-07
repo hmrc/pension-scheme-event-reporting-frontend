@@ -62,7 +62,6 @@ class EventSummaryController @Inject()(
               actions = Some(Actions(
                 items = if(request.readOnly()) { Seq(
                   viewOnlyLinkForEvent(eventSummary.eventType).map { link =>
-                    println("\n\n\neven type " + eventSummary.eventType)
                     ActionItem(
                       content = Text(Message("site.view")),
                       href = link

@@ -21,26 +21,24 @@ import models.UserAnswers
 import pages.event20A.CeasedDatePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object CeasedDateSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(CeasedDatePage).map {
       answer =>
 
-        SummaryListRow(
+        SummaryListRowViewModel(
           key     = "ceasedDateMasterTrust.checkYourAnswersLabel",
           value   = ValueViewModel(answer.format(dateFormatter)),
-          actions = if (isReadOnly) None else {
-            Some(Actions(items = Seq(
-              ActionItemViewModel("site.change", CeasedDatePage.changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("ceasedDateMasterTrust.change.hidden"))
-            )))
-          }
+          actions = Seq(
+            ActionItemViewModel("site.change", CeasedDatePage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("ceasedDateMasterTrust.change.hidden"))
+          )
         )
     }
 }

@@ -21,26 +21,24 @@ import models.UserAnswers
 import pages.event20A.BecameDatePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object BecameDateSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(BecameDatePage).map {
       answer =>
 
-        SummaryListRow(
+        SummaryListRowViewModel(
           key     = "becameDateMasterTrust.checkYourAnswersLabel",
           value   = ValueViewModel(answer.format(dateFormatter)),
-          actions = if (isReadOnly) None else {
-            Some(Actions(items = Seq(
-              ActionItemViewModel("site.change", BecameDatePage.changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("becameDateMasterTrust.change.hidden"))
-            )))
-          }
+          actions = Seq(
+            ActionItemViewModel("site.change", BecameDatePage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("becameDateMasterTrust.change.hidden"))
+          )
         )
     }
 }

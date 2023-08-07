@@ -22,13 +22,13 @@ import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object WhatChangeSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(WhatChangePage).map {
       answer =>
@@ -39,15 +39,13 @@ object WhatChangeSummary  {
           )
         )
 
-        SummaryListRow(
+        SummaryListRowViewModel(
           key     = "whatChange.checkYourAnswersLabel",
           value   = value,
-          actions = if (isReadOnly) None else {
-            Some(Actions(items = Seq(
-              ActionItemViewModel("site.change", WhatChangePage.changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("whatChange.change.hidden"))
-            )))
-          }
+          actions = Seq(
+            ActionItemViewModel("site.change", WhatChangePage.changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("whatChange.change.hidden"))
+          )
         )
     }
 }
