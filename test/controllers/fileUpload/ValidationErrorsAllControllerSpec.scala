@@ -19,7 +19,7 @@ package controllers.fileUpload
 import base.SpecBase
 import connectors.ParsingAndValidationOutcomeCacheConnector
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23, Event6}
+import models.enumeration.EventType.{Event1, Event22, Event23, Event6}
 import models.fileUpload.ParsingAndValidationOutcome
 import models.fileUpload.ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10
 import org.mockito.ArgumentMatchers.any
@@ -40,7 +40,7 @@ import scala.concurrent.Future
 class ValidationErrorsAllControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockParsingAndValidationOutcomeCacheConnector = mock[ParsingAndValidationOutcomeCacheConnector]
-  private val seqOfEvents = Seq(Event6, Event22, Event23)
+  private val seqOfEvents = Seq(Event1, Event6, Event22, Event23)
 
   private val expectedOutcome = ParsingAndValidationOutcome(
     status = ValidationErrorsLessThan10,
@@ -64,7 +64,7 @@ class ValidationErrorsAllControllerSpec extends SpecBase with BeforeAndAfterEach
     bind[ParsingAndValidationOutcomeCacheConnector].toInstance(mockParsingAndValidationOutcomeCacheConnector)
   )
 
-  private def returnUrl(eventType: EventType) = s"/manage-pension-scheme-event-report/new-report/event-${eventType.toString}-upload"
+  private def returnUrl(eventType: EventType) = s"/manage-pension-scheme-event-report/report/event-${eventType.toString}-upload"
 
   private def fileDownloadInstructionLink(eventType: EventType) = s"/manage-pension-scheme-event-report/event-${eventType.toString}-upload-format-instructions"
 

@@ -17,7 +17,7 @@
 package helpers.fileUpload
 
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event6}
+import models.enumeration.EventType.{Event1, Event22, Event6}
 import models.fileUpload.FileUploadHeaders._
 import services.fileUpload.ValidationError
 
@@ -37,8 +37,41 @@ object FileUploadGenericErrorReporter {
   )
 
 
+  //noinspection ScalaStyle
   private def eventHeader(eventType: EventType) = {
     eventType match {
+      case Event1 =>
+        commonColumnAndErrorMessageMap ++
+          Map(
+            Event1FieldNames.memberOrEmployer -> "fileUpload.memberOrEmployer.generic.error",
+            Event1FieldNames.doYouHoldSignedMandate -> "fileUpload.doYouHoldSignedMandate.generic.error",
+            Event1FieldNames.valueOfUnauthorisedPayment -> "fileUpload.valueOfUnauthorisedPayment.generic.error",
+            Event1FieldNames.schemeUnAuthPaySurcharge -> "fileUpload.schemeUnAuthPaySurcharge.generic.error",
+            Event1FieldNames.natureOfPayment -> "fileUpload.natureOfPayment.generic.error",
+            Event1FieldNames.benefitDescription -> "fileUpload.benefitDescription.generic.error",
+            Event1FieldNames.transferMadeTo -> "fileUpload.transferMadeTo.generic.error",
+            Event1FieldNames.schemeDetails -> "fileUpload.schemeDetails.generic.error",
+            Event1FieldNames.schemeName -> "fileUpload.schemeName.generic.error",
+            Event1FieldNames.schemeReference -> "fileUpload.schemeReference.generic.error",
+            Event1FieldNames.overpaymentReason -> "fileUpload.overpaymentReason.generic.error",
+            Event1FieldNames.addressLine1 -> "fileUpload.addressLine1.generic.error",
+            Event1FieldNames.addressLine2 -> "fileUpload.addressLine2.generic.error",
+            Event1FieldNames.addressLine3 -> "fileUpload.addressLine3.generic.error",
+            Event1FieldNames.addressLine4 -> "fileUpload.addressLine4.generic.error",
+            Event1FieldNames.postCode -> "fileUpload.postCode.generic.error",
+            Event1FieldNames.country -> "fileUpload.country.generic.error",
+            Event1FieldNames.tangibleDescription -> "fileUpload.tangibleDescription.generic.error",
+            Event1FieldNames.courtNameOfPersonOrOrg -> "fileUpload.courtNameOfPersonOrOrg.generic.error",
+            Event1FieldNames.otherDescription -> "fileUpload.otherDescription.generic.error",
+            Event1FieldNames.errorDescription -> "fileUpload.errorDescription.generic.error",
+            Event1FieldNames.earlyDescription -> "fileUpload.earlyDescription.generic.error",
+            Event1FieldNames.companyOrOrgName -> "fileUpload.companyOrOrgName.generic.error",
+            Event1FieldNames.companyNo -> "fileUpload.companyNo.generic.error",
+            Event1FieldNames.loanAmount -> "fileUpload.loanAmount.generic.error",
+            Event1FieldNames.valueOfFund -> "fileUpload.valueOfFund.generic.error",
+            Event1FieldNames.paymentAmount -> "fileUpload.paymentAmount.generic.error",
+            Event1FieldNames.paymentDate -> "fileUpload.paymentDate.generic.error"
+          )
       case Event6 =>
         commonColumnAndErrorMessageMap ++
           Map(
@@ -64,6 +97,7 @@ object FileUploadGenericErrorReporter {
   }
 
   private def getColumnsAndErrorMap(eventType: EventType): ColumnAndErrorMap = eventType match {
+    case EventType.Event1 => eventHeader(eventType)
     case EventType.Event6 => eventHeader(eventType)
     case EventType.Event22 => eventHeader(eventType)
     case EventType.Event23 => eventHeader(eventType)

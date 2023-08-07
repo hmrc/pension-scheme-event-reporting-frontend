@@ -19,13 +19,13 @@ package forms.eventWindUp
 import forms.mappings.Mappings
 import models.TaxYearValidationDetail
 import play.api.data.Form
-
+import utils.DateHelper.formatDateDMY
 import java.time.LocalDate
 import javax.inject.Inject
 
 class SchemeWindUpDateFormProvider @Inject() extends Mappings {
 
-  def apply(taxYear: Int): Form[LocalDate] =
+  def apply(taxYear: Int, openDate: LocalDate): Form[LocalDate] =
     Form(
       "value" -> localDate(
         invalidKey = "schemeWindUpDate.error.invalid",
@@ -36,6 +36,10 @@ class SchemeWindUpDateFormProvider @Inject() extends Mappings {
           invalidKey = "schemeWindUpDate.error.outside.taxYear",
           taxYear = taxYear
         ))
+      ).verifying(
+        isNotBeforeOpenDate(openDate, "schemeWindUpDate.error.beforeOpenDate", formatDateDMY(openDate))
       )
+
+
     )
 }

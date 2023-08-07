@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package forms.event1
+@this(
+        layout: templates.Layout,
+        govukButton: GovukButton
+)
 
-import forms.mappings.Mappings
-import play.api.data.Form
+@(returnUrl: String)(implicit request: Request[_], messages: Messages)
 
-import javax.inject.Inject
+@layout(pageTitle = titleNoForm(messages("cannotSubmitEvents.title"))) {
 
-class ValueOfUnauthorisedPaymentFormProvider @Inject() extends Mappings {
+    <h1 class="govuk-heading-xl">@messages("cannotSubmitEvents.heading")</h1>
+    <p class="govuk-body">@messages("cannotSubmitEvents.p1")</p>
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("valueOfUnauthorisedPayment.error.required", invalidKey = "valueOfUnauthorisedPayment.error.format")
-    )
+
+    <p class="govuk-body">
+        @govukButton(
+        ButtonViewModel(messages("site.returnTo", "summary page"))
+        .asLink(returnUrl)
+        .withAttribute(("id", "submit"))
+        )
+    </p>
 }

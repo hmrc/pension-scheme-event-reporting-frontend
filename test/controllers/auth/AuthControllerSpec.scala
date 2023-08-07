@@ -34,9 +34,6 @@ import java.net.URLEncoder
 import scala.concurrent.Future
 
 class AuthControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
-
-  // TODO: Amend once auth sorted
-
   private val mockSessionDataCacheConnector = mock[SessionDataCacheConnector]
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 

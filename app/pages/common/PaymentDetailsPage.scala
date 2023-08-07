@@ -24,7 +24,7 @@ import models.enumeration.EventType.{Event3, Event4, Event5}
 import pages.event3.Event3CheckYourAnswersPage
 import pages.event4.Event4CheckYourAnswersPage
 import pages.event5.Event5CheckYourAnswersPage
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{JourneyRecoveryPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -41,7 +41,7 @@ case class PaymentDetailsPage(eventType: EventType, index: Int) extends Question
       case Event3 => Event3CheckYourAnswersPage(index)
       case Event4 => Event4CheckYourAnswersPage(index)
       case Event5 => Event5CheckYourAnswersPage(index)
-      case _ => IndexPage
+      case _ => JourneyRecoveryPage
     }
   }
 }

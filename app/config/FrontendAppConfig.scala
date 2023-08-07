@@ -60,6 +60,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   def yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
 
+  def listPspUrl: String = loadConfig("urls.listPsp")
+
   def manageOverviewDashboardUrl: String = loadConfig("urls.manageOverviewDashboard")
 
   def successEndPointTarget(eventType: EventType): String = loadConfig("upscan.success-endpoint").format(toRoute(eventType))
@@ -82,10 +84,13 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
   lazy val minimumYear: Int = configuration.get[Int]("minimumYear")
 
+  lazy val compileDelayInSeconds: Int = configuration.get[Int]("compileDelayInSeconds")
+
   lazy val minimalDetailsUrl: String = s"$pensionsAdministratorUrl${configuration.get[String](path = "urls.minimalDetails")}"
   lazy val parsingAndValidationUrl: String = s"$eventReportingUrl${configuration.get[String](path = "urls.parsingAndValidation")}"
   lazy val schemeDetailsUrl: String = s"$pensionSchemeUrl${configuration.get[String](path = "urls.schemeDetails")}"
   lazy val pspSchemeDetailsUrl: String = s"$pensionSchemeUrl${configuration.get[String](path = "urls.pspSchemeDetails")}"
+  lazy val openDateUrl: String = s"$pensionSchemeUrl${configuration.get[String](path = "urls.openDate")}"
 
   lazy val emailApiUrl: String = servicesConfig.baseUrl("email")
   lazy val emailSendForce: Boolean = configuration.getOptional[Boolean]("email.force").getOrElse(false)
@@ -110,6 +115,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
       )
   }"
 
+  lazy val validEvent1Header: String = configuration.get[String]("validEvent1Header")
   lazy val validEvent6Header: String = configuration.get[String]("validEvent6Header")
   lazy val validEvent22Header: String = configuration.get[String]("validEvent22Header")
   lazy val validEvent23Header: String = configuration.get[String]("validEvent23Header")

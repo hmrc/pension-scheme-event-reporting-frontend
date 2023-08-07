@@ -15,15 +15,12 @@
  */
 
 package pages
-import controllers.routes
-import models.UserAnswers
-import play.api.mvc.Call
 
-object IndexPage extends Page {
+import play.api.mvc.Call
+import controllers.routes
+
+case object CannotSubmitPage extends Page {
 
   override def route(waypoints: Waypoints): Call =
-    routes.IndexController.onPageLoad
-
-  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    IndexPage
+    routes.CannotSubmitController.onPageLoad(waypoints)
 }

@@ -17,6 +17,7 @@
 package services
 
 import com.google.inject.Inject
+import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.enumeration.EventType
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
@@ -28,7 +29,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CompileService @Inject()(
                                 eventReportingConnector: EventReportingConnector,
-                                userAnswersCacheConnector: UserAnswersCacheConnector
+                                userAnswersCacheConnector: UserAnswersCacheConnector,
+                                appConfig: FrontendAppConfig
                               ) {
 
 
@@ -63,9 +65,8 @@ class CompileService @Inject()(
   }
 
 
-
   def compileEvent(eventType: EventType, pstr: String, userAnswers: UserAnswers, delete: Boolean = false)(implicit ec: ExecutionContext,
-                                                                                 headerCarrier: HeaderCarrier): Future[Unit] = {
+                                                                                                          headerCarrier: HeaderCarrier): Future[Unit] = {
 
     def doCompile(currentVersionInfo: VersionInfo, newVersionInfo: VersionInfo): Future[Unit] = {
 
@@ -81,9 +82,15 @@ class CompileService @Inject()(
             .setOrException(EventReportingOverviewPage, seqErOverview, nonEventTypeData = true)
           case _ => uaNonEventTypeVersionUpdated
         }
-        userAnswersCacheConnector.save(pstr, updatedUA).map { _ =>
-          eventReportingConnector
+        userAnswersCacheConnector.save(pstr, updatedUA).flatMap { _ =>
+          val response = eventReportingConnector
             .compileEvent(pstr, userAnswers.eventDataIdentifier(eventType, Some(newVersionInfo)), currentVersionInfo.version, delete)
+          response.map { _ =>
+            appConfig.compileDelayInSeconds match {
+              case v if v > 0 => Thread.sleep(appConfig.compileDelayInSeconds * 1000)
+              case _ => (): Unit
+            }
+          }
         }
       }
     }

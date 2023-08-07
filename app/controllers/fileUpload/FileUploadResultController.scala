@@ -26,7 +26,7 @@ import helpers.fileUpload.FileUploadGenericErrorReporter
 import helpers.fileUpload.FileUploadGenericErrorReporter.generateGenericErrorReport
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event6, getEventTypeByName}
+import models.enumeration.EventType.{Event1, Event22, Event6, getEventTypeByName}
 import models.fileUpload.ParsingAndValidationOutcomeStatus._
 import models.fileUpload.{FileUploadResult, ParsingAndValidationOutcome}
 import models.requests.OptionalDataRequest
@@ -60,6 +60,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                                            formProvider: FileUploadResultFormProvider,
                                            parsingAndValidationOutcomeCacheConnector: ParsingAndValidationOutcomeCacheConnector,
                                            view: FileUploadResultView,
+                                           event1Validator: Event1Validator,
                                            event6Validator: Event6Validator,
                                            event22Validator: Event22Validator,
                                            event23Validator: Event23Validator,
@@ -121,6 +122,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
 
   private def validatorForEvent(eventType: EventType): Validator = {
     eventType match {
+      case Event1 => event1Validator
       case Event6 => event6Validator
       case Event22 => event22Validator
       case _ => event23Validator

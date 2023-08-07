@@ -39,8 +39,8 @@ object EROverviewVersion {
         (noOfVersions, isSubmitted, isCompiled) =>
           Some(EROverviewVersion(
             noOfVersions,
-            isSubmitted.equals(true),
-            isCompiled.equals(true)
+            isSubmitted,
+            isCompiled
           )))
     }
   }

@@ -53,7 +53,7 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(list,
-          "/manage-pension-scheme-event-report/new-report/event-23-click")(request, messages(application)).toString
+          "/manage-pension-scheme-event-report/report/event-23-click")(request, messages(application)).toString
       }
     }
 
@@ -133,25 +133,25 @@ object Event23CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel",
       "Joe Bloggs",
-      "/manage-pension-scheme-event-report/new-report/1/event-23-member-details?waypoints=event-23-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-23-member-details?waypoints=event-23-check-answers-1",
       "membersDetails.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel.nino",
       "AA234567D",
-      "/manage-pension-scheme-event-report/new-report/1/event-23-member-details?waypoints=event-23-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-23-member-details?waypoints=event-23-check-answers-1",
       "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithoutChange(
       "chooseTaxYear.event23.checkYourAnswersLabel",
       "2015 to 2016",
-      "/manage-pension-scheme-event-report/new-report/1/event-23-tax-year?waypoints=event-23-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-23-tax-year?waypoints=event-23-check-answers-1",
       "chooseTaxYear.event23.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithoutChange(
       "totalPensionAmounts.event23.checkYourAnswersLabel",
       "£10.00",
-      "/manage-pension-scheme-event-report/new-report/1/event-23-total-input-amount?waypoints=event-23-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-23-total-input-amount?waypoints=event-23-check-answers-1",
       "totalPensionAmounts.event23.change.hidden"
     )
   )
