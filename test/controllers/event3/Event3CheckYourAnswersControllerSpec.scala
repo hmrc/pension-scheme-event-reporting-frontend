@@ -52,7 +52,7 @@ class Event3CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-3-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-3-click")(request, messages(application)).toString
       }
     }
 
@@ -131,25 +131,25 @@ object Event3CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel",
       "Joe Bloggs",
-      "/manage-pension-scheme-event-report/new-report/1/event-3-member-details?waypoints=event-3-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-3-member-details?waypoints=event-3-check-answers-1",
       "membersDetails.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel.nino",
       "AA234567D",
-      "/manage-pension-scheme-event-report/new-report/1/event-3-member-details?waypoints=event-3-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-3-member-details?waypoints=event-3-check-answers-1",
       "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "paymentDetails.value.checkYourAnswersLabel",
       "£10.00",
-      "/manage-pension-scheme-event-report/new-report/1/event-3-payment-details?waypoints=event-3-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-3-payment-details?waypoints=event-3-check-answers-1",
       "paymentDetails.value.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "paymentDetails.date.checkYourAnswersLabel",
       "05 April 2022",
-      "/manage-pension-scheme-event-report/new-report/1/event-3-payment-details?waypoints=event-3-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-3-payment-details?waypoints=event-3-check-answers-1",
       "paymentDetails.date.change.hidden"
     )
   )

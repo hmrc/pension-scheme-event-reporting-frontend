@@ -70,7 +70,7 @@ class Event14CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(list,
-          "/manage-pension-scheme-event-report/new-report/event-14-click")(request, messages(application)).toString
+          "/manage-pension-scheme-event-report/report/event-14-click")(request, messages(application)).toString
       }
     }
 

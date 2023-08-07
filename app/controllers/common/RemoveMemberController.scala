@@ -18,14 +18,12 @@ package controllers.common
 
 import connectors.EventReportingConnector
 import controllers.actions._
-import controllers.common.RemoveMemberController.eventTypeMessage
 import forms.common.RemoveMemberFormProvider
 import models.Index
 import models.enumeration.EventType
-import models.enumeration.EventType._
-import pages.{VersionInfoPage, Waypoints}
 import pages.common.RemoveMemberPage
-import play.api.i18n.I18nSupport
+import pages.{VersionInfoPage, Waypoints}
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.common.RemoveMemberView
@@ -43,6 +41,7 @@ class RemoveMemberController @Inject()(
                                         view: RemoveMemberView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
+  private def eventTypeMessage(eventType: EventType)(implicit messages: Messages): String = messages(s"eventDescription.event${eventType.toString}")
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
@@ -78,21 +77,4 @@ class RemoveMemberController @Inject()(
       )
   }
 
-}
-
-object RemoveMemberController {
-  def eventTypeMessage(eventType: EventType): String = {
-    //TODO: Replace with messages. -Pavel Vjalicin
-    eventType match {
-      case Event1 => "unauthorised payment"
-      case Event2 => "lump sum death benefit payment"
-      case Event3 => "benefits provided before normal minimum pension age"
-      case Event4 => "payment of serious ill-health lump sum"
-      case Event5 => "cessation of ill-health pension"
-      case Event6 => "benefit crystallisation event"
-      case Event7 | Event8 | Event8A => "pension commencement lump sum"
-      case Event22 => "annual allowance"
-      case Event23 => "dual annual allowance"
-    }
-  }
 }

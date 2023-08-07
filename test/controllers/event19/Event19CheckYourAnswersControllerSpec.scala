@@ -81,7 +81,7 @@ class Event19CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-19-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-19-click")(request, messages(application)).toString
       }
     }
 
@@ -195,13 +195,13 @@ object Event19CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithTextWithHiddenContent(
       "event19.countryOrTerritory.change.checkYourAnswersLabel",
       "United Kingdom",
-      "/manage-pension-scheme-event-report/new-report/event-19-which-country-or-territory?waypoints=event-19-check-answers",
+      "/manage-pension-scheme-event-report/report/event-19-which-country-or-territory?waypoints=event-19-check-answers",
       "event19.countryOrTerritory.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "event19.dateChangeMade.checkYourAnswersLabel",
       "22 March 2022",
-      "/manage-pension-scheme-event-report/new-report/event-19-when-country-or-territory-change-took-place?waypoints=event-19-check-answers",
+      "/manage-pension-scheme-event-report/report/event-19-when-country-or-territory-change-took-place?waypoints=event-19-check-answers",
       "event19.dateChangeMade.change.hidden"
     )
   )

@@ -16,7 +16,7 @@
 
 package controllers.event20A
 
-import connectors.{EventReportingConnector, MinimalConnector, SchemeDetailsConnector, UserAnswersCacheConnector}
+import connectors.{EventReportingConnector, MinimalConnector, SchemeConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.event20A.Event20APspDeclarationFormProvider
 import models.TaxYear.{getTaxYear, getTaxYearFromOption}
@@ -44,7 +44,7 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
                                                  minimalConnector: MinimalConnector,
                                                  requireData: DataRequiredAction,
                                                  eventReportingConnector: EventReportingConnector,
-                                                 schemeDetailsConnector: SchemeDetailsConnector,
+                                                 schemeDetailsConnector: SchemeConnector,
                                                  view: Event20APspDeclarationView
                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -81,7 +81,7 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
                     eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion).map { _ =>
                       Redirect(Event20APspDeclarationPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
                     }
-                  case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
+                  case _ => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None).url))
                 }
               }
             }

@@ -159,11 +159,12 @@ final case class UserAnswers(
   def countAll(page: Query): Int =
     page.path.readNullable[JsArray].reads(data).asOpt.flatten.map(_.value.size).getOrElse(0)
 
+  private val deletedFilter: JsValue => Boolean = jsValue => !(jsValue \ "memberStatus").asOpt[String].contains("Deleted")
+
   def sumAll(page: Query, readsBigDecimal: Reads[BigDecimal]): BigDecimal = {
     def zeroValue = BigDecimal(0)
-
     page.path.readNullable[JsArray].reads(data).asOpt.flatten
-      .map(_.value.map(jsValue => readsBigDecimal.reads(jsValue).asOpt.getOrElse(zeroValue)).sum)
+      .map(_.value.filter(deletedFilter).map(jsValue => readsBigDecimal.reads(jsValue).asOpt.getOrElse(zeroValue)).sum)
       .getOrElse(zeroValue)
   }
 

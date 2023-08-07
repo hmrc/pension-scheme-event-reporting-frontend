@@ -38,6 +38,7 @@ case object TaxYearPage extends QuestionPage[TaxYear] {
       case (Some(StartNew), Some(VersionInfo(_, NotStarted)) | None) => EventSelectionPage
       case (Some(StartNew), _) => EventSummaryPage
       case (Some(PastEventTypes), _) => ReturnHistoryPage
+      case _ => JourneyRecoveryPage
     }
   }
 }

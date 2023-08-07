@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
-import connectors.{EventReportingConnector, MinimalConnector, SchemeDetailsConnector, UserAnswersCacheConnector}
+import connectors.{EventReportingConnector, MinimalConnector, SchemeConnector, UserAnswersCacheConnector}
 import data.SampleData.sampleEvent20JourneyData
 import forms.DeclarationPspFormProvider
 import models.{SchemeDetails, UserAnswers}
@@ -45,7 +45,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val mockSchemeDetailsConnector = mock[SchemeDetailsConnector]
+  private val mockSchemeDetailsConnector = mock[SchemeConnector]
   private val mockEventReportingConnector = mock[EventReportingConnector]
   private val mockMinimalConnector = mock[MinimalConnector]
   private val mockSchemeDetails = SchemeDetails("schemeName", "87219363YN", "Open", authorisingPsaId)
@@ -67,7 +67,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
-    bind[SchemeDetailsConnector].toInstance(mockSchemeDetailsConnector),
+    bind[SchemeConnector].toInstance(mockSchemeDetailsConnector),
     bind[EventReportingConnector].toInstance(mockEventReportingConnector),
     bind[MinimalConnector].toInstance(mockMinimalConnector)
   )

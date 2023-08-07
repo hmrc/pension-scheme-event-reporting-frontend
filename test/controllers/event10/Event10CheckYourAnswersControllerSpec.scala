@@ -80,7 +80,7 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-10-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-10-click")(request, messages(application)).toString
       }
     }
 
@@ -248,19 +248,19 @@ object Event10CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "becomeOrCeaseScheme.checkYourAnswersLabel",
       "It became an investment regulated pension scheme",
-      "/manage-pension-scheme-event-report/new-report/event-10-become-or-ceased?waypoints=event-10-check-answers",
+      "/manage-pension-scheme-event-report/report/event-10-become-or-ceased?waypoints=event-10-check-answers",
       "becomeOrCeaseScheme.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "became.schemeChangeDate.checkYourAnswersLabel",
       "22 March 2022",
-      "/manage-pension-scheme-event-report/new-report/event-10-when-scheme-changed?waypoints=event-10-check-answers",
+      "/manage-pension-scheme-event-report/report/event-10-when-scheme-changed?waypoints=event-10-check-answers",
       "became.schemeChangeDate.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "contractsOrPolicies.checkYourAnswersLabel",
       "Yes",
-      "/manage-pension-scheme-event-report/new-report/event-10-are-investments-contracts-or-policies-of-insurance?waypoints=event-10-check-answers",
+      "/manage-pension-scheme-event-report/report/event-10-are-investments-contracts-or-policies-of-insurance?waypoints=event-10-check-answers",
       "contractsOrPolicies.change.hidden"
     )
   )
@@ -269,13 +269,13 @@ object Event10CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "becomeOrCeaseScheme.checkYourAnswersLabel",
       "It has ceased to be an investment regulated pension scheme",
-      "/manage-pension-scheme-event-report/new-report/event-10-become-or-ceased?waypoints=event-10-check-answers",
+      "/manage-pension-scheme-event-report/report/event-10-become-or-ceased?waypoints=event-10-check-answers",
       "becomeOrCeaseScheme.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "ceased.schemeChangeDate.checkYourAnswersLabel",
       "22 March 2022",
-      "/manage-pension-scheme-event-report/new-report/event-10-when-scheme-changed?waypoints=event-10-check-answers",
+      "/manage-pension-scheme-event-report/report/event-10-when-scheme-changed?waypoints=event-10-check-answers",
       "ceased.schemeChangeDate.change.hidden"
     )
   )

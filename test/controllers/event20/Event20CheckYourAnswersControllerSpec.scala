@@ -80,7 +80,7 @@ class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-20-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-20-click")(request, messages(application)).toString
       }
     }
 
@@ -221,13 +221,13 @@ object Event20CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlWithHiddenContent(
       "whatChange.checkYourAnswersLabel",
       "It became an occupational pension scheme",
-      "/manage-pension-scheme-event-report/new-report/event-20-occupational-pension-scheme?waypoints=event-20-check-answers",
+      "/manage-pension-scheme-event-report/report/event-20-occupational-pension-scheme?waypoints=event-20-check-answers",
       "whatChange.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "becameDate.checkYourAnswersLabel",
       "12 December 2023",
-      "/manage-pension-scheme-event-report/new-report/event-20-when-scheme-became-occupational?waypoints=event-20-check-answers",
+      "/manage-pension-scheme-event-report/report/event-20-when-scheme-became-occupational?waypoints=event-20-check-answers",
       "becameDate.change.hidden"
     )
   )

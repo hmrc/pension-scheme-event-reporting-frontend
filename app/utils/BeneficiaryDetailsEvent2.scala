@@ -31,7 +31,6 @@ object BeneficiaryDetailsEvent2 {
     }
     beneficiaryFullNameOpt match {
       case Some(beneficiaryName) => beneficiaryName
-      //TODO: what to do when no name is pulled back here
       case _ => throw new RuntimeException("Beneficiary name does not exist")
     }
   }

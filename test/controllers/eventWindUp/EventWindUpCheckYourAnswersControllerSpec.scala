@@ -69,7 +69,7 @@ class EventWindUpCheckYourAnswersControllerSpec extends SpecBase with SummaryLis
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(list,
-          "/manage-pension-scheme-event-report/new-report/event-windup-click")(request, messages(application)).toString
+          "/manage-pension-scheme-event-report/report/event-windup-click")(request, messages(application)).toString
       }
     }
 
