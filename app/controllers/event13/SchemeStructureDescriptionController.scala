@@ -24,10 +24,10 @@ import models.enumeration.EventType
 import pages.Waypoints
 import pages.event13.SchemeStructureDescriptionPage
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Format.GenericFormat
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event13.SchemeStructureDescriptionView
-import play.api.libs.json.Format.GenericFormat
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -55,10 +55,7 @@ class SchemeStructureDescriptionController @Inject()(val controllerComponents: M
           Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = value match {
-            case v => originalUserAnswers.setOrException(SchemeStructureDescriptionPage, v)
-            case _ => originalUserAnswers.removeOrException(SchemeStructureDescriptionPage)
-          }
+          val updatedAnswers = originalUserAnswers.setOrException(SchemeStructureDescriptionPage, value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(SchemeStructureDescriptionPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }

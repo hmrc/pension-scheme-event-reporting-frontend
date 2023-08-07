@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import config.FrontendAppConfig
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
@@ -59,9 +60,9 @@ class JourneyRecoveryControllerSpec extends SpecBase {
           val result = route(application, request).value
 
           val startAgainView = application.injector.instanceOf[JourneyRecoveryStartAgainView]
-
+          val appConfig = application.injector.instanceOf[FrontendAppConfig]
           status(result) mustEqual OK
-          contentAsString(result) mustEqual startAgainView()(request, messages(application)).toString
+          contentAsString(result) mustEqual startAgainView(appConfig.yourPensionSchemesUrl)(request, messages(application)).toString
         }
       }
     }
@@ -79,8 +80,10 @@ class JourneyRecoveryControllerSpec extends SpecBase {
 
           val startAgainView = application.injector.instanceOf[JourneyRecoveryStartAgainView]
 
+          val appConfig = application.injector.instanceOf[FrontendAppConfig]
+
           status(result) mustEqual OK
-          contentAsString(result) mustEqual startAgainView()(request, messages(application)).toString
+          contentAsString(result) mustEqual startAgainView(appConfig.yourPensionSchemesUrl)(request, messages(application)).toString
         }
       }
     }
