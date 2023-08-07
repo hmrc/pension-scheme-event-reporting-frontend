@@ -50,7 +50,8 @@ class JourneyRecoveryController @Inject()(
       }
 
       def startAgainUrl: String =
-        config.schemeDashboardUrl(request.loggedInUser.administratorOrPractitioner).format(request.srn)
+        config.schemeDashboardUrl(request.loggedInUser.administratorOrPractitioner, request.srn)
+
       safeUrl
         .map(url => Ok(continueView(url)))
         .getOrElse(

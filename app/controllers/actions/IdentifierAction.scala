@@ -90,8 +90,7 @@ class AuthenticatedIdentifierAction @Inject()(
     implicit val req: Request[A] = request
 
     withAuthInfo {
-      case (Some(_), _, None) => // TODO: Where to go here?
-        throw new RuntimeException("Unable to recover journey as no event reporting information")
+      case (Some(_), _, None) => Future.successful(Redirect(config.yourPensionSchemesUrl))
       case (Some(externalId), enrolments, Some(er)) if bothPsaAndPspEnrolmentsPresent(enrolments) =>
         actionForBothEnrolments(er, externalId, enrolments, request, block)
       case (Some(externalId), enrolments, Some(er)) if enrolments.getEnrolment(enrolmentPSA).isDefined =>
