@@ -69,17 +69,6 @@ class EventReportingTileLinksController @Inject()(
             Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
           }
       }
-
-      /* TODO: implement below in PODS-8491.
-      If 1 compile is in progress (i.e. with compiledVersionAvailable as Yes) then
-
-      a) display the link "View event report in progress"
-      (target is summary page for that year hence prior to rendering the page the year will need to be
-      first saved in the user answers Mongo with event type of None) and
-
-      b) display content in subheading of tile "Event report 2022 to 2023: in progress"
-       */
-
     }
 
   def onClickNew: Action[AnyContent] =

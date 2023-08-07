@@ -159,7 +159,7 @@ class Event1Validator @Inject()(
 
   private case class FieldInfoForValidation[A](fieldNum: Int, description: String, form: Form[A])
 
-  private def genericBooleanFieldValidation[Boolean](index: Int, chargeFields: Seq[String], fieldInfoForValidation: FieldInfoForValidation[Boolean]): Validated[Seq[ValidationError], Boolean] = {
+  private def genericBooleanFieldValidation(index: Int, chargeFields: Seq[String], fieldInfoForValidation: FieldInfoForValidation[Boolean]): Validated[Seq[ValidationError], Boolean] = {
     val mappedBoolean = toBoolean(chargeFields(fieldInfoForValidation.fieldNum))
     val fields = Seq(Field(valueFormField, mappedBoolean, fieldInfoForValidation.description, fieldInfoForValidation.fieldNum))
     fieldInfoForValidation.form.bind(

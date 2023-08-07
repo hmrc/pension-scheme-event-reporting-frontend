@@ -97,7 +97,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
                         Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints))
                       }
                     }
-                  case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
+                  case _ => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None).url))
                 }
               }
             }

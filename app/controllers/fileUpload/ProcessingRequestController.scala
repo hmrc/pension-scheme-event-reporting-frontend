@@ -54,7 +54,7 @@ class ProcessingRequestController @Inject()(
           Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsSummaryController.onPageLoad(waypoints, eventType)))
         case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
         case _ =>
-          Future.successful(Ok(view(controllers.routes.IndexController.onPageLoad.url)))
+          Future.successful(Ok(view(controllers.routes.JourneyRecoveryController.onPageLoad(None).url)))
       }
   }
 
