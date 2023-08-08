@@ -39,7 +39,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
   private val loggedInUser = LoggedInUser("user", Administrator, "psaId")
   private val pstr = "pstr"
-  private val request: IdentifierRequest[AnyContent] = IdentifierRequest(fakeRequest, loggedInUser, pstr, "schemeName", "returnUrl")
+  private val request: IdentifierRequest[AnyContent] = IdentifierRequest(fakeRequest, loggedInUser, pstr, "schemeName", "returnUrl", "srn")
   private val eventType = EventType.Event1
 
   class Harness extends DataRetrievalImpl(eventType, userAnswersCacheConnector) {
