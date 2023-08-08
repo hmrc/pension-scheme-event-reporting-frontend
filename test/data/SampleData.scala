@@ -21,9 +21,9 @@ import models.address.{Address, TolerantAddress}
 import models.common.ManualOrUpload.Manual
 import models.common.{ChooseTaxYear, MembersDetails, PaymentDetails => CommonPaymentDetails}
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
-import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event2, Event6, Event7, Event8, Event8A}
 import models.enumeration.VersionStatus.Compiled
+import models.enumeration.{EventType, VersionStatus}
 import models.event1.PaymentNature.BenefitInKind
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.employer.PaymentNature.TangibleMoveableProperty
@@ -96,6 +96,24 @@ object SampleData extends SpecBase {
     country = "GB"
   )
 
+  val event1EmployerAddress: Address = Address(
+    addressLine1 = "10 Other Place",
+    addressLine2 = "Some District",
+    addressLine3 = Some("Anytown"),
+    addressLine4 = Some("Anyplace"),
+    postcode = Some("ZZ1 1ZZ"),
+    country = "GB"
+  )
+
+  val memberAddress: Address = Address(
+    addressLine1 = "10 Other Place",
+    addressLine2 = "Some District",
+    addressLine3 = Some("Anytown"),
+    addressLine4 = Some("Anyplace"),
+    postcode = Some("ZZ1 1ZZ"),
+    country = "GB"
+  )
+
   val seqTolerantAddresses: Seq[TolerantAddress] = Seq[TolerantAddress](
     TolerantAddress(
       addressLine1 = Some("addr11"),
@@ -117,9 +135,23 @@ object SampleData extends SpecBase {
 
   val startDate: LocalDate = LocalDate.of(2022, 11, 8)
   val companyDetails: CompanyDetails = CompanyDetails("Company Name", "12345678")
+  val companyDetails2: CompanyDetails = CompanyDetails("Company Name 2", "12345679")
 
   val memberDetails: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567D")
   val memberDetails2: MembersDetails = MembersDetails("Steven", "Bloggs", "AA123456C")
+
+  val memberDetailsEr1: MembersDetails = MembersDetails("Joe", "Bloggs", "AA123456A")
+  val memberDetailsEr2: MembersDetails = MembersDetails("Joe", "Bloggs", "AA123456B")
+  val memberDetails3: MembersDetails = MembersDetails("Joe", "Bloggs", "AA123456C")
+  val memberDetails4: MembersDetails = MembersDetails("Joe", "Bloggs", "AA123456D")
+
+  val memberDetails5: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567A")
+  val memberDetails6: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567B")
+  val memberDetails7: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567C")
+  val memberDetails8: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567D")
+
+  val memberDetails9: MembersDetails = MembersDetails("Joe", "Bloggs", "AA345678A")
+  val memberDetails10: MembersDetails = MembersDetails("Joe", "Bloggs", "AA345678B")
 
   private val writesTaxYear: Writes[ChooseTaxYear] = ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
 
@@ -148,6 +180,7 @@ object SampleData extends SpecBase {
 
 
   val userAnswersWithOneMemberAndEmployerEvent1: UserAnswers = UserAnswers()
+    .setOrException(TaxYearPage, TaxYear("2022"), true)
     .setOrException(WhoReceivedUnauthPaymentPage(0), Member)
     .setOrException(PaymentValueAndDatePage(0), Event1PaymentDetails(BigDecimal(857.00), LocalDate.of(2022, 11, 9)))
     .setOrException(MembersDetailsPage(Event1, 0), memberDetails)
@@ -164,6 +197,8 @@ object SampleData extends SpecBase {
     .setOrException(MemberPaymentNaturePage(0), BenefitInKind)
     .setOrException(BenefitInKindBriefDescriptionPage(0), "Test description")
     .setOrException(PaymentValueAndDatePage(0), paymentDetails)
+    .setOrException(TaxYearPage, TaxYear("2022"), true)
+    .setOrException(VersionInfoPage, VersionInfo(1, VersionStatus.Compiled), true)
 
   val sampleEmployerJourneyDataEvent1: UserAnswers = UserAnswers()
     .setOrException(ManualOrUploadPage(Event1, 0), Manual)
@@ -190,7 +225,8 @@ object SampleData extends SpecBase {
     }
 
   def sampleMemberJourneyDataEvent3and4and5(eventType: EventType): UserAnswers = UserAnswers()
-    .setOrException(TaxYearPage, TaxYear("2022"))
+    .setOrException(TaxYearPage, TaxYear("2022"), true)
+    .setOrException(VersionInfoPage, VersionInfo(1, VersionStatus.Compiled), true)
     .setOrException(MembersDetailsPage(eventType, 0), memberDetails)
     .setOrException(PaymentDetailsPage(eventType, 0), paymentDetailsCommon)
 
@@ -324,4 +360,8 @@ object SampleData extends SpecBase {
     emptyUserAnswersWithTaxYear
       .setOrException(pages.event20A.WhatChangePage, CeasedMasterTrust)
       .setOrException(pages.event20A.CeasedDatePage, LocalDate.of(2023, 1, 12))
+
+  def sampleEvent18JourneyData: UserAnswers =
+    emptyUserAnswersWithTaxYear
+      .setOrException(pages.event18.Event18ConfirmationPage, true)
 }

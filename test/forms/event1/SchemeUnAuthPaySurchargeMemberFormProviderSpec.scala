@@ -22,7 +22,7 @@ import play.api.data.FormError
 class SchemeUnAuthPaySurchargeMemberFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "schemeUnAuthPaySurchargeMember.error.required"
-  val invalidKey = "error.boolean"
+  val invalidKey = "schemeUnAuthPaySurchargeMember.error.format"
 
   val form = new SchemeUnAuthPaySurchargeMemberFormProvider()()
 

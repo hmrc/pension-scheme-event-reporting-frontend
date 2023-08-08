@@ -24,7 +24,7 @@ import models.TaxYear.getSelectedTaxYearAsString
 import models.enumeration.EventType.Event7
 import models.event7.Event7MembersSummary
 import models.{Index, UserAnswers}
-import pages.Waypoints
+import pages.{EmptyWaypoints, Waypoints}
 import pages.common.MembersSummaryPage
 import pages.event7.Event7MembersPage
 import play.api.i18n.{I18nSupport, Messages}
@@ -36,7 +36,6 @@ import viewmodels.{Message, SummaryListRowWithThreeValues}
 import views.html.event7.{Event7MembersSummaryView, Event7MembersSummaryViewWithPagination}
 
 import javax.inject.Inject
-//TODO refactor this to use reusable membersSummary again, removing duplication of code- if statement in the view
 //scalastyle:off
 class Event7MembersSummaryController @Inject()(
                                                   val controllerComponents: MessagesControllerComponents,
@@ -110,7 +109,7 @@ class Event7MembersSummaryController @Inject()(
               ),
               ActionItem(
                 content = Text(Message("site.remove")),
-                href = "#"
+                href = controllers.common.routes.RemoveMemberController.onPageLoad(EmptyWaypoints, eventType, index).url
               )
             )
           ))

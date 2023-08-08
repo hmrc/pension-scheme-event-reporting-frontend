@@ -18,13 +18,15 @@ package controllers
 
 import base.SpecBase
 import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
-import connectors.{EventReportingConnector, MinimalConnector, SchemeDetailsConnector, UserAnswersCacheConnector}
+import connectors.{EventReportingConnector, MinimalConnector, SchemeConnector, UserAnswersCacheConnector}
 import data.SampleData.sampleEvent20JourneyData
 import forms.DeclarationPspFormProvider
+import handlers.NothingToSubmitException
 import models.{SchemeDetails, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.RecoverMethods.recoverToExceptionIf
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{DeclarationPspPage, EmptyWaypoints}
 import play.api.inject.bind
@@ -32,8 +34,13 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.DeclarationPspView
+import play.api.http.Status.OK
+import play.api.test.Helpers.GET
 
-import scala.concurrent.Future
+
+import scala.concurrent.duration.{Duration, SECONDS}
+import scala.concurrent.{Await, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
@@ -45,7 +52,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val mockSchemeDetailsConnector = mock[SchemeDetailsConnector]
+  private val mockSchemeDetailsConnector = mock[SchemeConnector]
   private val mockEventReportingConnector = mock[EventReportingConnector]
   private val mockMinimalConnector = mock[MinimalConnector]
   private val mockSchemeDetails = SchemeDetails("schemeName", "87219363YN", "Open", authorisingPsaId)
@@ -67,7 +74,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
-    bind[SchemeDetailsConnector].toInstance(mockSchemeDetailsConnector),
+    bind[SchemeConnector].toInstance(mockSchemeDetailsConnector),
     bind[EventReportingConnector].toInstance(mockEventReportingConnector),
     bind[MinimalConnector].toInstance(mockMinimalConnector)
   )
@@ -157,6 +164,21 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
         contentAsString(result) mustEqual view(practitionerName, boundForm, waypoints)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
+    }
+
+    "must redirect to the correct error screen when no data is able to be submitted" in {
+      val applicationNoUA = applicationBuilder(userAnswers = None, extraModules).build()
+      val controller: DeclarationPspController = applicationNoUA.injector.instanceOf[DeclarationPspController]
+
+      val request = FakeRequest(GET, routes.DeclarationPspController.onSubmit(waypoints).url)
+
+      val futureResult: Future[NothingToSubmitException] = recoverToExceptionIf[NothingToSubmitException] {
+        controller.onSubmit(waypoints)(request)
+      }
+
+      val result: NothingToSubmitException = Await.result(futureResult, Duration(5, SECONDS))
+
+      result.responseCode mustBe EXPECTATION_FAILED
     }
   }
 }

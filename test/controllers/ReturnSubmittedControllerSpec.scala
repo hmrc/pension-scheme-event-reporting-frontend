@@ -38,6 +38,7 @@ class ReturnSubmittedControllerSpec extends SpecBase {
 
   private val waypoints = EmptyWaypoints
   private val yourPensionSchemesUrl: String = "http://localhost:8204/manage-pension-schemes/your-pension-schemes"
+  private val listPspUrl: String = "http://localhost:8204/manage-pension-schemes/list-psp"
   private val schemeName = "schemeName"
   private val taxYear = "2022 to 2023"
   private val dateHelper = new DateHelper
@@ -51,7 +52,7 @@ class ReturnSubmittedControllerSpec extends SpecBase {
 
   "Return Submitted Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET (PSA)" in {
       val minimalDetails = MinimalDetails(email = email, isPsaSuspended = false,
         organisationName = None, individualDetails = None, rlsFlag = false, deceasedFlag = false)
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
@@ -73,6 +74,35 @@ class ReturnSubmittedControllerSpec extends SpecBase {
           view(
             routes.ReturnSubmittedController.onPageLoad(waypoints).url,
             yourPensionSchemesUrl,
+            schemeName,
+            taxYear,
+            dateSubmitted,
+            email)(request, messages(application)).toString
+      }
+    }
+
+    "must return OK and the correct view for a GET (PSP)" in {
+      val minimalDetails = MinimalDetails(email = email, isPsaSuspended = false,
+        organisationName = None, individualDetails = None, rlsFlag = false, deceasedFlag = false)
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"))
+      val application = applicationBuilderForPSP(userAnswers = Some(ua), extraModules).build()
+
+      running(application) {
+
+        val request = FakeRequest(GET, routes.ReturnSubmittedController.onPageLoad(waypoints).url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[ReturnSubmittedView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(
+            routes.ReturnSubmittedController.onPageLoad(waypoints).url,
+            listPspUrl,
             schemeName,
             taxYear,
             dateSubmitted,

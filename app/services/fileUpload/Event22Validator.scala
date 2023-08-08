@@ -22,7 +22,7 @@ import cats.implicits.toFoldableOps
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import forms.common.{ChooseTaxYearFormProvider, MembersDetailsFormProvider, TotalPensionAmountsFormProvider}
-import models.common.{ChooseTaxYear, MembersDetails}
+import models.common.ChooseTaxYear
 import models.enumeration.EventType
 import models.enumeration.EventType.Event22
 import models.fileUpload.FileUploadHeaders.Event22FieldNames.totalAmounts
@@ -79,13 +79,14 @@ class Event22Validator @Inject()(
 
   override protected def validateFields(index: Int,
                                         columns: Seq[String],
-                                        taxYear: Int)
+                                        taxYear: Int,
+                                        memberNinos: Seq[String])
                                        (implicit messages: Messages): Result = {
-    val a = resultFromFormValidationResult[MembersDetails](
-      memberDetailsValidation(index, columns, membersDetailsFormProvider(Event22, index)),
-      createCommitItem(index, MembersDetailsPage.apply(Event22, _))
+    val a = resultFromFormValidationResultForMembersDetails(
+      memberDetailsValidation(index, columns, membersDetailsFormProvider(Event22, memberNinos, index)),
+      createCommitItem(index, MembersDetailsPage.apply(Event22, _)),
+      memberNinos
     )
-
     val b = resultFromFormValidationResult[ChooseTaxYear](
       taxYearValidation(index, columns, taxYear), createCommitItem(index, ChooseTaxYearPage.apply(Event22, _)
       )(ChooseTaxYear.writes(ChooseTaxYear.enumerable(taxYear)))

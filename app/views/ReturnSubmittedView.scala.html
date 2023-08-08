@@ -22,7 +22,7 @@
     govukSummaryList : GovukSummaryList,
 )
 
-@(continueUrl: String, yourPensionSchemesUrl: String, schemeName: String, taxYear: String, dateSubmitted: String, email: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(continueUrl: String, viewOtherPensionSchemesUrl: String, schemeName: String, taxYear: String, dateSubmitted: String, email: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("confirmation.title"))) {
 
@@ -70,7 +70,7 @@
 
 <ul class="govuk-list govuk-list--bullet">
     <li>@messages("confirmation.li1")</li>
-    <li><a class="govuk-link" href="@yourPensionSchemesUrl">@messages("confirmation.li2")</a></li>
+    <li><a class="govuk-link" href="@viewOtherPensionSchemesUrl">@messages("confirmation.li2")</a></li>
     <li><a id="print-this-page-link" class="govuk-link" href="">@messages("confirmation.li3")</a></li>
     <li>@templates.ReturnToScheme()</li>
 </ul>

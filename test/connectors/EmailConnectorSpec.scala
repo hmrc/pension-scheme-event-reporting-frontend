@@ -31,6 +31,7 @@ class EmailConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper
   private val url: String = "/hmrc/email"
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   private val testPsaId = PsaId("A1234567")
+  private val testPstr = "87219363YN"
   private val requestId = "test-Request-Id"
 
   private val testEmailAddress = "test@test.com"
@@ -52,6 +53,7 @@ class EmailConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper
           AdministratorOrPractitioner.Administrator,
           requestId,
           testPsaId.id,
+          testPstr,
           testEmailAddress,
           testTemplate,
           Map.empty,
@@ -70,7 +72,7 @@ class EmailConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper
         )
 
         connector.sendEmail(AdministratorOrPractitioner.Administrator,
-          requestId, testPsaId.id, testEmailAddress, testTemplate, Map.empty, "reportVersion").map { result => result mustBe EmailNotSent
+          requestId, testPsaId.id, testPstr, testEmailAddress, testTemplate, Map.empty, "reportVersion").map { result => result mustBe EmailNotSent
         }
       }
 
@@ -82,7 +84,7 @@ class EmailConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper
           )
         )
         connector.sendEmail(AdministratorOrPractitioner.Administrator,
-          requestId, testPsaId.id, testEmailAddress, testTemplate, Map.empty, "reportVersion").map { result => result mustBe EmailNotSent
+          requestId, testPsaId.id, testPstr, testEmailAddress, testTemplate, Map.empty, "reportVersion").map { result => result mustBe EmailNotSent
         }
       }
     }

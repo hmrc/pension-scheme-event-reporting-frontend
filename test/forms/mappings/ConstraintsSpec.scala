@@ -201,4 +201,21 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
       }
     }
   }
+
+  "isBeforeOpenDate" - {
+    "must return Valid for a date after or on the open date" in {
+
+      val openDate = LocalDate.of(2020, 8, 27)
+      val date = LocalDate.of(2020, 9, 27)
+      val result = isNotBeforeOpenDate(openDate, "error.beforeOpenDate", "foo")(date)
+      result mustEqual Valid
+
+    }
+    "must return Invalid for a date before the openDate but within the tax year selected" in {
+      val openDate = LocalDate.of(2020, 8, 27)
+      val date = LocalDate.of(2020, 7, 27)
+      val result = isNotBeforeOpenDate(openDate, "error.beforeOpenDate", "foo")(date)
+      result mustEqual Invalid("error.beforeOpenDate", "foo")
+    }
+  }
 }

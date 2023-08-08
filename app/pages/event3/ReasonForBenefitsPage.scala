@@ -67,7 +67,6 @@ case class ReasonForBenefitsPage(index: Int) extends QuestionPage[ReasonForBenef
       case (Some(Other), true) => EarlyBenefitsBriefDescriptionPage(index)
       case (_, false) => Event3CheckYourAnswersPage(index)
       case (_, true) => PaymentDetailsPage(Event3, index)
-      case (Some(Other), false) => Event3CheckYourAnswersPage(index)
       case _ => JourneyRecoveryPage
     }
   }

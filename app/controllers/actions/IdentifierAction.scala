@@ -91,8 +91,7 @@ class AuthenticatedIdentifierAction @Inject()(
 
     withAuthInfo {
       case (Some(_), _, None) =>
-        throw new RuntimeException("PSTR is not available") // TODO: Once we have an event reporting dashboard then
-                                                            // we should redirect user to ??? page at this point
+        Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None)))
       case (Some(externalId), enrolments, Some(er)) if bothPsaAndPspEnrolmentsPresent(enrolments) =>
         actionForBothEnrolments(er, externalId, enrolments, request, block)
       case (Some(externalId), enrolments, Some(er)) if enrolments.getEnrolment(enrolmentPSA).isDefined =>

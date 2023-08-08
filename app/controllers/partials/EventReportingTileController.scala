@@ -51,6 +51,8 @@ class EventReportingTileController @Inject()(
   def eventReportPartial(): Action[AnyContent] = {
     (identify andThen getData()).async { implicit request =>
       eventReportingConnector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString).flatMap { seqEROverview =>
+
+
         val ua = UserAnswers().setOrException(EventReportingOverviewPage, seqEROverview, nonEventTypeData = true)
         userAnswersCacheConnector.removeAll(request.pstr).flatMap { _ =>
           userAnswersCacheConnector.save(request.pstr, ua).flatMap { _ =>
@@ -73,15 +75,25 @@ class EventReportingTileController @Inject()(
 
   private def cardSubheadings(isAnyCompiledReports: Boolean, seqEROverview: Seq[EROverview])(implicit request: OptionalDataRequest[AnyContent]): Seq[CardSubHeading] = {
     if (isAnyCompiledReports) {
-      val anyStartAndEndDates = seqEROverview.map { value => (value.periodStartDate, value.periodEndDate) }
+      val overviewsInProgress = seqEROverview.filter(_.versionDetails.exists(_.compiledVersionAvailable))
+
+      val (subHeadingMessage, subHeadingParamMessage) = overviewsInProgress.size match {
+        case 1 =>
+          (Messages("eventReportingTile.subHeading", overviewsInProgress.head.periodStartDate, overviewsInProgress.head.periodEndDate),
+            Messages("eventReportingTile.subHeading.param"))
+        case _ =>
+          (Messages("eventReportingTile.subHeading.multiple"),
+            Messages("eventReportingTile.subHeading.param.multiple", overviewsInProgress.size))
+      }
+
       Seq(
         CardSubHeading(
-          subHeading = Messages("eventReportingTile.subHeading", anyStartAndEndDates.head._1, anyStartAndEndDates.head._2),
+          subHeading = subHeadingMessage,
           subHeadingClasses = "card-sub-heading",
           subHeadingParams =
             Seq(
               CardSubHeadingParam(
-                subHeadingParam = Messages("eventReportingTile.subHeading.param"),
+                subHeadingParam = subHeadingParamMessage,
                 subHeadingParamClasses = "font-small bold"
               )
             )

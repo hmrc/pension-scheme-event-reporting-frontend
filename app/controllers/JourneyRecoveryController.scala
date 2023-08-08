@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
 import play.api.Logging
 import play.api.i18n.I18nSupport
@@ -31,7 +32,8 @@ class JourneyRecoveryController @Inject()(
                                            val controllerComponents: MessagesControllerComponents,
                                            identify: IdentifierAction,
                                            continueView: JourneyRecoveryContinueView,
-                                           startAgainView: JourneyRecoveryStartAgainView
+                                           startAgainView: JourneyRecoveryStartAgainView,
+                                           config: FrontendAppConfig
                                          ) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(continueUrl: Option[RedirectUrl] = None): Action[AnyContent] = identify {
@@ -50,6 +52,8 @@ class JourneyRecoveryController @Inject()(
 
       safeUrl
         .map(url => Ok(continueView(url)))
-        .getOrElse(Ok(startAgainView()))
+        .getOrElse(
+          Ok(startAgainView(config.yourPensionSchemesUrl))
+        )
   }
 }

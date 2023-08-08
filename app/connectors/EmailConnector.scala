@@ -49,13 +49,15 @@ class EmailConnector @Inject()(
                            schemeAdministratorType: AdministratorOrPractitioner,
                            requestId: String,
                            psaOrPspId: String,
+                           pstr: String,
                            email: String,
                            reportVersion: String
                          ): String = {
     val encryptedPsaOrPspId = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaOrPspId)).value, StandardCharsets.UTF_8.toString)
+    val encryptedPstr = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(pstr)).value, StandardCharsets.UTF_8.toString)
     val encryptedEmail = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(email)).value, StandardCharsets.UTF_8.toString)
 
-    appConfig.eventReportingEmailCallback(schemeAdministratorType, requestId, encryptedEmail, encryptedPsaOrPspId, reportVersion)
+    appConfig.eventReportingEmailCallback(schemeAdministratorType, requestId, encryptedEmail, encryptedPsaOrPspId, encryptedPstr, reportVersion)
   }
 
   //scalastyle:off parameter.number
@@ -63,6 +65,7 @@ class EmailConnector @Inject()(
                  schemeAdministratorType: AdministratorOrPractitioner = AdministratorOrPractitioner.Administrator,
                  requestId: String,
                  psaOrPspId: String,
+                 pstr: String,
                  emailAddress: String,
                  templateId: String,
                  templateParams: Map[String, String],
@@ -71,7 +74,7 @@ class EmailConnector @Inject()(
     val emailServiceUrl = s"${appConfig.emailApiUrl}/hmrc/email"
 
     val sendEmailReq = SendEmailRequest(List(emailAddress), templateId, templateParams, appConfig.emailSendForce,
-      callBackUrl(schemeAdministratorType, requestId, psaOrPspId, emailAddress, reportVersion))
+      callBackUrl(schemeAdministratorType, requestId, psaOrPspId, pstr, emailAddress, reportVersion))
     val jsonData = Json.toJson(sendEmailReq)
 
     http.POST[JsValue, HttpResponse](emailServiceUrl, jsonData).map { response =>

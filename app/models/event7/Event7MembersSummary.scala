@@ -21,7 +21,6 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json.{Format, JsPath, Json, Reads}
 
-//TODO refactor this to use reusable membersSummary again, removing duplication of code- if statement in the view
 case class Event7MembersSummary(
                                  name: String,
                                  PaymentValue: BigDecimal,

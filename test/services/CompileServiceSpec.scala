@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.enumeration.EventType.Event1
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
@@ -48,20 +49,24 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockEventReportingConnector = mock[EventReportingConnector]
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val compileService = new CompileService(mockEventReportingConnector, mockUserAnswersCacheConnector)
+  private val mockAppConfig = mock[FrontendAppConfig]
+
+  private val compileService = new CompileService(mockEventReportingConnector, mockUserAnswersCacheConnector, mockAppConfig)
 
   override def beforeEach(): Unit = {
     reset(mockEventReportingConnector)
     reset(mockUserAnswersCacheConnector)
+    reset(mockAppConfig)
     when(mockUserAnswersCacheConnector.save(ArgumentMatchers.eq(pstr), any())(any(), any()))
       .thenReturn(Future.successful((): Unit))
+    when(mockAppConfig.compileDelayInSeconds).thenReturn(0)
   }
 
   "compileEvent" - {
     "must call connector with correct tax year and version when not started" in {
       val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       val edi = EventDataIdentifier(Event1, taxYear, "1")
-      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi))(any, any()))
+      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any, any()))
         .thenReturn(Future.successful((): Unit))
 
       val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, NotStarted), nonEventTypeData = true)
@@ -76,7 +81,7 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
     "must call connector with correct tax year and version when in progress (being compiled)" in {
       val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       val edi = EventDataIdentifier(Event1, taxYear, "2")
-      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi))(any, any()))
+      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any, any()))
         .thenReturn(Future.successful((): Unit))
       val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(2, Compiled), nonEventTypeData = true)
       whenReady(compileService.compileEvent(Event1, pstr, ua)) { _ =>
@@ -87,10 +92,10 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "must call connector with correct tax year and version when in submitted + increase version, amend status + update overview" in {
+    "must call connector with correct tax year and version when submitted status + version 1: increase version to 2, amend status + update overview" in {
       val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      val edi = EventDataIdentifier(Event1, taxYear, "1")
-      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi))(any, any()))
+      val edi = EventDataIdentifier(Event1, taxYear, "2")
+      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any, any()))
         .thenReturn(Future.successful((): Unit))
       when(mockUserAnswersCacheConnector
         .changeVersion(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq("1"), ArgumentMatchers.eq("2"))(any(), any()))
