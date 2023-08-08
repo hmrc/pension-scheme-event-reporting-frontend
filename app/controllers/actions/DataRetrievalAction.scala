@@ -20,20 +20,17 @@ import com.google.inject.ImplementedBy
 import connectors.UserAnswersCacheConnector
 import models.enumeration.EventType
 import models.requests.{IdentifierRequest, OptionalDataRequest}
-import play.api.Logger
 import play.api.mvc.ActionTransformer
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
 
 class DataRetrievalImpl(eventType: EventType,
                         userAnswersCacheConnector: UserAnswersCacheConnector
                        )(implicit val executionContext: ExecutionContext)
   extends DataRetrieval {
-  private val logger = Logger(classOf[DataRetrievalImpl])
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
@@ -48,7 +45,6 @@ class DataRetrievalImpl(eventType: EventType,
 class DataRetrievalNoEventTypeImpl(userAnswersCacheConnector: UserAnswersCacheConnector
                                   )(implicit val executionContext: ExecutionContext)
   extends DataRetrieval {
-  private val logger = Logger(classOf[DataRetrievalImpl])
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
 

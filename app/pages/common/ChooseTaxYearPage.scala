@@ -21,7 +21,7 @@ import models.common.ChooseTaxYear
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event22, Event23}
 import models.{Index, UserAnswers}
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{JourneyRecoveryPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -36,7 +36,7 @@ case class ChooseTaxYearPage(eventType: EventType, index: Index) extends Questio
     eventType match {
       case Event22 => TotalPensionAmountsPage(Event22, index)
       case Event23 => TotalPensionAmountsPage(Event23, index)
-      case _ => IndexPage
+      case _ => JourneyRecoveryPage
     }
   }
 }

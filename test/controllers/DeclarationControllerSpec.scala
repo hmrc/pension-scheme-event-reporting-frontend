@@ -107,7 +107,6 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
     }
 
     "must redirect to the correct page for method onClick" in {
-
       val testEmail = "test@test.com"
       val templateId = "pods_event_report_submitted"
       val organisationName = "Test company ltd"

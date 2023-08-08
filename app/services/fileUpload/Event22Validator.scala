@@ -22,7 +22,7 @@ import cats.implicits.toFoldableOps
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import forms.common.{ChooseTaxYearFormProvider, MembersDetailsFormProvider, TotalPensionAmountsFormProvider}
-import models.common.{ChooseTaxYear, MembersDetails}
+import models.common.ChooseTaxYear
 import models.enumeration.EventType
 import models.enumeration.EventType.Event22
 import models.fileUpload.FileUploadHeaders.Event22FieldNames.totalAmounts

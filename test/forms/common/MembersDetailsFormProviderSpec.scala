@@ -16,7 +16,6 @@
 
 package forms.common
 
-import data.SampleData.{memberDetails, memberDetails2}
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
 import models.common.MembersDetails
