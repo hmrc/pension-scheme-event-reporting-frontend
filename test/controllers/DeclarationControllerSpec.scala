@@ -36,6 +36,7 @@ import audit.AuditService
 import base.SpecBase
 import connectors.MinimalConnector.MinimalDetails
 import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector}
+import handlers.NothingToSubmitException
 import models.VersionInfo
 import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.enumeration.VersionStatus.Compiled
@@ -52,8 +53,14 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SubmitService
 import views.html.DeclarationView
+import org.mockito.Mockito.doNothing
+import play.api.http.Status.OK
+import play.api.test.Helpers.GET
+import org.scalatest.RecoverMethods._
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
 
 class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
@@ -130,6 +137,21 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.ReturnSubmittedController.onPageLoad(waypoints).url
       }
+    }
+
+    "must redirect to the correct error screen when no data is able to be submitted" in {
+      val applicationNoUA = applicationBuilder(userAnswers = None, extraModules).build()
+      val controller: DeclarationController = applicationNoUA.injector.instanceOf[DeclarationController]
+
+      val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
+
+      val futureResult: Future[NothingToSubmitException] = recoverToExceptionIf[NothingToSubmitException] {
+        controller.onClick(waypoints)(request)
+      }
+
+      val result: NothingToSubmitException = Await.result(futureResult, Duration(5, SECONDS))
+
+      result.responseCode mustBe EXPECTATION_FAILED
     }
   }
 }

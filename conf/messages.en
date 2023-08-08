@@ -1693,3 +1693,8 @@ eventDescription.event8A = pension commencement lump sum
 eventDescription.event22 = annual allowance
 eventDescription.event23 = dual annual allowance
 
+noDataEnteredError.title = This report cannot be submitted
+noDataEnteredError.heading = This report cannot be submitted
+noDataEnteredError.p1 = No data has been entered
+noDataEnteredError.p2 = Return to the pensions dashboard
+noDataEnteredError.p3 = to enter data before submitting

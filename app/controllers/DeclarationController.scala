@@ -20,6 +20,7 @@ import audit.{AuditService, EventReportingSubmissionEmailAuditEvent}
 import config.FrontendAppConfig
 import connectors.{EmailConnector, EmailStatus, MinimalConnector}
 import controllers.actions._
+import handlers.NothingToSubmitException
 import models.enumeration.AdministratorOrPractitioner
 import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}
@@ -57,35 +58,39 @@ class DeclarationController @Inject()(
       Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
   }
 
-  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
+  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
-      val data: UserAnswers = UserAnswers(
-        declarationData(
-          request.pstr,
-          TaxYear.getSelectedTaxYear(request.userAnswers),
-          request.loggedInUser),
-        request.userAnswers.noEventTypeData
-      )
 
-      def emailFuture = minimalConnector.getMinimalDetails(
-        request.loggedInUser.idName,
-        request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
-        val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
-        val email = minimalDetails.email
-        val schemeName = request.schemeName
-        sendEmail(minimalDetails.name, email, taxYear, schemeName)
-      }
+      request.userAnswers.getOrElse(throw new NothingToSubmitException("User data not available"))
 
-      submitService.submitReport(request.pstr, data).flatMap { result =>
-        (result.header.status) match {
-          case OK =>
-            emailFuture.map(_ =>Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
-          case NOT_FOUND =>
-            logger.warn(s"Unable to submit declaration because there is nothing to submit (nothing in compile state)")
-            Future.successful(Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url))
-          case _ => throw new RuntimeException(s"Invalid response returned from submit report: ${result.header.status}")
+      requireData.invokeBlock(request, { implicit request:DataRequest[_] =>
+        val data: UserAnswers = UserAnswers(
+          declarationData(
+            request.pstr,
+            TaxYear.getSelectedTaxYear(request.userAnswers),
+            request.loggedInUser),
+          request.userAnswers.noEventTypeData
+        )
+
+        def emailFuture = minimalConnector.getMinimalDetails(
+          request.loggedInUser.idName,
+          request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
+          val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
+          val email = minimalDetails.email
+          val schemeName = request.schemeName
+          sendEmail(minimalDetails.name, email, taxYear, schemeName)
         }
-      }
+
+        submitService.submitReport(request.pstr, data).flatMap { result =>
+          result.header.status match {
+            case OK => emailFuture.map(_ => Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
+            case NOT_FOUND =>
+              logger.warn(s"Unable to submit declaration because there is nothing to submit (nothing in compile state)")
+              Future.successful(Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url))
+            case _ => throw new RuntimeException(s"Invalid response returned from submit report: ${result.header.status}")
+          }
+        }
+      })
   }
 
   private def sendEmail(psaName: String, email: String, taxYear: String, schemeName: String)(
