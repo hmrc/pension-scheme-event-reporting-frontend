@@ -14,12 +14,29 @@
  * limitations under the License.
  */
 
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers
 
 import audit.AuditService
 import base.SpecBase
 import connectors.MinimalConnector.MinimalDetails
 import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector}
+import handlers.NothingToSubmitException
 import models.VersionInfo
 import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.enumeration.VersionStatus.Compiled
@@ -36,8 +53,14 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SubmitService
 import views.html.DeclarationView
+import org.mockito.Mockito.doNothing
+import play.api.http.Status.OK
+import play.api.test.Helpers.GET
+import org.scalatest.RecoverMethods._
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
 
 class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
@@ -83,10 +106,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       }
     }
 
-    //TODO - update tests and json data for submitting event report/ connector once sufficient data is captured in the FE (separate ticket being raised)
-
     "must redirect to the correct page for method onClick" in {
-
       val testEmail = "test@test.com"
       val templateId = "pods_event_report_submitted"
       val organisationName = "Test company ltd"
@@ -96,7 +116,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       doNothing().when(mockAuditService).sendEvent(any())(any(), any())
       when(mockEmailConnector.sendEmail(
         schemeAdministratorType = ArgumentMatchers.eq(Administrator),
-        requestId = any(), psaOrPspId = any(),
+        requestId = any(), psaOrPspId = any(), pstr = any(),
         emailAddress = ArgumentMatchers.eq(testEmail),
         templateId = ArgumentMatchers.eq(templateId),
         templateParams = any(),
@@ -117,6 +137,21 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.ReturnSubmittedController.onPageLoad(waypoints).url
       }
+    }
+
+    "must redirect to the correct error screen when no data is able to be submitted" in {
+      val applicationNoUA = applicationBuilder(userAnswers = None, extraModules).build()
+      val controller: DeclarationController = applicationNoUA.injector.instanceOf[DeclarationController]
+
+      val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
+
+      val futureResult: Future[NothingToSubmitException] = recoverToExceptionIf[NothingToSubmitException] {
+        controller.onClick(waypoints)(request)
+      }
+
+      val result: NothingToSubmitException = Await.result(futureResult, Duration(5, SECONDS))
+
+      result.responseCode mustBe EXPECTATION_FAILED
     }
   }
 }

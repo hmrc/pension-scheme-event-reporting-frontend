@@ -153,19 +153,25 @@ final case class UserAnswers(
   def getAll[A](page: Gettable[Seq[A]])(implicit reads: Reads[A]): Seq[A] =
     data.as[Option[Seq[A]]](page.path.readNullable[Seq[A]]).toSeq.flatten
 
+  def getAll[A](path: JsPath)(implicit reads: Reads[A]): Seq[A] =
+    data.as[Option[Seq[A]]](path.readNullable[Seq[A]]).toSeq.flatten
+
   def countAll(page: Query): Int =
     page.path.readNullable[JsArray].reads(data).asOpt.flatten.map(_.value.size).getOrElse(0)
 
+  private val deletedFilter: JsValue => Boolean = jsValue => !(jsValue \ "memberStatus").asOpt[String].contains("Deleted")
+
   def sumAll(page: Query, readsBigDecimal: Reads[BigDecimal]): BigDecimal = {
     def zeroValue = BigDecimal(0)
-
     page.path.readNullable[JsArray].reads(data).asOpt.flatten
-      .map(_.value.map(jsValue => readsBigDecimal.reads(jsValue).asOpt.getOrElse(zeroValue)).sum)
+      .map(_.value.filter(deletedFilter).map(jsValue => readsBigDecimal.reads(jsValue).asOpt.getOrElse(zeroValue)).sum)
       .getOrElse(zeroValue)
   }
 
-  def eventDataIdentifier(eventType: EventType): EventDataIdentifier = {
-    ((noEventTypeData \ TaxYearPage.toString).asOpt[String], get(VersionInfoPage).map(_.version.toString)) match {
+  def eventDataIdentifier(eventType: EventType): EventDataIdentifier = eventDataIdentifier(eventType, get(VersionInfoPage))
+
+  def eventDataIdentifier(eventType: EventType, vi: Option[VersionInfo]): EventDataIdentifier = {
+    ((noEventTypeData \ TaxYearPage.toString).asOpt[String], vi.map(_.version.toString)) match {
       case (Some(year), Some(version)) => EventDataIdentifier(eventType, year, version)
       case (ty, v) => throw new RuntimeException(s"No tax year or version available $ty/ $v")
     }

@@ -21,7 +21,6 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.Ok
 import play.api.mvc.{Request, RequestHeader, Result}
 import play.twirl.api.Html
-import uk.gov.hmrc.http.ExpectationFailedException
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.{ErrorTemplate, NoDataEnteredErrorView}
 
@@ -40,10 +39,9 @@ class ErrorHandler @Inject()(
     view(pageTitle, heading, message)
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
-    implicit val rh: RequestHeader = request
-
     exception match {
-      case error: ExpectationFailedException => Future.successful(Ok(noDataEnteredView(config.yourPensionSchemesUrl)(Request(request, ""), request2Messages)))
+      case _: NothingToSubmitException =>
+        Future.successful(Ok(noDataEnteredView(config.manageOverviewDashboardUrl)(Request(request, ""), request2Messages(request))))
       case _ => super.onServerError(request, exception)
     }
   }

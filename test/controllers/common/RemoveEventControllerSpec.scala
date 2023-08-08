@@ -14,50 +14,52 @@
  * limitations under the License.
  */
 
-package controllers.event18
+package controllers.common
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event18.RemoveEvent18FormProvider
-import models.UserAnswers
-import org.mockito.ArgumentCaptor
+import data.SampleData.sampleEvent18JourneyData
+import forms.common.RemoveEventFormProvider
+import models.enumeration.EventType.Event18
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
-import pages.event18.{Event18ConfirmationPage, RemoveEvent18Page}
+import pages.common.RemoveEventPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event18.RemoveEvent18View
+import services.CompileService
+import views.html.common.RemoveEventView
 
-import scala.concurrent.Future
-
-class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach {
+class RemoveEventControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new RemoveEvent18FormProvider()
-  private val form = formProvider()
+  private val formProvider = new RemoveEventFormProvider()
+  private val form = formProvider(Event18)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val mockCompileService = mock[CompileService]
 
-  private def getRoute: String = routes.RemoveEvent18Controller.onPageLoad(waypoints).url
+  private def getRoute: String = routes.RemoveEventController.onPageLoad(waypoints, Event18).url
 
-  private def postRoute: String = routes.RemoveEvent18Controller.onSubmit(waypoints).url
+  private def postRoute: String = routes.RemoveEventController.onSubmit(waypoints, Event18).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
+    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
+    bind[CompileService].toInstance(mockCompileService)
   )
 
   override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
+    reset(mockCompileService)
   }
 
-  "RemoveEvent18 Controller" - {
+  "RemoveEvent Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -68,39 +70,16 @@ class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[RemoveEvent18View]
+        val view = application.injector.instanceOf[RemoveEventView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
-      }
-    }
-
-    "must update event18Confirmation in userAnswers to false when selecting true" in {
-      val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-
-      when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any()))
-        .thenReturn(Future.successful(()))
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        uaCaptor.getValue.get(Event18ConfirmationPage) mustBe Some(false)
-        redirectLocation(result).value mustEqual RemoveEvent18Page.navigate(waypoints, emptyUserAnswers, uaCaptor.getValue).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        contentAsString(result) mustEqual view(form, waypoints, Event18)(request, messages(application)).toString
       }
     }
 
     "must not change anything in userAnswer and not call user-cache connector when selecting false" in {
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(sampleEvent18JourneyData), extraModules)
           .build()
 
       running(application) {
@@ -110,7 +89,7 @@ class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RemoveEvent18Page.navigate(waypoints, emptyUserAnswers, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual RemoveEventPage(Event18).navigate(waypoints, sampleEvent18JourneyData, sampleEvent18JourneyData).url
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
@@ -124,13 +103,13 @@ class RemoveEvent18ControllerSpec extends SpecBase with BeforeAndAfterEach {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[RemoveEvent18View]
+        val view = application.injector.instanceOf[RemoveEventView]
         val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, Event18)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

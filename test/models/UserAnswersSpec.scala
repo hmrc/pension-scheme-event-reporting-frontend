@@ -20,8 +20,8 @@ import base.SpecBase
 import data.SampleData
 import data.SampleData._
 import models.common.ManualOrUpload.Manual
-import models.common.{ChooseTaxYear, MembersSummary}
 import models.common.MembersSummary.readsMemberValue
+import models.common.{ChooseTaxYear, MembersSummary}
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event22}
 import models.enumeration.VersionStatus.Compiled
@@ -29,26 +29,25 @@ import models.event1.MembersOrEmployersSummary.readsMemberOrEmployerValue
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.{MembersOrEmployersSummary, PaymentDetails}
 import org.scalatest.matchers.must.Matchers
-import pages.{TaxYearPage, VersionInfoPage}
 import pages.common._
 import pages.event1.employer.CompanyDetailsPage
 import pages.event1.{PaymentValueAndDatePage, WhoReceivedUnauthPaymentPage}
-import play.api.libs.json.JsString
-import play.api.libs.json.Writes
+import pages.{TaxYearPage, VersionInfoPage}
+import play.api.libs.json.{JsObject, JsString, Json, Writes}
 
 import java.time.LocalDate
 
 class UserAnswersSpec extends SpecBase with Matchers {
 
   private val userAnswersDataTaxYear = UserAnswers().setOrException(TaxYearPage, TaxYear("2020")).data
-  private val writesTaxYear: Writes[ChooseTaxYear]= ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
+  private val writesTaxYear: Writes[ChooseTaxYear] = ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
 
 
   "getAll" - {
     "must return the list of members or employers" in {
       userAnswersWithOneMemberAndEmployerEvent1.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
-        Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00)),
-          MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00)))
+        Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00), None),
+          MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00), None))
     }
 
     "must return empty list if nothing present" in {
@@ -62,8 +61,8 @@ class UserAnswersSpec extends SpecBase with Matchers {
         .setOrException(PaymentValueAndDatePage(1), PaymentDetails(BigDecimal(7687.00), LocalDate.of(2022, 11, 9)))
         .setOrException(CompanyDetailsPage(1), companyDetails)
       userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
-        Seq(MembersOrEmployersSummary("Not entered", BigDecimal(0.00)),
-          MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00)))
+        Seq(MembersOrEmployersSummary("Not entered", BigDecimal(0.00), None),
+          MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00), None))
     }
 
     "must return the list of members or employers where employer value and employer details missing" in {
@@ -73,15 +72,15 @@ class UserAnswersSpec extends SpecBase with Matchers {
         .setOrException(MembersDetailsPage(Event1, 0), memberDetails)
         .setOrException(WhoReceivedUnauthPaymentPage(1), Employer)
       userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
-        Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00)),
-          MembersOrEmployersSummary("Not entered", BigDecimal(0.00)))
+        Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00), None),
+          MembersOrEmployersSummary("Not entered", BigDecimal(0.00), None))
     }
     "must return the list of members or employers if only first question answered" in {
       val userAnswersWithOnlyManualOrUpload: UserAnswers = UserAnswers()
         .setOrException(ManualOrUploadPage(Event1, 0), Manual)
 
       userAnswersWithOnlyManualOrUpload.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
-        Seq(MembersOrEmployersSummary("Not entered", BigDecimal(0.00)))
+        Seq(MembersOrEmployersSummary("Not entered", BigDecimal(0.00), Some("Any")))
     }
   }
 
@@ -97,19 +96,114 @@ class UserAnswersSpec extends SpecBase with Matchers {
 
 
   "sumAll" - {
-    "must count correctly when one member and one employer" in {
+    "for event 1 must count correctly when one member and one employer" in {
       userAnswersWithOneMemberAndEmployerEvent1.sumAll(MembersOrEmployersPage(Event1), readsMemberOrEmployerValue) mustBe BigDecimal(8544.00)
     }
 
-    "must count correctly when nothing present" in {
+    "for event 1 must count correctly when one member and one employer and one of each deleted" in {
+      val event1PayloadWithDeleted = Json.parse(
+        """{
+          |   "event1":{
+          |      "membersOrEmployers":[
+          |         {
+          |            "whoReceivedUnauthPayment":"member",
+          |            "paymentValueAndDate":{
+          |               "paymentValue":857,
+          |               "paymentDate":"2022-11-09"
+          |            },
+          |            "membersDetails":{
+          |               "firstName":"Joe",
+          |               "lastName":"Bloggs",
+          |               "nino":"AA234567D"
+          |            }
+          |         },
+          |         {
+          |            "whoReceivedUnauthPayment":"employer",
+          |            "paymentValueAndDate":{
+          |               "paymentValue":7687,
+          |               "paymentDate":"2022-11-09"
+          |            },
+          |            "event1":{
+          |               "companyDetails":{
+          |                  "companyName":"Company Name",
+          |                  "companyNumber":"12345678"
+          |               }
+          |            }
+          |         },
+          |         {
+          |            "whoReceivedUnauthPayment":"member",
+          |            "paymentValueAndDate":{
+          |               "paymentValue":237,
+          |               "paymentDate":"2022-11-09"
+          |            },
+          |            "membersDetails":{
+          |               "firstName":"Steven",
+          |               "lastName":"Bloggs",
+          |               "nino":"AA123456C"
+          |            },
+          |            "memberStatus": "Deleted"
+          |         },
+          |         {
+          |            "whoReceivedUnauthPayment":"employer",
+          |            "paymentValueAndDate":{
+          |               "paymentValue":5333,
+          |               "paymentDate":"2022-11-09"
+          |            },
+          |            "memberStatus": "Deleted",
+          |            "event1":{
+          |               "companyDetails":{
+          |                  "companyName":"Company Name 2",
+          |                  "companyNumber":"12345679"
+          |               }
+          |            }
+          |         }
+          |      ]
+          |   }
+          |}""".stripMargin).as[JsObject]
+      val userAnswersWithOneMemberAndEmployerEvent1WithDeletedMembers = UserAnswers(event1PayloadWithDeleted)
+      userAnswersWithOneMemberAndEmployerEvent1WithDeletedMembers.sumAll(MembersOrEmployersPage(Event1), readsMemberOrEmployerValue) mustBe BigDecimal(8544.00)
+    }
+
+    "for event 1 must count correctly when nothing present" in {
       UserAnswers().sumAll(MembersOrEmployersPage(Event1), readsMemberOrEmployerValue) mustBe 0
     }
+
+    "for event 22 must count correctly when one member not deleted and one deleted" in {
+
+      val payload = Json.parse(
+        """{
+          |   "event22":{
+          |      "members":[
+          |         {
+          |            "chooseTaxYear":"2023", "totalPensionAmounts":500.12,
+          |            "membersDetails":{
+          |               "firstName":"First",
+          |               "lastName":"Last",
+          |               "nino":"AA234567D"
+          |            }
+          |         },
+          |         {
+          |            "chooseTaxYear":"2023", "totalPensionAmounts":667.12,
+          |            "membersDetails":{
+          |               "firstName":"First",
+          |               "lastName":"Last",
+          |               "nino":"AA234567D"
+          |            },"memberStatus":"Deleted"
+          |         }
+          |      ]
+          |   }
+          |}""".stripMargin).as[JsObject]
+
+
+      UserAnswers(payload).sumAll(MembersPage(Event22), MembersSummary.readsMemberValue(Event22)) mustBe BigDecimal(500.12)
+    }
   }
+
   "event22" - {
     "getAll" - {
       "must return the list of members" in {
         sampleMemberJourneyDataEvent22and23(Event22).getAll(MembersPage(Event22))(MembersSummary.readsMember(Event22)) mustBe
-          Seq(MembersSummary(SampleData.memberDetails.fullName, BigDecimal(10.00), SampleData.memberDetails.nino))
+          Seq(MembersSummary(SampleData.memberDetails.fullName, BigDecimal(10.00), SampleData.memberDetails.nino, None))
       }
 
       "must return empty list if nothing present" in {
@@ -121,7 +215,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
           .setOrException(ChooseTaxYearPage(Event22, 0), taxYear)(writesTaxYear)
 
         userAnswersWithOneMember.getAll(MembersPage(Event22))(MembersSummary.readsMember(Event22)) mustBe
-          Seq(MembersSummary("Not entered", BigDecimal(0.00), "Not entered"))
+          Seq(MembersSummary("Not entered", BigDecimal(0.00), "Not entered", None))
       }
 
     }

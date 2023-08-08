@@ -17,6 +17,7 @@
 package services
 
 import com.google.inject.Inject
+import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.enumeration.EventType
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
@@ -28,7 +29,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CompileService @Inject()(
                                 eventReportingConnector: EventReportingConnector,
-                                userAnswersCacheConnector: UserAnswersCacheConnector
+                                userAnswersCacheConnector: UserAnswersCacheConnector,
+                                appConfig: FrontendAppConfig
                               ) {
 
 
@@ -62,32 +64,46 @@ class CompileService @Inject()(
     }
   }
 
-  def compileEvent(eventType: EventType, pstr: String, userAnswers: UserAnswers)(implicit ec: ExecutionContext,
-                                                                                 headerCarrier: HeaderCarrier): Future[Unit] = {
-    eventReportingConnector.compileEvent(pstr, userAnswers.eventDataIdentifier(eventType)).flatMap { _ =>
-      userAnswers.get(VersionInfoPage) match {
-        case Some(vi) =>
-          val newVersionInfo = vi match {
-            case VersionInfo(version, NotStarted) => VersionInfo(version, Compiled)
-            case vi@VersionInfo(_, Compiled) => vi
-            case VersionInfo(version, Submitted) => VersionInfo(version + 1, Compiled)
-          }
-          val futureOptChangedOverviewSeq = if (newVersionInfo.version > vi.version) {
-            updateUAVersionAndOverview(pstr, userAnswers, vi.version, newVersionInfo.version)
-          } else {
-            Future.successful(None)
-          }
-          futureOptChangedOverviewSeq.flatMap { optChangedOverviewSeq =>
-            val uaNonEventTypeVersionUpdated = userAnswers.setOrException(VersionInfoPage, newVersionInfo, nonEventTypeData = true)
-            val updatedUA = optChangedOverviewSeq match {
-              case Some(seqErOverview) => uaNonEventTypeVersionUpdated
-                .setOrException(EventReportingOverviewPage, seqErOverview, nonEventTypeData = true)
-              case _ => uaNonEventTypeVersionUpdated
-            }
-            userAnswersCacheConnector.save(pstr, updatedUA)
-          }
-        case _ => throw new RuntimeException(s"No version available")
+
+  def compileEvent(eventType: EventType, pstr: String, userAnswers: UserAnswers, delete: Boolean = false)(implicit ec: ExecutionContext,
+                                                                                                          headerCarrier: HeaderCarrier): Future[Unit] = {
+
+    def doCompile(currentVersionInfo: VersionInfo, newVersionInfo: VersionInfo): Future[Unit] = {
+
+      val futureOptChangedOverviewSeq = if (newVersionInfo.version > currentVersionInfo.version) {
+        updateUAVersionAndOverview(pstr, userAnswers, currentVersionInfo.version, newVersionInfo.version)
+      } else {
+        Future.successful(None)
       }
+      futureOptChangedOverviewSeq.flatMap { optChangedOverviewSeq =>
+        val uaNonEventTypeVersionUpdated = userAnswers.setOrException(VersionInfoPage, newVersionInfo, nonEventTypeData = true)
+        val updatedUA = optChangedOverviewSeq match {
+          case Some(seqErOverview) => uaNonEventTypeVersionUpdated
+            .setOrException(EventReportingOverviewPage, seqErOverview, nonEventTypeData = true)
+          case _ => uaNonEventTypeVersionUpdated
+        }
+        userAnswersCacheConnector.save(pstr, updatedUA).flatMap { _ =>
+          val response = eventReportingConnector
+            .compileEvent(pstr, userAnswers.eventDataIdentifier(eventType, Some(newVersionInfo)), currentVersionInfo.version, delete)
+          response.map { _ =>
+            appConfig.compileDelayInSeconds match {
+              case v if v > 0 => Thread.sleep(appConfig.compileDelayInSeconds * 1000)
+              case _ => (): Unit
+            }
+          }
+        }
+      }
+    }
+
+    userAnswers.get(VersionInfoPage) match {
+      case Some(vi) =>
+        val newVersionInfo = vi match {
+          case VersionInfo(version, NotStarted) => VersionInfo(version, Compiled)
+          case vi@VersionInfo(_, Compiled) => vi
+          case VersionInfo(version, Submitted) => VersionInfo(version + 1, Compiled)
+        }
+        doCompile(vi, newVersionInfo)
+      case _ => throw new RuntimeException(s"No version available")
     }
   }
 }

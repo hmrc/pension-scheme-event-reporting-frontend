@@ -28,12 +28,13 @@ class PaymentNatureFormProviderSpec extends OptionFieldBehaviours {
 
     val fieldName = "value"
     val requiredKey = "paymentNature.error.required"
+    val formatKey = "paymentNature.error.format"
 
     behave like optionsField[PaymentNature](
       form,
       fieldName,
       validValues  = PaymentNature.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      invalidError = FormError(fieldName, formatKey)
     )
 
     behave like mandatoryField(

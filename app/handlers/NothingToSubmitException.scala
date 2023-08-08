@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package pages
-import controllers.routes
-import models.UserAnswers
-import play.api.mvc.Call
+package handlers
 
-object IndexPage extends Page {
+import uk.gov.hmrc.http.HttpException
+import play.api.http.Status.EXPECTATION_FAILED
 
-  override def route(waypoints: Waypoints): Call =
-    routes.IndexController.onPageLoad
+class NothingToSubmitException(message: String) extends HttpException(message, EXPECTATION_FAILED) {
 
-  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    IndexPage
 }

@@ -51,7 +51,7 @@ class Event6CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/new-report/event-6-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-6-click")(request, messages(application)).toString
       }
     }
 
@@ -143,38 +143,38 @@ object Event6CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel",
       "Joe Bloggs",
-      "/manage-pension-scheme-event-report/new-report/1/event-6-member-details?waypoints=event-6-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-6-member-details?waypoints=event-6-check-answers-1",
       "membersDetails.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel.nino",
       "AA234567D",
-      "/manage-pension-scheme-event-report/new-report/1/event-6-member-details?waypoints=event-6-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-6-member-details?waypoints=event-6-check-answers-1",
       "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "typeOfProtection.checkYourAnswersLabel",
       "Enhanced lifetime allowance",
-      "/manage-pension-scheme-event-report/new-report/1/event-6-what-type-protection-reference?waypoints=event-6-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-6-what-type-protection-reference?waypoints=event-6-check-answers-1",
       "typeOfProtection.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithTwoMsgKeys(
       "inputProtectionType.checkYourAnswersLabel",
       "typeOfProtection.enhancedLifetimeAllowance",
       "1234567A",
-      "/manage-pension-scheme-event-report/new-report/1/event-6-protection-reference?waypoints=event-6-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-6-protection-reference?waypoints=event-6-check-answers-1",
       "inputProtectionType.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "amountCrystallisedAndDate.value.checkYourAnswersLabel",
       "£10.00",
-      "/manage-pension-scheme-event-report/new-report/1/event-6-payment-details?waypoints=event-6-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-6-payment-details?waypoints=event-6-check-answers-1",
       "amountCrystallisedAndDate.value.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
       "amountCrystallisedAndDate.date.checkYourAnswersLabel",
       "08 November 2022",
-      "/manage-pension-scheme-event-report/new-report/1/event-6-payment-details?waypoints=event-6-check-answers-1",
+      "/manage-pension-scheme-event-report/report/1/event-6-payment-details?waypoints=event-6-check-answers-1",
       "amountCrystallisedAndDate.date.change.hidden"
     )
   )

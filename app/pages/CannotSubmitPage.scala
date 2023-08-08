@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package pages.event18
+package pages
 
-import pages.behaviours.PageBehaviours
+import play.api.mvc.Call
+import controllers.routes
 
-class RemoveEvent18PageSpec extends PageBehaviours {
+case object CannotSubmitPage extends Page {
 
-  "RemoveEvent18Page" - {
-
-    beRetrievable[Boolean](RemoveEvent18Page)
-
-    beSettable[Boolean](RemoveEvent18Page)
-
-    beRemovable[Boolean](RemoveEvent18Page)
-  }
+  override def route(waypoints: Waypoints): Call =
+    routes.CannotSubmitController.onPageLoad(waypoints)
 }

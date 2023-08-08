@@ -22,7 +22,7 @@ import play.api.data.FormError
 class ValueOfUnauthorisedPaymentFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "valueOfUnauthorisedPayment.error.required"
-  val invalidKey = "error.boolean"
+  val invalidKey = "valueOfUnauthorisedPayment.error.format"
 
   val form = new ValueOfUnauthorisedPaymentFormProvider()()
 

@@ -17,16 +17,17 @@
 package audit
 
 import connectors.EmailSent
-import models.enumeration.AdministratorOrPractitioner.Administrator
+import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 class EventReportingSubmissionEmailAuditEventSpec extends AnyFlatSpec with Matchers {
 
-  "EventReportingEmailAuditEvent" should "output the correct map of data" in {
+  "EventReportingEmailAuditEvent" should "output the correct map of data for PSA" in {
 
     val event = EventReportingSubmissionEmailAuditEvent(
       psaOrPspId = "A2500001",
+      pstr = "test-pstr",
       Administrator,
       emailAddress = "test@test.com",
       reportVersion = "1",
@@ -38,7 +39,32 @@ class EventReportingSubmissionEmailAuditEventSpec extends AnyFlatSpec with Match
       "submittedBy" -> Administrator.toString,
       "PensionSchemeAdministratorId" -> "A2500001",
       "reportVersion" -> "1",
-      "event" -> "EmailSent"
+      "event" -> "EmailSent",
+      "PensionSchemeTaxReference" -> "test-pstr"
+    )
+
+    event.auditType shouldBe "EventReportingEmailEvent"
+    event.details shouldBe expected
+  }
+
+  "EventReportingEmailAuditEvent" should "output the correct map of data for PSP" in {
+
+    val event = EventReportingSubmissionEmailAuditEvent(
+      psaOrPspId = "2500001",
+      pstr = "test-pstr",
+      Practitioner,
+      emailAddress = "test@test.com",
+      reportVersion = "1",
+      EmailSent
+    )
+
+    val expected: Map[String, String] = Map(
+      "emailAddress" -> "test@test.com",
+      "submittedBy" -> Practitioner.toString,
+      "PensionSchemePractitionerId" -> "2500001",
+      "reportVersion" -> "1",
+      "event" -> "EmailSent",
+      "PensionSchemeTaxReference" -> "test-pstr"
     )
 
     event.auditType shouldBe "EventReportingEmailEvent"

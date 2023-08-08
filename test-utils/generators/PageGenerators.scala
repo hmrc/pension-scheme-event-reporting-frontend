@@ -20,16 +20,19 @@ import models.Index
 import models.enumeration.AddressJourneyType
 import models.enumeration.EventType.{Event1, Event2}
 import org.scalacheck.Arbitrary
-import pages.common.MembersDetailsPage
+import pages.common.{MembersDetailsPage, RemoveEventPage}
 import pages.event1.employer.{EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, UnauthorisedPaymentRecipientNamePage}
 import pages.event1.member._
 import pages.event1.{employer, member}
 import pages.event13.SchemeStructurePage
 import pages.event3.EarlyBenefitsBriefDescriptionPage
 import pages.eventWindUp.SchemeWindUpDatePage
-import pages.{event13, _}
+import pages.{common, event13, _}
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryRemoveMemberPage: Arbitrary[common.RemoveMemberPage.type] =
+    Arbitrary(common.RemoveMemberPage)
 
   implicit lazy val arbitraryDeclarationPspPage: Arbitrary[DeclarationPspPage.type] =
     Arbitrary(DeclarationPspPage)
@@ -133,8 +136,8 @@ trait PageGenerators {
   implicit lazy val arbitraryManualOrUploadPage: Arbitrary[common.ManualOrUploadPage] =
     Arbitrary(common.ManualOrUploadPage(Event1, Index(0)))
 
-  implicit lazy val arbitraryRemoveEvent18Page: Arbitrary[event18.RemoveEvent18Page.type] =
-    Arbitrary(event18.RemoveEvent18Page)
+  implicit lazy val arbitraryRemoveEventPage: Arbitrary[RemoveEventPage.type] =
+    Arbitrary(common.RemoveEventPage)
 
   implicit lazy val arbitraryUnauthPaymentSummaryPage: Arbitrary[event1.UnauthPaymentSummaryPage.type] =
     Arbitrary(event1.UnauthPaymentSummaryPage)

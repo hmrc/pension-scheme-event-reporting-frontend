@@ -20,31 +20,24 @@ import com.google.inject.ImplementedBy
 import connectors.UserAnswersCacheConnector
 import models.enumeration.EventType
 import models.requests.{IdentifierRequest, OptionalDataRequest}
-import play.api.Logger
 import play.api.mvc.ActionTransformer
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
 
 class DataRetrievalImpl(eventType: EventType,
                         userAnswersCacheConnector: UserAnswersCacheConnector
                        )(implicit val executionContext: ExecutionContext)
   extends DataRetrieval {
-  private val logger = Logger(classOf[DataRetrievalImpl])
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-    val result = for {
+    for {
       data <- userAnswersCacheConnector.get(request.pstr, eventType)
     } yield {
       OptionalDataRequest[A](request.pstr, request.schemeName, request.returnUrl, request, request.loggedInUser, data)
-    }
-    result andThen {
-      case Success(v) => logger.info("Successful response to data retrieval:" + v)
-      case Failure(t: Throwable) => logger.warn("Unable to complete data retrieval", t)
     }
   }
 }
@@ -52,20 +45,15 @@ class DataRetrievalImpl(eventType: EventType,
 class DataRetrievalNoEventTypeImpl(userAnswersCacheConnector: UserAnswersCacheConnector
                                   )(implicit val executionContext: ExecutionContext)
   extends DataRetrieval {
-  private val logger = Logger(classOf[DataRetrievalImpl])
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    val result = for {
+    for {
       data <- userAnswersCacheConnector.get(request.pstr)
     } yield {
       OptionalDataRequest[A](request.pstr, request.schemeName, request.returnUrl, request, request.loggedInUser, data)
-    }
-    result andThen {
-      case Success(v) => logger.info("Successful response to data retrieval:" + v)
-      case Failure(t: Throwable) => logger.warn("Unable to complete data retrieval", t)
     }
   }
 }

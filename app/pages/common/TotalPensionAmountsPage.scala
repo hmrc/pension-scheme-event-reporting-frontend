@@ -23,7 +23,7 @@ import models.enumeration.EventType.{Event22, Event23}
 import pages.event22.Event22CheckYourAnswersPage
 
 import pages.event23.Event23CheckYourAnswersPage
-import pages.{IndexPage, Page, QuestionPage, Waypoints}
+import pages.{JourneyRecoveryPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -38,7 +38,7 @@ case class TotalPensionAmountsPage(eventType: EventType, index: Index) extends Q
     eventType match {
       case Event22 => Event22CheckYourAnswersPage(index)
       case Event23 => Event23CheckYourAnswersPage(index)
-      case _ => IndexPage
+      case _ => JourneyRecoveryPage
     }
   }
 

@@ -38,4 +38,30 @@ document.addEventListener('DOMContentLoaded', function(event) {
         });
     }
 
+    // file upload status
+    var ajaxRedirect = document.querySelector('#processing-status');
+    if( ajaxRedirect !== null ){
+        var url = "/manage-pension-scheme-event-report/report/event-checking-file";
+        function pollData(){
+            fetch(url).then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return Promise.reject(response);
+                }
+            }).then(function (data) {
+                if (data.status === "processing") {
+                    setTimeout(function() {
+                        pollData();
+                    }, 2000);
+                } else {
+                    location.reload();
+                }
+            }).catch(function (err) {
+                console.warn('Something went wrong.', err);
+            });
+        }
+        pollData();
+    }
+
 });

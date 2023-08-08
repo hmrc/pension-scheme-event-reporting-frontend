@@ -36,7 +36,7 @@ object TaxYear extends Enumerable.Implicits {
   implicit val writes: Writes[TaxYear] = (yr: TaxYear) => JsString(yr.startYear)
   private val numberOfYearsToShow = 7
 
-  val values: Seq[TaxYear] = {
+  def values: Seq[TaxYear] = {
     yearRange(DateHelper.today).reverse
   }
 
@@ -102,6 +102,13 @@ object TaxYear extends Enumerable.Implicits {
       }
       case _ => throw new RuntimeException("Tax year not entered")
     }
+  }
+
+  def isCurrentTaxYear(userAnswers: UserAnswers): Boolean = {
+    val taxYear = TaxYear.getTaxYear(userAnswers)
+    val endOfPreviousTaxYear = LocalDate.of(taxYear, 4, 5)
+    val startOfNextTaxYear = LocalDate.of(taxYear + 1, 4, 6)
+    DateHelper.today.isBefore(startOfNextTaxYear) && DateHelper.today.isAfter(endOfPreviousTaxYear)
   }
 
   implicit val enumerable: Enumerable[TaxYear] =

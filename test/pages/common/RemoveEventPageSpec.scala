@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.common
 
-import controllers.routes
-import models.UserAnswers
-import play.api.mvc.Call
+import models.enumeration.EventType.{Event1, Event18, Event22}
+import pages.behaviours.PageBehaviours
 
-object NoDataEnteredErrorPage extends Page {
+class RemoveEventPageSpec extends PageBehaviours {
 
-  override def route(waypoints: Waypoints): Call =
-    routes.NoDataEnteredErrorController.onPageLoad(waypoints)
+  "RemoveEventPage" - {
 
-  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    NoDataEnteredErrorPage
+    beRetrievable[Boolean](RemoveEventPage(Event1))
+
+    beSettable[Boolean](RemoveEventPage(Event18))
+
+    beRemovable[Boolean](RemoveEventPage(Event22))
+  }
 }
