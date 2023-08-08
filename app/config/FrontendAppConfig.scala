@@ -62,7 +62,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   def listPspUrl: String = loadConfig("urls.listPsp")
 
-  def manageOverviewDashboardUrl: String = loadConfig("urls.manageOverviewDashboard")
+   def manageOverviewDashboardUrl: String = loadConfig("urls.manageOverviewDashboard")
 
   def successEndPointTarget(eventType: EventType): String = loadConfig("upscan.success-endpoint").format(toRoute(eventType))
 
