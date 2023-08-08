@@ -114,6 +114,7 @@ class EventReportingConnector @Inject()(
       .map { response =>
         response.status match {
           case NO_CONTENT => ()
+          case EXPECTATION_FAILED => throw new ExpectationFailedException("Nothing to submit")
           case _ =>
             throw new HttpException(response.body, response.status)
         }
@@ -135,6 +136,7 @@ class EventReportingConnector @Inject()(
       .map { response =>
         response.status match {
           case NO_CONTENT => ()
+          case EXPECTATION_FAILED => throw new ExpectationFailedException("Nothing to submit")
           case _ =>
             throw new HttpException(response.body, response.status)
         }
