@@ -36,6 +36,7 @@ import audit.AuditService
 import base.SpecBase
 import connectors.MinimalConnector.MinimalDetails
 import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector}
+import handlers.NothingToSubmitException
 import models.VersionInfo
 import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.enumeration.VersionStatus.Compiled
@@ -51,7 +52,6 @@ import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SubmitService
-import uk.gov.hmrc.http.ExpectationFailedException
 import views.html.DeclarationView
 import org.mockito.Mockito.doNothing
 import play.api.http.Status.OK
@@ -145,11 +145,11 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
 
       val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
 
-      val futureResult: Future[ExpectationFailedException] = recoverToExceptionIf[ExpectationFailedException] {
+      val futureResult: Future[NothingToSubmitException] = recoverToExceptionIf[NothingToSubmitException] {
         controller.onClick(waypoints)(request)
       }
 
-      val result: ExpectationFailedException = Await.result(futureResult, Duration(5, SECONDS))
+      val result: NothingToSubmitException = Await.result(futureResult, Duration(5, SECONDS))
 
       result.responseCode mustBe EXPECTATION_FAILED
     }

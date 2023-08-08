@@ -43,7 +43,7 @@ class ErrorHandlerSpec extends SpecBase with BeforeAndAfterEach with MockitoSuga
 
       val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
 
-      val exception = new ExpectationFailedException("User data not available")
+      val exception = new NothingToSubmitException("User data not available")
 
       val result = errorHandler.onServerError(request, exception)
 

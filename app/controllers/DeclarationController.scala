@@ -20,6 +20,7 @@ import audit.{AuditService, EventReportingSubmissionEmailAuditEvent}
 import config.FrontendAppConfig
 import connectors.{EmailConnector, EmailStatus, MinimalConnector}
 import controllers.actions._
+import handlers.NothingToSubmitException
 import models.enumeration.AdministratorOrPractitioner
 import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}
@@ -29,7 +30,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SubmitService
-import uk.gov.hmrc.http.{ExpectationFailedException, HeaderCarrier}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.DateHelper.formatSubmittedDate
 import views.html.DeclarationView
@@ -60,7 +61,7 @@ class DeclarationController @Inject()(
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
 
-      request.userAnswers.getOrElse(throw new ExpectationFailedException("User data not available"))
+      request.userAnswers.getOrElse(throw new NothingToSubmitException("User data not available"))
 
       requireData.invokeBlock(request, { implicit request:DataRequest[_] =>
         val data: UserAnswers = UserAnswers(

@@ -21,7 +21,6 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.Ok
 import play.api.mvc.{Request, RequestHeader, Result}
 import play.twirl.api.Html
-import uk.gov.hmrc.http.ExpectationFailedException
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.{ErrorTemplate, NoDataEnteredErrorView}
 
@@ -41,7 +40,7 @@ class ErrorHandler @Inject()(
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
     exception match {
-      case _: ExpectationFailedException =>
+      case _: NothingToSubmitException =>
         Future.successful(Ok(noDataEnteredView(config.manageOverviewDashboardUrl)(Request(request, ""), request2Messages(request))))
       case _ => super.onServerError(request, exception)
     }

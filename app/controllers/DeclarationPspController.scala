@@ -21,6 +21,7 @@ import config.FrontendAppConfig
 import connectors._
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.DeclarationPspFormProvider
+import handlers.NothingToSubmitException
 import models.enumeration.AdministratorOrPractitioner
 import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}
@@ -29,7 +30,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.http.{ExpectationFailedException, HeaderCarrier}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.DateHelper.formatSubmittedDate
 import views.html.DeclarationPspView
@@ -70,7 +71,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
 
-      request.userAnswers.getOrElse(throw new ExpectationFailedException("User data not available"))
+      request.userAnswers.getOrElse(throw new NothingToSubmitException("User data not available"))
       requireData.invokeBlock(request, { implicit request: DataRequest[_] =>
 
         def emailFuture = minimalConnector.getMinimalDetails(
