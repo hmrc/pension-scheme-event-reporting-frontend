@@ -21,13 +21,11 @@
     <thead class="govuk-table__head">
     <tr class="govuk-table__row">
         <th scope="col" class="govuk-table__header">@messages(colOne)</th>
-        <th scope="col" class="govuk-table__header">@messages(colTwo)</th>
-        <th scope="col" class="govuk-table__header"></th>
+        <th scope="col" class="govuk-table__header" colspan="2">@messages(colTwo)</th>
     </tr>
     </thead>
     <tbody class="govuk-table__body">
     @seqSummaryListRow.map { summaryListRow =>
-
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header govuk-!-font-weight-regular govuk-!-width-one-half">@summaryListRow.key.content.asHtml</th>
                 @summaryListRow.actions.map { actions =>
