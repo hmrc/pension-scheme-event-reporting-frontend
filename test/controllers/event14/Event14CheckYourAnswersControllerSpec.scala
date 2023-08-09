@@ -17,6 +17,7 @@
 package controllers.event14
 
 import base.SpecBase
+import models.enumeration.EventType.Event14
 import models.enumeration.VersionStatus.Submitted
 import models.{EROverview, EROverviewVersion, TaxYear, VersionInfo}
 import pages.{EventReportingOverviewPage, VersionInfoPage}
@@ -57,7 +58,7 @@ class Event14CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
-        .setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+        .setOrException(VersionInfoPage, VersionInfo(3, Submitted))
         .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
@@ -71,6 +72,26 @@ class Event14CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(list,
           "/manage-pension-scheme-event-report/report/event-14-click")(request, messages(application)).toString
+      }
+    }
+
+    "must return OK and the correct view for a GET (View Only (different heading))" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
+        .setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+        .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event14.routes.Event14CheckYourAnswersController.onPageLoad().url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[CheckYourAnswersView]
+        val list = SummaryListViewModel(Seq.empty)
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(list,
+          "/manage-pension-scheme-event-report/report/event-14-click", Tuple2(Some(1), Some(Event14)))(request, messages(application)).toString
       }
     }
 

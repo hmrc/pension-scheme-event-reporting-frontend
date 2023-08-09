@@ -72,7 +72,7 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         ArgumentCaptor.forClass(classOf[SummaryList])
 
       running(application) {
-        when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
+        when(mockView.apply(captor.capture(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
         val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url)
         val result = route(application, request).value
         status(result) mustEqual OK

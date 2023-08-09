@@ -70,7 +70,7 @@ class Event7CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         ArgumentCaptor.forClass(classOf[SummaryList])
 
       running(application) {
-        when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
+        when(mockView.apply(captor.capture(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
         val request = FakeRequest(GET, controllers.event7.routes.Event7CheckYourAnswersController.onPageLoad(0).url)
         val result = route(application, request).value
         status(result) mustEqual OK

@@ -20,8 +20,6 @@ import com.google.inject.ImplementedBy
 import connectors.UserAnswersCacheConnector
 import models.enumeration.EventType
 import models.requests.{IdentifierRequest, OptionalDataRequest}
-import pages.VersionInfoPage
-import play.api.Logger
 import play.api.mvc.ActionTransformer
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -39,11 +37,6 @@ class DataRetrievalImpl(eventType: EventType,
     for {
       data <- userAnswersCacheConnector.get(request.pstr, eventType)
     } yield {
-      data.map{ uA => uA.get(VersionInfoPage) match {
-        case Some(value) => value.version
-      }
-
-      }
       OptionalDataRequest[A](request.pstr, request.schemeName, request.returnUrl, request, request.loggedInUser, data)
     }
   }

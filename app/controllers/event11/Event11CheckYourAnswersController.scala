@@ -18,11 +18,12 @@ package controllers.event11
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import helpers.ReadOnlyCYA
 import models.UserAnswers
 import models.enumeration.EventType.Event11
 import models.requests.DataRequest
 import pages.event11.{Event11CheckYourAnswersPage, HasSchemeChangedRulesInvestmentsInAssetsPage, HasSchemeChangedRulesPage}
-import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
@@ -49,7 +50,10 @@ class Event11CheckYourAnswersController @Inject()(
       val thisPage = Event11CheckYourAnswersPage()
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event11.routes.Event11CheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent11CYARows(waypoints, thisPage, request.userAnswers)), continueUrl))
+      val version = request.userAnswers.get(VersionInfoPage).map(_.version)
+      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event11, version, request.readOnly())
+
+      Ok(view(SummaryListViewModel(rows = buildEvent11CYARows(waypoints, thisPage, request.userAnswers)), continueUrl, readOnlyHeading))
     }
 
   def onClick: Action[AnyContent] =

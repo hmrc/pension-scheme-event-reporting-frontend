@@ -17,6 +17,7 @@
 package controllers.eventWindUp
 
 import base.SpecBase
+import models.enumeration.EventType.WindUp
 import models.enumeration.VersionStatus.Submitted
 import models.{EROverview, EROverviewVersion, TaxYear, VersionInfo}
 import pages.{EventReportingOverviewPage, VersionInfoPage}
@@ -56,7 +57,8 @@ class EventWindUpCheckYourAnswersControllerSpec extends SpecBase with SummaryLis
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+      val application = applicationBuilder(userAnswers =
+        Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(3, Submitted))
         .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
@@ -70,6 +72,26 @@ class EventWindUpCheckYourAnswersControllerSpec extends SpecBase with SummaryLis
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(list,
           "/manage-pension-scheme-event-report/report/event-windup-click")(request, messages(application)).toString
+      }
+    }
+
+    "must return OK and the correct view for a GET (View Only (different heading))" in {
+
+      val application = applicationBuilder(userAnswers =
+        Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+        .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onPageLoad().url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[CheckYourAnswersView]
+        val list = SummaryListViewModel(Seq.empty)
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(list,
+          "/manage-pension-scheme-event-report/report/event-windup-click", Tuple2(Some(1), Some(WindUp)))(request, messages(application)).toString
       }
     }
 

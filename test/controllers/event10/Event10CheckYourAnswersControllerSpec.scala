@@ -18,9 +18,10 @@ package controllers.event10
 
 import base.SpecBase
 import data.SampleData.{sampleJourneyData10BecameAScheme, sampleJourneyData10CeasedToBecomeAScheme}
+import models.enumeration.EventType.Event10
 import models.enumeration.VersionStatus.Submitted
 import models.{EROverview, EROverviewVersion, TaxYear, VersionInfo}
-import org.mockito.ArgumentCaptor
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
@@ -34,6 +35,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
+
 import java.time.LocalDate
 
 class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
@@ -68,7 +70,7 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers =
-        Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+        Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(3, Submitted))
         .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
@@ -81,6 +83,25 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-10-click")(request, messages(application)).toString
+      }
+    }
+
+    "must return OK and the correct view for a GET (View Only (different heading))" in {
+
+      val application = applicationBuilder(userAnswers =
+        Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+        .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[CheckYourAnswersView]
+        val list = SummaryListViewModel(Seq.empty)
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-10-click", Tuple2(Some(1), Some(Event10)))(request, messages(application)).toString
       }
     }
 
@@ -102,7 +123,7 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         ArgumentCaptor.forClass(classOf[SummaryList])
 
       running(application) {
-        when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
+        when(mockView.apply(captor.capture(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
         val request = FakeRequest(GET, controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
         val result = route(application, request).value
         status(result) mustEqual OK
@@ -136,7 +157,7 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         ArgumentCaptor.forClass(classOf[SummaryList])
 
       running(application) {
-        when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
+        when(mockView.apply(captor.capture(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
         val request = FakeRequest(GET, controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
         val result = route(application, request).value
         status(result) mustEqual OK
@@ -170,7 +191,7 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         ArgumentCaptor.forClass(classOf[SummaryList])
 
       running(application) {
-        when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
+        when(mockView.apply(captor.capture(), any(), ArgumentMatchers.eq(Some(1),Some(Event10)))(any(), any())).thenReturn(play.twirl.api.Html(""))
         val request = FakeRequest(GET, controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
         val result = route(application, request).value
         status(result) mustEqual OK

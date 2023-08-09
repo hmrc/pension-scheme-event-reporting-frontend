@@ -21,7 +21,7 @@ import controllers.event19.Event19CheckYourAnswersControllerSpec.{expectedMember
 import data.SampleData.sampleJourneyData19CountryOrTerritory
 import models.enumeration.VersionStatus.Submitted
 import models.{EROverview, EROverviewVersion, TaxYear, VersionInfo}
-import org.mockito.ArgumentCaptor
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
@@ -69,7 +69,7 @@ class Event19CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers =
-        Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+        Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(3, Submitted))
           .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
@@ -103,7 +103,7 @@ class Event19CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         ArgumentCaptor.forClass(classOf[SummaryList])
 
       running(application) {
-        when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
+        when(mockView.apply(captor.capture(), any(), ArgumentMatchers.eq(Tuple2(None, None)))(any(), any())).thenReturn(play.twirl.api.Html(""))
         val request = FakeRequest(GET, controllers.event19.routes.Event19CheckYourAnswersController.onPageLoad.url)
         val result = route(application, request).value
         status(result) mustEqual OK
@@ -137,7 +137,7 @@ class Event19CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         ArgumentCaptor.forClass(classOf[SummaryList])
 
       running(application) {
-        when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
+        when(mockView.apply(captor.capture(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
         val request = FakeRequest(GET, controllers.event19.routes.Event19CheckYourAnswersController.onPageLoad.url)
         val result = route(application, request).value
         status(result) mustEqual OK

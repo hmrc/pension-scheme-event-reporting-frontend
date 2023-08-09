@@ -16,7 +16,7 @@
 
 package models.requests
 
-import models.TaxYear.{getSelectedTaxYear, values}
+import models.TaxYear.getSelectedTaxYear
 import models.{LoggedInUser, UserAnswers}
 import pages.{EventReportingOverviewPage, VersionInfoPage}
 import play.api.mvc.{Request, WrappedRequest}

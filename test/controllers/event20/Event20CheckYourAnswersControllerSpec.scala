@@ -19,9 +19,10 @@ package controllers.event20
 import base.SpecBase
 import controllers.event20.Event20CheckYourAnswersControllerSpec.{expectedSummaryListRowsEvent20, expectedSummaryListRowsEvent20ViewOnly}
 import data.SampleData.sampleEvent20JourneyData
+import models.enumeration.EventType.Event20
 import models.enumeration.VersionStatus.Submitted
 import models.{EROverview, EROverviewVersion, TaxYear, VersionInfo}
-import org.mockito.ArgumentCaptor
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
@@ -68,7 +69,7 @@ class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
-        .setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+        .setOrException(VersionInfoPage, VersionInfo(3, Submitted))
         .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
@@ -81,6 +82,25 @@ class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-20-click")(request, messages(application)).toString
+      }
+    }
+
+    "must return OK and the correct view for a GET (View Only (different heading))" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
+        .setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+        .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[CheckYourAnswersView]
+        val list = SummaryListViewModel(Seq.empty)
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-20-click", Tuple2(Some(1), Some(Event20)))(request, messages(application)).toString
       }
     }
 
@@ -103,7 +123,7 @@ class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         ArgumentCaptor.forClass(classOf[SummaryList])
 
       running(application) {
-        when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
+        when(mockView.apply(captor.capture(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
         val request = FakeRequest(GET, controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
         val result = route(application, request).value
         status(result) mustEqual OK
@@ -130,7 +150,7 @@ class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         userAnswers = Some(sampleEvent20JourneyData
           .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
           .setOrException(EventReportingOverviewPage, erOverviewSeq)
-          .setOrException(VersionInfoPage, VersionInfo(2, Submitted))),
+          .setOrException(VersionInfoPage, VersionInfo(1, Submitted))),
         extraModules = extraModules
       ).build()
 
@@ -138,7 +158,7 @@ class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         ArgumentCaptor.forClass(classOf[SummaryList])
 
       running(application) {
-        when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
+        when(mockView.apply(captor.capture(), any(), ArgumentMatchers.eq(Some(1),Some(Event20)))(any(), any())).thenReturn(play.twirl.api.Html(""))
         val request = FakeRequest(GET, controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
         val result = route(application, request).value
         status(result) mustEqual OK

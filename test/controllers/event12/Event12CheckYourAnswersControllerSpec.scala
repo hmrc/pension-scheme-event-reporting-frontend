@@ -18,6 +18,7 @@ package controllers.event12
 
 import base.SpecBase
 import data.SampleData.sampleEvent12JourneyData
+import models.enumeration.EventType.Event12
 import models.enumeration.VersionStatus.Submitted
 import models.{EROverview, EROverviewVersion, TaxYear, VersionInfo}
 import org.mockito.ArgumentCaptor
@@ -69,7 +70,7 @@ class Event12CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
-        .setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+        .setOrException(VersionInfoPage, VersionInfo(3, Submitted))
         .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
@@ -82,6 +83,26 @@ class Event12CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-12-click")(request, messages(application)).toString
+      }
+    }
+
+    "must return OK and the correct view for a GET (View Only (different heading))" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
+        .setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+        .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[CheckYourAnswersView]
+        val list = SummaryListViewModel(Seq.empty)
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual
+          view(list, "/manage-pension-scheme-event-report/report/event-12-click", Tuple2(Some(1), Some(Event12)))(request, messages(application)).toString
       }
     }
 
@@ -103,7 +124,7 @@ class Event12CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         ArgumentCaptor.forClass(classOf[SummaryList])
 
       running(application) {
-        when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
+        when(mockView.apply(captor.capture(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
         val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
         val result = route(application, request).value
         status(result) mustEqual OK
@@ -137,7 +158,7 @@ class Event12CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         ArgumentCaptor.forClass(classOf[SummaryList])
 
       running(application) {
-        when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
+        when(mockView.apply(captor.capture(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
         val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
         val result = route(application, request).value
         status(result) mustEqual OK
