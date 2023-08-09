@@ -18,6 +18,7 @@ GET         /keep-alive                                                         
 GET         /event-selection                                                      controllers.EventSelectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /event-selection                                                      controllers.EventSelectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 GET         /event-summary                                                        controllers.EventSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /event18/summary                                                      controllers.EventSummaryController.onPageLoadForEvent18ViewOnlyLink(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /event-summary                                                        controllers.EventSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /report/want-to-submit                                            controllers.WantToSubmitController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
