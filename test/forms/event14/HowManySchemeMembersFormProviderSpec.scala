@@ -22,7 +22,6 @@ import play.api.data.FormError
 
   class HowManySchemeMembersFormProviderSpec extends OptionFieldBehaviours {
 
-    //TODO implement implicit messages
   private val requiredKey = "howManySchemeMembers.error.required"
   private def form = new HowManySchemeMembersFormProvider().apply(requiredKey)
 

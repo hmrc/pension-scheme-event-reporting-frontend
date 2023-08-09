@@ -67,7 +67,7 @@ class Event20APsaDeclarationController @Inject()(
           eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion).map { _ =>
             Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
           }
-        case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
+        case _ => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None).url))
       }
   }
 

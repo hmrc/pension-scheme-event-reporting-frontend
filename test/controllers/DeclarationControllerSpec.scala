@@ -36,6 +36,7 @@ import audit.AuditService
 import base.SpecBase
 import connectors.MinimalConnector.MinimalDetails
 import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector}
+import handlers.NothingToSubmitException
 import models.VersionInfo
 import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.enumeration.VersionStatus.{Compiled, Submitted}
@@ -43,17 +44,21 @@ import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.RecoverMethods._
 import org.scalatestplus.mockito.MockitoSugar
 import pages.{EmptyWaypoints, VersionInfoPage}
+import play.api.http.Status.OK
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.{GET, _}
 import services.SubmitService
 import views.html.DeclarationView
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 
 class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
@@ -115,10 +120,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       }
     }
 
-    //TODO - update tests and json data for submitting event report/ connector once sufficient data is captured in the FE (separate ticket being raised)
-
     "must redirect to the correct page for method onClick" in {
-
       val testEmail = "test@test.com"
       val templateId = "pods_event_report_submitted"
       val organisationName = "Test company ltd"
@@ -149,6 +151,21 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.ReturnSubmittedController.onPageLoad(waypoints).url
       }
+    }
+
+    "must redirect to the correct error screen when no data is able to be submitted" in {
+      val applicationNoUA = applicationBuilder(userAnswers = None, extraModules).build()
+      val controller: DeclarationController = applicationNoUA.injector.instanceOf[DeclarationController]
+
+      val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
+
+      val futureResult: Future[NothingToSubmitException] = recoverToExceptionIf[NothingToSubmitException] {
+        controller.onClick(waypoints)(request)
+      }
+
+      val result: NothingToSubmitException = Await.result(futureResult, Duration(5, SECONDS))
+
+      result.responseCode mustBe EXPECTATION_FAILED
     }
   }
 }

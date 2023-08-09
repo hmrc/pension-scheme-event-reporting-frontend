@@ -32,6 +32,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import views.html.NoDataEnteredErrorView
 import views.html.event20A.Event20APsaDeclarationView
 
 import scala.concurrent.Future

@@ -18,7 +18,7 @@ package controllers.event20A
 
 import base.SpecBase
 import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
-import connectors.{EventReportingConnector, MinimalConnector, SchemeDetailsConnector, UserAnswersCacheConnector}
+import connectors.{EventReportingConnector, MinimalConnector, SchemeConnector, UserAnswersCacheConnector}
 import data.SampleData.sampleEvent20ABecameJourneyData
 import forms.event20A.Event20APspDeclarationFormProvider
 import models.{SchemeDetails, VersionInfo}
@@ -49,7 +49,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
   val taxYear = "2022"
   val practitionerName = "John Smith"
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val mockSchemeDetailsConnector = mock[SchemeDetailsConnector]
+  private val mockSchemeDetailsConnector = mock[SchemeConnector]
   private val mockEventReportingConnector = mock[EventReportingConnector]
   private val mockMinimalConnector = mock[MinimalConnector]
   private val mockSchemeDetails = SchemeDetails("schemeName", "87219363YN", "Open", authorisingPsaId)
@@ -58,7 +58,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
-    bind[SchemeDetailsConnector].toInstance(mockSchemeDetailsConnector),
+    bind[SchemeConnector].toInstance(mockSchemeDetailsConnector),
     bind[EventReportingConnector].toInstance(mockEventReportingConnector),
     bind[MinimalConnector].toInstance(mockMinimalConnector)
   )

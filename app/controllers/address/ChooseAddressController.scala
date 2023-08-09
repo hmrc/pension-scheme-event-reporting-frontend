@@ -53,7 +53,7 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
             addresses,
             index
           ))
-        case _ => Redirect(controllers.routes.IndexController.onPageLoad.url)
+        case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None).url)
       }
     }
 
@@ -88,11 +88,11 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
                     userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, updatedAnswers).map { _ =>
                       Redirect(page.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
                     }
-                  case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
+                  case _ => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None).url))
                 }
               }
             )
-          case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
+          case _ => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None).url))
         }
     }
 

@@ -67,9 +67,9 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
     .setOrException(VersionInfoPage, VersionInfo(1, Compiled))
 
 
-  private val seqOfEvents = Seq(EventSummary(EventType.Event1, 1, None), EventSummary(EventType.Event18, 1, None))
-  private val seqOfEventsWithWindUp = Seq(EventSummary(EventType.Event1, 1, None), EventSummary(EventType.Event18, 1, None), EventSummary(EventType.WindUp, 1, None))
-  private val seqOfEventsWithEvent20A = Seq(EventSummary(EventType.Event1, 1, None), EventSummary(EventType.Event18, 1, None), EventSummary(EventType.Event20A, 1, None))
+  private val seqOfEvents = Seq(EventSummary(EventType.Event1, 1), EventSummary(EventType.Event18, 1))
+  private val seqOfEventsWithWindUp = Seq(EventSummary(EventType.Event1, 1), EventSummary(EventType.Event18, 1), EventSummary(EventType.WindUp, 1))
+  private val seqOfEventsWithEvent20A = Seq(EventSummary(EventType.Event1, 1), EventSummary(EventType.Event18, 1), EventSummary(EventType.Event20A, 1))
   override def beforeEach(): Unit = {
     super.beforeEach()
     DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
@@ -192,7 +192,6 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
         val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val userAnswerUpdated = UserAnswers().setOrException(WantToSubmitPage, true)
         status(result) mustEqual SEE_OTHER
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
         redirectLocation(result).value mustEqual routes.CannotSubmitController.onPageLoad(waypoints).url

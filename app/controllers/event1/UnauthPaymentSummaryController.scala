@@ -77,7 +77,7 @@ class UnauthPaymentSummaryController @Inject()(
   private def getMappedMemberOrEmployer(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
     userAnswers.getAll(MembersOrEmployersPage(EventType.Event1))(MembersOrEmployersSummary.readsMemberOrEmployer).zipWithIndex.collect {
       case (memberOrEmployerSummary, index) if !memberOrEmployerSummary.memberStatus.contains("Deleted") =>
-        //TODO: Remove front-end filter. Values should be filtered via MongoDB with an index. -Pavel Vjalicin
+        //TODO PODS-8617: Remove front-end filter. Values should be filtered via MongoDB with an index or by refactor
         val value = ValueViewModel(HtmlFormat.escape(currencyFormatter.format(memberOrEmployerSummary.unauthorisedPaymentValue)).toString)
         SummaryListRow(
           key = Key(
