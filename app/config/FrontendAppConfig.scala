@@ -60,7 +60,21 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   def yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
 
+  def schemeDashboardUrl(administratorOrPractitioner: AdministratorOrPractitioner, srn: String): String =
+    (
+      administratorOrPractitioner match {
+        case AdministratorOrPractitioner.Administrator => schemeSummaryPsaUrl
+        case AdministratorOrPractitioner.Practitioner => schemeSummaryPspUrl
+        case _ => schemeSummaryPsaUrl
+      }
+      ).format(srn)
+
+  private lazy val schemeSummaryPsaUrl: String = loadConfig("urls.schemeSummaryPsa")
+  private lazy val schemeSummaryPspUrl: String = loadConfig("urls.schemeSummaryPsp")
+
   def listPspUrl: String = loadConfig("urls.listPsp")
+
+   def manageOverviewDashboardUrl: String = loadConfig("urls.manageOverviewDashboard")
 
   def successEndPointTarget(eventType: EventType): String = loadConfig("upscan.success-endpoint").format(toRoute(eventType))
 

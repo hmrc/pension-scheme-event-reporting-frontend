@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package models.common
+package pages
 
-import play.api.libs.json.{Format, Json}
+import play.api.mvc.Call
+import controllers.routes
 
-case class EventReporting(pstr:String, schemeName: String, returnUrl:String, srn: String)
+case object CannotResumePage extends Page {
 
-object EventReporting {
-  implicit val format: Format[EventReporting] = Json.format[EventReporting]
+  override def route(waypoints: Waypoints): Call =
+    routes.CannotResumeController.onPageLoad(waypoints)
 }
