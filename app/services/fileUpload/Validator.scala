@@ -94,7 +94,8 @@ trait Validator {
                               (implicit messages: Messages): Result = {
     rows.zipWithIndex.foldLeft[Result](monoidResult.empty) {
       case (acc, Tuple2(_, 0)) => acc
-      case (acc, Tuple2(row, index)) => Seq(acc, validateFields(index, row.toIndexedSeq, taxYear, acc.memberNinos)).combineAll
+      case (acc, Tuple2(row, index)) =>
+        Seq(acc, validateFields(index, row.toIndexedSeq, taxYear, acc.memberNinos)).combineAll
     }
   }
 
@@ -146,9 +147,9 @@ trait Validator {
                                                                 generateCommitItem: MembersDetails => CommitItem,
                                                                 memberNinos: Seq[String]): Result = {
     formValidationResult match {
-      case Invalid(resultAErrors) => Result(memberNinos, Invalid(resultAErrors))
+      case Invalid(resultAErrors) => Result(Nil, Invalid(resultAErrors))
       case Valid(resultAObject) => Result(
-        memberNinos = memberNinos ++ Seq(resultAObject.nino),
+        memberNinos = Seq(resultAObject.nino),
         validated = Valid(Seq(generateCommitItem(resultAObject))))
     }
   }
