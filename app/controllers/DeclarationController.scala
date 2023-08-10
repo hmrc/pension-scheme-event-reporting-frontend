@@ -27,7 +27,7 @@ import models.{LoggedInUser, TaxYear, UserAnswers}
 import pages.{VersionInfoPage, Waypoints}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SubmitService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -50,12 +50,17 @@ class DeclarationController @Inject()(
                                        minimalConnector: MinimalConnector,
                                        auditService: AuditService,
                                        config: FrontendAppConfig,
-                                       view: DeclarationView
+                                       declarationView: DeclarationView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
   private val logger = Logger(classOf[DeclarationController])
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify {
+
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) {
     implicit request =>
-      Ok(view(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
+      if (request.isReportSubmitted) {
+        Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
+      } else {
+        Ok(declarationView(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
+      }
   }
 
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
@@ -63,7 +68,7 @@ class DeclarationController @Inject()(
 
       request.userAnswers.getOrElse(throw new NothingToSubmitException("User data not available"))
 
-      requireData.invokeBlock(request, { implicit request:DataRequest[_] =>
+      requireData.invokeBlock(request, { implicit request: DataRequest[_] =>
         val data: UserAnswers = UserAnswers(
           declarationData(
             request.pstr,
@@ -72,7 +77,7 @@ class DeclarationController @Inject()(
           request.userAnswers.noEventTypeData
         )
 
-        def emailFuture = minimalConnector.getMinimalDetails(
+        def emailFuture: Future[EmailStatus] = minimalConnector.getMinimalDetails(
           request.loggedInUser.idName,
           request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
           val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
@@ -131,7 +136,7 @@ class DeclarationController @Inject()(
     }
   }
 
-  private def declarationData(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser) = {
+  private def declarationData(pstr: String, taxYear: TaxYear, loggedInUser: LoggedInUser): JsObject = {
 
     val psaOrPsp = loggedInUser.administratorOrPractitioner match {
       case AdministratorOrPractitioner.Administrator => "PSA"

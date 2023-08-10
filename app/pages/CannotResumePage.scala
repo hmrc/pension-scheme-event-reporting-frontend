@@ -16,17 +16,11 @@
 
 package pages
 
-import models.{UserAnswers, VersionInfo}
-import play.api.libs.json.{JsPath, JsString, Writes}
 import play.api.mvc.Call
+import controllers.routes
 
-case object VersionInfoPage extends QuestionPage[VersionInfo] {
+case object CannotResumePage extends Page {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "versionInfo"
-
-  override def route(waypoints: Waypoints): Call = Call("GET", "")
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = VersionInfoPage
+  override def route(waypoints: Waypoints): Call =
+    routes.CannotResumeController.onPageLoad(waypoints)
 }

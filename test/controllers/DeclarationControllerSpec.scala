@@ -39,28 +39,26 @@ import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalCo
 import handlers.NothingToSubmitException
 import models.VersionInfo
 import models.enumeration.AdministratorOrPractitioner.Administrator
-import models.enumeration.VersionStatus.Compiled
+import models.enumeration.VersionStatus.{Compiled, Submitted}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.RecoverMethods._
 import org.scalatestplus.mockito.MockitoSugar
 import pages.{EmptyWaypoints, VersionInfoPage}
+import play.api.http.Status.OK
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.{GET, _}
 import services.SubmitService
 import views.html.DeclarationView
-import org.mockito.Mockito.doNothing
-import play.api.http.Status.OK
-import play.api.test.Helpers.GET
-import org.scalatest.RecoverMethods._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 
 class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
@@ -90,8 +88,9 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
 
   "Declaration Controller" - {
 
-    "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+    "must return OK and the correct view for a GET when when isReportSubmitted is false" in {
+      val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo)).build()
 
       running(application) {
 
@@ -103,6 +102,21 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(routes.DeclarationController.onClick(waypoints).url)(request, messages(application)).toString
+      }
+    }
+
+    "must redirect to cannot resume page when isReportSubmitted is true" in {
+      val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo)).build()
+
+      running(application) {
+
+        val request = FakeRequest(GET, routes.DeclarationController.onPageLoad(waypoints).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.CannotResumeController.onPageLoad(waypoints).url
       }
     }
 
