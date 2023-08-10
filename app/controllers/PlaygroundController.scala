@@ -26,6 +26,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.PlaygroundView
+import play.api.i18n.Messages
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,17 +39,16 @@ class PlaygroundController @Inject()(val controllerComponents: MessagesControlle
                                     view: PlaygroundView
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(PlaygroundPage)).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(PlaygroundPage)).fold(formProvider())(formProvider().fill)
     Ok(view(preparedForm, waypoints))
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
-      form.bindFromRequest().fold(
+      formProvider().bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
