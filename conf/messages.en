@@ -1623,6 +1623,7 @@ fileupload.invalid.item2 = Error
 return.to.fileupload = Return to file upload
 
 fileUpload.generic.total.error.part1 = Your file has {0} errors. At least one:
+fileUpload.generic.actions = Actions
 
 problemWithService.title = Sorry, there was a problem with the service
 problemWithService.heading = Sorry, there was a problem with the service

@@ -21,7 +21,12 @@
     <thead class="govuk-table__head">
     <tr class="govuk-table__row">
         <th scope="col" class="govuk-table__header">@messages(colOne)</th>
-        <th scope="col" class="govuk-table__header" colspan="2">@messages(colTwo)</th>
+        <th scope="col" class="govuk-table__header">@messages(colTwo)</th>
+        <th scope="col" class="govuk-table__header">
+            <span class="govuk-visually-hidden">
+                @messages("fileUpload.generic.actions")
+            </span>
+        </th>
     </tr>
     </thead>
     <tbody class="govuk-table__body">
