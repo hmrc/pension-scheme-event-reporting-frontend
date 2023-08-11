@@ -48,67 +48,49 @@ class Event22ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
     when(mockFrontendAppConfig.validEvent22Header).thenReturn(header)
   }
 
-//  "Event 22 validator" - {
-//    "return items in user answers when there are no validation errors" in {
-//      val validCSVFile = CSVParser.split(
-//        s"""$header
-//                            Joe,Bloggs,AA234567D,2020 to 2023,12.20
-//                            Steven,Bloggs,AA123456C,2022 to 2023,13.20"""
-//      )
-//      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
-//      val result = validator.validate(validCSVFile, ua)
-//      result mustBe Valid(ua
-//        .setOrException(MembersDetailsPage(Event22, 0).path, Json.toJson(SampleData.memberDetails))
-//        .setOrException(ChooseTaxYearPage(Event22, 0).path, Json.toJson(ChooseTaxYear("2020"))(ChooseTaxYear.writes(ChooseTaxYear.enumerable(2023))))
-//        .setOrException(TotalPensionAmountsPage(Event22, 0).path, Json.toJson(BigDecimal(12.20)))
-//        .setOrException(MembersDetailsPage(Event22, 1).path, Json.toJson(SampleData.memberDetails2))
-//        .setOrException(ChooseTaxYearPage(Event22, 1).path, Json.toJson(ChooseTaxYear("2022"))(ChooseTaxYear.writes(ChooseTaxYear.enumerable(2023))))
-//        .setOrException(TotalPensionAmountsPage(Event22, 1).path, Json.toJson(BigDecimal(13.20)))
-//      )
-//    }
-//
-//    "return validation error for incorrect header" in {
-//      val csvFile = CSVParser.split("""test""")
-//      val result = validator.validate(csvFile, UserAnswers())
-//      result mustBe Invalid(Seq(
-//        ValidationError(0, 0, HeaderInvalidOrFileIsEmpty)
-//      ))
-//    }
-//
-//    "return validation error for empty file" in {
-//      val result = validator.validate(Nil, UserAnswers())
-//      result mustBe Invalid(Seq(
-//        ValidationError(0, 0, HeaderInvalidOrFileIsEmpty)
-//      ))
-//    }
-//
-//    "return validation errors when present, including tax year in future" in {
-//      DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
-//      val csvFile = CSVParser.split(
-//        s"""$header
-//,Bloggs,AA234567D,2024,12.20
-//Steven,,xyz,,
-//Steven,Bloggs,AA123456C,2022 to 2023,13.20
-//Steven,Bloggs,AA123456C,2022 to 2023,13.20"""
-//      )
-//      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
-//
-//      val result = validator.validate(csvFile, ua)
-//      result mustBe Invalid(Seq(
-//        ValidationError(1, 0, "membersDetails.error.firstName.required", "firstName"),
-//        ValidationError(1, 3, "chooseTaxYear.event22.error.outsideRange", "taxYear", Seq("2013", "2023")),
-//        ValidationError(2, 1, "membersDetails.error.lastName.required", "lastName"),
-//        ValidationError(2, 2, "membersDetails.error.nino.invalid", "nino"),
-//        ValidationError(2, 3, "chooseTaxYear.event22.error.required", "taxYear", Seq("2013", "2023")),
-//        ValidationError(2, 4, "totalPensionAmounts.value.error.nothingEntered", "totalAmounts"),
-//        ValidationError(4, 2, "membersDetails.error.nino.notUnique", "nino")
-//      ))
-//    }
-//
-//  }
+  "Event 22 validator" - {
+    "return items in user answers when there are no validation errors" in {
+      val validCSVFile = CSVParser.split(
+        s"""$header
+                            Joe,Bloggs,AA234567D,2020 to 2023,12.20
+                            Steven,Bloggs,AA123456C,2022 to 2023,13.20"""
+      )
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
+      val result = validator.validate(validCSVFile, ua)
+      result mustBe Valid(ua
+        .setOrException(MembersDetailsPage(Event22, 0).path, Json.toJson(SampleData.memberDetails))
+        .setOrException(ChooseTaxYearPage(Event22, 0).path, Json.toJson(ChooseTaxYear("2020"))(ChooseTaxYear.writes(ChooseTaxYear.enumerable(2023))))
+        .setOrException(TotalPensionAmountsPage(Event22, 0).path, Json.toJson(BigDecimal(12.20)))
+        .setOrException(MembersDetailsPage(Event22, 1).path, Json.toJson(SampleData.memberDetails2))
+        .setOrException(ChooseTaxYearPage(Event22, 1).path, Json.toJson(ChooseTaxYear("2022"))(ChooseTaxYear.writes(ChooseTaxYear.enumerable(2023))))
+        .setOrException(TotalPensionAmountsPage(Event22, 1).path, Json.toJson(BigDecimal(13.20)))
+      )
+    }
 
+    "return correctly and in timely fashion (< 30 seconds) when there is a large payload (10K items)" in {
+      val payloadMain = (1 to 10000).foldLeft(""){ (acc, c) =>
+        val nino = "AA" + ("00000" + c.toString).takeRight(6) + "C"
+        acc + """
+""" + s"""Joe,Bloggs,$nino,2020 to 2023,12.20"""
+      }
 
-  "Event 22 validator with large payload" - {
+      val validCSVFile = CSVParser.split(
+        s"""$header
+""" + payloadMain
+      )
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
+      val startTime = System.currentTimeMillis
+      val result = validator.validate(validCSVFile, ua)
+      val endTime = System.currentTimeMillis
+      val timeTaken = (endTime - startTime) / 1000
+      result.isValid mustBe true
+      if (timeTaken < 30) {
+        assert(true, s"Validated large payload in less than 30 seconds (took $timeTaken seconds)")
+      } else {
+        assert(false, s"Validated large payload in more than 30 seconds (actually took $timeTaken seconds)")
+      }
+    }
+
     "return validation error for incorrect header" in {
       val csvFile = CSVParser.split("""test""")
       val result = validator.validate(csvFile, UserAnswers())
@@ -148,7 +130,6 @@ Steven,Bloggs,AA123456C,2022 to 2023,13.20"""
     }
 
   }
-
 }
 
 object Event22ValidatorSpec {
