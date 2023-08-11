@@ -32,15 +32,17 @@ import play.api.libs.json._
 import queries.Gettable
 import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
 
+import scala.collection.immutable.HashSet
+
 object ValidatorErrorMessages {
   val HeaderInvalidOrFileIsEmpty = "Header invalid or File is empty"
 }
 
 object Validator {
-  case class Result(memberNinos: Seq[String], validated: Validated[Seq[ValidationError], Seq[CommitItem]])
+  case class Result(memberNinos: HashSet[String], validated: Validated[Seq[ValidationError], Seq[CommitItem]])
 
   implicit def monoidResult: Monoid[Result] = new Monoid[Result] {
-    override def empty: Result = Result(Nil, Valid(Nil))
+    override def empty: Result = Result(HashSet(), Valid(Nil))
 
     override def combine(x: Result, y: Result): Result = {
       Result(
@@ -102,7 +104,7 @@ trait Validator {
   protected def validateFields(index: Int,
                                columns: Seq[String],
                                taxYear: Int,
-                               memberNinos: Seq[String]
+                               memberNinos: HashSet[String]
                               )(implicit messages: Messages): Result
 
   protected def memberDetailsValidation(index: Int, columns: Seq[String],
@@ -138,18 +140,17 @@ trait Validator {
   protected def resultFromFormValidationResult[A](formValidationResult: Validated[Seq[ValidationError], A],
                                                   generateCommitItem: A => CommitItem): Result = {
     formValidationResult match {
-      case Invalid(resultAErrors) => Result(Nil, Invalid(resultAErrors))
-      case Valid(resultAObject) => Result(Nil, Valid(Seq(generateCommitItem(resultAObject))))
+      case Invalid(resultAErrors) => Result(HashSet(), Invalid(resultAErrors))
+      case Valid(resultAObject) => Result(HashSet(), Valid(Seq(generateCommitItem(resultAObject))))
     }
   }
 
   protected def resultFromFormValidationResultForMembersDetails(formValidationResult: Validated[Seq[ValidationError], MembersDetails],
-                                                                generateCommitItem: MembersDetails => CommitItem,
-                                                                memberNinos: Seq[String]): Result = {
+                                                                generateCommitItem: MembersDetails => CommitItem): Result = {
     formValidationResult match {
-      case Invalid(resultAErrors) => Result(Nil, Invalid(resultAErrors))
+      case Invalid(resultAErrors) => Result(HashSet(), Invalid(resultAErrors))
       case Valid(resultAObject) => Result(
-        memberNinos = Seq(resultAObject.nino),
+        memberNinos = HashSet(resultAObject.nino),
         validated = Valid(Seq(generateCommitItem(resultAObject))))
     }
   }
