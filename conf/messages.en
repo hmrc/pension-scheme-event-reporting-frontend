@@ -1698,3 +1698,7 @@ noDataEnteredError.heading = This report cannot be submitted
 noDataEnteredError.p1 = No data has been entered
 noDataEnteredError.p2 = Return to the pensions dashboard
 noDataEnteredError.p3 = to enter data before submitting
+
+cannotResume.title = This event report has been submitted and is with HMRC
+cannotResume.heading = This event report has been submitted and is with HMRC
+cannotResume.p1 = You cannot resume this journey.

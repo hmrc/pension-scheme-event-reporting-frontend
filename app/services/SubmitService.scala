@@ -38,7 +38,7 @@ class SubmitService @Inject()(
       case Some(VersionInfo(version, Compiled)) =>
         eventReportingConnector.submitReport(pstr, ua, version.toString).flatMap { _ =>
           val updatedUA = ua.setOrException(VersionInfoPage, VersionInfo(version, Submitted), nonEventTypeData = true)
-          userAnswersCacheConnector.save(pstr, updatedUA).map{_ => Ok}
+          userAnswersCacheConnector.save(pstr, updatedUA).map { _ => Ok }
         }
       case Some(vi) =>
         Future.successful(NotFound(s"No compiled version to submit! Version info is $vi"))
