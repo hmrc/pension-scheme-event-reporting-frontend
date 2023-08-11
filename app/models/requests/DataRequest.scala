@@ -16,10 +16,9 @@
 
 package models.requests
 
-import models.enumeration.VersionStatus.Submitted
 import models.TaxYear.getSelectedTaxYear
+import models.enumeration.VersionStatus.Submitted
 import models.{LoggedInUser, UserAnswers}
-import pages.VersionInfoPage
 import pages.{EventReportingOverviewPage, VersionInfoPage}
 import play.api.mvc.{Request, WrappedRequest}
 
