@@ -19,16 +19,20 @@ package controllers.event20A
 import base.SpecBase
 import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
 import connectors.{EventReportingConnector, MinimalConnector}
+import controllers.routes
 import data.SampleData.sampleEvent20ABecameJourneyData
+import models.VersionInfo
+import models.enumeration.VersionStatus.{Compiled, Submitted}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints, VersionInfoPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import views.html.NoDataEnteredErrorView
 import views.html.event20A.Event20APsaDeclarationView
 
 import scala.concurrent.Future
@@ -48,7 +52,6 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
     reset(mockMinimalConnector)
   }
 
-
   "Event20APsaDeclaration Controller" - {
 
     val schemeName = "schemeName"
@@ -56,12 +59,13 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
     val taxYear = "2022"
     val adminName = "John Smith"
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET when when isReportSubmitted is false" in {
 
       val testEmail = "test@test.com"
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
+      val userAnswersWithVersionInfo = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
       val minimalDetails = {
-        MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None,  lastName = "Smith")), false, false)
+        MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None, lastName = "Smith")), false, false)
       }
 
       running(application) {
@@ -76,6 +80,26 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
         contentAsString(result) mustEqual view(
           schemeName, pstr, taxYear, adminName, controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url)(request, messages(application)
         ).toString
+      }
+    }
+
+    "must redirect to cannot resume page when isReportSubmitted is true" in {
+
+      val testEmail = "test@test.com"
+      val userAnswersWithVersionInfo = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+      val minimalDetails = {
+        MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None, lastName = "Smith")), false, false)
+      }
+
+      running(application) {
+        when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+        val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onPageLoad().url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.CannotResumeController.onPageLoad(EmptyWaypoints).url
       }
     }
 

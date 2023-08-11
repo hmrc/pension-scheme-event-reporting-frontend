@@ -72,7 +72,7 @@ class ReturnHistoryControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[ReturnHistoryView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(h, "2022", "2023")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(h, "2022", "2023", "schemeName")(request, messages(application)).toString
       }
     }
 

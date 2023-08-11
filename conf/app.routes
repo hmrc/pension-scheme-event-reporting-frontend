@@ -617,5 +617,7 @@ POST       /report/:index/remove-event-22                      controllers.commo
 GET        /report/:index/remove-event-23                    controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
 POST       /report/:index/remove-event-23                      controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
 
-GET         /variations/return-history                controllers.amend.ReturnHistoryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
-GET         /onClickGetVersion                        controllers.amend.ReturnHistoryController.onClick(waypoints: Waypoints ?= EmptyWaypoints, version: String)
+GET        /cannot-resume                                    controllers.CannotResumeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET        /variations/return-history                           controllers.amend.ReturnHistoryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /onClickGetVersion                        controllers.amend.ReturnHistoryController.onClick(waypoints: Waypoints ?= EmptyWaypoints, version: String)

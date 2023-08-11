@@ -16,15 +16,20 @@
 
 package models.requests
 
+import models.enumeration.VersionStatus.Submitted
 import models.TaxYear.getSelectedTaxYear
 import models.{LoggedInUser, UserAnswers}
+import pages.VersionInfoPage
 import pages.{EventReportingOverviewPage, VersionInfoPage}
 import play.api.mvc.{Request, WrappedRequest}
 
 abstract class RequiredSchemeDataRequest[A](request: Request[A]) extends WrappedRequest[A](request) {
   def pstr: String
+
   def schemeName: String
+
   def returnUrl: String
+
   def loggedInUser: LoggedInUser
 }
 
@@ -36,7 +41,12 @@ case class OptionalDataRequest[A](
                                    loggedInUser: LoggedInUser,
                                    userAnswers: Option[UserAnswers]
                                  ) extends RequiredSchemeDataRequest[A](request) {
-  def readOnly = true
+  def isReportSubmitted: Boolean = {
+    userAnswers match {
+      case None => false
+      case Some(ua) => ua.get(VersionInfoPage).exists(_.status == Submitted)
+    }
+  }
 }
 
 case class DataRequest[A](pstr: String,
@@ -64,5 +74,9 @@ case class DataRequest[A](pstr: String,
       }
       case _ => throw new RuntimeException("No Event Report Overview information")
     }
+  }
+
+  def isReportSubmitted: Boolean = {
+    userAnswers.get(VersionInfoPage).exists(_.status == Submitted)
   }
 }

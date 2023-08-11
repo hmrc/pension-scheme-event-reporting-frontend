@@ -25,9 +25,11 @@
 
 
 
-@(seqOfReturnHistorySummary:Seq[ReturnHistorySummary], taxYearStart: String, taxYearEnd: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(seqOfReturnHistorySummary:Seq[ReturnHistorySummary], taxYearStart: String, taxYearEnd: String, schemeName: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("returnHistory.title", taxYearStart, taxYearEnd))) {
+
+    <span class="govuk-caption-xl">@schemeName</span>
 
     <h1 class="govuk-heading-l">@messages("returnHistory.heading", taxYearStart, taxYearEnd)</h1>
 

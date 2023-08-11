@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package models.common
+package handlers
 
-import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.http.HttpException
+import play.api.http.Status.EXPECTATION_FAILED
 
-case class EventReporting(pstr:String, schemeName: String, returnUrl:String, srn: String)
+class NothingToSubmitException(message: String) extends HttpException(message, EXPECTATION_FAILED) {
 
-object EventReporting {
-  implicit val format: Format[EventReporting] = Json.format[EventReporting]
 }

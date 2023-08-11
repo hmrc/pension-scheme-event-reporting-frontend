@@ -90,8 +90,7 @@ class AuthenticatedIdentifierAction @Inject()(
     implicit val req: Request[A] = request
 
     withAuthInfo {
-      case (Some(_), _, None) =>
-        Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None)))
+      case (Some(_), _, None) => Future.successful(Redirect(config.yourPensionSchemesUrl))
       case (Some(externalId), enrolments, Some(er)) if bothPsaAndPspEnrolmentsPresent(enrolments) =>
         actionForBothEnrolments(er, externalId, enrolments, request, block)
       case (Some(externalId), enrolments, Some(er)) if enrolments.getEnrolment(enrolmentPSA).isDefined =>
@@ -138,7 +137,7 @@ class AuthenticatedIdentifierAction @Inject()(
       case None => Future.successful(Redirect(Call("GET", config.administratorOrPractitionerUrl)))
       case Some(role) =>
         getLoggedInUser(externalId, role, enrolments) match {
-          case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName, eventReporting.returnUrl))
+          case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName, eventReporting.returnUrl, eventReporting.srn))
           case _ => futureUnauthorisedPage
         }
     }
@@ -149,7 +148,7 @@ class AuthenticatedIdentifierAction @Inject()(
                                externalId: String, enrolments: Enrolments, request: Request[A],
                                block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
     getLoggedInUser(externalId, administratorOrPractitioner, enrolments) match {
-      case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName, eventReporting.returnUrl))
+      case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName, eventReporting.returnUrl, eventReporting.srn))
       case _ => futureUnauthorisedPage
     }
   }

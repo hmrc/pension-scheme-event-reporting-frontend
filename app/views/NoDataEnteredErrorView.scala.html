@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models.common
+@this(
+    layout: templates.Layout
+)
 
-import play.api.libs.json.{Format, Json}
+@(manageOverviewDashboardUrl: String)(implicit request: Request[_], messages: Messages)
 
-case class EventReporting(pstr:String, schemeName: String, returnUrl:String, srn: String)
+@layout(
+    pageTitle    = titleNoForm(messages("noDataEnteredError.title")),
+    showBackLink = false
+) {
 
-object EventReporting {
-  implicit val format: Format[EventReporting] = Json.format[EventReporting]
+    <h1 class="govuk-heading-xl">@messages("noDataEnteredError.heading")</h1>
+    <p class="govuk-body">@messages("noDataEnteredError.p1")</p>
+    <p class="govuk-body"><a href="@manageOverviewDashboardUrl" class="govuk-link">@messages("noDataEnteredError.p2")</a> @messages("noDataEnteredError.p3")</p>
+
 }
+

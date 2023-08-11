@@ -17,7 +17,7 @@
 package controllers
 
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.WantToSubmitFormProvider
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
 import models.enumeration.EventType.{Event20A, WindUp}
@@ -35,6 +35,7 @@ class WantToSubmitController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         identify: IdentifierAction,
                                         getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
                                         formProvider: WantToSubmitFormProvider,
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                         eventReportingConnector: EventReportingConnector,
@@ -43,41 +44,44 @@ class WantToSubmitController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(WantToSubmitPage)).fold(form)(form.fill)
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) { implicit request =>
+    val preparedForm = request.userAnswers.get(WantToSubmitPage).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints))
   }
+
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
-            val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-            val updatedAnswers = originalUserAnswers.setOrException(WantToSubmitPage, value)
-            val version = updatedAnswers.get(VersionInfoPage).get.version
-            val startYear = s"${TaxYear.getSelectedTaxYear(updatedAnswers).startYear}-04-06"
-            eventReportingConnector.getEventReportSummary(request.pstr, startYear, version)
-              .flatMap { seqEventSummaries =>
-                val currentCompileEventTypes = seqEventSummaries.filter { _.recordVersion == version }.map(_.eventType)
+          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+          val updatedAnswers = originalUserAnswers.setOrException(WantToSubmitPage, value)
+          val version = updatedAnswers.get(VersionInfoPage).get.version
+          val startYear = s"${TaxYear.getSelectedTaxYear(updatedAnswers).startYear}-04-06"
+          eventReportingConnector.getEventReportSummary(request.pstr, startYear, version)
+            .flatMap { seqEventSummaries =>
+              val currentCompileEventTypes = seqEventSummaries.filter {
+                _.recordVersion == version
+              }.map(_.eventType)
 
-                userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
-                  if(value) {
-                    lazy val isCurrentTaxYear = TaxYear.isCurrentTaxYear(updatedAnswers)
-                    if (currentCompileEventTypes.contains(WindUp) || currentCompileEventTypes.contains(Event20A) || !isCurrentTaxYear) {
-                      request.loggedInUser.administratorOrPractitioner match {
-                        case Administrator => Future.successful(Redirect(routes.DeclarationController.onPageLoad(waypoints)))
-                        case Practitioner => Future.successful(Redirect(routes.DeclarationPspController.onPageLoad(waypoints)))
-                      }
-                    } else if (isCurrentTaxYear) {
-                      Future.successful(Redirect(controllers.routes.CannotSubmitController.onPageLoad(waypoints).url))
-                    } else {
-                      Future.successful(Redirect(request.returnUrl))
+              userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
+                if (value) {
+                  lazy val isCurrentTaxYear = TaxYear.isCurrentTaxYear(updatedAnswers)
+                  if (currentCompileEventTypes.contains(WindUp) || currentCompileEventTypes.contains(Event20A) || !isCurrentTaxYear) {
+                    request.loggedInUser.administratorOrPractitioner match {
+                      case Administrator => Future.successful(Redirect(routes.DeclarationController.onPageLoad(waypoints)))
+                      case Practitioner => Future.successful(Redirect(routes.DeclarationPspController.onPageLoad(waypoints)))
                     }
+                  } else if (isCurrentTaxYear) {
+                    Future.successful(Redirect(controllers.routes.CannotSubmitController.onPageLoad(waypoints).url))
                   } else {
                     Future.successful(Redirect(request.returnUrl))
                   }
+                } else {
+                  Future.successful(Redirect(request.returnUrl))
                 }
-          }
+              }
+            }
         }
       )
   }
