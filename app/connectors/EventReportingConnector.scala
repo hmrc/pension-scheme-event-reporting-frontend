@@ -21,6 +21,8 @@ import config.FrontendAppConfig
 import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
 import play.api.http.Status._
 import play.api.libs.json._
+import play.api.mvc.Result
+import play.api.mvc.Results.{BadRequest, NoContent}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
 
@@ -86,7 +88,7 @@ class EventReportingConnector @Inject()(
       "year" -> edi.year,
       "currentVersion" -> currentVersion.toString,
       "version" -> edi.version
-    ) ++ (if(delete) Seq(("delete", "true")) else Seq())
+    ) ++ (if (delete) Seq(("delete", "true")) else Seq())
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
     http.POST[JsValue, HttpResponse](eventCompileUrl, Json.obj())(implicitly, implicitly, hc, implicitly)
@@ -100,7 +102,7 @@ class EventReportingConnector @Inject()(
   }
 
   def submitReport(pstr: String, ua: UserAnswers, version: String)
-                  (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+                  (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -113,7 +115,8 @@ class EventReportingConnector @Inject()(
     http.POST[JsValue, HttpResponse](eventSubmitUrl, ua.data)(implicitly, implicitly, hc, implicitly)
       .map { response =>
         response.status match {
-          case NO_CONTENT => ()
+          case NO_CONTENT => NoContent
+          case BAD_REQUEST => BadRequest
           case EXPECTATION_FAILED => throw new ExpectationFailedException("Nothing to submit")
           case _ =>
             throw new HttpException(response.body, response.status)
@@ -207,7 +210,7 @@ class EventReportingConnector @Inject()(
       }
   }
 
-  def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion:Int, memberIdToDelete: String)
+  def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion: Int, memberIdToDelete: String)
                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
