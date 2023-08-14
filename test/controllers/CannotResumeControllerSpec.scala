@@ -17,45 +17,47 @@
 package controllers
 
 import base.SpecBase
-import connectors.SessionDataCacheConnector
+import connectors.UserAnswersCacheConnector
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{running, _}
-import views.html.IndexView
+import play.api.test.Helpers._
+import views.html.CannotResumeView
 
 import scala.concurrent.Future
 
-class IndexControllerSpec extends SpecBase with MockitoSugar {
+class CannotResumeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
-  private val mockSessionDataCacheConnector = mock[SessionDataCacheConnector]
+  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+
+  override def beforeEach(): Unit = {
+    reset(mockUserAnswersCacheConnector)
+  }
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[SessionDataCacheConnector].toInstance(mockSessionDataCacheConnector)
+    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  "Index Controller" - {
+  "CannotResume Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      when(mockUserAnswersCacheConnector.removeAll(any())(any(), any())).thenReturn(Future.successful(()))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-
-      when(mockSessionDataCacheConnector.upsertTestPstr(any(), any())(any(), any())).thenReturn(Future.successful(()))
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.IndexController.onPageLoad.url)
+
+        val request = FakeRequest(GET, routes.CannotResumeController.onPageLoad().url)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[IndexView]
+        val view = application.injector.instanceOf[CannotResumeView]
 
         status(result) mustEqual OK
-
         contentAsString(result) mustEqual view()(request, messages(application)).toString
       }
     }

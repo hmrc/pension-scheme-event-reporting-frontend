@@ -22,7 +22,7 @@ import cats.implicits.toFoldableOps
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import forms.common.{ChooseTaxYearFormProvider, MembersDetailsFormProvider, TotalPensionAmountsFormProvider}
-import models.common.{ChooseTaxYear, MembersDetails}
+import models.common.ChooseTaxYear
 import models.enumeration.EventType
 import models.enumeration.EventType.Event23
 import models.fileUpload.FileUploadHeaders.Event23FieldNames.totalAmounts
@@ -31,6 +31,8 @@ import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsP
 import play.api.data.Form
 import play.api.i18n.Messages
 import services.fileUpload.Validator.Result
+
+import scala.collection.immutable.HashSet
 
 class Event23Validator @Inject()(
                                   membersDetailsFormProvider: MembersDetailsFormProvider,
@@ -80,12 +82,11 @@ class Event23Validator @Inject()(
   override protected def validateFields(index: Int,
                                         columns: Seq[String],
                                         taxYear: Int,
-                                        memberNinos: Seq[String])
+                                        memberNinos: HashSet[String])
                                        (implicit messages: Messages): Result = {
     val a = resultFromFormValidationResultForMembersDetails(
       memberDetailsValidation(index, columns, membersDetailsFormProvider(Event23, memberNinos, index)),
-      createCommitItem(index, MembersDetailsPage.apply(Event23, _)),
-      memberNinos
+      createCommitItem(index, MembersDetailsPage.apply(Event23, _))
     )
 
     val b = resultFromFormValidationResult[ChooseTaxYear](

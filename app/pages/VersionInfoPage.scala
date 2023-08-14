@@ -16,9 +16,8 @@
 
 package pages
 
-import controllers.routes
 import models.{UserAnswers, VersionInfo}
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsPath, JsString, Writes}
 import play.api.mvc.Call
 
 case object VersionInfoPage extends QuestionPage[VersionInfo] {
@@ -27,8 +26,7 @@ case object VersionInfoPage extends QuestionPage[VersionInfo] {
 
   override def toString: String = "versionInfo"
 
-  override def route(waypoints: Waypoints): Call =
-    routes.IndexController.onPageLoad
+  override def route(waypoints: Waypoints): Call = Call("GET", "")
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = VersionInfoPage
 }

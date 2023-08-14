@@ -47,6 +47,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.JsString
 import services.fileUpload.Validator.Result
+import scala.collection.immutable.HashSet
 
 class Event1Validator @Inject()(
                                  whoReceivedUnauthPaymentFormProvider: WhoReceivedUnauthPaymentFormProvider,
@@ -159,7 +160,7 @@ class Event1Validator @Inject()(
 
   private case class FieldInfoForValidation[A](fieldNum: Int, description: String, form: Form[A])
 
-  private def genericBooleanFieldValidation[Boolean](index: Int, chargeFields: Seq[String], fieldInfoForValidation: FieldInfoForValidation[Boolean]): Validated[Seq[ValidationError], Boolean] = {
+  private def genericBooleanFieldValidation(index: Int, chargeFields: Seq[String], fieldInfoForValidation: FieldInfoForValidation[Boolean]): Validated[Seq[ValidationError], Boolean] = {
     val mappedBoolean = toBoolean(chargeFields(fieldInfoForValidation.fieldNum))
     val fields = Seq(Field(valueFormField, mappedBoolean, fieldInfoForValidation.description, fieldInfoForValidation.fieldNum))
     fieldInfoForValidation.form.bind(
@@ -330,7 +331,7 @@ class Event1Validator @Inject()(
   override protected def validateFields(index: Int,
                                         columns: Seq[String],
                                         taxYear: Int,
-                                        memberNinos: Seq[String])
+                                        memberNinos: HashSet[String])
                                        (implicit messages: Messages): Result = {
 
     val a = resultFromFormValidationResult[WhoReceivedUnauthPayment](
@@ -494,12 +495,11 @@ class Event1Validator @Inject()(
                                index: Int,
                                columns: Seq[String],
                                taxYear: Int,
-                               memberNinos: Seq[String])
+                               memberNinos: HashSet[String])
                               (implicit messages: Messages): Result = {
     val b = resultFromFormValidationResultForMembersDetails(
       memberDetailsValidation(index, columns, membersDetailsFormProvider(Event1, memberNinos, index)),
-      createCommitItem(index, MembersDetailsPage.apply(Event1, _)),
-      memberNinos
+      createCommitItem(index, MembersDetailsPage.apply(Event1, _))
     )
 
     val c = resultFromFormValidationResult[Boolean](

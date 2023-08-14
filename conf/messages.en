@@ -16,6 +16,7 @@ site.signIn = Sign in
 site.govuk = GOV.UK
 site.saveAndContinue = Save and continue
 site.returnTo = Return to {0}
+site.unknown = unknown
 date.day = Day
 date.month = Month
 date.year = Year
@@ -184,6 +185,7 @@ schemeWindUpDate.error.outside.taxYear = Date must be between 6 April {0} and 5 
 schemeWindUpDate.error.required = The date must include a {0}
 schemeWindUpDate.error.invalid = Enter a real date
 schemeWindUpDate.change.hidden = When was the scheme wound up?
+schemeWindUpDate.error.beforeOpenDate = You have attempted to wind up the scheme before it was created. The date must come on or after {0}
 
 event18Confirmation.title = Scheme chargeable payment
 event18Confirmation.heading = Scheme chargeable payment
@@ -1681,3 +1683,24 @@ fileUpload.valueOfFund.generic.error = value of fund is missing or in the wrong 
 fileUpload.loanAmount.generic.error = loan amount is missing or in the wrong format
 fileUpload.memberOrEmployer.generic.error = entry of who received the unauthorised payment or deemed unauthorised payment is missing or in the wrong format
 
+eventDescription.event1 = unauthorised payment
+eventDescription.event2 = lump sum death benefit payment
+eventDescription.event3 = benefits provided before normal minimum pension age
+eventDescription.event4 = payment of serious ill-health lump sum
+eventDescription.event5 = cessation of ill-health pension
+eventDescription.event6 = benefit crystallisation event
+eventDescription.event7 = pension commencement lump sum
+eventDescription.event8 = pension commencement lump sum
+eventDescription.event8A = pension commencement lump sum
+eventDescription.event22 = annual allowance
+eventDescription.event23 = dual annual allowance
+
+noDataEnteredError.title = This report cannot be submitted
+noDataEnteredError.heading = This report cannot be submitted
+noDataEnteredError.p1 = No data has been entered
+noDataEnteredError.p2 = Return to the pensions dashboard
+noDataEnteredError.p3 = to enter data before submitting
+
+cannotResume.title = This event report has been submitted and is with HMRC
+cannotResume.heading = This event report has been submitted and is with HMRC
+cannotResume.p1 = You cannot resume this journey.

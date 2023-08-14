@@ -20,16 +20,41 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.SchemeDetails
 import play.api.http.Status._
-import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json}
+import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HttpClient, _}
 import utils.HttpResponseHelper
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class SchemeDetailsConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
+class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
   extends HttpResponseHelper {
+  def getOpenDate(idType: String, idValue: String, pstr: String)
+                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
+    val idTypeValue = idType match {
+      case "pspId" => Some("pspid")
+      case "psaId" => Some("psaid")
+      case _ => None
+    }
 
+    idTypeValue.map { idTypeValue =>
+      val schemeHc = hc.withExtraHeaders("idType" -> idTypeValue, "idValue" -> idValue, "pstr" -> pstr)
+      openDate(config.openDateUrl)(schemeHc, ec)
+    }.getOrElse(Future.failed(new IllegalArgumentException("Invalid idType")))
+  }
+  private def openDate(url: String)
+                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
+    http.GET[HttpResponse](url).map { response =>
+      response.status match {
+        case OK =>
+          val openDate = response.body.replace("\"", "")
+          LocalDate.parse(openDate)
+        case _ =>
+          handleErrorResponse("GET", url)(response)
+      }
+    }
+  }
   def getSchemeDetails(psaId: String, idNumber: String, schemeIdType: String)
                       (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[SchemeDetails] = {
 
@@ -57,7 +82,6 @@ class SchemeDetailsConnector @Inject()(http: HttpClient, config: FrontendAppConf
         }
     }
   }
-
   def getPspSchemeDetails(pspId: String, pstr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SchemeDetails] = {
 
     val url = config.pspSchemeDetailsUrl

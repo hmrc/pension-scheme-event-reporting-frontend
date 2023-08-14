@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models.common
+@this(
+        layout: templates.SchemeLayout,
+        govukButton: GovukButton
+)
 
-import play.api.libs.json.{Format, Json}
+@()(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-case class EventReporting(pstr:String, schemeName: String, returnUrl:String, srn: String)
+@layout(pageTitle = titleNoForm(messages("cannotResume.title")), showBackLink = false) {
 
-object EventReporting {
-  implicit val format: Format[EventReporting] = Json.format[EventReporting]
+   <h1 class="govuk-heading-xl">@messages("cannotResume.heading")</h1>
+   <p class="govuk-body">@messages("cannotResume.p1")</p>
+
 }

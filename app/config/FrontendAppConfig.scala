@@ -60,7 +60,21 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   def yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
 
+  def schemeDashboardUrl(administratorOrPractitioner: AdministratorOrPractitioner, srn: String): String =
+    (
+      administratorOrPractitioner match {
+        case AdministratorOrPractitioner.Administrator => schemeSummaryPsaUrl
+        case AdministratorOrPractitioner.Practitioner => schemeSummaryPspUrl
+        case _ => schemeSummaryPsaUrl
+      }
+      ).format(srn)
+
+  private lazy val schemeSummaryPsaUrl: String = loadConfig("urls.schemeSummaryPsa")
+  private lazy val schemeSummaryPspUrl: String = loadConfig("urls.schemeSummaryPsp")
+
   def listPspUrl: String = loadConfig("urls.listPsp")
+
+   def manageOverviewDashboardUrl: String = loadConfig("urls.manageOverviewDashboard")
 
   def successEndPointTarget(eventType: EventType): String = loadConfig("upscan.success-endpoint").format(toRoute(eventType))
 
@@ -88,6 +102,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   lazy val parsingAndValidationUrl: String = s"$eventReportingUrl${configuration.get[String](path = "urls.parsingAndValidation")}"
   lazy val schemeDetailsUrl: String = s"$pensionSchemeUrl${configuration.get[String](path = "urls.schemeDetails")}"
   lazy val pspSchemeDetailsUrl: String = s"$pensionSchemeUrl${configuration.get[String](path = "urls.pspSchemeDetails")}"
+  lazy val openDateUrl: String = s"$pensionSchemeUrl${configuration.get[String](path = "urls.openDate")}"
 
   lazy val emailApiUrl: String = servicesConfig.baseUrl("email")
   lazy val emailSendForce: Boolean = configuration.getOptional[Boolean]("email.force").getOrElse(false)

@@ -24,7 +24,7 @@
 
 @(continueUrl: String, viewOtherPensionSchemesUrl: String, schemeName: String, taxYear: String, dateSubmitted: String, email: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("confirmation.title"))) {
+@layout(pageTitle = titleNoForm(messages("confirmation.title")), showBackLink = false) {
 
 @govukPanel(Panel(
     title = messages("confirmation.panel.h1"),

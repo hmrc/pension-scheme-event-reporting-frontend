@@ -42,15 +42,20 @@ class Event20APsaDeclarationController @Inject()(
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: Event20APsaDeclarationView,
                                                   eventReportingConnector: EventReportingConnector,
-                                                  minimalConnector: MinimalConnector)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                  minimalConnector: MinimalConnector)
+                                                (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val eventType = EventType.Event20A
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
     minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map {
       minimalDetails =>
-        Ok(view(request.schemeName, request.pstr, getTaxYearFromOption(request.userAnswers).toString, minimalDetails.name,
-          controllers.event20A.routes.Event20APsaDeclarationController.onClick(waypoints).url))
+        if (request.isReportSubmitted) {
+          Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
+        } else {
+          Ok(view(request.schemeName, request.pstr, getTaxYearFromOption(request.userAnswers).toString, minimalDetails.name,
+            controllers.event20A.routes.Event20APsaDeclarationController.onClick(waypoints).url))
+        }
     }
   }
 
@@ -62,7 +67,7 @@ class Event20APsaDeclarationController @Inject()(
           eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion).map { _ =>
             Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
           }
-        case _ => Future.successful(Redirect(controllers.routes.IndexController.onPageLoad.url))
+        case _ => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None).url))
       }
   }
 

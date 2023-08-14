@@ -19,7 +19,7 @@ package pages.fileUpload
 import controllers.fileUpload.routes
 import models.UserAnswers
 import models.enumeration.EventType
-import pages.{IndexPage, Page, Waypoints}
+import pages.{JourneyRecoveryPage, Page, Waypoints}
 import play.api.mvc.Call
 
 case class ProcessingRequestPage(eventType: EventType) extends Page {
@@ -29,6 +29,6 @@ case class ProcessingRequestPage(eventType: EventType) extends Page {
   override def route(waypoints: Waypoints): Call =
     routes.ProcessingRequestController.onPageLoad(waypoints, eventType)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = IndexPage
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = JourneyRecoveryPage
 
 }

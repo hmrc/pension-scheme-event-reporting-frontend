@@ -18,15 +18,16 @@ package controllers.event20A
 
 import base.SpecBase
 import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
-import connectors.{EventReportingConnector, MinimalConnector, SchemeDetailsConnector, UserAnswersCacheConnector}
+import connectors.{EventReportingConnector, MinimalConnector, SchemeConnector, UserAnswersCacheConnector}
 import data.SampleData.sampleEvent20ABecameJourneyData
 import forms.event20A.Event20APspDeclarationFormProvider
-import models.SchemeDetails
+import models.{SchemeDetails, VersionInfo}
+import models.enumeration.VersionStatus.{Compiled, Submitted}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints, VersionInfoPage}
 import pages.event20A.Event20APspDeclarationPage
 import play.api.Application
 import play.api.inject.bind
@@ -48,7 +49,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
   val taxYear = "2022"
   val practitionerName = "John Smith"
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val mockSchemeDetailsConnector = mock[SchemeDetailsConnector]
+  private val mockSchemeDetailsConnector = mock[SchemeConnector]
   private val mockEventReportingConnector = mock[EventReportingConnector]
   private val mockMinimalConnector = mock[MinimalConnector]
   private val mockSchemeDetails = SchemeDetails("schemeName", "87219363YN", "Open", authorisingPsaId)
@@ -57,7 +58,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
-    bind[SchemeDetailsConnector].toInstance(mockSchemeDetailsConnector),
+    bind[SchemeConnector].toInstance(mockSchemeDetailsConnector),
     bind[EventReportingConnector].toInstance(mockEventReportingConnector),
     bind[MinimalConnector].toInstance(mockMinimalConnector)
   )
@@ -80,9 +81,9 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
   "Event20APspDeclaration Controller" - {
 
-    "must return OK and the correct view for a GET" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
+    "must return OK and the correct view for a GET when when isReportSubmitted is false" in {
+      val userAnswersWithVersionInfo = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
 
       running(application) {
@@ -94,6 +95,21 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(schemeName, pstr, taxYear, practitionerName, form, waypoints)(request, messages(application)).toString
+      }
+    }
+
+    "must redirect to cannot resume page when isReportSubmitted is true" in {
+      val userAnswersWithVersionInfo = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.CannotResumeController.onPageLoad(EmptyWaypoints).url
       }
     }
 

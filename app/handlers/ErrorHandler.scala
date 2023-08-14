@@ -16,20 +16,33 @@
 
 package handlers
 
+import config.FrontendAppConfig
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Request
+import play.api.mvc.Results.Ok
+import play.api.mvc.{Request, RequestHeader, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import views.html.ErrorTemplate
+import views.html.{ErrorTemplate, NoDataEnteredErrorView}
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.Future
 
 @Singleton
 class ErrorHandler @Inject()(
                               val messagesApi: MessagesApi,
-                              view: ErrorTemplate
+                              view: ErrorTemplate,
+                              noDataEnteredView: NoDataEnteredErrorView,
+                              config: FrontendAppConfig
                             ) extends FrontendErrorHandler with I18nSupport {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
     view(pageTitle, heading, message)
+
+  override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
+    exception match {
+      case _: NothingToSubmitException =>
+        Future.successful(Ok(noDataEnteredView(config.manageOverviewDashboardUrl)(Request(request, ""), request2Messages(request))))
+      case _ => super.onServerError(request, exception)
+    }
+  }
 }

@@ -134,7 +134,6 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
     */
   }
 
-
   private def testSuite(form: Form[Boolean], eventType: EventType, sampleData: UserAnswers, secondValue: String, href: String, totalAmount: String): Unit = {
     testReturnOkAndCorrectView(eventType, form, sampleData, secondValue, href, totalAmount)
     testSaveAnswerAndRedirectWhenValid(eventType)

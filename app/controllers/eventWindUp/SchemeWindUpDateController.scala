@@ -16,7 +16,7 @@
 
 package controllers.eventWindUp
 
-import connectors.UserAnswersCacheConnector
+import connectors.{SchemeConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.eventWindUp.SchemeWindUpDateFormProvider
 import helpers.DateHelper
@@ -25,11 +25,13 @@ import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
 import pages.eventWindUp.SchemeWindUpDatePage
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.eventWindUp.SchemeWindUpDateView
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,6 +39,7 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
                                     identify: IdentifierAction,
                                     getData: DataRetrievalAction,
                                     userAnswersCacheConnector: UserAnswersCacheConnector,
+                                    schemeConnector : SchemeConnector,
                                     formProvider: SchemeWindUpDateFormProvider,
                                     view: SchemeWindUpDateView,
                                     dateHelper: DateHelper
@@ -44,18 +47,26 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
 
   private val eventType = EventType.WindUp
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    def form = formProvider(getTaxYearFromOption(request.userAnswers))
-    val preparedForm = request.userAnswers.flatMap(_.get(SchemeWindUpDatePage)).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints))
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
+    val psaOrPspId = request.loggedInUser.psaIdOrPspId
+    val idValue = request.loggedInUser.idName
+    schemeConnector.getOpenDate(idValue, psaOrPspId, request.pstr).flatMap { openDate =>
+      def form: Form[LocalDate] = formProvider(getTaxYearFromOption(request.userAnswers), openDate)
+      val preparedForm = request.userAnswers.flatMap(_.get(SchemeWindUpDatePage)).fold(form)(form.fill)
+      Future.successful(Ok(view(preparedForm, waypoints)))
+    }
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
-      def form = formProvider(getTaxYearFromOption(request.userAnswers))
+      val psaOrPspId = request.loggedInUser.psaIdOrPspId
+      val idValue = request.loggedInUser.idName
+        schemeConnector.getOpenDate(idValue, psaOrPspId, request.pstr).flatMap { openDate =>
+      def form: Form[LocalDate] = formProvider(getTaxYearFromOption(request.userAnswers), openDate)
       form.bindFromRequest().fold(
         formWithErrors => {
-          Future.successful(BadRequest(view(formWithErrors, waypoints)))},
+          Future.successful(BadRequest(view(formWithErrors, waypoints)))
+        },
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(SchemeWindUpDatePage, value)
@@ -64,6 +75,7 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
           }
         }
       )
+    }
   }
 
 }

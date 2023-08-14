@@ -62,7 +62,8 @@ class IdentifierActionSpec
       implicit request =>
         Ok(Json.obj(
           "loggedInUser" -> Json.toJson(request.loggedInUser),
-          "pstr" -> request.pstr
+          "pstr" -> request.pstr,
+          "srn" -> request.srn
         ))
     }
   }
@@ -110,7 +111,8 @@ class IdentifierActionSpec
         "eventReporting" -> Json.obj(
           "pstr" -> pstrInDB,
           "schemeName" -> "schemeName",
-          "returnUrl" -> "returnUrl"
+          "returnUrl" -> "returnUrl",
+          "srn" -> "srn"
         )
       )
 
@@ -138,7 +140,8 @@ class IdentifierActionSpec
         "eventReporting" -> Json.obj(
           "pstr" -> pstrInDB,
           "schemeName" -> "schemeName",
-          "returnUrl" -> "returnUrl"
+          "returnUrl" -> "returnUrl",
+          "srn" -> "srn"
         )
       )
 
@@ -171,7 +174,8 @@ class IdentifierActionSpec
         "eventReporting" -> Json.obj(
           "pstr" -> pstrInDB,
           "schemeName" -> "schemeName",
-          "returnUrl" -> "returnUrl"
+          "returnUrl" -> "returnUrl",
+          "srn" -> "srn"
         )
       )
 
@@ -202,7 +206,8 @@ class IdentifierActionSpec
         "eventReporting" -> Json.obj(
           "pstr" -> pstrInDB,
           "schemeName" -> "schemeName",
-          "returnUrl" -> "returnUrl"
+          "returnUrl" -> "returnUrl",
+          "srn" -> "srn"
         )
       )
 
