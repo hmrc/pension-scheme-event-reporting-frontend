@@ -22,6 +22,7 @@ import utils.CountryOptions
 
 import java.time.LocalDate
 import scala.language.implicitConversions
+import scala.collection.immutable.HashSet
 
 trait Constraints {
 
@@ -171,7 +172,7 @@ trait Constraints {
     }
   }
 
-  protected def nonUniqueNino(notUniqueKey: String, ninos: Seq[String]): Constraint[String] = {
+  protected def nonUniqueNino(notUniqueKey: String, ninos: HashSet[String]): Constraint[String] = {
     Constraint {
       case nino if ninos.contains(nino) => Invalid(notUniqueKey)
       case _ => Valid

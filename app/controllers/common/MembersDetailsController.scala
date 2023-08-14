@@ -33,6 +33,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.common.MembersDetailsView
 
 import javax.inject.Inject
+import scala.collection.immutable.HashSet
 import scala.concurrent.{ExecutionContext, Future}
 
 class MembersDetailsController @Inject()(val controllerComponents: MessagesControllerComponents,
@@ -42,13 +43,14 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
                                          formProvider: MembersDetailsFormProvider,
                                          view: MembersDetailsView
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-  private def memberNinos(eventType: EventType)(implicit request: OptionalDataRequest[_]): Seq[String] = {
+  private def memberNinos(eventType: EventType)(implicit request: OptionalDataRequest[_]): HashSet[String] = {
     val readsNINumber: Reads[Option[String]] = (JsPath \ "membersDetails" \ "nino").readNullable[String]
     val pg = eventType match {
       case Event1 => MembersOrEmployersPage(eventType)
       case _ => MembersPage(eventType)
     }
-    request.userAnswers.map(_.getAll(pg.path)(readsNINumber.map(_.toSeq))).toSeq.flatten.flatten
+    val s = request.userAnswers.map(_.getAll(pg.path)(readsNINumber.map(_.toSeq))).toSeq.flatten.flatten
+    HashSet(s: _*)
   }
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index, memberPageNo: Int): Action[AnyContent] =
