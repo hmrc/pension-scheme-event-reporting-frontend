@@ -29,11 +29,16 @@ class PlaygroundFormProvider @Inject() extends Mappings {
 
   def apply()(implicit messages: Messages): Form[LocalDate] =
     Form(
+      // FormErrors to the FE View come from here
       "value" -> newLocalDate(
+        // TODO: remove all keys one by one and build back up to full functionality
         invalidKey                    = "playground.error.invalid",
+        /*
+        ,
         threeDateComponentsMissingKey = "playground.error.required.all",
         twoDateComponentsMissingKey   = "playground.error.required.two",
         oneDateComponentMissingKey    = "playground.error.required"
+         */
       ).verifying(
         yearHas4Digits("paymentValueAndDate.date.error.outsideDateRanges"),
         minDate(startDate, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", startDate.getYear.toString, endDate.getYear.toString)),

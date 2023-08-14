@@ -19,6 +19,7 @@ package forms.mappings
 import models.{Enumerable, TaxYearValidationDetail}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
+import play.api.i18n.Messages
 
 import java.time.LocalDate
 
@@ -59,16 +60,6 @@ trait Mappings extends Formatters with Constraints {
                               args: Seq[String] = Seq.empty)(implicit ev: Enumerable[A]): FieldMapping[A] =
     of(enumerableFormatter[A](requiredKey, invalidKey, args))
 
-  protected def newLocalDate(
-                           invalidKey: String,
-                           oneDateComponentMissingKey: String,
-                           twoDateComponentsMissingKey: String,
-                           threeDateComponentsMissingKey: String,
-                           taxYearValidationDetail: Option[TaxYearValidationDetail] = None,
-                           args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
-    of(new NewLocalDateFormatter(invalidKey, oneDateComponentMissingKey, twoDateComponentsMissingKey,
-      threeDateComponentsMissingKey, taxYearValidationDetail, args))
-
   protected def localDate(
                            invalidKey: String,
                            oneDateComponentMissingKey: String,
@@ -78,4 +69,24 @@ trait Mappings extends Formatters with Constraints {
                            args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, oneDateComponentMissingKey, twoDateComponentsMissingKey,
       threeDateComponentsMissingKey, taxYearValidationDetail, args))
+
+
+  /* KEYS
+                                oneDateComponentMissingKey: String,
+                              twoDateComponentsMissingKey: String,
+                              threeDateComponentsMissingKey: String,
+                              taxYearValidationDetail: Option[TaxYearValidationDetail] = None,
+
+   */
+  protected def newLocalDate(
+                              invalidKey: String,
+                              taxYearValidationDetail: Option[TaxYearValidationDetail] = None,
+                              args: Seq[String] = Seq.empty
+                            )(implicit messages: Messages): FieldMapping[LocalDate] =
+
+  /* PARAMS
+  , oneDateComponentMissingKey, twoDateComponentsMissingKey,
+      threeDateComponentsMissingKey, taxYearValidationDetail, args
+   */
+    of(new NewLocalDateFormatter(invalidKey, taxYearValidationDetail, args))
 }

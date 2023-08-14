@@ -20,28 +20,47 @@ import helpers.DateHelper
 import models.TaxYearValidationDetail
 import play.api.data.FormError
 import play.api.data.format.Formatter
+import play.api.i18n.Messages
 
 import java.time.LocalDate
 import scala.util.{Failure, Success, Try}
 
-private[mappings] class NewLocalDateFormatter(
-                                            invalidKey: String,
+
+/* PARAMS
+,
                                             oneDateComponentMissingKey: String,
                                             twoDateComponentsMissingKey: String,
                                             threeDateComponentsMissingKey: String,
-                                            taxYearValidationDetail: Option[TaxYearValidationDetail],
-                                            args: Seq[String] = Seq.empty
-                                          ) extends Formatter[LocalDate] with Formatters {
+
+ */
+
+//scalastyle:off
+private[mappings] class NewLocalDateFormatter(
+                                               invalidKey: String,
+                                               taxYearValidationDetail: Option[TaxYearValidationDetail] = None,
+                                               args: Seq[String] = Seq.empty
+                                             )(implicit messages: Messages) extends Formatter[LocalDate] with Formatters {
 
   private val fieldKeys: List[String] = List("day", "month", "year")
 
-  private def toDate(key: String, day: Int, month: Int, year: Int): Either[Seq[FormError], LocalDate] =
-    Try(LocalDate.of(year, month, day)) match {
-      case Success(date) =>
-        Right(date)
-      case Failure(_) =>
-        Left(Seq(FormError(key, invalidKey, args)))
+  def tryLocalDate(input: (Int, Int, Int)): Either[Seq[FormError], LocalDate] = {
+    Try(LocalDate.of(input._3, input._2, input._1)) match {
+      case Success(date) => Right(date)
+      case Failure(exception) =>
+        val errorMessage = exception.getMessage
+         errorMessage match {
+        case _ =>
+            Left(Seq(FormError(invalidKey, messages(erroneousDateKey(errorMessage)))))
+      }
     }
+  }
+
+  private val erroneousDateKey: String => String = {
+    case errorMessage@invalidDay if errorMessage.contains("DayOfMonth") => "genericDate.error.invalid.day"
+    case errorMessage@invalidMonth if errorMessage.contains("MonthOfYear") => "genericDate.error.invalid.month"
+    case errorMessage@invalidYear if errorMessage.contains("Year") => "genericDate.error.invalid.year"
+    case _ => invalidKey
+  }
 
   private def formatDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
@@ -53,13 +72,14 @@ private[mappings] class NewLocalDateFormatter(
     )
 
     for {
-      day <- int.bind(s"$key.day", data).right
-      month <- int.bind(s"$key.month", data).right
-      year <- int.bind(s"$key.year", data).right
-      date <- toDate(key, day, month, year).right
-    } yield date
+      day <- int.bind(s"$key.day", data)
+      month <- int.bind(s"$key.month", data)
+      year <- int.bind(s"$key.year", data)
+      tryDate <- tryLocalDate(day, month, year)
+    } yield tryDate
   }
 
+  // TODO: comment out now invalid keys for binding
   override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
     val fields = fieldKeys.map {
@@ -92,11 +112,12 @@ private[mappings] class NewLocalDateFormatter(
             }
         }
       case 2 =>
-        Left(List(FormError(key, oneDateComponentMissingKey, missingFields ++ args)))
+        println("\n\n\n\n\n\n\n" + missingFields)
+        Left(List(FormError(key, s"${messages("genericDate.error.invalid.oneFieldMissing")}: ${missingFields.head}", args)))
       case 1 =>
-        Left(List(FormError(key, twoDateComponentsMissingKey, missingFields ++ args)))
+        Left(List(FormError(key, "genericDate.error.invalid.twoFieldsMissing", args)))
       case _ =>
-        Left(List(FormError(key, threeDateComponentsMissingKey, args)))
+        Left(List(FormError(key, "genericDate.error.invalid.allFieldsMissing", args)))
     }
   }
 
