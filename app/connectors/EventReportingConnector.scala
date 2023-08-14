@@ -125,7 +125,7 @@ class EventReportingConnector @Inject()(
   }
 
   def submitReportEvent20A(pstr: String, ua: UserAnswers, version: String)
-                          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+                          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -138,7 +138,8 @@ class EventReportingConnector @Inject()(
     http.POST[JsValue, HttpResponse](event20ASubmitUrl, ua.data)(implicitly, implicitly, hc, implicitly)
       .map { response =>
         response.status match {
-          case NO_CONTENT => ()
+          case NO_CONTENT => NoContent
+          case BAD_REQUEST => BadRequest
           case EXPECTATION_FAILED => throw new ExpectationFailedException("Nothing to submit")
           case _ =>
             throw new HttpException(response.body, response.status)
