@@ -33,7 +33,8 @@ import scala.util.Failure
 class EventReportingConnector @Inject()(
                                          config: FrontendAppConfig,
                                          http: HttpClient
-                                       ) extends HttpResponseHelper {
+                                       )(implicit ec: ExecutionContext) extends HttpResponseHelper {
+  private val logger = Logger(classOf[EventReportingConnector])
 
   private def eventRepSummaryUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/event-summary"
 
@@ -55,7 +56,7 @@ class EventReportingConnector @Inject()(
 
 
   def getEventReportSummary(pstr: String, reportStartDate: String, version: Int)
-                           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventSummary]] = {
+                           (implicit headerCarrier: HeaderCarrier): Future[Seq[EventSummary]] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -84,7 +85,7 @@ class EventReportingConnector @Inject()(
   }
 
   def compileEvent(pstr: String, edi: EventDataIdentifier, currentVersion: Int, delete: Boolean = false)
-                  (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+                  (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
@@ -106,7 +107,7 @@ class EventReportingConnector @Inject()(
   }
 
   def submitReport(pstr: String, ua: UserAnswers, version: String)
-                  (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+                  (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -128,7 +129,7 @@ class EventReportingConnector @Inject()(
   }
 
   def submitReportEvent20A(pstr: String, ua: UserAnswers, version: String)
-                          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+                          (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -149,7 +150,7 @@ class EventReportingConnector @Inject()(
       }
   }
 
-  def getFeatureToggle(toggleName: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[ToggleDetails] = {
+  def getFeatureToggle(toggleName: String)(implicit hc: HeaderCarrier): Future[ToggleDetails] = {
     http.GET[HttpResponse](eventReportingToggleUrl(toggleName))(implicitly, hc, implicitly).map { response =>
       val toggleOpt = response.status match {
         case NO_CONTENT => None
@@ -166,7 +167,7 @@ class EventReportingConnector @Inject()(
     }
   }
 
-  def getFileUploadOutcome(reference: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[FileUploadOutcomeResponse] = {
+  def getFileUploadOutcome(reference: String)(implicit hc: HeaderCarrier): Future[FileUploadOutcomeResponse] = {
     val headerCarrier: HeaderCarrier = hc.withExtraHeaders("reference" -> reference)
     http.GET[HttpResponse](getFileUploadResponseUrl)(implicitly, headerCarrier, implicitly).map { response =>
       response.status match {
@@ -189,7 +190,7 @@ class EventReportingConnector @Inject()(
   }
 
   def getOverview(pstr: String, reportType: String, startDate: String, endDate: String)
-                 (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EROverview]] = {
+                 (implicit headerCarrier: HeaderCarrier): Future[Seq[EROverview]] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -214,7 +215,7 @@ class EventReportingConnector @Inject()(
   }
 
   def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion:Int, memberIdToDelete: String)
-                  (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+                  (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
@@ -236,8 +237,7 @@ class EventReportingConnector @Inject()(
       }
   }
 
-  def getListOfVersions(pstr: String, startDate: String)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Seq[VersionsWithSubmitter]] = {
-    val logger = Logger(classOf[EventReportingConnector])
+  def getListOfVersions(pstr: String, startDate: String)(implicit headerCarrier: HeaderCarrier): Future[Seq[VersionsWithSubmitter]] = {
     val hc = headerCarrier.withExtraHeaders("pstr" -> pstr, "startDate" -> startDate)
     http.GET[HttpResponse](erListOfVersionsUrl)(implicitly, hc, implicitly).map { response =>
       response.status match {
