@@ -67,7 +67,12 @@ case class DataRequest[A](pstr: String,
     userAnswers.get(EventReportingOverviewPage) match {
       case Some(value) => value.find(_.taxYear.equals(taxYear)) match {
         case Some(erOverview) =>
-          val reportVersion = erOverview.versionDetails.map(_.numberOfVersions).getOrElse(1)
+          val isMostRecentVersionInCompileState = erOverview.versionDetails.map(_.compiledVersionAvailable)
+          val reportVersion: Int = isMostRecentVersionInCompileState match {
+            case Some(true) => erOverview.versionDetails.map(_.numberOfVersions - 1).getOrElse(1)
+            case Some(false) => erOverview.versionDetails.map(_.numberOfVersions).getOrElse(1)
+            case _ => throw new RuntimeException("Missing event report compile information")
+          }
           versionSelected < reportVersion
         case None => false
       }
