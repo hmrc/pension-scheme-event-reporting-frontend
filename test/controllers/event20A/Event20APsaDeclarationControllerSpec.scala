@@ -32,7 +32,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.NoDataEnteredErrorView
 import views.html.event20A.Event20APsaDeclarationView
 
 import scala.concurrent.Future
@@ -110,7 +109,7 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
 
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
-      when(mockERConnector.submitReportEvent20A(any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
+      when(mockERConnector.submitReportEvent20A(any(), any(), any())(any())).thenReturn(Future.successful(()))
 
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)

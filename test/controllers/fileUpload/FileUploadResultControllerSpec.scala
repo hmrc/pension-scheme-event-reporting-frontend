@@ -82,7 +82,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
     s"must return OK and the correct view for a GET when a file name is successfully retrieved from mongo cache (Event $eventType)" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
-      when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
+      when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any()))
         .thenReturn(Future.successful(FileUploadOutcomeResponse(Some("testFile"), SUCCESS, Some("downloadUrl"), "reference", None)))
       running(application) {
         val request = FakeRequest.apply(method = GET, path = getRoute(eventType) + "?key=123")
@@ -101,7 +101,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
     s"must return OK and the correct view for a GET when a file name retrieval from mongo cache is in progress (Event $eventType)" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
-      when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
+      when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any()))
         .thenReturn(Future.successful(FileUploadOutcomeResponse(None, IN_PROGRESS, None, "123", None)))
       running(application) {
         val request = FakeRequest.apply(method = GET, path = getRoute(eventType) + "?key=123")
@@ -120,7 +120,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
     s"must return OK and redirect to the file rejected controller if file name is not retrieved from mongo cache (Event $eventType)" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
-      when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
+      when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any()))
         .thenReturn(Future.successful(FileUploadOutcomeResponse(None, FAILURE, None, "123", None)))
       running(application) {
         val request = FakeRequest.apply(method = GET, path = getRoute(eventType) + "?key=123")
