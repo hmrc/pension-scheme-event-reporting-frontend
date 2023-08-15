@@ -112,7 +112,7 @@ trait Formatters {
 
   private[mappings] def bigDecimal2DPFormatter(nothingEnteredKey: String,
                                                notANumberKey: String,
-                                               noDecimalsKey: String,
+                                               tooManyDecimalsKey: String,
                                                args: Seq[String] = Seq.empty): Formatter[BigDecimal] =
     new Formatter[BigDecimal] {
 
@@ -121,16 +121,20 @@ trait Formatters {
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BigDecimal] =
         baseFormatter
           .bind(key, data)
-          .right.map(_.replace(",", StringUtils.EMPTY).replace(" ", StringUtils.EMPTY))
-          .right.flatMap {
-          case s if !s.matches(numericRegexp) =>
+          .map(_.replace(",", StringUtils.EMPTY).replace(" ", StringUtils.EMPTY))
+          .map(_.replace("£", StringUtils.EMPTY).replace(" ", StringUtils.EMPTY))
+          .flatMap {
+          case stringWithNonNumericChars if !stringWithNonNumericChars.matches(numericRegexp) =>
             Left(Seq(FormError(key, notANumberKey, args)))
-          case s if !s.matches(decimal2DPRegexp) =>
-            Left(Seq(FormError(key, noDecimalsKey, args)))
-          case s =>
-            Try(BigDecimal(s)) match {
-              case Success(x) => Right(x)
-              case Failure(_) => Left(Seq(FormError(key, notANumberKey, args)))
+          case str =>
+            val strAsBigDecimal = BigDecimal(str)
+            if (strAsBigDecimal.scale > 2) {
+              Left(Seq(FormError(key, tooManyDecimalsKey, args)))
+            } else {
+              Try(strAsBigDecimal) match {
+                case Success(x) => Right(x)
+                case Failure(_) => Left(Seq(FormError(key, notANumberKey, args)))
+              }
             }
         }
 
@@ -142,24 +146,26 @@ trait Formatters {
                                                      decimalKey: String,
                                                      args: Seq[String] = Seq.empty): Formatter[Option[BigDecimal]] =
     new Formatter[Option[BigDecimal]] {
-
       private val baseFormatter: Formatter[Option[String]] = optionalStringFormatter
-
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[BigDecimal]] =
         baseFormatter
           .bind(key, data)
-          .right.map(_.map(_.replace(",", StringUtils.EMPTY).replace(" ", StringUtils.EMPTY)))
-          .right.flatMap {
+          .map(_.map(_.replace(",", StringUtils.EMPTY).replace(" ", StringUtils.EMPTY)))
+          .map(_.map(_.replace("£", StringUtils.EMPTY).replace(" ", StringUtils.EMPTY)))
+          .flatMap {
           case s if s.isEmpty =>
             Right(None)
-          case Some(s) if !s.matches(numericRegexp) =>
+          case Some(stringWithNonNumericChars) if !stringWithNonNumericChars.matches(numericRegexp) =>
             Left(Seq(FormError(key, invalidKey, args)))
-          case Some(s) if !s.matches(decimal2DPRegexp) =>
-            Left(Seq(FormError(key, decimalKey, args)))
-          case Some(s) =>
-            Try(Option(BigDecimal(s))) match {
-              case Success(x) => Right(x)
-              case Failure(_) => Left(Seq(FormError(key, invalidKey, args)))
+          case Some(str) =>
+            val strAsBigDecimal = BigDecimal(str)
+            if (strAsBigDecimal.scale > 2) {
+              Left(Seq(FormError(key, decimalKey, args)))
+            } else {
+              Try(Option(strAsBigDecimal)) match {
+                case Success(x) => Right(x)
+                case Failure(_) => Left(Seq(FormError(key, invalidKey, args)))
+              }
             }
           case None => Right(None)
         }

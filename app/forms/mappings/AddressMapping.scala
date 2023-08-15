@@ -52,6 +52,7 @@ trait AddressMapping extends Mappings with Transforms {
 
   def postCodeMapping(keyRequired: String, keyLength: String, keyInvalid: String): Mapping[String] = {
     text(keyRequired)
+      .transform(postCodeWhitespaceRemoval, noTransform)
       .transform(postCodeTransform, noTransform)
       .verifying(
         firstError(
@@ -113,6 +114,10 @@ trait AddressMapping extends Mappings with Transforms {
 
   private[mappings] def postCodeTransform(value: String): String = {
     minimiseSpace(value.trim.toUpperCase)
+  }
+
+  private[mappings] def postCodeWhitespaceRemoval(value: String): String = {
+    value.filterNot(_.isWhitespace)
   }
 
   private def countryDataTransform(value: Option[String]): Option[String] = {

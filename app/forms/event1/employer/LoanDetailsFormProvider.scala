@@ -33,14 +33,14 @@ class LoanDetailsFormProvider @Inject() extends Mappings with Transforms {
       mapping("loanAmount" ->
         optionBigDecimal2DP(
           "loanDetails.loanAmount.notANumber",
-          "loanDetails.loanAmount.noDecimals")
+          "loanDetails.loanAmount.tooManyDecimals")
           .verifying(
             maximumValue[BigDecimal](maxPaymentValue, "loanDetails.loanAmount.amountTooHigh"),
             minimumValue[BigDecimal](0, "loanDetails.loanAmount.negative")
           ), "fundValue" ->
         optionBigDecimal2DP(
           "loanDetails.fundValue.notANumber",
-          "loanDetails.fundValue.noDecimals")
+          "loanDetails.fundValue.tooManyDecimals")
           .verifying(
             maximumValue[BigDecimal](maxPaymentValue, "loanDetails.fundValue.amountTooHigh"),
             minimumValue[BigDecimal](0, "loanDetails.fundValue.negative")

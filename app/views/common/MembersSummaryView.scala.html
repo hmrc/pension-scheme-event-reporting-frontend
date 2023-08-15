@@ -44,7 +44,8 @@
             colTwo = s"membersSummary.event${eventType.toString}.table.header2",
             colThree = s"membersSummary.event${eventType.toString}.table.header3",
             total,
-            totalTitle = s"membersSummary.event${eventType.toString}.table.totalTitle"
+            totalTitle = s"membersSummary.event${eventType.toString}.table.totalTitle",
+            caption = messages(s"membersSummary.event${eventType.toString}.heading", selectedTaxYear)
         )
 
         @govukRadios(

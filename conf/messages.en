@@ -338,10 +338,10 @@ beneficiaryDetails.change.nino.hidden = The National Insurance number of the per
 amountPaid.event2.title = How much was paid?
 amountPaid.event2.heading = How much was paid to {0}?
 amountPaid.event2.checkYourAnswersLabel = The amount that was paid to {0}
-amountPaid.event2.error.nonNumeric = The amount must be an amount of money, like 123.45 or 156.00
-amountPaid.event2.error.negative = The amount must not be a negative amount of money, like -123.45 or -156.00
+amountPaid.event2.error.nonNumeric = The amount must be an amount of money, like £123.45 or £156.00
+amountPaid.event2.error.negative = The amount must not be a negative amount of money, like -£123.45 or -£156.00
 amountPaid.event2.error.nothingEntered = Enter the amount that was paid
-amountPaid.event2.error.noDecimals = The amount must include pence, like 123.45 or 156.00
+amountPaid.event2.error.tooManyDecimals = The amount can only include pounds and pence, like £123.45 or £156.00
 amountPaid.event2.error.tooHigh = The amount must be £999999999.99 or less
 amountPaid.event2.error.zeroEntered = The total amount paid must be greater than zero
 amountPaid.event2.change.hidden = The amount that was paid to {0}
@@ -570,11 +570,12 @@ paymentValueAndDate.title = Payment value and date
 paymentValueAndDate.heading = Payment value and date
 
 paymentValueAndDate.value.heading = Total value or amount of the unauthorised payment
+paymentValueAndDate.value.hint = For example, £600 or £193.54
 paymentValueAndDate.value.error.nothingEntered = Enter the payment value
-paymentValueAndDate.value.error.notANumber = The payment value must be an amount of money, like 123.45 or 156.00
-paymentValueAndDate.value.error.noDecimals = The payment value must include pence, like 123.45 or 156.00
+paymentValueAndDate.value.error.notANumber = The payment value must be an amount of money, like £123.45 or £156.00
+paymentValueAndDate.value.error.tooManyDecimals = The payment value can only include pounds and pence, like £123.45 or £156.00
 paymentValueAndDate.value.error.amountTooHigh = The payment value must be £999999999.99 or less
-paymentValueAndDate.value.error.negative = The payment value must not be a negative amount of money, like -123.45 or -156.00
+paymentValueAndDate.value.error.negative = The payment value must not be a negative amount of money, like -£123.45 or -£156.00
 paymentValueAndDate.value.change.hidden = Payment value
 paymentValueAndDate.value.checkYourAnswersLabel = Payment value
 
@@ -625,15 +626,15 @@ fundAmount.change.hidden = Fund amount
 loanDetails.CYA.loanAmountLabel = Loan Amount
 loanDetails.CYA.fundValueLabel = Fund Amount
 
-loanDetails.loanAmount.notANumber = The loan amount must be an amount of money, like 123.45 or 156.00
-loanDetails.loanAmount.noDecimals = The loan amount must include pence, like 123.45 or 156.00
+loanDetails.loanAmount.notANumber = The loan amount must be an amount of money, like £123.45 or £156.00
+loanDetails.loanAmount.tooManyDecimals = The loan amount can only include pounds and pence, like £123.45 or £156.00
 loanDetails.loanAmount.amountTooHigh = The loan amount must be £999999999.99 or less
-loanDetails.loanAmount.negative = The loan amount must not be a negative amount of money, like -123.45 or -156.00
+loanDetails.loanAmount.negative = The loan amount must not be a negative amount of money, like -£123.45 or -£156.00
 
-loanDetails.fundValue.notANumber = The fund value must be an amount of money, like 123.45 or 156.00
-loanDetails.fundValue.noDecimals = The fund value must include pence, like 123.45 or 156.00
+loanDetails.fundValue.notANumber = The fund value must be an amount of money, like £123.45 or £156.00
+loanDetails.fundValue.tooManyDecimals = The fund value can only include pounds and pence, like £123.45 or £156.00
 loanDetails.fundValue.amountTooHigh = The fund value must be £999999999.99 or less
-loanDetails.fundValue.negative = The fund value must not be a negative amount of money, like -123.45 or -156.00
+loanDetails.fundValue.negative = The fund value must not be a negative amount of money, like -£123.45 or -£156.00
 
 loanDetails.loanAmount.heading = Amount of the loan (optional)
 loanDetails.fundValue.heading = Value of the fund (optional)
@@ -1035,11 +1036,11 @@ totalPensionAmounts.event23.checkYourAnswersLabel = What is the total of the mem
 totalPensionAmounts.event23.change.hidden = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year
 
 totalPensionAmounts.value.error.nothingEntered = Enter the total pension input amounts
-totalPensionAmounts.value.error.notANumber = The total pension input amounts must be an amount of money, like 123.45 or 156.00
-totalPensionAmounts.value.error.noDecimals = The total pension input amounts must include pence, like 123.45 or 156.00
+totalPensionAmounts.value.error.notANumber = The total pension input amounts must be an amount of money, like £123.45 or £156.00
+totalPensionAmounts.value.error.tooManyDecimals = The total pension input amounts can only include pounds and pence, like £123.45 or £156.00
 totalPensionAmounts.value.error.amountTooHigh = The total pension input amounts must be £999999999.99 or less
 totalPensionAmounts.value.error.zeroAmount = The amount entered must be greater than zero
-totalPensionAmounts.value.error.negative = The total pension input amounts must not be a negative amount of money, like -123.45 or -156.00
+totalPensionAmounts.value.error.negative = The total pension input amounts must not be a negative amount of money, like -£123.45 or -£156.00
 
 removeEvent18.title = Are you sure you want to remove Event 18: Scheme chargeable payment?
 removeEvent18.heading = Are you sure you want to remove Event 18: Scheme chargeable payment?
@@ -1168,10 +1169,10 @@ amountCrystallisedAndDate.heading = Amount crystallised and date
 
 amountCrystallisedAndDate.value.heading = Total amount crystallised
 amountCrystallisedAndDate.value.error.nothingEntered = Enter the total amount crystallised
-amountCrystallisedAndDate.value.error.notANumber = The total amount crystallised must be an amount of money, like 123.45 or 156.00
-amountCrystallisedAndDate.value.error.noDecimals = The total amount crystallised must include pence, like 123.45 or 156.00
+amountCrystallisedAndDate.value.error.notANumber = The total amount crystallised must be an amount of money, like £123.45 or £156.00
+amountCrystallisedAndDate.value.error.tooManyDecimals = The total amount crystallised can only include pounds and pence, like £123.45 or £156.00
 amountCrystallisedAndDate.value.error.amountTooHigh = The total amount crystallised must be £999999999.99 or less
-amountCrystallisedAndDate.value.error.negativeValue = The total amount crystallised must not be a negative amount of money, like -123.45 or -156.00
+amountCrystallisedAndDate.value.error.negativeValue = The total amount crystallised must not be a negative amount of money, like -£123.45 or -£156.00
 amountCrystallisedAndDate.value.error.zeroEntered = The total amount crystallised must be greater than zero
 amountCrystallisedAndDate.value.change.hidden = The total amount crystallised
 amountCrystallisedAndDate.value.checkYourAnswersLabel = Total amount crystallised
@@ -1197,11 +1198,11 @@ crystallisedAmount.checkYourAnswersLabel = The amount crystallised
 crystallisedAmount.change.hidden = The amount that was crystallised
 crystallisedAmount.value.error.nothingEntered = Enter how much was crystallised
 
-amounts.value.error.notANumber = The amount must be an amount of money, like 123.45 or 156.00
-amounts.value.error.noDecimals = The amount must include pence, like 123.45 or 156.00
+amounts.value.error.notANumber = The amount must be an amount of money, like £123.45 or £156.00
+amounts.value.error.tooManyDecimals = The amount can only include pounds and pence, like £123.45 or £156.00
 amounts.value.error.amountTooHigh = The amount must be £999999999.99 or less
 amounts.value.error.zeroAmount = The amount entered must be greater than zero
-amounts.value.error.negative = The amount must not be a negative amount of money, like -123.45 or -156.00
+amounts.value.error.negative = The amount must not be a negative amount of money, like -£123.45 or -£156.00
 
 paymentDate.heading = When was the payment made?
 paymentDate.title = When was the payment made?
@@ -1218,10 +1219,10 @@ lumpSumAmountAndDate.heading = Lump sum amount and date
 
 lumpSumAmountAndDate.value.heading = How much lump sum was paid?
 lumpSumAmountAndDate.value.error.nothingEntered = Enter the lump sum amount
-lumpSumAmountAndDate.value.error.notANumber = The lump sum amount must be an amount of money, like 123.45 or 156.00
-lumpSumAmountAndDate.value.error.noDecimals = The lump sum amount must include pence, like 123.45 or 156.00
+lumpSumAmountAndDate.value.error.notANumber = The lump sum amount must be an amount of money, like £123.45 or £156.00
+lumpSumAmountAndDate.value.error.tooManyDecimals = The lump sum amount can only include pounds and pence, like £123.45 or £156.00
 lumpSumAmountAndDate.value.error.amountTooHigh = The lump sum amount must be £999999999.99 or less
-lumpSumAmountAndDate.value.error.negativeValue = The lump sum amount must not be a negative amount of money, like -123.45 or -156.00
+lumpSumAmountAndDate.value.error.negativeValue = The lump sum amount must not be a negative amount of money, like -£123.45 or -£156.00
 lumpSumAmountAndDate.value.error.zeroEntered = The lump sum amount must be greater than zero
 lumpSumAmountAndDate.value.change.hidden = The lump sum amount
 lumpSumAmountAndDate.value.checkYourAnswersLabel = Lump sum amount
@@ -1298,10 +1299,10 @@ event4.paymentDetails.value.heading = Total amount paid
 event5.paymentDetails.value.heading = Total amount paid
 
 paymentDetails.value.error.nothingEntered = Enter the total amount that was paid
-paymentDetails.value.error.notANumber = The total amount must be an amount of money, like 123.45 or 156.00
-paymentDetails.value.error.noDecimals = The total amount must include pence, like 123.45 or 156.00
+paymentDetails.value.error.notANumber = The total amount must be an amount of money, like £123.45 or £156.00
+paymentDetails.value.error.tooManyDecimals = The total amount can only include pounds and pence, like £123.45 or £156.00
 paymentDetails.value.error.amountTooHigh = The total amount must be £999999999.99 or less
-paymentDetails.value.error.negativeValue = The total amount must not be a negative amount of money, like -123.45 or -156.00
+paymentDetails.value.error.negativeValue = The total amount must not be a negative amount of money, like -£123.45 or -£156.00
 paymentDetails.value.error.zeroEntered = The total amount must be greater than zero
 paymentDetails.value.change.hidden = The total amount paid
 paymentDetails.value.checkYourAnswersLabel = Total amount paid
@@ -1606,7 +1607,7 @@ fileUpload.totalAmounts.generic.error = the total of the member’s pension inpu
 
 fileUpload.typeOfProtection.generic.error = "Error for type of protection needs to be confirmed"
 fileUpload.typeOfProtectionReference.generic.error = The protection reference is a maximum of 15 characters and a combination of numbers and letters
-fileUpload.lumpSumAmount.generic.error = The total amount crystallised must be an amount of money, like 123.45 or 156.00. It must include pence and cannot be a negative amount, nor exceed £999999999.99
+fileUpload.lumpSumAmount.generic.error = The total amount crystallised must be an amount of money, like £123.45 or £156.00. It must include pence and cannot be a negative amount, nor exceed £999999999.99
 fileUpload.lumpSumDate.generic.error = The date must be between 6 April 2006 and 5 April of the tax year that is being submitted
 
 fileUploadSuccess.title = Your file upload was successful
@@ -1625,6 +1626,7 @@ fileupload.invalid.item2 = Error
 return.to.fileupload = Return to file upload
 
 fileUpload.generic.total.error.part1 = Your file has {0} errors. At least one:
+fileUpload.generic.actions = Actions
 
 problemWithService.title = Sorry, there was a problem with the service
 problemWithService.heading = Sorry, there was a problem with the service

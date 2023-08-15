@@ -30,7 +30,7 @@ class TotalPensionAmountsFormProvider @Inject() extends Mappings {
       "value" -> bigDecimal2DP(
         "totalPensionAmounts.value.error.nothingEntered",
         "totalPensionAmounts.value.error.notANumber",
-        "totalPensionAmounts.value.error.noDecimals")
+        "totalPensionAmounts.value.error.tooManyDecimals")
         .verifying(
           maximumValue[BigDecimal](maxPensionAmtValue, "totalPensionAmounts.value.error.amountTooHigh"),
           minimumValue[BigDecimal](0, "totalPensionAmounts.value.error.negative"),
