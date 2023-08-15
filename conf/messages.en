@@ -1713,9 +1713,10 @@ playground.error.required = The date must include {0}
 playground.error.invalid = Enter a real date
 playground.change.hidden = Playground for dates
 
-genericDate.error.invalid.day = Enter a real date. The --- day --- input is invalid
-genericDate.error.invalid.month = Enter a real date. The --- month --- input is invalid
-genericDate.error.invalid.year = Enter a real date. The --- year --- input is invalid
-genericDate.error.invalid.oneFieldMissing = The date must include an X
-genericDate.error.invalid.twoFieldsMissing = The date must include a Y and a Z
+genericDate.error.invalid = Enter a real date
+genericDate.error.invalid.day = The day input is invalid
+genericDate.error.invalid.month = The month input is invalid
+genericDate.error.invalid.year = The year input is invalid
+genericDate.error.invalid.missingInformation = The date must include a
 genericDate.error.invalid.allFieldsMissing = The date must include a day, month and year
+genericDate.error.outsideRelevantTaxYear = Date must be between 6 April {0} and 5 April {1}

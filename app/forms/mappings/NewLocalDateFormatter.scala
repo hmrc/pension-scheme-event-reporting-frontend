@@ -25,16 +25,6 @@ import play.api.i18n.Messages
 import java.time.LocalDate
 import scala.util.{Failure, Success, Try}
 
-
-/* PARAMS
-,
-                                            oneDateComponentMissingKey: String,
-                                            twoDateComponentsMissingKey: String,
-                                            threeDateComponentsMissingKey: String,
-
- */
-
-//scalastyle:off
 private[mappings] class NewLocalDateFormatter(
                                                invalidKey: String,
                                                taxYearValidationDetail: Option[TaxYearValidationDetail] = None,
@@ -79,7 +69,6 @@ private[mappings] class NewLocalDateFormatter(
     } yield tryDate
   }
 
-  // TODO: comment out now invalid keys for binding
   override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
     val fields = fieldKeys.map {
@@ -112,10 +101,10 @@ private[mappings] class NewLocalDateFormatter(
             }
         }
       case 2 =>
-        println("\n\n\n\n\n\n\n" + missingFields)
-        Left(List(FormError(key, s"${messages("genericDate.error.invalid.oneFieldMissing")}: ${missingFields.head}", args)))
+        Left(List(FormError(key, s"${messages("genericDate.error.invalid.missingInformation")} ${missingFields.head}", args)))
       case 1 =>
-        Left(List(FormError(key, "genericDate.error.invalid.twoFieldsMissing", args)))
+        val missingFieldsString = s"${missingFields.head} and ${missingFields.tail.head}"
+        Left(List(FormError(key, s"${messages("genericDate.error.invalid.missingInformation")} $missingFieldsString", args)))
       case _ =>
         Left(List(FormError(key, "genericDate.error.invalid.allFieldsMissing", args)))
     }

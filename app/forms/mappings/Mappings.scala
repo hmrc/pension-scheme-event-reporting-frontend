@@ -70,23 +70,11 @@ trait Mappings extends Formatters with Constraints {
     of(new LocalDateFormatter(invalidKey, oneDateComponentMissingKey, twoDateComponentsMissingKey,
       threeDateComponentsMissingKey, taxYearValidationDetail, args))
 
-
-  /* KEYS
-                                oneDateComponentMissingKey: String,
-                              twoDateComponentsMissingKey: String,
-                              threeDateComponentsMissingKey: String,
-                              taxYearValidationDetail: Option[TaxYearValidationDetail] = None,
-
-   */
   protected def newLocalDate(
                               invalidKey: String,
                               taxYearValidationDetail: Option[TaxYearValidationDetail] = None,
                               args: Seq[String] = Seq.empty
                             )(implicit messages: Messages): FieldMapping[LocalDate] =
 
-  /* PARAMS
-  , oneDateComponentMissingKey, twoDateComponentsMissingKey,
-      threeDateComponentsMissingKey, taxYearValidationDetail, args
-   */
     of(new NewLocalDateFormatter(invalidKey, taxYearValidationDetail, args))
 }
