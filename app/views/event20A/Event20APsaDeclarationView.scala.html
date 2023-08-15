@@ -55,7 +55,9 @@
                 )
             )
         ),
-        firstCellIsHeader = true
+        firstCellIsHeader = true,
+        caption = Some(messages("event20A.psaDeclaration.heading")),
+        captionClasses = "govuk-visually-hidden",
     ))
         <p class="govuk-body">@messages("event20A.psaDeclaration.p", adminName)</p>
         <ul class="govuk-list govuk-list--bullet">
