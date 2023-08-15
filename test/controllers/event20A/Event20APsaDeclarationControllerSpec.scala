@@ -24,16 +24,15 @@ import data.SampleData.sampleEvent20ABecameJourneyData
 import models.VersionInfo
 import models.enumeration.VersionStatus.{Compiled, Submitted}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{EmptyWaypoints, VersionInfoPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.mvc.Results.NoContent
+import play.api.mvc.Results.{BadRequest, NoContent}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.NoDataEnteredErrorView
 import views.html.event20A.Event20APsaDeclarationView
 
 import scala.concurrent.Future
@@ -106,11 +105,6 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
     "must redirect to the correct page for method onClick" in {
 
-      val testEmail = "test@test.com"
-      val organisationName = "Test company ltd"
-      val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
-
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
       when(mockERConnector.submitReportEvent20A(any(), any(), any())(any(), any())).thenReturn(Future.successful(NoContent))
 
       val application =
@@ -124,6 +118,25 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url
+      }
+    }
+
+    "must redirect to the cannot resume page for method onClick when report has been submitted multiple times in quick succession" in {
+      when(mockERConnector.submitReportEvent20A(any(), any(), any())(any(), any())).thenReturn(Future.successful(BadRequest))
+
+      val application =
+        applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
+          .build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        verify(mockERConnector, times(1)).submitReportEvent20A(any(), any(), any())(any(), any())
+        redirectLocation(result).value mustEqual routes.CannotResumeController.onPageLoad(EmptyWaypoints).url
       }
     }
   }

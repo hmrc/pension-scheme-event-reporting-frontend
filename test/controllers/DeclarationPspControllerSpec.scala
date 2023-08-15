@@ -33,7 +33,7 @@ import pages.{DeclarationPspPage, EmptyWaypoints, VersionInfoPage}
 import play.api.http.Status.OK
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.mvc.Results.Ok
+import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, _}
 import services.SubmitService
@@ -205,6 +205,31 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
       val result: NothingToSubmitException = Await.result(futureResult, Duration(5, SECONDS))
 
       result.responseCode mustBe EXPECTATION_FAILED
+    }
+
+    "must redirect to the cannot resume page for method onClick when report has been submitted multiple times in quick succession" in {
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+      when(mockSubmitService.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(BadRequest))
+
+      val application =
+        applicationBuilder(userAnswers = Some(sampleEvent20JourneyData), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "A1234567"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
+        verify(mockSubmitService, times(1)).submitReport(any(), any())(any(), any())
+        redirectLocation(result).value mustEqual routes.CannotResumeController.onPageLoad(waypoints).url
+      }
     }
   }
 }
