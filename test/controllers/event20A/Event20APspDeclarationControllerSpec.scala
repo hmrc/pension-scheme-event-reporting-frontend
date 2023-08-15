@@ -32,6 +32,7 @@ import pages.event20A.Event20APspDeclarationPage
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.mvc.Results.{BadRequest, NoContent}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.event20A.Event20APspDeclarationView
@@ -139,7 +140,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
       when(mockEventReportingConnector.submitReportEvent20A(
-        any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
+        any(), any(), any())(any(), any())).thenReturn(Future.successful(NoContent))
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
           .build()
@@ -161,7 +162,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
       when(mockEventReportingConnector.submitReportEvent20A(
-       any(), any(), any())(any(), any())).thenReturn(Future.successful())
+       any(), any(), any())(any(), any())).thenReturn(Future.successful(BadRequest))
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()

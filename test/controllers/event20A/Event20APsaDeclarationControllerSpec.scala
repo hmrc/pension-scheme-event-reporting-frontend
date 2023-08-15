@@ -30,6 +30,7 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{EmptyWaypoints, VersionInfoPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.mvc.Results.NoContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.NoDataEnteredErrorView
@@ -110,7 +111,7 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
 
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
-      when(mockERConnector.submitReportEvent20A(any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
+      when(mockERConnector.submitReportEvent20A(any(), any(), any())(any(), any())).thenReturn(Future.successful(NoContent))
 
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)

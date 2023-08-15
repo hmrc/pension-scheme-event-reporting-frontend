@@ -50,7 +50,7 @@ import pages.{EmptyWaypoints, VersionInfoPage}
 import play.api.http.Status.OK
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.mvc.Results.Ok
+import play.api.mvc.Results.{NoContent, Ok}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, _}
 import services.SubmitService
@@ -126,7 +126,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       val organisationName = "Test company ltd"
       val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
 
-      when(mockERConnector.submitReport(any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
+      when(mockERConnector.submitReport(any(), any(), any())(any(), any())).thenReturn(Future.successful(NoContent))
       doNothing().when(mockAuditService).sendEvent(any())(any(), any())
       when(mockEmailConnector.sendEmail(
         schemeAdministratorType = ArgumentMatchers.eq(Administrator),
