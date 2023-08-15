@@ -39,7 +39,5 @@ class SchemeWindUpDateFormProvider @Inject() extends Mappings {
       ).verifying(
         isNotBeforeOpenDate(openDate, "schemeWindUpDate.error.beforeOpenDate", formatDateDMY(openDate))
       )
-
-
     )
 }

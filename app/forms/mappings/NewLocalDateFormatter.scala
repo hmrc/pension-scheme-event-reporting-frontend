@@ -34,13 +34,25 @@ private[mappings] class NewLocalDateFormatter(
   private val fieldKeys: List[String] = List("day", "month", "year")
 
   def tryLocalDate(input: (Int, Int, Int)): Either[Seq[FormError], LocalDate] = {
-    Try(LocalDate.of(input._3, input._2, input._1)) match {
-      case Success(date) => Right(date)
-      case Failure(exception) =>
-        val errorMessage = exception.getMessage
-         errorMessage match {
-        case _ =>
-            Left(Seq(FormError(invalidKey, messages(erroneousDateKey(errorMessage)))))
+
+    val badDay = input._1 > 31
+    val badMonth = input._2 > 12
+    val badYear = input._3 < 1000 | input._3 > 9999
+
+    val multipleErrors1 = badDay & badMonth & badYear
+    val multipleErrors2 = badDay & badMonth
+    val multipleErrors3 = badDay & badYear
+    val multipleErrors4 = badMonth & badYear
+
+    if (multipleErrors1 | multipleErrors2 | multipleErrors3 | multipleErrors4) {
+      // Generic date error displayed if more than one input is invalid.
+      Left(Seq(FormError(invalidKey, messages(invalidKey))))
+    } else {
+      Try(LocalDate.of(input._3, input._2, input._1)) match {
+        case Failure(exception) =>
+          // Specific date component error displayed if only one input is invalid.
+          Left(Seq(FormError(invalidKey, messages(erroneousDateKey(exception.getMessage)))))
+        case Success(date) => Right(date)
       }
     }
   }
@@ -65,8 +77,8 @@ private[mappings] class NewLocalDateFormatter(
       day <- int.bind(s"$key.day", data)
       month <- int.bind(s"$key.month", data)
       year <- int.bind(s"$key.year", data)
-      tryDate <- tryLocalDate(day, month, year)
-    } yield tryDate
+      date <- tryLocalDate(day, month, year)
+    } yield date
   }
 
   override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
