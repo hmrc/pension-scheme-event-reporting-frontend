@@ -24,6 +24,7 @@ import models.{EROverview, EROverviewVersion, EventDataIdentifier, EventSummary,
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import play.api.libs.json.{JsArray, Json}
+import play.api.mvc.Results.{BadRequest, NoContent}
 import uk.gov.hmrc.http._
 import utils.WireMockHelper
 
@@ -175,13 +176,13 @@ class EventReportingConnectorSpec
       )
 
       recoverToSucceededIf[HttpException] {
-        connector.deleteMember(pstr, EventDataIdentifier(eventType, "2020", "1"), 0,"0")
+        connector.deleteMember(pstr, EventDataIdentifier(eventType, "2020", "1"), 0, "0")
       }
     }
   }
 
   "submitReport" must {
-    "return unit for successful post" in {
+    "return NoContent for successful post" in {
       server.stubFor(
         post(urlEqualTo(eventReportSubmitUrl))
           .willReturn(
@@ -189,15 +190,29 @@ class EventReportingConnectorSpec
           )
       )
       connector.submitReport(pstr, userAnswers, reportVersion).map {
-        _ mustBe()
+        _ mustBe NoContent
       }
     }
 
-    "return BadRequestException when the backend has returned bad request response" in {
+    "return BadRequest when the backend has returned bad request response" in {
       server.stubFor(
         post(urlEqualTo(eventReportSubmitUrl))
           .willReturn(
             badRequest
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      connector.submitReport(pstr, userAnswers, reportVersion).map {
+        _ mustBe BadRequest
+      }
+    }
+
+    "return HttpException when the backend has returned server error" in {
+      server.stubFor(
+        post(urlEqualTo(eventReportSubmitUrl))
+          .willReturn(
+            serverError
               .withHeader("Content-Type", "application/json")
           )
       )
@@ -209,7 +224,7 @@ class EventReportingConnectorSpec
   }
 
   "submitReportEvent20A" must {
-    "return unit for successful post" in {
+    "return NoContent for successful post" in {
       server.stubFor(
         post(urlEqualTo(event20AReportSubmitUrl))
           .willReturn(
@@ -217,15 +232,29 @@ class EventReportingConnectorSpec
           )
       )
       connector.submitReportEvent20A(pstr, userAnswers, reportVersion).map {
-        _ mustBe()
+        _ mustBe NoContent
       }
     }
 
-    "return BadRequestException when the backend has returned bad request response" in {
+    "return BadRequest when the backend has returned bad request response" in {
       server.stubFor(
         post(urlEqualTo(event20AReportSubmitUrl))
           .willReturn(
             badRequest
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      connector.submitReportEvent20A(pstr, userAnswers, reportVersion).map {
+        _ mustBe BadRequest
+      }
+    }
+
+    "return HttpException when the backend has returned server error" in {
+      server.stubFor(
+        post(urlEqualTo(event20AReportSubmitUrl))
+          .willReturn(
+            serverError
               .withHeader("Content-Type", "application/json")
           )
       )
