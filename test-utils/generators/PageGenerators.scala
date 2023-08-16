@@ -31,9 +31,6 @@ import pages.{common, event13, _}
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryPlaygroundPage: Arbitrary[PlaygroundPage.type] =
-    Arbitrary(PlaygroundPage)
-
   implicit lazy val arbitraryRemoveMemberPage: Arbitrary[common.RemoveMemberPage.type] =
     Arbitrary(common.RemoveMemberPage)
 

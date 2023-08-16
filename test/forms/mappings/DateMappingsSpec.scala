@@ -24,26 +24,21 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.{Form, FormError}
+import play.api.i18n.Messages
 
 import java.time.LocalDate
 
-class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with OptionValues
+class DateMappingsSpec(implicit messages: Messages) extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with OptionValues
   with Mappings {
 
   private val formWithoutTaxYear = Form(
     "value" -> localDate(
-      oneDateComponentMissingKey = "error.required",
-      twoDateComponentsMissingKey = "error.required.two",
-      threeDateComponentsMissingKey = "error.required.all",
       invalidKey = "error.invalid"
     )
   )
 
   private val formWithTaxYear = Form(
     "value" -> localDate(
-      oneDateComponentMissingKey = "error.required",
-      twoDateComponentsMissingKey = "error.required.two",
-      threeDateComponentsMissingKey = "error.required.all",
       invalidKey = "error.invalid",
       taxYearValidationDetail = Some(TaxYearValidationDetail(
         invalidKey = "error.outside",
