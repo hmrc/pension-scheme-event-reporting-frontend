@@ -37,13 +37,13 @@ class DateOfChangeFormProviderSpec extends SpecBase
     behave like mandatoryDateField(
       form = form,
       key = dateOfChangeKey,
-      requiredAllKey = "dateOfChange.error.nothingEntered"
+      requiredAllKey = "genericDate.error.invalid.allFieldsMissing"
     )
 
     behave like dateFieldYearNot4Digits(
       form = form,
       key = dateOfChangeKey,
-      formError = FormError(dateOfChangeKey, "dateOfChange.error.outsideDateRanges")
+      formError = FormError(dateOfChangeKey, "genericDate.error.invalid")
     )
 
     behave like dateFieldWithMin(

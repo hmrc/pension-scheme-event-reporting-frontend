@@ -37,13 +37,13 @@ class CeasedDateFormProviderSpec extends SpecBase
     behave like mandatoryDateField(
       form = form,
       key = ceasedDateKey,
-      requiredAllKey = "schemeChangeDate.event20A.error.nothingEntered"
+      requiredAllKey = "genericDate.error.invalid.allFieldsMissing"
     )
 
     behave like dateFieldYearNot4Digits(
       form = form,
       key = ceasedDateKey,
-      formError = FormError(ceasedDateKey, "schemeChangeDate.event20A.error.outsideDateRanges")
+      formError = FormError(ceasedDateKey, "genericDate.error.invalid")
     )
 
     behave like dateFieldWithMin(

@@ -109,13 +109,13 @@ class AmountCrystallisedAndDateFormProviderSpec extends SpecBase
     behave like mandatoryDateField(
       form = form,
       key = crystallisedDateKey,
-      requiredAllKey = "amountCrystallisedAndDate.date.error.nothingEntered"
+      requiredAllKey = "genericDate.error.invalid.allFieldsMissing"
     )
 
     behave like dateFieldYearNot4Digits(
       form = form,
       key = crystallisedDateKey,
-      formError = FormError(crystallisedDateKey, "amountCrystallisedAndDate.date.error.outsideDateRanges")
+      formError = FormError(crystallisedDateKey, "genericDate.error.invalid")
     )
 
     behave like dateFieldWithMin(
