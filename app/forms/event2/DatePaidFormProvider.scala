@@ -30,12 +30,9 @@ class DatePaidFormProvider @Inject() extends Mappings with Transforms {
   val endDate: LocalDate = LocalDate.of(taxYear + 1, Month.APRIL, 5)
     Form(
       "value" -> localDate(
-        invalidKey = "datePaid.event2.error.invalid",
-        threeDateComponentsMissingKey = "datePaid.event2.error.required.all",
-        twoDateComponentsMissingKey = "datePaid.event2.error.required.two",
-        oneDateComponentMissingKey = "datePaid.event2.error.required"
+        invalidKey = "genericDate.error.invalid",
       ).verifying(
-        yearHas4Digits("datePaid.event2.error.invalid"),
+        yearHas4Digits("genericDate.error.invalid"),
         minDate(startDate, messages("datePaid.event2.error.outside.taxYear", startDate.getYear.toString,(taxYear + 1).toString)),
         maxDate(endDate, messages("datePaid.event2.error.outside.taxYear", startDate.getYear.toString,(taxYear + 1).toString)))
       )

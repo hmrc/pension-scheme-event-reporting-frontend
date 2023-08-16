@@ -42,12 +42,9 @@ class PaymentDetailsFormProvider @Inject() extends Mappings with Transforms {
             zeroValue[BigDecimal](0, "paymentDetails.value.error.zeroEntered")
           ), "eventDate" ->
         localDate(
-          oneDateComponentMissingKey = "paymentDetails.date.error.noDayMonthOrYear",
-          twoDateComponentsMissingKey = "paymentDetails.date.error.noDayMonthOrYear",
-          invalidKey = "paymentDetails.date.error.outsideDateRanges",
-          threeDateComponentsMissingKey = "paymentDetails.date.error.nothingEntered"
+          invalidKey = "genericDate.error.invalid"
         ).verifying(
-          yearHas4Digits("paymentDetails.date.error.outsideDateRanges"),
+          yearHas4Digits("genericDate.error.invalid"),
           minDate(min, messages("paymentDetails.date.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
           maxDate(max, messages("paymentDetails.date.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
         )

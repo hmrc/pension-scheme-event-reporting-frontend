@@ -43,12 +43,9 @@ class PaymentDateFormProvider @Inject() extends Mappings with Transforms { // sc
     Form(
       mapping("paymentDate" ->
         localDate(
-          oneDateComponentMissingKey = "paymentDate.date.error.noDayMonthOrYear",
-          twoDateComponentsMissingKey = "paymentDate.date.error.noDayMonthOrYear",
-          invalidKey = "paymentDate.date.error.outsideDateRanges",
-          threeDateComponentsMissingKey = "paymentDate.date.error.nothingEntered"
+          invalidKey = "genericDate.error.invalid",
         ).verifying(
-          yearHas4Digits("paymentDate.date.error.outsideDateRanges"),
+          yearHas4Digits("genericDate.error.invalid"),
           minDate(startDate, messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(endDate(max)))),
           maxDate(endDate(max), messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(endDate(max))))
         )

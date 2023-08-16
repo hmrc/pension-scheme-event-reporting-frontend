@@ -18,7 +18,7 @@ package controllers.testOnly
 
 import com.google.inject.Inject
 import forms.testOnly.DateTestFormProvider
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.DateHelper
@@ -31,16 +31,14 @@ class DateTestController @Inject()(val controllerComponents: MessagesControllerC
                                    view: DateTestView
                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
-
   def onPageLoad(): Action[AnyContent] = Action.async { implicit request =>
-    val preparedForm = DateHelper.overriddenDate.map(form.fill).getOrElse(form)
+    val preparedForm = DateHelper.overriddenDate.map(formProvider().fill).getOrElse(formProvider())
     Future(Ok(view(preparedForm)))
   }
 
   def onSubmit(): Action[AnyContent] = Action.async {
     implicit request =>
-      form.bindFromRequest().fold(
+      formProvider().bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors))),
         value => {

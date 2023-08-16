@@ -15,6 +15,7 @@
  *@
 
 @import controllers.event7.routes
+@import utils.DateErrorTargetHelper.targetField
 
 @this(
     layout: templates.SchemeLayout,
@@ -32,7 +33,7 @@
     @formHelper(action = routes.PaymentDateController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("paymentDate" -> "paymentDate.day")))
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = targetField("paymentDate", form.errors.head.message)))
         }
 
         <h1 class="govuk-heading-xl">@messages("paymentDate.heading")</h1>

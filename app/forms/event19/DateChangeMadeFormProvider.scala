@@ -17,21 +17,19 @@
 package forms.event19
 
 import java.time.LocalDate
-
 import forms.mappings.Mappings
+
 import javax.inject.Inject
 import play.api.data.Form
+import play.api.i18n.Messages
 
 class DateChangeMadeFormProvider @Inject() extends Mappings {
 
-  def apply(taxYear: Int): Form[LocalDate] =
+  def apply(taxYear: Int)(implicit messages: Messages): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidKey                    = "event19.dateChangeMade.error.invalid",
-        threeDateComponentsMissingKey = "event19.dateChangeMade.error.required.all",
-        twoDateComponentsMissingKey   = "event19.dateChangeMade.error.required.two",
-        oneDateComponentMissingKey    = "event19.dateChangeMade.error.required"
-      ).verifying(
+          invalidKey = "genericDate.error.invalid",
+        ).verifying(
         minDate(LocalDate.of(taxYear, 4,6), "event19.dateChangeMade.error.outside.taxYear", taxYear.toString, (taxYear + 1).toString),
         maxDate(LocalDate.of(taxYear + 1, 4,5), "event19.dateChangeMade.error.outside.taxYear", taxYear.toString, (taxYear + 1).toString)
       )

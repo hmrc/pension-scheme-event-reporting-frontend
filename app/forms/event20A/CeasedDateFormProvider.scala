@@ -30,12 +30,9 @@ class CeasedDateFormProvider @Inject() extends Mappings {
     Form(
       "ceasedDateMasterTrust" ->
         localDate(
-          oneDateComponentMissingKey = "schemeChangeDate.event20A.error.noDayMonthOrYear",
-          twoDateComponentsMissingKey = "schemeChangeDate.event20A.error.noDayMonthOrYear",
-          invalidKey = "schemeChangeDate.event20A.error.outsideDateRanges",
-          threeDateComponentsMissingKey = "schemeChangeDate.event20A.error.nothingEntered"
+          invalidKey = "genericDate.error.invalid",
         ).verifying(
-          yearHas4Digits("schemeChangeDate.event20A.error.outsideDateRanges"),
+          yearHas4Digits("genericDate.error.invalid"),
           minDate(min, messages("schemeChangeDate.event20A.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
           maxDate(max, messages("schemeChangeDate.event20A.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
         )

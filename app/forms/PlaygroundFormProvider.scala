@@ -29,7 +29,7 @@ class PlaygroundFormProvider @Inject() extends Mappings {
 
   def apply()(implicit messages: Messages): Form[LocalDate] =
     Form(
-      "value" -> newLocalDate(
+      "value" -> localDate(
         invalidKey = "genericDate.error.invalid"
       ).verifying(
         yearHas4Digits("genericDate.error.invalid"),
