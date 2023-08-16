@@ -97,14 +97,14 @@ trait Validator {
     rows.zipWithIndex.foldLeft[Result](monoidResult.empty) {
       case (acc, Tuple2(_, 0)) => acc
       case (acc, Tuple2(row, index)) =>
-        Seq(acc, validateFields(index, row.toIndexedSeq, taxYear, acc.memberNinos)).combineAll
+        Seq(acc, validateFields(index, row.toIndexedSeq, taxYear, acc.memberNinos.zipWithIndex)).combineAll
     }
   }
 
   protected def validateFields(index: Int,
                                columns: Seq[String],
                                taxYear: Int,
-                               memberNinos: HashSet[String]
+                               memberNinos: HashSet[(String, Int)]
                               )(implicit messages: Messages): Result
 
   protected def memberDetailsValidation(index: Int, columns: Seq[String],
