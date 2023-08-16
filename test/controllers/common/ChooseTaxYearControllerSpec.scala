@@ -44,7 +44,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
   private val formProvider = new ChooseTaxYearFormProvider()
   private val formEvent23 = formProvider(Event23, 2022)
   private val formEvent22 = formProvider(Event22, 2022)
-  private val writesTaxYear: Writes[ChooseTaxYear]= ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
+  private val writesTaxYear: Writes[ChooseTaxYear] = ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
 
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
@@ -82,7 +82,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val view = application.injector.instanceOf[ChooseTaxYearView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent23, waypoints, Event23, 0, 2022)(request, messages(application)).toString
+          contentAsString(result) mustEqual view.render(formEvent23, waypoints, Event23, 0, 2022, request, messages(application)).toString
         }
       }
 
@@ -99,7 +99,14 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent23.fill(ChooseTaxYear.values(2022).head), waypoints, Event23, 0, 2022)(request, messages(application)).toString
+          contentAsString(result) mustEqual view.render(formEvent23.fill(
+            ChooseTaxYear.values(2022).head),
+            waypoints,
+            Event23,
+            index = 0,
+            taxYearMax = 2022,
+            request = request,
+            messages = messages(application)).toString
         }
       }
 
@@ -140,7 +147,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event23, 0, 2022)(request, messages(application)).toString
+          contentAsString(result) mustEqual view.render(boundForm, waypoints, Event23, 0, 2022, request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
         }
       }
@@ -158,7 +165,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val view = application.injector.instanceOf[ChooseTaxYearView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent22, waypoints, Event22, 0, 2022)(request, messages(application)).toString
+          contentAsString(result) mustEqual view.render(formEvent22, waypoints, Event22, 0, 2022, request, messages(application)).toString
         }
       }
 
@@ -176,7 +183,14 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val result = route(application, request).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent22.fill(ChooseTaxYear.values(2022).head), waypoints, Event22, 0, 2022)(request, messages(application)).toString
+          contentAsString(result) mustEqual view.render(formEvent22.fill(
+            ChooseTaxYear.values(2022).head),
+            waypoints,
+            Event22,
+            index = 0,
+            taxYearMax = 2022,
+            request = request,
+            messages = messages(application)).toString
         }
       }
 
@@ -216,7 +230,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event22, 0, 2022)(request, messages(application)).toString
+          contentAsString(result) mustEqual view.render(boundForm, waypoints, Event22, 0, 2022, request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
         }
       }
