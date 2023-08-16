@@ -59,8 +59,8 @@ class FileUploadWhatYouWillNeedControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[FileUploadWhatYouWillNeedView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(continueUrl(eventType).url, templateDownloadLink(eventType),
-          instructionsDownloadLink(eventType), eventType)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(continueUrl(eventType).url, templateDownloadLink(eventType),
+          instructionsDownloadLink(eventType), eventType, request, messages(application)).toString
       }
     }
   }
