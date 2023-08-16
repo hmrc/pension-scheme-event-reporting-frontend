@@ -35,7 +35,7 @@ class LumpSumAmountAndDateFormProvider @Inject() extends Mappings with Transform
       mapping("lumpSumAmount" ->
         bigDecimal2DP("lumpSumAmountAndDate.value.error.nothingEntered",
           "lumpSumAmountAndDate.value.error.notANumber",
-          "lumpSumAmountAndDate.value.error.noDecimals")
+          "lumpSumAmountAndDate.value.error.tooManyDecimals")
           .verifying(
             maximumValue[BigDecimal](maxLumpSumValue, "lumpSumAmountAndDate.value.error.amountTooHigh"),
             minimumValue[BigDecimal](0, "lumpSumAmountAndDate.value.error.negativeValue"),

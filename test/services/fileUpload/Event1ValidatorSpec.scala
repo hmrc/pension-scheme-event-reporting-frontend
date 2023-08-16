@@ -169,6 +169,34 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       )
     }
 
+    // The test below passes fine but it is unnecessary to run each time. It serves though as a useful prototype
+    // for when we are doing load testing. It generates 10K rows and parses/ validates them.
+//    "return correctly and in timely fashion (< 30 seconds) when there is a large payload (10K items)" in {
+//      val payloadMain = (1 to 20000).foldLeft("") { (acc, c) =>
+//        val nino = "AA" + ("00000" + c.toString).takeRight(6) + "C"
+//        acc +
+//          """
+//""" + s"""member,Joe,Bloggs,$nino,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,08/11/2022"""
+//      }
+//
+//      val validCSVFile = CSVParser.split(
+//        s"""$header
+//""" + payloadMain
+//      )
+//      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+//      val startTime = System.currentTimeMillis
+//      val result = validator.validate(validCSVFile, ua)
+//      val endTime = System.currentTimeMillis
+//      val timeTaken = (endTime - startTime) / 1000
+//      result.isValid mustBe true
+//      println(s"Validated large payload (took $timeTaken seconds)")
+//      if (timeTaken < 30) {
+//        assert(true, s"Validated large payload in less than 30 seconds (took $timeTaken seconds)")
+//      } else {
+//        assert(false, s"Validated large payload in more than 30 seconds (actually took $timeTaken seconds)")
+//      }
+//    }
+
     "must return items in user answers when there are no validation errors for Employer" in {
 
       val validCSVFile = CSVParser.split(
@@ -306,7 +334,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         s"""$header
                             member,Steven,Bloggs,AA123456A,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",,08/11/2022
                             member,Steven,Bloggs,AA123456B,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1.1.0,08/11/2022
-                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000,08/11/2022
+                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.99999,08/11/2022
                             member,Steven,Bloggs,AA123456D,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",-1000.00,08/11/2022
                             member,Steven,Bloggs,AA223456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",9999999999.99,08/11/2022"""
 
@@ -317,7 +345,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
       result mustBe Invalid(Seq(
         ValidationError(1, 24, "paymentValueAndDate.value.error.nothingEntered", "paymentValue"),
         ValidationError(2, 24, "paymentValueAndDate.value.error.notANumber", "paymentValue"),
-        ValidationError(3, 24, "paymentValueAndDate.value.error.noDecimals", "paymentValue"),
+        ValidationError(3, 24, "paymentValueAndDate.value.error.tooManyDecimals", "paymentValue"),
         ValidationError(4, 24, "paymentValueAndDate.value.error.negative", "paymentValue", ArraySeq(0)),
         ValidationError(5, 24, "paymentValueAndDate.value.error.amountTooHigh", "paymentValue", ArraySeq(999999999.99))
       ))

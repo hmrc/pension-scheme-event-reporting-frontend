@@ -8,3 +8,11 @@
 .whitespace-nowrap {
   white-space: nowrap;
 }
+
+.govuk-back-link {
+  display: none;
+
+  &.js-enabled {
+    display: inline-block;
+  }
+}

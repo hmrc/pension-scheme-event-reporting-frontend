@@ -137,7 +137,7 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
     "must save the answer and redirect to declaration page on submit (when selecting YES) with correct year and Wind Up for a PSA" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
+      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any())).thenReturn(
         Future.successful(seqOfEventsWithWindUp))
 
       val application =
@@ -159,7 +159,7 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
     "must save the answer and redirect to declaration page on submit (when selecting YES) with correct year and event20A for a PSA" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
+      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any())).thenReturn(
         Future.successful(seqOfEventsWithEvent20A))
 
       val application =
@@ -181,7 +181,7 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
     "must redirect to cannot submit page on submit (when selecting YES) when current tax year and no wind up for a PSA" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
+      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any())).thenReturn(
         Future.successful(seqOfEvents))
 
       val application =
@@ -201,7 +201,7 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
     "must save the answer and redirect to event selection page on submit (when selecting YES) for a PSP" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
+      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any())).thenReturn(
         Future.successful(seqOfEvents))
 
       val application =
@@ -222,7 +222,7 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
     "must save the answer and redirect to next page on submit (when selecting NO)" in {
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
+      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any())).thenReturn(
         Future.successful(seqOfEvents))
 
       val application =

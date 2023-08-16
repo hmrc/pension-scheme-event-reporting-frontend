@@ -53,7 +53,7 @@ trait Generators extends PageGenerators with ModelGenerators with UserAnswersEnt
   }
 
   def decsInRangeWithCommas(min: BigDecimal, max: BigDecimal): Gen[String] = {
-    val numberGen = choose[BigDecimal](min, max).map(_.toString)
+    val numberGen = choose[BigDecimal](min, max).map[String](_.setScale(5, RoundingMode.FLOOR).toString())
     genIntersperseString(numberGen, ",")
   }
 

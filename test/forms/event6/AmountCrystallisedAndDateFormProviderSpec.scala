@@ -39,7 +39,7 @@ class AmountCrystallisedAndDateFormProviderSpec extends SpecBase
   private val messageKeyPaymentValueKey = "amountCrystallisedAndDate.value"
 
   // scalastyle:off magic.number
-  val invalidDataGenerator: Gen[String] = intsInRangeWithCommas(0, 999999999)
+  val invalidDataGenerator: Gen[String] = decsInRangeWithCommas(0, 999999999)
   val negativeValueDataGenerator: Gen[String] = decimalsBelowValue(0)
 
   private def crystallisedDetails(
@@ -69,11 +69,11 @@ class AmountCrystallisedAndDateFormProviderSpec extends SpecBase
       result.errors mustEqual Seq(FormError(amountCrystallisedKey, s"$messageKeyPaymentValueKey.error.notANumber"))
     }
 
-    "not bind integers" in {
-      forAll(invalidDataGenerator -> "noDecimals") {
-        int: String =>
-          val result = form.bind(crystallisedDetails(amountCrystallised = int, Some(validDate)))
-          result.errors mustEqual Seq(FormError(amountCrystallisedKey, s"$messageKeyPaymentValueKey.error.noDecimals"))
+    "not bind numbers with too many decimals" in {
+      forAll(invalidDataGenerator -> "tooManyDecimals") {
+        num: String =>
+          val result = form.bind(crystallisedDetails(amountCrystallised = num, Some(validDate)))
+          result.errors mustEqual Seq(FormError(amountCrystallisedKey, s"$messageKeyPaymentValueKey.error.tooManyDecimals"))
       }
     }
 

@@ -31,7 +31,7 @@ import forms.event2.AmountPaidFormProvider._
         bigDecimal2DP(
         "amountPaid.event2.error.nothingEntered",
         "amountPaid.event2.error.nonNumeric",
-        "amountPaid.event2.error.noDecimals")
+        "amountPaid.event2.error.tooManyDecimals")
         .verifying(
           maximumValue[BigDecimal](maxAmountPaidValue, "amountPaid.event2.error.tooHigh"),
           minimumValue[BigDecimal](0, "amountPaid.event2.error.negative"),

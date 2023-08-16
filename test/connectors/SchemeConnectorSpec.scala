@@ -44,7 +44,7 @@ class SchemeConnectorSpec
     "return the openDate for a valid request/response" in {
       server.stubFor(
         get(urlEqualTo(openDateUrl))
-          .withHeader("idType", equalTo("psaId"))
+          .withHeader("idType", equalTo("psaid"))
           .withHeader("idValue", equalTo(psaId))
           .willReturn(
             aResponse()
@@ -64,7 +64,7 @@ class SchemeConnectorSpec
     "return the openDate for psp for a valid request/response" in {
       server.stubFor(
         get(urlEqualTo(openDateUrl))
-          .withHeader("idType", equalTo("pspId"))
+          .withHeader("idType", equalTo("pspid"))
           .withHeader("idValue", equalTo(pspId))
           .willReturn(
             aResponse()
@@ -84,7 +84,7 @@ class SchemeConnectorSpec
     "throw BadRequestException for a 400 Bad Request response" in {
       server.stubFor(
         get(urlEqualTo(openDateUrl))
-          .withHeader("idType", equalTo("psaId"))
+          .withHeader("idType", equalTo("psaid"))
           .withHeader("idValue", equalTo(psaId))
           .willReturn(
             badRequest
