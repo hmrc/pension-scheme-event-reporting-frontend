@@ -32,12 +32,16 @@ class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
   extends HttpResponseHelper {
   def getOpenDate(idType: String, idValue: String, pstr: String)
                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
-    if (idType == "pspId" || idType == "psaId") {
-      val schemeHc = hc.withExtraHeaders("idType" -> idType, "idValue" -> idValue, "pstr" -> pstr)
-      openDate(config.openDateUrl)(schemeHc, ec)
-    } else {
-      Future.failed(new IllegalArgumentException("Invalid idType"))
+    val idTypeValue = idType match {
+      case "pspId" => Some("pspid")
+      case "psaId" => Some("psaid")
+      case _ => None
     }
+
+    idTypeValue.map { idTypeValue =>
+      val schemeHc = hc.withExtraHeaders("idType" -> idTypeValue, "idValue" -> idValue, "pstr" -> pstr)
+      openDate(config.openDateUrl)(schemeHc, ec)
+    }.getOrElse(Future.failed(new IllegalArgumentException("Invalid idType")))
   }
   private def openDate(url: String)
                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {

@@ -52,7 +52,7 @@ class SubmitServiceSpec extends SpecBase with BeforeAndAfterEach {
   "submitReport" - {
     "must call connector with correct tax year and version when in progress (being compiled) setting status to submitted" in {
       val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      when(mockEventReportingConnector.submitReport(ArgumentMatchers.eq(pstr), any(), any())(any, any()))
+      when(mockEventReportingConnector.submitReport(ArgumentMatchers.eq(pstr), any(), any())(any))
         .thenReturn(Future.successful((): Unit))
       when(mockUserAnswersCacheConnector.save(ArgumentMatchers.eq(pstr), any())(any(), any()))
         .thenReturn(Future.successful((): Unit))
@@ -67,8 +67,7 @@ class SubmitServiceSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must not call connector when status is submitted + return a not found" in {
-      val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      when(mockEventReportingConnector.submitReport(ArgumentMatchers.eq(pstr), any(), any())(any, any()))
+      when(mockEventReportingConnector.submitReport(ArgumentMatchers.eq(pstr), any(), any())(any))
         .thenReturn(Future.successful((): Unit))
       when(mockUserAnswersCacheConnector.save(ArgumentMatchers.eq(pstr), any())(any(), any()))
         .thenReturn(Future.successful((): Unit))

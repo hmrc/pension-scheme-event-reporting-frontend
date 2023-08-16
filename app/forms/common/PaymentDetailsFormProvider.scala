@@ -35,7 +35,7 @@ class PaymentDetailsFormProvider @Inject() extends Mappings with Transforms {
       mapping("amountPaid" ->
         bigDecimal2DP("paymentDetails.value.error.nothingEntered",
           "paymentDetails.value.error.notANumber",
-          "paymentDetails.value.error.noDecimals")
+          "paymentDetails.value.error.tooManyDecimals")
           .verifying(
             maximumValue[BigDecimal](maxPaymentValue, "paymentDetails.value.error.amountTooHigh"),
             minimumValue[BigDecimal](0, "paymentDetails.value.error.negativeValue"),

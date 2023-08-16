@@ -36,7 +36,7 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
   private val messageKeyPaymentValueKey = "paymentValueAndDate.value"
 
   // scalastyle:off magic.number
-  val invalidDataGenerator: Gen[String] = intsInRangeWithCommas(0, 999999999)
+  val invalidDataGenerator: Gen[String] = decsInRangeWithCommas(0, 999999999)
   val negativeValueDataGenerator: Gen[String] = decimalsBelowValue(0)
 
   private def paymentDetails(
@@ -66,11 +66,11 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
       result.errors mustEqual Seq(FormError(paymentValueKey, s"$messageKeyPaymentValueKey.error.notANumber"))
     }
 
-    "not bind integers" in {
-      forAll(invalidDataGenerator -> "noDecimals") {
-        int: String =>
-          val result = form.bind(paymentDetails(paymentValue = int, Some(LocalDate.of(2022,6,4))))
-          result.errors mustEqual Seq(FormError(paymentValueKey, s"$messageKeyPaymentValueKey.error.noDecimals"))
+    "not bind numbers with too many decimals" in {
+      forAll(invalidDataGenerator -> "tooManyDecimals") {
+        num: String =>
+          val result = form.bind(paymentDetails(paymentValue = num, Some(LocalDate.of(2022,6,4))))
+          result.errors mustEqual Seq(FormError(paymentValueKey, s"$messageKeyPaymentValueKey.error.tooManyDecimals"))
       }
     }
 

@@ -16,15 +16,20 @@
 
 @import viewmodels.SummaryListRowWithTwoValues
 
-@(seqSummaryListRowWithTwoValues: Seq[SummaryListRowWithTwoValues], colOne: String, colTwo: String, colThree: String, total: String, totalTitle: String = "entity_list_table.total")(implicit messages: Messages)
+@(seqSummaryListRowWithTwoValues: Seq[SummaryListRowWithTwoValues], colOne: String, colTwo: String, colThree: String, total: String, totalTitle: String = "entity_list_table.total", caption: String)(implicit messages: Messages)
 
 <table class="govuk-table" role="table">
+    <caption class="govuk-visually-hidden">@caption</caption>
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">@messages(colOne)</th>
             <th scope="col" class="govuk-table__header">@messages(colTwo)</th>
             <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages(colThree)</th>
-            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter"></th>
+            <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+                <span class="govuk-visually-hidden">
+                    @messages("fileUpload.generic.actions")
+                </span>
+            </th>
         </tr>
     </thead>
     <tbody class="govuk-table__body">

@@ -57,7 +57,7 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+      when(mockConnector.getFeatureToggle(any())(any())).thenReturn(
         Future.successful(ToggleDetails("event-reporting", None, isEnabled = true))
       )
 
@@ -67,7 +67,7 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
       when(mockUserAnswersCacheConnector.removeAll(any())(any(), any()))
         .thenReturn(Future.successful((): Unit))
 
-      when(mockConnector.getOverview(any(), any(), any(), any())(any(), any())).thenReturn(
+      when(mockConnector.getOverview(any(), any(), any(), any())(any())).thenReturn(
         Future.successful(Seq(EROverview(
           LocalDate.now(),
           LocalDate.now().plusYears(1),
@@ -104,7 +104,7 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
     }
 
     "must return empty html if feature toggle is disabled" in {
-      when(mockConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+      when(mockConnector.getFeatureToggle(any())(any())).thenReturn(
         Future.successful(ToggleDetails("event-reporting", None, isEnabled = false))
       )
 
@@ -113,7 +113,7 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
       when(mockUserAnswersCacheConnector.removeAll(any())(any(), any()))
         .thenReturn(Future.successful((): Unit))
 
-      when(mockConnector.getOverview(any(), any(), any(), any())(any(), any())).thenReturn(
+      when(mockConnector.getOverview(any(), any(), any(), any())(any())).thenReturn(
         Future.successful(Seq(EROverview(
           LocalDate.now(),
           LocalDate.now().plusYears(1),

@@ -35,7 +35,7 @@ class AmountCrystallisedAndDateFormProvider @Inject() extends Mappings with Tran
       mapping("amountCrystallised" ->
         bigDecimal2DP("amountCrystallisedAndDate.value.error.nothingEntered",
           "amountCrystallisedAndDate.value.error.notANumber",
-          "amountCrystallisedAndDate.value.error.noDecimals")
+          "amountCrystallisedAndDate.value.error.tooManyDecimals")
           .verifying(
             maximumValue[BigDecimal](maxCrystallisedValue, "amountCrystallisedAndDate.value.error.amountTooHigh"),
             minimumValue[BigDecimal](0, "amountCrystallisedAndDate.value.error.negativeValue"),

@@ -66,7 +66,7 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
     "must call connector with correct tax year and version when not started" in {
       val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       val edi = EventDataIdentifier(Event1, taxYear, "1")
-      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any, any()))
+      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any))
         .thenReturn(Future.successful((): Unit))
 
       val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, NotStarted), nonEventTypeData = true)
@@ -81,7 +81,7 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
     "must call connector with correct tax year and version when in progress (being compiled)" in {
       val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       val edi = EventDataIdentifier(Event1, taxYear, "2")
-      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any, any()))
+      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any))
         .thenReturn(Future.successful((): Unit))
       val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(2, Compiled), nonEventTypeData = true)
       whenReady(compileService.compileEvent(Event1, pstr, ua)) { _ =>
@@ -95,7 +95,7 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
     "must call connector with correct tax year and version when submitted status + version 1: increase version to 2, amend status + update overview" in {
       val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       val edi = EventDataIdentifier(Event1, taxYear, "2")
-      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any, any()))
+      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any))
         .thenReturn(Future.successful((): Unit))
       when(mockUserAnswersCacheConnector
         .changeVersion(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq("1"), ArgumentMatchers.eq("2"))(any(), any()))

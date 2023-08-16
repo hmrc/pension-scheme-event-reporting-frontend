@@ -26,12 +26,12 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
   private val fundValueKey = "fundValue"
 
   private val loanAmountNotANumberErrorKey = "loanDetails.loanAmount.notANumber"
-  private val loanAmountNoDecimalsKey = "loanDetails.loanAmount.noDecimals"
+  private val loanAmountTooManyDecimalsKey = "loanDetails.loanAmount.tooManyDecimals"
   private val loanAmountNegativeKey = "loanDetails.loanAmount.negative"
   private val loanAmountAmountTooHighErrorKey = "loanDetails.loanAmount.amountTooHigh"
 
   private val fundValueNotANumberErrorKey = "loanDetails.fundValue.notANumber"
-  private val fundValueNoDecimalsKey = "loanDetails.fundValue.noDecimals"
+  private val fundValueTooManyDecimalsKey = "loanDetails.fundValue.tooManyDecimals"
   private val fundValueNegativeKey = "loanDetails.fundValue.negative"
   private val fundValueAmountTooHighErrorKey = "loanDetails.fundValue.amountTooHigh"
 
@@ -56,7 +56,7 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
       forAll(decimals -> "decimal") {
         decimal: String =>
           val result = form.bind(details(loanAmount = decimal))
-          result.errors mustEqual Seq(FormError(loanAmountKey, loanAmountNoDecimalsKey))
+          result.errors mustEqual Seq(FormError(loanAmountKey, loanAmountTooManyDecimalsKey))
       }
     }
 
@@ -80,14 +80,6 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
       val result = form.bind(details(loanAmount = "0.00"))
       result.errors mustBe Seq.empty
     }
-
-    "not bind integers" in {
-      forAll(intsInRange(0, 999999) -> "noDecimals") {
-        int: String =>
-          val result = form.bind(details(loanAmount = int))
-          result.errors mustEqual Seq(FormError(loanAmountKey, loanAmountNoDecimalsKey))
-      }
-    }
   }
 
   "fundValue" - {
@@ -103,7 +95,7 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
       forAll(decimals -> "decimal") {
         decimal: String =>
           val result = form.bind(details(fundValue = decimal))
-          result.errors mustEqual Seq(FormError(fundValueKey, fundValueNoDecimalsKey))
+          result.errors mustEqual Seq(FormError(fundValueKey, fundValueTooManyDecimalsKey))
       }
     }
 
@@ -126,14 +118,6 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
     "bind 0.00 when positive value" in {
       val result = form.bind(details(fundValue = "0.00"))
       result.errors mustBe Seq.empty
-    }
-
-    "not bind integers" in {
-      forAll(intsInRange(0, 999999) -> "noDecimals") {
-        int: String =>
-          val result = form.bind(details(fundValue = int))
-          result.errors mustEqual Seq(FormError(fundValueKey, fundValueNoDecimalsKey))
-      }
     }
   }
 }
