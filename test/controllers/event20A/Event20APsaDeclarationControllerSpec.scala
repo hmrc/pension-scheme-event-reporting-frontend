@@ -65,7 +65,8 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       val userAnswersWithVersionInfo = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
       val minimalDetails = {
-        MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None, lastName = "Smith")), false, false)
+        MinimalDetails(testEmail, isPsaSuspended = false, None, Some(IndividualDetails(firstName = "John", None, lastName = "Smith")),
+          rlsFlag = false, deceasedFlag = false)
       }
 
       running(application) {
@@ -77,8 +78,8 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
         val view = application.injector.instanceOf[Event20APsaDeclarationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(
-          schemeName, pstr, taxYear, adminName, controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url)(request, messages(application)
+        contentAsString(result) mustEqual view(schemeName, pstr, taxYear, adminName,
+          controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url)(request, messages(application)
         ).toString
       }
     }
@@ -89,7 +90,8 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       val userAnswersWithVersionInfo = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
       val minimalDetails = {
-        MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None, lastName = "Smith")), false, false)
+        MinimalDetails(testEmail, isPsaSuspended = false, None, Some(IndividualDetails(firstName = "John", None, lastName = "Smith")),
+          rlsFlag = false, deceasedFlag = false)
       }
 
       running(application) {
@@ -107,10 +109,10 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
       val testEmail = "test@test.com"
       val organisationName = "Test company ltd"
-      val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
+      val minimalDetails = MinimalDetails(testEmail, isPsaSuspended = false, Some(organisationName), None, rlsFlag = false, deceasedFlag = false)
 
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
-      when(mockERConnector.submitReportEvent20A(any(), any(), any())(any())).thenReturn(Future.successful(()))
+      when(mockERConnector.submitReportEvent20A(any(), any(), any())(any())).thenReturn(Future.successful(NoContent))
 
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
@@ -127,7 +129,7 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
     }
 
     "must redirect to the cannot resume page for method onClick when report has been submitted multiple times in quick succession" in {
-      when(mockERConnector.submitReportEvent20A(any(), any(), any())(any(), any())).thenReturn(Future.successful(BadRequest))
+      when(mockERConnector.submitReportEvent20A(any(), any(), any())(any())).thenReturn(Future.successful(BadRequest))
 
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
@@ -140,7 +142,7 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
         status(result) mustEqual SEE_OTHER
 
-        verify(mockERConnector, times(1)).submitReportEvent20A(any(), any(), any())(any(), any())
+        verify(mockERConnector, times(1)).submitReportEvent20A(any(), any(), any())(any())
         redirectLocation(result).value mustEqual routes.CannotResumeController.onPageLoad(EmptyWaypoints).url
       }
     }

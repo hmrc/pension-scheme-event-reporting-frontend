@@ -124,9 +124,9 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       val testEmail = "test@test.com"
       val templateId = "pods_event_report_submitted"
       val organisationName = "Test company ltd"
-      val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
+      val minimalDetails = MinimalDetails(testEmail, isPsaSuspended = false, Some(organisationName), None, rlsFlag = false, deceasedFlag = false)
 
-      when(mockERConnector.submitReport(any(), any(), any())(any())).thenReturn(Future.successful(()))
+      when(mockERConnector.submitReport(any(), any(), any())(any())).thenReturn(Future.successful(NoContent))
       doNothing().when(mockAuditService).sendEvent(any())(any(), any())
       when(mockEmailConnector.sendEmail(
         schemeAdministratorType = ArgumentMatchers.eq(Administrator),
@@ -172,9 +172,9 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       val testEmail = "test@test.com"
       val templateId = "pods_event_report_submitted"
       val organisationName = "Test company ltd"
-      val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
+      val minimalDetails = MinimalDetails(testEmail, isPsaSuspended = false, Some(organisationName), None, rlsFlag = false, deceasedFlag = false)
 
-      when(mockERConnector.submitReport(any(), any(), any())(any(), any())).thenReturn(Future.successful(BadRequest))
+      when(mockERConnector.submitReport(any(), any(), any())(any())).thenReturn(Future.successful(BadRequest))
       doNothing().when(mockAuditService).sendEvent(any())(any(), any())
       when(mockEmailConnector.sendEmail(
         schemeAdministratorType = ArgumentMatchers.eq(Administrator),

@@ -109,7 +109,7 @@ class EventReportingConnector @Inject()(
   }
 
   def submitReport(pstr: String, ua: UserAnswers, version: String)
-                  (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+                  (implicit headerCarrier: HeaderCarrier): Future[Result] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -132,7 +132,7 @@ class EventReportingConnector @Inject()(
   }
 
   def submitReportEvent20A(pstr: String, ua: UserAnswers, version: String)
-                          (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+                          (implicit headerCarrier: HeaderCarrier): Future[Result] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -218,7 +218,7 @@ class EventReportingConnector @Inject()(
       }
   }
 
-  def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion:Int, memberIdToDelete: String)
+  def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion: Int, memberIdToDelete: String)
                   (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",

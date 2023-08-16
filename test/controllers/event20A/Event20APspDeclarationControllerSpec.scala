@@ -21,14 +21,14 @@ import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
 import connectors.{EventReportingConnector, MinimalConnector, SchemeConnector, UserAnswersCacheConnector}
 import data.SampleData.sampleEvent20ABecameJourneyData
 import forms.event20A.Event20APspDeclarationFormProvider
-import models.{SchemeDetails, VersionInfo}
 import models.enumeration.VersionStatus.{Compiled, Submitted}
+import models.{SchemeDetails, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{EmptyWaypoints, VersionInfoPage}
 import pages.event20A.Event20APspDeclarationPage
+import pages.{EmptyWaypoints, VersionInfoPage}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -79,7 +79,8 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
   val testEmail = "test@test.com"
   val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
   val mockMinimalDetails: MinimalDetails = {
-    MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None, lastName = "Smith")), false, false)
+    MinimalDetails(testEmail, isPsaSuspended = false, None, Some(IndividualDetails(firstName = "John", None, lastName = "Smith")),
+      rlsFlag = false, deceasedFlag = false)
   }
 
   "Event20APspDeclaration Controller" - {
@@ -142,7 +143,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
       when(mockEventReportingConnector.submitReportEvent20A(
-        any(), any(), any())(any())).thenReturn(Future.successful(()))
+        any(), any(), any())(any())).thenReturn(Future.successful(NoContent))
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
           .build()
@@ -164,7 +165,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
       when(mockEventReportingConnector.submitReportEvent20A(
-       any(), any(), any())(any())).thenReturn(Future.successful())
+        any(), any(), any())(any())).thenReturn(Future.successful(BadRequest))
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
@@ -190,7 +191,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
       when(mockEventReportingConnector.submitReportEvent20A(
-        any(), any(), any())(any(), any())).thenReturn(Future.successful(BadRequest))
+        any(), any(), any())(any())).thenReturn(Future.successful(BadRequest))
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
           .build()
@@ -206,7 +207,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
         verify(mockMinimalConnector, times(1)).getMinimalDetails(any(), any())(any(), any())
         verify(mockSchemeDetailsConnector, times(1)).getPspSchemeDetails(any(), any())(any(), any())
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
-        verify(mockEventReportingConnector, times(1)).submitReportEvent20A(any(), any(), any())(any(), any())
+        verify(mockEventReportingConnector, times(1)).submitReportEvent20A(any(), any(), any())(any())
       }
     }
   }
