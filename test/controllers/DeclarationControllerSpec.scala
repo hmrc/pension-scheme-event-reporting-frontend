@@ -126,7 +126,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       val organisationName = "Test company ltd"
       val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
 
-      when(mockERConnector.submitReport(any(), any(), any())(any(), any())).thenReturn(Future.successful(NoContent))
+      when(mockERConnector.submitReport(any(), any(), any())(any())).thenReturn(Future.successful(()))
       doNothing().when(mockAuditService).sendEvent(any())(any(), any())
       when(mockEmailConnector.sendEmail(
         schemeAdministratorType = ArgumentMatchers.eq(Administrator),

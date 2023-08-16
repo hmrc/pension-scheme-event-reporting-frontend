@@ -127,7 +127,7 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(
-            "loanAmount" -> "12.4",
+            "loanAmount" -> "12.9999999",
             "fundValue" -> "13.1"
           )
 

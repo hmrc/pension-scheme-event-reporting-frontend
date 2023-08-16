@@ -37,7 +37,7 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
       mapping("paymentValue" ->
         bigDecimal2DP("paymentValueAndDate.value.error.nothingEntered",
           "paymentValueAndDate.value.error.notANumber",
-          "paymentValueAndDate.value.error.noDecimals")
+          "paymentValueAndDate.value.error.tooManyDecimals")
           .verifying(
             maximumValue[BigDecimal](maxPaymentValue, "paymentValueAndDate.value.error.amountTooHigh"),
             minimumValue[BigDecimal](0, "paymentValueAndDate.value.error.negative")

@@ -38,7 +38,7 @@ class LumpSumAmountAndDateFormProviderSpec extends SpecBase
   private val messageKeyLumpSumValueKey = "lumpSumAmountAndDate.value"
 
   // scalastyle:off magic.number
-  val invalidDataGenerator: Gen[String] = intsInRangeWithCommas(0, 999999999)
+  val invalidDataGenerator: Gen[String] = decsInRangeWithCommas(0, 999999999)
   val negativeValueDataGenerator: Gen[String] = decimalsBelowValue(0)
 
   private def lumpSumDetails(
@@ -68,11 +68,11 @@ class LumpSumAmountAndDateFormProviderSpec extends SpecBase
       result.errors mustEqual Seq(FormError(lumpSumAmountKey, s"$messageKeyLumpSumValueKey.error.notANumber"))
     }
 
-    "not bind integers" in {
-      forAll(invalidDataGenerator -> "noDecimals") {
-        int: String =>
-          val result = form.bind(lumpSumDetails(lumpSumAmount = int, Some(validDate)))
-          result.errors mustEqual Seq(FormError(lumpSumAmountKey, s"$messageKeyLumpSumValueKey.error.noDecimals"))
+    "not bind numbers with too many decimals" in {
+      forAll(invalidDataGenerator -> "tooManyDecimals") {
+        num: String =>
+          val result = form.bind(lumpSumDetails(lumpSumAmount = num, Some(validDate)))
+          result.errors mustEqual Seq(FormError(lumpSumAmountKey, s"$messageKeyLumpSumValueKey.error.tooManyDecimals"))
       }
     }
 

@@ -40,6 +40,7 @@ import models.event20A.WhatChange.{BecameMasterTrust, CeasedMasterTrust}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
 import pages.address.ManualAddressPage
+import pages.amend.ReturnHistoryPage
 import pages.common.{ChooseTaxYearPage, ManualOrUploadPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, LoanDetailsPage}
@@ -336,7 +337,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
     startingFrom(TaxYearPage, answers = ua)
       .run(
         submitAnswer(TaxYearPage, TaxYear("2020")),
-        pageMustBe(EventSummaryPage)
+        pageMustBe(ReturnHistoryPage)
       )
   }
 

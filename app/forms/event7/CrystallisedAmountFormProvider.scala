@@ -30,7 +30,7 @@ class CrystallisedAmountFormProvider @Inject() extends Mappings {
       "crystallisedAmount" -> bigDecimal2DP(
         "crystallisedAmount.value.error.nothingEntered",
         "amounts.value.error.notANumber",
-        "amounts.value.error.noDecimals")
+        "amounts.value.error.tooManyDecimals")
         .verifying(
           maximumValue[BigDecimal](maxCrystallisedAmount, "amounts.value.error.amountTooHigh"),
           minimumValue[BigDecimal](0, "amounts.value.error.negative"),

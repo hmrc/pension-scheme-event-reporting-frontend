@@ -28,7 +28,7 @@ class AmountPaidFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours
   private val messageKeyValueKey = "amountPaid.event2"
 
   // scalastyle:off magic.number
-  val invalidDataGenerator: Gen[String] = intsInRangeWithCommas(0, 999999999)
+  val invalidDataGenerator: Gen[String] = decsInRangeWithCommas(0, 999999999)
   val negativeValueDataGenerator: Gen[String] = decimalsBelowValue(0.00)
 
   private def valueDetails(value: String): Map[String, String] = Map(valueKey -> value)
@@ -44,11 +44,11 @@ class AmountPaidFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours
       result.errors mustEqual Seq(FormError(valueKey, s"$messageKeyValueKey.error.nonNumeric"))
     }
 
-    "not bind integers" in {
-      forAll(invalidDataGenerator -> "noDecimals") {
-        int: String =>
-          val result = form.bind(valueDetails(int))
-          result.errors mustEqual Seq(FormError(valueKey, s"$messageKeyValueKey.error.noDecimals"))
+    "not bind numbers with too many decimals" in {
+      forAll(invalidDataGenerator -> "tooManyDecimals") {
+        num: String =>
+          val result = form.bind(valueDetails(num))
+          result.errors mustEqual Seq(FormError(valueKey, s"$messageKeyValueKey.error.tooManyDecimals"))
       }
     }
 

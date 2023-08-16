@@ -93,7 +93,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).bindings(
         bind[EventReportingConnector].to(mockEventConnector)).build()
 
-      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
         Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
       )
 
@@ -114,7 +114,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).bindings(
         bind[EventReportingConnector].to(mockEventConnector)).build()
 
-      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
         Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = true))
       )
 
@@ -137,7 +137,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
       val application = applicationBuilder(userAnswers = Some(ua)).bindings(
         bind[EventReportingConnector].to(mockEventConnector)).build()
-      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
         Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
       )
       running(application) {
@@ -160,7 +160,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
       val application = applicationBuilder(userAnswers = Some(ua)).bindings(
         bind[EventReportingConnector].to(mockEventConnector)).build()
-      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
         Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
       )
 
@@ -185,7 +185,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       val application = applicationBuilder(userAnswers = Some(userAnswers)).bindings(
         bind[EventReportingConnector].to(mockEventConnector)).build()
 
-      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
         Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
       )
 
@@ -208,7 +208,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       val application = applicationBuilder(userAnswers = Some(userAnswers)).bindings(
         bind[EventReportingConnector].to(mockEventConnector)).build()
 
-      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
         Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = true))
       )
 
@@ -234,7 +234,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         applicationBuilder(userAnswers = Some(ua), extraModules).bindings(
           bind[EventReportingConnector].to(mockEventConnector)).build()
 
-      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
         Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
       )
 
@@ -256,7 +256,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).bindings(
           bind[EventReportingConnector].to(mockEventConnector)).build()
 
-      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
         Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
       )
 
@@ -280,7 +280,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).bindings(
           bind[EventReportingConnector].to(mockEventConnector)).build()
 
-      when(mockEventConnector.getFeatureToggle(any())(any(), any())).thenReturn(
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
         Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = true))
       )
 

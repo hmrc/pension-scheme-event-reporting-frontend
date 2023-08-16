@@ -18,20 +18,25 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import models.amend.VersionsWithSubmitter
 import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
+import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json._
 import play.api.mvc.Result
 import play.api.mvc.Results.{BadRequest, NoContent}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
+import utils.HttpResponseHelper
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Failure
 
 class EventReportingConnector @Inject()(
                                          config: FrontendAppConfig,
                                          http: HttpClient
-                                       ) {
+                                       )(implicit ec: ExecutionContext) extends HttpResponseHelper {
+  private val logger = Logger(classOf[EventReportingConnector])
 
   private def eventRepSummaryUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/event-summary"
 
@@ -47,11 +52,13 @@ class EventReportingConnector @Inject()(
 
   private def eventOverviewUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/overview"
 
+  private def erListOfVersionsUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/versions"
+
   private def deleteMemberUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/delete-member"
 
 
   def getEventReportSummary(pstr: String, reportStartDate: String, version: Int)
-                           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EventSummary]] = {
+                           (implicit headerCarrier: HeaderCarrier): Future[Seq[EventSummary]] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -80,7 +87,7 @@ class EventReportingConnector @Inject()(
   }
 
   def compileEvent(pstr: String, edi: EventDataIdentifier, currentVersion: Int, delete: Boolean = false)
-                  (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+                  (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
@@ -102,7 +109,7 @@ class EventReportingConnector @Inject()(
   }
 
   def submitReport(pstr: String, ua: UserAnswers, version: String)
-                  (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
+                  (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -125,7 +132,7 @@ class EventReportingConnector @Inject()(
   }
 
   def submitReportEvent20A(pstr: String, ua: UserAnswers, version: String)
-                          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
+                          (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -147,7 +154,7 @@ class EventReportingConnector @Inject()(
       }
   }
 
-  def getFeatureToggle(toggleName: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[ToggleDetails] = {
+  def getFeatureToggle(toggleName: String)(implicit hc: HeaderCarrier): Future[ToggleDetails] = {
     http.GET[HttpResponse](eventReportingToggleUrl(toggleName))(implicitly, hc, implicitly).map { response =>
       val toggleOpt = response.status match {
         case NO_CONTENT => None
@@ -164,7 +171,7 @@ class EventReportingConnector @Inject()(
     }
   }
 
-  def getFileUploadOutcome(reference: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[FileUploadOutcomeResponse] = {
+  def getFileUploadOutcome(reference: String)(implicit hc: HeaderCarrier): Future[FileUploadOutcomeResponse] = {
     val headerCarrier: HeaderCarrier = hc.withExtraHeaders("reference" -> reference)
     http.GET[HttpResponse](getFileUploadResponseUrl)(implicitly, headerCarrier, implicitly).map { response =>
       response.status match {
@@ -187,7 +194,7 @@ class EventReportingConnector @Inject()(
   }
 
   def getOverview(pstr: String, reportType: String, startDate: String, endDate: String)
-                 (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Seq[EROverview]] = {
+                 (implicit headerCarrier: HeaderCarrier): Future[Seq[EROverview]] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -211,8 +218,8 @@ class EventReportingConnector @Inject()(
       }
   }
 
-  def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion: Int, memberIdToDelete: String)
-                  (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+  def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion:Int, memberIdToDelete: String)
+                  (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
@@ -232,6 +239,23 @@ class EventReportingConnector @Inject()(
             throw new HttpException(response.body, response.status)
         }
       }
+  }
+
+  def getListOfVersions(pstr: String, startDate: String)(implicit headerCarrier: HeaderCarrier): Future[Seq[VersionsWithSubmitter]] = {
+    val hc = headerCarrier.withExtraHeaders("pstr" -> pstr, "startDate" -> startDate)
+    http.GET[HttpResponse](erListOfVersionsUrl)(implicitly, hc, implicitly).map { response =>
+      response.status match {
+        case OK =>
+          Json.parse(response.body).validate[Seq[VersionsWithSubmitter]] match {
+            case JsSuccess(value, _) => value
+            case JsError(errors) => throw JsResultException(errors)
+          }
+        case NOT_FOUND => Seq.empty
+        case _ => handleErrorResponse("GET", erListOfVersionsUrl)(response)
+      }
+    } andThen {
+      case Failure(t: Throwable) => logger.warn("Unable to get list of versions", t)
+    }
   }
 }
 
