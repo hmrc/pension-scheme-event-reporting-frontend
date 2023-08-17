@@ -45,7 +45,7 @@ class PaymentDateFormProvider @Inject() extends Mappings with Transforms { // sc
         localDate(
           invalidKey = "genericDate.error.invalid",
         ).verifying(
-          yearHas4Digits("genericDate.error.invalid"),
+          yearHas4Digits("genericDate.error.invalid.year"),
           minDate(startDate, messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(endDate(max)))),
           maxDate(endDate(max), messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(endDate(max))))
         )

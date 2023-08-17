@@ -44,7 +44,7 @@ class AmountCrystallisedAndDateFormProvider @Inject() extends Mappings with Tran
         localDate(
           invalidKey = "genericDate.error.invalid",
         ).verifying(
-          yearHas4Digits("genericDate.error.invalid"),
+          yearHas4Digits("genericDate.error.invalid.year"),
           minDate(startDate, messages("amountCrystallisedAndDate.date.error.outsideReportedYear", formatDateDMY(startDate), formatDateDMY(endDate(max)))),
           maxDate(endDate(max), messages("amountCrystallisedAndDate.date.error.outsideReportedYear", formatDateDMY(startDate), formatDateDMY(endDate(max))))
         )

@@ -34,7 +34,7 @@ class DateOfChangeFormProvider @Inject() extends Mappings with Transforms {
         localDate(
           invalidKey = "genericDate.error.invalid",
         ).verifying(
-          yearHas4Digits("genericDate.error.invalid"),
+          yearHas4Digits("genericDate.error.invalid.year"),
           minDate(min, messages("dateOfChange.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
           maxDate(max, messages("dateOfChange.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
         )

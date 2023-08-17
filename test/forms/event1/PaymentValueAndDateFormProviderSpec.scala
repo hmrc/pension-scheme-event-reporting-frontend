@@ -106,7 +106,7 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
     behave like dateFieldYearNot4Digits(
       form = form,
       key = paymentDateKey,
-      formError = FormError(paymentDateKey, "genericDate.error.invalid")
+      formError = FormError(paymentDateKey, "genericDate.error.invalid.year")
     )
 
     behave like dateFieldWithMin(

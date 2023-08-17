@@ -43,7 +43,7 @@ class CeasedDateFormProviderSpec extends SpecBase
     behave like dateFieldYearNot4Digits(
       form = form,
       key = ceasedDateKey,
-      formError = FormError(ceasedDateKey, "genericDate.error.invalid")
+      formError = FormError(ceasedDateKey, "genericDate.error.invalid.year")
     )
 
     behave like dateFieldWithMin(

@@ -350,7 +350,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         ValidationError(5, 24, "paymentValueAndDate.value.error.amountTooHigh", "paymentValue", ArraySeq(999999999.99))
       ))
     }
-
+    
     "return validation errors when present for the date field, including tax year in future" in {
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
@@ -366,11 +366,11 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
 
       val result = validator.validate(csvFile, ua)
       result mustBe Invalid(Seq(
-        ValidationError(1, 25, "paymentValueAndDate.date.error.nothingEntered", "paymentDate"),
-        ValidationError(2, 25, "paymentValueAndDate.date.error.noDayMonthOrYear", "paymentDate", List("day")),
-        ValidationError(3, 25, "paymentValueAndDate.date.error.noDayMonthOrYear", "paymentDate", List("month", "year")),
+        ValidationError(1, 25, "genericDate.error.invalid.allFieldsMissing", "paymentDate"),
+        ValidationError(2, 25, "The date must include a day", "paymentDate", List()),
+        ValidationError(3, 25, "The date must include a month and year", "paymentDate", List()),
         ValidationError(4, 25, "Date must be between 6 April 2022 and 5 April 2023", "paymentDate"),
-        ValidationError(5, 25, "paymentValueAndDate.date.error.outsideDateRanges", "paymentDate")
+        ValidationError(5, 25, "genericDate.error.invalid", "paymentDate")
       ))
     }
 

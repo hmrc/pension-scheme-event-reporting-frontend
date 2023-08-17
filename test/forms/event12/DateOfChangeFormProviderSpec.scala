@@ -43,7 +43,7 @@ class DateOfChangeFormProviderSpec extends SpecBase
     behave like dateFieldYearNot4Digits(
       form = form,
       key = dateOfChangeKey,
-      formError = FormError(dateOfChangeKey, "genericDate.error.invalid")
+      formError = FormError(dateOfChangeKey, "genericDate.error.invalid.year")
     )
 
     behave like dateFieldWithMin(

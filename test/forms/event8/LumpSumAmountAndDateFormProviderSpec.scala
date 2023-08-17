@@ -114,7 +114,7 @@ class LumpSumAmountAndDateFormProviderSpec extends SpecBase
     behave like dateFieldYearNot4Digits(
       form = form,
       key = lumpSumDateKey,
-      formError = FormError(lumpSumDateKey, "genericDate.error.invalid")
+      formError = FormError(lumpSumDateKey, "genericDate.error.invalid.year")
     )
 
     behave like dateFieldWithMin(

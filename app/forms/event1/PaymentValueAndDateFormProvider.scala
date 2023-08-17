@@ -45,7 +45,7 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
         localDate(
           invalidKey = "genericDate.error.invalid"
         ).verifying(
-          yearHas4Digits("genericDate.error.invalid"),
+          yearHas4Digits("genericDate.error.invalid.year"),
           minDate(startDate, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", startDate.getYear.toString, endDate.getYear.toString)),
           maxDate(endDate, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", startDate.getYear.toString, endDate.getYear.toString))
         )

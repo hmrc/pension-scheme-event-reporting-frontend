@@ -115,7 +115,7 @@ class AmountCrystallisedAndDateFormProviderSpec extends SpecBase
     behave like dateFieldYearNot4Digits(
       form = form,
       key = crystallisedDateKey,
-      formError = FormError(crystallisedDateKey, "genericDate.error.invalid")
+      formError = FormError(crystallisedDateKey, "genericDate.error.invalid.year")
     )
 
     behave like dateFieldWithMin(
