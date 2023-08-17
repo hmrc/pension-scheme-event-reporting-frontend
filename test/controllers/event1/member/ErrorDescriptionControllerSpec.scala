@@ -37,21 +37,18 @@ import scala.concurrent.Future
 class ErrorDescriptionControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
-
   private val formProvider = new ErrorDescriptionFormProvider()
   private val form = formProvider()
-
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-
-  private def getRoute: String = routes.ErrorDescriptionController.onPageLoad(waypoints, 0).url
-
-  private def postRoute: String = routes.ErrorDescriptionController.onSubmit(waypoints, 0).url
+  private val validValue = "abc"
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validValue = "abc"
+  private def getRoute: String = routes.ErrorDescriptionController.onPageLoad(waypoints, 0).url
+
+  private def postRoute: String = routes.ErrorDescriptionController.onSubmit(waypoints, 0).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -59,38 +56,30 @@ class ErrorDescriptionControllerSpec extends SpecBase with BeforeAndAfterEach wi
   }
 
   "ErrorDescription Controller" - {
-
     "must return OK and the correct view for a GET" in {
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[ErrorDescriptionView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(form, waypoints, index = 0, request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
       val userAnswers = UserAnswers().set(ErrorDescriptionPage(0), validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
       running(application) {
         val request = FakeRequest(GET, getRoute)
-
         val view = application.injector.instanceOf[ErrorDescriptionView]
-
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(Some(validValue)), waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(form.fill(Some(validValue)), waypoints, index = 0, request, messages(application)).toString
       }
     }
 
@@ -98,14 +87,9 @@ class ErrorDescriptionControllerSpec extends SpecBase with BeforeAndAfterEach wi
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "abcdef"))
-
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "abcdef"))
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(ErrorDescriptionPage(0), validValue).success.value
 
@@ -119,14 +103,10 @@ class ErrorDescriptionControllerSpec extends SpecBase with BeforeAndAfterEach wi
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
-
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(ErrorDescriptionPage(0), validValue).success.value
 
@@ -137,17 +117,17 @@ class ErrorDescriptionControllerSpec extends SpecBase with BeforeAndAfterEach wi
     }
 
     "must return bad request when invalid data is submitted" in {
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
+      val invalidValue = "A" * 151
 
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "A" * 151))
-
+        val view = application.injector.instanceOf[ErrorDescriptionView]
+        val boundForm = form.bind(Map("value" -> invalidValue))
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", invalidValue))
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view.render(boundForm, waypoints, index = 0, request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
