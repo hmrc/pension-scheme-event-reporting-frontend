@@ -29,6 +29,7 @@ import org.scalatest.wordspec.AsyncWordSpec
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, JsResultException, Json}
+import play.api.mvc.Results.{BadRequest, NoContent}
 import play.api.test.Helpers.running
 import uk.gov.hmrc.http._
 import utils.WireMockHelper
@@ -91,7 +92,8 @@ class EventReportingConnectorSpec
 
   private val failureOutcome = FileUploadOutcomeResponse(fileName = None, FAILURE, None, referenceStub, None)
   private val failureOutcomeJson = Json.obj("fileStatus" -> "ERROR")
-  private val successOutcome = FileUploadOutcomeResponse(fileName = Some("test"), SUCCESS, Some("downloadUrl"), referenceStub, Some(100L))
+  private val successOutcome = FileUploadOutcomeResponse(
+    fileName = Some("test"), SUCCESS, Some("downloadUrl"), referenceStub, Some(100L))
   private val successOutcomeJson = Json.obj(
     "fileStatus" -> "READY",
     "downloadUrl" -> "downloadUrl",
