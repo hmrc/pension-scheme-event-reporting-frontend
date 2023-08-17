@@ -40,7 +40,7 @@ class DatePaidFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours w
     behave like dateFieldYearNot4Digits(
       form = form,
       key = datePaidKey,
-      formError = FormError(datePaidKey, "genericDate.error.invalid")
+      formError = FormError(datePaidKey, "genericDate.error.invalid.year")
     )
 
     behave like dateFieldWithMin(

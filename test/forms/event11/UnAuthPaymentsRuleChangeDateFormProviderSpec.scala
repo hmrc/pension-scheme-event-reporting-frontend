@@ -43,7 +43,7 @@ class UnAuthPaymentsRuleChangeDateFormProviderSpec extends SpecBase
     behave like dateFieldYearNot4Digits(
       form = form,
       key = dateKey,
-      formError = FormError(dateKey, "genericDate.error.invalid")
+      formError = FormError(dateKey, "genericDate.error.invalid.year")
     )
 
     behave like dateFieldWithMin(

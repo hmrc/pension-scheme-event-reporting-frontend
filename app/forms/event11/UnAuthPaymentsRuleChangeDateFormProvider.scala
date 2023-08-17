@@ -33,7 +33,7 @@ class UnAuthPaymentsRuleChangeDateFormProvider @Inject() extends Mappings {
       mapping("value" -> localDate(
         invalidKey = "genericDate.error.invalid",
       ).verifying(
-        yearHas4Digits("genericDate.error.invalid"),
+        yearHas4Digits("genericDate.error.invalid.year"),
         minDate(min, messages("unAuthPaymentsRuleChangeDate.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
         maxDate(max, messages("unAuthPaymentsRuleChangeDate.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
       )

@@ -32,7 +32,7 @@ class DatePaidFormProvider @Inject() extends Mappings with Transforms {
       "value" -> localDate(
         invalidKey = "genericDate.error.invalid",
       ).verifying(
-        yearHas4Digits("genericDate.error.invalid"),
+        yearHas4Digits("genericDate.error.invalid.year"),
         minDate(startDate, messages("datePaid.event2.error.outside.taxYear", startDate.getYear.toString,(taxYear + 1).toString)),
         maxDate(endDate, messages("datePaid.event2.error.outside.taxYear", startDate.getYear.toString,(taxYear + 1).toString)))
       )
