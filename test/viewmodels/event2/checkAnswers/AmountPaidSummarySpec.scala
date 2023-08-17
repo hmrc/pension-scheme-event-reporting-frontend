@@ -14,44 +14,46 @@
  * limitations under the License.
  */
 
-package viewmodels.event2
+package viewmodels.event2.checkAnswers
 
+import data.SampleData.memberDetails
 import models.UserAnswers
-import models.common.MembersDetails
 import models.enumeration.EventType.Event2
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import pages.common.MembersDetailsPage
-import pages.event2.{DatePaidPage, Event2CheckYourAnswersPage}
+import pages.event2.{AmountPaidPage, Event2CheckYourAnswersPage}
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
-import viewmodels.event2.checkAnswers.DatePaidSummary
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
-class DatePaidSummarySpec extends AnyFreeSpec with Matchers with OptionValues with TryValues with SummaryListFluency {
+class AmountPaidSummarySpec extends AnyFreeSpec with Matchers with OptionValues with TryValues with SummaryListFluency {
 
   private implicit val messages: Messages = stubMessages()
-  "row date paid" - {
-    "must display correct information for the date" in {
-      val datePaid = LocalDate.now()
-      val memberDetails: MembersDetails = MembersDetails("Joe", "Bloggs", "AA234567D")
-      val answer = UserAnswers().setOrException(DatePaidPage(0, Event2), datePaid).setOrException(MembersDetailsPage(Event2, 0, 2), memberDetails)
+
+
+  "rowAmountPaid" - {
+
+    "must display correct information for the amount" in {
+
+      val amountPaid = BigDecimal(1000.00)
+      val amountPaidHtml = "£1,000.00"
+      val answer = UserAnswers().setOrException(AmountPaidPage(0, Event2), amountPaid).setOrException(MembersDetailsPage(Event2, 0, 2), memberDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event2CheckYourAnswersPage(0)
-      val format = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-      DatePaidSummary.row(answer, waypoints, sourcePage, 0) mustBe Some(
+
+      AmountPaidSummary.row(answer, waypoints, sourcePage, 0) mustBe Some(
         SummaryListRowViewModel(
-          key = messages("datePaid.event2.checkYourAnswersLabel", memberDetails.fullName),
-          value = ValueViewModel(format.format(datePaid)),
+          key = messages("amountPaid.event2.checkYourAnswersLabel" , memberDetails.fullName),
+          value = ValueViewModel(Text(amountPaidHtml)),
           actions = Seq(
-            ActionItemViewModel("site.change", DatePaidPage(0, Event2).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("datePaid.event2.change.hidden"))
+            ActionItemViewModel("site.change", AmountPaidPage(index = 0, Event2).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("amountPaid.event2.change.hidden", memberDetails.fullName))
           )
         )
       )

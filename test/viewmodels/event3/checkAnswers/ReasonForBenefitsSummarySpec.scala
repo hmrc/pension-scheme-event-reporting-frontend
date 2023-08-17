@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.event3
+package viewmodels.event3.checkAnswers
 
 import models.UserAnswers
 import models.event3.ReasonForBenefits
