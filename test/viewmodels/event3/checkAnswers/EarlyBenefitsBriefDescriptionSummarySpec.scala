@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.event3
+package viewmodels.event3.checkAnswers
 
 import models.UserAnswers
 import org.scalatest.freespec.AnyFreeSpec
@@ -25,7 +25,6 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
-import viewmodels.event3.checkAnswers.EarlyBenefitsBriefDescriptionSummary
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
