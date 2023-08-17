@@ -18,42 +18,51 @@ package controllers.event2
 
 import base.SpecBase
 import data.SampleData.sampleMemberJourneyDataEvent2
+import models.VersionInfo
+import models.enumeration.EventType.Event2
+import models.enumeration.VersionStatus.Compiled
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.{EmptyWaypoints, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
+import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
+import scala.concurrent.Future
+
 
 class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
+  private val mockCompileService = mock[CompileService]
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[CompileService].toInstance(mockCompileService)
+  )
+
   import Event2CheckYourAnswersControllerSpec._
 
-
   "Check Your Answers Controller" - {
-
     "must return OK and the correct view for a GET" in {
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(0).url)
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[CheckYourAnswersView]
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-2-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(list, "/manage-pension-scheme-event-report/report/event-2-click", request, messages(application)).toString
       }
     }
 
@@ -89,16 +98,30 @@ class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(0).url)
-
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to the correct page onClick" in {
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful())
+
+      val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event2.routes.Event2CheckYourAnswersController.onClick.url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event2).url
       }
     }
   }
