@@ -27,37 +27,14 @@ import uk.gov.hmrc.http._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SessionDataCacheConnector  @Inject()(
-  config: FrontendAppConfig,
-  http: HttpClient
-) {
-  private def url(cacheId:String) = s"${config.pensionsAdministratorUrl}/pension-administrator/journey-cache/session-data/$cacheId"
-
-  def upsertTestPstr(id: String, pstr: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
-    val headers: Seq[(String, String)] = Seq(
-      "Content-Type" -> "application/json"
-    )
-
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-
-    val json = Json.obj(
-      "eventReporting" -> Json.obj(
-        "pstr" -> pstr
-      )
-    )
-
-    http.POST[JsValue, HttpResponse](url(id), json)(implicitly, implicitly, hc, implicitly)
-      .map { response =>
-        response.status match {
-          case OK => ()
-          case _ =>
-            throw new HttpException(response.body, response.status)
-        }
-      }
-  }
+class SessionDataCacheConnector @Inject()(
+                                           config: FrontendAppConfig,
+                                           http: HttpClient
+                                         ) {
+  private def url(cacheId: String) = s"${config.pensionsAdministratorUrl}/pension-administrator/journey-cache/session-data/$cacheId"
 
   def fetch(id: String)
-    (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[JsValue]] = {
+           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[JsValue]] = {
 
     http.GET[HttpResponse](url(id))
       .recoverWith(mapExceptionsToStatus)
@@ -74,7 +51,7 @@ class SessionDataCacheConnector  @Inject()(
   }
 
   def removeAll(id: String)
-    (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
+               (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
     http.DELETE[HttpResponse](url(id)).map { _ =>
       Ok
     }
