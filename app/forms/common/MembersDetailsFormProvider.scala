@@ -29,7 +29,7 @@ import javax.inject.Inject
 
 class MembersDetailsFormProvider @Inject() extends Mappings with Transforms {
 
-  def apply(eventType: EventType, memberNinos: HashSet[(String, Int)], memberPageNo: Int=0): Form[MembersDetails] = {
+  def apply(eventType: EventType, memberNinos: HashSet[String], memberPageNo: Int=0): Form[MembersDetails] = {
     val detailsType = (eventType, memberPageNo) match {
       case (Event2, 1) => "deceasedMembersDetails"
       case (Event2, 2) => "beneficiaryDetails"

@@ -19,7 +19,7 @@ package controllers.common
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.common.MembersDetailsFormProvider
-import models.Index.indexToInt
+import models.Index.{indexToInt, intToIndex}
 import models.enumeration.EventType
 import models.enumeration.EventType.Event1
 import models.requests.OptionalDataRequest
@@ -43,14 +43,14 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
                                          formProvider: MembersDetailsFormProvider,
                                          view: MembersDetailsView
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-  private def memberNinos(eventType: EventType, index: Int)(implicit request: OptionalDataRequest[_]): HashSet[(String, Int)] = {
+  private def memberNinos(eventType: EventType, index: Int)(implicit request: OptionalDataRequest[_]): HashSet[String] = {
     val readsNINumber: Reads[Option[String]] = (JsPath \ "membersDetails" \ "nino").readNullable[String]
     val pg = eventType match {
       case Event1 => MembersOrEmployersPage(eventType)
       case _ => MembersPage(eventType)
     }
     val s = request.userAnswers.map(_.getAll(pg.path)(readsNINumber.map(_.toSeq))).toSeq.flatten.flatten
-      .zipWithIndex.filter(_._2 != index)
+      .zipWithIndex.filter(_._2 != index).map(_._1)
     HashSet(s: _*)
   }
 

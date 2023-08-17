@@ -172,9 +172,9 @@ trait Constraints {
     }
   }
 
-  protected def nonUniqueNino(notUniqueKey: String, ninos: HashSet[(String, Int)]): Constraint[String] = {
+  protected def nonUniqueNino(notUniqueKey: String, ninos: HashSet[String]): Constraint[String] = {
     Constraint {
-      case nino if ninos.map(_._1).contains(nino) => Invalid(notUniqueKey)
+      case nino if ninos.contains(nino) => Invalid(notUniqueKey)
       case _ => Valid
     }
   }

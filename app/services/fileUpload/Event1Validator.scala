@@ -331,7 +331,7 @@ class Event1Validator @Inject()(
   override protected def validateFields(index: Int,
                                         columns: Seq[String],
                                         taxYear: Int,
-                                        memberNinos: HashSet[(String, Int)])
+                                        memberNinos: HashSet[String])
                                        (implicit messages: Messages): Result = {
 
     val a = resultFromFormValidationResult[WhoReceivedUnauthPayment](
@@ -495,7 +495,7 @@ class Event1Validator @Inject()(
                                index: Int,
                                columns: Seq[String],
                                taxYear: Int,
-                               memberNinos: HashSet[(String, Int)])
+                               memberNinos: HashSet[String])
                               (implicit messages: Messages): Result = {
     val b = resultFromFormValidationResultForMembersDetails(
       memberDetailsValidation(index, columns, membersDetailsFormProvider(Event1, memberNinos, index)),

@@ -142,6 +142,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
     }
   }
 
+  //scalastyle:off method.length
   private def testBadRequestForInvalidDataSubmission(eventType: EventType): Unit = {
     s"must return bad request when invalid data is submitted for Event $eventType" in {
 
@@ -164,9 +165,10 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
       }
     }
 
-    s"must return bad request when invalid data is submitted for Event $eventType - when member exists" in {
+    s"must return bad request when invalid data (last name is empty) is submitted for Event $eventType - when member exists" in {
 
-      val ua = emptyUserAnswersWithTaxYear.setOrException(MembersDetailsPage(eventType, 0), MembersDetails("", "", "CS121212C"))
+      val nino = "CS121212C"
+      val ua = emptyUserAnswersWithTaxYear.setOrException(MembersDetailsPage(eventType, 0), MembersDetails("firstName", "lastName", nino))
 
       val application =
         applicationBuilder(userAnswers = Some(ua), extraModules)
@@ -174,10 +176,10 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("firstName", "John"), ("lastName", ""), ("nino", "CS121212C"))
+          FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("firstName", "John"), ("lastName", ""), ("nino", nino))
 
         val view = application.injector.instanceOf[MembersDetailsView]
-        val boundForm = form(eventType, HashSet("CS121212C")).bind(Map("firstName" -> "John", "lastName" -> "", "nino" -> "CS121212C"))
+        val boundForm = form(eventType, HashSet()).bind(Map("firstName" -> "John", "lastName" -> "", "nino" -> nino))
         val result = route(application, request).value
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, waypoints, eventType, 0, submitUrl(eventType))(request, messages(application)).toString
