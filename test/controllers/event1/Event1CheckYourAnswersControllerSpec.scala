@@ -26,9 +26,9 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{EmptyWaypoints, VersionInfoPage}
-import play.api
 import play.api.i18n.Messages
 import play.api.inject
+import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -43,6 +43,10 @@ import scala.concurrent.Future
 class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach {
 
   private val mockCompileService = mock[CompileService]
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[CompileService].toInstance(mockCompileService)
+  )
 
   import Event1CheckYourAnswersControllerSpec._
 
@@ -145,15 +149,12 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       }
     }
 
-    "must redirect to the UnauthPaymentSummaryController onClick" in {
+    "must redirect to the correct page onClick" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful())
 
       val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
-      val application = applicationBuilder(
-          userAnswers = Some(userAnswersWithVersionInfo),
-          extraModules = Seq(api.inject.bind[CompileService].toInstance(mockCompileService))
-        ).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event1.routes.Event1CheckYourAnswersController.onClick.url)

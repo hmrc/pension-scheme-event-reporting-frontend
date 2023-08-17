@@ -70,7 +70,6 @@ class Event1CheckYourAnswersController @Inject()(
       val waypoints = EmptyWaypoints
       compileService.compileEvent(Event1, request.pstr, request.userAnswers).map {
         _ =>
-          println("123")
           Redirect(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(waypoints))
       }
     }
