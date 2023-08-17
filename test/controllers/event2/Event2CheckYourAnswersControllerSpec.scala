@@ -23,7 +23,8 @@ import models.enumeration.EventType.Event2
 import models.enumeration.VersionStatus.Compiled
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{EmptyWaypoints, VersionInfoPage}
 import play.api.i18n.Messages
@@ -41,7 +42,7 @@ import views.html.CheckYourAnswersView
 import scala.concurrent.Future
 
 
-class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
+class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach{
 
   private val mockCompileService = mock[CompileService]
 
@@ -50,6 +51,11 @@ class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
   )
 
   import Event2CheckYourAnswersControllerSpec._
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockCompileService)
+  }
 
   "Check Your Answers Controller" - {
     "must return OK and the correct view for a GET" in {
