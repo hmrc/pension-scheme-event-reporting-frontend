@@ -21,11 +21,11 @@ import connectors.UserAnswersCacheConnector
 import forms.controllers.event13.SchemeStructureFormProvider
 import models.UserAnswers
 import models.event13.SchemeStructure
-import pages.EmptyWaypoints
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, reset, times, verify, when}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.event13.SchemeStructurePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -35,21 +35,20 @@ import views.html.event13.SchemeStructureView
 
 import scala.concurrent.Future
 
-class SchemeStructureControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar  {
+class SchemeStructureControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
-
   private val formProvider = new SchemeStructureFormProvider()
   private val form = formProvider()
-
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-
-  private def getRoute: String = controllers.event13.routes.SchemeStructureController.onPageLoad(waypoints).url
-  private def postRoute: String = controllers.event13.routes.SchemeStructureController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
+
+  private def getRoute: String = controllers.event13.routes.SchemeStructureController.onPageLoad(waypoints).url
+
+  private def postRoute: String = controllers.event13.routes.SchemeStructureController.onSubmit(waypoints).url
 
   override def beforeEach(): Unit = {
     super.beforeEach
@@ -57,38 +56,30 @@ class SchemeStructureControllerSpec extends SpecBase with BeforeAndAfterEach wit
   }
 
   "SchemeStructure Controller" - {
-
     "must return OK and the correct view for a GET" in {
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[SchemeStructureView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(form, waypoints, request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
       val userAnswers = UserAnswers().set(SchemeStructurePage, SchemeStructure.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
       running(application) {
         val request = FakeRequest(GET, getRoute)
-
         val view = application.injector.instanceOf[SchemeStructureView]
-
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(SchemeStructure.values.head), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(form.fill(SchemeStructure.values.head), waypoints, request, messages(application)).toString
       }
     }
 
@@ -96,14 +87,9 @@ class SchemeStructureControllerSpec extends SpecBase with BeforeAndAfterEach wit
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", SchemeStructure.values.head.toString))
-
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", SchemeStructure.values.head.toString))
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(SchemeStructurePage, SchemeStructure.values.head).success.value
 
@@ -114,21 +100,16 @@ class SchemeStructureControllerSpec extends SpecBase with BeforeAndAfterEach wit
     }
 
     "must return bad request when invalid data is submitted" in {
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
-
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
         val view = application.injector.instanceOf[SchemeStructureView]
         val boundForm = form.bind(Map("value" -> "invalid"))
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(boundForm, waypoints, request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
