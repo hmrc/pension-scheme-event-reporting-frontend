@@ -22,6 +22,7 @@ import controllers.common.PaymentDetailsControllerSpec.{paymentDetails, validDat
 import forms.common.PaymentDetailsFormProvider
 import models.common.PaymentDetails
 import models.enumeration.EventType
+import models.enumeration.EventType.{Event3, Event4, Event5}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -39,17 +40,24 @@ import scala.concurrent.Future
 
 class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
-  private val waypoints = EmptyWaypoints
+  private val minTaxYear = 2006
+  private val maxTaxYear = 2023
+  private val aprilMonth = 4
+  private val startOfTaxYearDay = 6
+  private val endOfTaxYearDay = 5
+  private val validValueAmount = 500.00
+  private val validValueDateYear = 2022
+  private val validValueDateMonth = 7
+  private val validValueDateDay = 12
 
-  private val stubMin: LocalDate = LocalDate.of(2006, 4, 6) //06-04-2006
-  private val stubMax: LocalDate = LocalDate.of(2023, 4, 5) //05-04-2023
+  private val waypoints = EmptyWaypoints
+  private val stubMin: LocalDate = LocalDate.of(minTaxYear, aprilMonth, startOfTaxYearDay) //06-04-2006
+  private val stubMax: LocalDate = LocalDate.of(maxTaxYear, aprilMonth, endOfTaxYearDay) //05-04-2023
 
   private val formProvider = new PaymentDetailsFormProvider()
   private val form = formProvider(stubMin, stubMax)
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val event3 = EventType.Event3
-  private val event4 = EventType.Event4
-  private val event5 = EventType.Event5
+  private val seqOfEvents = Seq(Event3, Event4, Event5)
 
   private def getRoute(eventType: EventType): String = routes.PaymentDetailsController.onPageLoad(waypoints, eventType, 0).url
 
@@ -59,7 +67,7 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validValue = PaymentDetails(500.00, LocalDate.of(2022, 7, 12))
+  private val validValue = PaymentDetails(validValueAmount, LocalDate.of(validValueDateYear, validValueDateMonth, validValueDateDay))
 
   override def beforeEach(): Unit = {
     super.beforeEach
@@ -67,32 +75,25 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
   }
 
   "PaymentDetails Controller" - {
-    testSuite(event3)
-    testSuite(event4)
-    testSuite(event5)
-  }
-
-  private def testSuite(eventType: EventType): Unit = {
-    testReturnOkAndCorrectView(eventType)
-    testPopulateCorrectViewOnGetWhenPrevAnswered(eventType)
-    testSaveAnswerAndRedirectWhenValid(eventType)
-    testBadRequestForInvalidDataSubmission(eventType)
+    for (event <- seqOfEvents) {
+      testReturnOkAndCorrectView(event)
+      testPopulateCorrectViewOnGetWhenPrevAnswered(event)
+      testSaveAnswerAndRedirectWhenValid(event)
+      testBadRequestForInvalidDataSubmission(event)
+    }
   }
 
   private def testReturnOkAndCorrectView(eventType: EventType): Unit = {
     s"must return OK and the correct view for a GET for Event $eventType" in {
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute(eventType))
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[PaymentDetailsView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, eventType, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(form, waypoints, eventType, index = 0, request, messages(application)).toString
       }
     }
   }
@@ -104,13 +105,11 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
 
       running(application) {
         val request = FakeRequest(GET, getRoute(eventType))
-
         val view = application.injector.instanceOf[PaymentDetailsView]
-
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, eventType, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(form.fill(validValue), waypoints, eventType, index = 0, request, messages(application)).toString
       }
     }
   }
@@ -120,13 +119,10 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(paymentDetails("1000.00", Some(validDate)): _*)
+        val request = FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(paymentDetails("1000.00", Some(validDate)): _*)
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswersWithTaxYear.set(PaymentDetailsPage(eventType, 0), validValue).success.value
@@ -145,12 +141,9 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           .build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("value", "invalid"))
-
+        val request = FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("value", "invalid"))
         val view = application.injector.instanceOf[PaymentDetailsView]
         val boundForm = form.bind(Map("value" -> "invalid"))
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
@@ -164,6 +157,13 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
 object PaymentDetailsControllerSpec {
   private val amountPaidKey = "amountPaid"
   private val eventDateKey = "eventDate"
+  private val aprilMonth = 4
+  private val dateDay = 6
+  private val minYear = 2006
+
+  private val validDateYear = 2023
+  private val validDateMonth = 1
+  private val validDateDay = 1
 
   private def paymentDetails(
                               amountPaid: String,
@@ -181,12 +181,12 @@ object PaymentDetailsControllerSpec {
 
   private def validDateCalc(date: LocalDate): LocalDate = {
     date match {
-      case _ if date.isBefore(LocalDate.of(date.getYear, 4, 6)) =>
-        LocalDate.of(2006, 4, 6)
+      case _ if date.isBefore(LocalDate.of(date.getYear, aprilMonth, dateDay)) =>
+        LocalDate.of(minYear, aprilMonth, dateDay)
       case _ =>
-        LocalDate.of(date.getYear, 4, 5)
+        LocalDate.of(date.getYear, aprilMonth, dateDay - 1)
     }
   }
 
-  private val validDate = validDateCalc(LocalDate.of(2023, 1, 1))
+  private val validDate = validDateCalc(LocalDate.of(validDateYear, validDateMonth, validDateDay))
 }
