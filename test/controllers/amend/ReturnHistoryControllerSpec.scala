@@ -18,7 +18,7 @@ package controllers.amend
 
 import base.SpecBase
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
-import controllers.amend.ReturnHistoryControllerSpec.{h, v}
+import controllers.amend.ReturnHistoryControllerSpec.{seqOfReturnHistorySummary, versionsWithSubmitter}
 import models.VersionInfo
 import models.amend.VersionsWithSubmitter
 import models.enumeration.VersionStatus.Submitted
@@ -36,7 +36,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import viewmodels.ReturnHistorySummary
 import views.html.amend.ReturnHistoryView
 
-import java.time.LocalDate
+import java.time.{LocalDate, Month}
 import scala.concurrent.Future
 
 class ReturnHistoryControllerSpec extends SpecBase with BeforeAndAfterEach {
@@ -55,37 +55,34 @@ class ReturnHistoryControllerSpec extends SpecBase with BeforeAndAfterEach {
   }
 
   "ReturnHistory Controller" - {
-
     "must return OK and the correct view for a GET" in {
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
       when(mockErConnector.getListOfVersions(ArgumentMatchers.eq("87219363YN"), ArgumentMatchers.eq("2022-04-06"))(any()))
-        .thenReturn(Future.successful(Seq(v)))
+        .thenReturn(Future.successful(Seq(versionsWithSubmitter)))
 
       running(application) {
-
         val request = FakeRequest(GET, routes.ReturnHistoryController.onPageLoad().url)
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[ReturnHistoryView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(h, "2022", "2023", "schemeName")(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(seqOfReturnHistorySummary,
+          taxYearStart = "2022",
+          taxYearEnd = "2023",
+          schemeName = "schemeName",
+          request = request,
+          messages = messages(application)).toString
       }
     }
 
-    "onClick must redirect to the correct page and save correct version in mongo" in {
-
+    "must redirect to the correct page and save correct version in mongodb onClick " in {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
       when(mockUACacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful())
 
       running(application) {
-
         val request = FakeRequest(GET, routes.ReturnHistoryController.onClick(EmptyWaypoints, "1").url)
-
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -98,10 +95,14 @@ class ReturnHistoryControllerSpec extends SpecBase with BeforeAndAfterEach {
 
 object ReturnHistoryControllerSpec {
 
-  val v: VersionsWithSubmitter =
-    VersionsWithSubmitter(VersionInfo(1, Submitted), Some("John Smith"), LocalDate.of(2022, 6, 9))
+  private val dayOfMonth: Int = 9
+  private val dateYear: Int = 2022
+  private val versionNo: Int = 1
 
-  val h = Seq(ReturnHistorySummary(
+  val versionsWithSubmitter: VersionsWithSubmitter =
+    VersionsWithSubmitter(VersionInfo(versionNo, Submitted), Some("John Smith"), LocalDate.of(dateYear, Month.JUNE, dayOfMonth))
+
+  val seqOfReturnHistorySummary: Seq[ReturnHistorySummary] = Seq(ReturnHistorySummary(
     key = "1",
     firstValue = "Submitted on 09 June 2022",
     secondValue = "John Smith",
