@@ -20,6 +20,7 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.common.TotalPensionAmountsFormProvider
 import models.enumeration.EventType
+import models.enumeration.EventType.{Event22, Event23}
 import org.apache.commons.lang3.StringUtils
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -38,185 +39,104 @@ import scala.concurrent.Future
 class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
-  private val event23 = EventType.Event23
-  private val event22 = EventType.Event22
+  private val seqOfEvents = Seq(Event22, Event23)
   private val formProvider = new TotalPensionAmountsFormProvider()
   private val form = formProvider()
-
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-
-  private def getRouteEvent23: String = routes.TotalPensionAmountsController.onPageLoad(waypoints, event23, 0).url
-
-  private def postRouteEvent23: String = routes.TotalPensionAmountsController.onSubmit(waypoints, event23, 0).url
-
-  private def getRouteEvent22: String = routes.TotalPensionAmountsController.onPageLoad(waypoints, event22, 0).url
-
-  private def postRouteEvent22: String = routes.TotalPensionAmountsController.onSubmit(waypoints, event22, 0).url
+  private val validValue = BigDecimal(1000.00)
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validValue = BigDecimal(1000.00)
+  private def getRoute(eventType: EventType): String = routes.TotalPensionAmountsController.onPageLoad(waypoints, eventType, 0).url
+
+  private def postRoute(eventType: EventType): String = routes.TotalPensionAmountsController.onSubmit(waypoints, eventType, 0).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 
-  "MembersTotalPensionAmounts Controller" - {
-
-    "event23" - {
-      "must return OK and the correct view for a GET" in {
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
-
-        running(application) {
-          val request = FakeRequest(GET, getRouteEvent23)
-
-          val result = route(application, request).value
-
-          val view = application.injector.instanceOf[TotalPensionAmountsView]
-
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, waypoints, event23, StringUtils.EMPTY, 0)(request, messages(application)).toString
-        }
-      }
-
-      "must populate the view correctly on a GET when the question has previously been answered" in {
-
-        val userAnswers = emptyUserAnswersWithTaxYear.set(TotalPensionAmountsPage(event23, 0), validValue).success.value
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-        running(application) {
-          val request = FakeRequest(GET, getRouteEvent23)
-
-          val view = application.injector.instanceOf[TotalPensionAmountsView]
-
-          val result = route(application, request).value
-
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(validValue), waypoints, event23, StringUtils.EMPTY, 0)(request, messages(application)).toString
-        }
-      }
-
-      "must save the answer and redirect to the next page when valid data is submitted" in {
-        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(()))
-
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
-            .build()
-
-        running(application) {
-          val request =
-            FakeRequest(POST, postRouteEvent23).withFormUrlEncodedBody(("value", "33.00"))
-
-          val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(TotalPensionAmountsPage(event23, 0), validValue).success.value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual TotalPensionAmountsPage(event23, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-          verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
-        }
-      }
-
-      "must return bad request when invalid data is submitted" in {
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
-            .build()
-
-        running(application) {
-          val request =
-            FakeRequest(POST, postRouteEvent23).withFormUrlEncodedBody(("value", ""))
-
-          val view = application.injector.instanceOf[TotalPensionAmountsView]
-          val boundForm = form.bind(Map("value" -> ""))
-
-          val result = route(application, request).value
-
-          status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, event23, StringUtils.EMPTY, 0)(request, messages(application)).toString
-          verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
-        }
-      }
+  "TotalPensionAmounts Controller" - {
+    for (event <- seqOfEvents) {
+      testReturnOkAndCorrectView(event)
+      testPopulateCorrectViewOnGetWhenPrevAnswered(event)
+      testSaveAnswerAndRedirectWhenValid(event)
+      testBadRequestForInvalidDataSubmission(event)
     }
-    "event22" - {
-      "must return OK and the correct view for a GET" in {
+  }
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
+  private def testReturnOkAndCorrectView(eventType: EventType): Unit = {
+    s"must return OK and the correct view for a GET for Event $eventType" in {
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
 
-        running(application) {
-          val request = FakeRequest(GET, getRouteEvent22)
+      running(application) {
+        val request = FakeRequest(GET, getRoute(eventType))
+        val result = route(application, request).value
+        val view = application.injector.instanceOf[TotalPensionAmountsView]
 
-          val result = route(application, request).value
-
-          val view = application.injector.instanceOf[TotalPensionAmountsView]
-
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, waypoints, event22, StringUtils.EMPTY, 0)(request, messages(application)).toString
-        }
-      }
-
-      "must populate the view correctly on a GET when the question has previously been answered" in {
-
-        val userAnswers = emptyUserAnswersWithTaxYear.set(TotalPensionAmountsPage(event22, 0), validValue).success.value
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-        running(application) {
-          val request = FakeRequest(GET, getRouteEvent22)
-
-          val view = application.injector.instanceOf[TotalPensionAmountsView]
-
-          val result = route(application, request).value
-
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(validValue), waypoints, event22, StringUtils.EMPTY, 0)(request, messages(application)).toString
-        }
-      }
-
-      "must save the answer and redirect to the next page when valid data is submitted" in {
-        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(()))
-
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
-            .build()
-
-        running(application) {
-          val request =
-            FakeRequest(POST, postRouteEvent22).withFormUrlEncodedBody(("value", "33.00"))
-
-          val result = route(application, request).value
-          val updatedAnswers = emptyUserAnswers.set(TotalPensionAmountsPage(event22, 0), validValue).success.value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual TotalPensionAmountsPage(event22, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-          verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
-        }
-      }
-
-      "must return bad request when invalid data is submitted" in {
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
-            .build()
-
-        running(application) {
-          val request =
-            FakeRequest(POST, postRouteEvent22).withFormUrlEncodedBody(("value", ""))
-
-          val view = application.injector.instanceOf[TotalPensionAmountsView]
-          val boundForm = form.bind(Map("value" -> ""))
-
-          val result = route(application, request).value
-
-          status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, event22, StringUtils.EMPTY, 0)(request, messages(application)).toString
-          verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
-        }
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view.render(form, waypoints, eventType, StringUtils.EMPTY, index = 0, request, messages(application)).toString
       }
     }
   }
+
+  private def testPopulateCorrectViewOnGetWhenPrevAnswered(eventType: EventType): Unit = {
+    s"must populate the view correctly on a GET when the question has previously been answered  for Event $eventType" in {
+      val userAnswers = emptyUserAnswersWithTaxYear.set(TotalPensionAmountsPage(eventType, 0), validValue).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      running(application) {
+        val request = FakeRequest(GET, getRoute(eventType))
+        val view = application.injector.instanceOf[TotalPensionAmountsView]
+        val result = route(application, request).value
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view.render(
+          form.fill(validValue),
+          waypoints,
+          eventType,
+          StringUtils.EMPTY,
+          index = 0,
+          request,
+          messages(application)).toString
+      }
+    }
+  }
+
+  private def testSaveAnswerAndRedirectWhenValid(eventType: EventType): Unit = {
+    s"must save the answer and redirect to the next page when valid data is submitted for Event $eventType" in {
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
+      running(application) {
+        val request = FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("value", "33.00"))
+        val result = route(application, request).value
+        val updatedAnswers = emptyUserAnswers.set(TotalPensionAmountsPage(eventType, 0), validValue).success.value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual TotalPensionAmountsPage(eventType, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+      }
+    }
+  }
+
+  private def testBadRequestForInvalidDataSubmission(eventType: EventType): Unit = {
+    s"must return bad request when invalid data is submitted for Event $eventType" in {
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("value", ""))
+        val view = application.injector.instanceOf[TotalPensionAmountsView]
+        val boundForm = form.bind(Map("value" -> ""))
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view.render(boundForm, waypoints, eventType, StringUtils.EMPTY, index = 0, request, messages(application)).toString
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
+  }
+
 }

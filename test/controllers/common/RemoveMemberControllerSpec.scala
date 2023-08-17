@@ -38,10 +38,14 @@ import scala.concurrent.Future
 class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
-
   private val formProvider = new RemoveMemberFormProvider()
   private val formEvent1 = formProvider("unauthorised payment")
   private val formEvent5 = formProvider("cessation of ill-health pension")
+  private val mockEventReportingConnector = mock[EventReportingConnector]
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[EventReportingConnector].toInstance(mockEventReportingConnector)
+  )
 
   private def getRouteForEvent1: String = routes.RemoveMemberController.onPageLoad(waypoints, Event1, 0).url
 
@@ -51,100 +55,100 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private def postRoute: String = routes.RemoveMemberController.onSubmit(waypoints, Event5, 0).url
 
-  private val mockEventReportingConnector = mock[EventReportingConnector]
-
-  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[EventReportingConnector].toInstance(mockEventReportingConnector)
-  )
-
   override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockEventReportingConnector)
   }
 
   "RemoveMember Controller" - {
-
-
     "must return OK and the correct view for a GET in event 1" in {
-
       val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent1)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRouteForEvent1)
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[RemoveMemberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(formEvent1, waypoints, Event1, "unauthorised payment", 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(
+          formEvent1,
+          waypoints,
+          Event1,
+          eventTypeMessage = "unauthorised payment",
+          index = 0,
+          request,
+          messages(application)).toString
       }
     }
 
     "must return OK and the correct view for a GET in an event that isn't event 1" in {
-
       val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent3and4and5(Event5))).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[RemoveMemberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(formEvent5, waypoints, Event5, "cessation of ill-health pension", 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(
+          formEvent5,
+          waypoints,
+          Event5,
+          eventTypeMessage = "cessation of ill-health pension",
+          index = 0,
+          request = request,
+          messages = messages(application)).toString
       }
     }
 
-
     "must populate the view correctly on a GET when the question has previously been answered for event 1" in {
-
       val userAnswers = sampleMemberJourneyDataEvent1.set(RemoveMemberPage(Event1, 0), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
       running(application) {
         val request = FakeRequest(GET, getRouteForEvent1)
-
         val view = application.injector.instanceOf[RemoveMemberView]
-
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(formEvent1.fill(true), waypoints, Event1, "unauthorised payment", 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(
+          formEvent1.fill(true),
+          waypoints,
+          Event1,
+          eventTypeMessage = "unauthorised payment",
+          index = 0,
+          request = request,
+          messages = messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered in an event that isn't event 1" in {
-
       val userAnswers = sampleMemberJourneyDataEvent3and4and5(Event5).set(RemoveMemberPage(Event5, 0), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
       running(application) {
         val request = FakeRequest(GET, getRoute)
-
         val view = application.injector.instanceOf[RemoveMemberView]
-
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(formEvent5.fill(true), waypoints, Event5, "cessation of ill-health pension", 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(
+          formEvent5.fill(true),
+          waypoints,
+          Event5,
+          eventTypeMessage = "cessation of ill-health pension",
+          index = 0,
+          request = request,
+          messages = messages(application)).toString
       }
     }
 
     "must save the answer and redirect to the next page when valid data is submitted  for event 1" in {
-
       when(mockEventReportingConnector.deleteMember(any(), any(), any(), any())(any())).thenReturn(Future.successful())
-      val application =
-        applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent1), extraModules)
-          .build()
 
+      val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent1), extraModules).build()
       running(application) {
-        val request =
-          FakeRequest(POST, postRouteForEvent1).withFormUrlEncodedBody(("value", "true"))
-
+        val request = FakeRequest(POST, postRouteForEvent1).withFormUrlEncodedBody(("value", "true"))
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(RemoveMemberPage(Event1, 0), true).success.value
 
@@ -154,16 +158,11 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must save the answer and redirect to the next page when valid data is submitted in an event that isn't event 1" in {
-
       when(mockEventReportingConnector.deleteMember(any(), any(), any(), any())(any())).thenReturn(Future.successful())
-      val application =
-        applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent3and4and5(Event5)), extraModules)
-          .build()
 
+      val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent3and4and5(Event5)), extraModules).build()
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
-
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(RemoveMemberPage(Event5, 0), true).success.value
 
@@ -173,40 +172,44 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must return bad request when invalid data is submitted for event 1" in {
-      val application =
-        applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent1), extraModules)
-          .build()
+      val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent1), extraModules).build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, postRouteForEvent1).withFormUrlEncodedBody(("value", "invalid"))
-
+        val request = FakeRequest(POST, postRouteForEvent1).withFormUrlEncodedBody(("value", "invalid"))
         val view = application.injector.instanceOf[RemoveMemberView]
         val boundForm = formEvent1.bind(Map("value" -> "invalid"))
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, Event1, "unauthorised payment", 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(
+          boundForm,
+          waypoints,
+          Event1,
+          eventTypeMessage = "unauthorised payment",
+          index = 0,
+          request = request,
+          messages = messages(application)).toString
       }
     }
 
     "must return bad request when invalid data is submitted in an event that isn't event 1" in {
-      val application =
-        applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent3and4and5(Event5)), extraModules)
-          .build()
+      val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent3and4and5(Event5)), extraModules).build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
-
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
         val view = application.injector.instanceOf[RemoveMemberView]
         val boundForm = formEvent5.bind(Map("value" -> "invalid"))
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, Event5, "cessation of ill-health pension", 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(
+          boundForm,
+          waypoints,
+          Event5,
+          eventTypeMessage = "cessation of ill-health pension",
+          index = 0,
+          request = request,
+          messages = messages(application)).toString
       }
     }
   }
