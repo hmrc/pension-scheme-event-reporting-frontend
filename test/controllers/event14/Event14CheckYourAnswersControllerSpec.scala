@@ -17,18 +17,49 @@
 package controllers.event14
 
 import base.SpecBase
+import models.enumeration.EventType.Event14
+import models.enumeration.VersionStatus.Submitted
+import models.{EROverview, EROverviewVersion, TaxYear, VersionInfo}
+import pages.{EventReportingOverviewPage, VersionInfoPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
+import java.time.LocalDate
+
 class Event14CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
   "Check Your Answers Controller" - {
 
+    val erOverviewSeq = Seq(EROverview(
+      LocalDate.of(2022, 4, 6),
+      LocalDate.of(2023, 4, 5),
+      TaxYear("2022"),
+      tpssReportPresent = true,
+      Some(EROverviewVersion(
+        3,
+        submittedVersionAvailable = true,
+        compiledVersionAvailable = false
+      ))
+    ),
+      EROverview(
+        LocalDate.of(2023, 4, 6),
+        LocalDate.of(2024, 4, 5),
+        TaxYear("2023"),
+        tpssReportPresent = true,
+        Some(EROverviewVersion(
+          2,
+          submittedVersionAvailable = true,
+          compiledVersionAvailable = false
+        ))
+      ))
+
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
+        .setOrException(VersionInfoPage, VersionInfo(3, Submitted))
+        .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event14.routes.Event14CheckYourAnswersController.onPageLoad().url)
@@ -41,6 +72,26 @@ class Event14CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(list,
           "/manage-pension-scheme-event-report/report/event-14-click")(request, messages(application)).toString
+      }
+    }
+
+    "must return OK and the correct view for a GET (View Only (different heading))" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
+        .setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+        .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event14.routes.Event14CheckYourAnswersController.onPageLoad().url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[CheckYourAnswersView]
+        val list = SummaryListViewModel(Seq.empty)
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(list,
+          "/manage-pension-scheme-event-report/report/event-14-click", Tuple2(Some(1), Some(Event14)))(request, messages(application)).toString
       }
     }
 

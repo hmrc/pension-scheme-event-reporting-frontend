@@ -185,6 +185,25 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       }
     }
 
+    "must redirect to Journey Recovery for a GET if no existing data is found onSubmit" in {
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
+
+      val application = applicationBuilder(userAnswers = None, extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "A1234567"))
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad(None).url
+        verify(mockMinimalConnector, times(0)).getMinimalDetails(any(), any())(any(), any())
+        verify(mockSchemeDetailsConnector, times(0)).getPspSchemeDetails(any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(0)).save(any(), any(), any())(any(), any())
+      }
+    }
+
     "must redirect to the cannot resume page for method onClick when report has been submitted multiple times in quick succession" in {
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))

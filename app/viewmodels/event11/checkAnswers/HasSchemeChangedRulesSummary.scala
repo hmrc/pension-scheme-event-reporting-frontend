@@ -21,13 +21,13 @@ import pages.event11.HasSchemeChangedRulesPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object HasSchemeChangedRulesSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(HasSchemeChangedRulesPage).map {
       answer =>
@@ -38,13 +38,15 @@ object HasSchemeChangedRulesSummary {
           "The scheme has not changed its rules to allow any person to make unauthorised payment"
         }
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = "hasSchemeChangedRules.event11.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent(value)),
-          actions = Seq(
-            ActionItemViewModel("site.change", HasSchemeChangedRulesPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("hasSchemeChangedRules.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", HasSchemeChangedRulesPage.changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("hasSchemeChangedRules.change.hidden"))
+            )))
+          }
         )
     }
 }

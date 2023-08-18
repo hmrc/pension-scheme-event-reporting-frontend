@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package helpers
 
-import models.{UserAnswers, VersionInfo}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.enumeration.EventType
 
-case object VersionInfoPage extends QuestionPage[VersionInfo] {
-
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "versionInfo"
-
-  override def route(waypoints: Waypoints): Call = Call("GET", "")
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = VersionInfoPage
+object ReadOnlyCYA {
+  def readOnlyHeading(eventType: EventType, version: Option[Int], isReadOnly: Boolean): (Option[Int], Option[EventType]) = {
+    {
+      if (isReadOnly) {
+        Tuple2(version, Some(eventType))
+      } else {
+        Tuple2(None, None)
+      }
+    }
+  }
 }

@@ -20,7 +20,7 @@ import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import models.TaxYear.getTaxYearFromOption
 import models.VersionInfo
-import models.enumeration.VersionStatus.{Compiled, Submitted}
+import models.enumeration.VersionStatus.Submitted
 import pages.{VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

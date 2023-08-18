@@ -32,13 +32,11 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <span class="govuk-caption-xl">@schemeName</span>
+        <span class="govuk-caption-l">@schemeName</span>
 
-        @version.map{v => <span class="govuk-caption-xl">@{s"Version $v"}</span>}
+        @version.map{v => <span class="govuk-caption-l">@messages("eventSummary.heading.version", v)</span>}
 
-        <h1 class="govuk-heading-xl">@messages("eventSummary.heading", selectedTaxYear)</h1>
-
-
+        <h1 class="govuk-heading-l">@messages("eventSummary.heading", selectedTaxYear)</h1>
 
         @components.entity_list(events)
 

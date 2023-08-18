@@ -18,10 +18,11 @@ package controllers.event19
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import helpers.ReadOnlyCYA
 import models.enumeration.EventType.Event19
 import models.requests.DataRequest
 import pages.event19.Event19CheckYourAnswersPage
-import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
@@ -49,7 +50,9 @@ class Event19CheckYourAnswersController @Inject()(
       val thisPage = Event19CheckYourAnswersPage
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event19.routes.Event19CheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent19CYARows(waypoints, thisPage)), continueUrl))
+      val version = request.userAnswers.get(VersionInfoPage).map(_.version)
+      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event19, version, request.readOnly())
+      Ok(view(SummaryListViewModel(rows = buildEvent19CYARows(waypoints, thisPage)), continueUrl, readOnlyHeading))
     }
 
   def onClick: Action[AnyContent] =
@@ -63,8 +66,8 @@ class Event19CheckYourAnswersController @Inject()(
   private def buildEvent19CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     Seq(
-      countryOrTerritorySummary.row(request.userAnswers, waypoints, sourcePage),
-      DateChangeMadeSummary.row(request.userAnswers, waypoints, sourcePage)
+      countryOrTerritorySummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()),
+      DateChangeMadeSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly())
     ).flatten
   }
 }

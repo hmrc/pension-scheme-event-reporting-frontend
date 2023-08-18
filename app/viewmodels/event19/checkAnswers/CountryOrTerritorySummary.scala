@@ -20,7 +20,7 @@ import models.UserAnswers
 import pages.event19.CountryOrTerritoryPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
 import utils.CountryOptions
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -36,17 +36,19 @@ class CountryOrTerritorySummary @Inject()(val countryOptions: CountryOptions) {
     }.getOrElse(countryCode)
   }
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(CountryOrTerritoryPage).map {
       answer =>
-        SummaryListRowViewModel(
+        SummaryListRow(
           key     = "event19.countryOrTerritory.change.checkYourAnswersLabel",
           value   = ValueViewModel(fullNameOfChosenCountry(answer)),
-          actions = Seq(
-            ActionItemViewModel("site.change", CountryOrTerritoryPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("event19.countryOrTerritory.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", CountryOrTerritoryPage.changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("event19.countryOrTerritory.change.hidden"))
+            )))
+          }
         )
     }
 }

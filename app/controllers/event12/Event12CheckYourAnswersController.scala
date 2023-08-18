@@ -18,16 +18,17 @@ package controllers.event12
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import helpers.ReadOnlyCYA
 import models.enumeration.EventType.Event12
 import models.requests.DataRequest
 import pages.event12.Event12CheckYourAnswersPage
-import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.{DateOfChangeSummary, HasSchemeChangedRulesSummary}
+import viewmodels.event12.checkAnswers.{DateOfChangeSummary, HasSchemeChangedRulesSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -48,7 +49,9 @@ class Event12CheckYourAnswersController @Inject()(
       val thisPage = Event12CheckYourAnswersPage()
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event12.routes.Event12CheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent12CYARows(waypoints, thisPage)), continueUrl))
+      val version = request.userAnswers.get(VersionInfoPage).map(_.version)
+      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event12, version, request.readOnly())
+      Ok(view(SummaryListViewModel(rows = buildEvent12CYARows(waypoints, thisPage)), continueUrl, readOnlyHeading))
     }
 
   def onClick: Action[AnyContent] =
@@ -61,7 +64,7 @@ class Event12CheckYourAnswersController @Inject()(
 
   private def buildEvent12CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    HasSchemeChangedRulesSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      DateOfChangeSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+    HasSchemeChangedRulesSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()).toSeq ++
+      DateOfChangeSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()).toSeq
   }
 }

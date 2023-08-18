@@ -56,7 +56,7 @@ class Event3CheckYourAnswersController @Inject()(
     }
 
   def onClick: Action[AnyContent] =
-    (identify andThen getData(Event3) andThen requireData).async {  implicit request =>
+    (identify andThen getData(Event3) andThen requireData).async { implicit request =>
 
       compileService.compileEvent(Event3, request.pstr, request.userAnswers).map {
         _ =>
@@ -65,7 +65,7 @@ class Event3CheckYourAnswersController @Inject()(
     }
 
   private def event3ReasonForBenefitsRows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)
-                                           (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+                                         (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     request.userAnswers.get(ReasonForBenefitsPage(index)) match {
       case Some(Other) => EarlyBenefitsBriefDescriptionSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
       case _ => Nil

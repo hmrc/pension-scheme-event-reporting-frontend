@@ -26,7 +26,7 @@ import pages.event8.{Event8CheckYourAnswersPage, LumpSumAmountAndDatePage}
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.event8.checkAnswers.LumpSumAmountAndDateSummary.{currencyFormatter, dateFormatter}
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
