@@ -30,7 +30,7 @@ class DateTestFormProvider @Inject() extends Mappings {
       "testDate" -> localDate(
         invalidKey = "genericDate.error.invalid"
       ).verifying(
-        yearHas4Digits("genericDate.error.invalid"),
+        yearHas4Digits("genericDate.error.invalid")
       )
     )
 }
