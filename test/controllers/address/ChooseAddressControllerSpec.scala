@@ -41,19 +41,17 @@ import scala.concurrent.Future
 class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
-
   private val formProvider = new ChooseAddressFormProvider()
   private val form = formProvider(seqAddresses)
-
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-
-  private def getRoute: String = routes.ChooseAddressController.onPageLoad(waypoints, Event1EmployerAddressJourney, 0).url
-
-  private def postRoute: String = routes.ChooseAddressController.onSubmit(waypoints, Event1EmployerAddressJourney, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
+
+  private def getRoute: String = routes.ChooseAddressController.onPageLoad(waypoints, Event1EmployerAddressJourney, 0).url
+
+  private def postRoute: String = routes.ChooseAddressController.onSubmit(waypoints, Event1EmployerAddressJourney, 0).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -61,7 +59,6 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
   }
 
   "Choose address controller" - {
-
     "must return OK and the correct view for a GET" in {
       val ua = emptyUserAnswers
         .setOrException(EnterPostcodePage(Event1EmployerAddressJourney, 0), seqTolerantAddresses)
@@ -78,18 +75,17 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(form, waypoints, Event1EmployerAddressJourney,
+          view.render(form, waypoints, Event1EmployerAddressJourney,
             messages("chooseAddress.title", "the company"),
             messages("chooseAddress.heading", companyDetails.companyName),
-            seqTolerantAddresses, 0)(request, messages(application)).toString
+            seqTolerantAddresses, index = 0, request, messages(application)).toString
       }
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
       val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-      when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any()))
-        .thenReturn(Future.successful(()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any())).thenReturn(Future.successful(()))
 
       val ua = emptyUserAnswers.setOrException(EnterPostcodePage(Event1EmployerAddressJourney, 0), seqTolerantAddresses)
 
@@ -98,15 +94,12 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
           .build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "0"))
-
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "0"))
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.setOrException(ManualAddressPage(Event1EmployerAddressJourney, 0), seqAddresses.head)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ChooseAddressPage(Event1EmployerAddressJourney, 0)
-          .navigate(waypoints, updatedAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual ChooseAddressPage(Event1EmployerAddressJourney, 0).navigate(waypoints, updatedAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
         uaCaptor.getValue.get(ManualAddressPage(Event1EmployerAddressJourney, 0)) mustBe Some(seqAddresses.head)
       }
@@ -115,14 +108,10 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
     "must return bad request when invalid data is submitted" in {
       val ua = emptyUserAnswers.setOrException(EnterPostcodePage(Event1EmployerAddressJourney, 0), seqTolerantAddresses)
 
-      val application =
-        applicationBuilder(userAnswers = Some(ua), extraModules)
-          .build()
+      val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
-
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST

@@ -25,13 +25,16 @@ import models.requests.DataRequest
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
+import scala.util.{Failure, Success, Try}
+
 
 class FileUploadController @Inject()(val controllerComponents: MessagesControllerComponents,
                                      identify: IdentifierAction,
@@ -48,7 +51,19 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
     val successRedirectUrl = appConfig.successEndPointTarget(eventType)
     val errorRedirectUrl = appConfig.failureEndPointTarget(eventType)
     upscanInitiateConnector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), eventType).map { uir =>
-      Ok(view(waypoints, getEventTypeByName(eventType), eventType, Call("post", uir.postTarget), uir.formFields, getErrorCode(request)))
+
+      val isFileNotFoundErrorPresent = Try(request.request.queryString("errorMessage")) match {
+        case Success(value) => value.contains("""'file' field not found""")
+        case Failure(_) => false
+      }
+
+      if (isFileNotFoundErrorPresent) {
+        def noFileUploaded(implicit messages: Messages): Option[ErrorMessage] =
+          Some(ErrorMessage(content = HtmlContent(Html(messages("fileUpload.error.rejected.InvalidArgument")))))
+        Ok(view(waypoints, getEventTypeByName(eventType), eventType, Call("post", uir.postTarget), uir.formFields, noFileUploaded))
+      } else {
+        Ok(view(waypoints, getEventTypeByName(eventType), eventType, Call("post", uir.postTarget), uir.formFields, getErrorCode(request)))
+      }
     }
   }
 
