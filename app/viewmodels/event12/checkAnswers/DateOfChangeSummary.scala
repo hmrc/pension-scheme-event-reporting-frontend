@@ -14,30 +14,32 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event12.checkAnswers
 
 import forms.mappings.Formatters
 import models.UserAnswers
 import pages.{CheckAnswersPage, Waypoints}
 import pages.event12.DateOfChangePage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object DateOfChangeSummary  extends Formatters {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DateOfChangePage).map {
       answer =>
-        SummaryListRowViewModel(
+        SummaryListRow(
           key     = "dateOfChange.checkYourAnswersLabel",
           value   = ValueViewModel(dateFormatter.format(answer.dateOfChange)),
-          actions = Seq(
-            ActionItemViewModel("site.change", DateOfChangePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("dateOfChange.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", DateOfChangePage.changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("dateOfChange.change.hidden"))
+            )))
+          }
         )
     }
 }

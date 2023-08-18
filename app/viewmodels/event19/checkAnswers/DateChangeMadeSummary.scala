@@ -21,26 +21,28 @@ import models.UserAnswers
 import pages.{CheckAnswersPage, Waypoints}
 import pages.event19.DateChangeMadePage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object DateChangeMadeSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DateChangeMadePage).map {
       answer =>
 
         val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key     = "event19.dateChangeMade.checkYourAnswersLabel",
           value   = ValueViewModel(answer.format(dateFormatter)),
-          actions = Seq(
-            ActionItemViewModel("site.change", DateChangeMadePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("event19.dateChangeMade.change.hidden"))
-          )
+          actions = if(isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", DateChangeMadePage.changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("event19.dateChangeMade.change.hidden"))
+            )))
+          }
         )
     }
 }

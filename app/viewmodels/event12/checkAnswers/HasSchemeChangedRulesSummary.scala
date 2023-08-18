@@ -14,32 +14,34 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event12.checkAnswers
 
 import models.UserAnswers
 import pages.event12.HasSchemeChangedRulesPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object HasSchemeChangedRulesSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(HasSchemeChangedRulesPage).map {
       answer =>
 
         val value = if (answer) "site.yes" else "site.no"
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = "hasSchemeChangedRules.checkYourAnswersLabel",
           value = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel("site.change", HasSchemeChangedRulesPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("hasSchemeChangedRules.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", HasSchemeChangedRulesPage.changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("hasSchemeChangedRules.change.hidden"))
+            )))
+          }
         )
     }
 }

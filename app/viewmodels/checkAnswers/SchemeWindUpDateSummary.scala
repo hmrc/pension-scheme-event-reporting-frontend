@@ -21,24 +21,26 @@ import models.UserAnswers
 import pages.eventWindUp.SchemeWindUpDatePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object SchemeWindUpDateSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isViewOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SchemeWindUpDatePage).map {
       answer =>
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = KeyViewModel("schemeWindUpDate.checkYourAnswersLabel").withCssClass("govuk-!-width-one-half"),
           value = ValueViewModel(DateHelper.dateFormatter.format(answer)),
-          actions = Seq(
-            ActionItemViewModel("site.change", SchemeWindUpDatePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("schemeWindUpDate.change.hidden"))
-          )
+          actions = if (isViewOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", SchemeWindUpDatePage.changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("schemeWindUpDate.change.hidden"))
+            )))
+          }
         )
     }
 }

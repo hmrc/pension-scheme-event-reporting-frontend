@@ -22,13 +22,13 @@ import forms.EventSummaryFormProvider
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event18}
 import models.enumeration.VersionStatus.Compiled
-import models.{EventSummary, TaxYear, UserAnswers, VersionInfo}
+import models.{EROverview, EROverviewVersion, EventSummary, TaxYear, UserAnswers, VersionInfo}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, EventSummaryPage, TaxYearPage, VersionInfoPage}
+import pages.{EmptyWaypoints, EventReportingOverviewPage, EventSummaryPage, TaxYearPage, VersionInfoPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -38,11 +38,25 @@ import viewmodels.Message
 import viewmodels.govuk.SummaryListFluency
 import views.html.EventSummaryView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach with MockitoSugar {
   private val mockEventReportSummaryConnector = mock[EventReportingConnector]
   private val waypoints = EmptyWaypoints
+
+  val erOverviewSeq = Seq(EROverview(
+    LocalDate.of(2022, 4, 6),
+    LocalDate.of(2023, 4, 5),
+    TaxYear("2022"),
+    tpssReportPresent = true,
+    Some(EROverviewVersion(
+      1,
+      submittedVersionAvailable = true,
+      compiledVersionAvailable = false
+    ))
+  ))
+
 
   private def postRoute: String = routes.EventSummaryController.onSubmit(waypoints).url
 
@@ -62,6 +76,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
         .setOrException(EventSummaryPage, true)
         .setOrException(TaxYearPage, TaxYear("2022"))
         .setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+        .setOrException(EventReportingOverviewPage, erOverviewSeq)
 
       val seqOfEvents = Seq(EventSummary(EventType.Event1, 1), EventSummary(EventType.Event18, 1))
 

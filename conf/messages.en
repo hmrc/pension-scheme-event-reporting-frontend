@@ -175,6 +175,7 @@ eventSummary.event20A = Event 20a: Master Trust scheme
 eventSummary.event22 = Event 22: Annual allowance
 eventSummary.event23 = Event 23: Dual annual allowance
 eventSummary.eventWindUp = Scheme has wound up
+eventSummary.heading.version = Event reporting submission {0}
 
 schemeWindUpDate.title = When was the scheme wound up?
 schemeWindUpDate.heading = When was the scheme wound up?

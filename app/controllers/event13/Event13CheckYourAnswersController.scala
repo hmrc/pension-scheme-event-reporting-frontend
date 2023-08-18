@@ -18,16 +18,17 @@ package controllers.event13
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import helpers.ReadOnlyCYA
 import models.enumeration.EventType.Event13
 import models.requests.DataRequest
 import pages.event13.Event13CheckYourAnswersPage
-import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.{ChangeDateSummary, SchemeStructureDescriptionSummary}
+import viewmodels.event13.checkAnswers.{ChangeDateSummary, SchemeStructureDescriptionSummary}
 import viewmodels.event13.checkAnswers.SchemeStructureSummary
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
@@ -49,7 +50,9 @@ class Event13CheckYourAnswersController @Inject()(
       val thisPage = Event13CheckYourAnswersPage()
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event13.routes.Event13CheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent13CYARows(waypoints, thisPage)), continueUrl))
+      val version = request.userAnswers.get(VersionInfoPage).map(_.version)
+      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event13, version, request.readOnly())
+      Ok(view(SummaryListViewModel(rows = buildEvent13CYARows(waypoints, thisPage)), continueUrl, readOnlyHeading))
     }
 
   def onClick: Action[AnyContent] =
@@ -63,9 +66,9 @@ class Event13CheckYourAnswersController @Inject()(
   private def buildEvent13CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     Seq(
-      SchemeStructureSummary.row(request.userAnswers, waypoints, sourcePage),
-      SchemeStructureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage),
-      ChangeDateSummary.row(request.userAnswers, waypoints, sourcePage)
+      SchemeStructureSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()),
+      SchemeStructureDescriptionSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()),
+      ChangeDateSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly())
     ).flatten
   }
 }

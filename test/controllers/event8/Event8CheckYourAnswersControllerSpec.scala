@@ -69,6 +69,7 @@ class Event8CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(list,
           continueUrl = "/manage-pension-scheme-event-report/report/event-8-click",
+          Tuple2(None, None),
           request,
           messages(application)).toString
       }
@@ -89,7 +90,7 @@ class Event8CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         ArgumentCaptor.forClass(classOf[SummaryList])
 
       running(application) {
-        when(mockView.apply(captor.capture(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
+        when(mockView.apply(captor.capture(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
         val request = FakeRequest(GET, controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(0).url)
         val result = route(application, request).value
         status(result) mustEqual OK
