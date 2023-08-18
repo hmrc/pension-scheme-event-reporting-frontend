@@ -19,28 +19,43 @@ package controllers.event10
 import base.SpecBase
 import data.SampleData.{sampleJourneyData10BecameAScheme, sampleJourneyData10CeasedToBecomeAScheme}
 import models.enumeration.EventType.Event10
-import models.enumeration.VersionStatus.Submitted
+import models.enumeration.VersionStatus.{Compiled, Submitted}
 import models.{EROverview, EROverviewVersion, TaxYear, VersionInfo}
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
+import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
+import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
 import java.time.LocalDate
+import scala.concurrent.Future
 
-class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
+class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach {
+
+  private val mockCompileService = mock[CompileService]
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[CompileService].toInstance(mockCompileService)
+  )
 
   import Event10CheckYourAnswersControllerSpec._
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockCompileService)
+  }
 
   "Check Your Answers Controller for Event 10" - {
 
@@ -75,14 +90,16 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
       running(application) {
         val request = FakeRequest(GET, controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[CheckYourAnswersView]
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-10-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(
+          list,
+          continueUrl = "/manage-pension-scheme-event-report/report/event-10-click", Tuple2(None, None),
+          request,
+          messages(application)).toString
       }
     }
 
@@ -208,16 +225,31 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
-
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to the correct page onClick" in {
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful())
+
+      val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event10.routes.Event10CheckYourAnswersController.onClick.url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url
+        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any(), any())
       }
     }
   }

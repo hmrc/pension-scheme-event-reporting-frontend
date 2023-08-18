@@ -59,7 +59,6 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
     val adminName = "John Smith"
 
     "must return OK and the correct view for a GET when when isReportSubmitted is false" in {
-
       val testEmail = "test@test.com"
       val userAnswersWithVersionInfo = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
@@ -69,21 +68,20 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
       running(application) {
         when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+
         val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onPageLoad().url)
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[Event20APsaDeclarationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(
-          schemeName, pstr, taxYear, adminName, controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url)(request, messages(application)
+        contentAsString(result) mustEqual view.render(
+          schemeName, pstr, taxYear, adminName, controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url,
+          request, messages(application)
         ).toString
       }
     }
 
     "must redirect to cannot resume page when isReportSubmitted is true" in {
-
       val testEmail = "test@test.com"
       val userAnswersWithVersionInfo = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
@@ -93,8 +91,8 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
       running(application) {
         when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
-        val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onPageLoad().url)
 
+        val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onPageLoad().url)
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -103,7 +101,6 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
     }
 
     "must redirect to the correct page for method onClick" in {
-
       val testEmail = "test@test.com"
       val organisationName = "Test company ltd"
       val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
@@ -111,17 +108,25 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
       when(mockERConnector.submitReportEvent20A(any(), any(), any())(any())).thenReturn(Future.successful(()))
 
-      val application =
-        applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
-          .build()
-
+      val application = applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules).build()
       running(application) {
         val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url)
-
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET if no existing data is found onClick" in {
+      val application = applicationBuilder(userAnswers = None).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad(None).url
       }
     }
   }

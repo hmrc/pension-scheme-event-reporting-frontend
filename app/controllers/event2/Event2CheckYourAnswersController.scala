@@ -37,14 +37,14 @@ import views.html.CheckYourAnswersView
 import scala.concurrent.ExecutionContext
 
 class Event2CheckYourAnswersController @Inject()(
-                                                   override val messagesApi: MessagesApi,
-                                                   identify: IdentifierAction,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   compileService: CompileService,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: CheckYourAnswersView
-                                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                  override val messagesApi: MessagesApi,
+                                                  identify: IdentifierAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  compileService: CompileService,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: CheckYourAnswersView
+                                                )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (identify andThen getData(Event2) andThen requireData) { implicit request =>
@@ -56,20 +56,20 @@ class Event2CheckYourAnswersController @Inject()(
 
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event2) andThen requireData).async { implicit request =>
-                compileService.compileEvent(Event2, request.pstr, request.userAnswers).map {
-                  _ =>
+      compileService.compileEvent(Event2, request.pstr, request.userAnswers).map {
+        _ =>
           Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event2).url)
-          }
+      }
     }
 
   private def buildEvent2CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
-                                 (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+                                (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event2, Event2MemberPageNumbers.FIRST_PAGE_DECEASED).toSeq ++
-    MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event2, Event2MemberPageNumbers.FIRST_PAGE_DECEASED).toSeq ++
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event2, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY).toSeq ++
-    MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event2, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY).toSeq ++
-    AmountPaidSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq ++
-    DatePaidSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event2, Event2MemberPageNumbers.FIRST_PAGE_DECEASED).toSeq ++
+      MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event2, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY).toSeq ++
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event2, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY).toSeq ++
+      AmountPaidSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq ++
+      DatePaidSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq
   }
 }
 
