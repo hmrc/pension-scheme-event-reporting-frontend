@@ -23,7 +23,7 @@ import models.enumeration.EventType.Event4
 import models.enumeration.VersionStatus.Compiled
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{EmptyWaypoints, VersionInfoPage}
@@ -130,6 +130,7 @@ class Event4CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event4).url
+        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any(), any())
       }
     }
   }
