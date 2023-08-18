@@ -57,21 +57,21 @@ class Event4CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
   }
 
   "Check Your Answers Controller for Event 4" - {
-
     "must return OK and the correct view for a GET" in {
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url)
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[CheckYourAnswersView]
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-4-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(
+          list,
+          continueUrl = "/manage-pension-scheme-event-report/report/event-4-click",
+          request,
+          messages(application)).toString
       }
     }
 
@@ -107,14 +107,11 @@ class Event4CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(0).url)
-
         val result = route(application, request).value
-
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }

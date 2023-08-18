@@ -23,7 +23,7 @@ import models.enumeration.EventType.Event2
 import models.enumeration.VersionStatus.Compiled
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{EmptyWaypoints, VersionInfoPage}
@@ -42,7 +42,7 @@ import views.html.CheckYourAnswersView
 import scala.concurrent.Future
 
 
-class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach{
+class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach {
 
   private val mockCompileService = mock[CompileService]
 
@@ -128,6 +128,7 @@ class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event2).url
+        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any(), any())
       }
     }
   }

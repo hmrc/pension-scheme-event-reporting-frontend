@@ -22,7 +22,7 @@ import models.VersionInfo
 import models.enumeration.VersionStatus.Compiled
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{EmptyWaypoints, VersionInfoPage}
@@ -162,6 +162,7 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(EmptyWaypoints).url
+        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any(), any())
       }
     }
   }

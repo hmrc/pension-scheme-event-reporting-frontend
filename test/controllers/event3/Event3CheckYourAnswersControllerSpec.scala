@@ -23,7 +23,7 @@ import models.enumeration.EventType.Event3
 import models.enumeration.VersionStatus.Compiled
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{EmptyWaypoints, VersionInfoPage}
@@ -57,21 +57,21 @@ class Event3CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
   }
 
   "Check Your Answers Controller for Event 3" - {
-
     "must return OK and the correct view for a GET" in {
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(0).url)
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[CheckYourAnswersView]
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-3-click")(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(
+          list,
+          continueUrl = "/manage-pension-scheme-event-report/report/event-3-click",
+          request,
+          messages(application)).toString
       }
     }
 
@@ -107,12 +107,10 @@ class Event3CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(0).url)
-
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -133,6 +131,7 @@ class Event3CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event3).url
+        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any(), any())
       }
     }
   }
