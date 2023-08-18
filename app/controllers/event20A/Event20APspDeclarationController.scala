@@ -83,8 +83,12 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
                 declarationDataEvent20A(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, authorisingPsaId, request) match {
                   case Some(data) =>
                     val reportVersion = request.userAnswers.get(VersionInfoPage).get.version.toString
-                    eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion).map { _ =>
-                      Redirect(Event20APspDeclarationPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+                    eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion).map { response =>
+                      if (response.header.status == NO_CONTENT) {
+                        Redirect(Event20APspDeclarationPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+                      } else {
+                        Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints).url)
+                      }
                     }
                   case _ => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None).url))
                 }
