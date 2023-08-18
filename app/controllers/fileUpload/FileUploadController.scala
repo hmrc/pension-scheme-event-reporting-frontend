@@ -52,16 +52,11 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
     val errorRedirectUrl = appConfig.failureEndPointTarget(eventType)
     upscanInitiateConnector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), eventType).map { uir =>
 
-
-      // Introduced for ticket PODS-8661 to be tested in higher environments.
-      // If PODS-8661 is moved to Done you may remove these comments.
       val isFileNotFoundErrorPresent = Try(request.request.queryString("errorMessage")) match {
         case Success(value) => value.contains("""'file' field not found""")
         case Failure(_) => false
       }
 
-      // Introduced for ticket PODS-8661 to be tested in higher environments.
-      // If PODS-8661 is moved to Done you may remove these comments.
       if (isFileNotFoundErrorPresent) {
         def noFileUploaded(implicit messages: Messages): Option[ErrorMessage] =
           Some(ErrorMessage(content = HtmlContent(Html(messages("fileUpload.error.rejected.InvalidArgument")))))
