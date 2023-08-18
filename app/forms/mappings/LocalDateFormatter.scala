@@ -35,17 +35,7 @@ private[mappings] class LocalDateFormatter(
 
   def tryLocalDate(input: (Int, Int, Int)): Either[Seq[FormError], LocalDate] = {
 
-    // TODO: extract to function
-    val badDay = input._1 > 31
-    val badMonth = input._2 > 12
-    val badYear = input._3 < 1000 | input._3 > 9999
-
-    val multipleErrors1 = badDay & badMonth & badYear
-    val multipleErrors2 = badDay & badMonth
-    val multipleErrors3 = badDay & badYear
-    val multipleErrors4 = badMonth & badYear
-
-    if (multipleErrors1 | multipleErrors2 | multipleErrors3 | multipleErrors4) {
+    if (multipleInvalidInputs(input._1, input._2, input._3)) {
       // Generic date error displayed if more than one input is invalid.
       Left(Seq(FormError(invalidKey, messages(invalidKey))))
     } else {
@@ -56,6 +46,19 @@ private[mappings] class LocalDateFormatter(
         case Success(date) => Right(date)
       }
     }
+  }
+
+  private val multipleInvalidInputs: (Int, Int, Int) => Boolean = (d, m, y) => {
+    val isBadDay = d > 31
+    val isBadMonth = m > 12
+    val isBadYear = y < 1000 | y > 9999
+
+    val isBadDMY = isBadDay & isBadMonth & isBadYear
+    val isBadDM = isBadDay & isBadMonth
+    val isBadDY = isBadDay & isBadYear
+    val isBadMY = isBadMonth & isBadYear
+
+    isBadDMY | isBadDM | isBadDY | isBadMY
   }
 
   private val erroneousDateKey: String => String = {
@@ -78,7 +81,7 @@ private[mappings] class LocalDateFormatter(
       day <- int.bind(s"$key.day", data)
       month <- int.bind(s"$key.month", data)
       year <- int.bind(s"$key.year", data)
-      date <- tryLocalDate(day, month, year)
+      date <- tryLocalDate((day, month, year): (Int, Int, Int))
     } yield date
   }
 
