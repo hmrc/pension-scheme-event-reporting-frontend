@@ -30,7 +30,7 @@ class BecameDateFormProvider @Inject() extends Mappings {
     Form(
       "becameDateMasterTrust" ->
         localDate(
-          invalidKey = "genericDate.error.invalid",
+          invalidKey = "genericDate.error.invalid"
         ).verifying(
           yearHas4Digits("genericDate.error.invalid.year"),
           minDate(min, messages("schemeChangeDate.event20A.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),

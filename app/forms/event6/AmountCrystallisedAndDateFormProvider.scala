@@ -42,7 +42,7 @@ class AmountCrystallisedAndDateFormProvider @Inject() extends Mappings with Tran
             zeroValue[BigDecimal](0, "amountCrystallisedAndDate.value.error.zeroEntered")
           ), "crystallisedDate" ->
         localDate(
-          invalidKey = "genericDate.error.invalid",
+          invalidKey = "genericDate.error.invalid"
         ).verifying(
           yearHas4Digits("genericDate.error.invalid.year"),
           minDate(startDate, messages("amountCrystallisedAndDate.date.error.outsideReportedYear", formatDateDMY(startDate), formatDateDMY(endDate(max)))),

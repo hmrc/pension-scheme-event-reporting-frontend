@@ -28,7 +28,7 @@ class DateTestFormProvider @Inject() extends Mappings {
   def apply()(implicit messages: Messages): Form[LocalDate] =
     Form(
       "testDate" -> localDate(
-        invalidKey = "genericDate.error.invalid",
+        invalidKey = "genericDate.error.invalid"
       ).verifying(
         yearHas4Digits("genericDate.error.invalid"),
       )
