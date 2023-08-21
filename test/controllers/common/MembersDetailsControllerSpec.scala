@@ -44,12 +44,15 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
 
   private val waypoints = EmptyWaypoints
   private val seqOfEvents = Seq(Event1, Event3, Event4, Event5, Event6, Event7, Event8, Event8A, Event22, Event23)
-
+  private val validValue = MembersDetails("Joe", "Blogs", "AA123456D")
   private val formProvider = new MembersDetailsFormProvider()
+  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
+  )
 
   private def form(eventType: EventType, members: HashSet[String]): Form[MembersDetails] = formProvider(eventType, members)
-
-  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
   private def getRoute(eventType: EventType): String = routes.MembersDetailsController.onPageLoad(waypoints, eventType, Index(0), memberPageNo = 0).url
 
@@ -57,19 +60,12 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
 
   private def submitUrl(eventType: EventType): Call = controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, 0, memberPageNo = 0)
 
-  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
-  )
-
-  private val validValue = MembersDetails("Joe", "Blogs", "AA123456D")
-
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 
   "MembersDetails Controller" - {
-
     for (event <- seqOfEvents) {
       testSuite(event)
     }
@@ -84,37 +80,42 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
 
   private def testReturnOkAndCorrectView(eventType: EventType): Unit = {
     s"must return OK and the correct view for a GET for Event $eventType" in {
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute(eventType))
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[MembersDetailsView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form(eventType, HashSet()), waypoints, eventType, 0, submitUrl(eventType))(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(
+          form(eventType, HashSet()),
+          waypoints,
+          eventType,
+          memberPageNo = 0,
+          submitUrl = submitUrl(eventType), request = request, messages = messages(application)).toString
       }
     }
   }
 
   private def testPopulateCorrectViewOnGetWhenPrevAnswered(eventType: EventType): Unit = {
     s"must populate the view correctly on a GET when the question has previously been answered for Event $eventType" in {
-
       val userAnswers = emptyUserAnswersWithTaxYear.set(MembersDetailsPage(eventType, 0), validValue).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute(eventType))
-
         val view = application.injector.instanceOf[MembersDetailsView]
-
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form(eventType, HashSet()).fill(validValue), waypoints, eventType, 0, submitUrl(eventType))(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(
+          form(eventType, HashSet()).fill(validValue),
+          waypoints,
+          eventType,
+          memberPageNo = 0,
+          submitUrl = submitUrl(eventType),
+          request = request, messages = messages(application)).toString
       }
     }
   }
@@ -124,13 +125,13 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("firstName", validValue.firstName), ("lastName", validValue.lastName), ("nino", validValue.nino))
+          FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(
+            ("firstName", validValue.firstName), ("lastName", validValue.lastName), ("nino", validValue.nino)
+          )
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswersWithTaxYear.set(MembersDetailsPage(eventType, 0), validValue).success.value
@@ -145,22 +146,23 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
   //scalastyle:off method.length
   private def testBadRequestForInvalidDataSubmission(eventType: EventType): Unit = {
     s"must return bad request when invalid data is submitted for Event $eventType" in {
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("firstName", "%"), ("lastName", ""), ("nino", "abc"))
-
+        val request = FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("firstName", "%"), ("lastName", ""), ("nino", "abc"))
         val view = application.injector.instanceOf[MembersDetailsView]
         val boundForm = form(eventType, HashSet()).bind(Map("firstName" -> "%", "lastName" -> "", "nino" -> "abc"))
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, eventType, 0, submitUrl(eventType))(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(
+          boundForm,
+          waypoints,
+          eventType,
+          memberPageNo = 0,
+          submitUrl(eventType),
+          request,
+          messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
@@ -181,8 +183,16 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
         val view = application.injector.instanceOf[MembersDetailsView]
         val boundForm = form(eventType, HashSet()).bind(Map("firstName" -> "John", "lastName" -> "", "nino" -> nino))
         val result = route(application, request).value
+
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, eventType, 0, submitUrl(eventType))(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(
+          boundForm,
+          waypoints,
+          eventType,
+          memberPageNo = 0,
+          submitUrl(eventType),
+          request,
+          messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

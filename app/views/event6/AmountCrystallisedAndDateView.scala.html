@@ -16,6 +16,7 @@
 
 @import controllers.event6.routes
 @import viewmodels.InputWidth._
+@import utils.DateErrorTargetHelper.targetField
 
 @this(
     layout: templates.SchemeLayout,
@@ -33,7 +34,7 @@
     @formHelper(action = routes.AmountCrystallisedAndDateController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("crystallisedDate" -> "crystallisedDate.day")))
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = targetField("crystallisedDate", form.errors.head.message)))
         }
 
         <h1 class="govuk-heading-xl">@messages("amountCrystallisedAndDate.heading")</h1>

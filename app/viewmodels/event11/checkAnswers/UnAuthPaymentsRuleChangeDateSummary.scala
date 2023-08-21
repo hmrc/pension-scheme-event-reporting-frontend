@@ -20,23 +20,25 @@ import models.UserAnswers
 import pages.event11.UnAuthPaymentsRuleChangeDatePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object UnAuthPaymentsRuleChangeDateSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(UnAuthPaymentsRuleChangeDatePage).map {
       answer =>
-        SummaryListRowViewModel(
+        SummaryListRow(
           key     = "unAuthPaymentsRuleChangeDate.checkYourAnswersLabel",
           value   = ValueViewModel(answer.formatEvent11Date),
-          actions = Seq(
-            ActionItemViewModel("site.change", UnAuthPaymentsRuleChangeDatePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("unAuthPaymentsRuleChangeDate.change.hidden"))
-          )
+          actions = if(isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", UnAuthPaymentsRuleChangeDatePage.changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("unAuthPaymentsRuleChangeDate.change.hidden"))
+            )))
+          }
         )
     }
 }

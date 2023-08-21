@@ -175,6 +175,7 @@ eventSummary.event20A = Event 20a: Master Trust scheme
 eventSummary.event22 = Event 22: Annual allowance
 eventSummary.event23 = Event 23: Dual annual allowance
 eventSummary.eventWindUp = Scheme has wound up
+eventSummary.heading.version = Event reporting submission {0}
 
 schemeWindUpDate.title = When was the scheme wound up?
 schemeWindUpDate.heading = When was the scheme wound up?
@@ -1706,6 +1707,14 @@ cannotResume.title = This event report has been submitted and is with HMRC
 cannotResume.heading = This event report has been submitted and is with HMRC
 cannotResume.p1 = You cannot resume this journey.
 
+genericDate.error.invalid = Enter the real date
+genericDate.error.invalid.day = The day is invalid
+genericDate.error.invalid.month = The month is invalid
+genericDate.error.invalid.year = The year is invalid
+genericDate.error.invalid.missingInformation = The date must include a
+genericDate.error.invalid.allFieldsMissing = The date must include a day, month and year
+genericDate.error.outsideRelevantTaxYear = Date must be between 6 April {0} and 5 April {1}
+
 returnHistory.title = Event reporting return history for {0} to {1}
 returnHistory.heading = Event reporting return history for {0} to {1}
 returnHistory.table.header1 = Submission
@@ -1713,3 +1722,4 @@ returnHistory.table.header2 = Status
 returnHistory.table.header3 = Submitted by
 returnHistory.status.compiled = Compiled
 returnHistory.status.submitted = Submitted
+

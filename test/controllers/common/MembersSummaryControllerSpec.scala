@@ -50,25 +50,27 @@ import scala.concurrent.Future
 class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
-
   private val formProvider = new MembersSummaryFormProvider()
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockEventPaginationService = mock[EventPaginationService]
-
   private val mockTaxYear = mock[DateHelper]
-  private val validAnswer = LocalDate.of(2022, 5, 12)
-
-  private def getRoute(eventType: EventType): String = routes.MembersSummaryController.onPageLoad(waypoints, eventType).url
-
-  private def getRouteWithPagination(eventType: EventType): String = routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, eventType, 0).url
-
-  private def postRoute(eventType: EventType): String = routes.MembersSummaryController.onSubmit(waypoints, eventType).url
+  private val dateYear = 2022
+  private val dateMonth = 5
+  private val dateDay = 12
+  private val totalAmount: String = "10.00"
+  private val validAnswer = LocalDate.of(dateYear, dateMonth, dateDay)
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
     bind[EventPaginationService].toInstance(mockEventPaginationService),
     bind[DateHelper].toInstance(mockTaxYear)
   )
+
+  private def getRoute(eventType: EventType): String = routes.MembersSummaryController.onPageLoad(waypoints, eventType).url
+
+  private def getRouteWithPagination(eventType: EventType): String = routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, eventType, 0).url
+
+  private def postRoute(eventType: EventType): String = routes.MembersSummaryController.onSubmit(waypoints, eventType).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -77,32 +79,76 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
   }
 
   "MembersSummary Controller" - {
-    behave like testSuite(formProvider(Event2), Event2, sampleMemberJourneyDataEvent2, SampleData.amountPaid.toString(),
+    behave like testSuite(
+      formProvider(Event2),
+      Event2,
+      sampleMemberJourneyDataEvent2,
+      SampleData.amountPaid.toString(),
       fakeChangeUrl(Event2), "999.11")
 
-    behave like testSuite(formProvider(Event3), Event3, sampleMemberJourneyDataEvent3and4and5(Event3), SampleData.paymentDetailsCommon.amountPaid.setScale(2).toString,
-      fakeChangeUrl(Event3), "10.00")
+    behave like testSuite(
+      formProvider(Event3),
+      Event3,
+      sampleMemberJourneyDataEvent3and4and5(Event3),
+      SampleData.paymentDetailsCommon.amountPaid.setScale(2).toString,
+      fakeChangeUrl(Event3),
+      totalAmount)
 
-    behave like testSuite(formProvider(Event4), Event4, sampleMemberJourneyDataEvent3and4and5(Event4), SampleData.paymentDetailsCommon.amountPaid.setScale(2).toString(),
-      fakeChangeUrl(Event4), "10.00")
+    behave like testSuite(
+      formProvider(Event4),
+      Event4,
+      sampleMemberJourneyDataEvent3and4and5(Event4),
+      SampleData.paymentDetailsCommon.amountPaid.setScale(2).toString(),
+      fakeChangeUrl(Event4),
+      totalAmount)
 
-    behave like testSuite(formProvider(Event5), Event5, sampleMemberJourneyDataEvent3and4and5(Event5), SampleData.paymentDetailsCommon.amountPaid.setScale(2).toString(),
-      fakeChangeUrl(Event5), "10.00")
+    behave like testSuite(
+      formProvider(Event5),
+      Event5,
+      sampleMemberJourneyDataEvent3and4and5(Event5),
+      SampleData.paymentDetailsCommon.amountPaid.setScale(2).toString(),
+      fakeChangeUrl(Event5),
+      totalAmount)
 
-    behave like testSuite(formProvider(Event6), Event6, sampleMemberJourneyDataEvent6, SampleData.crystallisedDetails.amountCrystallised.setScale(2).toString(),
-      fakeChangeUrl(Event6), "10.00")
+    behave like testSuite(
+      formProvider(Event6),
+      Event6,
+      sampleMemberJourneyDataEvent6,
+      SampleData.crystallisedDetails.amountCrystallised.setScale(2).toString(),
+      fakeChangeUrl(Event6),
+      totalAmount)
 
-    behave like testSuite(formProvider(Event8), Event8, sampleMemberJourneyDataEvent8, SampleData.lumpSumDetails.lumpSumAmount.setScale(2).toString(),
-      fakeChangeUrl(Event8), "10.00")
+    behave like testSuite(
+      formProvider(Event8),
+      Event8,
+      sampleMemberJourneyDataEvent8,
+      SampleData.lumpSumDetails.lumpSumAmount.setScale(2).toString(),
+      fakeChangeUrl(Event8),
+      totalAmount)
 
-    behave like testSuite(formProvider(Event8A), Event8A, sampleMemberJourneyDataEvent8A, SampleData.lumpSumDetails.lumpSumAmount.setScale(2).toString(),
-      fakeChangeUrl(Event8A), "10.00")
+    behave like testSuite(
+      formProvider(Event8A),
+      Event8A,
+      sampleMemberJourneyDataEvent8A,
+      SampleData.lumpSumDetails.lumpSumAmount.setScale(2).toString(),
+      fakeChangeUrl(Event8A),
+      totalAmount)
 
-    behave like testSuite(formProvider(Event22), Event22, sampleMemberJourneyDataEvent22and23(Event22), SampleData.totalPaymentAmountEvent22and23.setScale(2).toString(),
-      fakeChangeUrl(Event22), "10.00")
+    behave like testSuite(
+      formProvider(Event22),
+      Event22,
+      sampleMemberJourneyDataEvent22and23(Event22),
+      SampleData.totalPaymentAmountEvent22and23.setScale(2).toString(),
+      fakeChangeUrl(Event22),
+      totalAmount)
 
-    behave like testSuite(formProvider(Event23), Event23, sampleMemberJourneyDataEvent22and23(Event23), SampleData.totalPaymentAmountEvent22and23.setScale(2).toString(),
-      fakeChangeUrl(Event23), "10.00")
+    behave like testSuite(
+      formProvider(Event23),
+      Event23,
+      sampleMemberJourneyDataEvent22and23(Event23),
+      SampleData.totalPaymentAmountEvent22and23.setScale(2).toString(),
+      fakeChangeUrl(Event23),
+      totalAmount)
 
     /* TODO: Temporarily disabled pagination test due to performance issues. -Pavel Vjalicin
     behave like testSuiteWithPagination(
@@ -144,16 +190,18 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
     testReturnOkAndCorrectViewWithPagination(eventType, form, href, totalAmount, sampleData)
   }
 
-  private def testReturnOkAndCorrectView(eventType: EventType, form: Form[Boolean], sampleData: UserAnswers, secondValue: String, href: String, totalAmount: String): Unit = {
+  private def testReturnOkAndCorrectView(eventType: EventType,
+                                         form: Form[Boolean],
+                                         sampleData: UserAnswers,
+                                         secondValue: String,
+                                         href: String,
+                                         totalAmount: String): Unit = {
     s"must return OK and the correct view for a GET for Event $eventType" in {
-
       val application = applicationBuilder(userAnswers = Some(sampleData)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute(eventType))
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[MembersSummaryView]
 
         val expectedSeq =
@@ -176,35 +224,47 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
               ))
             ))
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, eventType, expectedSeq, totalAmount, "2023")(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(form, waypoints, eventType, expectedSeq, totalAmount,
+          selectedTaxYear = "2023", request = request, messages = messages(application)).toString
       }
     }
   }
 
-  private def testReturnOkAndCorrectViewWithPagination(eventType: EventType, form: Form[Boolean], href: String, totalAmount: String, sampleData: UserAnswers): Unit = {
+  private def testReturnOkAndCorrectViewWithPagination(eventType: EventType,
+                                                       form: Form[Boolean],
+                                                       href: String,
+                                                       totalAmount: String,
+                                                       sampleData: UserAnswers): Unit = {
     s"must return OK and the correct view with pagination for a GET for Event $eventType" in {
-
       when(mockEventPaginationService.paginateMappedMembers(any(), any())).thenReturn(paginationStats26Members(href, eventType))
 
       val application = applicationBuilder(userAnswers = Some(sampleData)).build()
+      val totalNumberOfMembers = 26
 
       running(application) {
         val request = FakeRequest(GET, getRouteWithPagination(eventType))
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[MembersSummaryViewWithPagination]
 
         val expectedPaginationStats = PaginationStats(
           slicedMembers = fake26MappedMembers(href, eventType),
-          totalNumberOfMembers = 26,
+          totalNumberOfMembers,
           totalNumberOfPages = 2,
           pageStartAndEnd = (1, 25),
           pagerSeq = Seq(1, 2))
 
         status(result) mustEqual OK
-
-        val expectedView = view(form, waypoints, eventType, fake26MappedMembers(href, eventType), totalAmount, "2023", expectedPaginationStats, 0)(request, messages(application)).toString
+        val expectedView = view.render(
+          form,
+          waypoints,
+          eventType,
+          fake26MappedMembers(href, eventType),
+          totalAmount,
+          selectedTaxYear = "2023",
+          expectedPaginationStats,
+          pageNumber = 0,
+          request,
+          messages(application)).toString
 
         contentAsString(result) mustEqual expectedView
       }
@@ -238,21 +298,24 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("value", "invalid"))
-
+        val request = FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("value", "invalid"))
         val view = application.injector.instanceOf[MembersSummaryView]
         val boundForm = form.bind(Map("value" -> "invalid"))
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, eventType, Nil, "0.00", "2023")(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(
+          boundForm,
+          waypoints,
+          eventType,
+          Nil,
+          total = "0.00",
+          selectedTaxYear = "2023",
+          request = request,
+          messages = messages(application)).toString
         verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
       }
     }
@@ -260,6 +323,11 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
 }
 
 object MembersSummaryControllerSpec extends SpecBase {
+
+  private val lowerBound = 0
+  private val upperBound = 24
+  private val mappedMembers = 25
+  private val totalMembers = 26
 
   private def fakeChangeUrl(eventType: EventType): String = {
     eventType match {
@@ -279,29 +347,29 @@ object MembersSummaryControllerSpec extends SpecBase {
   private def fakeRemoveUrl(eventType: EventType): String = {
     eventType match {
       case Event2 | Event3 |
-        Event4 | Event5 |
-        Event6 | Event8 |
-        Event8A | Event22 |
-        Event23 => RemoveMemberController.onPageLoad(EmptyWaypoints, eventType, 0).url
+           Event4 | Event5 |
+           Event6 | Event8 |
+           Event8A | Event22 |
+           Event23 => RemoveMemberController.onPageLoad(EmptyWaypoints, eventType, 0).url
       case _ => "Not a member event used on this summary page"
     }
   }
 
-  private def fake26MappedMembers(href: String, eventType: EventType): Seq[SummaryListRowWithTwoValues] = fakeXMappedMembers(25, href, eventType)
+  private def fake26MappedMembers(href: String, eventType: EventType): Seq[SummaryListRowWithTwoValues] = fakeXMappedMembers(mappedMembers, href, eventType)
 
-  private def cYAHref(eventType: EventType, index: Int) = {
-      eventType match {
-        case Event2 => controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(index).url
-        case Event3 => controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(index).url
-        case Event4 => controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(index).url
-        case Event5 => controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(index).url
-        case Event6 => controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(index).url
-        case Event8 => controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(index).url
-        case Event8A => controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(index).url
-        case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
-        case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
-        case _ => "Not a member event"
-      }
+  private def cYAHref(eventType: EventType, index: Int): String = {
+    eventType match {
+      case Event2 => controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(index).url
+      case Event3 => controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(index).url
+      case Event4 => controllers.event4.routes.Event4CheckYourAnswersController.onPageLoad(index).url
+      case Event5 => controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(index).url
+      case Event6 => controllers.event6.routes.Event6CheckYourAnswersController.onPageLoad(index).url
+      case Event8 => controllers.event8.routes.Event8CheckYourAnswersController.onPageLoad(index).url
+      case Event8A => controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(index).url
+      case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
+      case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
+      case _ => "Not a member event"
+    }
   }
 
   private def fakeXMappedMembers(x: Int, href: String, eventType: EventType): Seq[SummaryListRowWithTwoValues] = for {
@@ -312,7 +380,7 @@ object MembersSummaryControllerSpec extends SpecBase {
         items = Seq(
           ActionItem(
             content = Text(Message("site.view")),
-            href = cYAHref(eventType, i-1)
+            href = cYAHref(eventType, i - 1)
           ),
           ActionItem(
             content = Text(Message("site.remove")),
@@ -336,11 +404,11 @@ object MembersSummaryControllerSpec extends SpecBase {
     pagerSeq = pagSeq
   )
 
-  private def paginationStats26Members(href: String, eventType: EventType) = fakePaginationStats(
-    fake26MappedMembers(href, eventType).slice(0, 24),
-    26,
-    2,
-    (1, 25),
-    1 to 2
+  private def paginationStats26Members(href: String, eventType: EventType): PaginationStats = fakePaginationStats(
+    fake26MappedMembers(href, eventType).slice(lowerBound, upperBound),
+    totalMembers,
+    totPages = 2,
+    pagStartEnd = (1, 25),
+    pagSeq = 1 to 2
   )
 }

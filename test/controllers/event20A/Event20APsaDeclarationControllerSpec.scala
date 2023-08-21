@@ -24,12 +24,13 @@ import data.SampleData.sampleEvent20ABecameJourneyData
 import models.VersionInfo
 import models.enumeration.VersionStatus.{Compiled, Submitted}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{EmptyWaypoints, VersionInfoPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.mvc.Results.{BadRequest, NoContent}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.event20A.Event20APsaDeclarationView
@@ -59,42 +60,42 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
     val adminName = "John Smith"
 
     "must return OK and the correct view for a GET when when isReportSubmitted is false" in {
-
       val testEmail = "test@test.com"
       val userAnswersWithVersionInfo = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
       val minimalDetails = {
-        MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None, lastName = "Smith")), false, false)
+        MinimalDetails(testEmail, isPsaSuspended = false, None, Some(IndividualDetails(firstName = "John", None, lastName = "Smith")),
+          rlsFlag = false, deceasedFlag = false)
       }
 
       running(application) {
         when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+
         val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onPageLoad().url)
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[Event20APsaDeclarationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(
-          schemeName, pstr, taxYear, adminName, controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url)(request, messages(application)
+        contentAsString(result) mustEqual view.render(
+          schemeName, pstr, taxYear, adminName, controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url,
+          request, messages(application)
         ).toString
       }
     }
 
     "must redirect to cannot resume page when isReportSubmitted is true" in {
-
       val testEmail = "test@test.com"
       val userAnswersWithVersionInfo = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
       val minimalDetails = {
-        MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None, lastName = "Smith")), false, false)
+        MinimalDetails(testEmail, isPsaSuspended = false, None, Some(IndividualDetails(firstName = "John", None, lastName = "Smith")),
+          rlsFlag = false, deceasedFlag = false)
       }
 
       running(application) {
         when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
-        val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onPageLoad().url)
 
+        val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onPageLoad().url)
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -103,13 +104,37 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
     }
 
     "must redirect to the correct page for method onClick" in {
-
       val testEmail = "test@test.com"
       val organisationName = "Test company ltd"
-      val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
+      val minimalDetails = MinimalDetails(testEmail, isPsaSuspended = false, Some(organisationName), None, rlsFlag = false, deceasedFlag = false)
 
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
-      when(mockERConnector.submitReportEvent20A(any(), any(), any())(any())).thenReturn(Future.successful(()))
+      when(mockERConnector.submitReportEvent20A(any(), any(), any())(any())).thenReturn(Future.successful(NoContent))
+
+      val application = applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules).build()
+      running(application) {
+        val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET if no existing data is found onClick" in {
+      val application = applicationBuilder(userAnswers = None).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad(None).url
+      }
+    }
+
+    "must redirect to the cannot resume page for method onClick when report has been submitted multiple times in quick succession" in {
+      when(mockERConnector.submitReportEvent20A(any(), any(), any())(any())).thenReturn(Future.successful(BadRequest))
 
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
@@ -121,7 +146,9 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url
+
+        verify(mockERConnector, times(1)).submitReportEvent20A(any(), any(), any())(any())
+        redirectLocation(result).value mustEqual routes.CannotResumeController.onPageLoad(EmptyWaypoints).url
       }
     }
   }

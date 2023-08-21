@@ -66,27 +66,22 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
   "ManualAddress Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
       val ua = emptyUserAnswers.setOrException(CompanyDetailsPage(0), companyDetails)
-
       val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[ManualAddressView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, Event1EmployerAddressJourney,
+        contentAsString(result) mustEqual view.render(form, waypoints, Event1EmployerAddressJourney,
           Messages("address.title", entityType),
-          Messages("address.heading", companyDetails.companyName), countryOptions.options, 0)(request, messages(application)).toString
+          Messages("address.heading", companyDetails.companyName), countryOptions.options, index = 0, request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
       val ua = emptyUserAnswers.setOrException(CompanyDetailsPage(0), companyDetails)
         .setOrException(ManualAddressPage(Event1EmployerAddressJourney, 0), seqAddresses.head)
 
@@ -94,15 +89,13 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
-
         val view = application.injector.instanceOf[ManualAddressView]
-
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(seqAddresses.head), waypoints, Event1EmployerAddressJourney,
+        contentAsString(result) mustEqual view.render(form.fill(seqAddresses.head), waypoints, Event1EmployerAddressJourney,
           Messages("address.title", entityType),
-          Messages("address.heading", companyDetails.companyName), countryOptions.options, 0)(request, messages(application)).toString
+          Messages("address.heading", companyDetails.companyName), countryOptions.options, index = 0, request, messages(application)).toString
       }
     }
 
@@ -111,7 +104,6 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
         .thenReturn(Future.successful(()))
 
       val ua = emptyUserAnswers.setOrException(CompanyDetailsPage(0), companyDetails)
-
       val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
 
       running(application) {
@@ -126,7 +118,6 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
           )
 
         val result = route(application, request).value
-        //val updatedAnswers = emptyUserAnswers.set(ChooseAddressPage(Event1EmployerAddressJourney, 0), seqAddresses.head).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ChooseAddressPage(Event1EmployerAddressJourney, 0)
@@ -137,7 +128,6 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
     "must return bad request when invalid data is submitted" in {
       val ua = emptyUserAnswers.setOrException(CompanyDetailsPage(0), companyDetails)
-
       val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
 
       running(application) {

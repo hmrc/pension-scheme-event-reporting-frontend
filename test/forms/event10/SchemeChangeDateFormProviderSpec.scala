@@ -37,13 +37,13 @@ class SchemeChangeDateFormProviderSpec extends SpecBase
     behave like mandatoryDateField(
       form = form,
       key = schemeChangeDateKey,
-      requiredAllKey = "schemeChangeDate.error.nothingEntered"
+      requiredAllKey = "genericDate.error.invalid.allFieldsMissing"
     )
 
     behave like dateFieldYearNot4Digits(
       form = form,
       key = schemeChangeDateKey,
-      formError = FormError(schemeChangeDateKey, "schemeChangeDate.error.outsideDateRanges")
+      formError = FormError(schemeChangeDateKey, "genericDate.error.invalid.year")
     )
 
     behave like dateFieldWithMin(

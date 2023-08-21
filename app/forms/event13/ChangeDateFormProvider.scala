@@ -17,21 +17,19 @@
 package forms.event13
 
 import java.time.LocalDate
-
 import forms.mappings.Mappings
 import models.TaxYearValidationDetail
+
 import javax.inject.Inject
 import play.api.data.Form
+import play.api.i18n.Messages
 
 class ChangeDateFormProvider @Inject() extends Mappings {
 
-  def apply(taxYear:Int): Form[LocalDate] =
+  def apply(taxYear:Int)(implicit messages: Messages): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidKey                    = "event13.changeDate.error.invalid",
-        threeDateComponentsMissingKey = "event13.changeDate.error.required.all",
-        twoDateComponentsMissingKey   = "event13.changeDate.error.required.two",
-        oneDateComponentMissingKey    = "event13.changeDate.error.required",
+        invalidKey = "genericDate.error.invalid",
         taxYearValidationDetail = Some(TaxYearValidationDetail(
           invalidKey = "event13.changeDate.error.outside.taxYear",
           taxYear = taxYear

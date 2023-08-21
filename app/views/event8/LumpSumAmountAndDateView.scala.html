@@ -17,6 +17,7 @@
 @import controllers.event8.routes
 @import viewmodels.InputWidth._
 @import models.enumeration.EventType
+@import utils.DateErrorTargetHelper.targetField
 
 @this(
     layout: templates.SchemeLayout,
@@ -34,7 +35,7 @@
     @formHelper(action = routes.LumpSumAmountAndDateController.onSubmit(waypoints, eventType, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("lumpSumDate" -> "lumpSumDate.day")))
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = targetField("lumpSumDate", form.errors.head.message)))
         }
 
         <h1 class="govuk-heading-xl">@messages("lumpSumAmountAndDate.heading")</h1>

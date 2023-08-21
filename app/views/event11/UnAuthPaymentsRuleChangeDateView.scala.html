@@ -15,6 +15,7 @@
  *@
 
 @import controllers.event11.routes
+@import utils.DateErrorTargetHelper.targetField
 
 @this(
     layout: templates.SchemeLayout,
@@ -31,7 +32,7 @@
     @formHelper(action = routes.UnAuthPaymentsRuleChangeDateController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value.day")))
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = targetField("value", form.errors.head.message)))
         }
 
         @govukDateInput(

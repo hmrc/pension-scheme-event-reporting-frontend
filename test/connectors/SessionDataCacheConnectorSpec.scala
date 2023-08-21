@@ -20,6 +20,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import models.enumeration.AdministratorOrPractitioner
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
+import play.api.http.Status.OK
 import play.api.libs.json.Json
 import uk.gov.hmrc.http._
 import utils.WireMockHelper
@@ -37,10 +38,10 @@ class SessionDataCacheConnectorSpec
   private val externalId = "test-value"
   private val sessionDataCacheUrl = s"/pension-administrator/journey-cache/session-data/$externalId"
 
-  private def jsonAOP(aop:AdministratorOrPractitioner) =
+  private def jsonAOP(aop: AdministratorOrPractitioner) =
     Json.obj("administratorOrPractitioner" -> aop.toString)
 
-  private def validResponse(administratorOrPractitioner:String) =
+  private def validResponse(administratorOrPractitioner: String) =
     Json.stringify(
       Json.obj(
         "administratorOrPractitioner" -> administratorOrPractitioner
@@ -99,9 +100,24 @@ class SessionDataCacheConnectorSpec
           )
       )
 
-        recoverToSucceededIf[HttpException] {
-          connector.fetch(externalId)
-        }
+      recoverToSucceededIf[HttpException] {
+        connector.fetch(externalId)
+      }
+    }
+  }
+
+  "removeAll" must {
+    "return successfully when the backend has returned an Ok response" in {
+      server.stubFor(
+        post(urlEqualTo(sessionDataCacheUrl))
+          .willReturn(
+            ok
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+      connector.removeAll(externalId).map { response =>
+        response.header.status mustBe OK
+      }
     }
   }
 }

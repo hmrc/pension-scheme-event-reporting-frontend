@@ -21,17 +21,18 @@ import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
 import connectors.{EventReportingConnector, MinimalConnector, SchemeConnector, UserAnswersCacheConnector}
 import data.SampleData.sampleEvent20ABecameJourneyData
 import forms.event20A.Event20APspDeclarationFormProvider
-import models.{SchemeDetails, VersionInfo}
 import models.enumeration.VersionStatus.{Compiled, Submitted}
+import models.{SchemeDetails, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{EmptyWaypoints, VersionInfoPage}
 import pages.event20A.Event20APspDeclarationPage
+import pages.{EmptyWaypoints, VersionInfoPage}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.mvc.Results.{BadRequest, NoContent}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.event20A.Event20APspDeclarationView
@@ -53,7 +54,9 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
   private val mockEventReportingConnector = mock[EventReportingConnector]
   private val mockMinimalConnector = mock[MinimalConnector]
   private val mockSchemeDetails = SchemeDetails("schemeName", "87219363YN", "Open", authorisingPsaId)
+
   private def getRoute: String = routes.Event20APspDeclarationController.onPageLoad(waypoints).url
+
   private def postRoute: String = routes.Event20APspDeclarationController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -76,7 +79,8 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
   val testEmail = "test@test.com"
   val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
   val mockMinimalDetails: MinimalDetails = {
-    MinimalDetails(testEmail, false, None, Some(IndividualDetails(firstName = "John", None,  lastName = "Smith")), false, false)
+    MinimalDetails(testEmail, isPsaSuspended = false, None, Some(IndividualDetails(firstName = "John", None, lastName = "Smith")),
+      rlsFlag = false, deceasedFlag = false)
   }
 
   "Event20APspDeclaration Controller" - {
@@ -139,7 +143,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
       when(mockEventReportingConnector.submitReportEvent20A(
-        any(), any(), any())(any())).thenReturn(Future.successful(()))
+        any(), any(), any())(any())).thenReturn(Future.successful(NoContent))
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
           .build()
@@ -161,7 +165,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
       when(mockEventReportingConnector.submitReportEvent20A(
-       any(), any(), any())(any())).thenReturn(Future.successful())
+        any(), any(), any())(any())).thenReturn(Future.successful(BadRequest))
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
@@ -178,6 +182,51 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(schemeName, pstr, taxYear, practitionerName, boundForm, waypoints)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET if no existing data is found onSubmit" in {
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
+
+      val application = applicationBuilder(userAnswers = None, extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "A1234567"))
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad(None).url
+        verify(mockMinimalConnector, times(0)).getMinimalDetails(any(), any())(any(), any())
+        verify(mockSchemeDetailsConnector, times(0)).getPspSchemeDetails(any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(0)).save(any(), any(), any())(any(), any())
+      }
+    }
+
+    "must redirect to the cannot resume page for method onClick when report has been submitted multiple times in quick succession" in {
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+      when(mockEventReportingConnector.submitReportEvent20A(
+        any(), any(), any())(any())).thenReturn(Future.successful(BadRequest))
+      val application =
+        applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "A1234567"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.CannotResumeController.onPageLoad(EmptyWaypoints).url
+        verify(mockMinimalConnector, times(1)).getMinimalDetails(any(), any())(any(), any())
+        verify(mockSchemeDetailsConnector, times(1)).getPspSchemeDetails(any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockEventReportingConnector, times(1)).submitReportEvent20A(any(), any(), any())(any())
       }
     }
   }

@@ -67,20 +67,17 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach with 
     "must return OK and the correct view for a GET" in {
 
       val ua = emptyUserAnswers.setOrException(CompanyDetailsPage(0), companyDetails)
-
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[EnterPostcodeView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, Event1EmployerAddressJourney,
+        contentAsString(result) mustEqual view.render(form, waypoints, Event1EmployerAddressJourney,
           messages("enterPostcode.title", "the company"),
-          messages("enterPostcode.heading", companyDetails.companyName), 0)(request, messages(application)).toString
+          messages("enterPostcode.heading", companyDetails.companyName), index = 0, request, messages(application)).toString
       }
     }
 
@@ -88,14 +85,10 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach with 
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "zz11zz"))
-
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "zz11zz"))
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.setOrException(EnterPostcodePage(Event1EmployerAddressJourney, 0), seqTolerantAddresses)
 
@@ -106,14 +99,10 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach with 
     }
 
     "must return bad request when invalid data is submitted" in {
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
-
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST

@@ -106,6 +106,9 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
                         result.header.status match {
                           case OK =>
                             emailFuture.map(_ => Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
+                          case BAD_REQUEST =>
+                            logger.warn(s"Unable to submit declaration because it has already been submitted)")
+                            Future.successful(Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints).url))
                           case NOT_FOUND =>
                             logger.warn(s"Unable to submit declaration because there is nothing to submit (nothing in compile state)")
                             Future.successful(Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url))

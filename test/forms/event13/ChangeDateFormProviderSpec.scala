@@ -17,10 +17,11 @@
 package forms.event13
 
 import forms.behaviours.DateBehaviours
+import play.api.i18n.Messages
 
 import java.time.LocalDate
 
-class ChangeDateFormProviderSpec extends DateBehaviours {
+class ChangeDateFormProviderSpec(implicit messages: Messages) extends DateBehaviours {
 
   private val form = new ChangeDateFormProvider()(2000)
 

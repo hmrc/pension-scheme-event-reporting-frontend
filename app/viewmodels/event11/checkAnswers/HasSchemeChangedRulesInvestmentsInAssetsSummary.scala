@@ -21,13 +21,13 @@ import pages.event11.HasSchemeChangedRulesInvestmentsInAssetsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object HasSchemeChangedRulesInvestmentsInAssetsSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(HasSchemeChangedRulesInvestmentsInAssetsPage).map {
       answer =>
@@ -38,14 +38,16 @@ object HasSchemeChangedRulesInvestmentsInAssetsSummary  {
           "The scheme has not changed its rules to allow investments in assets other than contracts or policies of insurance"
         }
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           //LDS ignore
           key     = "hasSchemeChangedRulesInvestmentsInAssets.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
-          actions = Seq(
-            ActionItemViewModel("site.change", HasSchemeChangedRulesInvestmentsInAssetsPage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("hasSchemeChangedRulesInvestmentsInAssets.change.hidden"))
-          )
+          actions = if(isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", HasSchemeChangedRulesInvestmentsInAssetsPage.changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("hasSchemeChangedRulesInvestmentsInAssets.change.hidden"))
+            )))
+          }
         )
     }
 }

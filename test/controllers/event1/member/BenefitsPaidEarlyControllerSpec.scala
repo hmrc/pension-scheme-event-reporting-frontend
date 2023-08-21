@@ -37,21 +37,18 @@ import scala.concurrent.Future
 class BenefitsPaidEarlyControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
-
   private val formProvider = new BenefitsPaidEarlyFormProvider()
   private val form = formProvider()
-
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-
-  private def getRoute: String = routes.BenefitsPaidEarlyController.onPageLoad(waypoints, 0).url
-
-  private def postRoute: String = routes.BenefitsPaidEarlyController.onSubmit(waypoints, 0).url
+  private val validValue = "abc"
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validValue = "abc"
+  private def getRoute: String = routes.BenefitsPaidEarlyController.onPageLoad(waypoints, 0).url
+
+  private def postRoute: String = routes.BenefitsPaidEarlyController.onSubmit(waypoints, 0).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -59,38 +56,30 @@ class BenefitsPaidEarlyControllerSpec extends SpecBase with BeforeAndAfterEach w
   }
 
   "BenefitsPaidEarly Controller" - {
-
     "must return OK and the correct view for a GET" in {
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[BenefitsPaidEarlyView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(form, waypoints, index = 0, request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
       val userAnswers = UserAnswers().set(BenefitsPaidEarlyPage(0), validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
       running(application) {
         val request = FakeRequest(GET, getRoute)
-
         val view = application.injector.instanceOf[BenefitsPaidEarlyView]
-
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(form.fill(validValue), waypoints, index = 0, request, messages(application)).toString
       }
     }
 
@@ -98,14 +87,9 @@ class BenefitsPaidEarlyControllerSpec extends SpecBase with BeforeAndAfterEach w
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
-
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(BenefitsPaidEarlyPage(0), validValue).success.value
 
@@ -116,23 +100,17 @@ class BenefitsPaidEarlyControllerSpec extends SpecBase with BeforeAndAfterEach w
     }
 
     "must return bad request when invalid data is submitted" in {
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
-
       val invalidValue = "*" * 151
 
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", invalidValue))
-
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", invalidValue))
         val view = application.injector.instanceOf[BenefitsPaidEarlyView]
         val boundForm = form.bind(Map("value" -> invalidValue))
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(boundForm, waypoints, index = 0, request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

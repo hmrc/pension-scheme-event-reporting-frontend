@@ -18,16 +18,17 @@ package controllers.event14
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import helpers.ReadOnlyCYA
 import models.enumeration.EventType.Event14
 import models.requests.DataRequest
 import pages.event14.Event14CheckYourAnswersPage
-import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.HowManySchemeMembersSummary
+import viewmodels.event14.checkAnswers.HowManySchemeMembersSummary
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -48,7 +49,10 @@ class Event14CheckYourAnswersController @Inject()(
       val thisPage = Event14CheckYourAnswersPage
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event14.routes.Event14CheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent14CYARows(waypoints, thisPage)), continueUrl))
+      val version = request.userAnswers.get(VersionInfoPage).map(_.version)
+      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event14, version, request.readOnly())
+
+      Ok(view(SummaryListViewModel(rows = buildEvent14CYARows(waypoints, thisPage)), continueUrl, readOnlyHeading))
     }
 
   def onClick: Action[AnyContent] =
@@ -62,6 +66,6 @@ class Event14CheckYourAnswersController @Inject()(
 
   private def buildEvent14CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-      HowManySchemeMembersSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      HowManySchemeMembersSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()).toSeq
   }
 }

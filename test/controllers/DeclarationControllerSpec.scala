@@ -50,7 +50,7 @@ import pages.{EmptyWaypoints, VersionInfoPage}
 import play.api.http.Status.OK
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.mvc.Results.Ok
+import play.api.mvc.Results.{BadRequest, NoContent, Ok}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, _}
 import services.SubmitService
@@ -124,9 +124,9 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       val testEmail = "test@test.com"
       val templateId = "pods_event_report_submitted"
       val organisationName = "Test company ltd"
-      val minimalDetails = MinimalDetails(testEmail, false, Some(organisationName), None, false, false)
+      val minimalDetails = MinimalDetails(testEmail, isPsaSuspended = false, Some(organisationName), None, rlsFlag = false, deceasedFlag = false)
 
-      when(mockERConnector.submitReport(any(), any(), any())(any())).thenReturn(Future.successful(()))
+      when(mockERConnector.submitReport(any(), any(), any())(any())).thenReturn(Future.successful(NoContent))
       doNothing().when(mockAuditService).sendEvent(any())(any(), any())
       when(mockEmailConnector.sendEmail(
         schemeAdministratorType = ArgumentMatchers.eq(Administrator),
@@ -166,6 +166,42 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       val result: NothingToSubmitException = Await.result(futureResult, Duration(5, SECONDS))
 
       result.responseCode mustBe EXPECTATION_FAILED
+    }
+
+    "must redirect to the cannot resume page for method onClick when report has been submitted multiple times in quick succession" in {
+      val testEmail = "test@test.com"
+      val templateId = "pods_event_report_submitted"
+      val organisationName = "Test company ltd"
+      val minimalDetails = MinimalDetails(testEmail, isPsaSuspended = false, Some(organisationName), None, rlsFlag = false, deceasedFlag = false)
+
+      when(mockERConnector.submitReport(any(), any(), any())(any())).thenReturn(Future.successful(BadRequest))
+      doNothing().when(mockAuditService).sendEvent(any())(any(), any())
+      when(mockEmailConnector.sendEmail(
+        schemeAdministratorType = ArgumentMatchers.eq(Administrator),
+        requestId = any(), psaOrPspId = any(), pstr = any(),
+        emailAddress = ArgumentMatchers.eq(testEmail),
+        templateId = ArgumentMatchers.eq(templateId),
+        templateParams = any(),
+        reportVersion = any())(any(), any()))
+        .thenReturn(Future.successful(EmailSent))
+      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+      when(mockSubmitService.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(BadRequest))
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled))), extraModules)
+          .build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        verify(mockEmailConnector, times(0)).sendEmail(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())
+        verify(mockAuditService, times(0)).sendEvent(any())(any(), any())
+        verify(mockSubmitService, times(1)).submitReport(any(), any())(any(), any())
+        redirectLocation(result).value mustEqual routes.CannotResumeController.onPageLoad(waypoints).url
+      }
     }
   }
 }

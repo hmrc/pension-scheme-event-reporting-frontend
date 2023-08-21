@@ -44,14 +44,14 @@ class RemoveEventControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockCompileService = mock[CompileService]
 
-  private def getRoute: String = routes.RemoveEventController.onPageLoad(waypoints, Event18).url
-
-  private def postRoute: String = routes.RemoveEventController.onSubmit(waypoints, Event18).url
-
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
     bind[CompileService].toInstance(mockCompileService)
   )
+
+  private def getRoute: String = routes.RemoveEventController.onPageLoad(waypoints, Event18).url
+
+  private def postRoute: String = routes.RemoveEventController.onSubmit(waypoints, Event18).url
 
   override def beforeEach(): Unit = {
     super.beforeEach
@@ -60,32 +60,24 @@ class RemoveEventControllerSpec extends SpecBase with BeforeAndAfterEach {
   }
 
   "RemoveEvent Controller" - {
-
     "must return OK and the correct view for a GET" in {
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[RemoveEventView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, Event18)(request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(form, waypoints, Event18, request, messages(application)).toString
       }
     }
 
     "must not change anything in userAnswer and not call user-cache connector when selecting false" in {
-      val application =
-        applicationBuilder(userAnswers = Some(sampleEvent18JourneyData), extraModules)
-          .build()
+      val application = applicationBuilder(userAnswers = Some(sampleEvent18JourneyData), extraModules).build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "false"))
-
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "false"))
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -95,17 +87,12 @@ class RemoveEventControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must return bad request when invalid data is submitted" in {
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
-
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
         val view = application.injector.instanceOf[RemoveEventView]
         val boundForm = form.bind(Map("value" -> "invalid"))
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST

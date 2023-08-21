@@ -18,21 +18,19 @@ package forms.testOnly
 
 import forms.mappings.Mappings
 import play.api.data.Form
+import play.api.i18n.Messages
 
 import java.time.LocalDate
 import javax.inject.Inject
 
 class DateTestFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[LocalDate] =
+  def apply()(implicit messages: Messages): Form[LocalDate] =
     Form(
       "testDate" -> localDate(
-        oneDateComponentMissingKey = "testDate.error.noDayMonthOrYear",
-        twoDateComponentsMissingKey = "testDate.error.noDayMonthOrYear",
-        invalidKey = "testDate.error.outsideDateRanges",
-        threeDateComponentsMissingKey = "testDate.error.nothingEntered"
+        invalidKey = "genericDate.error.invalid"
       ).verifying(
-        yearHas4Digits("testDate.outsideDateRanges")
+        yearHas4Digits("genericDate.error.invalid")
       )
     )
 }

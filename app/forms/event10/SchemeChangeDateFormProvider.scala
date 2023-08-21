@@ -32,12 +32,9 @@ class SchemeChangeDateFormProvider @Inject() extends Mappings with Transforms {
     Form(
       mapping("schemeChangeDate" ->
         localDate(
-          oneDateComponentMissingKey = "schemeChangeDate.error.noDayMonthOrYear",
-          twoDateComponentsMissingKey = "schemeChangeDate.error.noDayMonthOrYear",
-          invalidKey = "schemeChangeDate.error.outsideDateRanges",
-          threeDateComponentsMissingKey = "schemeChangeDate.error.nothingEntered"
+          invalidKey = "genericDate.error.invalid"
         ).verifying(
-          yearHas4Digits("schemeChangeDate.error.outsideDateRanges"),
+          yearHas4Digits("genericDate.error.invalid.year"),
           minDate(min, messages("schemeChangeDate.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
           maxDate(max, messages("schemeChangeDate.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
         )

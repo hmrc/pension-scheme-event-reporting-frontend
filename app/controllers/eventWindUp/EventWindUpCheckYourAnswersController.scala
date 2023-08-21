@@ -18,10 +18,11 @@ package controllers.eventWindUp
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import helpers.ReadOnlyCYA
 import models.enumeration.EventType.WindUp
 import models.requests.DataRequest
 import pages.eventWindUp.EventWindUpCheckYourAnswersPage
-import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
@@ -49,7 +50,9 @@ class EventWindUpCheckYourAnswersController @Inject()(
       val thisPage = EventWindUpCheckYourAnswersPage
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEventWindUpCYARows(waypoints, thisPage)), continueUrl))
+      val version = request.userAnswers.get(VersionInfoPage).map(_.version)
+      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(WindUp, version, request.readOnly())
+      Ok(view(SummaryListViewModel(rows = buildEventWindUpCYARows(waypoints, thisPage)), continueUrl, readOnlyHeading))
     }
 
   def onClick: Action[AnyContent] =
@@ -62,5 +65,5 @@ class EventWindUpCheckYourAnswersController @Inject()(
     }
 
     private def buildEventWindUpCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
-      SchemeWindUpDateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq
+      SchemeWindUpDateSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()).toSeq
 }

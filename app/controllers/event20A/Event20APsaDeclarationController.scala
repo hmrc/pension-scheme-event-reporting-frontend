@@ -64,8 +64,12 @@ class Event20APsaDeclarationController @Inject()(
       declarationDataEvent20A(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, request) match {
         case Some(data) =>
           val reportVersion = request.userAnswers.get(VersionInfoPage).get.version.toString
-          eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion).map { _ =>
-            Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
+          eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion).map { response =>
+            if (response.header.status == NO_CONTENT) {
+              Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
+            } else {
+              Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints).url)
+            }
           }
         case _ => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None).url))
       }

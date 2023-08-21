@@ -21,8 +21,9 @@ import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.enumeration.VersionStatus.{Compiled, Submitted}
 import models.{UserAnswers, VersionInfo}
 import pages.VersionInfoPage
+import play.api.http.Status.NO_CONTENT
 import play.api.mvc.Result
-import play.api.mvc.Results.{NotFound, Ok}
+import play.api.mvc.Results.{BadRequest, NotFound, Ok}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,10 +37,16 @@ class SubmitService @Inject()(
                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
     ua.get(VersionInfoPage) match {
       case Some(VersionInfo(version, Compiled)) =>
-        eventReportingConnector.submitReport(pstr, ua, version.toString).flatMap { _ =>
-          val updatedUA = ua.setOrException(VersionInfoPage, VersionInfo(version, Submitted), nonEventTypeData = true)
-          userAnswersCacheConnector.save(pstr, updatedUA).map { _ => Ok }
+        eventReportingConnector.submitReport(pstr, ua, version.toString).flatMap { response =>
+          if (response.header.status == NO_CONTENT) {
+            val updatedUA = ua.setOrException(VersionInfoPage, VersionInfo(version, Submitted), nonEventTypeData = true)
+            userAnswersCacheConnector.save(pstr, updatedUA).map { _ => Ok }
+          } else {
+            Future.successful(BadRequest("The event report has already been submitted"))
+          }
         }
+      case Some(VersionInfo(_, Submitted)) =>
+        Future.successful(BadRequest("The event report has already been submitted"))
       case Some(vi) =>
         Future.successful(NotFound(s"No compiled version to submit! Version info is $vi"))
       case _ =>

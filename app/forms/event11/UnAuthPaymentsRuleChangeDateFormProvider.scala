@@ -31,12 +31,9 @@ class UnAuthPaymentsRuleChangeDateFormProvider @Inject() extends Mappings {
   def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[Event11Date] =
     Form(
       mapping("value" -> localDate(
-        invalidKey = "unAuthPaymentsRuleChangeDate.error.invalid",
-        threeDateComponentsMissingKey = "unAuthPaymentsRuleChangeDate.error.required.all",
-        twoDateComponentsMissingKey = "unAuthPaymentsRuleChangeDate.error.required.two",
-        oneDateComponentMissingKey = "unAuthPaymentsRuleChangeDate.error.required"
+        invalidKey = "genericDate.error.invalid"
       ).verifying(
-        yearHas4Digits("unAuthPaymentsRuleChangeDate.error.outsideDateRanges"),
+        yearHas4Digits("genericDate.error.invalid.year"),
         minDate(min, messages("unAuthPaymentsRuleChangeDate.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
         maxDate(max, messages("unAuthPaymentsRuleChangeDate.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
       )

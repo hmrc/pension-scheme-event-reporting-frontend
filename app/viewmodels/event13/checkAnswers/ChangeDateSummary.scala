@@ -14,33 +14,35 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event13.checkAnswers
 
 import java.time.format.DateTimeFormatter
 import models.UserAnswers
 import pages.{CheckAnswersPage, Waypoints}
 import pages.event13.ChangeDatePage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object ChangeDateSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(ChangeDatePage).map {
       answer =>
 
         val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key     = "event13.changeDate.checkYourAnswersLabel",
           value   = ValueViewModel(answer.format(dateFormatter)),
-          actions = Seq(
-            ActionItemViewModel("site.change", ChangeDatePage.changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("event13.changeDate.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", ChangeDatePage.changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("event13.changeDate.change.hidden"))
+            )))
+          }
         )
     }
 }

@@ -15,6 +15,7 @@
  *@
 
 @import controllers.event20A.routes
+@import utils.DateErrorTargetHelper.targetField
 
 @this(
     layout: templates.SchemeLayout,
@@ -31,7 +32,7 @@
     @formHelper(action = routes.CeasedDateController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value.day")))
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = targetField("ceasedDateMasterTrust", form.errors.head.message)))
         }
 
         @govukDateInput(

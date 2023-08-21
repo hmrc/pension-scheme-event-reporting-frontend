@@ -42,12 +42,9 @@ class AmountCrystallisedAndDateFormProvider @Inject() extends Mappings with Tran
             zeroValue[BigDecimal](0, "amountCrystallisedAndDate.value.error.zeroEntered")
           ), "crystallisedDate" ->
         localDate(
-          oneDateComponentMissingKey = "amountCrystallisedAndDate.date.error.noDayMonthOrYear",
-          twoDateComponentsMissingKey = "amountCrystallisedAndDate.date.error.noDayMonthOrYear",
-          invalidKey = "amountCrystallisedAndDate.date.error.outsideDateRanges",
-          threeDateComponentsMissingKey = "amountCrystallisedAndDate.date.error.nothingEntered"
+          invalidKey = "genericDate.error.invalid"
         ).verifying(
-          yearHas4Digits("amountCrystallisedAndDate.date.error.outsideDateRanges"),
+          yearHas4Digits("genericDate.error.invalid.year"),
           minDate(startDate, messages("amountCrystallisedAndDate.date.error.outsideReportedYear", formatDateDMY(startDate), formatDateDMY(endDate(max)))),
           maxDate(endDate(max), messages("amountCrystallisedAndDate.date.error.outsideReportedYear", formatDateDMY(startDate), formatDateDMY(endDate(max))))
         )

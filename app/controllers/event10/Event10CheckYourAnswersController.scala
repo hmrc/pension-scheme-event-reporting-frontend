@@ -18,10 +18,11 @@ package controllers.event10
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import helpers.ReadOnlyCYA
 import models.enumeration.EventType.Event10
 import models.requests.DataRequest
 import pages.event10.Event10CheckYourAnswersPage
-import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
@@ -48,7 +49,10 @@ class Event10CheckYourAnswersController @Inject()(
       val thisPage = Event10CheckYourAnswersPage()
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event10.routes.Event10CheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent10CYARows(waypoints, thisPage)), continueUrl))
+      val version = request.userAnswers.get(VersionInfoPage).map(_.version)
+      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event10, version, request.readOnly())
+
+      Ok(view(SummaryListViewModel(rows = buildEvent10CYARows(waypoints, thisPage)), continueUrl, readOnlyHeading))
     }
 
   def onClick: Action[AnyContent] =
@@ -60,8 +64,9 @@ class Event10CheckYourAnswersController @Inject()(
 
   private def buildEvent10CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    BecomeOrCeaseSchemeSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      SchemeChangeDateSummary.row(request.userAnswers, waypoints, sourcePage).toSeq ++
-      ContractsOrPoliciesSummary.row(request.userAnswers, waypoints, sourcePage)
+
+    BecomeOrCeaseSchemeSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()).toSeq ++
+      SchemeChangeDateSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly()).toSeq ++
+      ContractsOrPoliciesSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly())
   }
 }

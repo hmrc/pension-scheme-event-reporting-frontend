@@ -17,15 +17,20 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
+import data.SampleData.convertScalaFuture
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.amend.VersionsWithSubmitter
 import models.enumeration.EventType.{Event1, Event2}
 import models.enumeration.VersionStatus.Submitted
 import models.enumeration.{Enumerable, EventType}
-import models.{EROverview, EROverviewVersion, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, TaxYear, UserAnswers, VersionInfo}
+import models.{EROverview, EROverviewVersion, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, TaxYear, ToggleDetails, UserAnswers, VersionInfo}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
-import play.api.libs.json.{JsArray, Json}
+import play.api.Application
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.{JsArray, JsResultException, Json}
+import play.api.mvc.Results.{BadRequest, NoContent}
+import play.api.test.Helpers.running
 import uk.gov.hmrc.http._
 import utils.WireMockHelper
 
@@ -57,6 +62,22 @@ class EventReportingConnectorSpec
 
   override protected def portConfigKey: String = "microservice.services.pension-scheme-event-reporting.port"
 
+  private def application: Application =
+    new GuiceApplicationBuilder()
+      .configure(
+        "microservice.services.pension-scheme-event-reporting.port" -> server.port
+      )
+      .build()
+
+  private val happyJsonToggle1: String = {
+    s"""
+       |{"toggleName" : "event-reporting", "toggleDescription": "event reporting toggle", "isEnabled" : true }
+     """.stripMargin
+  }
+
+  private val toggleDetails1 = ToggleDetails("event-reporting", Some("event reporting toggle"), isEnabled = true)
+  private val getFeatureTogglePath = "/admin/get-toggle"
+
   private lazy val connector: EventReportingConnector = injector.instanceOf[EventReportingConnector]
   private val eventReportSummaryCacheUrl = "/pension-scheme-event-reporting/event-summary"
   private val eventReportCompileUrl = "/pension-scheme-event-reporting/compile"
@@ -71,7 +92,8 @@ class EventReportingConnectorSpec
 
   private val failureOutcome = FileUploadOutcomeResponse(fileName = None, FAILURE, None, referenceStub, None)
   private val failureOutcomeJson = Json.obj("fileStatus" -> "ERROR")
-  private val successOutcome = FileUploadOutcomeResponse(fileName = Some("test"), SUCCESS, Some("downloadUrl"), referenceStub, Some(100L))
+  private val successOutcome = FileUploadOutcomeResponse(
+    fileName = Some("test"), SUCCESS, Some("downloadUrl"), referenceStub, Some(100L))
   private val successOutcomeJson = Json.obj(
     "fileStatus" -> "READY",
     "downloadUrl" -> "downloadUrl",
@@ -178,13 +200,13 @@ class EventReportingConnectorSpec
       )
 
       recoverToSucceededIf[HttpException] {
-        connector.deleteMember(pstr, EventDataIdentifier(eventType, "2020", "1"), 0,"0")
+        connector.deleteMember(pstr, EventDataIdentifier(eventType, "2020", "1"), 0, "0")
       }
     }
   }
 
   "submitReport" must {
-    "return unit for successful post" in {
+    "return NoContent for successful post" in {
       server.stubFor(
         post(urlEqualTo(eventReportSubmitUrl))
           .willReturn(
@@ -192,15 +214,29 @@ class EventReportingConnectorSpec
           )
       )
       connector.submitReport(pstr, userAnswers, reportVersion).map {
-        _ mustBe()
+        _ mustBe NoContent
       }
     }
 
-    "return BadRequestException when the backend has returned bad request response" in {
+    "return BadRequest when the backend has returned bad request response" in {
       server.stubFor(
         post(urlEqualTo(eventReportSubmitUrl))
           .willReturn(
             badRequest
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      connector.submitReport(pstr, userAnswers, reportVersion).map {
+        _ mustBe BadRequest
+      }
+    }
+
+    "return HttpException when the backend has returned server error" in {
+      server.stubFor(
+        post(urlEqualTo(eventReportSubmitUrl))
+          .willReturn(
+            serverError
               .withHeader("Content-Type", "application/json")
           )
       )
@@ -212,7 +248,7 @@ class EventReportingConnectorSpec
   }
 
   "submitReportEvent20A" must {
-    "return unit for successful post" in {
+    "return NoContent for successful post" in {
       server.stubFor(
         post(urlEqualTo(event20AReportSubmitUrl))
           .willReturn(
@@ -220,15 +256,29 @@ class EventReportingConnectorSpec
           )
       )
       connector.submitReportEvent20A(pstr, userAnswers, reportVersion).map {
-        _ mustBe()
+        _ mustBe NoContent
       }
     }
 
-    "return BadRequestException when the backend has returned bad request response" in {
+    "return BadRequest when the backend has returned bad request response" in {
       server.stubFor(
         post(urlEqualTo(event20AReportSubmitUrl))
           .willReturn(
             badRequest
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      connector.submitReportEvent20A(pstr, userAnswers, reportVersion).map {
+        _ mustBe BadRequest
+      }
+    }
+
+    "return HttpException when the backend has returned server error" in {
+      server.stubFor(
+        post(urlEqualTo(event20AReportSubmitUrl))
+          .willReturn(
+            serverError
               .withHeader("Content-Type", "application/json")
           )
       )
@@ -284,6 +334,23 @@ class EventReportingConnectorSpec
       connector.getFileUploadOutcome(referenceStub) map {
         result =>
           result mustEqual inProgressOutcome
+      }
+    }
+
+    "return BadRequestException when the backend has returned bad request response" in {
+      server.stubFor(
+        get(urlEqualTo(getFileUploadResponseUrl))
+          .willReturn(
+            badRequest
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      recoverToSucceededIf[HttpException] {
+        connector.getFileUploadOutcome(referenceStub) map {
+          result =>
+            result mustEqual successOutcome
+        }
       }
     }
   }
@@ -346,6 +413,46 @@ class EventReportingConnectorSpec
         response mustBe erOverview
       }
     }
+
+    "return JsResultException when the backend has returned errors" in {
+      val erOverviewResponseJson: JsArray = Json.arr(
+        Json.obj(
+          "periodStartDate" -> "2022-04-06",
+          "versionDetails" -> Json.obj(
+            "numberOfVersions" -> 3,
+            "submittedVersionAvailable" -> false,
+            "compiledVersionAvailable" -> true
+          )
+        )
+      )
+
+      server.stubFor(
+        get(urlEqualTo(getOverviewUrl))
+          .willReturn(
+            ok
+              .withHeader("Content-Type", "application/json")
+              .withBody(erOverviewResponseJson.toString())
+          )
+      )
+
+      recoverToSucceededIf[JsResultException] {
+        connector.getOverview(pstr, "ER", "2022-04-06", "2023-04-05")
+      }
+    }
+
+    "return BadRequestException when the backend has returned bad request response" in {
+      server.stubFor(
+        get(urlEqualTo(getOverviewUrl))
+          .willReturn(
+            badRequest
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      recoverToSucceededIf[HttpException] {
+        connector.getOverview(pstr, "ER", "2022-04-06", "2023-04-05")
+      }
+    }
   }
 
   "getListOfVersions" must {
@@ -389,6 +496,47 @@ class EventReportingConnectorSpec
       connector.getListOfVersions(pstr, "2022-04-06") map {
         result =>
           result mustEqual Nil
+      }
+    }
+  }
+
+  "getFeatureToggle" must {
+    "return a SuccessResponse when valid json is returned" in {
+      val app = application
+      running(app) {
+        val connector = app.injector.instanceOf[EventReportingConnector]
+        server.stubFor(
+          get(urlEqualTo(getFeatureTogglePath + "/event-reporting")).willReturn(ok(happyJsonToggle1))
+        )
+        val result = connector.getFeatureToggle("event-reporting").futureValue
+        result mustBe toggleDetails1
+      }
+    }
+
+    "return None when an existing feature toggle in not found" in {
+      val app = application
+      running(app) {
+        val connector = app.injector.instanceOf[EventReportingConnector]
+        server.stubFor(
+          get(urlEqualTo(getFeatureTogglePath + "/event-reporting")).willReturn(noContent)
+        )
+
+        val result = connector.getFeatureToggle("event-reporting").futureValue
+        result mustBe ToggleDetails("event-reporting", None, isEnabled = false)
+      }
+    }
+
+    "return BadRequestException when the backend has returned bad request response" in {
+      server.stubFor(
+        get(urlEqualTo(getFeatureTogglePath + "/event-reporting"))
+          .willReturn(
+            badRequest
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      recoverToSucceededIf[HttpException] {
+        connector.getFeatureToggle("event-reporting")
       }
     }
   }

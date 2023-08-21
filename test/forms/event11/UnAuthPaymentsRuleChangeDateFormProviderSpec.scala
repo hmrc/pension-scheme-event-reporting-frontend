@@ -37,13 +37,13 @@ class UnAuthPaymentsRuleChangeDateFormProviderSpec extends SpecBase
     behave like mandatoryDateField(
       form = form,
       key = dateKey,
-      requiredAllKey = "unAuthPaymentsRuleChangeDate.error.required.all"
+      requiredAllKey = "genericDate.error.invalid.allFieldsMissing"
     )
 
     behave like dateFieldYearNot4Digits(
       form = form,
       key = dateKey,
-      formError = FormError(dateKey, "unAuthPaymentsRuleChangeDate.error.outsideDateRanges")
+      formError = FormError(dateKey, "genericDate.error.invalid.year")
     )
 
     behave like dateFieldWithMin(
