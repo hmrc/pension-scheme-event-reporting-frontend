@@ -38,7 +38,7 @@ class SchemeWindUpDateFormProviderSpec extends DateBehaviours with SpecBase {
 
     behave like dateField(form, "value", validData)
 
-    behave like mandatoryDateField(form, "value", "schemeWindUpDate.error.required.all")
+    behave like mandatoryDateField(form, "value", "genericDate.error.invalid.allFieldsMissing")
 
     behave like dateFieldWithMax(
       form = form,

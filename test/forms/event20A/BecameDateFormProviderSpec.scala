@@ -37,13 +37,13 @@ class BecameDateFormProviderSpec extends SpecBase
     behave like mandatoryDateField(
       form = form,
       key = becameDateKey,
-      requiredAllKey = "schemeChangeDate.event20A.error.nothingEntered"
+      requiredAllKey = "genericDate.error.invalid.allFieldsMissing"
     )
 
     behave like dateFieldYearNot4Digits(
       form = form,
       key = becameDateKey,
-      formError = FormError(becameDateKey, "schemeChangeDate.event20A.error.outsideDateRanges")
+      formError = FormError(becameDateKey, "genericDate.error.invalid.year")
     )
 
     behave like dateFieldWithMin(

@@ -42,12 +42,9 @@ class LumpSumAmountAndDateFormProvider @Inject() extends Mappings with Transform
             zeroValue[BigDecimal](0, "lumpSumAmountAndDate.value.error.zeroEntered")
           ), "lumpSumDate" ->
         localDate(
-          oneDateComponentMissingKey = "lumpSumAmountAndDate.date.error.noDayMonthOrYear",
-          twoDateComponentsMissingKey = "lumpSumAmountAndDate.date.error.noDayMonthOrYear",
-          invalidKey = "lumpSumAmountAndDate.date.error.outsideDateRanges",
-          threeDateComponentsMissingKey = "lumpSumAmountAndDate.date.error.nothingEntered"
+          invalidKey = "genericDate.error.invalid"
         ).verifying(
-          yearHas4Digits("lumpSumAmountAndDate.date.error.outsideDateRanges"),
+          yearHas4Digits("genericDate.error.invalid.year"),
           minDate(min, messages("lumpSumAmountAndDate.date.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
           maxDate(max, messages("lumpSumAmountAndDate.date.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
         )

@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package forms.testOnly
+package utils
 
-import forms.mappings.Mappings
-import play.api.data.Form
-import play.api.i18n.Messages
+object DateErrorTargetHelper {
 
-import java.time.LocalDate
-import javax.inject.Inject
-
-class DateTestFormProvider @Inject() extends Mappings {
-
-  def apply()(implicit messages: Messages): Form[LocalDate] =
-    Form(
-      "testDate" -> localDate(
-        invalidKey = "genericDate.error.invalid"
-      ).verifying(
-        yearHas4Digits("genericDate.error.invalid")
-      )
-    )
+  val targetField: (String, String) => Map[String, String] = (key: String, message: String) => message match {
+    case invalidDay if message.contains("day") => Map(key -> s"$key.day")
+    case invalidMonth if message.contains("month") => Map(key -> s"$key.month")
+    case invalidYear if message.contains("year") => Map(key -> s"$key.year")
+    case _ => Map(key -> key)
+  }
 }

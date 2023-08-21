@@ -100,13 +100,13 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
     behave like mandatoryDateField(
       form = form,
       key = paymentDateKey,
-      requiredAllKey = "paymentValueAndDate.date.error.nothingEntered"
+      requiredAllKey = "genericDate.error.invalid.allFieldsMissing"
     )
 
     behave like dateFieldYearNot4Digits(
       form = form,
       key = paymentDateKey,
-      formError = FormError(paymentDateKey, "paymentValueAndDate.date.error.outsideDateRanges")
+      formError = FormError(paymentDateKey, "genericDate.error.invalid.year")
     )
 
     behave like dateFieldWithMin(
