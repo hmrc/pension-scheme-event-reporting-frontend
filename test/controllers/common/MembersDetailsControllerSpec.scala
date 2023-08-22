@@ -143,6 +143,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
     }
   }
 
+  //scalastyle:off method.length
   private def testBadRequestForInvalidDataSubmission(eventType: EventType): Unit = {
     s"must return bad request when invalid data is submitted for Event $eventType" in {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
@@ -166,14 +167,21 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
       }
     }
 
-    s"must return bad request when invalid data is submitted for Event $eventType - when member exists" in {
-      val ua = emptyUserAnswersWithTaxYear.setOrException(MembersDetailsPage(eventType, 0), MembersDetails("", "", "CS121212C"))
-      val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
+    s"must return bad request when invalid data (last name is empty) is submitted for Event $eventType - when member exists" in {
+
+      val nino = "CS121212C"
+      val ua = emptyUserAnswersWithTaxYear.setOrException(MembersDetailsPage(eventType, 0), MembersDetails("firstName", "lastName", nino))
+
+      val application =
+        applicationBuilder(userAnswers = Some(ua), extraModules)
+          .build()
 
       running(application) {
-        val request = FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("firstName", "John"), ("lastName", ""), ("nino", "CS121212C"))
+        val request =
+          FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("firstName", "John"), ("lastName", ""), ("nino", nino))
+
         val view = application.injector.instanceOf[MembersDetailsView]
-        val boundForm = form(eventType, HashSet("CS121212C")).bind(Map("firstName" -> "John", "lastName" -> "", "nino" -> "CS121212C"))
+        val boundForm = form(eventType, HashSet()).bind(Map("firstName" -> "John", "lastName" -> "", "nino" -> nino))
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST

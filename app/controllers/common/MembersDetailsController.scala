@@ -19,7 +19,7 @@ package controllers.common
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.common.MembersDetailsFormProvider
-import models.Index.indexToInt
+import models.Index.{indexToInt, intToIndex}
 import models.enumeration.EventType
 import models.enumeration.EventType.Event1
 import models.requests.OptionalDataRequest
@@ -43,19 +43,20 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
                                          formProvider: MembersDetailsFormProvider,
                                          view: MembersDetailsView
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-  private def memberNinos(eventType: EventType)(implicit request: OptionalDataRequest[_]): HashSet[String] = {
+  private def memberNinos(eventType: EventType, index: Int)(implicit request: OptionalDataRequest[_]): HashSet[String] = {
     val readsNINumber: Reads[Option[String]] = (JsPath \ "membersDetails" \ "nino").readNullable[String]
     val pg = eventType match {
       case Event1 => MembersOrEmployersPage(eventType)
       case _ => MembersPage(eventType)
     }
     val s = request.userAnswers.map(_.getAll(pg.path)(readsNINumber.map(_.toSeq))).toSeq.flatten.flatten
+      .zipWithIndex.filter(_._2 != index).map(_._1)
     HashSet(s: _*)
   }
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index, memberPageNo: Int): Action[AnyContent] =
     (identify andThen getData(eventType)) { implicit request =>
-      val form = formProvider(eventType, memberNinos(eventType), memberPageNo)
+      val form = formProvider(eventType, memberNinos(eventType, indexToInt(index)), memberPageNo)
       val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, indexToInt(index), memberPageNo))).fold(form)(form.fill)
       Ok(view(preparedForm, waypoints, eventType, memberPageNo, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index, memberPageNo)))
     }
@@ -67,7 +68,8 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
         eventType,
         MembersDetailsPage(eventType, index, memberPageNo),
         controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index, memberPageNo),
-        memberPageNo
+        memberPageNo,
+        index
       )
   }
 
@@ -75,9 +77,10 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
                          eventType: EventType,
                          page: MembersDetailsPage,
                          postCall: => Call,
-                         memberPageNo: Int
+                         memberPageNo: Int,
+                         index: Int
                         )(implicit request: OptionalDataRequest[_]): Future[Result] = {
-    val form = formProvider(eventType, memberNinos(eventType), memberPageNo)
+    val form = formProvider(eventType, memberNinos(eventType, indexToInt(index)), memberPageNo)
     form.bindFromRequest().fold(
       formWithErrors =>
         Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, memberPageNo, postCall))),

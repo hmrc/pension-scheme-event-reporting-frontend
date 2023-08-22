@@ -139,8 +139,17 @@ class MembersDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
 
     Seq("CS121212C", "CS121212B").foreach { nino =>
       s"fail to bind when NINO $nino is not unique" in {
+        val memberNinos: HashSet[String] = HashSet("CS121212C", "CS121212B")
+        val form = new MembersDetailsFormProvider()(event, memberNinos)
         val result = form.bind(Map("firstName" -> "validFirstName", "lastName" -> "validLastName", "nino" -> nino))
         result.errors mustBe Seq(FormError("nino", notUniqueKey))
+      }
+
+      s"successfully bind when NINO $nino is unique" in {
+        val memberNinos: HashSet[String] = HashSet("Ab020202A", "AB020202a")
+        val form = new MembersDetailsFormProvider()(event, memberNinos)
+        val result = form.bind(Map("firstName" -> "validFirstName", "lastName" -> "validLastName", "nino" -> nino))
+        result.errors mustBe Seq()
       }
     }
   }
