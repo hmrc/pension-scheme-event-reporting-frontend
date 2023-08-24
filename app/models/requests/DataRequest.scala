@@ -76,7 +76,7 @@ case class DataRequest[A](pstr: String,
           versionSelected < reportVersion
         case None => false
       }
-      case _ => throw new RuntimeException("No Event Report Overview information")
+      case _ => false
     }
   }
 
