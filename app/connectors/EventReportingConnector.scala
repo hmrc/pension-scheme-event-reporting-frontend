@@ -46,6 +46,8 @@ class EventReportingConnector @Inject()(
 
   private def event20ASubmitUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event20a-declaration-report"
 
+  private def doubleClickLockUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/double-click-lock"
+
   private def getFileUploadResponseUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/get"
 
   private def eventReportingToggleUrl(toggleName: String) = s"${config.eventReportingUrl}/admin/get-toggle/$toggleName"
@@ -108,12 +110,13 @@ class EventReportingConnector @Inject()(
       }
   }
 
-  def submitReport(pstr: String, ua: UserAnswers, version: String)
+  def submitReport(pstr: String, ua: UserAnswers, version: String, year: String)
                   (implicit headerCarrier: HeaderCarrier): Future[Result] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
+      "year" -> year,
       "version" -> version
     )
 
@@ -131,12 +134,13 @@ class EventReportingConnector @Inject()(
       }
   }
 
-  def submitReportEvent20A(pstr: String, ua: UserAnswers, version: String)
+  def submitReportEvent20A(pstr: String, ua: UserAnswers, version: String, year: String)
                           (implicit headerCarrier: HeaderCarrier): Future[Result] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
+      "year" -> year,
       "version" -> version
     )
 
@@ -152,6 +156,10 @@ class EventReportingConnector @Inject()(
             throw new HttpException(response.body, response.status)
         }
       }
+  }
+
+  def removeDoubleClickLock(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] = {
+    http.DELETE[HttpResponse](doubleClickLockUrl)(implicitly, headerCarrier, implicitly)
   }
 
   def getFeatureToggle(toggleName: String)(implicit hc: HeaderCarrier): Future[ToggleDetails] = {

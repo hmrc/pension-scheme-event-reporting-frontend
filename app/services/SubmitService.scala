@@ -19,7 +19,7 @@ package services
 import com.google.inject.Inject
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.enumeration.VersionStatus.{Compiled, Submitted}
-import models.{UserAnswers, VersionInfo}
+import models.{TaxYear, UserAnswers, VersionInfo}
 import pages.VersionInfoPage
 import play.api.http.Status.NO_CONTENT
 import play.api.mvc.Result
@@ -37,7 +37,7 @@ class SubmitService @Inject()(
                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
     ua.get(VersionInfoPage) match {
       case Some(VersionInfo(version, Compiled)) =>
-        eventReportingConnector.submitReport(pstr, ua, version.toString).flatMap { response =>
+        eventReportingConnector.submitReport(pstr, ua, version.toString, TaxYear.getSelectedTaxYearAsString(ua)).flatMap { response =>
           if (response.header.status == NO_CONTENT) {
             val updatedUA = ua.setOrException(VersionInfoPage, VersionInfo(version, Submitted), nonEventTypeData = true)
             userAnswersCacheConnector.save(pstr, updatedUA).map { _ => Ok }

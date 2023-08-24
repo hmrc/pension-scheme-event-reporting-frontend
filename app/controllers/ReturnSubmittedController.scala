@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.MinimalConnector
+import connectors.{EventReportingConnector, MinimalConnector}
 import controllers.actions._
 import helpers.DateHelper
 import helpers.DateHelper.dateFormatter
@@ -25,6 +25,7 @@ import models.enumeration.AdministratorOrPractitioner.Administrator
 import pages.{TaxYearPage, Waypoints}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.http.HttpException
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ReturnSubmittedView
 
@@ -38,29 +39,33 @@ class ReturnSubmittedController @Inject()(
                                            requireData: DataRequiredAction,
                                            view: ReturnSubmittedView,
                                            config: FrontendAppConfig,
-                                           minimalConnector: MinimalConnector
+                                           minimalConnector: MinimalConnector,
+                                           eventReportingConnector: EventReportingConnector
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
+    eventReportingConnector.removeDoubleClickLock.flatMap { lockDeleteResp =>
+      if(lockDeleteResp.status != NO_CONTENT) throw new HttpException("Bad response while deleting double click locks", lockDeleteResp.status)
 
-    minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map { minimalDetails =>
-      val schemeName = request.schemeName
+      minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map { minimalDetails =>
+        val schemeName = request.schemeName
 
-      val viewOtherPensionSchemesUrl: String = request.loggedInUser.administratorOrPractitioner match {
-        case Administrator => config.yourPensionSchemesUrl
-        case _ => config.listPspUrl
+        val viewOtherPensionSchemesUrl: String = request.loggedInUser.administratorOrPractitioner match {
+          case Administrator => config.yourPensionSchemesUrl
+          case _ => config.listPspUrl
+        }
+
+        val taxYear = request.userAnswers.get(TaxYearPage) match {
+          case Some(taxYear) => s"${taxYear.startYear} ${Messages("confirmation.taxYear.to")} ${taxYear.endYear}"
+          case _ => throw new RuntimeException("Tax year not available on Return Submitted Controller")
+        }
+
+        val dateHelper = new DateHelper
+        val dateSubmitted: String = dateHelper.now.format(dateFormatter)
+
+        Ok(view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url,
+          viewOtherPensionSchemesUrl, schemeName, taxYear, dateSubmitted, minimalDetails.email))
       }
-
-      val taxYear = request.userAnswers.get(TaxYearPage) match {
-        case Some(taxYear) => s"${taxYear.startYear} ${Messages("confirmation.taxYear.to")} ${taxYear.endYear}"
-        case _ => throw new RuntimeException("Tax year not available on Return Submitted Controller")
-      }
-
-      val dateHelper = new DateHelper
-      val dateSubmitted: String = dateHelper.now.format(dateFormatter)
-
-      Ok(view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url,
-        viewOtherPensionSchemesUrl, schemeName, taxYear, dateSubmitted, minimalDetails.email))
     }
   }
 }

@@ -61,10 +61,11 @@ class Event20APsaDeclarationController @Inject()(
 
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
-      declarationDataEvent20A(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, request) match {
+      val year = TaxYear.getSelectedTaxYear(request.userAnswers)
+      declarationDataEvent20A(request.pstr, year, request.loggedInUser, request) match {
         case Some(data) =>
           val reportVersion = request.userAnswers.get(VersionInfoPage).get.version.toString
-          eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion).map { response =>
+          eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion, year.startYear).map { response =>
             if (response.header.status == NO_CONTENT) {
               Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
             } else {

@@ -80,10 +80,11 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
               val originalUserAnswers = request.userAnswers
               val updatedAnswers = originalUserAnswers.setOrException(Event20APspDeclarationPage, value)
               userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).flatMap { _ =>
-                declarationDataEvent20A(request.pstr, TaxYear.getSelectedTaxYear(request.userAnswers), request.loggedInUser, authorisingPsaId, request) match {
+                val year = TaxYear.getSelectedTaxYear(request.userAnswers)
+                declarationDataEvent20A(request.pstr, year, request.loggedInUser, authorisingPsaId, request) match {
                   case Some(data) =>
                     val reportVersion = request.userAnswers.get(VersionInfoPage).get.version.toString
-                    eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion).map { response =>
+                    eventReportingConnector.submitReportEvent20A(request.pstr, UserAnswers(data), reportVersion, year.startYear).map { response =>
                       if (response.header.status == NO_CONTENT) {
                         Redirect(Event20APspDeclarationPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
                       } else {
