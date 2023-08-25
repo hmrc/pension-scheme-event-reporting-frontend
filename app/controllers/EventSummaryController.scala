@@ -16,18 +16,17 @@
 
 package controllers
 
-import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import connectors.EventReportingConnector
 import controllers.actions._
 import forms.EventSummaryFormProvider
 import models.TaxYear.getSelectedTaxYearAsString
+import models.{EventSummary, UserAnswers}
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event18, Event20A, Event8A, WindUp}
 import models.requests.DataRequest
-import models.{EventSummary, UserAnswers}
 import pages.{EmptyWaypoints, EventSummaryPage, TaxYearPage, VersionInfoPage, Waypoints}
 import play.api.Logger
 import play.api.i18n.I18nSupport
-import play.api.libs.json.JsObject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -42,7 +41,6 @@ class EventSummaryController @Inject()(
                                         identify: IdentifierAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
-                                        userAnswersCacheConnector: UserAnswersCacheConnector,
                                         connector: EventReportingConnector,
                                         formProvider: EventSummaryFormProvider,
                                         view: EventSummaryView
@@ -61,63 +59,46 @@ class EventSummaryController @Inject()(
   }
 
   private def summaryListRows(implicit request: DataRequest[AnyContent]): Future[Seq[SummaryListRow]] = {
-
     (request.userAnswers.get(TaxYearPage), request.userAnswers.get(VersionInfoPage)) match {
       case (Some(taxYear), Some(versionInfo)) =>
         val startYear = s"${taxYear.startYear}-04-06"
         connector.getEventReportSummary(request.pstr, startYear, versionInfo.version)
-          .map { seqOfEventSummariesFromApi =>
-            val listOfFuturesFromCache =
-              for {
-                event <- EventType.values
-              } yield {
-                userAnswersCacheConnector.get(request.pstr, event).map { uA =>
-                  val maybeEventDataInCache: JsObject = uA.getOrElse(UserAnswers()).data
-                  if (maybeEventDataInCache != JsObject.empty) {
-                    List(EventSummary(event, versionInfo.version))
-                  } else {
-                    Nil
+          .map { seqOfEventTypes =>
+          seqOfEventTypes.sortBy(sortExpr).map{ eventSummary  =>
+            SummaryListRow(
+              key = Key(
+                content = Text(Message(s"eventSummary.event${eventSummary.eventType.toString}"))
+              ),
+              actions = Some(Actions(
+                items = if(request.readOnly()) { Seq(
+                  viewOnlyLinkForEvent(eventSummary.eventType).map { link =>
+                    ActionItem(
+                      content = Text(Message("site.view")),
+                      href = link
+                    )
                   }
-                }
-              }
-            Future.sequence(listOfFuturesFromCache).map(_.flatten).map { seqOfEventSummariesFromCache =>
-              val combinedSeq = (seqOfEventSummariesFromCache ++ seqOfEventSummariesFromApi).distinct
-              combinedSeq.sortBy(sortExpr).map { eventSummary =>
-                SummaryListRow(
-                  key = Key(
-                    content = Text(Message(s"eventSummary.event${eventSummary.eventType.toString}"))
-                  ),
-                  actions = Some(Actions(
-                    items = if (request.readOnly()) {
-                      Seq(
-                        viewOnlyLinkForEvent(eventSummary.eventType).map { link =>
-                          ActionItem(
-                            content = Text(Message("site.view")),
-                            href = link
-                          )
-                        }
-                      ).flatten
-                    } else {
-                      Seq(
-                        changeLinkForEvent(eventSummary.eventType).map { link =>
-                          ActionItem(
-                            content = Text(Message("site.change")),
-                            href = link
-                          )
-                        },
-                        removeLinkForEvent(eventSummary.eventType).map { link =>
-                          ActionItem(
-                            content = Text(Message("site.remove")),
-                            href = link
-                          )
-                        }
-                      ).flatten
+                ).flatten
+                } else {
+                  Seq(
+                    changeLinkForEvent(eventSummary.eventType).map { link =>
+                      ActionItem(
+                        content = Text(Message("site.change")),
+                        href = link
+                      )
+                    },
+                    removeLinkForEvent(eventSummary.eventType).map { link =>
+                      ActionItem(
+                        content = Text(Message("site.remove")),
+                        href = link
+                      )
                     }
-                  ))
-                )
-              }
-            }
-          }.flatten
+                  ).flatten
+                }
+              ))
+            )
+          }
+        }
+
       case _ =>
         logger.warn("No tax year selected on load of summary page")
         Future.successful(Nil)
@@ -238,7 +219,7 @@ class EventSummaryController @Inject()(
       case EventType.Event18 => Some(controllers.routes.EventSummaryController.onPageLoadForEvent18ViewOnlyLink(EmptyWaypoints).url)
       case EventType.Event19 => Some(controllers.event19.routes.Event19CheckYourAnswersController.onPageLoad.url)
       case EventType.Event20 => Some(controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
-      case EventType.WindUp => Some(controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onPageLoad().url)
+      case EventType.WindUp =>  Some(controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onPageLoad().url)
       case _ =>
         logger.error(s"Missing event type $eventType")
         None

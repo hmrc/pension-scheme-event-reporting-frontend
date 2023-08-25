@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import connectors.EventReportingConnector
 import forms.EventSummaryFormProvider
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event18}
@@ -31,7 +31,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.{EmptyWaypoints, EventReportingOverviewPage, EventSummaryPage, TaxYearPage, VersionInfoPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.Aliases._
@@ -44,7 +43,6 @@ import scala.concurrent.Future
 
 class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach with MockitoSugar {
   private val mockEventReportSummaryConnector = mock[EventReportingConnector]
-  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val waypoints = EmptyWaypoints
 
   val erOverviewSeq = Seq(EROverview(
@@ -63,15 +61,11 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
   private def postRoute: String = routes.EventSummaryController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[EventReportingConnector].toInstance(mockEventReportSummaryConnector),
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
+    bind[EventReportingConnector].toInstance(mockEventReportSummaryConnector)
   )
 
-  override def beforeEach(): Unit = {
+  override protected def beforeEach(): Unit = {
     reset(mockEventReportSummaryConnector)
-    reset(mockUserAnswersCacheConnector)
-    when(mockUserAnswersCacheConnector.removeAll(any())(any(), any()))
-      .thenReturn(Future.successful(Ok("")))
   }
 
   "Event Summary Controller" - {
@@ -86,13 +80,9 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
 
       val seqOfEvents = Seq(EventSummary(EventType.Event1, 1), EventSummary(EventType.Event18, 1))
 
-      when(
-        mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any()))
-        .thenReturn(Future.successful(seqOfEvents)
-        )
-
-      when(mockUserAnswersCacheConnector.get(any(), any())(any(), any()))
-        .thenReturn(Future.successful(Some(ua)))
+      when(mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any())).thenReturn(
+        Future.successful(seqOfEvents)
+      )
 
       val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
 
@@ -106,50 +96,46 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
         val formProvider = new EventSummaryFormProvider()
         val form = formProvider()
 
-
-        val mappedEvents =
-          Seq({
-            val eventMessageKey = Message(s"eventSummary.event1")
-            SummaryListRow(
-              key = Key(
-                content = Text(eventMessageKey),
-                classes = "govuk-!-width-full"
-              ),
-              actions = Some(Actions(
-                items = Seq(
-                  ActionItem(
-                    content = Text(Message("site.change")),
-                    href = event1.routes.UnauthPaymentSummaryController.onPageLoad(EmptyWaypoints).url
-                  ),
-                  ActionItem(
-                    content = Text(Message("site.remove")),
-                    href = common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, Event1).url
-                  )
+        val mappedEvents = Seq({
+          val eventMessageKey = Message(s"eventSummary.event1")
+          SummaryListRow(
+            key = Key(
+              content = Text(eventMessageKey),
+              classes = "govuk-!-width-full"
+            ),
+            actions = Some(Actions(
+              items = Seq(
+                ActionItem(
+                  content = Text(Message("site.change")),
+                  href = event1.routes.UnauthPaymentSummaryController.onPageLoad(EmptyWaypoints).url
+                ),
+                ActionItem(
+                  content = Text(Message("site.remove")),
+                  href = common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, Event1).url
                 )
-              ))
-            )
-          }, {
-            val eventMessageKey = Message(s"eventSummary.event18")
-            SummaryListRow(
-              key = Key(
-                content = Text(eventMessageKey),
-                classes = "govuk-!-width-full"
-              ),
-              actions = Some(Actions(
-                items = Seq(
-                  ActionItem(
-                    content = Text(Message("site.remove")),
-                    href = common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, Event18).url
-                  )
+              )
+            ))
+          )
+        }, {
+          val eventMessageKey = Message(s"eventSummary.event18")
+          SummaryListRow(
+            key = Key(
+              content = Text(eventMessageKey),
+              classes = "govuk-!-width-full"
+            ),
+            actions = Some(Actions(
+              items = Seq(
+                ActionItem(
+                  content = Text(Message("site.remove")),
+                  href = common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, Event18).url
                 )
-              ))
-            )
-          })
+              )
+            ))
+          )
+        })
 
         status(result) mustEqual OK
-        contentAsString(result).contains("Event 1: Unauthorised payments") mustEqual true
-        contentAsString(result).contains("Event 18: Scheme chargeable payment") mustEqual true
-        contentType(result) must be(Some(contentType(view(form, waypoints, mappedEvents, "2023", schemeName, Some(1))(request, messages(application)))))
+        contentAsString(result) mustEqual view(form, waypoints, mappedEvents, "2023", schemeName, Some(1))(request, messages(application)).toString
       }
     }
 
