@@ -24,7 +24,7 @@ import data.SampleData
 import data.SampleData._
 import forms.common.MembersSummaryFormProvider
 import helpers.DateHelper
-import models.UserAnswers
+import models.{MemberSummaryPath, UserAnswers}
 import models.enumeration.EventType
 import models.enumeration.EventType._
 import org.mockito.ArgumentMatchers.any
@@ -66,11 +66,11 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
     bind[DateHelper].toInstance(mockTaxYear)
   )
 
-  private def getRoute(eventType: EventType): String = routes.MembersSummaryController.onPageLoad(waypoints, eventType).url
+  private def getRoute(eventType: EventType): String = routes.MembersSummaryController.onPageLoad(waypoints, MemberSummaryPath(eventType)).url
 
-  private def getRouteWithPagination(eventType: EventType): String = routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, eventType, 0).url
+  private def getRouteWithPagination(eventType: EventType): String = routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, MemberSummaryPath(eventType), 0).url
 
-  private def postRoute(eventType: EventType): String = routes.MembersSummaryController.onSubmit(waypoints, eventType).url
+  private def postRoute(eventType: EventType): String = routes.MembersSummaryController.onSubmit(waypoints, MemberSummaryPath(eventType)).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()

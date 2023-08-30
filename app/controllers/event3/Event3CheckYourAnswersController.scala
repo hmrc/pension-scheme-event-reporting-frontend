@@ -18,7 +18,7 @@ package controllers.event3
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.Index
+import models.{Index, MemberSummaryPath}
 import models.enumeration.EventType.Event3
 import models.event3.ReasonForBenefits.Other
 import models.requests.DataRequest
@@ -60,7 +60,7 @@ class Event3CheckYourAnswersController @Inject()(
 
       compileService.compileEvent(Event3, request.pstr, request.userAnswers).map {
         _ =>
-          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event3).url)
+          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event3)).url)
       }
     }
 

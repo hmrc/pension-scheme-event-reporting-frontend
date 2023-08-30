@@ -23,7 +23,7 @@ import models.TaxYear.getSelectedTaxYearAsString
 import models.common.MembersSummary
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event2, Event22, Event23, Event3, Event4, Event5, Event6, Event8, Event8A}
-import models.{Index, UserAnswers}
+import models.{MemberSummaryPath, Index, UserAnswers}
 import pages.{EmptyWaypoints, Waypoints}
 import pages.common.{MembersPage, MembersSummaryPage}
 import play.api.i18n.{I18nSupport, Messages}
@@ -48,48 +48,55 @@ class MembersSummaryController @Inject()(
                                           eventPaginationService: EventPaginationService
                                         ) extends FrontendBaseController with I18nSupport with Formatters {
 
-  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, eventSummaryPath: MemberSummaryPath): Action[AnyContent] = {
+    val eventType = eventSummaryPath.event
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       if (mappedMembers.length > 25) {
-        Redirect(routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, eventType, 0))
+        Redirect(routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, eventSummaryPath, 0))
       } else {
         Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear))
       }
     }
+  }
 
-  def onPageLoadWithPageNumber(waypoints: Waypoints, eventType: EventType, pageNumber: Index): Action[AnyContent] =
+  def onPageLoadWithPageNumber(waypoints: Waypoints, eventSummaryPath: MemberSummaryPath, pageNumber: Index): Action[AnyContent] = {
+    val eventType = eventSummaryPath.event
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, pageNumber)
       if (mappedMembers.length <= 25) {
-        Redirect(routes.MembersSummaryController.onPageLoad(waypoints, eventType))
+        Redirect(routes.MembersSummaryController.onPageLoad(waypoints, eventSummaryPath))
       } else {
         Ok(newView(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, pageNumber))
       }
     }
+  }
 
   private def sumValue(userAnswers: UserAnswers, eventType: EventType) =
     currencyFormatter.format(userAnswers.sumAll(MembersPage(eventType), MembersSummary.readsMemberValue(eventType)))
 
-  def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
-    implicit request =>
-      val form = formProvider(eventType)
-      val mappedMembers = getMappedMembers(request.userAnswers, eventType)
-      val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear))
-        },
-        value => {
-          val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 0), value)
-          Redirect(MembersSummaryPage(eventType, 0).navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)
-        }
-      )
+  def onSubmit(waypoints: Waypoints, eventSummaryPath: MemberSummaryPath): Action[AnyContent] = {
+    val eventType = eventSummaryPath.event
+    (identify andThen getData(eventType) andThen requireData) {
+      implicit request =>
+        val form = formProvider(eventType)
+        val mappedMembers = getMappedMembers(request.userAnswers, eventType)
+        val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
+        form.bindFromRequest().fold(
+          formWithErrors => {
+            BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear))
+          },
+          value => {
+            val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 0), value)
+            Redirect(MembersSummaryPage(eventType, 0).navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)
+          }
+        )
+    }
   }
 
   private def getMappedMembers(userAnswers: UserAnswers, eventType: EventType)(implicit messages: Messages): Seq[SummaryListRowWithTwoValues] = {
