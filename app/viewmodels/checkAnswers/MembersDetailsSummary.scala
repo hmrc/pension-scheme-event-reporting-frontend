@@ -31,7 +31,8 @@ import viewmodels.implicits._
 
 object MembersDetailsSummary {
 
-  def rowFullName(answers: UserAnswers, waypoints: Waypoints, index: Int, sourcePage: CheckAnswersPage, isReadOnly: Boolean, eventType: EventType, memberPageNo: Int = 0)
+  def rowFullName(answers: UserAnswers, waypoints: Waypoints, index: Int, sourcePage: CheckAnswersPage, isReadOnly: Boolean,
+                  eventType: EventType, memberPageNo: Int = 0)
                  (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MembersDetailsPage(eventType, index, memberPageNo)).map {
       val detailsType = (eventType, memberPageNo) match {
@@ -53,7 +54,8 @@ object MembersDetailsSummary {
         )
     }
 
-  def rowNino(answers: UserAnswers, waypoints: Waypoints, index: Int, sourcePage: CheckAnswersPage, eventType: EventType, memberPageNo: Int = 0)
+  def rowNino(answers: UserAnswers, waypoints: Waypoints, index: Int, sourcePage: CheckAnswersPage, isReadOnly: Boolean,
+              eventType: EventType, memberPageNo: Int = 0)
              (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MembersDetailsPage(eventType, index, memberPageNo)).map {
       val detailsType = (eventType, memberPageNo) match {
@@ -64,13 +66,15 @@ object MembersDetailsSummary {
       answer =>
 
         val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(answer.nino)).toString))
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = s"$detailsType.checkYourAnswersLabel.nino",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", MembersDetailsPage(eventType, index, memberPageNo).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages(s"$detailsType.change.nino.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", MembersDetailsPage(eventType, index, memberPageNo).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages(s"$detailsType.change.nino.hidden"))
+            )))
+          }
         )
     }
 }

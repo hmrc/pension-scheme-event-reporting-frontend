@@ -64,7 +64,7 @@ class Event7CheckYourAnswersController @Inject()(
   private def buildEvent7CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event7).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event7).toSeq ++
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event7).toSeq ++
       LumpSumAmountSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
       CrystallisedAmountSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
       PaymentDateSummary.rowPaymentDate(request.userAnswers, waypoints, sourcePage, Event7, index).toSeq

@@ -64,10 +64,14 @@ class Event2CheckYourAnswersController @Inject()(
 
   private def buildEvent2CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
                                 (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event2, Event2MemberPageNumbers.FIRST_PAGE_DECEASED).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event2, Event2MemberPageNumbers.FIRST_PAGE_DECEASED).toSeq ++
-      MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event2, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event2, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY).toSeq ++
+    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(),
+      Event2, Event2MemberPageNumbers.FIRST_PAGE_DECEASED).toSeq ++
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(),
+        Event2, Event2MemberPageNumbers.FIRST_PAGE_DECEASED).toSeq ++
+      MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(),
+        Event2, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY).toSeq ++
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(),
+        Event2, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY).toSeq ++
       AmountPaidSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq ++
       DatePaidSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq
   }
