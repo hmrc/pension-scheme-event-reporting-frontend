@@ -67,6 +67,7 @@ class ValidationErrorsAllControllerSpec extends SpecBase with BeforeAndAfterEach
   private def returnUrl(eventType: EventType) = s"/manage-pension-scheme-event-report/report/event-${eventType.toString}-upload"
 
   private def fileDownloadInstructionLink(eventType: EventType) = s"/manage-pension-scheme-event-report/event-${eventType.toString}-upload-format-instructions"
+  private def fileDownloadTemplateLink(eventType: EventType) = s"/manage-pension-scheme-event-report/event-${eventType.toString}-bulk-upload-template"
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -94,7 +95,7 @@ class ValidationErrorsAllControllerSpec extends SpecBase with BeforeAndAfterEach
         )
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(returnUrl(eventType),
-          fileDownloadInstructionLink(eventType), dummyErrors)(request, messages(application)).toString
+          fileDownloadInstructionLink(eventType), dummyErrors, fileDownloadTemplateLink(eventType))(request, messages(application)).toString
       }
     }
   }

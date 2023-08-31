@@ -30,12 +30,13 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json._
 import queries.Gettable
-import services.fileUpload.ValidatorErrorMessages.HeaderInvalidOrFileIsEmpty
+import services.fileUpload.ValidatorErrorMessages.{HeaderInvalidOrFileIsEmpty, NoDataRowsProvided}
 
 import scala.collection.immutable.HashSet
 
 object ValidatorErrorMessages {
   val HeaderInvalidOrFileIsEmpty = "Header invalid or File is empty"
+  val NoDataRowsProvided = "No data has been added to the file"
 }
 
 object Validator {
@@ -53,6 +54,8 @@ object Validator {
   }
 
   val FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty: ValidationError = ValidationError(0, 0, HeaderInvalidOrFileIsEmpty, EMPTY)
+
+  val FileLevelValidationErrorTypeNoDataRowsProvided: ValidationError = ValidationError(0, 0, NoDataRowsProvided, EMPTY)
 }
 
 trait Validator {
@@ -79,9 +82,12 @@ trait Validator {
 
   def validate(rows: Seq[Array[String]], userAnswers: UserAnswers)
               (implicit messages: Messages): Validated[Seq[ValidationError], UserAnswers] = {
+
     rows.headOption match {
       case Some(row) if row.mkString(",").equalsIgnoreCase(validHeader) =>
         rows.size match {
+          case emptyTemplate if emptyTemplate == 1 =>
+            Invalid(Seq(FileLevelValidationErrorTypeNoDataRowsProvided))
           case n if n >= 2 =>
             val x = validateDataRows(rows, getTaxYear(userAnswers))
             x.validated.map(_.foldLeft(userAnswers)((acc, ci) => acc.setOrException(ci.jsPath, ci.value)))
