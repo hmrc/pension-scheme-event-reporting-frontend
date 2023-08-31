@@ -63,7 +63,7 @@ class Event8CheckYourAnswersController @Inject()(
 
   private def buildEvent8CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
                                 (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event8).toSeq ++
+    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event8).toSeq ++
       MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event8).toSeq ++
       TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, Event8).toSeq ++
       TypeOfProtectionReferenceSummary.row(request.userAnswers, waypoints, sourcePage, Event8, index).toSeq ++

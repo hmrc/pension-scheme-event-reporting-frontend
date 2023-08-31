@@ -63,7 +63,7 @@ class Event6CheckYourAnswersController @Inject()(
 
   private def buildEvent6CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event6).toSeq ++
+    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event6).toSeq ++
       MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event6).toSeq ++
       TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, Event6).toSeq ++
       InputProtectionTypeSummary.row(request.userAnswers, waypoints, sourcePage, Event6, index).toSeq ++

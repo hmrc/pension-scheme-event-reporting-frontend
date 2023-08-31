@@ -52,7 +52,7 @@ class UnauthPaymentSummaryController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(EventType.Event1) andThen requireData) { implicit request =>
     val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
-    val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers)
+    val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers, request.readOnly())
     Ok(view(form, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers), taxYear))
   }
 
@@ -64,7 +64,7 @@ class UnauthPaymentSummaryController @Inject()(
       val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
       form.bindFromRequest().fold(
         formWithErrors => {
-          val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers)
+          val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers, request.readOnly())
           BadRequest(view(formWithErrors, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers), taxYear))
         },
         value => {
@@ -74,7 +74,7 @@ class UnauthPaymentSummaryController @Inject()(
       )
   }
 
-  private def getMappedMemberOrEmployer(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
+  private def getMappedMemberOrEmployer(userAnswers: UserAnswers, isReadOnly : Boolean)(implicit messages: Messages): Seq[SummaryListRow] = {
     userAnswers.getAll(MembersOrEmployersPage(EventType.Event1))(MembersOrEmployersSummary.readsMemberOrEmployer).zipWithIndex.collect {
       case (memberOrEmployerSummary, index) if !memberOrEmployerSummary.memberStatus.contains("Deleted") =>
         //TODO PODS-8617: Remove front-end filter. Values should be filtered via MongoDB with an index or by refactor
@@ -85,16 +85,25 @@ class UnauthPaymentSummaryController @Inject()(
           ),
           value = value,
           actions = Some(Actions(
-            items = Seq(
-              ActionItem(
-                content = Text(Message("site.view")),
-                href = controllers.event1.routes.Event1CheckYourAnswersController.onPageLoad(index).url
-              ),
-              ActionItem(
-                content = Text(Message("site.remove")),
-                href = controllers.common.routes.RemoveMemberController.onPageLoad(EmptyWaypoints, Event1, index).url
+            items = if(isReadOnly) {
+              Seq(
+                ActionItem(
+                  content = Text(Message("site.view")),
+                  href = controllers.event1.routes.Event1CheckYourAnswersController.onPageLoad(index).url
+                )
               )
-            )
+            } else {
+              Seq(
+                ActionItem(
+                  content = Text(Message("site.view")),
+                  href = controllers.event1.routes.Event1CheckYourAnswersController.onPageLoad(index).url
+                ),
+                ActionItem(
+                  content = Text(Message("site.remove")),
+                  href = controllers.common.routes.RemoveMemberController.onPageLoad(EmptyWaypoints, Event1, index).url
+                )
+              )
+            }
           ))
         )
     }

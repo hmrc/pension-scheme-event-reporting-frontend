@@ -48,7 +48,7 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
       val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(memberDetails.fullName)).toString))
 
-      MembersDetailsSummary.rowFullName(answers, waypoints, 0, sourcePage, Event1) mustBe Some(
+      MembersDetailsSummary.rowFullName(answers, waypoints, 0, sourcePage, isReadOnly = false, Event1) mustBe Some(
         SummaryListRowViewModel(
           key = "membersDetails.checkYourAnswersLabel",
           value = value,
