@@ -28,7 +28,7 @@
 
 <h1 class="govuk-heading-l">@messages("unauthPaymentSummary.heading", taxYear)</h1>
 
-@components.MembersSummarySearch(searchValue, searchHref, Some("membersSummary.event1.search.hint"))
+@components.MembersSummarySearch(searchValue, searchHref)
 
     @formHelper(action = controllers.event1.routes.UnauthPaymentSummaryController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
