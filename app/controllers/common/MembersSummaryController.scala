@@ -75,9 +75,9 @@ class MembersSummaryController @Inject()(
         val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
         form.bindFromRequest().fold(
           formWithErrors => {
-            val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, 1)
+            val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, 0)
             val searchHref = routes.MembersSummaryController.onPageLoad(waypoints, eventSummaryPath, None).url
-            BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, Index(1), None, searchHref ))
+            BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, Index(0), None, searchHref ))
           },
           value => {
             val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 0), value)

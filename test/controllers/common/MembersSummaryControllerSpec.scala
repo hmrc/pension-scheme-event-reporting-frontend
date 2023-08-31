@@ -226,7 +226,13 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
         
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(form, waypoints, eventType, expectedSeq, totalAmount,
-          selectedTaxYear = "2023", request = request, messages = messages(application), paginationStats = eventPaginationService.paginateMappedMembers(expectedSeq, 1), pageNumber = Index(0)).toString
+          selectedTaxYear = "2023",
+          request = request,
+          messages = messages(application),
+          paginationStats = eventPaginationService.paginateMappedMembers(expectedSeq, 1),
+          pageNumber = Index(0),
+          searchValue = None,
+          searchHref = s"/manage-pension-scheme-event-report/report/event-$eventType-summary").toString
       }
     }
   }
@@ -242,7 +248,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
       val application = applicationBuilder(userAnswers = Some(sampleData)).build()
       val totalNumberOfMembers = 26
 
-      running(application) {
+      running(application) {2
         val request = FakeRequest(GET, getRouteWithPagination(eventType))
         val result = route(application, request).value
         val view = application.injector.instanceOf[MembersSummaryView]
@@ -264,6 +270,8 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           selectedTaxYear = "2023",
           expectedPaginationStats,
           pageNumber = 0,
+          None,
+          "",
           request,
           messages(application)).toString
 
@@ -317,7 +325,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           total = "0.00",
           selectedTaxYear = "2023",
           request = request,
-          messages = messages(application), paginationStats = emptyPageStats, pageNumber = Index(0)).toString
+          messages = messages(application), paginationStats = emptyPageStats, pageNumber = Index(0), searchValue = None, searchHref = s"/manage-pension-scheme-event-report/report/event-$eventType-summary").toString
         verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
       }
     }

@@ -80,7 +80,7 @@ searchHref: String)(implicit request: RequiredSchemeDataRequest[_], messages: Me
                 <ul class="govuk-list">
                     @if((pageNumber.toInt + 1) >= 2) {
                     <li class="govuk-!-display-inline govuk-!-margin-right-2">
-                        <a href="@pageLink(pageNumber.toInt - 1)" id="value-@(pageNumber.toInt)" class="govuk-link">Previous</a>
+                        <a href="@pageLink(pageNumber.toInt - 1)" id="value-@(pageNumber.toInt - 1)" class="govuk-link">Previous</a>
                     </li>
                     }
                     @for(link <- paginationStats.pagerSeq) {

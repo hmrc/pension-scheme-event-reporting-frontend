@@ -27,9 +27,24 @@
 )
 
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberSeq: Seq[SummaryListRowWithThreeValues], total: String, selectedTaxYear: String, paginationStats: PaginationStatsEvent7, pageNumber: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_],
+waypoints: Waypoints,
+eventType: EventType,
+memberSeq: Seq[SummaryListRowWithThreeValues],
+total: String,
+selectedTaxYear: String,
+paginationStats: PaginationStatsEvent7,
+pageNumber: Index,
+searchValue: Option[String],
+searchHref: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+
+@pageLink(pageNumber:Int) = @{controllers.event7.routes.Event7MembersSummaryController.onPageLoadWithPageNumber(waypoints, Index(pageNumber)).url}
 
 @layout(pageTitle = title(form, messages(s"membersSummary.event${eventType.toString}.title", selectedTaxYear))) {
+
+<h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", selectedTaxYear)</h1>
+
+@components.MembersSummarySearch(searchValue, searchHref)
 
     @formHelper(action = controllers.event7.routes.Event7MembersSummaryController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
@@ -37,11 +52,12 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @if((pageNumber.toInt + 1) > paginationStats.totalNumberOfPages) {
-            @govukErrorSummary(ErrorSummaryViewModel(form.withError(FormError("page-nav", Seq("Page number is out of bounds")))))
+        @if(paginationStats.totalNumberOfPages > 1) {
+            @if((pageNumber.toInt + 1) > paginationStats.totalNumberOfPages) {
+                @govukErrorSummary(ErrorSummaryViewModel(form.withError(FormError("page-nav", Seq("Page number is out of bounds")))))
+            }
         }
 
-        <h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", selectedTaxYear)</h1>
 
         @components.entity_summaryFour_table_list(
             paginationStats.slicedMembers,
@@ -54,20 +70,20 @@
             caption = messages(s"membersSummary.event${eventType.toString}.heading", selectedTaxYear)
         )
 
-        @if(paginationStats.pagerSeq) {
+        @if(paginationStats.totalNumberOfPages > 1) {
         <div class="govuk-!-margin-bottom-9" id="page-nav">
             <p class="govuk-body">@(s"Showing ${paginationStats.pageStartAndEnd._1} – ${paginationStats.pageStartAndEnd._2} of ${paginationStats.totalNumberOfMembers} members")</p>
             <nav class="govuk-margin-top-5" aria-label="page">
                 <ul class="govuk-list">
                     @if((pageNumber.toInt + 1) >= 2) {
                     <li class="govuk-!-display-inline govuk-!-margin-right-2">
-                        <a href=@(pageNumber.toInt) id="value-@(pageNumber.toInt)" class="govuk-link">Previous</a>
+                        <a href="@pageLink(pageNumber.toInt - 1)" id="value-@(pageNumber.toInt - 1)" class="govuk-link">Previous</a>
                     </li>
                     }
                     @for(link <- paginationStats.pagerSeq) {
                             @if(link.toInt != (pageNumber.toInt + 1)){
                                 <li class="govuk-!-display-inline govuk-!-margin-right-2">
-                                    <a href=@(link) id="value-@(link)" class="govuk-link">@(link)</a>
+                                    <a href="@pageLink(link - 1)" id="value-@(link)" class="govuk-link">@(link)</a>
                                 </li>
                             } else {
                                 <li class="govuk-!-display-inline govuk-!-margin-right-2">
@@ -77,7 +93,7 @@
                     }
                     @if((pageNumber.toInt + 1) < paginationStats.totalNumberOfPages) {
                     <li class="govuk-!-display-inline">
-                        <a href=@(pageNumber.toInt + 2) id="value-@(pageNumber.toInt + 2)" class="govuk-link">Next</a>
+                        <a href="@pageLink(pageNumber.toInt + 1)" id="value-@(pageNumber.toInt + 1)" class="govuk-link">Next</a>
                     </li>
                     }
                 </ul>
