@@ -16,9 +16,10 @@
 
 @import viewmodels.SummaryListRowWithThreeValues
 @import models.enumeration.EventType
+@import services.EventPaginationService._
 
 @this(
-    layout: templates.SchemeLayout,
+    layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
@@ -26,13 +27,7 @@
 )
 
 
-@(
-        form: Form[_],
-        waypoints: Waypoints,
-        eventType: EventType,
-        memberSeq: Seq[SummaryListRowWithThreeValues],
-        total: String,
-        selectedTaxYear: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberSeq: Seq[SummaryListRowWithThreeValues], total: String, selectedTaxYear: String, paginationStats: PaginationStatsEvent7, pageNumber: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"membersSummary.event${eventType.toString}.title", selectedTaxYear))) {
 
@@ -42,18 +37,53 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        @if((pageNumber.toInt + 1) > paginationStats.totalNumberOfPages) {
+            @govukErrorSummary(ErrorSummaryViewModel(form.withError(FormError("page-nav", Seq("Page number is out of bounds")))))
+        }
+
         <h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", selectedTaxYear)</h1>
 
         @components.entity_summaryFour_table_list(
-            memberSeq,
-            colOne = s"membersSummary.event${eventType.toString}.table.header1",
-            colTwo = s"membersSummary.event${eventType.toString}.table.header2",
-            colThree = s"membersSummary.event${eventType.toString}.table.header3",
-            colFour = s"membersSummary.event${eventType.toString}.table.header4",
+            paginationStats.slicedMembers,
+            colOne = "membersSummary.event7.table.header1",
+            colTwo = "membersSummary.event7.table.header2",
+            colThree = "membersSummary.event7.table.header3",
+            colFour = "membersSummary.event7.table.header4",
             total,
-            totalTitle = s"membersSummary.event${eventType.toString}.table.totalTitle",
+            "membersSummary.event7.table.totalTitle",
             caption = messages(s"membersSummary.event${eventType.toString}.heading", selectedTaxYear)
         )
+
+        @if(paginationStats.pagerSeq) {
+        <div class="govuk-!-margin-bottom-9" id="page-nav">
+            <p class="govuk-body">@(s"Showing ${paginationStats.pageStartAndEnd._1} – ${paginationStats.pageStartAndEnd._2} of ${paginationStats.totalNumberOfMembers} members")</p>
+            <nav class="govuk-margin-top-5" aria-label="page">
+                <ul class="govuk-list">
+                    @if((pageNumber.toInt + 1) >= 2) {
+                    <li class="govuk-!-display-inline govuk-!-margin-right-2">
+                        <a href=@(pageNumber.toInt) id="value-@(pageNumber.toInt)" class="govuk-link">Previous</a>
+                    </li>
+                    }
+                    @for(link <- paginationStats.pagerSeq) {
+                            @if(link.toInt != (pageNumber.toInt + 1)){
+                                <li class="govuk-!-display-inline govuk-!-margin-right-2">
+                                    <a href=@(link) id="value-@(link)" class="govuk-link">@(link)</a>
+                                </li>
+                            } else {
+                                <li class="govuk-!-display-inline govuk-!-margin-right-2">
+                                    @(link)
+                                </li>
+                            }
+                    }
+                    @if((pageNumber.toInt + 1) < paginationStats.totalNumberOfPages) {
+                    <li class="govuk-!-display-inline">
+                        <a href=@(pageNumber.toInt + 2) id="value-@(pageNumber.toInt + 2)" class="govuk-link">Next</a>
+                    </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+        }
 
         @govukRadios(
             RadiosViewModel.yesNo(
@@ -65,5 +95,5 @@
         @govukButton(
             ButtonViewModel(messages("site.saveAndContinue")).withAttribute(("id", "submit"))
         )
-  }
+    }
 }
