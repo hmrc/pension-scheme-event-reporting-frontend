@@ -28,11 +28,25 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberSeq: Seq[SummaryListRowWithTwoValues], total: String, selectedTaxYear: String, paginationStats: PaginationStats, pageNumber: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_],
+waypoints: Waypoints,
+eventType: EventType,
+memberSeq: Seq[SummaryListRowWithTwoValues],
+total: String,
+selectedTaxYear: String,
+paginationStats: PaginationStats,
+pageNumber: Index,
+searchValue: Option[String],
+searchHref: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @pageLink(pageNumber:Int) = @{controllers.common.routes.MembersSummaryController.onPageLoadPaginated(waypoints, MemberSummaryPath(eventType), Index(pageNumber)).url}
 
 @layout(pageTitle = title(form, messages(s"membersSummary.event${eventType.toString}.title", selectedTaxYear))) {
+
+
+<h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", selectedTaxYear)</h1>
+
+@components.MembersSummarySearch(searchValue, searchHref)
 
     @formHelper(action = controllers.common.routes.MembersSummaryController.onSubmit(waypoints, MemberSummaryPath(eventType)), Symbol("autoComplete") -> "off") {
 
@@ -46,7 +60,7 @@
             }
         }
 
-        <h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", selectedTaxYear)</h1>
+
 
         @components.entity_summaryThree_table_list(
             paginationStats.slicedMembers,

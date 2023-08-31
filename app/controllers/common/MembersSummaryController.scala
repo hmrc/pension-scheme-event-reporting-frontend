@@ -47,18 +47,19 @@ class MembersSummaryController @Inject()(
                                           eventPaginationService: EventPaginationService
                                         ) extends FrontendBaseController with I18nSupport with Formatters {
 
-  def onPageLoad(waypoints: Waypoints, eventSummaryPath: MemberSummaryPath): Action[AnyContent] = {
-    onPageLoadPaginated(waypoints, eventSummaryPath, Index(0))
+  def onPageLoad(waypoints: Waypoints, eventSummaryPath: MemberSummaryPath, search:Option[String] = None): Action[AnyContent] = {
+    onPageLoadPaginated(waypoints, eventSummaryPath, Index(0), search)
   }
 
-  def onPageLoadPaginated(waypoints: Waypoints, eventSummaryPath: MemberSummaryPath, pageNumber: Index = Index(0)): Action[AnyContent] = {
+  def onPageLoadPaginated(waypoints: Waypoints, eventSummaryPath: MemberSummaryPath, pageNumber: Index = Index(0), search:Option[String] = None): Action[AnyContent] = {
     val eventType = eventSummaryPath.event
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, pageNumber)
-      Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, pageNumber))
+      val searchHref = routes.MembersSummaryController.onPageLoad(waypoints, eventSummaryPath, None).url
+      Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, pageNumber, search, searchHref))
     }
   }
 
@@ -75,7 +76,8 @@ class MembersSummaryController @Inject()(
         form.bindFromRequest().fold(
           formWithErrors => {
             val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, 1)
-            BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, Index(1)))
+            val searchHref = routes.MembersSummaryController.onPageLoad(waypoints, eventSummaryPath, None).url
+            BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, Index(1), None, searchHref ))
           },
           value => {
             val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 0), value)

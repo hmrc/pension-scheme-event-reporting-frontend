@@ -586,6 +586,6 @@ GET        /cannot-resume                                    controllers.CannotR
 GET         /variations/return-history                           controllers.amend.ReturnHistoryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 GET         /on-click-get-version                                controllers.amend.ReturnHistoryController.onClick(waypoints: Waypoints ?= EmptyWaypoints, version: String)
 
-GET         /report/:memberSummaryPath                         controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, memberSummaryPath: MemberSummaryPath)
-GET         /report/:memberSummaryPath/page/:pageNumber        controllers.common.MembersSummaryController.onPageLoadPaginated(waypoints: Waypoints ?= EmptyWaypoints, memberSummaryPath: MemberSummaryPath, pageNumber: Index)
+GET         /report/:memberSummaryPath                         controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, memberSummaryPath: MemberSummaryPath, search: Option[String]?= None)
+GET         /report/:memberSummaryPath/page/:pageNumber        controllers.common.MembersSummaryController.onPageLoadPaginated(waypoints: Waypoints ?= EmptyWaypoints, memberSummaryPath: MemberSummaryPath, pageNumber: Index, search: Option[String] ?= None)
 POST        /report/:memberSummaryPath                         controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, memberSummaryPath: MemberSummaryPath)
