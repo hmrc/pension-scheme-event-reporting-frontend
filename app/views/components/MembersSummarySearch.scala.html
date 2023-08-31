@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@(value:Option[String], searchHref: String)(implicit messages: Messages)
+@(value:Option[String], searchHref: String, hint:Option[String] = None)(implicit messages: Messages)
 
 <div class="govuk-form-group">
     <h2 class="govuk-label-wrapper"><label class="govuk-label govuk-label--m" for="event-name">
@@ -22,7 +22,7 @@
     </label>
     </h2>
     <div id="event-name-hint" class="govuk-hint">
-        @messages("membersSummary.search.hint")
+        @messages(hint.getOrElse("membersSummary.search.hint"))
     </div>
     <form action="@searchHref" method="GET">
         <input class="govuk-input govuk-!-width-one-half" id="event-name" name="search" type="text" aria-describedby="event-name-hint" value="@value.getOrElse("")">

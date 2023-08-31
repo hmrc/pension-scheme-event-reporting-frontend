@@ -50,10 +50,10 @@ class UnauthPaymentSummaryController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(EventType.Event1) andThen requireData) { implicit request =>
+  def onPageLoad(waypoints: Waypoints, search: Option[String] = None): Action[AnyContent] = (identify andThen getData(EventType.Event1) andThen requireData) { implicit request =>
     val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
-    val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers)
-    Ok(view(form, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers), taxYear))
+    val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers, search.map(_.toLowerCase))
+    Ok(view(form, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers), taxYear, search, routes.UnauthPaymentSummaryController.onPageLoad(waypoints, None).url))
   }
 
   private def sumValue(userAnswers: UserAnswers): String =
@@ -64,8 +64,8 @@ class UnauthPaymentSummaryController @Inject()(
       val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
       form.bindFromRequest().fold(
         formWithErrors => {
-          val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers)
-          BadRequest(view(formWithErrors, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers), taxYear))
+          val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers, None)
+          BadRequest(view(formWithErrors, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers), taxYear, None, routes.UnauthPaymentSummaryController.onPageLoad(waypoints, None).url))
         },
         value => {
           val userAnswerUpdated = request.userAnswers.setOrException(UnauthPaymentSummaryPage, value)
@@ -74,9 +74,14 @@ class UnauthPaymentSummaryController @Inject()(
       )
   }
 
-  private def getMappedMemberOrEmployer(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
+  private def getMappedMemberOrEmployer(userAnswers: UserAnswers, searchTerm: Option[String])(implicit messages: Messages): Seq[SummaryListRow] = {
+    def searchTermFilter(membersSummary: MembersOrEmployersSummary) = searchTerm.forall { searchTerm =>
+      val ninoMatches = membersSummary.nino.exists { nino => nino.toLowerCase.contains(searchTerm) }
+      val companyNumberMatches = membersSummary.companyNumber.exists { companyNumber => companyNumber.toLowerCase.contains(searchTerm) }
+      ninoMatches || membersSummary.name.toLowerCase.contains(searchTerm) || companyNumberMatches
+    }
     userAnswers.getAll(MembersOrEmployersPage(EventType.Event1))(MembersOrEmployersSummary.readsMemberOrEmployer).zipWithIndex.collect {
-      case (memberOrEmployerSummary, index) if !memberOrEmployerSummary.memberStatus.contains("Deleted") =>
+      case (memberOrEmployerSummary, index) if !memberOrEmployerSummary.memberStatus.contains("Deleted") && searchTermFilter(memberOrEmployerSummary) =>
         //TODO PODS-8617: Remove front-end filter. Values should be filtered via MongoDB with an index or by refactor
         val value = ValueViewModel(HtmlFormat.escape(currencyFormatter.format(memberOrEmployerSummary.unauthorisedPaymentValue)).toString)
         SummaryListRow(

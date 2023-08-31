@@ -241,7 +241,7 @@ POST        /report/:index/event-1-member-details                             co
 
 GET         /report/event-1-paying-charges                                    controllers.event1.UnauthPaymentAndSanctionChargesController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET         /report/event-1-summary                                           controllers.event1.UnauthPaymentSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+GET         /report/event-1-summary                                           controllers.event1.UnauthPaymentSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, search:Option[String] ?= None)
 POST        /report/event-1-summary                                           controllers.event1.UnauthPaymentSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /report/:index/event-23-tax-year                                  controllers.common.ChooseTaxYearController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)

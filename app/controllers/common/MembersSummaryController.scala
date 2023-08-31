@@ -55,7 +55,7 @@ class MembersSummaryController @Inject()(
     val eventType = eventSummaryPath.event
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val form = formProvider(eventType)
-      val mappedMembers = getMappedMembers(request.userAnswers, eventType)
+      val mappedMembers = getMappedMembers(request.userAnswers, eventType, search.map(_.toLowerCase))
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, pageNumber)
       val searchHref = routes.MembersSummaryController.onPageLoad(waypoints, eventSummaryPath, None).url
@@ -71,7 +71,7 @@ class MembersSummaryController @Inject()(
     (identify andThen getData(eventType) andThen requireData) {
       implicit request =>
         val form = formProvider(eventType)
-        val mappedMembers = getMappedMembers(request.userAnswers, eventType)
+        val mappedMembers = getMappedMembers(request.userAnswers, eventType, None)
         val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
         form.bindFromRequest().fold(
           formWithErrors => {
@@ -87,9 +87,12 @@ class MembersSummaryController @Inject()(
     }
   }
 
-  private def getMappedMembers(userAnswers: UserAnswers, eventType: EventType)(implicit messages: Messages): Seq[SummaryListRowWithTwoValues] = {
+  private def getMappedMembers(userAnswers: UserAnswers, eventType: EventType, searchTerm: Option[String])(implicit messages: Messages): Seq[SummaryListRowWithTwoValues] = {
+    def searchTermFilter(membersSummary: MembersSummary) = searchTerm.forall { searchTerm =>
+      membersSummary.nINumber.toLowerCase.contains(searchTerm) || membersSummary.name.toLowerCase.contains(searchTerm)
+    }
     userAnswers.getAll(MembersPage(eventType))(MembersSummary.readsMember(eventType)).zipWithIndex.collect {
-      case (memberSummary, index) if !memberSummary.memberStatus.contains("Deleted") =>
+      case (memberSummary, index) if !memberSummary.memberStatus.contains("Deleted") && searchTermFilter(memberSummary) =>
         //TODO PODS-8617: Remove front-end filter. Values should be filtered via MongoDB with an index or by refactor
         SummaryListRowWithTwoValues(
           key = memberSummary.name,
