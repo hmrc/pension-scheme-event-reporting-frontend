@@ -32,7 +32,7 @@ import services.EventPaginationService
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.{Message, SummaryListRowWithTwoValues}
-import views.html.common.{MembersSummaryView, MembersSummaryViewWithPagination}
+import views.html.common.MembersSummaryView
 
 import javax.inject.Inject
 
@@ -44,36 +44,21 @@ class MembersSummaryController @Inject()(
                                           requireData: DataRequiredAction,
                                           formProvider: MembersSummaryFormProvider,
                                           view: MembersSummaryView,
-                                          newView: MembersSummaryViewWithPagination,
                                           eventPaginationService: EventPaginationService
                                         ) extends FrontendBaseController with I18nSupport with Formatters {
 
   def onPageLoad(waypoints: Waypoints, eventSummaryPath: MemberSummaryPath): Action[AnyContent] = {
-    val eventType = eventSummaryPath.event
-    (identify andThen getData(eventType) andThen requireData) { implicit request =>
-      val form = formProvider(eventType)
-      val mappedMembers = getMappedMembers(request.userAnswers, eventType)
-      val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
-      if (mappedMembers.length > 25) {
-        Redirect(routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, eventSummaryPath, 0))
-      } else {
-        Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear))
-      }
-    }
+    onPageLoadPaginated(waypoints, eventSummaryPath, Index(0))
   }
 
-  def onPageLoadWithPageNumber(waypoints: Waypoints, eventSummaryPath: MemberSummaryPath, pageNumber: Index): Action[AnyContent] = {
+  def onPageLoadPaginated(waypoints: Waypoints, eventSummaryPath: MemberSummaryPath, pageNumber: Index = Index(0)): Action[AnyContent] = {
     val eventType = eventSummaryPath.event
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, eventType)
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, pageNumber)
-      if (mappedMembers.length <= 25) {
-        Redirect(routes.MembersSummaryController.onPageLoad(waypoints, eventSummaryPath))
-      } else {
-        Ok(newView(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, pageNumber))
-      }
+      Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, pageNumber))
     }
   }
 
@@ -89,7 +74,8 @@ class MembersSummaryController @Inject()(
         val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
         form.bindFromRequest().fold(
           formWithErrors => {
-            BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear))
+            val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, 1)
+            BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, Index(1)))
           },
           value => {
             val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 0), value)
@@ -121,7 +107,7 @@ class MembersSummaryController @Inject()(
                   case Event8A => controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(index).url
                   case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
                   case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
-                  case _ => "#"
+                  case _ => throw new RuntimeException("Unknown event type")
                 }
               ),
               ActionItem(
