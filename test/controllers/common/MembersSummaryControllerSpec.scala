@@ -248,7 +248,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
       val application = applicationBuilder(userAnswers = Some(sampleData)).build()
       val totalNumberOfMembers = 26
 
-      running(application) {2
+      running(application) {
         val request = FakeRequest(GET, getRouteWithPagination(eventType))
         val result = route(application, request).value
         val view = application.injector.instanceOf[MembersSummaryView]

@@ -42,10 +42,8 @@ class Event7MembersSummaryController @Inject()(
                                                   identify: IdentifierAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
-                                                  userAnswersCacheConnector: UserAnswersCacheConnector,
                                                   formProvider: MembersSummaryFormProvider,
                                                   view: Event7MembersSummaryView,
-                                                  newView: Event7MembersSummaryViewWithPagination,
                                                   eventPaginationService: EventPaginationService
                                                 ) extends FrontendBaseController with I18nSupport with Formatters {
   private val eventType = Event7
