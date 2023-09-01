@@ -21,39 +21,44 @@ import pages.event1.employer.CompanyDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object CompanyDetailsSummary {
 
-  def rowCompanyName(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+  def rowCompanyName(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
                     (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(CompanyDetailsPage(index)).map {
       answer =>
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = "companyDetails.CYA.companyName",
           value = ValueViewModel(HtmlFormat.escape(answer.companyName).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", CompanyDetailsPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("companyDetails.companyName.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", CompanyDetailsPage(index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("companyDetails.companyName.change.hidden"))
+            )))
+          }
         )
     }
 
-  def rowCompanyNumber(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+  def rowCompanyNumber(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
                       (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(CompanyDetailsPage(index)).map {
       answer =>
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = "companyDetails.CYA.companyNumber",
           value = ValueViewModel(HtmlFormat.escape(answer.companyNumber).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", CompanyDetailsPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("companyDetails.companyNumber.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", CompanyDetailsPage(index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("companyDetails.companyNumber.change.hidden"))
+            )))
+          }
         )
     }
 }

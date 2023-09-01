@@ -22,7 +22,7 @@ import pages.event1.member.SchemeDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, HtmlContent}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -35,7 +35,7 @@ object SchemeDetailsSummary {
     )
   }
 
-  def rowSchemeName(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+  def rowSchemeName(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
                    (implicit messages: Messages): Option[SummaryListRow] = {
 
 
@@ -49,18 +49,20 @@ object SchemeDetailsSummary {
     }
 
     Some(
-      SummaryListRowViewModel(
+      SummaryListRow(
         key = "Scheme name",
         value = value.getOrElse(ValueViewModel(StringUtils.EMPTY)),
-        actions = Seq(
-          ActionItemViewModel("site.change", SchemeDetailsPage(index).changeLink(waypoints, sourcePage).url)
-            .withVisuallyHiddenText(messages("schemeName.change.hidden"))
-        )
+        actions = if (isReadOnly) None else {
+          Some(Actions(items = Seq(
+            ActionItemViewModel("site.change", SchemeDetailsPage(index).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("schemeName.change.hidden"))
+          )))
+        }
       )
     )
   }
 
-  def rowSchemeReference(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+  def rowSchemeReference(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
                         (implicit messages: Messages): Option[SummaryListRow] = {
 
     val value = answers.get(SchemeDetailsPage(index)).map {
@@ -73,13 +75,15 @@ object SchemeDetailsSummary {
     }
 
     Some(
-      SummaryListRowViewModel(
+      SummaryListRow(
         key = "Reference",
         value = value.getOrElse(ValueViewModel(StringUtils.EMPTY)),
-        actions = Seq(
-          ActionItemViewModel("site.change", SchemeDetailsPage(index).changeLink(waypoints, sourcePage).url)
-            .withVisuallyHiddenText(messages("schemeReference.change.hidden"))
-        )
+        actions = if (isReadOnly) None else {
+          Some(Actions(items = Seq(
+            ActionItemViewModel("site.change", SchemeDetailsPage(index).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("schemeReference.change.hidden"))
+          )))
+        }
       )
     )
   }

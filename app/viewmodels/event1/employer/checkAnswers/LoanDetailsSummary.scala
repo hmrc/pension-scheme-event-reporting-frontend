@@ -23,6 +23,7 @@ import pages.event1.employer.LoanDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -30,7 +31,7 @@ import viewmodels.implicits._
 
 object LoanDetailsSummary extends Formatters {
 
-  def rowLoanAmount(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+  def rowLoanAmount(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
                    (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(LoanDetailsPage(index)).map {
       answer =>
@@ -41,17 +42,19 @@ object LoanDetailsSummary extends Formatters {
           )
         )
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = "loanDetails.CYA.loanAmountLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", LoanDetailsPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("loanAmount.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", LoanDetailsPage(index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("loanAmount.change.hidden"))
+            )))
+          }
         )
     }
 
-  def rowFundValue(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+  def rowFundValue(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
                   (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(LoanDetailsPage(index)).map {
       answer =>
@@ -62,13 +65,15 @@ object LoanDetailsSummary extends Formatters {
           )
         )
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = "loanDetails.CYA.fundValueLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", LoanDetailsPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("fundAmount.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", LoanDetailsPage(index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("fundAmount.change.hidden"))
+            )))
+          }
         )
     }
 }

@@ -25,6 +25,7 @@ import pages.address.{EnterPostcodePage, ManualAddressPage}
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -50,7 +51,7 @@ object ChooseAddressSummary {
     )
   }
 
-  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, addressJourneyType: AddressJourneyType)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean, addressJourneyType: AddressJourneyType)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
     val rowKey = if (addressJourneyType != Event1EmployerAddressJourney) {
@@ -74,13 +75,15 @@ object ChooseAddressSummary {
           )
         )
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = rowKey,
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages(visuallyHiddenTextKey))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType, index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages(visuallyHiddenTextKey))
+            )))
+          }
         )
     }
   }
