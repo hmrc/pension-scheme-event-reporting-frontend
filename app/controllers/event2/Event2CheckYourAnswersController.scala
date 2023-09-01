@@ -72,8 +72,8 @@ class Event2CheckYourAnswersController @Inject()(
         Event2, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY).toSeq ++
       MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(),
         Event2, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY).toSeq ++
-      AmountPaidSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq ++
-      DatePaidSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq
+      AmountPaidSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq ++
+      DatePaidSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq
   }
 }
 

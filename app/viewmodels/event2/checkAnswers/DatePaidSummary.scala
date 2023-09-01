@@ -23,6 +23,7 @@ import pages.common.MembersDetailsPage
 import pages.event2.DatePaidPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.Event2MemberPageNumbers
 import viewmodels.Message
@@ -33,7 +34,7 @@ import java.time.format.DateTimeFormatter
 
 object DatePaidSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, index: Index)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DatePaidPage(index, Event2)).map {
       answer =>
@@ -43,13 +44,15 @@ object DatePaidSummary {
         val amountPaidHeadingMessage: String = Message("datePaid.event2.checkYourAnswersLabel", beneficiaryName)
         val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = amountPaidHeadingMessage,
           value = ValueViewModel(answer.format(dateFormatter)),
-          actions = Seq(
-            ActionItemViewModel("site.change", DatePaidPage(index, Event2).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("datePaid.event2.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", DatePaidPage(index, Event2).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("datePaid.event2.change.hidden"))
+            )))
+          }
         )
     }
 }

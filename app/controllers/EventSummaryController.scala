@@ -209,7 +209,7 @@ class EventSummaryController @Inject()(
            EventType.Event4 | EventType.Event5 |
            EventType.Event6 | EventType.Event8 |
            EventType.Event8A | EventType.Event22 |
-           EventType.Event23 => Some("#")
+           EventType.Event23 => Some(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, eventType).url)
       case EventType.Event7 => Some("#")
       case EventType.Event10 => Some(controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
       case EventType.Event11 => Some(controllers.event11.routes.Event11CheckYourAnswersController.onPageLoad.url)

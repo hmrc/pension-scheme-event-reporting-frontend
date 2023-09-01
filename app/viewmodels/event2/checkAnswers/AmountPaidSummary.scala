@@ -22,6 +22,7 @@ import models.{Index, UserAnswers}
 import pages.event2.AmountPaidPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.BeneficiaryDetailsEvent2.getBeneficiaryName
@@ -30,17 +31,19 @@ import viewmodels.implicits._
 
 object AmountPaidSummary extends Formatters {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, index: Index)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AmountPaidPage(index, Event2)).map {
       answer =>
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = messages("amountPaid.event2.checkYourAnswersLabel", getBeneficiaryName(Some(answers), index)),
           value = ValueViewModel(Text(s"£${currencyFormatter.format(answer)}")),
-          actions = Seq(
-            ActionItemViewModel("site.change", AmountPaidPage(index, Event2).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("amountPaid.event2.change.hidden", getBeneficiaryName(Some(answers), index)))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", AmountPaidPage(index, Event2).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("amountPaid.event2.change.hidden", getBeneficiaryName(Some(answers), index)))
+            )))
+          }
         )
     }
 }
