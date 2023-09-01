@@ -51,7 +51,6 @@ class MembersSummaryController @Inject()(
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val form = formProvider(eventType)
-      println(s"\n\n\n MembersSummaryController.onPageLoad ${request.userAnswers}")
       val mappedMembers = getMappedMembers(request.userAnswers, eventType, request.readOnly())
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       if (mappedMembers.length > 25) {
@@ -126,7 +125,6 @@ class MembersSummaryController @Inject()(
   }
 
   private def hrefBasedOnEvent(eventType: EventType, index: Index): String = {
-    println(s"hrefBasedOnEvent() eventType $eventType and index $index")
     eventType match {
       case Event2 => controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(index).url
       case Event3 => controllers.event3.routes.Event3CheckYourAnswersController.onPageLoad(index).url
