@@ -53,8 +53,8 @@ object MembersOrEmployersSummary {
 
   private def readsEmployerSummary(implicit messages: Messages): Reads[MembersOrEmployersSummary] =
     (
-      (JsPath \ s"event${Event1.toString}" \ "companyDetails" \ "companyName").readNullable[String] and
-        (JsPath \ s"event${Event1.toString}" \ "companyDetails" \ "companyNumber").readNullable[String] and
+      (JsPath \ s"event1" \ "companyDetails" \ "companyName").readNullable[String] and
+        (JsPath \ s"event1" \ "companyDetails" \ "companyNumber").readNullable[String] and
         readsMemberOrEmployerValue and
         (JsPath \ "memberStatus").readNullable[String]
       ) (
