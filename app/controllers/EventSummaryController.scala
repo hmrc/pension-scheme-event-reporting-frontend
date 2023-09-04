@@ -20,7 +20,7 @@ import connectors.EventReportingConnector
 import controllers.actions._
 import forms.EventSummaryFormProvider
 import models.TaxYear.getSelectedTaxYearAsString
-import models.{EventSummary, UserAnswers}
+import models.{EventSummary, MemberSummaryPath, UserAnswers}
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event18, Event20A, Event8A, WindUp}
 import models.requests.DataRequest
@@ -156,7 +156,7 @@ class EventSummaryController @Inject()(
            EventType.Event4 | EventType.Event5 |
            EventType.Event6 | EventType.Event8 |
            EventType.Event8A | EventType.Event22 |
-           EventType.Event23 => Some(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, eventType).url)
+           EventType.Event23 => Some(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(eventType)).url)
       case EventType.Event7 => Some(controllers.event7.routes.Event7MembersSummaryController.onPageLoad(EmptyWaypoints).url)
       case EventType.Event10 => Some(controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
       case EventType.Event11 => Some(controllers.event11.routes.Event11CheckYourAnswersController.onPageLoad.url)

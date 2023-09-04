@@ -18,7 +18,7 @@ package controllers.event5
 
 import base.SpecBase
 import data.SampleData.sampleMemberJourneyDataEvent3and4and5
-import models.VersionInfo
+import models.{MemberSummaryPath, VersionInfo}
 import models.enumeration.EventType.Event5
 import models.enumeration.VersionStatus.Compiled
 import org.mockito.ArgumentCaptor
@@ -131,7 +131,7 @@ class Event5CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event5).url
+        redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event5)).url
         verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any(), any())
       }
     }

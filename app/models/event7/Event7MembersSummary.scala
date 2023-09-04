@@ -25,7 +25,8 @@ case class Event7MembersSummary(
                                  name: String,
                                  PaymentValue: BigDecimal,
                                  PaymentValueTwo: BigDecimal,
-                                 nINumber: String
+                                 nINumber: String,
+                                 memberStatus: Option[String]
                                )
 
 object Event7MembersSummary {
@@ -47,20 +48,21 @@ object Event7MembersSummary {
     (
       (JsPath \ "membersDetails" \ "firstName").readNullable[String] and
         (JsPath \ "membersDetails" \ "lastName").readNullable[String] and
+        (JsPath  \ "memberStatus").readNullable[String] and
         readsLumpSumValue and
         readsCrystallisedValue and
         readsNINumber
       ) (
-      (firstName, lastName, paymentValue, paymentValueTwo, nINumber) => {
-        (firstName, lastName, paymentValue, paymentValueTwo, nINumber) match {
-          case (Some(fn), Some(ln), _, _, _) =>
-            Event7MembersSummary(fn + " " + ln, paymentValue, paymentValueTwo,  nINumber)
-          case (None, Some(ln), _, _, _) =>
-            Event7MembersSummary(ln, paymentValue, paymentValueTwo,  nINumber)
-          case (Some(fn), None, _, _, _) =>
-            Event7MembersSummary(fn, paymentValue, paymentValueTwo, nINumber)
-          case (None, None, _, _, _) =>
-            Event7MembersSummary(messages("site.notEntered"), paymentValue, paymentValueTwo,  nINumber)
+      (firstName, lastName, memberStatus, paymentValue, paymentValueTwo, nINumber) => {
+        (firstName, lastName, memberStatus, paymentValue, paymentValueTwo, nINumber) match {
+          case (Some(fn), Some(ln), _, _, _, _) =>
+            Event7MembersSummary(fn + " " + ln, paymentValue, paymentValueTwo,  nINumber, memberStatus)
+          case (None, Some(ln), _, _, _, _) =>
+            Event7MembersSummary(ln, paymentValue, paymentValueTwo,  nINumber, memberStatus)
+          case (Some(fn), None, _, _, _, _) =>
+            Event7MembersSummary(fn, paymentValue, paymentValueTwo, nINumber, memberStatus)
+          case (None, None, _, _, _, _) =>
+            Event7MembersSummary(messages("site.notEntered"), paymentValue, paymentValueTwo,  nINumber, memberStatus)
         }
       }
     )

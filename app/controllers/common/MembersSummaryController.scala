@@ -23,7 +23,7 @@ import models.TaxYear.getSelectedTaxYearAsString
 import models.common.MembersSummary
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event2, Event22, Event23, Event3, Event4, Event5, Event6, Event8, Event8A}
-import models.{Index, UserAnswers}
+import models.{MemberSummaryPath, Index, UserAnswers}
 import pages.{EmptyWaypoints, Waypoints}
 import pages.common.{MembersPage, MembersSummaryPage}
 import play.api.i18n.{I18nSupport, Messages}
@@ -32,7 +32,7 @@ import services.EventPaginationService
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.{Message, SummaryListRowWithTwoValues}
-import views.html.common.{MembersSummaryView, MembersSummaryViewWithPagination}
+import views.html.common.MembersSummaryView
 
 import javax.inject.Inject
 
@@ -44,57 +44,55 @@ class MembersSummaryController @Inject()(
                                           requireData: DataRequiredAction,
                                           formProvider: MembersSummaryFormProvider,
                                           view: MembersSummaryView,
-                                          newView: MembersSummaryViewWithPagination,
                                           eventPaginationService: EventPaginationService
                                         ) extends FrontendBaseController with I18nSupport with Formatters {
 
-  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] =
-    (identify andThen getData(eventType) andThen requireData) { implicit request =>
-      val form = formProvider(eventType)
-      val mappedMembers = getMappedMembers(request.userAnswers, eventType)
-      val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
-      if (mappedMembers.length > 25) {
-        Redirect(routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, eventType, 0))
-      } else {
-        Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear))
-      }
-    }
+  def onPageLoad(waypoints: Waypoints, eventSummaryPath: MemberSummaryPath, search:Option[String] = None): Action[AnyContent] = {
+    onPageLoadPaginated(waypoints, eventSummaryPath, Index(0), search)
+  }
 
-  def onPageLoadWithPageNumber(waypoints: Waypoints, eventType: EventType, pageNumber: Index): Action[AnyContent] =
+  def onPageLoadPaginated(waypoints: Waypoints, eventSummaryPath: MemberSummaryPath, pageNumber: Index = Index(0), search:Option[String] = None): Action[AnyContent] = {
+    val eventType = eventSummaryPath.event
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val form = formProvider(eventType)
-      val mappedMembers = getMappedMembers(request.userAnswers, eventType)
+      val mappedMembers = getMappedMembers(request.userAnswers, eventType, search.map(_.toLowerCase))
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, pageNumber)
-      if (mappedMembers.length <= 25) {
-        Redirect(routes.MembersSummaryController.onPageLoad(waypoints, eventType))
-      } else {
-        Ok(newView(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, pageNumber))
-      }
+      val searchHref = routes.MembersSummaryController.onPageLoad(waypoints, eventSummaryPath, None).url
+      Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, pageNumber, search, searchHref))
     }
+  }
 
   private def sumValue(userAnswers: UserAnswers, eventType: EventType) =
     currencyFormatter.format(userAnswers.sumAll(MembersPage(eventType), MembersSummary.readsMemberValue(eventType)))
 
-  def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
-    implicit request =>
-      val form = formProvider(eventType)
-      val mappedMembers = getMappedMembers(request.userAnswers, eventType)
-      val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear))
-        },
-        value => {
-          val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 0), value)
-          Redirect(MembersSummaryPage(eventType, 0).navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)
-        }
-      )
+  def onSubmit(waypoints: Waypoints, eventSummaryPath: MemberSummaryPath): Action[AnyContent] = {
+    val eventType = eventSummaryPath.event
+    (identify andThen getData(eventType) andThen requireData) {
+      implicit request =>
+        val form = formProvider(eventType)
+        val mappedMembers = getMappedMembers(request.userAnswers, eventType, None)
+        val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
+        form.bindFromRequest().fold(
+          formWithErrors => {
+            val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, 0)
+            val searchHref = routes.MembersSummaryController.onPageLoad(waypoints, eventSummaryPath, None).url
+            BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, Index(0), None, searchHref ))
+          },
+          value => {
+            val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 0), value)
+            Redirect(MembersSummaryPage(eventType, 0).navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)
+          }
+        )
+    }
   }
 
-  private def getMappedMembers(userAnswers: UserAnswers, eventType: EventType)(implicit messages: Messages): Seq[SummaryListRowWithTwoValues] = {
+  private def getMappedMembers(userAnswers: UserAnswers, eventType: EventType, searchTerm: Option[String])(implicit messages: Messages): Seq[SummaryListRowWithTwoValues] = {
+    def searchTermFilter(membersSummary: MembersSummary) = searchTerm.forall { searchTerm =>
+      membersSummary.nINumber.toLowerCase.contains(searchTerm) || membersSummary.name.toLowerCase.contains(searchTerm)
+    }
     userAnswers.getAll(MembersPage(eventType))(MembersSummary.readsMember(eventType)).zipWithIndex.collect {
-      case (memberSummary, index) if !memberSummary.memberStatus.contains("Deleted") =>
+      case (memberSummary, index) if !memberSummary.memberStatus.contains("Deleted") && searchTermFilter(memberSummary) =>
         //TODO PODS-8617: Remove front-end filter. Values should be filtered via MongoDB with an index or by refactor
         SummaryListRowWithTwoValues(
           key = memberSummary.name,
@@ -114,7 +112,7 @@ class MembersSummaryController @Inject()(
                   case Event8A => controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(index).url
                   case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
                   case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
-                  case _ => "#"
+                  case _ => throw new RuntimeException("Unknown event type")
                 }
               ),
               ActionItem(

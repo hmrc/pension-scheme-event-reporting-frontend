@@ -23,6 +23,7 @@ import data.SampleData.{memberDetails, sampleMemberJourneyDataEvent7}
 import forms.common.MembersSummaryFormProvider
 import forms.mappings.Formatters
 import helpers.DateHelper
+import models.Index
 import models.enumeration.EventType.Event7
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -35,7 +36,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.EventPaginationService
-import services.EventPaginationService.PaginationStatsEvent7
+import services.EventPaginationService.{PaginationStats, PaginationStatsEvent7}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import viewmodels.{Message, SummaryListRowWithThreeValues}
 import views.html.event7.Event7MembersSummaryView
@@ -77,6 +78,8 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
         val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent7)).build()
 
+        val eventPaginationService = application.injector.instanceOf[EventPaginationService]
+
         running(application) {
           val request = FakeRequest(GET, getRouteEvent7)
 
@@ -107,7 +110,8 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent7, waypoints, Event7, expectedSeq, "150.00", "2023")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(formEvent7, waypoints, Event7, expectedSeq, "150.00", "2023", eventPaginationService.paginateMappedMembersThreeValues(expectedSeq, 1), Index(0), searchValue = None,
+            searchHref = "/manage-pension-scheme-event-report/report/event-7-summary")(request, messages(application)).toString
         }
       }
       /* TODO: Temporarily disabled pagination test due to performance issues. -Pavel Vjalicin
@@ -159,6 +163,8 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
       "must return bad request when invalid data is submitted" in {
         when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(()))
+        val emptyPageStats = PaginationStatsEvent7(Seq(), 0, 1, (0, 1), Seq())
+        when(mockEventPaginationService.paginateMappedMembersThreeValues(any(), any())).thenReturn(emptyPageStats)
 
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
@@ -174,7 +180,7 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event7, Nil, "0.00", "2023")(request, messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, waypoints, Event7, Nil, "0.00", "2023", emptyPageStats, Index(0), None, "/manage-pension-scheme-event-report/report/event-7-summary")(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
         }
       }

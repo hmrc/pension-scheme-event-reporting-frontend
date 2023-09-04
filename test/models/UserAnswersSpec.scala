@@ -46,8 +46,8 @@ class UserAnswersSpec extends SpecBase with Matchers {
   "getAll" - {
     "must return the list of members or employers" in {
       userAnswersWithOneMemberAndEmployerEvent1.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
-        Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00), None),
-          MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00), None))
+        Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00), None, Some(SampleData.memberDetails.nino)),
+          MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00), None, companyNumber = Some(SampleData.companyDetails.companyNumber)))
     }
 
     "must return empty list if nothing present" in {
@@ -62,7 +62,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
         .setOrException(CompanyDetailsPage(1), companyDetails)
       userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
         Seq(MembersOrEmployersSummary("Not entered", BigDecimal(0.00), None),
-          MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00), None))
+          MembersOrEmployersSummary(SampleData.companyDetails.companyName, BigDecimal(7687.00), None, companyNumber = Some(SampleData.companyDetails.companyNumber)))
     }
 
     "must return the list of members or employers where employer value and employer details missing" in {
@@ -72,7 +72,7 @@ class UserAnswersSpec extends SpecBase with Matchers {
         .setOrException(MembersDetailsPage(Event1, 0), memberDetails)
         .setOrException(WhoReceivedUnauthPaymentPage(1), Employer)
       userAnswersWithOneMemberAndEmployer.getAll(MembersOrEmployersPage(Event1))(MembersOrEmployersSummary.readsMemberOrEmployer) mustBe
-        Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00), None),
+        Seq(MembersOrEmployersSummary(SampleData.memberDetails.fullName, BigDecimal(857.00), None, nino = Some(SampleData.memberDetails.nino)),
           MembersOrEmployersSummary("Not entered", BigDecimal(0.00), None))
     }
     "must return the list of members or employers if only first question answered" in {

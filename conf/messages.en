@@ -367,6 +367,10 @@ membersSummary.event2.table.header2 = National Insurance number
 membersSummary.event2.table.header3 = Amount paid
 membersSummary.event2.table.totalTitle = Total not required
 
+membersSummary.search.title = Search for a member
+membersSummary.search.hint = Search by name or National Insurance number
+membersSummary.search = Search
+
 doYouHoldSignedMandate.title = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.heading = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?
 doYouHoldSignedMandate.checkYourAnswersLabel = Do you hold a signed mandate from the member to deduct tax from their unauthorised payment?

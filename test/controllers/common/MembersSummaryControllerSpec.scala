@@ -24,7 +24,7 @@ import data.SampleData
 import data.SampleData._
 import forms.common.MembersSummaryFormProvider
 import helpers.DateHelper
-import models.UserAnswers
+import models.{Index, MemberSummaryPath, UserAnswers}
 import models.enumeration.EventType
 import models.enumeration.EventType._
 import org.mockito.ArgumentMatchers.any
@@ -42,7 +42,7 @@ import services.EventPaginationService
 import services.EventPaginationService.PaginationStats
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import viewmodels.{Message, SummaryListRowWithTwoValues}
-import views.html.common.{MembersSummaryView, MembersSummaryViewWithPagination}
+import views.html.common.MembersSummaryView
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -66,11 +66,10 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
     bind[DateHelper].toInstance(mockTaxYear)
   )
 
-  private def getRoute(eventType: EventType): String = routes.MembersSummaryController.onPageLoad(waypoints, eventType).url
+  private def getRoute(eventType: EventType): String = routes.MembersSummaryController.onPageLoad(waypoints, MemberSummaryPath(eventType)).url
+  private def getRouteWithPagination(eventType: EventType): String = routes.MembersSummaryController.onPageLoadPaginated(waypoints, MemberSummaryPath(eventType), 0).url
 
-  private def getRouteWithPagination(eventType: EventType): String = routes.MembersSummaryController.onPageLoadWithPageNumber(waypoints, eventType, 0).url
-
-  private def postRoute(eventType: EventType): String = routes.MembersSummaryController.onSubmit(waypoints, eventType).url
+  private def postRoute(eventType: EventType): String = routes.MembersSummaryController.onSubmit(waypoints, MemberSummaryPath(eventType)).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -198,6 +197,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
                                          totalAmount: String): Unit = {
     s"must return OK and the correct view for a GET for Event $eventType" in {
       val application = applicationBuilder(userAnswers = Some(sampleData)).build()
+      val eventPaginationService = application.injector.instanceOf[EventPaginationService]
 
       running(application) {
         val request = FakeRequest(GET, getRoute(eventType))
@@ -223,9 +223,16 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
                 )
               ))
             ))
+        
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(form, waypoints, eventType, expectedSeq, totalAmount,
-          selectedTaxYear = "2023", request = request, messages = messages(application)).toString
+          selectedTaxYear = "2023",
+          request = request,
+          messages = messages(application),
+          paginationStats = eventPaginationService.paginateMappedMembers(expectedSeq, 1),
+          pageNumber = Index(0),
+          searchValue = None,
+          searchHref = s"/manage-pension-scheme-event-report/report/event-$eventType-summary").toString
       }
     }
   }
@@ -244,7 +251,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
       running(application) {
         val request = FakeRequest(GET, getRouteWithPagination(eventType))
         val result = route(application, request).value
-        val view = application.injector.instanceOf[MembersSummaryViewWithPagination]
+        val view = application.injector.instanceOf[MembersSummaryView]
 
         val expectedPaginationStats = PaginationStats(
           slicedMembers = fake26MappedMembers(href, eventType),
@@ -263,6 +270,8 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           selectedTaxYear = "2023",
           expectedPaginationStats,
           pageNumber = 0,
+          None,
+          "",
           request,
           messages(application)).toString
 
@@ -297,7 +306,8 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
     s"must return bad request when invalid data is submitted for Event $eventType" in {
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
-
+      val emptyPageStats = PaginationStats(Seq(), 0, 1, (0,1),Seq())
+      when(mockEventPaginationService.paginateMappedMembers(any(), any())).thenReturn(emptyPageStats)
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
       running(application) {
@@ -315,7 +325,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           total = "0.00",
           selectedTaxYear = "2023",
           request = request,
-          messages = messages(application)).toString
+          messages = messages(application), paginationStats = emptyPageStats, pageNumber = Index(0), searchValue = None, searchHref = s"/manage-pension-scheme-event-report/report/event-$eventType-summary").toString
         verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
       }
     }
