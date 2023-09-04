@@ -16,7 +16,6 @@
 
 package models.event1
 
-import models.enumeration.EventType.Event1
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import pages.event1.WhoReceivedUnauthPaymentPage
 import play.api.i18n.Messages
