@@ -28,7 +28,7 @@ object MemberSummaryPath {
       if(splitString.length == 3) {
         val eventName = splitString(1)
         EventType.mapOfEvents.get(eventName)
-          .map(x => Right(MemberSummaryPath(x))).getOrElse(Left("Unknown event type"))
+          .map(eventName => Right(MemberSummaryPath(eventName))).getOrElse(Left("Unknown event type"))
       } else {
         Left("Unknown url format")
       }
