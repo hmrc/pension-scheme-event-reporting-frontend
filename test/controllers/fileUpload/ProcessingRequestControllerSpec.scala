@@ -30,8 +30,9 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import scala.concurrent.duration._
 
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
 
 class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
@@ -49,7 +50,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
   }
 
   "ProcessingRequest Controller" - {
-    for (event <- seqOfEvents) {
+    seqOfEvents.map { event =>
       testReturnOkAndCorrectViewWhenOutcomeSuccess(event)
       testReturnOkAndCorrectViewWhenOutcomeGeneralError(event)
       testReturnOkAndCorrectViewWhenValidationErrorsLessThan10(event)
@@ -73,6 +74,8 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       redirectLocation(result).value mustEqual routes.FileUploadSuccessController.onPageLoad(waypoints, eventType).url
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
+
+      Await.result(application.stop(), 10.seconds)
     }
   }
 
@@ -92,6 +95,8 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       redirectLocation(result).value mustEqual routes.ProblemWithServiceController.onPageLoad(waypoints, eventType).url
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
+
+      Await.result(application.stop(), 10.seconds)
     }
   }
 
@@ -111,6 +116,8 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       redirectLocation(result).value mustEqual routes.ValidationErrorsAllController.onPageLoad(waypoints, eventType).url
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
+
+      Await.result(application.stop(), 10.seconds)
     }
   }
 
@@ -130,6 +137,8 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       redirectLocation(result).value mustEqual routes.ValidationErrorsSummaryController.onPageLoad(waypoints, eventType).url
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
+
+      Await.result(application.stop(), 10.seconds)
     }
   }
 }

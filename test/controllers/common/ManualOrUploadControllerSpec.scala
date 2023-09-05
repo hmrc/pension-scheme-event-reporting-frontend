@@ -30,6 +30,9 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.common.ManualOrUploadView
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
 class ManualOrUploadControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val seqOfEvents = Seq(Event1, Event6, Event22, Event23)
@@ -64,6 +67,8 @@ class ManualOrUploadControllerSpec extends SpecBase with BeforeAndAfterEach with
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(form(eventType), waypoints, eventType, index = 0, request, messages(application)).toString
       }
+
+      Await.result(application.stop(), 10.seconds)
     }
   }
 
@@ -79,6 +84,8 @@ class ManualOrUploadControllerSpec extends SpecBase with BeforeAndAfterEach with
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ManualOrUploadPage(eventType, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
       }
+
+      Await.result(application.stop(), 10.seconds)
     }
   }
 
@@ -97,6 +104,8 @@ class ManualOrUploadControllerSpec extends SpecBase with BeforeAndAfterEach with
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view.render(boundForm, waypoints, eventType, index = 0, request, messages(application)).toString
       }
+
+      Await.result(application.stop(), 10.seconds)
     }
   }
 
