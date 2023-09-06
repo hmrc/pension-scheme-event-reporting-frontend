@@ -22,13 +22,14 @@ import pages.event8.{TypeOfProtectionPage, TypeOfProtectionReferencePage}
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object TypeOfProtectionReferenceSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Int)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, eventType: EventType, index: Int)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
     val protectionType = answers.get(TypeOfProtectionPage(eventType, index)) match {
@@ -39,15 +40,17 @@ object TypeOfProtectionReferenceSummary {
     answers.get(TypeOfProtectionReferencePage(eventType, index)).map {
       answer =>
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = messages(s"typeOfProtectionReference.checkYourAnswersLabel",
             messages(s"event8.typeOfProtection.${protectionType.toString}").toLowerCase()),
           value = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
             ActionItemViewModel("site.change", TypeOfProtectionReferencePage(eventType, index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("typeOfProtectionReference.change.hidden",
                 messages(s"event8.typeOfProtection.${protectionType.toString}").toLowerCase()))
-          )
+          )))
+          }
         )
     }
   }

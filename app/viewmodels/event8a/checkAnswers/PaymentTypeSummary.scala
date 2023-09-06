@@ -16,12 +16,13 @@
 
 package viewmodels.event8a.checkAnswers
 
-import models.enumeration.EventType
+import models.enumeration.EventType.Event8A
 import models.{Index, UserAnswers}
 import pages.event8a.PaymentTypePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -29,9 +30,9 @@ import viewmodels.implicits._
 
 object PaymentTypeSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, eventType: EventType)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(PaymentTypePage(eventType, index)).map {
+    answers.get(PaymentTypePage(Event8A, index)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -40,13 +41,15 @@ object PaymentTypeSummary {
           )
         )
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = messages("paymentType.checkYourAnswersLabel"),
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", PaymentTypePage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentType.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", PaymentTypePage(Event8A, index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("paymentType.change.hidden"))
+            )))
+          }
         )
     }
 }
