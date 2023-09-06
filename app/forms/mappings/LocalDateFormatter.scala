@@ -16,6 +16,7 @@
 
 package forms.mappings
 
+import forms.mappings.LocalDateFormatter.monthStringConverter
 import helpers.DateHelper
 import models.TaxYearValidationDetail
 import play.api.data.FormError
@@ -70,13 +71,6 @@ private[mappings] class LocalDateFormatter(
 
   private def formatDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
-    val dataWithWhitespaceRemoved = for { tuple <- data } yield {
-      tuple._1 match {
-        case "csrfToken" => tuple
-        case _ => (tuple._1, tuple._2.filterNot(_.isWhitespace))
-      }
-    }
-
     val int = intFormatter(
       requiredKey = invalidKey,
       wholeNumberKey = invalidKey,
@@ -84,10 +78,24 @@ private[mappings] class LocalDateFormatter(
       args
     )
 
+    val dataWithWhitespaceRemoved = for { tuple <- data } yield {
+      tuple._1 match {
+        case "csrfToken" => tuple
+        case _ => (tuple._1, tuple._2.filterNot(_.isWhitespace))
+      }
+    }
+
+    val dataWithConvertedMonth = for { tuple <- dataWithWhitespaceRemoved } yield {
+      tuple._1 match {
+        case s"$key.month" => (tuple._1, monthStringConverter(tuple._2))
+        case _ => tuple
+      }
+    }
+
     for {
-      day <- int.bind(s"$key.day", dataWithWhitespaceRemoved)
-      month <- int.bind(s"$key.month", dataWithWhitespaceRemoved)
-      year <- int.bind(s"$key.year", dataWithWhitespaceRemoved)
+      day <- int.bind(s"$key.day", dataWithConvertedMonth)
+      month <- int.bind(s"$key.month", dataWithConvertedMonth)
+      year <- int.bind(s"$key.year", dataWithConvertedMonth)
       date <- tryLocalDate((day, month, year): (Int, Int, Int))
     } yield date
   }
@@ -139,4 +147,25 @@ private[mappings] class LocalDateFormatter(
       s"$key.month" -> value.getMonthValue.toString,
       s"$key.year" -> value.getYear.toString
     )
+}
+
+object LocalDateFormatter {
+
+  val monthStringConverter: String => String = input => {
+    input.toUpperCase match {
+      case "JAN" | "JANUARY"    => "1"
+      case "FEB" | "FEBRUARY"   => "2"
+      case "MAR" | "MARCH"      => "3"
+      case "APR" | "APRIL"      => "4"
+      case "MAY"                => "5"
+      case "JUN" | "JUNE"       => "6"
+      case "JUL" | "JULY"       => "7"
+      case "AUG" | "AUGUST"     => "8"
+      case "SEP" | "SEPTEMBER"  => "9"
+      case "OCT" | "OCTOBER"    => "10"
+      case "NOV" | "NOVEMBER"   => "11"
+      case "DEC" | "DECEMBER"   => "12"
+      case _ => input
+    }
+  }
 }
