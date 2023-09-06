@@ -65,7 +65,7 @@ class Event5CheckYourAnswersController @Inject()(
                                 (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event5).toSeq ++
       MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event5).toSeq ++
-      PaymentDetailsSummary.rowAmountPaid(request.userAnswers, waypoints, sourcePage, Event5, index).toSeq ++
-      PaymentDetailsSummary.rowEventDate(request.userAnswers, waypoints, sourcePage, Event5, index).toSeq
+      PaymentDetailsSummary.rowAmountPaid(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event5, index).toSeq ++
+      PaymentDetailsSummary.rowEventDate(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event5, index).toSeq
   }
 }

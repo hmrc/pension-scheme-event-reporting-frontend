@@ -29,21 +29,22 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event3.checkAnswers
 
 import models.{Index, UserAnswers}
 import pages.{CheckAnswersPage, Waypoints}
 import pages.event3.ReasonForBenefitsPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object ReasonForBenefitsSummary  {
+object ReasonForBenefitsSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(ReasonForBenefitsPage(index)).map {
       answer =>
@@ -54,13 +55,15 @@ object ReasonForBenefitsSummary  {
           )
         )
 
-        SummaryListRowViewModel(
-          key     = "reasonForBenefits.event3.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", ReasonForBenefitsPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("reasonForBenefits.event3.change.hidden"))
-          )
+        SummaryListRow(
+          key = "reasonForBenefits.event3.checkYourAnswersLabel",
+          value = value,
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", ReasonForBenefitsPage(index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("reasonForBenefits.event3.change.hidden"))
+            )))
+          }
         )
     }
 }

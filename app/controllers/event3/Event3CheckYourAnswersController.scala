@@ -29,9 +29,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.{MembersDetailsSummary, ReasonForBenefitsSummary}
+import viewmodels.checkAnswers.MembersDetailsSummary
 import viewmodels.common.checkAnswers.PaymentDetailsSummary
-import viewmodels.event3.checkAnswers.EarlyBenefitsBriefDescriptionSummary
+import viewmodels.event3.checkAnswers.{EarlyBenefitsBriefDescriptionSummary, ReasonForBenefitsSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -67,7 +67,7 @@ class Event3CheckYourAnswersController @Inject()(
   private def event3ReasonForBenefitsRows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)
                                          (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     request.userAnswers.get(ReasonForBenefitsPage(index)) match {
-      case Some(Other) => EarlyBenefitsBriefDescriptionSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
+      case Some(Other) => EarlyBenefitsBriefDescriptionSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq
       case _ => Nil
     }
   }
@@ -76,9 +76,9 @@ class Event3CheckYourAnswersController @Inject()(
                                 (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event3).toSeq ++
       MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event3).toSeq ++
-      ReasonForBenefitsSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
+      ReasonForBenefitsSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
       event3ReasonForBenefitsRows(waypoints, sourcePage, index) ++
-      PaymentDetailsSummary.rowAmountPaid(request.userAnswers, waypoints, sourcePage, Event3, index).toSeq ++
-      PaymentDetailsSummary.rowEventDate(request.userAnswers, waypoints, sourcePage, Event3, index).toSeq
+      PaymentDetailsSummary.rowAmountPaid(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event3, index).toSeq ++
+      PaymentDetailsSummary.rowEventDate(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event3, index).toSeq
   }
 }
