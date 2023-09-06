@@ -16,22 +16,22 @@
 
 package viewmodels.event6.checkAnswers
 
-import models.enumeration.EventType
+import models.enumeration.EventType.Event6
 import models.{Index, UserAnswers}
 import pages.event6.TypeOfProtectionPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, HtmlContent}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object TypeOfProtectionSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, eventType: EventType)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TypeOfProtectionPage(eventType, index)).map {
+    answers.get(TypeOfProtectionPage(Event6, index)).map {
       answer =>
         val value = ValueViewModel(
           HtmlContent(
@@ -39,13 +39,15 @@ object TypeOfProtectionSummary {
           )
         )
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = "typeOfProtection.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", TypeOfProtectionPage(eventType, index).changeLink(waypoints, sourcePage).url)
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+            ActionItemViewModel("site.change", TypeOfProtectionPage(Event6, index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("typeOfProtection.change.hidden"))
-          )
+          )))
+          }
         )
     }
 }

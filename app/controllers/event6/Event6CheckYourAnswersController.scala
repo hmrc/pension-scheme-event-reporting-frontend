@@ -36,14 +36,14 @@ import views.html.CheckYourAnswersView
 import scala.concurrent.ExecutionContext
 
 class Event6CheckYourAnswersController @Inject()(
-                                                   override val messagesApi: MessagesApi,
-                                                   identify: IdentifierAction,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   compileService: CompileService,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: CheckYourAnswersView
-                                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                  override val messagesApi: MessagesApi,
+                                                  identify: IdentifierAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  compileService: CompileService,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: CheckYourAnswersView
+                                                )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (identify andThen getData(Event6) andThen requireData) { implicit request =>
@@ -62,12 +62,12 @@ class Event6CheckYourAnswersController @Inject()(
     }
 
   private def buildEvent6CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
-                                 (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+                                (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event6).toSeq ++
       MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event6).toSeq ++
-      TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, Event6).toSeq ++
-      InputProtectionTypeSummary.row(request.userAnswers, waypoints, sourcePage, Event6, index).toSeq ++
-      AmountCrystallisedAndDateSummary.rowCrystallisedValue(request.userAnswers, waypoints, sourcePage, Event6, index).toSeq ++
-      AmountCrystallisedAndDateSummary.rowCrystallisedDate(request.userAnswers, waypoints, sourcePage, Event6, index).toSeq
+      TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
+      InputProtectionTypeSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq ++
+      AmountCrystallisedAndDateSummary.rowCrystallisedValue(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq ++
+      AmountCrystallisedAndDateSummary.rowCrystallisedDate(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq
   }
 }

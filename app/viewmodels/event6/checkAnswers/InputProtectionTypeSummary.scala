@@ -16,36 +16,40 @@
 
 package viewmodels.event6.checkAnswers
 
-import models.{UserAnswers}
+import models.UserAnswers
 import models.enumeration.EventType
+import models.enumeration.EventType.Event6
 import pages.event6.{InputProtectionTypePage, TypeOfProtectionPage}
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object InputProtectionTypeSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Int)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, index: Int)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
-    val protectionType = answers.get(TypeOfProtectionPage(eventType, index)) match {
+    val protectionType = answers.get(TypeOfProtectionPage(Event6, index)) match {
       case Some(value) => value
       case _ => None
     }
 
-    answers.get(InputProtectionTypePage(eventType, index)).map {
+    answers.get(InputProtectionTypePage(Event6, index)).map {
       answer =>
-        SummaryListRowViewModel(
+        SummaryListRow(
           key     = messages(s"inputProtectionType.checkYourAnswersLabel", messages(s"typeOfProtection.${protectionType.toString}")),
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", InputProtectionTypePage(eventType, index).changeLink(waypoints, sourcePage).url)
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+            ActionItemViewModel("site.change", InputProtectionTypePage(Event6, index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("inputProtectionType.change.hidden",
                 messages(s"typeOfProtection.${protectionType.toString}").toLowerCase()))
-          )
+          )))
+          }
         )
     }
   }
