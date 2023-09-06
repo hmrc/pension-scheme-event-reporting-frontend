@@ -70,6 +70,13 @@ private[mappings] class LocalDateFormatter(
 
   private def formatDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
+    val dataWithWhitespaceRemoved = for { tuple <- data } yield {
+      tuple._1 match {
+        case "csrfToken" => tuple
+        case _ => (tuple._1, tuple._2.filterNot(_.isWhitespace))
+      }
+    }
+
     val int = intFormatter(
       requiredKey = invalidKey,
       wholeNumberKey = invalidKey,
@@ -78,9 +85,9 @@ private[mappings] class LocalDateFormatter(
     )
 
     for {
-      day <- int.bind(s"$key.day", data)
-      month <- int.bind(s"$key.month", data)
-      year <- int.bind(s"$key.year", data)
+      day <- int.bind(s"$key.day", dataWithWhitespaceRemoved)
+      month <- int.bind(s"$key.month", dataWithWhitespaceRemoved)
+      year <- int.bind(s"$key.year", dataWithWhitespaceRemoved)
       date <- tryLocalDate((day, month, year): (Int, Int, Int))
     } yield date
   }
