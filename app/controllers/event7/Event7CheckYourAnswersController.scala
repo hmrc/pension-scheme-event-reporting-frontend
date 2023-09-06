@@ -36,14 +36,14 @@ import views.html.CheckYourAnswersView
 import scala.concurrent.ExecutionContext
 
 class Event7CheckYourAnswersController @Inject()(
-                                                   override val messagesApi: MessagesApi,
-                                                   identify: IdentifierAction,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   compileService: CompileService,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: CheckYourAnswersView
-                                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                  override val messagesApi: MessagesApi,
+                                                  identify: IdentifierAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  compileService: CompileService,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: CheckYourAnswersView
+                                                )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (identify andThen getData(Event7) andThen requireData) { implicit request =>
@@ -54,19 +54,19 @@ class Event7CheckYourAnswersController @Inject()(
     }
 
   def onClick: Action[AnyContent] =
-    (identify andThen getData(Event7) andThen requireData).async {  implicit request =>
-       compileService.compileEvent(Event7, request.pstr, request.userAnswers).map {
+    (identify andThen getData(Event7) andThen requireData).async { implicit request =>
+      compileService.compileEvent(Event7, request.pstr, request.userAnswers).map {
         _ =>
           Redirect(controllers.event7.routes.Event7MembersSummaryController.onPageLoad(EmptyWaypoints).url)
       }
     }
 
   private def buildEvent7CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
-                                 (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+                                (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event7).toSeq ++
       MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event7).toSeq ++
-      LumpSumAmountSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
-      CrystallisedAmountSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
-      PaymentDateSummary.rowPaymentDate(request.userAnswers, waypoints, sourcePage, Event7, index).toSeq
+      LumpSumAmountSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
+      CrystallisedAmountSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
+      PaymentDateSummary.rowPaymentDate(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq
   }
 }

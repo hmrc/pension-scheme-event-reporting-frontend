@@ -64,40 +64,41 @@ class EventSummaryController @Inject()(
         val startYear = s"${taxYear.startYear}-04-06"
         connector.getEventReportSummary(request.pstr, startYear, versionInfo.version)
           .map { seqOfEventTypes =>
-          seqOfEventTypes.sortBy(sortExpr).map{ eventSummary  =>
-            SummaryListRow(
-              key = Key(
-                content = Text(Message(s"eventSummary.event${eventSummary.eventType.toString}"))
-              ),
-              actions = Some(Actions(
-                items = if(request.readOnly()) { Seq(
-                  viewOnlyLinkForEvent(eventSummary.eventType).map { link =>
-                    ActionItem(
-                      content = Text(Message("site.view")),
-                      href = link
-                    )
+            seqOfEventTypes.sortBy(sortExpr).map { eventSummary =>
+              SummaryListRow(
+                key = Key(
+                  content = Text(Message(s"eventSummary.event${eventSummary.eventType.toString}"))
+                ),
+                actions = Some(Actions(
+                  items = if (request.readOnly()) {
+                    Seq(
+                      viewOnlyLinkForEvent(eventSummary.eventType).map { link =>
+                        ActionItem(
+                          content = Text(Message("site.view")),
+                          href = link
+                        )
+                      }
+                    ).flatten
+                  } else {
+                    Seq(
+                      changeLinkForEvent(eventSummary.eventType).map { link =>
+                        ActionItem(
+                          content = Text(Message("site.change")),
+                          href = link
+                        )
+                      },
+                      removeLinkForEvent(eventSummary.eventType).map { link =>
+                        ActionItem(
+                          content = Text(Message("site.remove")),
+                          href = link
+                        )
+                      }
+                    ).flatten
                   }
-                ).flatten
-                } else {
-                  Seq(
-                    changeLinkForEvent(eventSummary.eventType).map { link =>
-                      ActionItem(
-                        content = Text(Message("site.change")),
-                        href = link
-                      )
-                    },
-                    removeLinkForEvent(eventSummary.eventType).map { link =>
-                      ActionItem(
-                        content = Text(Message("site.remove")),
-                        href = link
-                      )
-                    }
-                  ).flatten
-                }
-              ))
-            )
+                ))
+              )
+            }
           }
-        }
 
       case _ =>
         logger.warn("No tax year selected on load of summary page")
@@ -210,7 +211,7 @@ class EventSummaryController @Inject()(
            EventType.Event6 | EventType.Event8 |
            EventType.Event8A | EventType.Event22 |
            EventType.Event23 => Some(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, eventType).url)
-      case EventType.Event7 => Some("#")
+      case EventType.Event7 => Some(controllers.event7.routes.Event7MembersSummaryController.onPageLoad(EmptyWaypoints).url)
       case EventType.Event10 => Some(controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
       case EventType.Event11 => Some(controllers.event11.routes.Event11CheckYourAnswersController.onPageLoad.url)
       case EventType.Event12 => Some(controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
@@ -219,7 +220,7 @@ class EventSummaryController @Inject()(
       case EventType.Event18 => Some(controllers.routes.EventSummaryController.onPageLoadForEvent18ViewOnlyLink(EmptyWaypoints).url)
       case EventType.Event19 => Some(controllers.event19.routes.Event19CheckYourAnswersController.onPageLoad.url)
       case EventType.Event20 => Some(controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
-      case EventType.WindUp =>  Some(controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onPageLoad().url)
+      case EventType.WindUp => Some(controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onPageLoad().url)
       case _ =>
         logger.error(s"Missing event type $eventType")
         None
