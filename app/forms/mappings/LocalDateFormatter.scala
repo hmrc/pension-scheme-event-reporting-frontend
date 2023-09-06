@@ -16,7 +16,7 @@
 
 package forms.mappings
 
-import forms.mappings.LocalDateFormatter.monthStringConverter
+import forms.mappings.LocalDateFormatter.{convertMonthInData, monthStringConverter, removeWhitespaceFromData}
 import helpers.DateHelper
 import models.TaxYearValidationDetail
 import play.api.data.FormError
@@ -27,10 +27,10 @@ import java.time.LocalDate
 import scala.util.{Failure, Success, Try}
 
 private[mappings] class LocalDateFormatter(
-                                               invalidKey: String,
-                                               taxYearValidationDetail: Option[TaxYearValidationDetail] = None,
-                                               args: Seq[String] = Seq.empty
-                                             )(implicit messages: Messages) extends Formatter[LocalDate] with Formatters {
+                                            invalidKey: String,
+                                            taxYearValidationDetail: Option[TaxYearValidationDetail] = None,
+                                            args: Seq[String] = Seq.empty
+                                          )(implicit messages: Messages) extends Formatter[LocalDate] with Formatters {
 
   private val fieldKeys: List[String] = List("day", "month", "year")
 
@@ -78,24 +78,13 @@ private[mappings] class LocalDateFormatter(
       args
     )
 
-    val dataWithWhitespaceRemoved = for { tuple <- data } yield {
-      tuple._1 match {
-        case "csrfToken" => tuple
-        case _ => (tuple._1, tuple._2.filterNot(_.isWhitespace))
-      }
-    }
-
-    val dataWithConvertedMonth = for { tuple <- dataWithWhitespaceRemoved } yield {
-      tuple._1 match {
-        case s"$key.month" => (tuple._1, monthStringConverter(tuple._2))
-        case _ => tuple
-      }
-    }
+    val dataNoWhitespace = removeWhitespaceFromData(data)
+    val cleanedData = convertMonthInData(key, dataNoWhitespace)
 
     for {
-      day <- int.bind(s"$key.day", dataWithConvertedMonth)
-      month <- int.bind(s"$key.month", dataWithConvertedMonth)
-      year <- int.bind(s"$key.year", dataWithConvertedMonth)
+      day <- int.bind(s"$key.day", cleanedData)
+      month <- int.bind(s"$key.month", cleanedData)
+      year <- int.bind(s"$key.year", cleanedData)
       date <- tryLocalDate((day, month, year): (Int, Int, Int))
     } yield date
   }
@@ -151,20 +140,36 @@ private[mappings] class LocalDateFormatter(
 
 object LocalDateFormatter {
 
+  val removeWhitespaceFromData: Map[String, String] => Map[String, String] = (data: Map[String, String]) =>
+    for {tuple <- data} yield {
+      tuple._1 match {
+        case "csrfToken" => tuple
+        case _ => (tuple._1, tuple._2.filterNot(_.isWhitespace))
+      }
+    }
+
+  val convertMonthInData: (String, Map[String, String]) => Map[String, String] = (key: String, data: Map[String, String]) =>
+    for {tuple <- data} yield {
+      tuple._1 match {
+        case s"$key.month" => (tuple._1, monthStringConverter(tuple._2))
+        case _ => tuple
+      }
+    }
+
   val monthStringConverter: String => String = input => {
     input.toUpperCase match {
-      case "JAN" | "JANUARY"    => "1"
-      case "FEB" | "FEBRUARY"   => "2"
-      case "MAR" | "MARCH"      => "3"
-      case "APR" | "APRIL"      => "4"
-      case "MAY"                => "5"
-      case "JUN" | "JUNE"       => "6"
-      case "JUL" | "JULY"       => "7"
-      case "AUG" | "AUGUST"     => "8"
-      case "SEP" | "SEPTEMBER"  => "9"
-      case "OCT" | "OCTOBER"    => "10"
-      case "NOV" | "NOVEMBER"   => "11"
-      case "DEC" | "DECEMBER"   => "12"
+      case "JAN" | "JANUARY" => "1"
+      case "FEB" | "FEBRUARY" => "2"
+      case "MAR" | "MARCH" => "3"
+      case "APR" | "APRIL" => "4"
+      case "MAY" => "5"
+      case "JUN" | "JUNE" => "6"
+      case "JUL" | "JULY" => "7"
+      case "AUG" | "AUGUST" => "8"
+      case "SEP" | "SEPTEMBER" => "9"
+      case "OCT" | "OCTOBER" => "10"
+      case "NOV" | "NOVEMBER" => "11"
+      case "DEC" | "DECEMBER" => "12"
       case _ => input
     }
   }
