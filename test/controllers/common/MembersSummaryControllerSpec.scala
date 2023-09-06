@@ -18,7 +18,7 @@ package controllers.common
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import controllers.common.MembersSummaryControllerSpec.{cYAHref, fakeChangeUrl, fakeRemoveUrl, paginationStats26Members, totalMembers}
+import controllers.common.MembersSummaryControllerSpec.{cYAHref, fakeChangeUrl, fakeRemoveUrl, paginationStats26Members}
 import controllers.common.routes._
 import data.SampleData
 import data.SampleData._
@@ -36,7 +36,6 @@ import pages.common.MembersSummaryPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{Format, Json, OFormat, Reads, Writes}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.EventPaginationService
@@ -216,7 +215,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
                   ),
                   ActionItem(
                     content = Text(Message("site.remove")),
-                    href = fakeRemoveUrl(eventType)
+                    href = fakeRemoveUrl(eventType, 0)
                   )
                 )
               ))
@@ -247,11 +246,11 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
             items = Seq(
               ActionItem(
                 content = Text(Message("site.view")),
-                href = cYAHref(Event2, i - 1)
+                href = cYAHref(eventType, i - 1)
               ),
               ActionItem(
                 content = Text(Message("site.remove")),
-                href = fakeRemoveUrl(Event2)
+                href = fakeRemoveUrl(eventType, i - 1)
               )
             )
           ))
@@ -285,7 +284,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           expectedPaginationStats,
           pageNumber = 0,
           None,
-          "",
+          s"/manage-pension-scheme-event-report/report/event-$eventType-summary",
           request,
           messages(application)).toString
 
@@ -367,13 +366,13 @@ object MembersSummaryControllerSpec {
     }
   }
 
-  private def fakeRemoveUrl(eventType: EventType): String = {
+  private def fakeRemoveUrl(eventType: EventType, index: Index): String = {
     eventType match {
       case Event2 | Event3 |
            Event4 | Event5 |
            Event6 | Event8 |
            Event8A | Event22 |
-           Event23 => RemoveMemberController.onPageLoad(EmptyWaypoints, eventType, 0).url
+           Event23 => RemoveMemberController.onPageLoad(EmptyWaypoints, eventType, index).url
       case _ => "Not a member event used on this summary page"
     }
   }
