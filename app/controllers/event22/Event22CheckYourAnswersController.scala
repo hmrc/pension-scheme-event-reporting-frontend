@@ -64,7 +64,7 @@ class Event22CheckYourAnswersController @Inject()(
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event22).toSeq ++
       MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event22).toSeq ++
-      ChooseTaxYearSummary.row(request.userAnswers, waypoints, sourcePage, Event22, index).toSeq ++
-      TotalPensionAmountsSummary.row(request.userAnswers, waypoints, sourcePage, Event22, index).toSeq
+      ChooseTaxYearSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event22, index).toSeq ++
+      TotalPensionAmountsSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event22, index).toSeq
   }
 }
