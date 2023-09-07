@@ -16,7 +16,7 @@
 
 package forms.common
 
-import forms.common.PersonNameFormProvider.{firstNameLength, lastNameLength}
+import forms.common.MembersDetailsFormProvider.{firstNameLength, lastNameLength}
 import forms.mappings.{Mappings, Transforms}
 import models.common.MembersDetails
 import models.enumeration.EventType
@@ -37,29 +37,29 @@ class MembersDetailsFormProvider @Inject() extends Mappings with Transforms {
     }
     Form(
       mapping("firstName" ->
-        text(s"${detailsType}.error.firstName.required").verifying(
+        text(s"$detailsType.error.firstName.required").verifying(
           firstError(
-            maxLength(firstNameLength, s"${detailsType}.error.firstName.length"),
-            regexp(regexName, s"${detailsType}.error.firstName.invalid"))),
+            maxLength(firstNameLength, s"$detailsType.error.firstName.length"),
+            regexp(regexName, s"$detailsType.error.firstName.invalid"))),
         "lastName" ->
-          text(s"${detailsType}.error.lastName.required").verifying(
+          text(s"$detailsType.error.lastName.required").verifying(
             firstError(
-              maxLength(lastNameLength, s"${detailsType}.error.lastName.length"),
-              regexp(regexName, s"${detailsType}.error.lastName.invalid"))
+              maxLength(lastNameLength, s"$detailsType.error.lastName.length"),
+              regexp(regexName, s"$detailsType.error.lastName.invalid"))
           ),
         "nino" ->
-          text(s"${detailsType}.error.nino.required")
+          text(s"$detailsType.error.nino.required")
             .transform(noSpaceWithUpperCaseTransform, noTransform)
             .verifying(
-              validNino(s"${detailsType}.error.nino.invalid"),
-              nonUniqueNino(s"${detailsType}.error.nino.notUnique", memberNinos)
+              validNino(s"$detailsType.error.nino.invalid"),
+              nonUniqueNino(s"$detailsType.error.nino.notUnique", memberNinos)
             ))(MembersDetails.apply)(MembersDetails.unapply)
     )
   }
 
 }
 
-object PersonNameFormProvider {
+object MembersDetailsFormProvider {
   val firstNameLength: Int = 35
   val lastNameLength: Int = 35
 }
