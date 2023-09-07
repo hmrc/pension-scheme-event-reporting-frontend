@@ -16,12 +16,12 @@
 
 package forms.common
 
-import forms.common.MembersDetailsFormProvider.{firstName, lastName, nameIsValid, ninoIsValid}
+import forms.common.MembersDetailsFormProvider.{firstName, lastName, nameIsValid, nameMapping, ninoIsValid}
 import forms.mappings.{Mappings, Transforms}
 import models.common.MembersDetails
 import models.enumeration.EventType
 import models.enumeration.EventType.Event2
-import play.api.data.Form
+import play.api.data.{Form, Mapping}
 import play.api.data.Forms.mapping
 import play.api.data.validation.Constraint
 
@@ -40,12 +40,8 @@ class MembersDetailsFormProvider @Inject() extends Mappings with Transforms {
 
     Form(
       mapping(
-        firstName ->
-        text(s"$detailsType.error.firstName.required")
-          .verifying(nameIsValid(detailsType, firstName)),
-        lastName ->
-          text(s"$detailsType.error.lastName.required")
-            .verifying(nameIsValid(detailsType, lastName)),
+        nameMapping(firstName, detailsType),
+        nameMapping(lastName, detailsType),
         "nino" ->
           text(s"$detailsType.error.nino.required")
             .transform(noSpaceWithUpperCaseTransform, noTransform)
@@ -57,14 +53,19 @@ class MembersDetailsFormProvider @Inject() extends Mappings with Transforms {
   }
 }
 
-object MembersDetailsFormProvider extends Mappings {
+object MembersDetailsFormProvider extends Mappings with Transforms {
 
   private val firstName: String = "firstName"
   private val lastName: String = "lastName"
   // maximumNameLength is not private because it's accessed in the corresponding Spec file.
   val maximumNameLength: Int = 35
 
-  private val nameIsValid: (String, String) => Constraint[String] = (detailsType: String, nameField: String) => {
+  private val nameMapping: (String, String) => (String, Mapping[String]) = (nameField: String, detailsType: String) => {
+    nameField ->
+      text(s"$detailsType.error.$nameField.required").verifying(nameIsValid(nameField, detailsType))
+  }
+
+  private val nameIsValid: (String, String) => Constraint[String] = (nameField: String, detailsType: String) => {
     firstError(
       maxLength(maximumNameLength, s"$detailsType.error.$nameField.length"),
       regexp(regexName, s"$detailsType.error.$nameField.invalid")
