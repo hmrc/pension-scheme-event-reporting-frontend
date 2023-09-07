@@ -165,10 +165,11 @@ trait Constraints {
         Invalid(errorKey)
     }
 
-  protected def validNino(invalidKey: String): Constraint[String] = {
+  protected def validNino(detailsType: String): Constraint[String] = {
     Constraint {
       case nino if Nino.isValid(nino) => Valid
-      case _ => Invalid(invalidKey)
+      // Generic invalid
+      case _ => Invalid(s"$detailsType.error.nino.invalid")
     }
   }
 
