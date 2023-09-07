@@ -16,50 +16,65 @@
 
 package forms.common
 
-import forms.common.MembersDetailsFormProvider.{firstNameLength, lastNameLength}
+import forms.common.MembersDetailsFormProvider.{firstName, lastName, nameIsValid, ninoIsValid}
 import forms.mappings.{Mappings, Transforms}
 import models.common.MembersDetails
 import models.enumeration.EventType
 import models.enumeration.EventType.Event2
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import scala.collection.immutable.HashSet
+import play.api.data.validation.Constraint
 
+import scala.collection.immutable.HashSet
 import javax.inject.Inject
 
 class MembersDetailsFormProvider @Inject() extends Mappings with Transforms {
 
-  def apply(eventType: EventType, memberNinos: HashSet[String], memberPageNo: Int=0): Form[MembersDetails] = {
+  def apply(eventType: EventType, memberNinos: HashSet[String], memberPageNo: Int = 0): Form[MembersDetails] = {
+
     val detailsType = (eventType, memberPageNo) match {
       case (Event2, 1) => "deceasedMembersDetails"
       case (Event2, 2) => "beneficiaryDetails"
       case _ => "membersDetails"
     }
+
     Form(
-      mapping("firstName" ->
-        text(s"$detailsType.error.firstName.required").verifying(
-          firstError(
-            maxLength(firstNameLength, s"$detailsType.error.firstName.length"),
-            regexp(regexName, s"$detailsType.error.firstName.invalid"))),
-        "lastName" ->
-          text(s"$detailsType.error.lastName.required").verifying(
-            firstError(
-              maxLength(lastNameLength, s"$detailsType.error.lastName.length"),
-              regexp(regexName, s"$detailsType.error.lastName.invalid"))
-          ),
+      mapping(
+        firstName ->
+        text(s"$detailsType.error.firstName.required")
+          .verifying(nameIsValid(detailsType, firstName)),
+        lastName ->
+          text(s"$detailsType.error.lastName.required")
+            .verifying(nameIsValid(detailsType, lastName)),
         "nino" ->
           text(s"$detailsType.error.nino.required")
             .transform(noSpaceWithUpperCaseTransform, noTransform)
             .verifying(
-              validNino(s"$detailsType.error.nino.invalid"),
-              nonUniqueNino(s"$detailsType.error.nino.notUnique", memberNinos)
-            ))(MembersDetails.apply)(MembersDetails.unapply)
+              ninoIsValid(detailsType, memberNinos)
+            )
+      )(MembersDetails.apply)(MembersDetails.unapply)
+    )
+  }
+}
+
+object MembersDetailsFormProvider extends Mappings {
+
+  private val firstName: String = "firstName"
+  private val lastName: String = "lastName"
+  // maximumNameLength is not private because it's accessed in the corresponding Spec file.
+  val maximumNameLength: Int = 35
+
+  private val nameIsValid: (String, String) => Constraint[String] = (detailsType: String, nameField: String) => {
+    firstError(
+      maxLength(maximumNameLength, s"$detailsType.error.$nameField.length"),
+      regexp(regexName, s"$detailsType.error.$nameField.invalid")
     )
   }
 
-}
-
-object MembersDetailsFormProvider {
-  val firstNameLength: Int = 35
-  val lastNameLength: Int = 35
+  private val ninoIsValid: (String, HashSet[String]) => Constraint[String] = (detailsType: String, memberNinos: HashSet[String]) => {
+    firstError(
+      validNino(s"$detailsType.error.nino.invalid"),
+      nonUniqueNino(s"$detailsType.error.nino.notUnique", memberNinos)
+    )
+  }
 }

@@ -39,7 +39,7 @@ class MembersDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
     val requiredKey = "membersDetails.error.firstName.required"
     val lengthKey = "membersDetails.error.firstName.length"
     val invalidKey = "membersDetails.error.firstName.invalid"
-    val maxLength = MembersDetailsFormProvider.firstNameLength
+    val maxLength = MembersDetailsFormProvider.maximumNameLength
     val fieldName = "firstName"
 
     behave like fieldThatBindsValidData(
@@ -74,7 +74,7 @@ class MembersDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
     val requiredKey = "membersDetails.error.lastName.required"
     val lengthKey = "membersDetails.error.lastName.length"
     val invalidKey = "membersDetails.error.lastName.invalid"
-    val maxLength = MembersDetailsFormProvider.lastNameLength
+    val maxLength = MembersDetailsFormProvider.maximumNameLength
     val fieldName = "lastName"
 
     behave like fieldThatBindsValidData(
