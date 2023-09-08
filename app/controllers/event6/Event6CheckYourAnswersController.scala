@@ -18,7 +18,7 @@ package controllers.event6
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.Index
+import models.{Index, MemberSummaryPath}
 import models.enumeration.EventType.Event6
 import models.requests.DataRequest
 import pages.event6.Event6CheckYourAnswersPage
@@ -57,7 +57,7 @@ class Event6CheckYourAnswersController @Inject()(
     (identify andThen getData(Event6) andThen requireData).async { implicit request =>
       compileService.compileEvent(Event6, request.pstr, request.userAnswers).map {
         _ =>
-          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event6).url)
+          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event6)).url)
       }
     }
 

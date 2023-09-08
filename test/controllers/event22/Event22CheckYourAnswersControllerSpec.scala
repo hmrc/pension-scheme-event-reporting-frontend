@@ -18,7 +18,7 @@ package controllers.event22
 
 import base.SpecBase
 import data.SampleData.sampleMemberJourneyDataEvent22and23
-import models.VersionInfo
+import models.{MemberSummaryPath, VersionInfo}
 import models.enumeration.EventType.Event22
 import models.enumeration.VersionStatus.Compiled
 import org.mockito.ArgumentCaptor
@@ -130,7 +130,7 @@ class Event22CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event22).url
+        redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event22)).url
         verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any(), any())
       }
     }

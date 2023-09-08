@@ -57,6 +57,9 @@ trait SpecBase
   def emptyUserAnswersWithTaxYear: UserAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022"), nonEventTypeData = true).get
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
+
+  private val app = applicationBuilder(None).build()
+
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None,
                                    extraModules: Seq[GuiceableModule] = Seq.empty): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
@@ -79,7 +82,7 @@ trait SpecBase
         ): _*
       )
 
-  protected def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
+  protected def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
   protected implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 

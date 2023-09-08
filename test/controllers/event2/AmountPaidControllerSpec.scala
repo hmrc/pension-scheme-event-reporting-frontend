@@ -36,7 +36,8 @@ import play.api.test.Helpers._
 import utils.Event2MemberPageNumbers
 import views.html.event2.AmountPaidView
 
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
 
 class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
 
@@ -80,6 +81,8 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints, 0, "Joe Bloggs")(request, messages(application)).toString
       }
+
+      Await.result(application.stop(), 10.seconds)
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -98,6 +101,8 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form.fill(validValue), waypoints, 0, "Joe Bloggs")(request, messages(application)).toString
       }
+
+      Await.result(application.stop(), 10.seconds)
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
@@ -119,6 +124,8 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
         redirectLocation(result).value mustEqual AmountPaidPage(index = 0, Event2).navigate(waypoints, correctUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
+
+      Await.result(application.stop(), 10.seconds)
     }
 
     "must return bad request when invalid data is submitted" in {
@@ -139,6 +146,8 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
         contentAsString(result) mustEqual view(boundForm, waypoints, 0, "Joe Bloggs")(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
+
+      Await.result(application.stop(), 10.seconds)
     }
   }
 }

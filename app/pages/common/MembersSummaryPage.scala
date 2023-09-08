@@ -18,7 +18,7 @@ package pages.common
 
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event2, Event22, Event23, Event3, Event4, Event5, Event6, Event7, Event8, Event8A}
-import models.{Index, UserAnswers}
+import models.{Index, MemberSummaryPath, UserAnswers}
 import pages.event7.Event7MembersPage
 import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
@@ -31,7 +31,7 @@ case class MembersSummaryPage(eventType: EventType, pageNumber: Index) extends Q
 
   override def route(waypoints: Waypoints): Call = eventType match {
     case Event7 => controllers.event7.routes.Event7MembersSummaryController.onPageLoad(waypoints)
-    case _ => controllers.common.routes.MembersSummaryController.onPageLoad(waypoints, eventType)
+    case _ => controllers.common.routes.MembersSummaryController.onPageLoad(waypoints, MemberSummaryPath(eventType))
   }
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {

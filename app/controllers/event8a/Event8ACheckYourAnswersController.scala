@@ -21,7 +21,7 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import models.enumeration.EventType.Event8A
 import models.event8a.PaymentType
 import models.requests.DataRequest
-import models.{Index, UserAnswers}
+import models.{Index, MemberSummaryPath, UserAnswers}
 import pages.common.MembersDetailsPage
 import pages.event8a.Event8ACheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
@@ -118,7 +118,7 @@ class Event8ACheckYourAnswersController @Inject()(
     (identify andThen getData(Event8A) andThen requireData).async { implicit request =>
       compileService.compileEvent(Event8A, request.pstr, request.userAnswers).map {
         _ =>
-          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event8A).url)
+          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event8A)).url)
       }
     }
 

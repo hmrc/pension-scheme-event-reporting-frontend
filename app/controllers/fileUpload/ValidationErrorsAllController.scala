@@ -45,10 +45,11 @@ class ValidationErrorsAllController @Inject()(
     implicit request =>
       val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints, eventType).url
       val fileDownloadInstructionLink = controllers.routes.FileDownloadController.instructionsFile(eventType).url
+      val fileTemplateInstructionLink = controllers.routes.FileDownloadController.templateFile(eventType).url
       parsingAndValidationOutcomeCacheConnector.getOutcome.map {
         case Some(outcome@ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _)) =>
           outcome.json.validate[Seq[ValidationErrorForRendering]] match {
-            case JsSuccess(value, _) => Ok(view(returnUrl, fileDownloadInstructionLink, value))
+            case JsSuccess(value, _) => Ok(view(returnUrl, fileDownloadInstructionLink, value, fileTemplateInstructionLink))
             case JsError(errors) => throw JsResultException(errors)
           }
         case _ => NotFound

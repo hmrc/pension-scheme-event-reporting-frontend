@@ -37,7 +37,8 @@ import utils.DateHelper
 import views.html.common.ChooseTaxYearView
 
 import java.time.{LocalDate, Month}
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
 
 class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
@@ -91,6 +92,8 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(form(eventType), waypoints, eventType, index = 0, maxTaxYear, request, messages(application)).toString
       }
+
+      Await.result(application.stop(), 10.seconds)
     }
   }
 
@@ -118,6 +121,8 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
           request = request,
           messages = messages(application)).toString
       }
+
+      Await.result(application.stop(), 10.seconds)
     }
   }
 
@@ -138,6 +143,8 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
         redirectLocation(result).value mustEqual common.ChooseTaxYearPage(eventType, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
+
+      Await.result(application.stop(), 10.seconds)
     }
   }
 
@@ -158,6 +165,8 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
         contentAsString(result) mustEqual view.render(boundForm, waypoints, eventType, 0, maxTaxYear, request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
+
+      Await.result(application.stop(), 10.seconds)
     }
   }
 

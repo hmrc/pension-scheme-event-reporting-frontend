@@ -25,6 +25,9 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.common.FileUploadWhatYouWillNeedView
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
 class FileUploadWhatYouWillNeedControllerSpec extends SpecBase {
 
   private val seqOfEvents = Seq(Event6, Event22, Event23)
@@ -62,6 +65,8 @@ class FileUploadWhatYouWillNeedControllerSpec extends SpecBase {
         contentAsString(result) mustEqual view.render(continueUrl(eventType).url, templateDownloadLink(eventType),
           instructionsDownloadLink(eventType), eventType, request, messages(application)).toString
       }
+
+      Await.result(application.stop(), 10.seconds)
     }
   }
 }

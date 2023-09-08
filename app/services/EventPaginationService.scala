@@ -18,6 +18,9 @@ package services
 
 import viewmodels.{SummaryListRowWithThreeValues, SummaryListRowWithTwoValues}
 
+import javax.inject.Singleton
+
+@Singleton
 class EventPaginationService {
 
   import EventPaginationService._
@@ -28,7 +31,6 @@ class EventPaginationService {
     val totNumOfPages = totalNumberOfPages(totalNumberOfMembers, pageSize)
     val pagStartAndEnd = pageStartAndEnd(pageNumber, totalNumberOfMembers, pageSize)
     val pagerSeqForNav = pagerSeq(pageNumber, totNumOfPages)
-
     PaginationStats(
       mappedMembers.slice(pagStartAndEnd._1 - 1, pagStartAndEnd._2),
       totalNumberOfMembers,

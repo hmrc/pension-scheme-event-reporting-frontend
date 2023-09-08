@@ -23,15 +23,16 @@
         govukTable : GovukTable
 )
 
-@(returnToFileUploadURL: String, fileDownloadInstructionsLink: String, dummyErrors: Seq[ValidationErrorForRendering])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(returnToFileUploadURL: String, fileDownloadInstructionsLink: String, dummyErrors: Seq[ValidationErrorForRendering], fileDownloadTemplateLink: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("fileupload.invalid.title"))) {
 
  <h1 class="govuk-heading-xl">@messages("fileupload.invalid.heading")</h1>
-
- <p class="govuk-body">@messages("fileupload.invalid.p1")
-     <a href="@fileDownloadInstructionsLink" class="govuk-link">@messages("fileupload.invalid.download.instructions.link")</a>
+ <p class="govuk-body">@messages("fileupload.invalid.p1")</p>
+ <p class="govuk-body">
+     <a href="@fileDownloadTemplateLink" class="govuk-link">@messages("fileupload.invalid.download.template.link")</a>,
      @messages("fileupload.invalid.subheading.p2")
+     <a href="@fileDownloadInstructionsLink" class="govuk-link">@messages("fileupload.invalid.download.instructions.link")</a>.
  </p>
 
 @govukTable(

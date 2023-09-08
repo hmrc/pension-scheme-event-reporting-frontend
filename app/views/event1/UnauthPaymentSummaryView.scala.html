@@ -22,17 +22,19 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, memberOrEmployerSeq: Seq[SummaryListRow], total: String, taxYear: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, memberOrEmployerSeq: Seq[SummaryListRow], total: String, taxYear: String, searchValue: Option[String], searchHref: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("unauthPaymentSummary.title", taxYear))) {
+
+<h1 class="govuk-heading-l">@messages("unauthPaymentSummary.heading", taxYear)</h1>
+
+@components.MembersSummarySearch(searchValue, searchHref)
 
     @formHelper(action = controllers.event1.routes.UnauthPaymentSummaryController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
-
-        <h1 class="govuk-heading-l">@messages("unauthPaymentSummary.heading", taxYear)</h1>
 
         @components.entity_table_list(
             memberOrEmployerSeq,

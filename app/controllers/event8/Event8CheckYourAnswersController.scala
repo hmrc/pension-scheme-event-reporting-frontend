@@ -18,7 +18,7 @@ package controllers.event8
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.Index
+import models.{Index, MemberSummaryPath}
 import models.enumeration.EventType.Event8
 import models.requests.DataRequest
 import pages.event8.Event8CheckYourAnswersPage
@@ -57,7 +57,7 @@ class Event8CheckYourAnswersController @Inject()(
     (identify andThen getData(Event8) andThen requireData).async { implicit request =>
       compileService.compileEvent(Event8, request.pstr, request.userAnswers).map {
         _ =>
-          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, Event8).url)
+          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event8)).url)
       }
     }
 
