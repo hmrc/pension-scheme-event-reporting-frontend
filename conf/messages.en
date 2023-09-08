@@ -1728,7 +1728,9 @@ returnHistory.table.header3 = Submitted by
 returnHistory.status.compiled = Compiled
 returnHistory.status.submitted = Submitted
 
-genericNino.error.invalid.length            = The National Insurance number must be 2 letters, 6 numbers, then A, B, C or D, like QQ 12 34 56 C
-genericNino.error.invalid.prefix            = The National Insurance number must begin with 2 letters
-genericNino.error.invalid.root              = The National Insurance number must contain 6 numbers
-genericNino.error.invalid.suffix            = Character 9 must be a letter
+genericNino.error.invalid            = This National Insurance number is not valid
+genericNino.error.invalid.length     = The National Insurance number must be 2 letters, 6 numbers, then A, B, C or D, like QQ 12 34 56 C
+genericNino.error.invalid.prefix     = The National Insurance number must begin with 2 letters
+genericNino.error.invalid.numbers    = The National Insurance number must contain 6 numbers
+genericNino.error.invalid.suffix     = The National Insurance number must end with a letter
+

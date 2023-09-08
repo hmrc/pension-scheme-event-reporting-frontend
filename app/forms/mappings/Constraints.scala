@@ -165,22 +165,19 @@ trait Constraints {
         Invalid(errorKey)
     }
 
-  protected def validNino(detailsType: String): Constraint[String] = {
-    Constraint {
-          // Has 9 characters
-      case ninoWithBadLength if ninoWithBadLength.length != 9 => Invalid("genericNino.error.invalid.length")
-      // Begins with two letters
-      case ninoWithBadPrefix if !ninoWithBadPrefix.take(2).matches("[a-zA-Z]{2}") =>
-        Invalid("genericNino.error.invalid.prefix")
-      // Has 6 numbers in the middle
-      case ninoWithBadRoot if !ninoWithBadRoot.substring(2, 8).matches("[0-9]{6}") => Invalid("genericNino.error.invalid.root")
-      // Finishes with a letter
-      case ninoWithBadSuffix if !ninoWithBadSuffix.takeRight(1).matches("[a-zA-Z]{1}") => Invalid("genericNino.error.invalid.suffix")
-      // VALID
-      case nino if Nino.isValid(nino) => Valid
-      // Generic invalid
-      case _ => Invalid(s"$detailsType.error.nino.invalid")
-    }
+  protected def validNino: Constraint[String] = Constraint { input =>
+
+    val conditionsAndErrors: List[(String => Boolean, String)] = List(
+      (_.length != 9, "genericNino.error.invalid.length"),
+      (!_.take(2).matches("[a-zA-Z]{2}"), "genericNino.error.invalid.prefix"),
+      (!_.substring(2, 8).matches("[0-9]{6}"), "genericNino.error.invalid.numbers"),
+      (!_.takeRight(1).matches("[a-zA-Z]{1}"), "genericNino.error.invalid.suffix"),
+      (!Nino.isValid(_), "genericNino.error.invalid")
+    )
+
+    conditionsAndErrors.collectFirst {
+      case (condition, error) if condition(input) => Invalid(error)
+    }.getOrElse(Valid)
   }
 
   protected def nonUniqueNino(notUniqueKey: String, ninos: HashSet[String]): Constraint[String] = {

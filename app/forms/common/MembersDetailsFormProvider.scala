@@ -49,8 +49,7 @@ class MembersDetailsFormProvider {
 
 object MembersDetailsFormProvider extends Mappings with Transforms {
 
-  private val (firstName: String, lastName: String) = ("firstName", "lastName")
-  private val nino: String = "nino"
+  private val (firstName: String, lastName: String, nino: String) = ("firstName", "lastName", "nino")
   val maximumNameLength: Int = 35
 
   private val nameMapping: (String, String) => (String, Mapping[String]) = (field: String, detailsType: String) =>
@@ -69,7 +68,7 @@ object MembersDetailsFormProvider extends Mappings with Transforms {
 
   private val ninoIsValid: (String, HashSet[String]) => Constraint[String] = (detailsType: String, memberNinos: HashSet[String]) =>
     firstError(
-      validNino(detailsType),
+      validNino,
       nonUniqueNino(s"$detailsType.error.nino.notUnique", memberNinos)
     )
 }
