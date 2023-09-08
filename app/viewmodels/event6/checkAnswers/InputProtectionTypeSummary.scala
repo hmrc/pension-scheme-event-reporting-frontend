@@ -17,7 +17,6 @@
 package viewmodels.event6.checkAnswers
 
 import models.UserAnswers
-import models.enumeration.EventType
 import models.enumeration.EventType.Event6
 import pages.event6.{InputProtectionTypePage, TypeOfProtectionPage}
 import pages.{CheckAnswersPage, Waypoints}

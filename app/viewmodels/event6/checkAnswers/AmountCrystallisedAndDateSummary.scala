@@ -17,7 +17,6 @@
 package viewmodels.event6.checkAnswers
 
 import forms.mappings.Formatters
-import models.enumeration.EventType
 import models.enumeration.EventType.Event6
 import models.{Index, UserAnswers}
 import pages.event6.AmountCrystallisedAndDatePage

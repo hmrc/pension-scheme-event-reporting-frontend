@@ -16,7 +16,6 @@
 
 package controllers.event7
 
-import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.common.MembersSummaryFormProvider
 import forms.mappings.Formatters
@@ -39,24 +38,24 @@ import javax.inject.Inject
 
 //scalastyle:off
 class Event7MembersSummaryController @Inject()(
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  identify: IdentifierAction,
-                                                  getData: DataRetrievalAction,
-                                                  requireData: DataRequiredAction,
-                                                  formProvider: MembersSummaryFormProvider,
-                                                  view: Event7MembersSummaryView,
-                                                  eventPaginationService: EventPaginationService
-                                                ) extends FrontendBaseController with I18nSupport with Formatters {
+                                                val controllerComponents: MessagesControllerComponents,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                formProvider: MembersSummaryFormProvider,
+                                                view: Event7MembersSummaryView,
+                                                eventPaginationService: EventPaginationService
+                                              ) extends FrontendBaseController with I18nSupport with Formatters {
   private val eventType = Event7
 
   def onPageLoad(waypoints: Waypoints, search: Option[String] = None): Action[AnyContent] = {
     onPageLoadWithPageNumber(waypoints, Index(0), search)
   }
 
-  def onPageLoadWithPageNumber(waypoints: Waypoints, pageNumber: Index, search:Option[String] = None): Action[AnyContent] =
+  def onPageLoadWithPageNumber(waypoints: Waypoints, pageNumber: Index, search: Option[String] = None): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val form = formProvider(eventType)
-      val mappedMembers = getMappedMembers(request.userAnswers, search.map(_.toLowerCase))
+      val mappedMembers = getMappedMembers(request.userAnswers, request.readOnly(), search.map(_.toLowerCase))
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       val paginationStats = eventPaginationService.paginateMappedMembersThreeValues(mappedMembers, pageNumber)
       Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers), selectedTaxYear, paginationStats, pageNumber, search, routes.Event7MembersSummaryController.onPageLoad(waypoints, None).url))
@@ -68,7 +67,7 @@ class Event7MembersSummaryController @Inject()(
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
     implicit request =>
       val form = formProvider(eventType)
-      val mappedMembers = getMappedMembers(request.userAnswers, None)
+      val mappedMembers = getMappedMembers(request.userAnswers, request.readOnly(), None)
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       form.bindFromRequest().fold(
         formWithErrors => {
@@ -77,14 +76,16 @@ class Event7MembersSummaryController @Inject()(
         },
         value => {
           val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 0), value)
-          Redirect(MembersSummaryPage(eventType, 0).navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)}
+          Redirect(MembersSummaryPage(eventType, 0).navigate(waypoints, userAnswerUpdated, userAnswerUpdated).route)
+        }
       )
   }
 
-   private def getMappedMembers(userAnswers : UserAnswers, searchTerm: Option[String]) (implicit messages: Messages) : Seq[SummaryListRowWithThreeValues] = {
-     def searchTermFilter(membersSummary: Event7MembersSummary) = searchTerm.forall { searchTerm =>
-       membersSummary.nINumber.toLowerCase.contains(searchTerm) || membersSummary.name.toLowerCase.contains(searchTerm)
-     }
+  private def getMappedMembers(userAnswers: UserAnswers, isReadOnly: Boolean, searchTerm: Option[String])(implicit messages: Messages): Seq[SummaryListRowWithThreeValues] = {
+    def searchTermFilter(membersSummary: Event7MembersSummary) = searchTerm.forall { searchTerm =>
+      membersSummary.nINumber.toLowerCase.contains(searchTerm) || membersSummary.name.toLowerCase.contains(searchTerm)
+    }
+
     userAnswers.getAll(Event7MembersPage(eventType))(Event7MembersSummary.readsMember).zipWithIndex.collect {
 
       case (memberSummary, index) if !memberSummary.memberStatus.contains("Deleted") && searchTermFilter(memberSummary) =>
