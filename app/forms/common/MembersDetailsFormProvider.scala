@@ -49,10 +49,9 @@ class MembersDetailsFormProvider {
 
 object MembersDetailsFormProvider extends Mappings with Transforms {
 
-  private val firstName: String = "firstName"
-  private val lastName: String = "lastName"
+  private val (firstName: String, lastName: String) = ("firstName", "lastName")
   private val nino: String = "nino"
-  val maximumNameLength: Int = 35 // maximumNameLength is not private because it's accessed in the corresponding Spec file.
+  val maximumNameLength: Int = 35
 
   private val nameMapping: (String, String) => (String, Mapping[String]) = (field: String, detailsType: String) =>
     field -> text(s"$detailsType.error.$field.required")

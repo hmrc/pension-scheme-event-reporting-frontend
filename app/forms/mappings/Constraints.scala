@@ -167,6 +167,16 @@ trait Constraints {
 
   protected def validNino(detailsType: String): Constraint[String] = {
     Constraint {
+          // Has 9 characters
+      case ninoWithBadLength if ninoWithBadLength.length != 9 => Invalid("genericNino.error.invalid.length")
+      // Begins with two letters
+      case ninoWithBadPrefix if !ninoWithBadPrefix.take(2).matches("[a-zA-Z]{2}") =>
+        Invalid("genericNino.error.invalid.prefix")
+      // Has 6 numbers in the middle
+      case ninoWithBadRoot if !ninoWithBadRoot.substring(2, 8).matches("[0-9]{6}") => Invalid("genericNino.error.invalid.root")
+      // Finishes with a letter
+      case ninoWithBadSuffix if !ninoWithBadSuffix.takeRight(1).matches("[a-zA-Z]{1}") => Invalid("genericNino.error.invalid.suffix")
+      // VALID
       case nino if Nino.isValid(nino) => Valid
       // Generic invalid
       case _ => Invalid(s"$detailsType.error.nino.invalid")
