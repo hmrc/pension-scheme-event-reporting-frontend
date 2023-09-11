@@ -62,7 +62,7 @@ object DateHelper extends Mappings {
                                         date: T,
                                         outOfRangeKey: String
                                       )(implicit messages: Messages, tag: TypeTag[T]): (String, Mapping[LocalDate]) =
-    field -> localDate(invalidKey).verifying(withinDateRange(date, outOfRangeKey): _*)
+    field -> localDate(invalidKey).verifying(firstError(withinDateRange(date, outOfRangeKey): _*))
 
   def withinDateRange[T](input: T, errorKey: String)(implicit messages: Messages, tag: TypeTag[T]): Seq[Constraint[LocalDate]] = tag.tpe match {
     case int if int =:= typeOf[Int] =>
