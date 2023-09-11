@@ -41,11 +41,6 @@ class PaymentDateFormProvider @Inject() extends Mappings with Transforms { // sc
 
   def apply(max: LocalDate)(implicit messages: Messages): Form[PaymentDate] =
     Form(
-      mapping("paymentDate" ->
-        localDate(
-          invalidKey = "genericDate.error.invalid"
-        ).verifying(
-          minDate(startDate, messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(endDate(max)))),
       mapping(
         localDateMappingWithDateRange(field = "paymentDate", date = (startDate, endDate(max)), outOfRangeKey = "paymentDate.date.error.outsideReportedYear")
       )
