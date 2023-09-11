@@ -16,12 +16,17 @@
 
 package utils
 
+import forms.mappings.Mappings
+import play.api.data.Mapping
+import play.api.data.validation.Constraint
+import play.api.i18n.Messages
+
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, ZonedDateTime}
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicReference
 
-object DateHelper {
+object DateHelper extends Mappings {
 
   val dateFormatterDMY: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
@@ -42,5 +47,23 @@ object DateHelper {
     val suffix = str.takeRight(2).toLowerCase
     val prefix = str.take(str.length - 2)
     prefix + suffix
+  }
+
+  def localDateMappingWithDateRange[T](
+                                        field: String = "value",
+                                        invalidKey: String = "genericDate.error.invalid",
+                                        date: T,
+                                        outOfRangeKey: String
+                                      )(implicit messages: Messages): (String, Mapping[LocalDate]) =
+    field -> localDate(invalidKey).verifying(withinDateRange(date, outOfRangeKey): _*)
+
+  def withinDateRange[T](input: T, errorKey: String): Seq[Constraint[LocalDate]] = input match {
+    case int: Int =>
+      Seq(
+        minDate(LocalDate.of(int, 4, 6), errorKey, int.toString, (int + 1).toString),
+        maxDate(LocalDate.of(int + 1, 4, 5), errorKey, int.toString, (int + 1).toString)
+      )
+    case localDate: LocalDate => ???
+    case _ => throw new RuntimeException("withinDateRange does not support inputs of types other than Int or LocalDate")
   }
 }
