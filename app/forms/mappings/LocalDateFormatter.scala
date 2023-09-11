@@ -16,13 +16,13 @@
 
 package forms.mappings
 
-import forms.mappings.LocalDateFormatter.{convertMonthInData, monthStringConverter, removeWhitespaceFromData}
+import forms.mappings.LocalDateFormatter.{convertMonthInData, removeWhitespaceFromData}
 import helpers.DateHelper
 import models.TaxYearValidationDetail
 import play.api.data.FormError
 import play.api.data.format.Formatter
 import play.api.i18n.Messages
-
+import scala.util.chaining.scalaUtilChainingOps
 import java.time.LocalDate
 import scala.util.{Failure, Success, Try}
 
@@ -78,13 +78,12 @@ private[mappings] class LocalDateFormatter(
       args
     )
 
-    val dataNoWhitespace = removeWhitespaceFromData(data)
-    val cleanedData = convertMonthInData(key, dataNoWhitespace)
+    val finalData = data.pipe(removeWhitespaceFromData).pipe(convertMonthInData(key, _))
 
     for {
-      day <- int.bind(s"$key.day", cleanedData)
-      month <- int.bind(s"$key.month", cleanedData)
-      year <- int.bind(s"$key.year", cleanedData)
+      day <- int.bind(s"$key.day", finalData)
+      month <- int.bind(s"$key.month", finalData)
+      year <- int.bind(s"$key.year", finalData)
       date <- tryLocalDate((day, month, year): (Int, Int, Int))
     } yield date
   }
