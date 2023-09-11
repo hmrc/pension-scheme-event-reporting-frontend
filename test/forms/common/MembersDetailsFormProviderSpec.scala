@@ -107,7 +107,11 @@ class MembersDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
   ".nino" - {
 
     val requiredKey = "membersDetails.error.nino.required"
-    val invalidKey = "membersDetails.error.nino.invalid"
+    val lengthKey = "genericNino.error.invalid.length"
+    val prefixKey = "genericNino.error.invalid.prefix"
+    val numbersKey = "genericNino.error.invalid.numbers"
+    val suffixKey = "genericNino.error.invalid.suffix"
+    val invalidKey = "genericNino.error.invalid"
     val notUniqueKey = "membersDetails.error.nino.notUnique"
     val fieldName = "nino"
 
@@ -123,10 +127,11 @@ class MembersDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
       res.get.nino mustEqual "AB020202A"
     }
 
-    Seq("DE999999A", "AO111111B", "ORA12345C", "AB0202020", "AB0303030D", "AB040404E").foreach { nino =>
-      s"fail to bind when NINO $nino is invalid" in {
-        val result = form.bind(Map("firstName" -> "validFirstName", "lastName" -> "validLastName", "nino" -> nino))
-        result.errors mustBe Seq(FormError("nino", invalidKey))
+    List(("12345678", lengthKey), ("123456789", prefixKey), ("AA34B6789", numbersKey),
+      ("AA3456789", suffixKey), ("AA345678E", invalidKey)).foreach { ninoAndError =>
+      s"fail to bind when NINO ${ninoAndError._1} is invalid with appropriate error ${ninoAndError._2}" in {
+        val result = form.bind(Map("firstName" -> "validFirstName", "lastName" -> "validLastName", "nino" -> ninoAndError._1))
+        result.errors mustBe Seq(FormError("nino", ninoAndError._2))
       }
     }
 
