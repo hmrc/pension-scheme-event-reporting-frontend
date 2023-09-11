@@ -22,6 +22,7 @@ import models.event1.PaymentDetails
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.i18n.Messages
+import utils.DateHelper.localDateMappingWithDateRange
 
 import java.time.LocalDate
 import javax.inject.Inject
@@ -41,14 +42,9 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
           .verifying(
             maximumValue[BigDecimal](maxPaymentValue, "paymentValueAndDate.value.error.amountTooHigh"),
             minimumValue[BigDecimal](0, "paymentValueAndDate.value.error.negative")
-          ), "paymentDate" ->
-        localDate(
-          invalidKey = "genericDate.error.invalid"
-        ).verifying(
-          yearHas4Digits("genericDate.error.invalid.year"),
-          minDate(startDate, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", startDate.getYear.toString, endDate.getYear.toString)),
-          maxDate(endDate, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", startDate.getYear.toString, endDate.getYear.toString))
-        )
+          ),
+        localDateMappingWithDateRange(field = "paymentDate", date = (startDate, endDate),
+          outOfRangeKey = "paymentValueAndDate.date.error.outsideRelevantTaxYear")
       )
       (PaymentDetails.apply)(PaymentDetails.unapply)
     )

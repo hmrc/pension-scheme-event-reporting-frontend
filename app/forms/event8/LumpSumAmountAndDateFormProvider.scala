@@ -21,7 +21,7 @@ import models.event8.LumpSumDetails
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.i18n.Messages
-import utils.DateHelper.formatDateDMY
+import utils.DateHelper.{formatDateDMY, localDateMappingWithDateRange}
 
 import java.time.LocalDate
 import javax.inject.Inject
@@ -40,14 +40,8 @@ class LumpSumAmountAndDateFormProvider @Inject() extends Mappings with Transform
             maximumValue[BigDecimal](maxLumpSumValue, "lumpSumAmountAndDate.value.error.amountTooHigh"),
             minimumValue[BigDecimal](0, "lumpSumAmountAndDate.value.error.negativeValue"),
             zeroValue[BigDecimal](0, "lumpSumAmountAndDate.value.error.zeroEntered")
-          ), "lumpSumDate" ->
-        localDate(
-          invalidKey = "genericDate.error.invalid"
-        ).verifying(
-          yearHas4Digits("genericDate.error.invalid.year"),
-          minDate(min, messages("lumpSumAmountAndDate.date.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
-          maxDate(max, messages("lumpSumAmountAndDate.date.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
-        )
+          ),
+        localDateMappingWithDateRange(field = "lumpSumDate", date = (min, max), outOfRangeKey = "lumpSumAmountAndDate.date.error.outsideReportedYear")
       )
       (LumpSumDetails.apply)(LumpSumDetails.unapply)
     )

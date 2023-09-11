@@ -369,7 +369,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         ValidationError(1, 25, "genericDate.error.invalid.allFieldsMissing", "paymentDate"),
         ValidationError(2, 25, "The date must include a day", "paymentDate", List()),
         ValidationError(3, 25, "The date must include a month and year", "paymentDate", List()),
-        ValidationError(4, 25, "Date must be between 6 April 2022 and 5 April 2023", "paymentDate"),
+        ValidationError(4, 25, "Date must be between 06 April 2022 and 05 April 2023", "paymentDate"),
         ValidationError(5, 25, "genericDate.error.invalid", "paymentDate")
       ))
     }

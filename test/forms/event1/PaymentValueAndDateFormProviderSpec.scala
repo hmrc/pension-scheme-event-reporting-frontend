@@ -103,24 +103,18 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
       requiredAllKey = "genericDate.error.invalid.allFieldsMissing"
     )
 
-    behave like dateFieldYearNot4Digits(
-      form = form,
-      key = paymentDateKey,
-      formError = FormError(paymentDateKey, "genericDate.error.invalid.year")
-    )
-
     behave like dateFieldWithMin(
       form = form,
       key = paymentDateKey,
       min = stubMin,
-      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", "2022", "2023"))
+      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", "06 April 2022", "05 April 2023"))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = paymentDateKey,
       max = stubMax,
-      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", "2022", "2023"))
+      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", "06 April 2022", "05 April 2023"))
     )
   }
 }

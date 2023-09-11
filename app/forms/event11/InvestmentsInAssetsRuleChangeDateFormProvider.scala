@@ -24,19 +24,14 @@ import javax.inject.Inject
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.i18n.Messages
-import utils.DateHelper.formatDateDMY
+import utils.DateHelper.{formatDateDMY, localDateMappingWithDateRange}
 
 class InvestmentsInAssetsRuleChangeDateFormProvider @Inject() extends Mappings {
 
   def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[Event11Date] =
     Form(
-      mapping("value" -> localDate(
-        invalidKey = "genericDate.error.invalid"
-      ).verifying(
-        yearHas4Digits("genericDate.error.invalid.year"),
-        minDate(min, messages("investmentsInAssetsRuleChangeDate.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
-        maxDate(max, messages("investmentsInAssetsRuleChangeDate.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
-      )
+      mapping(
+        localDateMappingWithDateRange(date = (min, max), outOfRangeKey = "investmentsInAssetsRuleChangeDate.error.outsideReportedYear")
       )
       (Event11Date.apply)(Event11Date.unapply)
     )

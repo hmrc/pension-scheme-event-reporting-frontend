@@ -589,7 +589,7 @@ paymentValueAndDate.date.hint = For example, 22 09 2022
 paymentValueAndDate.date.error.nothingEntered = Enter the date of payment or when benefit made available
 paymentValueAndDate.date.error.noDayMonthOrYear = The date must include a day, month and year
 paymentValueAndDate.date.error.outsideDateRanges = Enter a real date
-paymentValueAndDate.date.error.outsideRelevantTaxYear = Date must be between 6 April {0} and 5 April {1}
+paymentValueAndDate.date.error.outsideRelevantTaxYear = Date must be between {0} and {1}
 paymentValueAndDate.date.change.hidden = Payment date
 paymentValueAndDate.date.checkYourAnswersLabel = Payment date
 

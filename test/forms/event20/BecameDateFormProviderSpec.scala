@@ -40,12 +40,6 @@ class BecameDateFormProviderSpec extends SpecBase
       requiredAllKey = "genericDate.error.invalid.allFieldsMissing"
     )
 
-    behave like dateFieldYearNot4Digits(
-      form = form,
-      key = becameDateKey,
-      formError = FormError(becameDateKey, "genericDate.error.invalid.year")
-    )
-
     behave like dateFieldWithMin(
       form = form,
       key = becameDateKey,

@@ -16,25 +16,16 @@
 
 package forms.event20A
 
-import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.i18n.Messages
-import utils.DateHelper.formatDateDMY
+import utils.DateHelper.localDateMappingWithDateRange
 
 import java.time.LocalDate
-import javax.inject.Inject
 
-class BecameDateFormProvider @Inject() extends Mappings {
+class BecameDateFormProvider {
 
   def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[LocalDate] =
     Form(
-      "becameDateMasterTrust" ->
-        localDate(
-          invalidKey = "genericDate.error.invalid"
-        ).verifying(
-          yearHas4Digits("genericDate.error.invalid.year"),
-          minDate(min, messages("schemeChangeDate.event20A.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
-          maxDate(max, messages("schemeChangeDate.event20A.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
-        )
+      localDateMappingWithDateRange(field = "becameDateMasterTrust", date = (min, max), outOfRangeKey = "schemeChangeDate.event20A.error.outsideReportedYear")
     )
 }
