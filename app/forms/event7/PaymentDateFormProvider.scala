@@ -21,7 +21,7 @@ import models.event7.PaymentDate
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.i18n.Messages
-import utils.DateHelper.formatDateDMY
+import utils.DateHelper.localDateMappingWithDateRange
 
 import java.time.LocalDate
 import javax.inject.Inject
@@ -46,8 +46,8 @@ class PaymentDateFormProvider @Inject() extends Mappings with Transforms { // sc
           invalidKey = "genericDate.error.invalid"
         ).verifying(
           minDate(startDate, messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(endDate(max)))),
-          maxDate(endDate(max), messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(endDate(max))))
-        )
+      mapping(
+        localDateMappingWithDateRange(field = "paymentDate", date = (startDate, endDate(max)), outOfRangeKey = "paymentDate.date.error.outsideReportedYear")
       )
       (PaymentDate.apply)(PaymentDate.unapply)
     )
