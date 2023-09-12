@@ -85,6 +85,6 @@ object DateHelper extends Mappings {
         isNotBeforeOpenDate(tupleValue._2, "schemeWindUpDate.error.beforeOpenDate", formatDateDMY(tupleValue._2))
       )
     case _ =>
-      throw new RuntimeException("withinDateRange does not support inputs of types other than Int, (LocalDate, LocalDate), or (Int, LocalDate)")
+      throw new ClassCastException("withinDateRange does not support inputs of types other than Int, (LocalDate, LocalDate), or (Int, LocalDate)")
   }
 }
