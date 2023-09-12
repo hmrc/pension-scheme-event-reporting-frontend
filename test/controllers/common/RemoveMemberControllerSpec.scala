@@ -31,6 +31,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.CompileService
 import views.html.common.RemoveMemberView
 
 import scala.concurrent.Future
@@ -42,9 +43,11 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val formEvent1 = formProvider("unauthorised payment")
   private val formEvent5 = formProvider("cessation of ill-health pension")
   private val mockEventReportingConnector = mock[EventReportingConnector]
+  private val mockCompileService = mock[CompileService]
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[EventReportingConnector].toInstance(mockEventReportingConnector)
+    bind[EventReportingConnector].toInstance(mockEventReportingConnector),
+    bind[CompileService].toInstance(mockCompileService)
   )
 
   private def getRouteForEvent1: String = routes.RemoveMemberController.onPageLoad(waypoints, Event1, 0).url
@@ -58,6 +61,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
   override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockEventReportingConnector)
+    reset(mockCompileService)
   }
 
   "RemoveMember Controller" - {
@@ -146,6 +150,9 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
     "must save the answer and redirect to the next page when valid data is submitted  for event 1" in {
       when(mockEventReportingConnector.deleteMember(any(), any(), any(), any())(any())).thenReturn(Future.successful())
 
+      when(mockCompileService.deleteMember(any(), any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful())
+
       val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent1), extraModules).build()
       running(application) {
         val request = FakeRequest(POST, postRouteForEvent1).withFormUrlEncodedBody(("value", "true"))
@@ -159,6 +166,9 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must save the answer and redirect to the next page when valid data is submitted in an event that isn't event 1" in {
       when(mockEventReportingConnector.deleteMember(any(), any(), any(), any())(any())).thenReturn(Future.successful())
+
+      when(mockCompileService.deleteMember(any(), any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful())
 
       val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent3and4and5(Event5)), extraModules).build()
       running(application) {
