@@ -165,11 +165,19 @@ trait Constraints {
         Invalid(errorKey)
     }
 
-  protected def validNino(invalidKey: String): Constraint[String] = {
-    Constraint {
-      case nino if Nino.isValid(nino) => Valid
-      case _ => Invalid(invalidKey)
-    }
+  protected def validNino: Constraint[String] = Constraint { input =>
+
+    val conditionsAndErrors: List[(String => Boolean, String)] = List(
+      (_.length != 9, "genericNino.error.invalid.length"),
+      (!_.take(2).matches("[a-zA-Z]{2}"), "genericNino.error.invalid.prefix"),
+      (!_.substring(2, 8).matches("[0-9]{6}"), "genericNino.error.invalid.numbers"),
+      (!_.takeRight(1).matches("[a-zA-Z]{1}"), "genericNino.error.invalid.suffix"),
+      (!Nino.isValid(_), "genericNino.error.invalid")
+    )
+
+    conditionsAndErrors.collectFirst {
+      case (condition, error) if condition(input) => Invalid(error)
+    }.getOrElse(Valid)
   }
 
   protected def nonUniqueNino(notUniqueKey: String, ninos: HashSet[String]): Constraint[String] = {

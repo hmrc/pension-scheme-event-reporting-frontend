@@ -19,18 +19,14 @@ package controllers.event19
 import base.SpecBase
 import controllers.event19.Event19CheckYourAnswersControllerSpec.{expectedMemberSummaryListRowsEvent19, expectedMemberSummaryListRowsEvent19ViewOnly}
 import data.SampleData.sampleJourneyData19CountryOrTerritory
-import models.enumeration.VersionStatus.Submitted
+import models.enumeration.VersionStatus.{Compiled, Submitted}
 import models.{EROverview, EROverviewVersion, TaxYear, VersionInfo}
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
-import models.VersionInfo
-import models.enumeration.VersionStatus.Compiled
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
-import pages.{EmptyWaypoints, VersionInfoPage}
+import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
 import play.api.inject.bind
@@ -42,8 +38,8 @@ import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
-import java.time.LocalDate
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class Event19CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach {
@@ -188,7 +184,7 @@ class Event19CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
     }
 
     "must redirect to the correct page onClick" in {
-      when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
         .thenReturn(Future.successful())
 
       val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
@@ -200,7 +196,7 @@ class Event19CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url
-        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any(), any())
+        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
       }
     }
   }

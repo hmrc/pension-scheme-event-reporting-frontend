@@ -19,6 +19,7 @@ package controllers.partials
 import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import helpers.DateHelper.dateFormatter
 import models.requests.OptionalDataRequest
 import models.{EROverview, ToggleDetails, UserAnswers}
 import pages.EventReportingOverviewPage
@@ -79,7 +80,7 @@ class EventReportingTileController @Inject()(
 
       val (subHeadingMessage, subHeadingParamMessage) = overviewsInProgress.size match {
         case 1 =>
-          (Messages("eventReportingTile.subHeading", overviewsInProgress.head.periodStartDate, overviewsInProgress.head.periodEndDate),
+          (Messages("eventReportingTile.subHeading", dateFormatter.format(overviewsInProgress.head.periodStartDate), dateFormatter.format(overviewsInProgress.head.periodEndDate)),
             Messages("eventReportingTile.subHeading.param"))
         case _ =>
           (Messages("eventReportingTile.subHeading.multiple"),

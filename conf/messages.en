@@ -914,9 +914,9 @@ unauthPaymentAndSanctionCharges.h2 = How to pay
 unauthPaymentAndSanctionCharges.p4 = Check your scheme’s financial overview regularly following submission to see if it has been updated with any applicable charges. Then use the appropriate charge reference(s) when paying any member unauthorised payment or scheme sanction charge.
 unauthPaymentAndSanctionCharges.p5 = You will also receive paper notice(s) for any charges raised.
 
-unauthPaymentSummary.title = Unauthorised payments for tax year ending 5 April {0}
-unauthPaymentSummary.heading = Unauthorised payments for tax year ending 5 April {0}
-unauthPaymentSummary.yesno.legend = Do you want to add another unauthorised payment?
+unauthPaymentSummary.title = Event 1: Unauthorised payments events for tax year ending 5 April {0}
+unauthPaymentSummary.heading =  Event 1: Unauthorised payments events for tax year ending 5 April {0}
+unauthPaymentSummary.yesno.legend = Do you want to add another entry for this event?
 unauthPaymentSummary.checkYourAnswersLabel = Check your answers
 unauthPaymentSummary.error.required = Select yes if you want to add another unauthorised payment
 unauthPaymentSummary.change.hidden = Unauthorised payment summary
@@ -924,6 +924,7 @@ unauthPaymentSummary.table.header1 = Member or company name
 unauthPaymentSummary.table.header2 = Unauthorised payment value
 
 entity_list_table.total = Total
+entity_list_table.totalForUnauthorisedPayments = Total unauthorised payment value
 entity_list_table.totalForMembersSummary = Total amount for this event
 
 membersSummary.checkYourAnswersLabel = Check your answers
@@ -997,19 +998,19 @@ membersSummary.event8A.table.header2 = National Insurance number
 membersSummary.event8A.table.header3 = Lump sum
 membersSummary.event8A.table.totalTitle = Total not required
 
-membersSummary.event22.title = Annual allowance events reported in the tax year ending 5 April {0}
-membersSummary.event22.heading = Annual allowance events reported in the tax year ending 5 April {0}
+membersSummary.event22.title = Event 22: Annual allowance events reported in the tax year ending 5 April {0}
+membersSummary.event22.heading = Event 22: Annual allowance events reported in the tax year ending 5 April {0}
 membersSummary.event22.error.required = Select yes if you want to add another annual allowance event
-membersSummary.event22.yesno.legend = Do you want to add another annual allowance event?
+membersSummary.event22.yesno.legend = Do you want to add another entry for this event?
 membersSummary.event22.table.header1 = Member
 membersSummary.event22.table.header2 = National Insurance number
 membersSummary.event22.table.header3 = Pension input amount
 membersSummary.event22.table.totalTitle = Total amount for this event report
 
-membersSummary.event23.title = Dual annual allowances events for tax year ending 5 April {0}
-membersSummary.event23.heading = Dual annual allowances events for tax year ending 5 April {0}
+membersSummary.event23.title = Event 23: Dual annual allowances events reported in the tax year ending 5 April {0}
+membersSummary.event23.heading = Event 23: Dual annual allowances events reported in the tax year ending 5 April {0}
 membersSummary.event23.error.required = Select yes if you want to add another dual annual allowances event
-membersSummary.event23.yesno.legend = Do you want to add another dual annual allowance event?
+membersSummary.event23.yesno.legend = Do you want to add another entry for this event?
 membersSummary.event23.table.header1 = Member
 membersSummary.event23.table.header2 = National Insurance number
 membersSummary.event23.table.header3 = Pension input amount
@@ -1727,4 +1728,10 @@ returnHistory.table.header2 = Status
 returnHistory.table.header3 = Submitted by
 returnHistory.status.compiled = Compiled
 returnHistory.status.submitted = Submitted
+
+genericNino.error.invalid            = This National Insurance number is not valid
+genericNino.error.invalid.length     = The National Insurance number must be 2 letters, 6 numbers, then A, B, C or D, like QQ 12 34 56 C
+genericNino.error.invalid.prefix     = The National Insurance number must begin with 2 letters
+genericNino.error.invalid.numbers    = The National Insurance number must contain 6 numbers
+genericNino.error.invalid.suffix     = The National Insurance number must end with a letter
 
