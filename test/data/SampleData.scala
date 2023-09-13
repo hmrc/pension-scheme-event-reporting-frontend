@@ -39,7 +39,7 @@ import models.event6.{CrystallisedDetails, TypeOfProtection => Event6TypeOfProte
 import models.event7.PaymentDate
 import models.event8.{LumpSumDetails, TypeOfProtection => Event8TypeOfProtection}
 import models.event8a.PaymentType
-import models.{TaxYear, UserAnswers, VersionInfo}
+import models.{EROverview, EROverviewVersion, TaxYear, UserAnswers, VersionInfo}
 import pages.address.ManualAddressPage
 import pages.common._
 import pages.event1._
@@ -300,6 +300,28 @@ object SampleData extends SpecBase {
         .setOrException(LumpSumAmountAndDatePage(Event8A, i), lumpSumDetails)
     }
 
+  val erOverviewSeq = Seq(EROverview(
+    LocalDate.of(2022, 4, 6),
+    LocalDate.of(2023, 4, 5),
+    TaxYear("2022"),
+    tpssReportPresent = true,
+    Some(EROverviewVersion(
+      3,
+      submittedVersionAvailable = true,
+      compiledVersionAvailable = false
+    ))
+  ),
+    EROverview(
+      LocalDate.of(2023, 4, 6),
+      LocalDate.of(2024, 4, 5),
+      TaxYear("2023"),
+      tpssReportPresent = true,
+      Some(EROverviewVersion(
+        2,
+        submittedVersionAvailable = true,
+        compiledVersionAvailable = false
+      ))
+    ))
   def sampleMemberJourneyDataEvent22and23(eventType: EventType): UserAnswers = UserAnswers()
     .setOrException(TaxYearPage, TaxYear("2022"))
     .setOrException(MembersDetailsPage(eventType, 0), memberDetails)

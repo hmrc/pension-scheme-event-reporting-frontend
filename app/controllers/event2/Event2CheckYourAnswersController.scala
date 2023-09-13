@@ -18,11 +18,12 @@ package controllers.event2
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.{MemberSummaryPath, Index}
-import models.enumeration.EventType.Event2
+import helpers.ReadOnlyCYA
+import models.{Index, MemberSummaryPath}
+import models.enumeration.EventType.{Event2, Event4}
 import models.requests.DataRequest
 import pages.event2.Event2CheckYourAnswersPage
-import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
@@ -51,7 +52,9 @@ class Event2CheckYourAnswersController @Inject()(
       val thisPage = Event2CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event2.routes.Event2CheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent2CYARows(waypoints, thisPage, index)), continueUrl))
+      val version = request.userAnswers.get(VersionInfoPage).map(_.version)
+      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event2, version, request.readOnly())
+      Ok(view(SummaryListViewModel(rows = buildEvent2CYARows(waypoints, thisPage, index)), continueUrl, readOnlyHeading))
     }
 
   def onClick: Action[AnyContent] =
