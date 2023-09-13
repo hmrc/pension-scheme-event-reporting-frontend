@@ -69,8 +69,8 @@ object DateHelper extends Mappings {
       val intValue = input.asInstanceOf[Int]
       Seq(
         yearHas4Digits("genericDate.error.invalid.year"),
-        minDate(LocalDate.of(intValue, april, taxYearOpenDay), errorKey, int.toString, (intValue + 1).toString),
-        maxDate(LocalDate.of(intValue + 1, april, taxYearCloseDay), errorKey, int.toString, (intValue + 1).toString)
+        minDate(LocalDate.of(intValue, april, taxYearOpenDay), errorKey, intValue.toString, (intValue + 1).toString),
+        maxDate(LocalDate.of(intValue + 1, april, taxYearCloseDay), errorKey, intValue.toString, (intValue + 1).toString)
       )
     case localDates if localDates =:= typeOf[(LocalDate, LocalDate)]  =>
       val tupleValue = input.asInstanceOf[(LocalDate, LocalDate)]
