@@ -25,6 +25,7 @@ import pages.event1.{Event1CheckYourAnswersPage, SchemeUnAuthPaySurchargeMemberP
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
@@ -40,15 +41,17 @@ class SchemeUnAuthPaySurchargeMemberSummarySpec extends AnyFreeSpec with Matcher
       val answer = UserAnswers().setOrException(SchemeUnAuthPaySurchargeMemberPage(0), true)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
-      SchemeUnAuthPaySurchargeMemberSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      val isReadOnly = false
+      SchemeUnAuthPaySurchargeMemberSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "schemeUnAuthPaySurchargeMember.checkYourAnswersLabel",
           value = ValueViewModel(booleanCYAVal(true)),
-          actions = Seq(
-            ActionItemViewModel("site.change", SchemeUnAuthPaySurchargeMemberPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("schemeUnAuthPaySurchargeMember.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", SchemeUnAuthPaySurchargeMemberPage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("schemeUnAuthPaySurchargeMember.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -58,15 +61,17 @@ class SchemeUnAuthPaySurchargeMemberSummarySpec extends AnyFreeSpec with Matcher
       val answer = UserAnswers().setOrException(SchemeUnAuthPaySurchargeMemberPage(0), false)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
-      SchemeUnAuthPaySurchargeMemberSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      val isReadOnly = false
+      SchemeUnAuthPaySurchargeMemberSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "schemeUnAuthPaySurchargeMember.checkYourAnswersLabel",
           value = ValueViewModel(booleanCYAVal(false)),
-          actions = Seq(
-            ActionItemViewModel("site.change", SchemeUnAuthPaySurchargeMemberPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("schemeUnAuthPaySurchargeMember.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", SchemeUnAuthPaySurchargeMemberPage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("schemeUnAuthPaySurchargeMember.change.hidden"))
+            )))
+          }
         )
       )
     }

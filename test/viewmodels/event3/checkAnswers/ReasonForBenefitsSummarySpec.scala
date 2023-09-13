@@ -26,8 +26,8 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import viewmodels.checkAnswers.ReasonForBenefitsSummary
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
@@ -39,14 +39,17 @@ class ReasonForBenefitsSummarySpec extends AnyFreeSpec with Matchers with Option
       val answer = UserAnswers().setOrException(ReasonForBenefitsPage(0), ReasonForBenefits.ProtectedPensionAge)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event3CheckYourAnswersPage(0)
-      ReasonForBenefitsSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      val isReadOnly = false
+      ReasonForBenefitsSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "reasonForBenefits.event3.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages("reasonForBenefits.event3.protectedPensionAge")))),
-          actions = Seq(
-            ActionItemViewModel("site.change", ReasonForBenefitsPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("reasonForBenefits.event3.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", ReasonForBenefitsPage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("reasonForBenefits.event3.change.hidden"))
+            )))
+          }
         )
       )
     }

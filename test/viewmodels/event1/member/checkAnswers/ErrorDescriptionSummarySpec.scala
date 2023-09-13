@@ -26,6 +26,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
@@ -41,15 +42,18 @@ class ErrorDescriptionSummarySpec extends AnyFreeSpec with Matchers with OptionV
       val answer = UserAnswers().setOrException(ErrorDescriptionPage(0), "brief description of the error")
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
+      val isReadOnly = false
 
-      ErrorDescriptionSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      ErrorDescriptionSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "errorDescription.checkYourAnswersLabel",
           value = ValueViewModel(HtmlFormat.escape("brief description of the error").toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", ErrorDescriptionPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("errorDescription.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", ErrorDescriptionPage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("errorDescription.change.hidden"))
+            )))
+          }
         )
       )
     }

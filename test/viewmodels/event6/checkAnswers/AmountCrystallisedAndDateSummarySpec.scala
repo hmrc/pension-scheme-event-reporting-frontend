@@ -27,6 +27,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
@@ -47,19 +48,21 @@ class AmountCrystallisedAndDateSummarySpec extends AnyFreeSpec with Matchers wit
 
       val crystallisedDetails = CrystallisedDetails(1000000.00, LocalDate.now())
       val amountCrystallised = "£1,000,000.00"
-
+      val isReadOnly = false
       val answer = UserAnswers().setOrException(AmountCrystallisedAndDatePage(eventType, 0), crystallisedDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event6CheckYourAnswersPage(0)
 
-      AmountCrystallisedAndDateSummary.rowCrystallisedValue(answer, waypoints, sourcePage, eventType, 0) mustBe Some(
-        SummaryListRowViewModel(
+      AmountCrystallisedAndDateSummary.rowCrystallisedValue(answer, waypoints, sourcePage, isReadOnly, 0) mustBe Some(
+        SummaryListRow(
           key = messages("amountCrystallisedAndDate.value.checkYourAnswersLabel"),
           value = ValueViewModel(HtmlContent(Html(amountCrystallised))),
-          actions = Seq(
-            ActionItemViewModel("site.change", AmountCrystallisedAndDatePage(eventType, index = 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("amountCrystallisedAndDate.value.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", AmountCrystallisedAndDatePage(eventType, index = 0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("amountCrystallisedAndDate.value.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -74,18 +77,20 @@ class AmountCrystallisedAndDateSummarySpec extends AnyFreeSpec with Matchers wit
       val answer = UserAnswers().setOrException(AmountCrystallisedAndDatePage(eventType, 0), crystallisedDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event6CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val date = crystallisedDetails.crystallisedDate
       val format = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
-      AmountCrystallisedAndDateSummary.rowCrystallisedDate(answer, waypoints, sourcePage, eventType, 0) mustBe Some(
-        SummaryListRowViewModel(
+      AmountCrystallisedAndDateSummary.rowCrystallisedDate(answer, waypoints, sourcePage, isReadOnly, 0) mustBe Some(
+        SummaryListRow(
           key = messages("amountCrystallisedAndDate.date.checkYourAnswersLabel"),
           value = ValueViewModel(format.format(date)),
-          actions = Seq(
-            ActionItemViewModel("site.change", AmountCrystallisedAndDatePage(eventType, 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("amountCrystallisedAndDate.date.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", AmountCrystallisedAndDatePage(eventType, 0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("amountCrystallisedAndDate.date.change.hidden"))
+            )))
+          }
         )
       )
     }

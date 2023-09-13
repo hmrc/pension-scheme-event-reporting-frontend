@@ -27,6 +27,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
@@ -42,6 +43,7 @@ class WhoWasTheTransferMadeSummarySpec extends AnyFreeSpec with Matchers with Op
       val answer = UserAnswers().setOrException(WhoWasTheTransferMadePage(0), WhoWasTheTransferMade.AnEmployerFinanced)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
+      val isReadOnly = false
 
       val value = ValueViewModel(
         HtmlContent(
@@ -49,14 +51,16 @@ class WhoWasTheTransferMadeSummarySpec extends AnyFreeSpec with Matchers with Op
         )
       )
 
-      WhoWasTheTransferMadeSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      WhoWasTheTransferMadeSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "whoWasTheTransferMade.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", WhoWasTheTransferMadePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("whoWasTheTransferMade.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", WhoWasTheTransferMadePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("whoWasTheTransferMade.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -66,21 +70,23 @@ class WhoWasTheTransferMadeSummarySpec extends AnyFreeSpec with Matchers with Op
       val answer = UserAnswers().setOrException(WhoWasTheTransferMadePage(0), WhoWasTheTransferMade.NonRecognisedScheme)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val value = ValueViewModel(
         HtmlContent(
           HtmlFormat.escape(messages(s"whoWasTheTransferMade.${WhoWasTheTransferMade.NonRecognisedScheme}"))
         )
       )
 
-      WhoWasTheTransferMadeSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      WhoWasTheTransferMadeSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "whoWasTheTransferMade.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", WhoWasTheTransferMadePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("whoWasTheTransferMade.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", WhoWasTheTransferMadePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("whoWasTheTransferMade.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -90,21 +96,23 @@ class WhoWasTheTransferMadeSummarySpec extends AnyFreeSpec with Matchers with Op
       val answer = UserAnswers().setOrException(WhoWasTheTransferMadePage(0), WhoWasTheTransferMade.Other)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val value = ValueViewModel(
         HtmlContent(
           HtmlFormat.escape(messages(s"whoWasTheTransferMade.${WhoWasTheTransferMade.Other}"))
         )
       )
 
-      WhoWasTheTransferMadeSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      WhoWasTheTransferMadeSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "whoWasTheTransferMade.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", WhoWasTheTransferMadePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("whoWasTheTransferMade.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", WhoWasTheTransferMadePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("whoWasTheTransferMade.change.hidden"))
+            )))
+          }
         )
       )
     }

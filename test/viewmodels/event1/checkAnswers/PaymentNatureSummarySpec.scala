@@ -27,6 +27,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
@@ -43,21 +44,23 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
       val answer = UserAnswers().setOrException(PaymentNaturePage(0), PaymentNature.BenefitInKind)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val value = ValueViewModel(
         HtmlContent(
           HtmlFormat.escape(messages(s"paymentNature.${PaymentNature.BenefitInKind}"))
         )
       )
 
-      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "paymentNature.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -67,21 +70,23 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
       val answer = UserAnswers().setOrException(PaymentNaturePage(0), PaymentNature.TransferToNonRegPensionScheme)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val value = ValueViewModel(
         HtmlContent(
           HtmlFormat.escape(messages(s"paymentNature.${PaymentNature.TransferToNonRegPensionScheme}"))
         )
       )
 
-      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "paymentNature.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -91,21 +96,23 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
       val answer = UserAnswers().setOrException(PaymentNaturePage(0), PaymentNature.ErrorCalcTaxFreeLumpSums)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val value = ValueViewModel(
         HtmlContent(
           HtmlFormat.escape(messages(s"paymentNature.${PaymentNature.ErrorCalcTaxFreeLumpSums}"))
         )
       )
 
-      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "paymentNature.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -115,21 +122,23 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
       val answer = UserAnswers().setOrException(PaymentNaturePage(0), PaymentNature.BenefitsPaidEarly)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val value = ValueViewModel(
         HtmlContent(
           HtmlFormat.escape(messages(s"paymentNature.${PaymentNature.BenefitsPaidEarly}"))
         )
       )
 
-      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "paymentNature.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -139,21 +148,23 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
       val answer = UserAnswers().setOrException(PaymentNaturePage(0), PaymentNature.RefundOfContributions)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val value = ValueViewModel(
         HtmlContent(
           HtmlFormat.escape(messages(s"paymentNature.${PaymentNature.RefundOfContributions}"))
         )
       )
 
-      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "paymentNature.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -163,21 +174,23 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
       val answer = UserAnswers().setOrException(PaymentNaturePage(0), PaymentNature.OverpaymentOrWriteOff)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val value = ValueViewModel(
         HtmlContent(
           HtmlFormat.escape(messages(s"paymentNature.${PaymentNature.OverpaymentOrWriteOff}"))
         )
       )
 
-      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "paymentNature.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -187,21 +200,23 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
       val answer = UserAnswers().setOrException(PaymentNaturePage(0), PaymentNature.ResidentialPropertyHeld)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val value = ValueViewModel(
         HtmlContent(
           HtmlFormat.escape(messages(s"paymentNature.${PaymentNature.ResidentialPropertyHeld}"))
         )
       )
 
-      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "paymentNature.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -211,21 +226,23 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
       val answer = UserAnswers().setOrException(PaymentNaturePage(0), PaymentNature.TangibleMoveablePropertyHeld)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val value = ValueViewModel(
         HtmlContent(
           HtmlFormat.escape(messages(s"paymentNature.${PaymentNature.TangibleMoveablePropertyHeld}"))
         )
       )
 
-      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "paymentNature.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -235,21 +252,23 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
       val answer = UserAnswers().setOrException(PaymentNaturePage(0), PaymentNature.CourtOrConfiscationOrder)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val value = ValueViewModel(
         HtmlContent(
           HtmlFormat.escape(messages(s"paymentNature.${PaymentNature.CourtOrConfiscationOrder}"))
         )
       )
 
-      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "paymentNature.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -259,21 +278,23 @@ class PaymentNatureSummarySpec extends AnyFreeSpec with Matchers with OptionValu
       val answer = UserAnswers().setOrException(PaymentNaturePage(0), PaymentNature.MemberOther)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val value = ValueViewModel(
         HtmlContent(
           HtmlFormat.escape(messages(s"paymentNature.${PaymentNature.MemberOther}"))
         )
       )
 
-      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      PaymentNatureSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "paymentNature.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", PaymentNaturePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("paymentNature.change.hidden"))
+            )))
+          }
         )
       )
     }
