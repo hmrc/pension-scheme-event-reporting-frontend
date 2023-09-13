@@ -68,18 +68,21 @@ object DateHelper extends Mappings {
     case int if int =:= typeOf[Int] =>
       val intValue = input.asInstanceOf[Int]
       Seq(
+        yearHas4Digits("genericDate.error.invalid.year"),
         minDate(LocalDate.of(intValue, april, taxYearOpenDay), errorKey, int.toString, (intValue + 1).toString),
         maxDate(LocalDate.of(intValue + 1, april, taxYearCloseDay), errorKey, int.toString, (intValue + 1).toString)
       )
     case localDates if localDates =:= typeOf[(LocalDate, LocalDate)]  =>
       val tupleValue = input.asInstanceOf[(LocalDate, LocalDate)]
       Seq(
+        yearHas4Digits("genericDate.error.invalid.year"),
         minDate(tupleValue._1, messages(errorKey, formatDateDMY(tupleValue._1), formatDateDMY(tupleValue._2))),
         maxDate(tupleValue._2, messages(errorKey, formatDateDMY(tupleValue._1), formatDateDMY(tupleValue._2)))
       )
     case intAndLocalDate if intAndLocalDate =:= typeOf[(Int, LocalDate)]  =>
       val tupleValue = input.asInstanceOf[(Int, LocalDate)]
       Seq(
+        yearHas4Digits("genericDate.error.invalid.year"),
         minDate(LocalDate.of(tupleValue._1, april, taxYearOpenDay), errorKey, tupleValue._1.toString, (tupleValue._1 + 1).toString),
         maxDate(LocalDate.of(tupleValue._1 + 1, april, taxYearCloseDay), errorKey, tupleValue._1.toString, (tupleValue._1 + 1).toString),
         isNotBeforeOpenDate(tupleValue._2, "schemeWindUpDate.error.beforeOpenDate", formatDateDMY(tupleValue._2))
