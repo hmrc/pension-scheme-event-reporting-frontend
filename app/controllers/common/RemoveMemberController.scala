@@ -16,7 +16,6 @@
 
 package controllers.common
 
-import connectors.EventReportingConnector
 import controllers.actions._
 import forms.common.RemoveMemberFormProvider
 import models.Index
@@ -25,6 +24,7 @@ import pages.common.RemoveMemberPage
 import pages.{VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.CompileService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.common.RemoveMemberView
 
@@ -36,7 +36,7 @@ class RemoveMemberController @Inject()(
                                         identify: IdentifierAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
-                                        eventReportingConnector: EventReportingConnector,
+                                        compileService: CompileService,
                                         formProvider: RemoveMemberFormProvider,
                                         view: RemoveMemberView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -57,8 +57,15 @@ class RemoveMemberController @Inject()(
 
       def deleteMember(delete:Boolean) = {
         val ua = if (delete) {
-          eventReportingConnector.deleteMember(request.pstr, request.userAnswers.eventDataIdentifier(eventType), request.userAnswers.get(VersionInfoPage).map(_.version).getOrElse(0), index.id.toString )
-            .map(_ => request.userAnswers)
+          val vi = request.userAnswers.get(VersionInfoPage)
+          val version = vi.map(_.version).getOrElse(0)
+          compileService.deleteMember(
+              request.pstr,
+              request.userAnswers.eventDataIdentifier(eventType),
+              version,
+              index.id.toString,
+              request.userAnswers
+            ).map(_ => request.userAnswers)
         } else {
           Future.successful(request.userAnswers)
         }

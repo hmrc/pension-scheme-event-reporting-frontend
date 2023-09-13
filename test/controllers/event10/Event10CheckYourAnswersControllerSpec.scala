@@ -237,7 +237,7 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
     }
 
     "must redirect to the correct page onClick" in {
-      when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
         .thenReturn(Future.successful())
 
       val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
@@ -249,7 +249,7 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url
-        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any(), any())
+        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
       }
     }
   }

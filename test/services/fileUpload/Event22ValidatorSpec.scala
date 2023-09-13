@@ -113,10 +113,10 @@ class Event22ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
       DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
-,Bloggs,AA234567D,2024,12.20
-Steven,,xyz,,
-Steven,Bloggs,AA123456C,2022 to 2023,13.20
-Steven,Bloggs,AA123456C,2022 to 2023,13.20"""
+        ,Bloggs,AA234567D,2024,12.20
+        Steven,,xyz,,
+        Steven,Bloggs,AA123456C,2022 to 2023,13.20
+        Steven,Bloggs,AA123456C,2022 to 2023,13.20"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
 
@@ -125,7 +125,7 @@ Steven,Bloggs,AA123456C,2022 to 2023,13.20"""
         ValidationError(1, 0, "membersDetails.error.firstName.required", "firstName"),
         ValidationError(1, 3, "chooseTaxYear.event22.error.outsideRange", "taxYear", Seq("2013", "2023")),
         ValidationError(2, 1, "membersDetails.error.lastName.required", "lastName"),
-        ValidationError(2, 2, "membersDetails.error.nino.invalid", "nino"),
+        ValidationError(2, 2, "genericNino.error.invalid.length", "nino"),
         ValidationError(2, 3, "chooseTaxYear.event22.error.required", "taxYear", Seq("2013", "2023")),
         ValidationError(2, 4, "totalPensionAmounts.value.error.nothingEntered", "totalAmounts"),
         ValidationError(4, 2, "membersDetails.error.nino.notUnique", "nino")
