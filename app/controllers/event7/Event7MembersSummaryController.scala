@@ -16,7 +16,6 @@
 
 package controllers.event7
 
-import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.common.MembersSummaryFormProvider
 import forms.mappings.Formatters

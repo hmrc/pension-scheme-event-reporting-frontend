@@ -19,7 +19,7 @@ package forms.eventWindUp
 import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.i18n.Messages
-import utils.DateHelper.localDateMappingWithDateRange
+import utils.DateConstraintHandlers.{intAndLocalDateConstraintHandler, localDateMappingWithDateRange}
 
 import java.time.LocalDate
 import javax.inject.Inject
@@ -28,6 +28,6 @@ class SchemeWindUpDateFormProvider @Inject() extends Mappings {
 
   def apply(taxYear: Int, openDate: LocalDate)(implicit messages: Messages): Form[LocalDate] =
     Form(
-          localDateMappingWithDateRange(date = (taxYear, openDate), outOfRangeKey = "schemeWindUpDate.error.outside.taxYear")
+      localDateMappingWithDateRange(date = (taxYear, openDate), outOfRangeKey = "schemeWindUpDate.error.outside.taxYear")
     )
 }

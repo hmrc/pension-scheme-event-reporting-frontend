@@ -18,7 +18,7 @@ package forms.event19
 
 import play.api.data.Form
 import play.api.i18n.Messages
-import utils.DateHelper.localDateMappingWithDateRange
+import utils.DateConstraintHandlers.{intConstraintHandler, localDateMappingWithDateRange}
 
 import java.time.LocalDate
 

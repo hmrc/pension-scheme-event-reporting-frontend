@@ -21,7 +21,7 @@ import models.event7.PaymentDate
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.i18n.Messages
-import utils.DateHelper.localDateMappingWithDateRange
+import utils.DateConstraintHandlers.{localDateMappingWithDateRange, localDatesConstraintHandler}
 
 import java.time.LocalDate
 import javax.inject.Inject

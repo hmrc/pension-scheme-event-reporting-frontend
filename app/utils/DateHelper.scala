@@ -16,24 +16,12 @@
 
 package utils
 
-import forms.mappings.Mappings
-import play.api.data.Mapping
-import play.api.data.validation.Constraint
-import play.api.i18n.Messages
-
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, ZonedDateTime}
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicReference
 
-import scala.reflect.runtime.universe._
-import scala.reflect.runtime.universe.TypeTag
-
-object DateHelper extends Mappings {
-
-  private val april = 4
-  private val taxYearOpenDay = 6
-  private val taxYearCloseDay = 5
+object DateHelper {
 
   val dateFormatterDMY: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
@@ -54,40 +42,5 @@ object DateHelper extends Mappings {
     val suffix = str.takeRight(2).toLowerCase
     val prefix = str.take(str.length - 2)
     prefix + suffix
-  }
-
-  def localDateMappingWithDateRange[T](
-                                        field: String = "value",
-                                        invalidKey: String = "genericDate.error.invalid",
-                                        date: T,
-                                        outOfRangeKey: String
-                                      )(implicit messages: Messages, tag: TypeTag[T]): (String, Mapping[LocalDate]) =
-    field -> localDate(invalidKey).verifying(firstError(withinDateRange(date, outOfRangeKey): _*))
-
-  def withinDateRange[T](input: T, errorKey: String)(implicit messages: Messages, tag: TypeTag[T]): Seq[Constraint[LocalDate]] = tag.tpe match {
-    case int if int =:= typeOf[Int] =>
-      val intValue = input.asInstanceOf[Int]
-      Seq(
-        yearHas4Digits("genericDate.error.invalid.year"),
-        minDate(LocalDate.of(intValue, april, taxYearOpenDay), errorKey, intValue.toString, (intValue + 1).toString),
-        maxDate(LocalDate.of(intValue + 1, april, taxYearCloseDay), errorKey, intValue.toString, (intValue + 1).toString)
-      )
-    case localDates if localDates =:= typeOf[(LocalDate, LocalDate)]  =>
-      val tupleValue = input.asInstanceOf[(LocalDate, LocalDate)]
-      Seq(
-        yearHas4Digits("genericDate.error.invalid.year"),
-        minDate(tupleValue._1, messages(errorKey, formatDateDMY(tupleValue._1), formatDateDMY(tupleValue._2))),
-        maxDate(tupleValue._2, messages(errorKey, formatDateDMY(tupleValue._1), formatDateDMY(tupleValue._2)))
-      )
-    case intAndLocalDate if intAndLocalDate =:= typeOf[(Int, LocalDate)]  =>
-      val tupleValue = input.asInstanceOf[(Int, LocalDate)]
-      Seq(
-        yearHas4Digits("genericDate.error.invalid.year"),
-        minDate(LocalDate.of(tupleValue._1, april, taxYearOpenDay), errorKey, tupleValue._1.toString, (tupleValue._1 + 1).toString),
-        maxDate(LocalDate.of(tupleValue._1 + 1, april, taxYearCloseDay), errorKey, tupleValue._1.toString, (tupleValue._1 + 1).toString),
-        isNotBeforeOpenDate(tupleValue._2, "schemeWindUpDate.error.beforeOpenDate", formatDateDMY(tupleValue._2))
-      )
-    case _ =>
-      throw new ClassCastException("withinDateRange does not support inputs of types other than Int, (LocalDate, LocalDate), or (Int, LocalDate)")
   }
 }

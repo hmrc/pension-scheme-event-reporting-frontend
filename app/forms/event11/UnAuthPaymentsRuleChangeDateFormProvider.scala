@@ -16,15 +16,15 @@
 
 package forms.event11
 
-import java.time.LocalDate
 import forms.mappings.Mappings
 import models.event11.Event11Date
-
-import javax.inject.Inject
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.i18n.Messages
-import utils.DateHelper.{formatDateDMY, localDateMappingWithDateRange}
+import utils.DateConstraintHandlers.{localDateMappingWithDateRange, localDatesConstraintHandler}
+
+import java.time.LocalDate
+import javax.inject.Inject
 
 class UnAuthPaymentsRuleChangeDateFormProvider @Inject() extends Mappings {
 

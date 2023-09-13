@@ -21,8 +21,8 @@ import uk.gov.hmrc.domain.Nino
 import utils.CountryOptions
 
 import java.time.LocalDate
-import scala.language.implicitConversions
 import scala.collection.immutable.HashSet
+import scala.language.implicitConversions
 
 trait Constraints {
 

@@ -16,11 +16,11 @@
 
 package forms.controllers.event13
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
-import play.api.data.Form
 import models.event13.SchemeStructure
+import play.api.data.Form
+
+import javax.inject.Inject
 
 class SchemeStructureFormProvider @Inject() extends Mappings {
 

@@ -21,7 +21,7 @@ import models.event6.CrystallisedDetails
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.i18n.Messages
-import utils.DateHelper.{formatDateDMY, localDateMappingWithDateRange}
+import utils.DateConstraintHandlers.{localDateMappingWithDateRange, localDatesConstraintHandler}
 
 import java.time.LocalDate
 import javax.inject.Inject

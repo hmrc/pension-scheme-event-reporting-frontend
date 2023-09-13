@@ -23,9 +23,9 @@ import models.enumeration.EventType
 import models.enumeration.EventType.Event2
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import scala.collection.immutable.HashSet
 
 import javax.inject.Inject
+import scala.collection.immutable.HashSet
 
 class MembersDetailsFormProvider @Inject() extends Mappings with Transforms {
 

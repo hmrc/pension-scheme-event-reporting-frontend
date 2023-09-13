@@ -16,15 +16,15 @@
 
 package forms.event13
 
-import java.time.LocalDate
-
 import play.api.data.Form
 import play.api.i18n.Messages
-import utils.DateHelper.localDateMappingWithDateRange
+import utils.DateConstraintHandlers.{intConstraintHandler, localDateMappingWithDateRange}
+
+import java.time.LocalDate
 
 class ChangeDateFormProvider {
 
-  def apply(taxYear:Int)(implicit messages: Messages): Form[LocalDate] =
+  def apply(taxYear: Int)(implicit messages: Messages): Form[LocalDate] =
     Form(
       localDateMappingWithDateRange(date = taxYear, outOfRangeKey = "event13.changeDate.error.outside.taxYear")
     )

@@ -355,7 +355,7 @@ datePaid.event2.error.required.all = Enter the date
 datePaid.event2.error.required.two = The date must include {0} and {1}
 datePaid.event2.error.required = The date must include {0}
 datePaid.event2.error.invalid = Enter a real date
-datePaid.event2.error.outside.taxYear = The date must be between 06 April {0} to 05 April {1}
+datePaid.event2.error.outside.taxYear = The date must be between {0} to {1}
 datePaid.event2.change.hidden = When the payment was made
 
 membersSummary.event2.title = Event 2: Lump sum death benefit payment events reported in the tax year ending 5 April {0}

@@ -22,8 +22,9 @@ import models.TaxYearValidationDetail
 import play.api.data.FormError
 import play.api.data.format.Formatter
 import play.api.i18n.Messages
-import scala.util.chaining.scalaUtilChainingOps
+
 import java.time.LocalDate
+import scala.util.chaining.scalaUtilChainingOps
 import scala.util.{Failure, Success, Try}
 
 private[mappings] class LocalDateFormatter(

@@ -17,8 +17,8 @@
 package forms.common
 
 import forms.mappings.Mappings
-import models.enumeration.EventType
 import models.common.ManualOrUpload
+import models.enumeration.EventType
 import play.api.data.Form
 
 import javax.inject.Inject
