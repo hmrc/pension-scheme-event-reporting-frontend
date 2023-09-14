@@ -17,16 +17,16 @@
 package controllers.event5
 
 import base.SpecBase
-import data.SampleData.sampleMemberJourneyDataEvent3and4and5
-import models.{MemberSummaryPath, VersionInfo}
+import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent3and4and5}
 import models.enumeration.EventType.Event5
-import models.enumeration.VersionStatus.Compiled
-import org.mockito.ArgumentCaptor
+import models.enumeration.VersionStatus.{Compiled, Submitted}
+import models.{MemberSummaryPath, TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{EmptyWaypoints, VersionInfoPage}
+import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
 import play.api.inject.bind
@@ -58,7 +58,9 @@ class Event5CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
   "Check Your Answers Controller for Event 5" - {
     "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
+        .setOrException(VersionInfoPage, VersionInfo(3, Submitted))
+        .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(0).url)
@@ -76,6 +78,27 @@ class Event5CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       }
     }
 
+    "must return OK and the correct view for a GET (View Only (different heading))" in {
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
+        .setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+        .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(0).url)
+        val result = route(application, request).value
+        val view = application.injector.instanceOf[CheckYourAnswersView]
+        val list = SummaryListViewModel(Seq.empty)
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view.render(
+          list,
+          continueUrl = "/manage-pension-scheme-event-report/report/event-5-click",
+          Tuple2(Some(1), Some(Event5)),
+          request,
+          messages(application)).toString
+      }
+    }
+
     "must return OK and the correct summary list row items for a GET (member)" in {
       val mockView = mock[CheckYourAnswersView]
       val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -83,7 +106,10 @@ class Event5CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleMemberJourneyDataEvent3and4and5(Event5)),
+        userAnswers = Some(sampleMemberJourneyDataEvent3and4and5(Event5)
+          .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+          .setOrException(EventReportingOverviewPage, erOverviewSeq)
+          .setOrException(VersionInfoPage, VersionInfo(3, Submitted))),
         extraModules = extraModules
       ).build()
 
@@ -98,6 +124,40 @@ class Event5CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         val actual: Seq[SummaryListRow] = captor.getValue.rows
         val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRowsEvent5
+
+        actual.size mustBe expected.size
+
+        actual.zipWithIndex.map { case (a, i) =>
+          a mustBe expected(i)
+        }
+      }
+    }
+
+    "must return OK and the correct summary list row items for a GET (member) (NO change links present)" in {
+      val mockView = mock[CheckYourAnswersView]
+      val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+        inject.bind[CheckYourAnswersView].toInstance(mockView)
+      )
+
+      val application = applicationBuilder(
+        userAnswers = Some(sampleMemberJourneyDataEvent3and4and5(Event5)
+          .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+          .setOrException(EventReportingOverviewPage, erOverviewSeq)
+          .setOrException(VersionInfoPage, VersionInfo(1, Submitted))),
+        extraModules = extraModules
+      ).build()
+
+      val captor: ArgumentCaptor[SummaryList] =
+        ArgumentCaptor.forClass(classOf[SummaryList])
+
+      running(application) {
+        when(mockView.apply(captor.capture(), any(), ArgumentMatchers.eq(Some(1), Some(Event5)))(any(), any())).thenReturn(play.twirl.api.Html(""))
+        val request = FakeRequest(GET, controllers.event5.routes.Event5CheckYourAnswersController.onPageLoad(0).url)
+        val result = route(application, request).value
+        status(result) mustEqual OK
+
+        val actual: Seq[SummaryListRow] = captor.getValue.rows
+        val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRowsEvent5ViewOnly
 
         actual.size mustBe expected.size
 
@@ -162,6 +222,24 @@ object Event5CheckYourAnswersControllerSpec {
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
 
+  private def fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(messageKey: String, htmlContent: String)
+                                                                        (implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      Key(
+        Text(
+          messages(messageKey)
+        ), ""),
+      Value(HtmlContent(htmlContent), ""), "")
+
+  private def fakeSummaryListRowWithTextWithHiddenContentViewOnly(messageKey: String, text: String)
+                                                                 (implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      Key(
+        Text(
+          messages(messageKey)
+        ), ""),
+      Value(Text(text), ""), "")
+
   private def expectedMemberSummaryListRowsEvent5(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel",
@@ -186,6 +264,25 @@ object Event5CheckYourAnswersControllerSpec {
       "05 April 2022",
       "/manage-pension-scheme-event-report/report/1/event-5-payment-details?waypoints=event-5-check-answers-1",
       "paymentDetails.date.change.hidden"
+    )
+  )
+
+  private def expectedMemberSummaryListRowsEvent5ViewOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
+    fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
+      "membersDetails.checkYourAnswersLabel",
+      "Joe Bloggs"
+    ),
+    fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
+      "membersDetails.checkYourAnswersLabel.nino",
+      "AA234567D"
+    ),
+    fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
+      "paymentDetails.value.checkYourAnswersLabel",
+      "£10.00"
+    ),
+    fakeSummaryListRowWithTextWithHiddenContentViewOnly(
+      "paymentDetails.date.checkYourAnswersLabel",
+      "05 April 2022"
     )
   )
 }

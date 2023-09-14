@@ -17,16 +17,16 @@
 package controllers.event23
 
 import base.SpecBase
-import data.SampleData.sampleMemberJourneyDataEvent22and23
-import models.{MemberSummaryPath, VersionInfo}
+import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent22and23}
 import models.enumeration.EventType.Event23
-import models.enumeration.VersionStatus.Compiled
-import org.mockito.ArgumentCaptor
+import models.enumeration.VersionStatus.{Compiled, Submitted}
+import models.{MemberSummaryPath, TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{EmptyWaypoints, VersionInfoPage}
+import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
 import play.api.inject.bind
@@ -56,9 +56,11 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
     reset(mockCompileService)
   }
 
-  "Check Your Answers Controller" - {
+  "Check Your Answers Controller for Event 23" - {
     "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
+        .setOrException(VersionInfoPage, VersionInfo(3, Submitted))
+        .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url)
@@ -75,6 +77,27 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       }
     }
 
+    "must return OK and the correct view for a GET (View Only (different heading))" in {
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
+        .setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+        .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url)
+        val result = route(application, request).value
+        val view = application.injector.instanceOf[CheckYourAnswersView]
+        val list = SummaryListViewModel(Seq.empty)
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view.render(
+          list,
+          continueUrl = "/manage-pension-scheme-event-report/report/event-23-click",
+          Tuple2(Some(1), Some(Event23)),
+          request,
+          messages(application)).toString
+      }
+    }
+
     "must return OK and the correct summary list row items for a GET (member)" in {
       val mockView = mock[CheckYourAnswersView]
       val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -82,7 +105,10 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleMemberJourneyDataEvent22and23(Event23)),
+        userAnswers = Some(sampleMemberJourneyDataEvent22and23(Event23)
+          .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+          .setOrException(EventReportingOverviewPage, erOverviewSeq)
+          .setOrException(VersionInfoPage, VersionInfo(3, Submitted))),
         extraModules = extraModules
       ).build()
 
@@ -97,6 +123,40 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
         val actual: Seq[SummaryListRow] = captor.getValue.rows
         val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRowsEvent23
+
+        actual.size mustBe expected.size
+
+        actual.zipWithIndex.map { case (a, i) =>
+          a mustBe expected(i)
+        }
+      }
+    }
+
+    "must return OK and the correct summary list row items for a GET (member) (NO change links present)" in {
+      val mockView = mock[CheckYourAnswersView]
+      val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+        inject.bind[CheckYourAnswersView].toInstance(mockView)
+      )
+
+      val application = applicationBuilder(
+        userAnswers = Some(sampleMemberJourneyDataEvent22and23(Event23)
+          .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+          .setOrException(EventReportingOverviewPage, erOverviewSeq)
+          .setOrException(VersionInfoPage, VersionInfo(1, Submitted))),
+        extraModules = extraModules
+      ).build()
+
+      val captor: ArgumentCaptor[SummaryList] =
+        ArgumentCaptor.forClass(classOf[SummaryList])
+
+      running(application) {
+        when(mockView.apply(captor.capture(), any(), ArgumentMatchers.eq(Some(1), Some(Event23)))(any(), any())).thenReturn(play.twirl.api.Html(""))
+        val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url)
+        val result = route(application, request).value
+        status(result) mustEqual OK
+
+        val actual: Seq[SummaryListRow] = captor.getValue.rows
+        val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRowsEvent23ViewOnly
 
         actual.size mustBe expected.size
 
@@ -162,6 +222,24 @@ object Event23CheckYourAnswersControllerSpec {
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
 
+  private def fakeSummaryListRowWithHtmlContentWithHiddenContentWithoutChangeViewOnly(messageKey: String, htmlContent: String)
+                                                                                     (implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      Key(
+        Text(
+          messages(messageKey)
+        ), ""),
+      Value(HtmlContent(htmlContent), ""), "")
+
+  private def fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(messageKey: String, htmlContent: String)
+                                                                        (implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      Key(
+        Text(
+          messages(messageKey)
+        ), ""),
+      Value(HtmlContent(htmlContent), ""), "")
+
   private def expectedMemberSummaryListRowsEvent23(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel",
@@ -186,6 +264,25 @@ object Event23CheckYourAnswersControllerSpec {
       "£10.00",
       "/manage-pension-scheme-event-report/report/1/event-23-total-input-amount?waypoints=event-23-check-answers-1",
       "totalPensionAmounts.event23.change.hidden"
+    )
+  )
+
+  private def expectedMemberSummaryListRowsEvent23ViewOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
+    fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
+      "membersDetails.checkYourAnswersLabel",
+      "Joe Bloggs"
+    ),
+    fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
+      "membersDetails.checkYourAnswersLabel.nino",
+      "AA234567D"
+    ),
+    fakeSummaryListRowWithHtmlContentWithHiddenContentWithoutChangeViewOnly(
+      "chooseTaxYear.event23.checkYourAnswersLabel",
+      "2015 to 2016"
+    ),
+    fakeSummaryListRowWithHtmlContentWithHiddenContentWithoutChangeViewOnly(
+      "totalPensionAmounts.event23.checkYourAnswersLabel",
+      "£10.00"
     )
   )
 }

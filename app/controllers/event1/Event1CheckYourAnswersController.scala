@@ -18,6 +18,7 @@ package controllers.event1
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import helpers.ReadOnlyCYA
 import models.Index
 import models.enumeration.AddressJourneyType
 import models.enumeration.EventType.Event1
@@ -28,7 +29,7 @@ import models.requests.DataRequest
 import pages.event1.employer.{PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member.{PaymentNaturePage => MemberPaymentNaturePage}
 import pages.event1.{Event1CheckYourAnswersPage, ValueOfUnauthorisedPaymentPage, WhoReceivedUnauthPaymentPage}
-import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
@@ -61,8 +62,9 @@ class Event1CheckYourAnswersController @Inject()(
       val waypoints = EmptyWaypoints
 
       val continueUrl = controllers.event1.routes.Event1CheckYourAnswersController.onClick.url
-
-      Ok(view(SummaryListViewModel(rows = buildEvent1CYARows(waypoints, thisPage, index)), continueUrl))
+      val version = request.userAnswers.get(VersionInfoPage).map(_.version)
+      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event1, version, request.readOnly())
+      Ok(view(SummaryListViewModel(rows = buildEvent1CYARows(waypoints, thisPage, index)), continueUrl, readOnlyHeading))
     }
 
   def onClick: Action[AnyContent] =

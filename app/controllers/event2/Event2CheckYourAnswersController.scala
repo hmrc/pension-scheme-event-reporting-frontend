@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import helpers.ReadOnlyCYA
 import models.{Index, MemberSummaryPath}
-import models.enumeration.EventType.{Event2, Event4}
+import models.enumeration.EventType.Event2
 import models.requests.DataRequest
 import pages.event2.Event2CheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}

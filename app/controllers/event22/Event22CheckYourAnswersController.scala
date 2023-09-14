@@ -18,11 +18,12 @@ package controllers.event22
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.{Index, MemberSummaryPath}
+import helpers.ReadOnlyCYA
 import models.enumeration.EventType.Event22
 import models.requests.DataRequest
+import models.{Index, MemberSummaryPath}
 import pages.event22.Event22CheckYourAnswersPage
-import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
@@ -49,7 +50,9 @@ class Event22CheckYourAnswersController @Inject()(
       val thisPage = Event22CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event22.routes.Event22CheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent22CYARows(waypoints, thisPage, index)), continueUrl))
+      val version = request.userAnswers.get(VersionInfoPage).map(_.version)
+      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event22, version, request.readOnly())
+      Ok(view(SummaryListViewModel(rows = buildEvent22CYARows(waypoints, thisPage, index)), continueUrl, readOnlyHeading))
     }
 
   def onClick: Action[AnyContent] =
