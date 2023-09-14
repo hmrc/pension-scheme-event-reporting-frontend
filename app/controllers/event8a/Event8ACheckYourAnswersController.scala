@@ -18,13 +18,14 @@ package controllers.event8a
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import helpers.ReadOnlyCYA
 import models.enumeration.EventType.Event8A
 import models.event8a.PaymentType
 import models.requests.DataRequest
 import models.{Index, MemberSummaryPath, UserAnswers}
 import pages.common.MembersDetailsPage
 import pages.event8a.Event8ACheckYourAnswersPage
-import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
@@ -108,9 +109,11 @@ class Event8ACheckYourAnswersController @Inject()(
       val thisPage = Event8ACheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event8a.routes.Event8ACheckYourAnswersController.onClick.url
+      val version = request.userAnswers.get(VersionInfoPage).map(_.version)
+      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event8A, version, request.readOnly())
 
       missingDataResult(request.userAnswers, index, waypoints).getOrElse(
-        Ok(view(SummaryListViewModel(rows = buildEvent8aCYARows(waypoints, thisPage, index)), continueUrl))
+        Ok(view(SummaryListViewModel(rows = buildEvent8aCYARows(waypoints, thisPage, index)), continueUrl, readOnlyHeading))
       )
     }
 
@@ -124,12 +127,12 @@ class Event8ACheckYourAnswersController @Inject()(
 
   private def buildEvent8aCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event8A).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event8A).toSeq ++
-      PaymentTypeSummary.row(request.userAnswers, waypoints, index, sourcePage, Event8A).toSeq ++
-      TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, Event8A).toSeq ++
-      TypeOfProtectionReferenceSummary.row(request.userAnswers, waypoints, sourcePage, Event8A, index).toSeq ++
-      LumpSumAmountAndDateSummary.rowLumpSumValue(request.userAnswers, waypoints, sourcePage, Event8A, index).toSeq ++
-      LumpSumAmountAndDateSummary.rowLumpSumDate(request.userAnswers, waypoints, sourcePage, Event8A, index).toSeq
+    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event8A).toSeq ++
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event8A).toSeq ++
+      PaymentTypeSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
+      TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event8A).toSeq ++
+      TypeOfProtectionReferenceSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event8A, index).toSeq ++
+      LumpSumAmountAndDateSummary.rowLumpSumValue(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event8A, index).toSeq ++
+      LumpSumAmountAndDateSummary.rowLumpSumDate(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event8A, index).toSeq
   }
 }

@@ -25,6 +25,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
@@ -41,19 +42,21 @@ class CrystallisedAmountSummarySpec extends AnyFreeSpec with Matchers with Optio
 
       val crystallisedAmount = BigDecimal(1000000.00)
       val crystallisedAmountHtml = "£1,000,000.00"
-
+      val isReadOnly = false
       val answer = UserAnswers().setOrException(CrystallisedAmountPage(0), crystallisedAmount)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event7CheckYourAnswersPage(0)
 
-      CrystallisedAmountSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      CrystallisedAmountSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = messages("crystallisedAmount.checkYourAnswersLabel"),
           value = ValueViewModel(HtmlContent(Html(crystallisedAmountHtml))),
-          actions = Seq(
-            ActionItemViewModel("site.change", CrystallisedAmountPage(index = 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("crystallisedAmount.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", CrystallisedAmountPage(index = 0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("crystallisedAmount.change.hidden"))
+            )))
+          }
         )
       )
     }

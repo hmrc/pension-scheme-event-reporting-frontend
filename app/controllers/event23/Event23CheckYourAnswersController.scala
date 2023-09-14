@@ -18,11 +18,12 @@ package controllers.event23
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.{Index, MemberSummaryPath}
+import helpers.ReadOnlyCYA
 import models.enumeration.EventType.Event23
 import models.requests.DataRequest
+import models.{Index, MemberSummaryPath}
 import pages.event23.Event23CheckYourAnswersPage
-import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
@@ -49,7 +50,9 @@ class Event23CheckYourAnswersController @Inject()(
       val thisPage = Event23CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event23.routes.Event23CheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent23CYARows(waypoints, thisPage, index)), continueUrl))
+      val version = request.userAnswers.get(VersionInfoPage).map(_.version)
+      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event23, version, request.readOnly())
+      Ok(view(SummaryListViewModel(rows = buildEvent23CYARows(waypoints, thisPage, index)), continueUrl, readOnlyHeading))
     }
 
   def onClick: Action[AnyContent] =
@@ -62,9 +65,9 @@ class Event23CheckYourAnswersController @Inject()(
 
   private def buildEvent23CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event23).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event23).toSeq ++
-      ChooseTaxYearSummary.row(request.userAnswers, waypoints, sourcePage, Event23, index).toSeq ++
-      TotalPensionAmountsSummary.row(request.userAnswers, waypoints, sourcePage, Event23, index).toSeq
+    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event23).toSeq ++
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event23).toSeq ++
+      ChooseTaxYearSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event23, index).toSeq ++
+      TotalPensionAmountsSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event23, index).toSeq
   }
 }

@@ -20,26 +20,29 @@ import models.{Index, UserAnswers}
 import pages.event7.LumpSumAmountPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.event1.checkAnswers.PaymentValueAndDateSummary.currencyFormatter
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object LumpSumAmountSummary  {
+object LumpSumAmountSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(LumpSumAmountPage(index)).map {
       answer =>
 
-        SummaryListRowViewModel(
-          key     = "lumpSumAmount.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer)}")),
-          actions = Seq(
-            ActionItemViewModel("site.change", LumpSumAmountPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("lumpSumAmount.change.hidden"))
-          )
+        SummaryListRow(
+          key = "lumpSumAmount.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer)}")),
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", LumpSumAmountPage(index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("lumpSumAmount.change.hidden"))
+            )))
+          }
         )
     }
 }

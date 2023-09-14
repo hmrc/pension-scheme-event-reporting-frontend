@@ -19,17 +19,18 @@ package controllers.event7
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import data.SampleData
-import data.SampleData.{memberDetails, sampleMemberJourneyDataEvent7}
+import data.SampleData.{erOverviewSeq, memberDetails, sampleMemberJourneyDataEvent7}
 import forms.common.MembersSummaryFormProvider
 import forms.mappings.Formatters
 import helpers.DateHelper
-import models.Index
+import models.{Index, VersionInfo}
 import models.enumeration.EventType.Event7
+import models.enumeration.VersionStatus.Submitted
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints, EventReportingOverviewPage, VersionInfoPage}
 import pages.common.MembersSummaryPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -76,7 +77,9 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
     "Event 7" - {
       "must return OK and the correct view for a GET" in {
 
-        val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent7)).build()
+        val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent7
+          .setOrException(VersionInfoPage, VersionInfo(3, Submitted))
+          .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
         val eventPaginationService = application.injector.instanceOf[EventPaginationService]
 
@@ -145,7 +148,9 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
           .thenReturn(Future.successful(()))
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
+            .setOrException(VersionInfoPage, VersionInfo(3, Submitted))
+            .setOrException(EventReportingOverviewPage, erOverviewSeq)), extraModules)
             .build()
 
         running(application) {
@@ -167,7 +172,9 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
         when(mockEventPaginationService.paginateMappedMembersThreeValues(any(), any())).thenReturn(emptyPageStats)
 
         val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+          applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
+            .setOrException(VersionInfoPage, VersionInfo(3, Submitted))
+            .setOrException(EventReportingOverviewPage, erOverviewSeq)), extraModules)
             .build()
 
         running(application) {

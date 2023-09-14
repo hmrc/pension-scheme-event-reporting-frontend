@@ -18,14 +18,16 @@ package controllers.event1
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import data.SampleData.userAnswersWithOneMemberAndEmployerEvent1
+import data.SampleData.{erOverviewSeq, userAnswersWithOneMemberAndEmployerEvent1}
 import forms.event1.UnauthPaymentSummaryFormProvider
+import models.enumeration.VersionStatus.Submitted
+import models.{TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.EmptyWaypoints
 import pages.event1.UnauthPaymentSummaryPage
+import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -33,6 +35,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import views.html.event1.UnauthPaymentSummaryView
+
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
@@ -62,7 +65,10 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersWithOneMemberAndEmployerEvent1)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithOneMemberAndEmployerEvent1
+        .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+        .setOrException(EventReportingOverviewPage, erOverviewSeq)
+        .setOrException(VersionInfoPage, VersionInfo(3, Submitted)))).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -112,7 +118,8 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, expectedSeq, "8,544.00", taxYear, None, "/manage-pension-scheme-event-report/report/event-1-summary")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, expectedSeq, "8,544.00", taxYear,
+          None, "/manage-pension-scheme-event-report/report/event-1-summary")(request, messages(application)).toString
       }
 
       Await.result(application.stop(), 10.seconds)
@@ -145,7 +152,10 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
         .thenReturn(Future.successful(()))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
+          .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+          .setOrException(EventReportingOverviewPage, erOverviewSeq)
+          .setOrException(VersionInfoPage, VersionInfo(1, Submitted))), extraModules)
           .build()
 
       running(application) {
@@ -158,7 +168,8 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, Nil, "0.00", taxYear, None, "/manage-pension-scheme-event-report/report/event-1-summary")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, Nil, "0.00", taxYear,
+          None, "/manage-pension-scheme-event-report/report/event-1-summary")(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
       }
 

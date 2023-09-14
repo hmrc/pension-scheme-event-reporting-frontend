@@ -22,13 +22,14 @@ import pages.event1.member.BenefitInKindBriefDescriptionPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object BenefitInKindBriefDescriptionSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
     val valueViewModel = answers.get(BenefitInKindBriefDescriptionPage(index)) match {
@@ -39,13 +40,15 @@ object BenefitInKindBriefDescriptionSummary {
     }
 
     Some(
-      SummaryListRowViewModel(
+      SummaryListRow(
         key = "benefitInKindBriefDescription.checkYourAnswersLabel",
         value = valueViewModel,
-        actions = Seq(
-          ActionItemViewModel("site.change", BenefitInKindBriefDescriptionPage(index).changeLink(waypoints, sourcePage).url)
-            .withVisuallyHiddenText(messages("benefitInKindBriefDescription.change.hidden"))
-        )
+        actions = if (isReadOnly) None else {
+          Some(Actions(items = Seq(
+            ActionItemViewModel("site.change", BenefitInKindBriefDescriptionPage(index).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("benefitInKindBriefDescription.change.hidden"))
+          )))
+        }
       )
     )
   }

@@ -28,6 +28,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.checkAnswers.MembersDetailsSummary
 import viewmodels.govuk.SummaryListFluency
@@ -48,7 +49,7 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
       val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(memberDetails.fullName)).toString))
 
-      MembersDetailsSummary.rowFullName(answers, waypoints, 0, sourcePage, Event1) mustBe Some(
+      MembersDetailsSummary.rowFullName(answers, waypoints, 0, sourcePage, isReadOnly = false, Event1) mustBe Some(
         SummaryListRowViewModel(
           key = "membersDetails.checkYourAnswersLabel",
           value = value,
@@ -69,15 +70,17 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
       val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(memberDetails.nino)).toString))
-
-      MembersDetailsSummary.rowNino(answers, waypoints, 0, sourcePage, Event1) mustBe Some(
-        SummaryListRowViewModel(
+      val isReadOnly = false
+      MembersDetailsSummary.rowNino(answers, waypoints, 0, sourcePage, isReadOnly, Event1) mustBe Some(
+        SummaryListRow(
           key = "membersDetails.checkYourAnswersLabel.nino",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", MembersDetailsPage(Event1, 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("membersDetails.change.nino.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", MembersDetailsPage(Event1, 0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("membersDetails.change.nino.hidden"))
+            )))
+          }
         )
       )
     }

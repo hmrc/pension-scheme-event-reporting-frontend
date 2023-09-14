@@ -22,13 +22,14 @@ import pages.event1.member.MemberPaymentNatureDescriptionPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object MemberPaymentNatureDescriptionSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
     val valueViewModel = answers.get(MemberPaymentNatureDescriptionPage(index)) match {
@@ -39,13 +40,15 @@ object MemberPaymentNatureDescriptionSummary {
     }
 
     Some(
-      SummaryListRowViewModel(
+      SummaryListRow(
         key = "memberPaymentNatureDescription.checkYourAnswersLabel",
         value = valueViewModel,
-        actions = Seq(
-          ActionItemViewModel("site.change", MemberPaymentNatureDescriptionPage(index).changeLink(waypoints, sourcePage).url)
-            .withVisuallyHiddenText(messages("memberPaymentNatureDescription.change.hidden"))
-        )
+        actions = if (isReadOnly) None else {
+          Some(Actions(items = Seq(
+            ActionItemViewModel("site.change", MemberPaymentNatureDescriptionPage(index).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("memberPaymentNatureDescription.change.hidden"))
+          )))
+        }
       )
     )
   }

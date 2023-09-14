@@ -17,7 +17,6 @@
 package viewmodels.event7.checkAnswers
 
 import models.UserAnswers
-import models.enumeration.EventType.Event7
 import models.event7.PaymentDate
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -26,6 +25,7 @@ import pages.event7.{Event7CheckYourAnswersPage, PaymentDatePage}
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
@@ -36,8 +36,6 @@ import java.time.format.DateTimeFormatter
 class PaymentDateSummarySpec extends AnyFreeSpec with Matchers with OptionValues with TryValues with SummaryListFluency {
 
   private implicit val messages: Messages = stubMessages()
-  private val eventType = Event7
-
 
   "row PaymentDate" - {
 
@@ -48,18 +46,20 @@ class PaymentDateSummarySpec extends AnyFreeSpec with Matchers with OptionValues
       val answer = UserAnswers().setOrException(PaymentDatePage(0), paymentDateDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event7CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val date = paymentDateDetails.date
       val format = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
-      PaymentDateSummary.rowPaymentDate(answer, waypoints, sourcePage, eventType, 0) mustBe Some(
-        SummaryListRowViewModel(
+      PaymentDateSummary.rowPaymentDate(answer, waypoints, sourcePage, isReadOnly, 0) mustBe Some(
+        SummaryListRow(
           key = messages("paymentDate.date.checkYourAnswersLabel"),
           value = ValueViewModel(format.format(date)),
-          actions = Seq(
-            ActionItemViewModel("site.change", PaymentDatePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentDate.date.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", PaymentDatePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("paymentDate.date.change.hidden"))
+            )))
+          }
         )
       )
     }

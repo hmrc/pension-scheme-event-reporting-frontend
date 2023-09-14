@@ -18,11 +18,12 @@ package controllers.event4
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import helpers.ReadOnlyCYA
 import models.{Index, MemberSummaryPath}
 import models.enumeration.EventType.Event4
 import models.requests.DataRequest
 import pages.event4.Event4CheckYourAnswersPage
-import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
@@ -50,7 +51,9 @@ class Event4CheckYourAnswersController @Inject()(
       val thisPage = Event4CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event4.routes.Event4CheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent4CYARows(waypoints, thisPage, index)), continueUrl))
+      val version = request.userAnswers.get(VersionInfoPage).map(_.version)
+      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event4, version, request.readOnly())
+      Ok(view(SummaryListViewModel(rows = buildEvent4CYARows(waypoints, thisPage, index)), continueUrl, readOnlyHeading))
     }
 
   def onClick: Action[AnyContent] =
@@ -63,9 +66,9 @@ class Event4CheckYourAnswersController @Inject()(
 
   private def buildEvent4CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
                                 (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event4).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event4).toSeq ++
-      PaymentDetailsSummary.rowAmountPaid(request.userAnswers, waypoints, sourcePage, Event4, index).toSeq ++
-      PaymentDetailsSummary.rowEventDate(request.userAnswers, waypoints, sourcePage, Event4, index).toSeq
+    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event4).toSeq ++
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event4).toSeq ++
+      PaymentDetailsSummary.rowAmountPaid(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event4, index).toSeq ++
+      PaymentDetailsSummary.rowEventDate(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event4, index).toSeq
   }
 }

@@ -18,11 +18,12 @@ package controllers.event7
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import helpers.ReadOnlyCYA
 import models.Index
 import models.enumeration.EventType.Event7
 import models.requests.DataRequest
 import pages.event7.Event7CheckYourAnswersPage
-import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
@@ -36,37 +37,39 @@ import views.html.CheckYourAnswersView
 import scala.concurrent.ExecutionContext
 
 class Event7CheckYourAnswersController @Inject()(
-                                                   override val messagesApi: MessagesApi,
-                                                   identify: IdentifierAction,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   compileService: CompileService,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: CheckYourAnswersView
-                                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                  override val messagesApi: MessagesApi,
+                                                  identify: IdentifierAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  compileService: CompileService,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: CheckYourAnswersView
+                                                )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (identify andThen getData(Event7) andThen requireData) { implicit request =>
       val thisPage = Event7CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event7.routes.Event7CheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent7CYARows(waypoints, thisPage, index)), continueUrl))
+      val version = request.userAnswers.get(VersionInfoPage).map(_.version)
+      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event7, version, request.readOnly())
+      Ok(view(SummaryListViewModel(rows = buildEvent7CYARows(waypoints, thisPage, index)), continueUrl, readOnlyHeading))
     }
 
   def onClick: Action[AnyContent] =
-    (identify andThen getData(Event7) andThen requireData).async {  implicit request =>
-       compileService.compileEvent(Event7, request.pstr, request.userAnswers).map {
+    (identify andThen getData(Event7) andThen requireData).async { implicit request =>
+      compileService.compileEvent(Event7, request.pstr, request.userAnswers).map {
         _ =>
           Redirect(controllers.event7.routes.Event7MembersSummaryController.onPageLoad(EmptyWaypoints).url)
       }
     }
 
   private def buildEvent7CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
-                                 (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event7).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event7).toSeq ++
-      LumpSumAmountSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
-      CrystallisedAmountSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
-      PaymentDateSummary.rowPaymentDate(request.userAnswers, waypoints, sourcePage, Event7, index).toSeq
+                                (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event7).toSeq ++
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event7).toSeq ++
+      LumpSumAmountSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
+      CrystallisedAmountSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
+      PaymentDateSummary.rowPaymentDate(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq
   }
 }

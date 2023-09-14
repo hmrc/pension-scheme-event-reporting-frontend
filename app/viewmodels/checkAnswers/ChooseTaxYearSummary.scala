@@ -23,6 +23,7 @@ import models.{Index, UserAnswers}
 import pages.{CheckAnswersPage, Waypoints, common}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -30,10 +31,10 @@ import viewmodels.implicits._
 
 object ChooseTaxYearSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Index)
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, eventType: EventType, index: Index)
          (implicit messages: Messages): Option[SummaryListRow] = {
     val taxYearChosen = getTaxYear(answers)
-    val rdsTaxYear = (ChooseTaxYear.reads(ChooseTaxYear.enumerable(taxYearChosen)))
+    val rdsTaxYear = ChooseTaxYear.reads(ChooseTaxYear.enumerable(taxYearChosen))
     answers.get(common.ChooseTaxYearPage(eventType, index))(rdsTaxYear).map {
       answer =>
 
@@ -43,13 +44,15 @@ object ChooseTaxYearSummary {
           )
         )
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = s"chooseTaxYear.event${eventType.toString}.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", common.ChooseTaxYearPage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages(s"chooseTaxYear.event${eventType}.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", common.ChooseTaxYearPage(eventType, index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages(s"chooseTaxYear.event$eventType.change.hidden"))
+            )))
+          }
         )
     }
   }

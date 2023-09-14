@@ -18,11 +18,12 @@ package controllers.event6
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.{Index, MemberSummaryPath}
+import helpers.ReadOnlyCYA
 import models.enumeration.EventType.Event6
 import models.requests.DataRequest
+import models.{Index, MemberSummaryPath}
 import pages.event6.Event6CheckYourAnswersPage
-import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
@@ -36,21 +37,23 @@ import views.html.CheckYourAnswersView
 import scala.concurrent.ExecutionContext
 
 class Event6CheckYourAnswersController @Inject()(
-                                                   override val messagesApi: MessagesApi,
-                                                   identify: IdentifierAction,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   compileService: CompileService,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: CheckYourAnswersView
-                                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                  override val messagesApi: MessagesApi,
+                                                  identify: IdentifierAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  compileService: CompileService,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: CheckYourAnswersView
+                                                )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (identify andThen getData(Event6) andThen requireData) { implicit request =>
       val thisPage = Event6CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event6.routes.Event6CheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent6CYARows(waypoints, thisPage, index)), continueUrl))
+      val version = request.userAnswers.get(VersionInfoPage).map(_.version)
+      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event6, version, request.readOnly())
+      Ok(view(SummaryListViewModel(rows = buildEvent6CYARows(waypoints, thisPage, index)), continueUrl, readOnlyHeading))
     }
 
   def onClick: Action[AnyContent] =
@@ -62,12 +65,12 @@ class Event6CheckYourAnswersController @Inject()(
     }
 
   private def buildEvent6CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
-                                 (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event6).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event6).toSeq ++
-      TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, Event6).toSeq ++
-      InputProtectionTypeSummary.row(request.userAnswers, waypoints, sourcePage, Event6, index).toSeq ++
-      AmountCrystallisedAndDateSummary.rowCrystallisedValue(request.userAnswers, waypoints, sourcePage, Event6, index).toSeq ++
-      AmountCrystallisedAndDateSummary.rowCrystallisedDate(request.userAnswers, waypoints, sourcePage, Event6, index).toSeq
+                                (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event6).toSeq ++
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event6).toSeq ++
+      TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
+      InputProtectionTypeSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq ++
+      AmountCrystallisedAndDateSummary.rowCrystallisedValue(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq ++
+      AmountCrystallisedAndDateSummary.rowCrystallisedDate(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq
   }
 }
