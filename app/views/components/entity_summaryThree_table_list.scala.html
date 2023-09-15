@@ -54,12 +54,10 @@
         </tr>
     }
     </tbody>
-</table>
-<table class="govuk-table" role="table">
     @if(messages(totalTitle) != "Total not required") {
     <tfoot>
     <tr class="govuk-table__row">
-        <td class="govuk-table__cell"><strong>@messages(totalTitle)</strong></td>
+        <td class="govuk-table__cell" colspan="3"><strong>@messages(totalTitle)</strong></td>
         <td class="govuk-table__cell govuk-table__cell--numeric whitespace-nowrap"><strong>&pound;@total</strong></td>
     </tr>
     </tfoot>
