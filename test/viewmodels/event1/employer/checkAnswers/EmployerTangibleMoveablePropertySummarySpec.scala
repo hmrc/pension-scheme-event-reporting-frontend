@@ -26,6 +26,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import viewmodels.event1.checkAnswers.EmployerTangibleMoveablePropertySummary
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
@@ -42,15 +43,18 @@ class EmployerTangibleMoveablePropertySummarySpec extends AnyFreeSpec with Match
       val answer = UserAnswers().setOrException(EmployerTangibleMoveablePropertyPage(0), "brief description of the tangible moveable property")
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
+      val isReadOnly = false
 
-      EmployerTangibleMoveablePropertySummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      EmployerTangibleMoveablePropertySummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "employerTangibleMoveableProperty.checkYourAnswersLabel",
           value = ValueViewModel(HtmlFormat.escape("brief description of the tangible moveable property").toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", EmployerTangibleMoveablePropertyPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("employerTangibleMoveableProperty.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", EmployerTangibleMoveablePropertyPage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("employerTangibleMoveableProperty.change.hidden"))
+            )))
+          }
         )
       )
     }

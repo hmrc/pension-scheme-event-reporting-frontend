@@ -27,6 +27,7 @@ import pages.event2.{DatePaidPage, Event2CheckYourAnswersPage}
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
@@ -44,14 +45,18 @@ class DatePaidSummarySpec extends AnyFreeSpec with Matchers with OptionValues wi
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event2CheckYourAnswersPage(0)
       val format = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-      DatePaidSummary.row(answer, waypoints, sourcePage, 0) mustBe Some(
-        SummaryListRowViewModel(
+      val isReadOnly = false
+
+      DatePaidSummary.row(answer, waypoints, sourcePage, isReadOnly, 0) mustBe Some(
+        SummaryListRow(
           key = messages("datePaid.event2.checkYourAnswersLabel", memberDetails.fullName),
           value = ValueViewModel(format.format(datePaid)),
-          actions = Seq(
-            ActionItemViewModel("site.change", DatePaidPage(0, Event2).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("datePaid.event2.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", DatePaidPage(0, Event2).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("datePaid.event2.change.hidden"))
+            )))
+          }
         )
       )
     }

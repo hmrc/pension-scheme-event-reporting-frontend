@@ -18,20 +18,21 @@ package controllers.event3
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import helpers.ReadOnlyCYA
 import models.{Index, MemberSummaryPath}
 import models.enumeration.EventType.Event3
 import models.event3.ReasonForBenefits.Other
 import models.requests.DataRequest
 import pages.event3.{Event3CheckYourAnswersPage, ReasonForBenefitsPage}
-import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
+import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.{MembersDetailsSummary, ReasonForBenefitsSummary}
+import viewmodels.checkAnswers.MembersDetailsSummary
 import viewmodels.common.checkAnswers.PaymentDetailsSummary
-import viewmodels.event3.checkAnswers.EarlyBenefitsBriefDescriptionSummary
+import viewmodels.event3.checkAnswers.{EarlyBenefitsBriefDescriptionSummary, ReasonForBenefitsSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -52,7 +53,9 @@ class Event3CheckYourAnswersController @Inject()(
       val thisPage = Event3CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event3.routes.Event3CheckYourAnswersController.onClick.url
-      Ok(view(SummaryListViewModel(rows = buildEvent3CYARows(waypoints, thisPage, index)), continueUrl))
+      val version = request.userAnswers.get(VersionInfoPage).map(_.version)
+      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event3, version, request.readOnly())
+      Ok(view(SummaryListViewModel(rows = buildEvent3CYARows(waypoints, thisPage, index)), continueUrl, readOnlyHeading))
     }
 
   def onClick: Action[AnyContent] =
@@ -67,18 +70,18 @@ class Event3CheckYourAnswersController @Inject()(
   private def event3ReasonForBenefitsRows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)
                                          (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     request.userAnswers.get(ReasonForBenefitsPage(index)) match {
-      case Some(Other) => EarlyBenefitsBriefDescriptionSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq
+      case Some(Other) => EarlyBenefitsBriefDescriptionSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq
       case _ => Nil
     }
   }
 
   private def buildEvent3CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
                                 (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, Event3).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, Event3).toSeq ++
-      ReasonForBenefitsSummary.row(request.userAnswers, waypoints, index, sourcePage).toSeq ++
+    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event3).toSeq ++
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event3).toSeq ++
+      ReasonForBenefitsSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
       event3ReasonForBenefitsRows(waypoints, sourcePage, index) ++
-      PaymentDetailsSummary.rowAmountPaid(request.userAnswers, waypoints, sourcePage, Event3, index).toSeq ++
-      PaymentDetailsSummary.rowEventDate(request.userAnswers, waypoints, sourcePage, Event3, index).toSeq
+      PaymentDetailsSummary.rowAmountPaid(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event3, index).toSeq ++
+      PaymentDetailsSummary.rowEventDate(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event3, index).toSeq
   }
 }

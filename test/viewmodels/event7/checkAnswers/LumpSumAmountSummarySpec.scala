@@ -25,6 +25,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
@@ -41,19 +42,21 @@ class LumpSumAmountSummarySpec extends AnyFreeSpec with Matchers with OptionValu
 
       val lumpSumAmount = BigDecimal(1000000.00)
       val lumpSumAmountHtml = "£1,000,000.00"
-
+      val isReadOnly = false
       val answer = UserAnswers().setOrException(LumpSumAmountPage(0), lumpSumAmount)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event7CheckYourAnswersPage(0)
 
-      LumpSumAmountSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      LumpSumAmountSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = messages("lumpSumAmount.checkYourAnswersLabel"),
           value = ValueViewModel(HtmlContent(Html(lumpSumAmountHtml))),
-          actions = Seq(
-            ActionItemViewModel("site.change", LumpSumAmountPage(index = 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("lumpSumAmount.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", LumpSumAmountPage(index = 0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("lumpSumAmount.change.hidden"))
+            )))
+          }
         )
       )
     }

@@ -17,15 +17,16 @@
 package controllers.event1
 
 import base.SpecBase
-import data.SampleData.{sampleEmployerJourneyDataEvent1, sampleMemberJourneyDataEvent1}
-import models.VersionInfo
-import models.enumeration.VersionStatus.Compiled
-import org.mockito.ArgumentCaptor
+import data.SampleData.{erOverviewSeq, sampleEmployerJourneyDataEvent1, sampleMemberJourneyDataEvent1}
+import models.{TaxYear, VersionInfo}
+import models.enumeration.EventType.Event1
+import models.enumeration.VersionStatus.{Compiled, Submitted}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{EmptyWaypoints, VersionInfoPage}
+import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
 import play.api.inject.bind
@@ -55,9 +56,11 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
     reset(mockCompileService)
   }
 
-  "Check Your Answers Controller" - {
+  "Check Your Answers Controller for Event 1" - {
     "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
+        .setOrException(VersionInfoPage, VersionInfo(3, Submitted))
+        .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event1.routes.Event1CheckYourAnswersController.onPageLoad(0).url)
@@ -74,6 +77,27 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       }
     }
 
+    "must return OK and the correct view for a GET (View Only (different heading))" in {
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
+        .setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+        .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event1.routes.Event1CheckYourAnswersController.onPageLoad(0).url)
+        val result = route(application, request).value
+        val view = application.injector.instanceOf[CheckYourAnswersView]
+        val list = SummaryListViewModel(Seq.empty)
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view.render(
+          list,
+          continueUrl = "/manage-pension-scheme-event-report/report/event-1-click",
+          Tuple2(Some(1), Some(Event1)),
+          request,
+          messages(application)).toString
+      }
+    }
+
     "must return OK and the correct summary list row items for a GET (member)" in {
       val mockView = mock[CheckYourAnswersView]
       val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -81,7 +105,10 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleMemberJourneyDataEvent1),
+        userAnswers = Some(sampleMemberJourneyDataEvent1
+          .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+          .setOrException(EventReportingOverviewPage, erOverviewSeq)
+          .setOrException(VersionInfoPage, VersionInfo(3, Submitted))),
         extraModules = extraModules
       ).build()
 
@@ -105,6 +132,40 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       }
     }
 
+    "must return OK and the correct summary list row items for a GET (member) (NO change links present)" in {
+      val mockView = mock[CheckYourAnswersView]
+      val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+        inject.bind[CheckYourAnswersView].toInstance(mockView)
+      )
+
+      val application = applicationBuilder(
+        userAnswers = Some(sampleMemberJourneyDataEvent1
+          .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+          .setOrException(EventReportingOverviewPage, erOverviewSeq)
+          .setOrException(VersionInfoPage, VersionInfo(1, Submitted))),
+        extraModules = extraModules
+      ).build()
+
+      val captor: ArgumentCaptor[SummaryList] =
+        ArgumentCaptor.forClass(classOf[SummaryList])
+
+      running(application) {
+        when(mockView.apply(captor.capture(), any(), ArgumentMatchers.eq(Some(1), Some(Event1)))(any(), any())).thenReturn(play.twirl.api.Html(""))
+        val request = FakeRequest(GET, controllers.event1.routes.Event1CheckYourAnswersController.onPageLoad(0).url)
+        val result = route(application, request).value
+        status(result) mustEqual OK
+
+        val actual: Seq[SummaryListRow] = captor.getValue.rows
+        val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRowsViewOnly
+
+        actual.size mustBe expected.size
+
+        actual.zipWithIndex.map { case (a, i) =>
+          a mustBe expected(i)
+        }
+      }
+    }
+
     "must return OK and the correct summary list row items for a GET (employer)" in {
       val mockView = mock[CheckYourAnswersView]
       val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -112,7 +173,10 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleEmployerJourneyDataEvent1),
+        userAnswers = Some(sampleEmployerJourneyDataEvent1
+          .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+          .setOrException(EventReportingOverviewPage, erOverviewSeq)
+          .setOrException(VersionInfoPage, VersionInfo(3, Submitted))),
         extraModules = extraModules
       ).build()
 
@@ -127,6 +191,40 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         val actual: Seq[SummaryListRow] = captor.getValue.rows
         val expected: Seq[Aliases.SummaryListRow] = expectedEmployerSummaryListRows
+
+        actual.size mustBe expected.size
+
+        actual.zipWithIndex.map { case (a, i) =>
+          a mustBe expected(i)
+        }
+      }
+    }
+
+    "must return OK and the correct summary list row items for a GET (employer) (NO change links present)" in {
+      val mockView = mock[CheckYourAnswersView]
+      val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+        inject.bind[CheckYourAnswersView].toInstance(mockView)
+      )
+
+      val application = applicationBuilder(
+        userAnswers = Some(sampleEmployerJourneyDataEvent1
+          .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+          .setOrException(EventReportingOverviewPage, erOverviewSeq)
+          .setOrException(VersionInfoPage, VersionInfo(1, Submitted))),
+        extraModules = extraModules
+      ).build()
+
+      val captor: ArgumentCaptor[SummaryList] =
+        ArgumentCaptor.forClass(classOf[SummaryList])
+
+      running(application) {
+        when(mockView.apply(captor.capture(), any(), ArgumentMatchers.eq(Some(1), Some(Event1)))(any(), any())).thenReturn(play.twirl.api.Html(""))
+        val request = FakeRequest(GET, controllers.event1.routes.Event1CheckYourAnswersController.onPageLoad(0).url)
+        val result = route(application, request).value
+        status(result) mustEqual OK
+
+        val actual: Seq[SummaryListRow] = captor.getValue.rows
+        val expected: Seq[Aliases.SummaryListRow] = expectedEmployerSummaryListRowsViewOnly
 
         actual.size mustBe expected.size
 
@@ -226,6 +324,50 @@ object Event1CheckYourAnswersControllerSpec {
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
 
+  private def fakeSummaryListRowWithTextViewOnly(messageKey: String, text: String)
+                                        (implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      Key(
+        Text(
+          messages(messageKey)
+        ), ""),
+      Value(Text(text), ""), "")
+
+  private def fakeSummaryListRowWithHtmlContentViewOnly(messageKey: String, htmlContent: String)
+                                               (implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      Key(
+        Text(
+          messages(messageKey)
+        ), ""),
+      Value(HtmlContent(htmlContent), ""), "")
+  private def fakeSummaryListRowWithHtmlContentWithHiddenContentWithChangeViewOnly(messageKey: String, htmlContent: String)
+                                                                          (implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      Key(
+        Text(
+          messages(messageKey)
+        ), ""),
+      Value(HtmlContent(htmlContent), ""), "")
+
+  private def fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(messageKey: String, htmlContent: String)
+                                                                (implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      Key(
+        Text(
+          messages(messageKey)
+        ), ""),
+      Value(HtmlContent(htmlContent), ""), "")
+
+  private def fakeSummaryListRowWithTextWithHiddenContentViewOnly(messageKey: String, text: String)
+                                                         (implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      Key(
+        Text(
+          messages(messageKey)
+        ), ""),
+      Value(Text(text), ""), "")
+
   private def expectedMemberSummaryListRows(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "membersDetails.checkYourAnswersLabel",
@@ -273,6 +415,41 @@ object Event1CheckYourAnswersControllerSpec {
     )
   )
 
+  private def expectedMemberSummaryListRowsViewOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
+    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChangeViewOnly(
+      "membersDetails.checkYourAnswersLabel",
+      "Joe Bloggs"
+    ),
+    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChangeViewOnly(
+      "membersDetails.checkYourAnswersLabel.nino",
+      "AA234567D"
+    ),
+    fakeSummaryListRowWithTextViewOnly(
+      "doYouHoldSignedMandate.checkYourAnswersLabel",
+      "No"
+    ),
+    fakeSummaryListRowWithTextViewOnly(
+      "valueOfUnauthorisedPayment.checkYourAnswersLabel",
+      "No"
+    ),
+    fakeSummaryListRowWithHtmlContentViewOnly(
+      "paymentNature.checkYourAnswersLabel",
+      "Benefit in kind"
+    ),
+    fakeSummaryListRowWithTextViewOnly(
+      "benefitInKindBriefDescription.checkYourAnswersLabel",
+      "Test description"
+    ),
+    fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
+      "paymentValueAndDate.value.checkYourAnswersLabel",
+      "£1,000.00"
+    ),
+    fakeSummaryListRowWithTextWithHiddenContentViewOnly(
+      "paymentValueAndDate.date.checkYourAnswersLabel",
+      "08 November 2022"
+    )
+  )
+
   private def expectedEmployerSummaryListRows(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithText(
       "companyDetails.CYA.companyName",
@@ -310,6 +487,37 @@ object Event1CheckYourAnswersControllerSpec {
       "08 November 2022",
       "/manage-pension-scheme-event-report/report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
       "paymentValueAndDate.date.change.hidden"
+    )
+  )
+
+  private def expectedEmployerSummaryListRowsViewOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
+    fakeSummaryListRowWithTextViewOnly(
+      "companyDetails.CYA.companyName",
+      "Company Name"
+    ),
+    fakeSummaryListRowWithTextViewOnly(
+      "companyDetails.CYA.companyNumber",
+      "12345678"
+    ),
+    fakeSummaryListRowWithHtmlContentViewOnly(
+      "companyDetails.CYA.companyAddress",
+      """<span class="govuk-!-display-block">addr11</span><span class="govuk-!-display-block">addr12</span><span class="govuk-!-display-block">addr13</span><span class="govuk-!-display-block">addr14</span><span class="govuk-!-display-block">zz11zz</span><span class="govuk-!-display-block">United Kingdom</span>""",
+    ),
+    fakeSummaryListRowWithHtmlContentViewOnly(
+      "paymentNature.checkYourAnswersLabel",
+      "Tangible moveable property held directly or indirectly by an investment-regulated pension scheme"
+    ),
+    fakeSummaryListRowWithTextViewOnly(
+      "employerTangibleMoveableProperty.checkYourAnswersLabel",
+      "Another test description"
+    ),
+    fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
+      "paymentValueAndDate.value.checkYourAnswersLabel",
+      "£1,000.00"
+    ),
+    fakeSummaryListRowWithTextWithHiddenContentViewOnly(
+      "paymentValueAndDate.date.checkYourAnswersLabel",
+      "08 November 2022"
     )
   )
 }

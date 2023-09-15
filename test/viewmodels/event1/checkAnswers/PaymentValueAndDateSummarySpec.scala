@@ -26,6 +26,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
@@ -49,15 +50,18 @@ class PaymentValueAndDateSummarySpec extends AnyFreeSpec with Matchers with Opti
       val answer = UserAnswers().setOrException(PaymentValueAndDatePage(0), paymentDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
+      val isReadOnly = false
 
-      PaymentValueAndDateSummary.rowPaymentValue(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      PaymentValueAndDateSummary.rowPaymentValue(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = messages("paymentValueAndDate.value.checkYourAnswersLabel"),
           value = ValueViewModel(HtmlContent(Html(paymentDetailsValue))),
-          actions = Seq(
-            ActionItemViewModel("site.change", PaymentValueAndDatePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentValueAndDate.value.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", PaymentValueAndDatePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("paymentValueAndDate.value.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -72,18 +76,20 @@ class PaymentValueAndDateSummarySpec extends AnyFreeSpec with Matchers with Opti
       val answer = UserAnswers().setOrException(PaymentValueAndDatePage(0), paymentDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val date = paymentDetails.paymentDate
       val format = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
-      PaymentValueAndDateSummary.rowPaymentDate(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      PaymentValueAndDateSummary.rowPaymentDate(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = messages("paymentValueAndDate.date.checkYourAnswersLabel"),
           value = ValueViewModel(format.format(date)),
-          actions = Seq(
-            ActionItemViewModel("site.change", PaymentValueAndDatePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentValueAndDate.date.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", PaymentValueAndDatePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("paymentValueAndDate.date.change.hidden"))
+            )))
+          }
         )
       )
     }

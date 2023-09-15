@@ -22,13 +22,14 @@ import pages.event1.employer.EmployerTangibleMoveablePropertyPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object EmployerTangibleMoveablePropertySummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
     val valueViewModel = answers.get(EmployerTangibleMoveablePropertyPage(index)) match {
@@ -39,13 +40,15 @@ object EmployerTangibleMoveablePropertySummary {
     }
 
     Some(
-      SummaryListRowViewModel(
+      SummaryListRow(
         key = "employerTangibleMoveableProperty.checkYourAnswersLabel",
         value = valueViewModel,
-        actions = Seq(
-          ActionItemViewModel("site.change", EmployerTangibleMoveablePropertyPage(index).changeLink(waypoints, sourcePage).url)
-            .withVisuallyHiddenText(messages("employerTangibleMoveableProperty.change.hidden"))
-        )
+        actions = if (isReadOnly) None else {
+          Some(Actions(items = Seq(
+            ActionItemViewModel("site.change", EmployerTangibleMoveablePropertyPage(index).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("employerTangibleMoveableProperty.change.hidden"))
+          )))
+        }
       ))
   }
 }

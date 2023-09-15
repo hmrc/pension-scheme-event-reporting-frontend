@@ -25,6 +25,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
@@ -35,14 +36,18 @@ class EarlyBenefitsBriefDescriptionSummarySpec extends AnyFreeSpec with Matchers
       val answer = UserAnswers().setOrException(EarlyBenefitsBriefDescriptionPage(0), "early benefit brief description")
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event3CheckYourAnswersPage(0)
-      EarlyBenefitsBriefDescriptionSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      val isReadOnly = false
+
+      EarlyBenefitsBriefDescriptionSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "earlyBenefitsBriefDescription.checkYourAnswersLabel",
           value = ValueViewModel(HtmlFormat.escape("early benefit brief description").toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", EarlyBenefitsBriefDescriptionPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("earlyBenefitsBriefDescription.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", EarlyBenefitsBriefDescriptionPage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("earlyBenefitsBriefDescription.change.hidden"))
+            )))
+          }
         )
       )
     }

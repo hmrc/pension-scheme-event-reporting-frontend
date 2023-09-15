@@ -23,6 +23,7 @@ import pages.common.MembersDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -30,7 +31,8 @@ import viewmodels.implicits._
 
 object MembersDetailsSummary {
 
-  def rowFullName(answers: UserAnswers, waypoints: Waypoints, index: Int, sourcePage: CheckAnswersPage, eventType: EventType, memberPageNo: Int=0)
+  def rowFullName(answers: UserAnswers, waypoints: Waypoints, index: Int, sourcePage: CheckAnswersPage, isReadOnly: Boolean,
+                  eventType: EventType, memberPageNo: Int = 0)
                  (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MembersDetailsPage(eventType, index, memberPageNo)).map {
       val detailsType = (eventType, memberPageNo) match {
@@ -39,19 +41,21 @@ object MembersDetailsSummary {
         case _ => "membersDetails"
       }
       answer =>
-
         val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(answer.fullName)).toString))
-        SummaryListRowViewModel(
-          key =  s"${detailsType}.checkYourAnswersLabel",
+        SummaryListRow(
+          key = s"$detailsType.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", MembersDetailsPage(eventType, index, memberPageNo).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages( s"${detailsType}.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", MembersDetailsPage(eventType, index, memberPageNo).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages(s"$detailsType.change.hidden"))
+            )))
+          }
         )
     }
 
-  def rowNino(answers: UserAnswers, waypoints: Waypoints, index: Int, sourcePage: CheckAnswersPage, eventType: EventType, memberPageNo: Int=0)
+  def rowNino(answers: UserAnswers, waypoints: Waypoints, index: Int, sourcePage: CheckAnswersPage, isReadOnly: Boolean,
+              eventType: EventType, memberPageNo: Int = 0)
              (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MembersDetailsPage(eventType, index, memberPageNo)).map {
       val detailsType = (eventType, memberPageNo) match {
@@ -62,13 +66,15 @@ object MembersDetailsSummary {
       answer =>
 
         val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(answer.nino)).toString))
-        SummaryListRowViewModel(
-          key = s"${detailsType}.checkYourAnswersLabel.nino",
+        SummaryListRow(
+          key = s"$detailsType.checkYourAnswersLabel.nino",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", MembersDetailsPage(eventType, index, memberPageNo).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages(s"${detailsType}.change.nino.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", MembersDetailsPage(eventType, index, memberPageNo).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages(s"$detailsType.change.nino.hidden"))
+            )))
+          }
         )
     }
 }

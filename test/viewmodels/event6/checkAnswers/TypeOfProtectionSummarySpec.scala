@@ -27,6 +27,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
@@ -41,6 +42,7 @@ class TypeOfProtectionSummarySpec extends AnyFreeSpec with Matchers with OptionV
   "row" - {
     for (typeOfProtection <- typeOfProtectionSeq) testTypeOfProtectionSummaryRow(typeOfProtection)
   }
+
   private def testTypeOfProtectionSummaryRow(typeOfProtection: TypeOfProtection): Unit = {
 
     s"must display correct information for the $typeOfProtection" in {
@@ -49,15 +51,18 @@ class TypeOfProtectionSummarySpec extends AnyFreeSpec with Matchers with OptionV
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event6CheckYourAnswersPage(0)
       val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"typeOfProtection.$typeOfProtection"))))
+      val isReadOnly = false
 
-      TypeOfProtectionSummary.row(answers, waypoints, 0, sourcePage, Event6) mustBe Some(
-        SummaryListRowViewModel(
+      TypeOfProtectionSummary.row(answers, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "typeOfProtection.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", TypeOfProtectionPage(Event6, 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("typeOfProtection.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", TypeOfProtectionPage(Event6, 0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("typeOfProtection.change.hidden"))
+            )))
+          }
         )
       )
     }

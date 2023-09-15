@@ -17,28 +17,30 @@
 package viewmodels.event7.checkAnswers
 
 import forms.mappings.Formatters
-import models.enumeration.EventType
 import models.{Index, UserAnswers}
 import pages.event7.PaymentDatePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object PaymentDateSummary extends Formatters {
 
-  def rowPaymentDate(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Index)
-                         (implicit messages: Messages): Option[SummaryListRow] =
+  def rowPaymentDate(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, index: Index)
+                    (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(PaymentDatePage(index)).map {
       answer =>
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = messages("paymentDate.date.checkYourAnswersLabel"),
           value = ValueViewModel(dateFormatter.format(answer.date)),
-          actions = Seq(
-            ActionItemViewModel("site.change", PaymentDatePage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentDate.date.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", PaymentDatePage(index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("paymentDate.date.change.hidden"))
+            )))
+          }
         )
     }
 }

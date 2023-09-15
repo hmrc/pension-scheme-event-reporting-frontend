@@ -30,6 +30,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.address.checkAnswers.ChooseAddressSummary
 import viewmodels.govuk.SummaryListFluency
@@ -67,6 +68,7 @@ class ChooseAddressSummarySpec extends AnyFreeSpec with Matchers with OptionValu
       val answer = UserAnswers().setOrException(ManualAddressPage(addressJourneyType, 0), employerAddress)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
+      val isReadOnly = false
 
       val rowKey = if (addressJourneyType != Event1EmployerAddressJourney) {
         "residentialAddress.address.title"
@@ -86,14 +88,16 @@ class ChooseAddressSummarySpec extends AnyFreeSpec with Matchers with OptionValu
         )
       )
 
-      ChooseAddressSummary.row(answer, waypoints, 0, sourcePage, addressJourneyType) mustBe Some(
-        SummaryListRowViewModel(
+      ChooseAddressSummary.row(answer, waypoints, 0, sourcePage, isReadOnly, addressJourneyType) mustBe Some(
+        SummaryListRow(
           key = rowKey,
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType, 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages(visuallyHiddenTextKey))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType, 0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages(visuallyHiddenTextKey))
+            )))
+          }
         )
       )
     }

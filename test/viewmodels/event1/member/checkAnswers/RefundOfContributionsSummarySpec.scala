@@ -27,6 +27,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
@@ -43,6 +44,7 @@ class RefundOfContributionsSummarySpec extends AnyFreeSpec with Matchers with Op
       val answer = UserAnswers().setOrException(RefundOfContributionsPage(0), RefundOfContributions.WidowOrOrphan)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
+      val isReadOnly = false
 
       val value = ValueViewModel(
         HtmlContent(
@@ -50,14 +52,16 @@ class RefundOfContributionsSummarySpec extends AnyFreeSpec with Matchers with Op
         )
       )
 
-      RefundOfContributionsSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      RefundOfContributionsSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "refundOfContributions.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", RefundOfContributionsPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("refundOfContributions.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", RefundOfContributionsPage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("refundOfContributions.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -67,21 +71,23 @@ class RefundOfContributionsSummarySpec extends AnyFreeSpec with Matchers with Op
       val answer = UserAnswers().setOrException(RefundOfContributionsPage(0), RefundOfContributions.Other)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val value = ValueViewModel(
         HtmlContent(
           HtmlFormat.escape(messages(s"refundOfContributions.${RefundOfContributions.Other}"))
         )
       )
 
-      RefundOfContributionsSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      RefundOfContributionsSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "refundOfContributions.checkYourAnswersLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", RefundOfContributionsPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("refundOfContributions.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", RefundOfContributionsPage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("refundOfContributions.change.hidden"))
+            )))
+          }
         )
       )
     }

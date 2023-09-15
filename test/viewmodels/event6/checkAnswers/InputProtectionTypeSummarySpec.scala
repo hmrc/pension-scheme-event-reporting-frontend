@@ -26,6 +26,7 @@ import pages.event6.{Event6CheckYourAnswersPage, InputProtectionTypePage}
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
@@ -46,16 +47,19 @@ class InputProtectionTypeSummarySpec extends AnyFreeSpec with Matchers with Opti
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event6CheckYourAnswersPage(0)
       val value = ValueViewModel("1234567A")
+      val isReadOnly = false
 
-      InputProtectionTypeSummary.row(answers, waypoints, sourcePage, Event6, 0) mustBe Some(
-        SummaryListRowViewModel(
+      InputProtectionTypeSummary.row(answers, waypoints, sourcePage, isReadOnly, 0) mustBe Some(
+        SummaryListRow(
           key = messages(s"inputProtectionType.checkYourAnswersLabel", messages(s"typeOfProtection.${typeOfProtection.toString}")),
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", InputProtectionTypePage(Event6, 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("inputProtectionType.change.hidden",
-                messages(s"typeOfProtection.${typeOfProtection.toString}").toLowerCase()))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", InputProtectionTypePage(Event6, 0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("inputProtectionType.change.hidden",
+                  messages(s"typeOfProtection.${typeOfProtection.toString}").toLowerCase()))
+            )))
+          }
         )
       )
     }
