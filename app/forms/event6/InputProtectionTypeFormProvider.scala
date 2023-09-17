@@ -16,9 +16,10 @@
 
 package forms.event6
 
-import javax.inject.Inject
 import forms.mappings.Mappings
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class InputProtectionTypeFormProvider @Inject() extends Mappings {
 

@@ -21,11 +21,12 @@ import forms.mappings.{Mappings, Transforms}
 import models.common.MembersDetails
 import models.enumeration.EventType
 import models.enumeration.EventType.Event2
-import play.api.data.{Form, Mapping}
 import play.api.data.Forms.mapping
 import play.api.data.validation.Constraint
+import play.api.data.{Form, Mapping}
 
 import scala.collection.immutable.HashSet
+
 
 class MembersDetailsFormProvider {
 

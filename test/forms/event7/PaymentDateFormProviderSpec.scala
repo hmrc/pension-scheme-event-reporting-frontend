@@ -56,14 +56,14 @@ class PaymentDateFormProviderSpec extends SpecBase
       form = form,
       key = paymentDateKey,
       min = stubMin,
-      formError = FormError(paymentDateKey, messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(stubMax)))
+      formError = FormError(paymentDateKey, messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = paymentDateKey,
       max = stubMax,
-      formError = FormError(paymentDateKey, messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(stubMax)))
+      formError = FormError(paymentDateKey, messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
   }
 }

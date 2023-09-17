@@ -16,24 +16,16 @@
 
 package forms.event13
 
-import java.time.LocalDate
-import forms.mappings.Mappings
-import models.TaxYearValidationDetail
-
-import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.Messages
+import utils.DateConstraintHandlers.{intConstraintHandler, localDateMappingWithDateRange}
 
-class ChangeDateFormProvider @Inject() extends Mappings {
+import java.time.LocalDate
 
-  def apply(taxYear:Int)(implicit messages: Messages): Form[LocalDate] =
+class ChangeDateFormProvider {
+
+  def apply(taxYear: Int)(implicit messages: Messages): Form[LocalDate] =
     Form(
-      "value" -> localDate(
-        invalidKey = "genericDate.error.invalid",
-        taxYearValidationDetail = Some(TaxYearValidationDetail(
-          invalidKey = "event13.changeDate.error.outside.taxYear",
-          taxYear = taxYear
-        ))
-      )
+      localDateMappingWithDateRange(date = taxYear, outOfRangeKey = "event13.changeDate.error.outside.taxYear")
     )
 }

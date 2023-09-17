@@ -19,6 +19,7 @@ package forms.event2
 import base.SpecBase
 import forms.behaviours.{BigDecimalFieldBehaviours, DateBehavioursTrait}
 import play.api.data.FormError
+import utils.DateHelper.formatDateDMY
 
 import java.time.LocalDate
 
@@ -47,14 +48,14 @@ class DatePaidFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours w
       form = form,
       key = datePaidKey,
       min = stubMin,
-      formError = FormError(datePaidKey, messages("datePaid.event2.error.outside.taxYear", stubMin.getYear.toString, stubMax.getYear.toString))
+      formError = FormError(datePaidKey, messages("datePaid.event2.error.outside.taxYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = datePaidKey,
       max = stubMax,
-      formError = FormError(datePaidKey, messages("datePaid.event2.error.outside.taxYear", stubMin.getYear.toString, stubMax.getYear.toString))
+      formError = FormError(datePaidKey, messages("datePaid.event2.error.outside.taxYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
   }
 }

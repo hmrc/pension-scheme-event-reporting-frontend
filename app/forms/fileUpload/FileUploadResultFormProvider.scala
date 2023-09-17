@@ -16,11 +16,11 @@
 
 package forms.fileUpload
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
-import play.api.data.Form
 import models.fileUpload.FileUploadResult
+import play.api.data.Form
+
+import javax.inject.Inject
 
 class FileUploadResultFormProvider @Inject() extends Mappings {
 

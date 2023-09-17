@@ -16,28 +16,20 @@
 
 package forms.event20
 
-import java.time.LocalDate
-import forms.mappings.Mappings
 import models.event20.Event20Date
-
-import javax.inject.Inject
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.i18n.Messages
-import utils.DateHelper.formatDateDMY
+import utils.DateConstraintHandlers.{localDateMappingWithDateRange, localDatesConstraintHandler}
 
-class CeasedDateFormProvider @Inject() extends Mappings {
+import java.time.LocalDate
+
+class CeasedDateFormProvider {
 
   def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[Event20Date] =
     Form(
-      mapping("ceasedDate" ->
-        localDate(
-          invalidKey = "genericDate.error.invalid"
-        ).verifying(
-          yearHas4Digits("genericDate.error.invalid.year"),
-          minDate(min, messages("schemeChangeDate.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
-          maxDate(max, messages("schemeChangeDate.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
-        )
+      mapping(
+        localDateMappingWithDateRange(field = "ceasedDate", date = (min, max), outOfRangeKey = "schemeChangeDate.error.outsideReportedYear")
       )
       (Event20Date.apply)(Event20Date.unapply)
     )
