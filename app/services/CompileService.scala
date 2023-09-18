@@ -16,7 +16,7 @@
 
 package services
 
-import akka.actor.Scheduler
+import akka.actor.ActorSystem
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
@@ -33,7 +33,7 @@ class CompileService @Inject()(
                                 eventReportingConnector: EventReportingConnector,
                                 userAnswersCacheConnector: UserAnswersCacheConnector,
                                 appConfig: FrontendAppConfig,
-                                scheduler: Scheduler
+                                actorSystem: ActorSystem
                               ) (implicit ec: ExecutionContext) {
 
 
@@ -62,7 +62,7 @@ class CompileService @Inject()(
           appConfig.compileDelayInSeconds match {
             case v if v > 0 =>
               val p = Promise[Unit]
-              scheduler.scheduleOnce(v.seconds)(p.success(()))
+              actorSystem.scheduler.scheduleOnce(v.seconds)(p.success(()))
               p.future
             case _ => Future.unit
           }
