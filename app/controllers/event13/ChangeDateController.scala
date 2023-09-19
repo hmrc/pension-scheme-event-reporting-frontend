@@ -22,9 +22,9 @@ import forms.event13.ChangeDateFormProvider
 import models.TaxYear.getTaxYearFromOption
 import models.UserAnswers
 import models.enumeration.EventType
-import pages.{TaxYearPage, Waypoints}
+import pages.Waypoints
 import pages.event13.ChangeDatePage
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event13.ChangeDateView

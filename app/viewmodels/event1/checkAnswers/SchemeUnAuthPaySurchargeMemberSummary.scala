@@ -20,26 +20,29 @@ import models.{Index, UserAnswers}
 import pages.event1.SchemeUnAuthPaySurchargeMemberPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object SchemeUnAuthPaySurchargeMemberSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SchemeUnAuthPaySurchargeMemberPage(index)).map {
       answer =>
 
         val value = if (answer) "site.yes" else "site.no"
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = "schemeUnAuthPaySurchargeMember.checkYourAnswersLabel",
           value = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel("site.change", SchemeUnAuthPaySurchargeMemberPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("schemeUnAuthPaySurchargeMember.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", SchemeUnAuthPaySurchargeMemberPage(index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("schemeUnAuthPaySurchargeMember.change.hidden"))
+            )))
+          }
         )
     }
 }

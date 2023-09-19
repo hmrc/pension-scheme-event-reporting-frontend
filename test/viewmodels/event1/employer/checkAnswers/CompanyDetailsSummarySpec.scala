@@ -27,6 +27,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
@@ -42,15 +43,17 @@ class CompanyDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
       val answer = UserAnswers().setOrException(CompanyDetailsPage(0), companyDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
-      CompanyDetailsSummary.rowCompanyName(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      val isReadOnly = false
+      CompanyDetailsSummary.rowCompanyName(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "companyDetails.CYA.companyName",
           value = ValueViewModel(HtmlFormat.escape(companyDetails.companyName).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", CompanyDetailsPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("companyDetails.companyName.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", CompanyDetailsPage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("companyDetails.companyName.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -64,15 +67,17 @@ class CompanyDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
       val answer = UserAnswers().setOrException(CompanyDetailsPage(0), companyDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
-      CompanyDetailsSummary.rowCompanyNumber(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      val isReadOnly = false
+      CompanyDetailsSummary.rowCompanyNumber(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "companyDetails.CYA.companyNumber",
           value = ValueViewModel(HtmlFormat.escape(companyDetails.companyNumber).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", CompanyDetailsPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("companyDetails.companyNumber.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", CompanyDetailsPage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("companyDetails.companyNumber.change.hidden"))
+            )))
+          }
         )
       )
     }

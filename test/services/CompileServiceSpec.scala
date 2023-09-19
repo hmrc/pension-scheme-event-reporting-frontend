@@ -16,6 +16,7 @@
 
 package services
 
+import akka.actor.ActorSystem
 import base.SpecBase
 import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
@@ -51,7 +52,9 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockAppConfig = mock[FrontendAppConfig]
 
-  private val compileService = new CompileService(mockEventReportingConnector, mockUserAnswersCacheConnector, mockAppConfig)
+  val application = applicationBuilder()
+
+  private val compileService = new CompileService(mockEventReportingConnector, mockUserAnswersCacheConnector, mockAppConfig, application.injector().instanceOf[ActorSystem])
 
   override def beforeEach(): Unit = {
     reset(mockEventReportingConnector)

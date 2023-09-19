@@ -24,13 +24,14 @@ import pages.event1.employer.UnauthorisedPaymentRecipientNamePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object EmployerUnauthorisedPaymentRecipientNameSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
     val valueViewModel = answers.get(UnauthorisedPaymentRecipientNamePage(index)) match {
@@ -43,13 +44,15 @@ object EmployerUnauthorisedPaymentRecipientNameSummary {
     answers.get(WhoReceivedUnauthPaymentPage(index)) match {
       case Some(Employer) =>
         Some(
-          SummaryListRowViewModel(
+          SummaryListRow(
             key = "unauthorisedPaymentRecipientName.employer.checkYourAnswersLabel",
             value = valueViewModel,
-            actions = Seq(
-              ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage(index).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.employer.change.hidden"))
-            )
+            actions = if (isReadOnly) None else {
+              Some(Actions(items = Seq(
+                ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage(index).changeLink(waypoints, sourcePage).url)
+                  .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.employer.change.hidden"))
+              )))
+            }
           )
         )
       case _ => None

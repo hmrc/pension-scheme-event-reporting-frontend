@@ -46,6 +46,7 @@ class UnAuthPaymentsRuleChangeDateFormProviderSpec extends SpecBase
       formError = FormError(dateKey, "genericDate.error.invalid.year")
     )
 
+
     behave like dateFieldWithMin(
       form = form,
       key = dateKey,

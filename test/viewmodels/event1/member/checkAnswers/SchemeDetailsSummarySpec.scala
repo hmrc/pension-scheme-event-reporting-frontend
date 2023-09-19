@@ -27,7 +27,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, HtmlContent, SummaryListRow}
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
@@ -56,6 +56,7 @@ class SchemeDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValu
       val answer = UserAnswers().setOrException(SchemeDetailsPage(0), schemeDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
+      val isReadOnly = false
 
       val value = ValueViewModel(
         HtmlContent(
@@ -63,14 +64,16 @@ class SchemeDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValu
         )
       )
 
-      SchemeDetailsSummary.rowSchemeName(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      SchemeDetailsSummary.rowSchemeName(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "Scheme name",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", SchemeDetailsPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("schemeName.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", SchemeDetailsPage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("schemeName.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -83,21 +86,23 @@ class SchemeDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValu
       val answer = UserAnswers().setOrException(SchemeDetailsPage(0), schemeDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val value = ValueViewModel(
         HtmlContent(
           schemeDetailsAnswer(schemeDetails.reference)
         )
       )
 
-      SchemeDetailsSummary.rowSchemeReference(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      SchemeDetailsSummary.rowSchemeReference(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "Reference",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", SchemeDetailsPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("schemeReference.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", SchemeDetailsPage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("schemeReference.change.hidden"))
+            )))
+          }
         )
       )
     }

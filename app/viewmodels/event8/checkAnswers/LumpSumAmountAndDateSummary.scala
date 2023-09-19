@@ -22,6 +22,7 @@ import models.{Index, UserAnswers}
 import pages.event8.LumpSumAmountAndDatePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -29,33 +30,37 @@ import viewmodels.implicits._
 
 object LumpSumAmountAndDateSummary extends Formatters {
 
-  def rowLumpSumValue(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Index)
+  def rowLumpSumValue(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, eventType: EventType, index: Index)
                      (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(LumpSumAmountAndDatePage(eventType, index)).map {
       answer =>
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = messages("lumpSumAmountAndDate.value.checkYourAnswersLabel"),
           value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer.lumpSumAmount)}")),
-          actions = Seq(
-            ActionItemViewModel("site.change", LumpSumAmountAndDatePage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("lumpSumAmountAndDate.value.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", LumpSumAmountAndDatePage(eventType, index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("lumpSumAmountAndDate.value.change.hidden"))
+            )))
+          }
         )
     }
 
-  def rowLumpSumDate(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Index)
+  def rowLumpSumDate(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, eventType: EventType, index: Index)
                     (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(LumpSumAmountAndDatePage(eventType, index)).map {
       answer =>
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = messages("lumpSumAmountAndDate.date.checkYourAnswersLabel"),
           value = ValueViewModel(dateFormatter.format(answer.lumpSumDate)),
-          actions = Seq(
-            ActionItemViewModel("site.change", LumpSumAmountAndDatePage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("lumpSumAmountAndDate.date.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", LumpSumAmountAndDatePage(eventType, index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("lumpSumAmountAndDate.date.change.hidden"))
+            )))
+          }
         )
     }
 }

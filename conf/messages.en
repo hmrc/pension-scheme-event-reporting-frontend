@@ -355,7 +355,7 @@ datePaid.event2.error.required.all = Enter the date
 datePaid.event2.error.required.two = The date must include {0} and {1}
 datePaid.event2.error.required = The date must include {0}
 datePaid.event2.error.invalid = Enter a real date
-datePaid.event2.error.outside.taxYear = The date must be between 6 April {0} to 5 April {1}
+datePaid.event2.error.outside.taxYear = The date must be between {0} to {1}
 datePaid.event2.change.hidden = When the payment was made
 
 membersSummary.event2.title = Event 2: Lump sum death benefit payment events reported in the tax year ending 5 April {0}
@@ -589,7 +589,7 @@ paymentValueAndDate.date.hint = For example, 22 09 2022
 paymentValueAndDate.date.error.nothingEntered = Enter the date of payment or when benefit made available
 paymentValueAndDate.date.error.noDayMonthOrYear = The date must include a day, month and year
 paymentValueAndDate.date.error.outsideDateRanges = Enter a real date
-paymentValueAndDate.date.error.outsideRelevantTaxYear = Date must be between 6 April {0} and 5 April {1}
+paymentValueAndDate.date.error.outsideRelevantTaxYear = Date must be between {0} and {1}
 paymentValueAndDate.date.change.hidden = Payment date
 paymentValueAndDate.date.checkYourAnswersLabel = Payment date
 
@@ -1216,7 +1216,7 @@ paymentDate.date.hint = For example, 22 09 2022
 paymentDate.date.error.nothingEntered = Enter the date
 paymentDate.date.error.noDayMonthOrYear = The date must include a day, month and year
 paymentDate.date.error.outsideDateRanges = Enter a real date
-paymentDate.date.error.outsideReportedYear = The date must be between 6 April 2006 and {0}
+paymentDate.date.error.outsideReportedYear = Date must be between {0} and {1}
 paymentDate.date.change.hidden = The date of the payment
 paymentDate.date.checkYourAnswersLabel = The date the payment was made
 

@@ -30,7 +30,9 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
@@ -44,35 +46,40 @@ class PaymentDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
   private val paymentDetails = PaymentDetails(54.23, LocalDate.now())
   private val amountPaid = "£54.23"
 
-  testRowAmountPaid(Event4, Event4CheckYourAnswersPage(0))
-  testRowEventDate(Event4, Event4CheckYourAnswersPage(0))
-  testRowAmountPaid(Event5, Event5CheckYourAnswersPage(0))
-  testRowEventDate(Event5, Event5CheckYourAnswersPage(0))
-
-  private def testRowAmountPaid(eventType: EventType, sourcePage: CheckAnswersPage) = {
-    s"rowAmountPaid for Event $eventType" - {
+  testRowAmountPaid(Event4, Event4CheckYourAnswersPage(0), true)
+  testRowEventDate(Event4, Event4CheckYourAnswersPage(0), true)
+  testRowAmountPaid(Event5, Event5CheckYourAnswersPage(0), true)
+  testRowEventDate(Event5, Event5CheckYourAnswersPage(0), true)
+  testRowAmountPaid(Event4, Event4CheckYourAnswersPage(0), false)
+  testRowEventDate(Event4, Event4CheckYourAnswersPage(0), false)
+  testRowAmountPaid(Event5, Event5CheckYourAnswersPage(0), false)
+  testRowEventDate(Event5, Event5CheckYourAnswersPage(0), false)
+  private def testRowAmountPaid(eventType: EventType, sourcePage: CheckAnswersPage, isReadOnly: Boolean) = {
+    s"rowAmountPaid for Event $eventType and isReadOnly is $isReadOnly" - {
 
       "must display correct information for the amount paid" in {
 
         val answer = UserAnswers().setOrException(PaymentDetailsPage(eventType, 0), paymentDetails)
         val waypoints: Waypoints = EmptyWaypoints
 
-        PaymentDetailsSummary.rowAmountPaid(answer, waypoints, sourcePage, eventType, 0) mustBe Some(
-          SummaryListRowViewModel(
+        PaymentDetailsSummary.rowAmountPaid(answer, waypoints, sourcePage, isReadOnly, eventType, 0) mustBe Some(
+          SummaryListRow(
             key = messages("paymentDetails.value.checkYourAnswersLabel"),
             value = ValueViewModel(HtmlContent(Html(amountPaid))),
-            actions = Seq(
-              ActionItemViewModel("site.change", PaymentDetailsPage(eventType, index = 0).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("paymentDetails.value.change.hidden"))
-            )
+            actions = if (isReadOnly) None else {
+              Some(Actions(items = Seq(
+                ActionItemViewModel("site.change", PaymentDetailsPage(eventType, index = 0).changeLink(waypoints, sourcePage).url)
+                  .withVisuallyHiddenText(messages("paymentDetails.value.change.hidden"))
+              )))
+            }
           )
         )
       }
     }
   }
 
-  private def testRowEventDate(eventType: EventType, sourcePage: CheckAnswersPage) = {
-    s"rowEventDate for Event $eventType" - {
+  private def testRowEventDate(eventType: EventType, sourcePage: CheckAnswersPage, isReadOnly: Boolean) = {
+    s"rowEventDate for Event $eventType and isReadOnly is $isReadOnly" - {
 
       "must display correct information for the event date" in {
 
@@ -82,14 +89,16 @@ class PaymentDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
         val date = paymentDetails.eventDate
         val format = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
-        PaymentDetailsSummary.rowEventDate(answer, waypoints, sourcePage, eventType, 0) mustBe Some(
-          SummaryListRowViewModel(
+        PaymentDetailsSummary.rowEventDate(answer, waypoints, sourcePage, isReadOnly, eventType, 0) mustBe Some(
+          SummaryListRow(
             key = messages("paymentDetails.date.checkYourAnswersLabel"),
             value = ValueViewModel(format.format(date)),
-            actions = Seq(
-              ActionItemViewModel("site.change", PaymentDetailsPage(eventType, 0).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("paymentDetails.date.change.hidden"))
-            )
+            actions = if (isReadOnly) None else {
+              Some(Actions(items = Seq(
+                ActionItemViewModel("site.change", PaymentDetailsPage(eventType, 0).changeLink(waypoints, sourcePage).url)
+                  .withVisuallyHiddenText(messages("paymentDetails.date.change.hidden"))
+              )))
+            }
           )
         )
       }

@@ -21,7 +21,7 @@ import models.event12.DateOfChange
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.i18n.Messages
-import utils.DateHelper.formatDateDMY
+import utils.DateConstraintHandlers.{localDateMappingWithDateRange, localDatesConstraintHandler}
 
 import java.time.LocalDate
 import javax.inject.Inject
@@ -30,14 +30,8 @@ class DateOfChangeFormProvider @Inject() extends Mappings with Transforms {
 
   def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[DateOfChange] =
     Form(
-      mapping("dateOfChange" ->
-        localDate(
-          invalidKey = "genericDate.error.invalid"
-        ).verifying(
-          yearHas4Digits("genericDate.error.invalid.year"),
-          minDate(min, messages("dateOfChange.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
-          maxDate(max, messages("dateOfChange.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
-        )
+      mapping(
+        localDateMappingWithDateRange(field = "dateOfChange", date = (min, max), outOfRangeKey = "dateOfChange.error.outsideReportedYear")
       )
       (DateOfChange.apply)(DateOfChange.unapply)
     )

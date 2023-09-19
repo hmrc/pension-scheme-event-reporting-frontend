@@ -25,6 +25,7 @@ import pages.event1.{DoYouHoldSignedMandatePage, Event1CheckYourAnswersPage}
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
@@ -40,15 +41,17 @@ class DoYouHoldSignedMandateSummarySpec extends AnyFreeSpec with Matchers with O
       val answer = UserAnswers().setOrException(DoYouHoldSignedMandatePage(0), true)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
-      DoYouHoldSignedMandateSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      val isReadOnly = false
+      DoYouHoldSignedMandateSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "doYouHoldSignedMandate.checkYourAnswersLabel",
           value = ValueViewModel(booleanCYAVal(true)),
-          actions = Seq(
-            ActionItemViewModel("site.change", DoYouHoldSignedMandatePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("doYouHoldSignedMandate.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", DoYouHoldSignedMandatePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("doYouHoldSignedMandate.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -58,15 +61,17 @@ class DoYouHoldSignedMandateSummarySpec extends AnyFreeSpec with Matchers with O
       val answer = UserAnswers().setOrException(DoYouHoldSignedMandatePage(0), false)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
-      DoYouHoldSignedMandateSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      val isReadOnly = false
+      DoYouHoldSignedMandateSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "doYouHoldSignedMandate.checkYourAnswersLabel",
           value = ValueViewModel(booleanCYAVal(false)),
-          actions = Seq(
-            ActionItemViewModel("site.change", DoYouHoldSignedMandatePage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("doYouHoldSignedMandate.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", DoYouHoldSignedMandatePage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("doYouHoldSignedMandate.change.hidden"))
+            )))
+          }
         )
       )
     }

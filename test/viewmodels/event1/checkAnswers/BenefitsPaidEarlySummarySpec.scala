@@ -26,6 +26,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
@@ -41,15 +42,17 @@ class BenefitsPaidEarlySummarySpec extends AnyFreeSpec with Matchers with Option
       val answer = UserAnswers().setOrException(BenefitsPaidEarlyPage(0), "brief description of why the benefits are being paid early")
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
-      BenefitsPaidEarlySummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      val isReadOnly = false
+      BenefitsPaidEarlySummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "benefitsPaidEarly.checkYourAnswersLabel",
           value = ValueViewModel(HtmlFormat.escape("brief description of why the benefits are being paid early").toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", BenefitsPaidEarlyPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("benefitsPaidEarly.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", BenefitsPaidEarlyPage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("benefitsPaidEarly.change.hidden"))
+            )))
+          }
         )
       )
     }

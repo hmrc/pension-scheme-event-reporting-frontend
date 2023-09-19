@@ -21,7 +21,7 @@ import models.event10.SchemeChangeDate
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.i18n.Messages
-import utils.DateHelper.formatDateDMY
+import utils.DateConstraintHandlers.{localDateMappingWithDateRange, localDatesConstraintHandler}
 
 import java.time.LocalDate
 import javax.inject.Inject
@@ -30,14 +30,8 @@ class SchemeChangeDateFormProvider @Inject() extends Mappings with Transforms {
 
   def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[SchemeChangeDate] =
     Form(
-      mapping("schemeChangeDate" ->
-        localDate(
-          invalidKey = "genericDate.error.invalid"
-        ).verifying(
-          yearHas4Digits("genericDate.error.invalid.year"),
-          minDate(min, messages("schemeChangeDate.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max))),
-          maxDate(max, messages("schemeChangeDate.error.outsideReportedYear", formatDateDMY(min), formatDateDMY(max)))
-        )
+      mapping(
+        localDateMappingWithDateRange(field = "schemeChangeDate", date = (min, max), outOfRangeKey = "schemeChangeDate.error.outsideReportedYear")
       )
       (SchemeChangeDate.apply)(SchemeChangeDate.unapply)
     )

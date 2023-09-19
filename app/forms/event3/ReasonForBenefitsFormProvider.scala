@@ -16,11 +16,11 @@
 
 package forms.event3
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
-import play.api.data.Form
 import models.event3.ReasonForBenefits
+import play.api.data.Form
+
+import javax.inject.Inject
 
 class ReasonForBenefitsFormProvider @Inject() extends Mappings {
 

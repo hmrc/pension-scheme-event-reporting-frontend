@@ -16,11 +16,11 @@
 
 package forms.event20
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
-import play.api.data.Form
 import models.event20.WhatChange
+import play.api.data.Form
+
+import javax.inject.Inject
 
 class WhatChangeFormProvider @Inject() extends Mappings {
 

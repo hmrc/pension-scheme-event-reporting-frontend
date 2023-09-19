@@ -26,6 +26,7 @@ import pages.event8.{Event8CheckYourAnswersPage, LumpSumAmountAndDatePage}
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.event8.checkAnswers.LumpSumAmountAndDateSummary.{currencyFormatter, dateFormatter}
 import viewmodels.govuk.SummaryListFluency
@@ -38,15 +39,17 @@ class LumpSumAmountAndDateSummarySpec extends AnyFreeSpec with Matchers with Opt
       val answer = UserAnswers().setOrException(LumpSumAmountAndDatePage(Event8, 0), lumpSumDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event8CheckYourAnswersPage(0)
-
-      LumpSumAmountAndDateSummary.rowLumpSumValue(answer, waypoints, sourcePage, Event8 ,0) mustBe Some(
-        SummaryListRowViewModel(
+      val isReadOnly = false
+      LumpSumAmountAndDateSummary.rowLumpSumValue(answer, waypoints, sourcePage, isReadOnly, Event8, 0) mustBe Some(
+        SummaryListRow(
           key = messages("lumpSumAmountAndDate.value.checkYourAnswersLabel"),
           value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(lumpSumDetails.lumpSumAmount)}")),
-          actions = Seq(
-            ActionItemViewModel("site.change", LumpSumAmountAndDatePage(Event8, index = 0 ).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("lumpSumAmountAndDate.value.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", LumpSumAmountAndDatePage(Event8, index = 0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("lumpSumAmountAndDate.value.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -57,15 +60,17 @@ class LumpSumAmountAndDateSummarySpec extends AnyFreeSpec with Matchers with Opt
       val answer = UserAnswers().setOrException(LumpSumAmountAndDatePage(Event8, 0), lumpSumDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event8CheckYourAnswersPage(0)
-
-      LumpSumAmountAndDateSummary.rowLumpSumDate(answer, waypoints, sourcePage, Event8, 0) mustBe Some(
-        SummaryListRowViewModel(
+      val isReadOnly = false
+      LumpSumAmountAndDateSummary.rowLumpSumDate(answer, waypoints, sourcePage, isReadOnly, Event8, 0) mustBe Some(
+        SummaryListRow(
           key = messages("lumpSumAmountAndDate.date.checkYourAnswersLabel"),
           value = ValueViewModel(dateFormatter.format(lumpSumDetails.lumpSumDate)),
-          actions = Seq(
-            ActionItemViewModel("site.change", LumpSumAmountAndDatePage(Event8, index = 0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("lumpSumAmountAndDate.date.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", LumpSumAmountAndDatePage(Event8, index = 0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("lumpSumAmountAndDate.date.change.hidden"))
+            )))
+          }
         )
       )
     }

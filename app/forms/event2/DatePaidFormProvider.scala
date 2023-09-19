@@ -19,22 +19,18 @@ package forms.event2
 import forms.mappings.{Mappings, Transforms}
 import play.api.data.Form
 import play.api.i18n.Messages
+import utils.DateConstraintHandlers.{localDateMappingWithDateRange, localDatesConstraintHandler}
 
 import java.time.{LocalDate, Month}
 import javax.inject.Inject
 
 class DatePaidFormProvider @Inject() extends Mappings with Transforms {
   def apply(taxYear: Int)(implicit messages: Messages): Form[LocalDate] = {
-  // scalastyle:off magic.number
-  val startDate: LocalDate = LocalDate.of(2006, Month.APRIL, 6)
-  val endDate: LocalDate = LocalDate.of(taxYear + 1, Month.APRIL, 5)
+    // scalastyle:off magic.number
+    val startDate: LocalDate = LocalDate.of(2006, Month.APRIL, 6)
+    val endDate: LocalDate = LocalDate.of(taxYear + 1, Month.APRIL, 5)
     Form(
-      "value" -> localDate(
-        invalidKey = "genericDate.error.invalid"
-      ).verifying(
-        yearHas4Digits("genericDate.error.invalid.year"),
-        minDate(startDate, messages("datePaid.event2.error.outside.taxYear", startDate.getYear.toString,(taxYear + 1).toString)),
-        maxDate(endDate, messages("datePaid.event2.error.outside.taxYear", startDate.getYear.toString,(taxYear + 1).toString)))
-      )
+      localDateMappingWithDateRange(date = (startDate, endDate), outOfRangeKey = "datePaid.event2.error.outside.taxYear")
+    )
   }
 }

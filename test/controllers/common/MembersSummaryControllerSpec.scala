@@ -24,14 +24,15 @@ import data.SampleData
 import data.SampleData._
 import forms.common.MembersSummaryFormProvider
 import helpers.DateHelper
-import models.{Index, MemberSummaryPath, UserAnswers}
+import models.{Index, MemberSummaryPath, TaxYear, UserAnswers, VersionInfo}
 import models.enumeration.EventType
 import models.enumeration.EventType._
+import models.enumeration.VersionStatus.Submitted
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import pages.common.MembersSummaryPage
 import play.api.data.Form
 import play.api.inject.bind
@@ -193,7 +194,10 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
                                          href: String,
                                          totalAmount: String): Unit = {
     s"must return OK and the correct view for a GET for Event $eventType" in {
-      val application = applicationBuilder(userAnswers = Some(sampleData)).build()
+      val application = applicationBuilder(userAnswers = Some(sampleData
+        .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+        .setOrException(EventReportingOverviewPage, erOverviewSeq)
+        .setOrException(VersionInfoPage, VersionInfo(3, Submitted)))).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute(eventType))
@@ -258,7 +262,10 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
 
       when(mockEventPaginationService.paginateMappedMembers(any(), any())).thenReturn(paginationStats26Members(fakeMembers))
 
-      val application = applicationBuilder(userAnswers = Some(sampleData)).build()
+      val application = applicationBuilder(userAnswers = Some(sampleData
+        .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+        .setOrException(EventReportingOverviewPage, erOverviewSeq)
+        .setOrException(VersionInfoPage, VersionInfo(3, Submitted)))).build()
       val totalNumberOfMembers = 26
 
       running(application) {
@@ -299,7 +306,11 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
         .thenReturn(Future.successful(()))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
+          .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+          .setOrException(EventReportingOverviewPage, erOverviewSeq)
+          .setOrException(VersionInfoPage, VersionInfo(3, Submitted))),
+          extraModules)
           .build()
 
       running(application) {
@@ -321,7 +332,11 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
         .thenReturn(Future.successful(()))
       val emptyPageStats = PaginationStats(Seq(), 0, 1, (0,1),Seq())
       when(mockEventPaginationService.paginateMappedMembers(any(), any())).thenReturn(emptyPageStats)
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
+        .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+        .setOrException(EventReportingOverviewPage, erOverviewSeq)
+        .setOrException(VersionInfoPage, VersionInfo(3, Submitted))),
+        extraModules).build()
 
       running(application) {
         val request = FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("value", "invalid"))

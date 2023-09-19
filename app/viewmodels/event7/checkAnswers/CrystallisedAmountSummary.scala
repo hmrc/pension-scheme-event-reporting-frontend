@@ -20,6 +20,7 @@ import models.{Index, UserAnswers}
 import pages.event7.CrystallisedAmountPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.event1.checkAnswers.PaymentValueAndDateSummary.currencyFormatter
@@ -28,18 +29,20 @@ import viewmodels.implicits._
 
 object CrystallisedAmountSummary  {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(CrystallisedAmountPage(index)).map {
       answer =>
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key     = "crystallisedAmount.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer)}")),
-          actions = Seq(
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
             ActionItemViewModel("site.change", CrystallisedAmountPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("crystallisedAmount.change.hidden"))
-          )
+          )))
+          }
         )
     }
 }

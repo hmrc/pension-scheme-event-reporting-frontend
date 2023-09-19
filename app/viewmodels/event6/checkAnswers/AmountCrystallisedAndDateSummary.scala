@@ -17,11 +17,12 @@
 package viewmodels.event6.checkAnswers
 
 import forms.mappings.Formatters
-import models.enumeration.EventType
+import models.enumeration.EventType.Event6
 import models.{Index, UserAnswers}
 import pages.event6.AmountCrystallisedAndDatePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -29,33 +30,37 @@ import viewmodels.implicits._
 
 object AmountCrystallisedAndDateSummary extends Formatters {
 
-  def rowCrystallisedValue(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Index)
+  def rowCrystallisedValue(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, index: Index)
                           (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmountCrystallisedAndDatePage(eventType, index)).map {
+    answers.get(AmountCrystallisedAndDatePage(Event6, index)).map {
       answer =>
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = messages("amountCrystallisedAndDate.value.checkYourAnswersLabel"),
           value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer.amountCrystallised)}")),
-          actions = Seq(
-            ActionItemViewModel("site.change", AmountCrystallisedAndDatePage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("amountCrystallisedAndDate.value.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", AmountCrystallisedAndDatePage(Event6, index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("amountCrystallisedAndDate.value.change.hidden"))
+            )))
+          }
         )
     }
 
-  def rowCrystallisedDate(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Index)
+  def rowCrystallisedDate(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, index: Index)
                          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmountCrystallisedAndDatePage(eventType, index)).map {
+    answers.get(AmountCrystallisedAndDatePage(Event6, index)).map {
       answer =>
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = messages("amountCrystallisedAndDate.date.checkYourAnswersLabel"),
           value = ValueViewModel(dateFormatter.format(answer.crystallisedDate)),
-          actions = Seq(
-            ActionItemViewModel("site.change", AmountCrystallisedAndDatePage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("amountCrystallisedAndDate.date.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", AmountCrystallisedAndDatePage(Event6, index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("amountCrystallisedAndDate.date.change.hidden"))
+            )))
+          }
         )
     }
 }

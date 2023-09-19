@@ -27,6 +27,7 @@ import pages.event2.{AmountPaidPage, Event2CheckYourAnswersPage}
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
@@ -46,15 +47,18 @@ class AmountPaidSummarySpec extends AnyFreeSpec with Matchers with OptionValues 
       val answer = UserAnswers().setOrException(AmountPaidPage(0, Event2), amountPaid).setOrException(MembersDetailsPage(Event2, 0, 2), memberDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event2CheckYourAnswersPage(0)
+      val isReadOnly = false
 
-      AmountPaidSummary.row(answer, waypoints, sourcePage, 0) mustBe Some(
-        SummaryListRowViewModel(
-          key = messages("amountPaid.event2.checkYourAnswersLabel" , memberDetails.fullName),
+      AmountPaidSummary.row(answer, waypoints, sourcePage, isReadOnly, 0) mustBe Some(
+        SummaryListRow(
+          key = messages("amountPaid.event2.checkYourAnswersLabel", memberDetails.fullName),
           value = ValueViewModel(Text(amountPaidHtml)),
-          actions = Seq(
-            ActionItemViewModel("site.change", AmountPaidPage(index = 0, Event2).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("amountPaid.event2.change.hidden", memberDetails.fullName))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", AmountPaidPage(index = 0, Event2).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("amountPaid.event2.change.hidden", memberDetails.fullName))
+            )))
+          }
         )
       )
     }

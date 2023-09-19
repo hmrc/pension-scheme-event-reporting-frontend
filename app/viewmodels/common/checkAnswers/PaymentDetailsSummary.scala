@@ -22,6 +22,7 @@ import models.{Index, UserAnswers}
 import pages.common.PaymentDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -29,33 +30,38 @@ import viewmodels.implicits._
 
 object PaymentDetailsSummary extends Formatters {
 
-  def rowAmountPaid(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Index)
-                   (implicit messages: Messages): Option[SummaryListRow] =
+  def rowAmountPaid(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, eventType: EventType, index: Index)
+                   (implicit messages: Messages): Option[SummaryListRow] = {
     answers.get(PaymentDetailsPage(eventType, index)).map {
       answer =>
-
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = messages("paymentDetails.value.checkYourAnswersLabel"),
           value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer.amountPaid)}")),
-          actions = Seq(
-            ActionItemViewModel("site.change", PaymentDetailsPage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentDetails.value.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", PaymentDetailsPage(eventType, index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("paymentDetails.value.change.hidden"))
+            )))
+          }
         )
     }
+  }
 
-  def rowEventDate(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, eventType: EventType, index: Index)
-                  (implicit messages: Messages): Option[SummaryListRow] =
+
+  def rowEventDate(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, eventType: EventType, index: Index)
+                  (implicit messages: Messages): Option[SummaryListRow] = {
     answers.get(PaymentDetailsPage(eventType, index)).map {
       answer =>
-
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = messages("paymentDetails.date.checkYourAnswersLabel"),
           value = ValueViewModel(dateFormatter.format(answer.eventDate)),
-          actions = Seq(
-            ActionItemViewModel("site.change", PaymentDetailsPage(eventType, index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("paymentDetails.date.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", PaymentDetailsPage(eventType, index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("paymentDetails.date.change.hidden"))
+            )))
+          }
         )
     }
+  }
 }

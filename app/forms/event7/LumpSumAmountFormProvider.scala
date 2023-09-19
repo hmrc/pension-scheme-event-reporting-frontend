@@ -16,9 +16,10 @@
 
 package forms.event7
 
-import javax.inject.Inject
 import forms.mappings.Mappings
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class LumpSumAmountFormProvider @Inject() extends Mappings {
 

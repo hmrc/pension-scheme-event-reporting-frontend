@@ -26,6 +26,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
@@ -42,17 +43,19 @@ class EmployerUnauthorisedPaymentRecipientNameSummarySpec extends AnyFreeSpec wi
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
       val answer = UserAnswers().setOrException(UnauthorisedPaymentRecipientNamePage(0), name)
-
+      val isReadOnly = false
       answer match {
         case employerJourney if answer.toString.contains("""whoReceivedUnauthPayment":"employer""") =>
-          EmployerUnauthorisedPaymentRecipientNameSummary.row(answer, waypoints, 0, sourcePage) mustBe Some(
-            SummaryListRowViewModel(
+          EmployerUnauthorisedPaymentRecipientNameSummary.row(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+            SummaryListRow(
               key = "unauthorisedPaymentRecipientName.employer.checkYourAnswersLabel",
               value = ValueViewModel(HtmlFormat.escape(name).toString),
-              actions = Seq(
-                ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage(0).changeLink(waypoints, sourcePage).url)
-                  .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.employer.change.hidden"))
-              )
+              actions = if (isReadOnly) None else {
+                Some(Actions(items = Seq(
+                  ActionItemViewModel("site.change", UnauthorisedPaymentRecipientNamePage(0).changeLink(waypoints, sourcePage).url)
+                    .withVisuallyHiddenText(messages("unauthorisedPaymentRecipientName.employer.change.hidden"))
+                )))
+              }
             )
           )
         case _ => None

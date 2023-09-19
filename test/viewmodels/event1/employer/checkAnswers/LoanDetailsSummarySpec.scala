@@ -27,6 +27,7 @@ import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
@@ -43,6 +44,7 @@ class LoanDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValues
       val answer = UserAnswers().setOrException(LoanDetailsPage(0), loanDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
+      val isReadOnly = false
 
       val value = ValueViewModel(
         HtmlContent(
@@ -50,14 +52,16 @@ class LoanDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValues
         )
       )
 
-      LoanDetailsSummary.rowLoanAmount(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      LoanDetailsSummary.rowLoanAmount(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "loanDetails.CYA.loanAmountLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", LoanDetailsPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("loanAmount.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", LoanDetailsPage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("loanAmount.change.hidden"))
+            )))
+          }
         )
       )
     }
@@ -67,21 +71,23 @@ class LoanDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValues
       val answer = UserAnswers().setOrException(LoanDetailsPage(0), loanDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-
+      val isReadOnly = false
       val value = ValueViewModel(
         HtmlContent(
           Html(fundValue)
         )
       )
 
-      LoanDetailsSummary.rowFundValue(answer, waypoints, 0, sourcePage) mustBe Some(
-        SummaryListRowViewModel(
+      LoanDetailsSummary.rowFundValue(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+        SummaryListRow(
           key = "loanDetails.CYA.fundValueLabel",
           value = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", LoanDetailsPage(0).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("fundAmount.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", LoanDetailsPage(0).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("fundAmount.change.hidden"))
+            )))
+          }
         )
       )
     }

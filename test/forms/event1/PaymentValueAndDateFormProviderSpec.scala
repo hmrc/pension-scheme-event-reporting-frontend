@@ -113,14 +113,14 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
       form = form,
       key = paymentDateKey,
       min = stubMin,
-      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", "2022", "2023"))
+      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", "06 April 2022", "05 April 2023"))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = paymentDateKey,
       max = stubMax,
-      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", "2022", "2023"))
+      formError = FormError(paymentDateKey, messages("paymentValueAndDate.date.error.outsideRelevantTaxYear", "06 April 2022", "05 April 2023"))
     )
   }
 }

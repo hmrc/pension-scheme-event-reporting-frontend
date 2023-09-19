@@ -21,24 +21,27 @@ import pages.event1.member.BenefitsPaidEarlyPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object BenefitsPaidEarlySummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(BenefitsPaidEarlyPage(index)).map {
       answer =>
 
-        SummaryListRowViewModel(
+        SummaryListRow(
           key = "benefitsPaidEarly.checkYourAnswersLabel",
           value = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", BenefitsPaidEarlyPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("benefitsPaidEarly.change.hidden"))
-          )
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", BenefitsPaidEarlyPage(index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("benefitsPaidEarly.change.hidden"))
+            )))
+          }
         )
     }
 }

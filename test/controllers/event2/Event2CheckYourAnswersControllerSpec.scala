@@ -17,16 +17,16 @@
 package controllers.event2
 
 import base.SpecBase
-import data.SampleData.sampleMemberJourneyDataEvent2
-import models.{MemberSummaryPath, VersionInfo}
+import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent2}
+import models.{MemberSummaryPath, TaxYear, VersionInfo}
 import models.enumeration.EventType.Event2
-import models.enumeration.VersionStatus.Compiled
-import org.mockito.ArgumentCaptor
+import models.enumeration.VersionStatus.{Compiled, Submitted}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{EmptyWaypoints, VersionInfoPage}
+import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
 import play.api.inject.bind
@@ -57,9 +57,11 @@ class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
     reset(mockCompileService)
   }
 
-  "Check Your Answers Controller" - {
+  "Check Your Answers Controller for Event 2" - {
     "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear
+        .setOrException(VersionInfoPage, VersionInfo(3, Submitted))
+        .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(0).url)
@@ -76,6 +78,27 @@ class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       }
     }
 
+    "must return OK and the correct view for a GET (View Only (different heading))" in {
+      val application = applicationBuilder(userAnswers =
+        Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
+          .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(0).url)
+        val result = route(application, request).value
+        val view = application.injector.instanceOf[CheckYourAnswersView]
+        val list = SummaryListViewModel(Seq.empty)
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view.render(
+          list,
+          continueUrl = "/manage-pension-scheme-event-report/report/event-2-click",
+          Tuple2(Some(1), Some(Event2)),
+          request,
+          messages(application)).toString
+      }
+    }
+
     "must return OK and the correct summary list row items for a GET (member)" in {
       val mockView = mock[CheckYourAnswersView]
       val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -83,7 +106,10 @@ class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleMemberJourneyDataEvent2),
+        userAnswers = Some(sampleMemberJourneyDataEvent2
+          .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+          .setOrException(EventReportingOverviewPage, erOverviewSeq)
+          .setOrException(VersionInfoPage, VersionInfo(3, Submitted))),
         extraModules = extraModules
       ).build()
 
@@ -98,6 +124,40 @@ class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         val actual: Seq[SummaryListRow] = captor.getValue.rows
         val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRowsEvent2
+
+        actual.size mustBe expected.size
+
+        actual.zipWithIndex.map { case (a, i) =>
+          a mustBe expected(i)
+        }
+      }
+    }
+
+    "must return OK and the correct summary list row items for a GET (member) (NO change links present)" in {
+      val mockView = mock[CheckYourAnswersView]
+      val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+        inject.bind[CheckYourAnswersView].toInstance(mockView)
+      )
+
+      val application = applicationBuilder(
+        userAnswers = Some(sampleMemberJourneyDataEvent2
+          .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+          .setOrException(EventReportingOverviewPage, erOverviewSeq)
+          .setOrException(VersionInfoPage, VersionInfo(1, Submitted))),
+        extraModules = extraModules
+      ).build()
+
+      val captor: ArgumentCaptor[SummaryList] =
+        ArgumentCaptor.forClass(classOf[SummaryList])
+
+      running(application) {
+        when(mockView.apply(captor.capture(), any(), ArgumentMatchers.eq(Some(1), Some(Event2)))(any(), any())).thenReturn(play.twirl.api.Html(""))
+        val request = FakeRequest(GET, controllers.event2.routes.Event2CheckYourAnswersController.onPageLoad(0).url)
+        val result = route(application, request).value
+        status(result) mustEqual OK
+
+        val actual: Seq[SummaryListRow] = captor.getValue.rows
+        val expected: Seq[Aliases.SummaryListRow] = expectedMemberSummaryListRowsEvent2ViewOnly
 
         actual.size mustBe expected.size
 
@@ -164,6 +224,24 @@ object Event2CheckYourAnswersControllerSpec {
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink, hiddenContentInterpolation)), "", Map()))))
     )
 
+  private def fakeSummaryListRowWithHtmlContentWithHiddenContentWithChangeViewOnly(messageKey: String, htmlContent: String)
+                                                                          (implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      Key(
+        Text(
+          messages(messageKey)
+        ), ""),
+      Value(HtmlContent(htmlContent), ""), "")
+
+  private def fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(messageKey: String, messageInterpolation: String, htmlContent: String)
+                                                                (implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      Key(
+        Text(
+          messages(messageKey, messageInterpolation)
+        ), ""),
+      Value(Text(htmlContent), ""), "")
+
   private def expectedMemberSummaryListRowsEvent2(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "deceasedMembersDetails.checkYourAnswersLabel",
@@ -205,6 +283,35 @@ object Event2CheckYourAnswersControllerSpec {
       htmlContent = "22 March 2022",
       changeLink = "/manage-pension-scheme-event-report/report/1/event-2-when-was-payment-made?waypoints=event-2-check-answers-1",
       hiddenContentChangeLink = "datePaid.event2.change.hidden"
+    )
+  )
+
+  private def expectedMemberSummaryListRowsEvent2ViewOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
+    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChangeViewOnly(
+      "deceasedMembersDetails.checkYourAnswersLabel",
+      "Joe Bloggs"
+    ),
+    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChangeViewOnly(
+      "deceasedMembersDetails.checkYourAnswersLabel.nino",
+      "AA234567D"
+    ),
+    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChangeViewOnly(
+      "beneficiaryDetails.checkYourAnswersLabel",
+      "Joe Bloggs"
+    ),
+    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChangeViewOnly(
+      "beneficiaryDetails.checkYourAnswersLabel.nino",
+      "AA234567D"
+    ),
+    fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
+      "amountPaid.event2.checkYourAnswersLabel",
+      "Joe Bloggs",
+      "£999.11"
+    ),
+    fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
+      "datePaid.event2.checkYourAnswersLabel",
+      messageInterpolation = "Joe Bloggs",
+      htmlContent = "22 March 2022"
     )
   )
 }

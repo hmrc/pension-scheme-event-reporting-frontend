@@ -16,6 +16,7 @@
 
 package services
 
+import akka.actor.ActorSystem
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
@@ -25,12 +26,14 @@ import models.{EROverview, EROverviewVersion, EventDataIdentifier, TaxYear, User
 import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.{ExecutionContext, Future, Promise}
 
 class CompileService @Inject()(
                                 eventReportingConnector: EventReportingConnector,
                                 userAnswersCacheConnector: UserAnswersCacheConnector,
-                                appConfig: FrontendAppConfig
+                                appConfig: FrontendAppConfig,
+                                actorSystem: ActorSystem
                               ) (implicit ec: ExecutionContext) {
 
 
@@ -57,8 +60,11 @@ class CompileService @Inject()(
         val response = compileResponse
         response.map { _ =>
           appConfig.compileDelayInSeconds match {
-            case v if v > 0 => Thread.sleep(appConfig.compileDelayInSeconds * 1000)
-            case _ => (): Unit
+            case v if v > 0 =>
+              val p = Promise[Unit]
+              actorSystem.scheduler.scheduleOnce(v.seconds)(p.success(()))
+              p.future
+            case _ => Future.unit
           }
         }
       }

@@ -21,7 +21,7 @@ import models.event6.CrystallisedDetails
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.i18n.Messages
-import utils.DateHelper.formatDateDMY
+import utils.DateConstraintHandlers.{localDateMappingWithDateRange, localDatesConstraintHandler}
 
 import java.time.LocalDate
 import javax.inject.Inject
@@ -40,14 +40,9 @@ class AmountCrystallisedAndDateFormProvider @Inject() extends Mappings with Tran
             maximumValue[BigDecimal](maxCrystallisedValue, "amountCrystallisedAndDate.value.error.amountTooHigh"),
             minimumValue[BigDecimal](0, "amountCrystallisedAndDate.value.error.negativeValue"),
             zeroValue[BigDecimal](0, "amountCrystallisedAndDate.value.error.zeroEntered")
-          ), "crystallisedDate" ->
-        localDate(
-          invalidKey = "genericDate.error.invalid"
-        ).verifying(
-          yearHas4Digits("genericDate.error.invalid.year"),
-          minDate(startDate, messages("amountCrystallisedAndDate.date.error.outsideReportedYear", formatDateDMY(startDate), formatDateDMY(endDate(max)))),
-          maxDate(endDate(max), messages("amountCrystallisedAndDate.date.error.outsideReportedYear", formatDateDMY(startDate), formatDateDMY(endDate(max))))
-        )
+          ),
+        localDateMappingWithDateRange(field = "crystallisedDate", date = (startDate, endDate(max)),
+          outOfRangeKey = "amountCrystallisedAndDate.date.error.outsideReportedYear")
       )
       (CrystallisedDetails.apply)(CrystallisedDetails.unapply)
     )
