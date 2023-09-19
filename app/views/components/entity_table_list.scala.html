@@ -50,12 +50,10 @@
             </tr>
     }
     </tbody>
-</table>
-<table class="govuk-table">
-    <tbody class="govuk-table__body">
+    <tfoot>
     <tr class="govuk-table__row">
-        <td class="govuk-table__cell govuk-!-width-one-half"><strong>@messages("entity_list_table.totalForUnauthorisedPayments")</strong></td>
-        <td class="govuk-table__cell govuk-!-width-one-half"><strong>&pound;@total</strong></td>
+        <td class="govuk-table__cell" colspan="2"><strong>@messages("entity_list_table.totalForUnauthorisedPayments")</strong></td>
+        <td class="govuk-table__cell govuk-table__cell--numeric"><strong>&pound;@total</strong></td>
     </tr>
-    </tbody>
+    </tfoot>
 </table>
