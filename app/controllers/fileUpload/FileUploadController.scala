@@ -55,10 +55,11 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
 
   private def getErrorCode(request: DataRequest[AnyContent])(implicit messages: Messages): Option[ErrorMessage] = {
     if (request.queryString.contains("errorCode") && request.queryString("errorCode").nonEmpty) {
-      request.queryString("errorCode").headOption.map {
-        case error@"EntityTooLarge" => ErrorMessage(content = Text(messages("fileUpload.error.rejected.EntityTooLarge", appConfig.maxUploadFileSize)))
-        case error@"InvalidArgument" => ErrorMessage(content = Text(messages("fileUpload.error.rejected.InvalidArgument")))
-        case _ => ErrorMessage(content = Text(messages("fileUpload.error.rejected.GeneralError")))
+      request.queryString("errorCode").headOption.map { error =>
+        error match {
+          case "EntityTooLarge" => ErrorMessage(content = Text(messages("fileUpload.error.rejected." + error, appConfig.maxUploadFileSize)))
+          case _ => ErrorMessage(content = Text(messages("fileUpload.error.rejected." + error)))
+        }
       }
     } else {
       None
