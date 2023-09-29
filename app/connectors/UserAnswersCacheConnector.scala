@@ -61,7 +61,7 @@ class UserAnswersCacheConnector @Inject()(
     }
 
     if (headers.isEmpty) {
-      throw new RuntimeException("No tax year or version available, empty headers in UserAnswersCacheConnector")
+      throw new RuntimeException("No tax year or version available")
     } else {
       headers
     }
@@ -125,7 +125,7 @@ class UserAnswersCacheConnector @Inject()(
             }
           }
       case (y, v) =>
-        Future.failed(new RuntimeException(s"No tax year or version available in UserAnswersCacheConnector: $y / $v"))
+        Future.failed(new RuntimeException(s"No tax year or version available: $y / $v"))
     }
   }
 
