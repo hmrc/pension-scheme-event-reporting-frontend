@@ -18,10 +18,11 @@ package controllers
 
 import audit.{AuditService, StartNewERAuditEvent}
 import base.SpecBase
-import connectors.UserAnswersCacheConnector
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import forms.EventSelectionFormProvider
+import models.EventSelection.{Event2, Event6, Event7, Event8, Event8A}
 import models.enumeration.{EventType, VersionStatus}
-import models.{EventSelection, TaxYear, VersionInfo}
+import models.{EventSelection, TaxYear, ToggleDetails, VersionInfo}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -44,10 +45,12 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
   private def postRoute: String = routes.EventSelectionController.onSubmit(waypoints).url
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val mockEventConnector = mock[EventReportingConnector]
   private val mockAuditService = mock[AuditService]
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     inject.bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
+    inject.bind[EventReportingConnector].toInstance(mockEventConnector),
     inject.bind[AuditService].toInstance(mockAuditService)
   )
 
@@ -55,17 +58,45 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
   private val pstr = "87219363YN"
   private val eventType = EventType.Event1
   private val reportVersion = "1"
+  private val hideEvents: Seq[EventSelection] = Seq(Event2, Event6, Event7, Event8, Event8A)
 
   override protected def beforeEach(): Unit = {
     reset(mockUserAnswersCacheConnector)
+    reset(mockEventConnector)
     reset(mockAuditService)
   }
 
   "GET" - {
-    "must return OK and the correct view" in {
+    "must return OK and the correct view when tax year 2022 and lta-events-show-hide toggle is OFF" in {
       val ua = emptyUserAnswers
         .setOrException(TaxYearPage, TaxYear("2022"))
       val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
+        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
+      )
+      val view = application.injector.instanceOf[EventSelectionView]
+
+      running(application) {
+        val request = FakeRequest(GET, routes.EventSelectionController.onPageLoad().url)
+        val result = route(application, request).value
+
+        val formProvider = new EventSelectionFormProvider()
+        val form = formProvider()
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form, EventSelection.options, waypoints)(request, messages(application)).toString
+      }
+    }
+
+    "must return OK and the correct view when tax year 2025 and lta-events-show-hide toggle is ON" in {
+      val ua = emptyUserAnswers
+        .setOrException(TaxYearPage, TaxYear("2025"))
+      val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
+
+
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
+        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = true))
+      )
 
       val view = application.injector.instanceOf[EventSelectionView]
 
@@ -77,17 +108,22 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
         val form = formProvider()
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, EventSelection.optionsFilteredByHideEvents(hideEvents), waypoints)(request, messages(application)).toString
       }
     }
   }
 
   "POST" - {
     "must redirect to next page on submit (when selecting an option) and send audit event" in {
-      val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, VersionStatus.Submitted))
-      val application = applicationBuilder(None, extraModules).build()
-      running(application) {
 
+      val ua = emptyUserAnswersWithTaxYear.setOrException(TaxYearPage, TaxYear("2022"))
+        .setOrException(VersionInfoPage, VersionInfo(1, VersionStatus.Submitted))
+      val application = applicationBuilder(Some(ua), extraModules).build()
+
+      running(application) {
+        when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
+          Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
+        )
         when(mockUserAnswersCacheConnector.get(any(), any())(any(), any()))
           .thenReturn(Future.successful(Some(ua)))
         doNothing().when(mockAuditService).sendEvent(any())(any(), any())

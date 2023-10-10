@@ -37,7 +37,7 @@ object TaxYear extends Enumerable.Implicits {
   private val numberOfYearsToShow = 7
 
   def values: Seq[TaxYear] = {
-    yearRange(DateHelper.today).reverse
+    yearRange(LocalDate.of(2026, 4, 5)).reverse
   }
 
 
@@ -85,6 +85,7 @@ object TaxYear extends Enumerable.Implicits {
       case _ => throw new RuntimeException("Tax year unavailable")
     }
   }
+
   def getSelectedTaxYearAsString(userAnswers: UserAnswers): String = {
     val taxYear = getSelectedTaxYear(userAnswers)
     s"${Integer.parseInt(taxYear.endYear.stripPrefix("TaxYear(").stripSuffix(")").trim)}"

@@ -22,7 +22,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], eventList: Seq[RadioItem], waypoints: Waypoints)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(
     pageTitle = title(form, messages("eventSelection.title")),
@@ -39,7 +39,7 @@
             RadiosViewModel(
                 field  = form("value"),
                 legend = LegendViewModel(messages("eventSelection.heading")).asPageHeading(),
-                items  = EventSelection.options
+                items  = eventList
             )
         )
 

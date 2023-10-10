@@ -17,14 +17,16 @@
 package controllers
 
 import audit.{AuditService, StartNewERAuditEvent}
-import connectors.UserAnswersCacheConnector
-import controllers.actions.IdentifierAction
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.EventSelectionFormProvider
-import models.{TaxYear, UserAnswers}
+import models.EventSelection.{Event2, Event6, Event7, Event8, Event8A}
 import models.enumeration.EventType
+import models.{EventSelection, TaxYear, UserAnswers}
 import pages.{EventSelectionPage, Waypoints}
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.EventSelectionView
 
@@ -33,23 +35,33 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EventSelectionController @Inject()(val controllerComponents: MessagesControllerComponents,
                                          identify: IdentifierAction,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
                                          formProvider: EventSelectionFormProvider,
                                          view: EventSelectionView,
                                          userAnswersCacheConnector: UserAnswersCacheConnector,
+                                         eventReportingConnector: EventReportingConnector,
                                          auditService: AuditService
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify { implicit request =>
-    Ok(view(form, waypoints))
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
+    eventReportingConnector.getFeatureToggle("lta-events-show-hide").flatMap { toggleData =>
+      val displayEventList: Seq[RadioItem] = getFilteredOptions(toggleData.isEnabled, request.userAnswers)
+      Future.successful(Ok(view(form, displayEventList, waypoints)))
+    }
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = identify.async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints))),
+          eventReportingConnector.getFeatureToggle("lta-events-show-hide").flatMap { toggleData =>
+            val displayEventList: Seq[RadioItem] = getFilteredOptions(toggleData.isEnabled, request.userAnswers)
+            Future.successful(BadRequest(view(formWithErrors, displayEventList, waypoints)))
+          }
+        ,
         value => {
           EventType.fromEventSelection(value) match {
             case Some(eventType) =>
@@ -71,9 +83,21 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
                     reportVersion = answers.eventDataIdentifier(eventType).version))
                 Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
               }
-            case _ => Future.successful(Ok(view(form, waypoints)))
+            case _ =>
+              eventReportingConnector.getFeatureToggle("lta-events-show-hide").flatMap { toggleData =>
+                val displayEventList: Seq[RadioItem] = getFilteredOptions(toggleData.isEnabled, request.userAnswers)
+                Future.successful(Ok(view(form, displayEventList, waypoints)))
+              }
           }
         }
       )
+  }
+
+  private def getFilteredOptions(isEnabled: Boolean, ua: UserAnswers)(implicit messages: Messages): Seq[RadioItem] = {
+    if (isEnabled && TaxYear.getSelectedTaxYear(ua).startYear >= "2024") {
+      EventSelection.optionsFilteredByHideEvents(Seq(Event2, Event6, Event7, Event8, Event8A))
+    } else {
+      EventSelection.options
+    }
   }
 }

@@ -73,6 +73,29 @@ object EventSelection extends Enumerable.Implicits {
       )
   }
 
+  def optionsFilteredByHideEvents(hideEvents: Seq[EventSelection])(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.flatMap {
+    case (Or, _) => Seq(RadioItem(divider = Some("or")))
+    case (EventWoundUp, index) =>
+      Seq(RadioItem(
+        content = Text(messages(s"eventSelection.${EventWoundUp.toString}")),
+        value = Some(EventWoundUp.toString),
+        id = Some(s"value_$index")
+      ))
+    case (value, index) =>
+      if (hideEvents.contains(value)) {
+        Nil
+      } else {
+        Seq(RadioItem(
+          content = Text(messages(s"eventSelection.${value.toString}")),
+          value = Some(value.toString),
+          id = Some(s"value_$index"),
+          hint = Some(Hint(
+            content = Text(messages(s"eventSelection.${value.toString}.hint"))
+          ))
+        ))
+      }
+  }
+
   implicit val enumerable: Enumerable[EventSelection] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }
