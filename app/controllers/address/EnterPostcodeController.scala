@@ -18,12 +18,14 @@ package controllers.address
 
 import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.address.EnterPostcodeController.companyName
 import forms.address.EnterPostcodeFormProvider
 import models.Index
 import models.enumeration.AddressJourneyType
 import models.requests.DataRequest
 import pages.Waypoints
 import pages.address.EnterPostcodePage
+import pages.event1.employer.CompanyDetailsPage
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -44,14 +46,13 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
                                         addressLookupConnector: AddressLookupConnector
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
-
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
+
       val page = EnterPostcodePage(addressJourneyType, index)
       Ok(
         view(
-          form,
+          formProvider(companyName(request, index)),
           waypoints,
           addressJourneyType,
           addressJourneyType.title(page),
@@ -64,6 +65,7 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
   def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
       implicit request =>
+
         val page = EnterPostcodePage(addressJourneyType, index)
 
         def renderView(formForRender: Form[String]): Future[Result] = {
@@ -81,12 +83,12 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
           )
         }
 
-        form.bindFromRequest().fold(
+        formProvider(companyName(request, index)).bindFromRequest().fold(
           formWithErrors => renderView(formWithErrors),
           postCode => {
             addressLookupConnector.addressLookupByPostCode(postCode).flatMap {
               case Nil =>
-                renderView(formWithError(Message("enterPostcode.error.noResults", postCode)))
+                renderView(formWithError(Message("enterPostcode.error.noResults", postCode), companyName(request, index)))
               case addresses =>
                 val originalUserAnswers = request.userAnswers
                 val updatedAnswers = originalUserAnswers.setOrException(page, addresses)
@@ -96,14 +98,21 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
 
             } recoverWith {
               case _ =>
-                renderView(formWithError(Message("enterPostcode.error.noResults", postCode)))
+                renderView(formWithError(Message("enterPostcode.error.noResults", postCode), companyName(request, index)))
             }
           }
         )
     }
 
-  private def formWithError(message: Message)(implicit request: DataRequest[AnyContent]): Form[String] = {
-    form.withError("postcode", message)
+  private def formWithError(message: Message, companyName: String)(implicit request: DataRequest[AnyContent]): Form[String] = {
+    formProvider(companyName).withError("postcode", message)
   }
+}
 
+object EnterPostcodeController {
+  private val defaultCompanyName = "the company"
+
+  private val companyName: (DataRequest[AnyContent], Index) => String = (dataRequest: DataRequest[AnyContent], index: Index) => {
+    dataRequest.userAnswers.get(CompanyDetailsPage(index)).map(_.companyName).getOrElse(defaultCompanyName)
+  }
 }
