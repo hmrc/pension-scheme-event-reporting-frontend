@@ -95,6 +95,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   val timeout: Int = configuration.get[Int]("timeout-dialog.timeout")
   val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
   lazy val minimumYear: Int = configuration.get[Int]("minimumYear")
+  val ltaToggleTestOnlyDate: String = configuration.get[String]("ltaToggleTestOnlyDate")
 
   lazy val compileDelayInSeconds: Int = configuration.get[Int]("compileDelayInSeconds")
 
