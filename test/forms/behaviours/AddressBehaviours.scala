@@ -125,7 +125,7 @@ trait AddressBehaviours extends FormSpec with StringFieldBehaviours with Constra
       behave like mandatoryField(
         form,
         fieldName,
-        requiredError = FormError(fieldName, "Enter Company Name’s postcode")
+        requiredError = FormError(fieldName, keyRequired)
       )
 
       behave like fieldWithRegex(
