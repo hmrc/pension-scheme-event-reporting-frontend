@@ -34,9 +34,11 @@ import play.api.inject
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import utils.DateHelper
 import viewmodels.govuk.SummaryListFluency
 import views.html.EventSelectionView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach with MockitoSugar {
@@ -61,6 +63,7 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
   private val hideEvents: Seq[EventSelection] = Seq(Event2, Event6, Event7, Event8, Event8A)
 
   override protected def beforeEach(): Unit = {
+    DateHelper.setDate(Some(LocalDate.of(2025, 6, 1)))
     reset(mockUserAnswersCacheConnector)
     reset(mockEventConnector)
     reset(mockAuditService)
