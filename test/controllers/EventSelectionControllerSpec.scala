@@ -34,11 +34,9 @@ import play.api.inject
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.DateHelper
 import viewmodels.govuk.SummaryListFluency
 import views.html.EventSelectionView
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach with MockitoSugar {
@@ -63,14 +61,13 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
   private val hideEvents: Seq[EventSelection] = Seq(Event2, Event6, Event7, Event8, Event8A)
 
   override protected def beforeEach(): Unit = {
-    DateHelper.setDate(Some(LocalDate.of(2025, 6, 1)))
     reset(mockUserAnswersCacheConnector)
     reset(mockEventConnector)
     reset(mockAuditService)
   }
 
   "GET" - {
-    "must return OK and the correct view when tax year 2022 and lta-events-show-hide toggle is OFF" in {
+    "must return OK and the correct view" in {
       val ua = emptyUserAnswers
         .setOrException(TaxYearPage, TaxYear("2022"))
       val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
@@ -88,30 +85,6 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, EventSelection.options, waypoints)(request, messages(application)).toString
-      }
-    }
-
-    "must return OK and the correct view when tax year 2025 and lta-events-show-hide toggle is ON" in {
-      val ua = emptyUserAnswers
-        .setOrException(TaxYearPage, TaxYear("2025"))
-      val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
-
-
-      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
-        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = true))
-      )
-
-      val view = application.injector.instanceOf[EventSelectionView]
-
-      running(application) {
-        val request = FakeRequest(GET, routes.EventSelectionController.onPageLoad().url)
-        val result = route(application, request).value
-
-        val formProvider = new EventSelectionFormProvider()
-        val form = formProvider()
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, EventSelection.optionsFilteredByHideEvents(hideEvents), waypoints)(request, messages(application)).toString
       }
     }
   }
