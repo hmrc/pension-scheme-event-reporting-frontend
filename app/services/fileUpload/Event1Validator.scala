@@ -255,7 +255,7 @@ class Event1Validator @Inject()(
     )
   }
 
-  private def addressValidation(index: Int, chargeFields: Seq[String], fieldNumber: Int): Validated[Seq[ValidationError], Address] = {
+  private def addressValidation(index: Int, chargeFields: Seq[String], fieldNumber: Int)(implicit messages: Messages): Validated[Seq[ValidationError], Address] = {
     val parsedAddress = splitAddress(chargeFields(fieldNumber))
     val fields = Seq(
       Field(addressLine1, parsedAddress.addressLine1, addressLine1, fieldNumber, Some(Event1FieldNames.addressLine1)),
@@ -265,7 +265,9 @@ class Event1Validator @Inject()(
       Field(postCode, parsedAddress.postCode, postCode, fieldNumber, Some(Event1FieldNames.postCode)),
       Field(country, parsedAddress.country, country, fieldNumber, Some(Event1FieldNames.country))
     )
-    val form: Form[Address] = manualAddressFormProvider()
+    // TODO: implement full functionality with dynamic naming
+    val defaultCompanyName = "The company"
+    val form: Form[Address] = manualAddressFormProvider(defaultCompanyName)
     form.bind(
       Field.seqToMap(fields)
     ).fold(
@@ -352,7 +354,7 @@ class Event1Validator @Inject()(
     }
   }
 
-  private def validatePaymentNatureMemberJourney(index: Int, columns: Seq[String]): Result = {
+  private def validatePaymentNatureMemberJourney(index: Int, columns: Seq[String])(implicit messages: Messages): Result = {
 
     val k = resultFromFormValidationResult[MemberPaymentNature](
       genericPaymentNatureFieldValidation(index, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, memberPaymentNatureFormProvider()),
@@ -420,7 +422,7 @@ class Event1Validator @Inject()(
 
   }
 
-  private def validatePaymentNatureEmployerJourney(index: Int, columns: Seq[String]): Result = {
+  private def validatePaymentNatureEmployerJourney(index: Int, columns: Seq[String])(implicit messages: Messages): Result = {
 
     val k = resultFromFormValidationResult[EmployerPaymentNature](
       genericPaymentNatureFieldValidation(index, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, employerPaymentNatureFormProvider()), mapPaymentNatureEmployer(columns(10))),

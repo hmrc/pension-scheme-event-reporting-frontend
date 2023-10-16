@@ -16,33 +16,60 @@
 
 package forms.address
 
+import forms.address.ManualAddressFormProvider.addressLineStr
 import forms.mappings.AddressMapping
 import models.address.Address
 import play.api.data.Form
 import play.api.data.Forms.mapping
+import play.api.i18n.Messages
 import utils.CountryOptions
 
 import javax.inject.Inject
 
+// TODO: refactor
 class ManualAddressFormProvider @Inject()(countryOptions: CountryOptions) extends AddressMapping {
-
-  def apply(): Form[Address] = Form(
+  //scalastyle:off
+  def apply(companyName: String)(implicit messages: Messages): Form[Address] = Form(
     mapping(
-      "addressLine1" ->
-        addressLineMapping("address.addressLine1.error.required", "address.addressLine1.error.length",
-          "address.addressLine1.error.invalid"),
-      "addressLine2" ->
-        addressLineMapping("address.addressLine2.error.required", "address.addressLine2.error.length",
-          "address.addressLine2.error.invalid"),
-      "addressLine3" ->
-        optionalAddressLineMapping("address.addressLine3.error.length", "address.addressLine3.error.invalid"),
-      "addressLine4" ->
-        optionalAddressLineMapping("address.addressLine4.error.length", "address.addressLine4.error.invalid"),
+      // TODO: refactor all below to reuse common component.
+      addressLineStr(1) ->
+        addressLineMapping(
+          messages(s"address.${addressLineStr(1)}.error.required", companyName),
+          messages(s"address.${addressLineStr(1)}.error.length", companyName),
+          messages(s"address.${addressLineStr(1)}.error.invalid", companyName)
+        ),
+      addressLineStr(2) ->
+        addressLineMapping(
+          messages(s"address.${addressLineStr(2)}.error.required", companyName),
+          messages(s"address.${addressLineStr(2)}.error.length", companyName),
+          messages(s"address.${addressLineStr(2)}.error.invalid", companyName)
+        ),
+      addressLineStr(3) ->
+        optionalAddressLineMapping(
+          messages("address.addressLine3.error.length", companyName),
+          messages("address.addressLine3.error.invalid", companyName)
+        ),
+      addressLineStr(4) ->
+        optionalAddressLineMapping(
+          messages("address.addressLine4.error.length", companyName),
+          messages("address.addressLine4.error.invalid", companyName)
+        ),
       "postCode" ->
-        postCodeWithCountryMapping("address.postCode.error.required", "enterPostcode.error.invalid",
-          "enterPostcode.error.nonUKLength"),
+        postCodeWithCountryMapping(
+          messages("address.postCode.error.required", companyName),
+          messages("enterPostcode.error.invalid", companyName),
+          "enterPostcode.error.nonUKLength"
+        ),
       "country" ->
-        countryMapping(countryOptions, "address.country.error.required", "address.country.error.invalid")
+        countryMapping
+        (countryOptions,
+          messages("address.country.error.required", companyName),
+          "address.country.error.invalid"
+        )
     )(Address.apply)(Address.unapply)
   )
+}
+
+object ManualAddressFormProvider {
+  val addressLineStr: Int => String = (int: Int) => s"addressLine$int"
 }

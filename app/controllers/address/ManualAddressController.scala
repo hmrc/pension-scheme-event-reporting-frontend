@@ -18,12 +18,15 @@ package controllers.address
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.address.ManualAddressController.companyName
 import forms.address.ManualAddressFormProvider
 import models.Index
 import models.address.Address
 import models.enumeration.AddressJourneyType
+import models.requests.DataRequest
 import pages.Waypoints
 import pages.address.ManualAddressPage
+import pages.event1.employer.CompanyDetailsPage
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -44,10 +47,9 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
                                         val countryOptions: CountryOptions
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form: Form[Address] = formProvider()
-
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
+      val form: Form[Address] = formProvider(companyName(request, index))
       val page = ManualAddressPage(addressJourneyType, index)
       val preparedForm = request.userAnswers.get(page).fold(form)(form.fill)
       Ok(
@@ -65,6 +67,7 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
   def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
       implicit request =>
+        val form: Form[Address] = formProvider(companyName(request, index))
         val page = ManualAddressPage(addressJourneyType, index)
         form.bindFromRequest().fold(
           formWithErrors => {
@@ -94,4 +97,12 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
   private def addArgsToErrors(form: Form[Address], args: String*): Form[Address] =
     form copy (errors = form.errors.map(_ copy (args = args)))
 
+}
+
+object ManualAddressController {
+  private val defaultCompanyName = "The company"
+
+  private val companyName: (DataRequest[AnyContent], Index) => String = (dataRequest: DataRequest[AnyContent], index: Index) => {
+    dataRequest.userAnswers.get(CompanyDetailsPage(index)).map(_.companyName).getOrElse(defaultCompanyName)
+  }
 }
