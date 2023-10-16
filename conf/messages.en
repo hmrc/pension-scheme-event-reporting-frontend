@@ -539,16 +539,16 @@ employerTangibleMoveableProperty.change.hidden = Give a brief description of the
 memberPaymentNatureDescription.title = Give a brief description of the nature of the payment
 memberPaymentNatureDescription.heading = Give a brief description of the nature of the payment
 memberPaymentNatureDescription.hint = You can enter a maximum of 150 characters (optional).
-memberPaymentNatureDescription.checkYourAnswersLabel = Give a brief description of the nature of the payment
+memberPaymentNatureDescription.checkYourAnswersLabel = Description of the nature of the payment
 memberPaymentNatureDescription.error.length = The nature of the payment must be 150 characters or fewer
-memberPaymentNatureDescription.change.hidden = Give a brief description of the nature of the payment
+memberPaymentNatureDescription.change.hidden = Description of the nature of the payment
 
 employerPaymentNatureDescription.title = Give a brief description of the nature of the payment
 employerPaymentNatureDescription.heading = Give a brief description of the nature of the payment
 employerPaymentNatureDescription.hint = You can enter a maximum of 150 characters (optional).
-employerPaymentNatureDescription.checkYourAnswersLabel = Give a brief description of the nature of the payment
+employerPaymentNatureDescription.checkYourAnswersLabel = Description of the nature of the payment
 employerPaymentNatureDescription.error.length = The nature of the payment must be 150 characters or fewer
-employerPaymentNatureDescription.change.hidden = Give a brief description of the nature of the payment
+employerPaymentNatureDescription.change.hidden = Description of the nature of the payment
 
 residentialAddress.enterPostcode.title = What is the postcode of the residential property?
 residentialAddress.enterPostcode.h1 = What is the postcode of the residential property?
