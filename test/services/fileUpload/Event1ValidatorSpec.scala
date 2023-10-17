@@ -376,6 +376,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
 
     "return validation errors when present for the Residential Address field(s) (Member)" in {
       val overMaxAddLength = "a" * 36
+      val defaultCompanyName = "The company"
 
       DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val csvFile = CSVParser.split(
@@ -390,18 +391,18 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
 
       val result = validator.validate(csvFile, ua)
       result mustBe Invalid(Seq(
-        ValidationError(1, 20, "address.addressLine1.error.required", "addressLine1"),
-        ValidationError(1, 20, "address.addressLine2.error.required", "addressLine2"),
-        ValidationError(1, 20, "address.country.error.required", "country"),
-        ValidationError(2, 20, "address.addressLine1.error.length", "addressLine1", ArraySeq(35)),
-        ValidationError(2, 20, "address.addressLine2.error.length", "addressLine2", ArraySeq(35)),
-        ValidationError(2, 20, "address.addressLine3.error.length", "addressLine3", ArraySeq(35)),
-        ValidationError(2, 20, "address.addressLine4.error.length", "addressLine4", ArraySeq(35)),
-        ValidationError(3, 20, "address.addressLine1.error.invalid", "addressLine1", ArraySeq("^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$")),
-        ValidationError(3, 20, "address.addressLine2.error.invalid", "addressLine2", ArraySeq("^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$")),
-        ValidationError(3, 20, "address.addressLine3.error.invalid", "addressLine3", ArraySeq("^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$")),
-        ValidationError(3, 20, "address.addressLine4.error.invalid", "addressLine4", ArraySeq("^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$")),
-        ValidationError(3, 20, "enterPostcode.error.invalid", "postCode"),
+        ValidationError(1, 20, messages("address.addressLine1.error.required", defaultCompanyName), "addressLine1"),
+        ValidationError(1, 20, messages("address.addressLine2.error.required", defaultCompanyName), "addressLine2"),
+        ValidationError(1, 20, messages("address.country.error.required", defaultCompanyName), "country"),
+        ValidationError(2, 20, messages("address.addressLine1.error.length", defaultCompanyName), "addressLine1", ArraySeq(35)),
+        ValidationError(2, 20, messages("address.addressLine2.error.length", defaultCompanyName), "addressLine2", ArraySeq(35)),
+        ValidationError(2, 20, messages("address.addressLine3.error.length", defaultCompanyName), "addressLine3", ArraySeq(35)),
+        ValidationError(2, 20, messages("address.addressLine4.error.length", defaultCompanyName), "addressLine4", ArraySeq(35)),
+        ValidationError(3, 20, messages("address.addressLine1.error.invalid", defaultCompanyName), "addressLine1", ArraySeq("^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$")),
+        ValidationError(3, 20, messages("address.addressLine2.error.invalid", defaultCompanyName), "addressLine2", ArraySeq("^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$")),
+        ValidationError(3, 20, messages("address.addressLine3.error.invalid", defaultCompanyName), "addressLine3", ArraySeq("^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$")),
+        ValidationError(3, 20, messages("address.addressLine4.error.invalid", defaultCompanyName), "addressLine4", ArraySeq("^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$")),
+        ValidationError(3, 20, messages("enterPostcode.error.invalid", defaultCompanyName), "postCode"),
         ValidationError(4, 20, "address.country.error.invalid", "country")
       ))
     }
