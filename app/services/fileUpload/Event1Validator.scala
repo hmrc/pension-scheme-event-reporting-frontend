@@ -255,7 +255,8 @@ class Event1Validator @Inject()(
     )
   }
 
-  private def addressValidation(index: Int, chargeFields: Seq[String], fieldNumber: Int)(implicit messages: Messages): Validated[Seq[ValidationError], Address] = {
+  private def addressValidation(index: Int, chargeFields: Seq[String], fieldNumber: Int, isMemberJourney: Boolean = false)
+                               (implicit messages: Messages): Validated[Seq[ValidationError], Address] = {
     val parsedAddress = splitAddress(chargeFields(fieldNumber))
     val fields = Seq(
       Field(addressLine1, parsedAddress.addressLine1, addressLine1, fieldNumber, Some(Event1FieldNames.addressLine1)),
@@ -265,9 +266,12 @@ class Event1Validator @Inject()(
       Field(postCode, parsedAddress.postCode, postCode, fieldNumber, Some(Event1FieldNames.postCode)),
       Field(country, parsedAddress.country, country, fieldNumber, Some(Event1FieldNames.country))
     )
-    // TODO: implement full functionality with dynamic naming
-    val defaultCompanyName = "The company"
-    val form: Form[Address] = manualAddressFormProvider(defaultCompanyName)
+
+    val name = if (isMemberJourney) { "Member" } else {
+      Field(companyOrOrgName, chargeFields(fieldNoCompanyOrOrgName), companyOrOrgName, fieldNoCompanyOrOrgName).fieldValue
+    }
+
+    val form: Form[Address] = manualAddressFormProvider(name)
     form.bind(
       Field.seqToMap(fields)
     ).fold(
@@ -397,7 +401,7 @@ class Event1Validator @Inject()(
               Seq(k, s).combineAll
             case "residentialPropertyHeld" =>
               val u = resultFromFormValidationResult[Address](
-                addressValidation(index, columns, fieldNoResidentialAddress), createCommitItem(index, ManualAddressPage(Event1MemberPropertyAddressJourney, _)))
+                addressValidation(index, columns, fieldNoResidentialAddress, isMemberJourney = true), createCommitItem(index, ManualAddressPage(Event1MemberPropertyAddressJourney, _)))
               Seq(k, u).combineAll
             case "tangibleMoveablePropertyHeld" =>
               val v = resultFromFormValidationResult[Option[String]](
