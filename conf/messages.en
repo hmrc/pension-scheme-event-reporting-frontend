@@ -475,7 +475,7 @@ paymentNature.change.hidden = Nature of the payment or deemed payment
 schemeUnAuthPaySurchargeMember.title = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
 schemeUnAuthPaySurchargeMember.heading = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
 schemeUnAuthPaySurchargeMember.checkYourAnswersLabel = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
-schemeUnAuthPaySurchargeMember.error.required = Select yes if Is the scheme paying the unauthorised payment surcharge on behalf of the member
+schemeUnAuthPaySurchargeMember.error.required = Select yes if the scheme is paying the unauthorised payment surcharge on behalf of the member
 schemeUnAuthPaySurchargeMember.error.format = Enter yes or no if the scheme is paying the unauthorised payment surcharge on behalf of the member
 schemeUnAuthPaySurchargeMember.change.hidden = Is the scheme paying the unauthorised payment surcharge on behalf of the member?
 
@@ -918,7 +918,7 @@ unauthPaymentSummary.title = Event 1: Unauthorised payments events for tax year 
 unauthPaymentSummary.heading =  Event 1: Unauthorised payments events for tax year ending 5 April {0}
 unauthPaymentSummary.yesno.legend = Do you want to add another entry for this event?
 unauthPaymentSummary.checkYourAnswersLabel = Check your answers
-unauthPaymentSummary.error.required = Select yes if you want to add another unauthorised payment
+unauthPaymentSummary.error.required = Select yes to add another entry
 unauthPaymentSummary.change.hidden = Unauthorised payment summary
 unauthPaymentSummary.table.header1 = Member or company name
 unauthPaymentSummary.table.header2 = Unauthorised payment value
