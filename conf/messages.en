@@ -449,6 +449,7 @@ address.addressLine4.error.length   = {0}’s address must be 35 characters or f
 address.addressLine4.error.invalid  = {0}’s address must only include letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 
 address.postCode.error.required = Enter {0}’s postcode
+address.postCode.error.invalid = {0}’s postcode is in the wrong format
 address.country.error.required = Enter {0}’s country
 address.country.error.invalid = Invalid country
 address.addressLine1 = Address Line 1
