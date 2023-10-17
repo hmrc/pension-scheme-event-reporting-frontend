@@ -37,14 +37,15 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("wantToSubmit.heading")).asPageHeading()
+                legend = LegendViewModel(messages("wantToSubmit.heading")).asPageHeading(),
+                hint = Some(Hint(content = messages("wantToSubmit.hint")))
             )
         )
-
-        <div id="more-detail-hint" class="govuk-hint"> @messages("wantToSubmit.hint")</div>
 
         @govukButton(
             ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))
         )
     }
 }
+
+<!--.withHint(hint = HintViewModel(content = messages("wantToSubmit.hint")))-->
