@@ -271,7 +271,7 @@ whatYouWillNeed.item6 = the payment value and date
 
 whatYouWillNeed.event22.title = What you will need
 whatYouWillNeed.event22.heading = What you will need
-whatYouWillNeed.event22.p = To report an annual allowance event you will need the following for each member:
+whatYouWillNeed.event22.p = To record a standard pension saving statement issued to a scheme member, you will need to tell us the:
 whatYouWillNeed.event22.item1 = their name
 whatYouWillNeed.event22.item2 = their National Insurance number
 whatYouWillNeed.event22.item3 = the tax year in which the annual allowance was exceeded
@@ -279,7 +279,7 @@ whatYouWillNeed.event22.item4 = the total of the member’s pension input amount
 
 whatYouWillNeed.event23.title = What you will need
 whatYouWillNeed.event23.heading = What you will need
-whatYouWillNeed.event23.p = To report a dual annual allowances event you will need the following for each member:
+whatYouWillNeed.event23.p = To record a money purchase pension savings statement issued to a scheme member, you will need to tell us the:
 whatYouWillNeed.event23.item1 = their name
 whatYouWillNeed.event23.item2 = their National Insurance number
 whatYouWillNeed.event23.item3 = the tax year in which the money purchase pension savings statement was issued
@@ -1084,7 +1084,7 @@ fileUploadWhatYouWillNeed.event1.item10 = – do not change or delete the header
 fileUploadWhatYouWillNeed.event1.item10.prefix = the
 fileUploadWhatYouWillNeed.event1.instructions.link.text = instructions explaining the process and the formatting that should be used
 fileUploadWhatYouWillNeed.event1.template.link.text = latest template file
-fileUploadWhatYouWillNeed.event1.inset = All the data you have previously added for this charge in this quarter will be overwritten when you upload a file.
+fileUploadWhatYouWillNeed.event1.inset = All the data you have previously added for this event will be overwritten when you upload a file.
 
 fileUploadWhatYouWillNeed.event6.title = What you will need
 fileUploadWhatYouWillNeed.event6.heading = What you will need
@@ -1098,7 +1098,7 @@ fileUploadWhatYouWillNeed.event6.item5 = – do not change or delete the header 
 fileUploadWhatYouWillNeed.event6.item5.prefix = the
 fileUploadWhatYouWillNeed.event6.instructions.link.text = instructions explaining the process and the formatting that should be used
 fileUploadWhatYouWillNeed.event6.template.link.text = latest template file
-fileUploadWhatYouWillNeed.event6.inset = All the data you have previously added for this charge in this quarter will be overwritten when you upload a file.
+fileUploadWhatYouWillNeed.event6.inset = All the data you have previously added for this event will be overwritten when you upload a file.
 
 fileUploadWhatYouWillNeed.event22.title = What you will need
 fileUploadWhatYouWillNeed.event22.heading = What you will need
@@ -1113,11 +1113,11 @@ fileUploadWhatYouWillNeed.event22.item5 = – do not change or delete the header
 fileUploadWhatYouWillNeed.event22.item5.prefix = the
 fileUploadWhatYouWillNeed.event22.instructions.link.text = instructions explaining the process and the formatting that should be used
 fileUploadWhatYouWillNeed.event22.template.link.text = latest template file
-fileUploadWhatYouWillNeed.event22.inset = All the data you have previously added for this charge in this quarter will be overwritten when you upload a file.
+fileUploadWhatYouWillNeed.event22.inset = All the data you have previously added for this event will be overwritten when you upload a file.
 
 fileUploadWhatYouWillNeed.event23.title = What you will need
 fileUploadWhatYouWillNeed.event23.heading = What you will need
-fileUploadWhatYouWillNeed.event23.p1 = To report dual annual allowances events you will need to upload a .csv file and include the following information for each member:
+fileUploadWhatYouWillNeed.event23.p1 = To record a money purchase pension savings statement issued to a scheme member, you will need to tell us the:
 fileUploadWhatYouWillNeed.event23.p2 = Documents previously sent to HMRC for event reporting purposes are out of date and cannot be uploaded. For the correct document and information on how to complete it, download:
 fileUploadWhatYouWillNeed.event23.heading = What you will need
 fileUploadWhatYouWillNeed.event23.item1 = their name
@@ -1128,7 +1128,7 @@ fileUploadWhatYouWillNeed.event23.item5 = – do not change or delete the header
 fileUploadWhatYouWillNeed.event23.item5.prefix = the
 fileUploadWhatYouWillNeed.event23.instructions.link.text = instructions explaining the process and the formatting that should be used
 fileUploadWhatYouWillNeed.event23.template.link.text = latest template file
-fileUploadWhatYouWillNeed.event23.inset = All the data you have previously added for this charge will be overwritten when you upload a file.
+fileUploadWhatYouWillNeed.event23.inset = All the data you have previously added for this event will be overwritten when you upload a file.
 
 typeOfProtection.title = What is the type of protection held for the crystallisation?
 typeOfProtection.heading = What is the type of protection held for the crystallisation?
@@ -1461,7 +1461,7 @@ fileUpload.change.hidden = file Upload
 fileUpload.upload.details.summary = What information do I need to include in this file?
 fileUpload.upload.label = Upload a file
 
-fileUpload.upload.details.annualAllowanceEvent22.p1 = To report an annual allowance event you will need the following for each member:
+fileUpload.upload.details.annualAllowanceEvent22.p1 = To record a standard pension saving statement issued to a scheme member, you will need to tell us the:
 fileUpload.upload.details.annualAllowanceEvent22.item1 = their name
 fileUpload.upload.details.annualAllowanceEvent22.item2 = their National Insurance number
 fileUpload.upload.details.annualAllowanceEvent22.item3 = the tax year in which the annual allowance was exceeded
@@ -1469,7 +1469,7 @@ fileUpload.upload.details.annualAllowanceEvent22.item4 = the total of the member
 fileUploadResult.title = Check your {0} event file
 fileUploadResult.heading = Check your {0} event file
 fileUpload.upload.result.h1 = Is this file correct?
-fileUploadResult.Yes = Yes, add this charge to the event
+fileUploadResult.Yes = Yes, add this to the event
 fileUploadResult.No = No, I want to select a different file
 fileUploadResult.checkYourAnswersLabel = fileUploadResult
 fileUploadResult.error.required = Select yes to add this file
@@ -1618,7 +1618,7 @@ fileUpload.lumpSumDate.generic.error = The date must be between 6 April 2006 and
 
 fileUploadSuccess.title = Your file upload was successful
 fileUploadSuccess.heading = Your file upload was successful
-fileUploadSuccess.p = {0} was uploaded successfully and the charge was added to the event. Select continue to view the changes.
+fileUploadSuccess.p = {0} was uploaded successfully and was added to the event. Select continue to view the changes.
 
 fileupload.invalid.title = There is a problem with your file
 fileupload.invalid.heading = There is a problem with your file
@@ -1659,10 +1659,10 @@ cannotSubmitEvents.title = You are unable to submit the event report yet
 cannotSubmitEvents.heading = You are unable to submit the event report yet
 cannotSubmitEvents.p1 = You cannot submit an event return in the current tax year unless you have wound up the scheme.
 
-removeMember.title = Are you sure you want to remove the {0} charge for this member?
-removeMember.heading = Are you sure you want to remove the {0} charge for this member?
-removeMember.error.required = Select yes if you want to remove the {0} charge for this member
-removeMember.change.hidden = Are you sure you want to remove the {0} charge for this member?
+removeMember.title = Are you sure you want to remove the {0} event for this member?
+removeMember.heading = Are you sure you want to remove the {0} event for this member?
+removeMember.error.required = Select yes if you want to remove the {0} event for this member
+removeMember.change.hidden = Are you sure you want to remove the {0} event for this member?
 
 membersDetails.error.nino.notUnique = This National Insurance number is already in use for this event and cannot be duplicated
 
