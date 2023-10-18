@@ -23,12 +23,12 @@ import play.api.i18n.Messages
 import javax.inject.Inject
 
 class EnterPostcodeFormProvider @Inject() extends AddressMapping {
-  def apply(companyName: String)(implicit messages: Messages): Form[String] =
+  def apply(name: String)(implicit messages: Messages): Form[String] =
     Form(
       "value" -> postCodeMapping(
-        messages("enterPostcode.error.required", companyName),
+        messages("enterPostcode.error.required", name),
         "enterPostcode.error.length",
-        messages("enterPostcode.error.invalid", companyName)
+        messages("enterPostcode.error.invalid", name)
       )
     )
 }

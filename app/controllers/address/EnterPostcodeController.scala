@@ -18,18 +18,17 @@ package controllers.address
 
 import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.address.EnterPostcodeController.companyName
 import forms.address.EnterPostcodeFormProvider
 import models.Index
 import models.enumeration.AddressJourneyType
 import models.requests.DataRequest
 import pages.Waypoints
 import pages.address.EnterPostcodePage
-import pages.event1.employer.CompanyDetailsPage
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.AddressHelper.retrieveNameManual
 import viewmodels.Message
 import views.html.address.EnterPostcodeView
 
@@ -52,7 +51,7 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
       val page = EnterPostcodePage(addressJourneyType, index)
       Ok(
         view(
-          formProvider(companyName(request, index)),
+          formProvider(retrieveNameManual(request, index)),
           waypoints,
           addressJourneyType,
           addressJourneyType.title(page),
@@ -83,12 +82,12 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
           )
         }
 
-        formProvider(companyName(request, index)).bindFromRequest().fold(
+        formProvider(retrieveNameManual(request, index)).bindFromRequest().fold(
           formWithErrors => renderView(formWithErrors),
           postCode => {
             addressLookupConnector.addressLookupByPostCode(postCode).flatMap {
               case Nil =>
-                renderView(formWithError(Message("enterPostcode.error.noResults", postCode), companyName(request, index)))
+                renderView(formWithError(Message("enterPostcode.error.noResults", postCode), retrieveNameManual(request, index)))
               case addresses =>
                 val originalUserAnswers = request.userAnswers
                 val updatedAnswers = originalUserAnswers.setOrException(page, addresses)
@@ -98,7 +97,7 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
 
             } recoverWith {
               case _ =>
-                renderView(formWithError(Message("enterPostcode.error.noResults", postCode), companyName(request, index)))
+                renderView(formWithError(Message("enterPostcode.error.noResults", postCode), retrieveNameManual(request, index)))
             }
           }
         )
@@ -106,13 +105,5 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
 
   private def formWithError(message: Message, companyName: String)(implicit request: DataRequest[AnyContent]): Form[String] = {
     formProvider(companyName).withError("postcode", message)
-  }
-}
-
-object EnterPostcodeController {
-  private val defaultCompanyName = "the company"
-
-  private val companyName: (DataRequest[AnyContent], Index) => String = (dataRequest: DataRequest[AnyContent], index: Index) => {
-    dataRequest.userAnswers.get(CompanyDetailsPage(index)).map(_.companyName).getOrElse(defaultCompanyName)
   }
 }
