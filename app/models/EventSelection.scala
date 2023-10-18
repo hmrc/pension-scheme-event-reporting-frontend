@@ -26,26 +26,47 @@ sealed trait EventSelection
 object EventSelection extends Enumerable.Implicits {
 
   case object Event1 extends WithName("event1") with EventSelection
+
   case object Event2 extends WithName("event2") with EventSelection
+
   case object Event3 extends WithName("event3") with EventSelection
+
   case object Event4 extends WithName("event4") with EventSelection
+
   case object Event5 extends WithName("event5") with EventSelection
+
   case object Event6 extends WithName("event6") with EventSelection
+
   case object Event7 extends WithName("event7") with EventSelection
+
   case object Event8 extends WithName("event8") with EventSelection
+
   case object Event8A extends WithName("event8a") with EventSelection
+
   case object Event10 extends WithName("event10") with EventSelection
+
   case object Event11 extends WithName("event11") with EventSelection
+
   case object Event12 extends WithName("event12") with EventSelection
+
   case object Event13 extends WithName("event13") with EventSelection
+
   case object Event14 extends WithName("event14") with EventSelection
+
   case object Event18 extends WithName("event18") with EventSelection
+
   case object Event19 extends WithName("event19") with EventSelection
+
   case object Event20 extends WithName("event20") with EventSelection
+
   case object Event20A extends WithName("event20a") with EventSelection
+
   case object Event22 extends WithName("event22") with EventSelection
+
   case object Event23 extends WithName("event23") with EventSelection
+
   case object Or extends WithName("or") with EventSelection
+
   case object EventWoundUp extends WithName("eventWoundUp") with EventSelection
 
   val values: Seq[EventSelection] = Seq(
@@ -54,7 +75,7 @@ object EventSelection extends Enumerable.Implicits {
     Event23, Or, EventWoundUp
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
+  def options(values: Seq[EventSelection])(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (Or, _) => RadioItem(divider = Some("or"))
     case (EventWoundUp, index) =>
       RadioItem(
@@ -71,29 +92,6 @@ object EventSelection extends Enumerable.Implicits {
           content = Text(messages(s"eventSelection.${value.toString}.hint"))
         ))
       )
-  }
-
-  def optionsFilteredByHideEvents(hideEvents: Seq[EventSelection])(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.flatMap {
-    case (Or, _) => Seq(RadioItem(divider = Some("or")))
-    case (EventWoundUp, index) =>
-      Seq(RadioItem(
-        content = Text(messages(s"eventSelection.${EventWoundUp.toString}")),
-        value = Some(EventWoundUp.toString),
-        id = Some(s"value_$index")
-      ))
-    case (value, index) =>
-      if (hideEvents.contains(value)) {
-        Nil
-      } else {
-        Seq(RadioItem(
-          content = Text(messages(s"eventSelection.${value.toString}")),
-          value = Some(value.toString),
-          id = Some(s"value_$index"),
-          hint = Some(Hint(
-            content = Text(messages(s"eventSelection.${value.toString}.hint"))
-          ))
-        ))
-      }
   }
 
   implicit val enumerable: Enumerable[EventSelection] =

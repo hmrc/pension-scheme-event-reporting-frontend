@@ -20,7 +20,6 @@ import audit.{AuditService, StartNewERAuditEvent}
 import base.SpecBase
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import forms.EventSelectionFormProvider
-import models.EventSelection.{Event2, Event6, Event7, Event8, Event8A}
 import models.enumeration.{EventType, VersionStatus}
 import models.{EventSelection, TaxYear, ToggleDetails, VersionInfo}
 import org.mockito.ArgumentMatchers
@@ -58,7 +57,6 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
   private val pstr = "87219363YN"
   private val eventType = EventType.Event1
   private val reportVersion = "1"
-  private val hideEvents: Seq[EventSelection] = Seq(Event2, Event6, Event7, Event8, Event8A)
 
   override protected def beforeEach(): Unit = {
     reset(mockUserAnswersCacheConnector)
@@ -84,7 +82,7 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
         val form = formProvider()
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, EventSelection.options, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, EventSelection.options(EventSelection.values), waypoints)(request, messages(application)).toString
       }
     }
   }

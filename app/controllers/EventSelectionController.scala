@@ -94,14 +94,14 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
   }
 
   private def getFilteredOptions(isEnabled: Boolean, ua: UserAnswers)(implicit messages: Messages): Seq[RadioItem] = {
-    val eventsToRemove = TaxYear.getSelectedTaxYear(ua).startYear >= "2024" match {
+    val eventsToRemove: Seq[EventSelection] = TaxYear.getSelectedTaxYear(ua).startYear >= "2024" match {
       case true => Seq(Event2, Event6, Event7, Event8, Event8A)
-      case false =>  Seq() // TODO: Include new events once developed Seq(Event25, Event26)
+      case false => Seq() // TODO: Include new events once developed Seq(Event25, Event26)
     }
-    if(isEnabled){
-      EventSelection.optionsFilteredByHideEvents(eventsToRemove)
+    if (isEnabled) {
+      EventSelection.options(EventSelection.values.diff(eventsToRemove))
     } else {
-      EventSelection.options
+      EventSelection.options(EventSelection.values)
     }
   }
 }
