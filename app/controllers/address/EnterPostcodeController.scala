@@ -103,7 +103,7 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
         )
     }
 
-  private def formWithError(message: Message, companyName: String)(implicit request: DataRequest[AnyContent]): Form[String] = {
-    formProvider(companyName).withError("postcode", message)
+  private def formWithError(message: Message, name: String)(implicit request: DataRequest[AnyContent]): Form[String] = {
+    formProvider(name).withError("postcode", message)
   }
 }

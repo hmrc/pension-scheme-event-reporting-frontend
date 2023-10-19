@@ -44,13 +44,13 @@ object ManualAddressFormProvider {
   private val addressLines: (String, String, String, String) = ("addressLine1", "addressLine2", "addressLine3", "addressLine4")
   private val postCodeAndCountry: (String, String) = ("postCode", "country")
   private val errMsg: (String, String) => String = (key: String, err: String) => s"address.$key.error.$err"
-  private def requiredAddressLineArgs(key: String, companyName: String)(implicit messages: Messages): (String, String, String) =
-    (messages(errMsg(key, "required"), companyName), messages(errMsg(key, "length"), companyName), messages(errMsg(key, "invalid"), companyName))
-  private def optionalAddressLineArgs(key: String, companyName: String)(implicit messages: Messages): (String, String) =
-    (messages(errMsg(key, "length"), companyName), messages(errMsg(key, "invalid"), companyName))
-  private def postCodeArgs(key: String, companyName: String)(implicit messages: Messages): (String, String, String) =
-    (messages(errMsg(key, "required"), companyName), messages(errMsg(key, "invalid"), companyName), "enterPostcode.error.nonUKLength")
-  private def countryArgs(key: String, companyName: String)(implicit messages: Messages): (String, String) =
-    (messages(errMsg(key, "required"), companyName), errMsg(key, "invalid"))
+  private def requiredAddressLineArgs(key: String, name: String)(implicit messages: Messages): (String, String, String) =
+    (messages(errMsg(key, "required"), name), messages(errMsg(key, "length"), name), messages(errMsg(key, "invalid"), name))
+  private def optionalAddressLineArgs(key: String, name: String)(implicit messages: Messages): (String, String) =
+    (messages(errMsg(key, "length"), name), messages(errMsg(key, "invalid"), name))
+  private def postCodeArgs(key: String, name: String)(implicit messages: Messages): (String, String, String) =
+    (messages(errMsg(key, "required"), name), messages(errMsg(key, "invalid"), name), "enterPostcode.error.nonUKLength")
+  private def countryArgs(key: String, name: String)(implicit messages: Messages): (String, String) =
+    (messages(errMsg(key, "required"), name), errMsg(key, "invalid"))
 
 }
