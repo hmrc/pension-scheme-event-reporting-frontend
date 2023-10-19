@@ -41,7 +41,7 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach with 
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new EnterPostcodeFormProvider()
-  private val form = formProvider()
+  private val form = formProvider(companyDetails.companyName)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockAddressLookupConnector = mock[AddressLookupConnector]

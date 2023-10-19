@@ -28,6 +28,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.AddressHelper.retrieveNameManual
 import utils.CountryOptions
 import views.html.address.ManualAddressView
 
@@ -44,10 +45,9 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
                                         val countryOptions: CountryOptions
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form: Form[Address] = formProvider()
-
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
+      val form: Form[Address] = formProvider(retrieveNameManual(request, index))
       val page = ManualAddressPage(addressJourneyType, index)
       val preparedForm = request.userAnswers.get(page).fold(form)(form.fill)
       Ok(
@@ -65,6 +65,7 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
   def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
       implicit request =>
+        val form: Form[Address] = formProvider(retrieveNameManual(request, index))
         val page = ManualAddressPage(addressJourneyType, index)
         form.bindFromRequest().fold(
           formWithErrors => {
