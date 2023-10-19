@@ -45,9 +45,10 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
+  private val ltaAbolitionShowHideToggle = "lta-events-show-hide"
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
-    eventReportingConnector.getFeatureToggle("lta-events-show-hide").flatMap { toggleData =>
+    eventReportingConnector.getFeatureToggle(ltaAbolitionShowHideToggle).flatMap { toggleData =>
       val displayEventList: Seq[RadioItem] = getFilteredOptions(toggleData.isEnabled, request.userAnswers)
       Future.successful(Ok(view(form, displayEventList, waypoints)))
     }
@@ -57,7 +58,7 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          eventReportingConnector.getFeatureToggle("lta-events-show-hide").flatMap { toggleData =>
+          eventReportingConnector.getFeatureToggle(ltaAbolitionShowHideToggle).flatMap { toggleData =>
             val displayEventList: Seq[RadioItem] = getFilteredOptions(toggleData.isEnabled, request.userAnswers)
             Future.successful(BadRequest(view(formWithErrors, displayEventList, waypoints)))
           }
@@ -84,7 +85,7 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
                 Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
               }
             case _ =>
-              eventReportingConnector.getFeatureToggle("lta-events-show-hide").flatMap { toggleData =>
+              eventReportingConnector.getFeatureToggle(ltaAbolitionShowHideToggle).flatMap { toggleData =>
                 val displayEventList: Seq[RadioItem] = getFilteredOptions(toggleData.isEnabled, request.userAnswers)
                 Future.successful(Ok(view(form, displayEventList, waypoints)))
               }
