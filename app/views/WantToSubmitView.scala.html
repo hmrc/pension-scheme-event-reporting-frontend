@@ -35,9 +35,10 @@
         }
 
         @govukRadios(
-            RadiosViewModel.yesNo(
+            RadiosViewModel.yesNoNotInline(
                 field = form("value"),
-                legend = LegendViewModel(messages("wantToSubmit.heading")).asPageHeading()
+                legend = LegendViewModel(messages("wantToSubmit.heading")).asPageHeading(),
+                hint = Some(Hint(content = messages("wantToSubmit.hint")))
             )
         )
 
