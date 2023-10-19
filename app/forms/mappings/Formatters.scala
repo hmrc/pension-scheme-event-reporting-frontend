@@ -201,8 +201,10 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString)
     }
 
+  //TODO Remove TaxYear2024FormProvider once 'lta-events-show-hide' toggle removed
+  //TODO TaxYear2024FormProvider to select future tax year for testing purpose only
   private[mappings] def enumerableFormatter2024[A](requiredKey: String, invalidKey: String,
-                                               args: Seq[String] = Seq.empty, ev: Enumerable[A]): Formatter[A] =
+                                                   args: Seq[String] = Seq.empty, ev: Enumerable[A]): Formatter[A] =
     new Formatter[A] {
 
       private val baseFormatter = stringFormatter(requiredKey, args)

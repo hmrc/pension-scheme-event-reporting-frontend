@@ -45,6 +45,8 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
                                   view: TaxYearView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
+  private val ltaAbolitionShowHideToggle = "lta-events-show-hide"
+
   private val yearsWhereSubmittedVersionAvailable: EROverview => Seq[String] = erOverview =>
     if (erOverview.versionDetails.exists(_.submittedVersionAvailable)) {
       Seq(erOverview.taxYear.startYear)
@@ -79,7 +81,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
   }
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
-    eventReportingConnector.getFeatureToggle("lta-events-show-hide").flatMap { ltaToggle =>
+    eventReportingConnector.getFeatureToggle(ltaAbolitionShowHideToggle).flatMap { ltaToggle =>
       val form = getFormProviderByLtaToggle(ltaToggle.isEnabled)
       val preparedForm = request.userAnswers.get(TaxYearPage).fold(form)(form.fill)
       eventReportingConnector.getFeatureToggle("event-reporting-tax-year").flatMap { taxYearToggle =>
@@ -90,7 +92,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
-      eventReportingConnector.getFeatureToggle("lta-events-show-hide").flatMap { ltaToggle =>
+      eventReportingConnector.getFeatureToggle(ltaAbolitionShowHideToggle).flatMap { ltaToggle =>
         val form = getFormProviderByLtaToggle(ltaToggle.isEnabled)
         form.bindFromRequest().fold(
           formWithErrors =>
@@ -126,6 +128,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
       }
   }
 
+  //TODO Remove below method to once 'lta-events-show-hide' toggle removed and use formProvider()
   private def getFormProviderByLtaToggle(isEnabled: Boolean): Form[TaxYear] = {
     if (isEnabled) {
       formProvider2024()
