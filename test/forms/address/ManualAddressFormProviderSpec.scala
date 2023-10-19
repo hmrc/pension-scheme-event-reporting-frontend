@@ -16,16 +16,19 @@
 
 package forms.address
 
+import base.SpecBase
+import data.SampleData.companyDetails
 import forms.behaviours.{AddressBehaviours, FormBehaviours}
 import models.address.Address
 import utils.FakeCountryOptions
 
 import scala.util.Random
 
-class ManualAddressFormProviderSpec extends AddressBehaviours with FormBehaviours {
+class ManualAddressFormProviderSpec extends SpecBase with AddressBehaviours with FormBehaviours {
   private def alphaString(max: Int = maxAddressLineLength) =
     Random.alphanumeric take Random.shuffle(Range(1, max).toList).head mkString ""
 
+  private val companyName = companyDetails.companyName
   private val addressLine1 = alphaString()
   private val addressLine2 = alphaString()
   private val addressLine3 = alphaString()
@@ -43,7 +46,7 @@ class ManualAddressFormProviderSpec extends AddressBehaviours with FormBehaviour
     "country" -> "GB"
   )
 
-  val form = new ManualAddressFormProvider(countryOptions)()
+  val form = new ManualAddressFormProvider(countryOptions)(companyName)
 
   "Address form" - {
     behave like questionForm(Address(
@@ -58,7 +61,7 @@ class ManualAddressFormProviderSpec extends AddressBehaviours with FormBehaviour
     behave like formWithCountry(
       form,
       "country",
-      "address.country.error.required",
+      messages("address.country.error.required", companyName),
       "address.country.error.invalid",
       countryOptions,
       Map(
@@ -69,8 +72,8 @@ class ManualAddressFormProviderSpec extends AddressBehaviours with FormBehaviour
 
     behave like formWithCountryAndPostCode(
       form,
-      "address.postCode.error.required",
-      "enterPostcode.error.invalid",
+      messages("address.postCode.error.required", companyName),
+      messages("enterPostcode.error.invalid", companyName),
       "enterPostcode.error.nonUKLength",
       Map(
         "addressLine1" -> addressLine1,
@@ -83,24 +86,24 @@ class ManualAddressFormProviderSpec extends AddressBehaviours with FormBehaviour
     behave like formWithAddressField(
       form,
       "addressLine1",
-      "address.addressLine1.error.required",
-      "address.addressLine1.error.length",
-      "address.addressLine1.error.invalid"
+      messages("address.addressLine1.error.required", companyName),
+      messages("address.addressLine1.error.length", companyName),
+      messages("address.addressLine1.error.invalid", companyName)
     )
 
     behave like formWithAddressField(
       form,
       "addressLine2",
-      "address.addressLine2.error.required",
-      "address.addressLine2.error.length",
-      "address.addressLine2.error.invalid"
+      messages("address.addressLine2.error.required", companyName),
+      messages("address.addressLine2.error.length", companyName),
+      messages("address.addressLine2.error.invalid", companyName)
     )
 
     behave like formWithOptionalAddressField(
       form,
       "addressLine3",
-      "address.addressLine3.error.length",
-      "address.addressLine3.error.invalid",
+      messages("address.addressLine3.error.length", companyName),
+      messages("address.addressLine3.error.invalid", companyName),
       validData,
       (address: Address) => address.addressLine3
     )
@@ -108,8 +111,8 @@ class ManualAddressFormProviderSpec extends AddressBehaviours with FormBehaviour
     behave like formWithOptionalAddressField(
       form,
       "addressLine4",
-      "address.addressLine4.error.length",
-      "address.addressLine4.error.invalid",
+      messages("address.addressLine4.error.length", companyName),
+      messages("address.addressLine4.error.invalid", companyName),
       validData,
       (address: Address) => address.addressLine4
     )

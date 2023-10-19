@@ -26,6 +26,6 @@ class CountryOrTerritoryFormProvider @Inject()(countryOptions: CountryOptions) e
 
   def apply(): Form[String] = Form(
       "country" ->
-        countryMapping(countryOptions, "event19.countryOrTerritory.error.required", "event19.countryOrTerritory.error.invalid")
+        countryMapping(countryOptions, ("event19.countryOrTerritory.error.required", "event19.countryOrTerritory.error.invalid"))
   )
 }

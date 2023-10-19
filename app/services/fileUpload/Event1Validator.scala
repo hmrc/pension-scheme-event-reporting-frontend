@@ -37,7 +37,7 @@ import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContribu
 import models.event1.{PaymentDetails, WhoReceivedUnauthPayment, PaymentNature => MemberPaymentNature}
 import models.fileUpload.FileUploadHeaders
 import models.fileUpload.FileUploadHeaders.Event1FieldNames._
-import models.fileUpload.FileUploadHeaders.{Event1FieldNames, valueFormField}
+import models.fileUpload.FileUploadHeaders.{Event1FieldNames, MemberDetailsFieldNames, valueFormField}
 import pages.address.ManualAddressPage
 import pages.common.MembersDetailsPage
 import pages.event1._
@@ -47,6 +47,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.JsString
 import services.fileUpload.Validator.Result
+
 import scala.collection.immutable.HashSet
 
 class Event1Validator @Inject()(
@@ -255,7 +256,8 @@ class Event1Validator @Inject()(
     )
   }
 
-  private def addressValidation(index: Int, chargeFields: Seq[String], fieldNumber: Int): Validated[Seq[ValidationError], Address] = {
+  private def addressValidation(index: Int, chargeFields: Seq[String], fieldNumber: Int, isMemberJourney: Boolean = false, columns: Seq[String] = Seq.empty)
+                               (implicit messages: Messages): Validated[Seq[ValidationError], Address] = {
     val parsedAddress = splitAddress(chargeFields(fieldNumber))
     val fields = Seq(
       Field(addressLine1, parsedAddress.addressLine1, addressLine1, fieldNumber, Some(Event1FieldNames.addressLine1)),
@@ -265,7 +267,19 @@ class Event1Validator @Inject()(
       Field(postCode, parsedAddress.postCode, postCode, fieldNumber, Some(Event1FieldNames.postCode)),
       Field(country, parsedAddress.country, country, fieldNumber, Some(Event1FieldNames.country))
     )
-    val form: Form[Address] = manualAddressFormProvider()
+
+    val retrieveNameUpload: Boolean => String = (isMemberJourney: Boolean) => {
+      if (isMemberJourney) {
+        Seq(
+          Field(MemberDetailsFieldNames.firstName, fieldValue(columns, fieldNoFirstName), MemberDetailsFieldNames.firstName, fieldNoFirstName).fieldValue,
+          Field(MemberDetailsFieldNames.lastName, fieldValue(columns, fieldNoLastName), MemberDetailsFieldNames.lastName, fieldNoLastName).fieldValue
+        ).mkString(" ")
+      } else {
+        Field(companyOrOrgName, chargeFields(fieldNoCompanyOrOrgName), companyOrOrgName, fieldNoCompanyOrOrgName).fieldValue
+      }
+    }
+
+    val form: Form[Address] = manualAddressFormProvider(retrieveNameUpload(isMemberJourney))
     form.bind(
       Field.seqToMap(fields)
     ).fold(
@@ -352,7 +366,7 @@ class Event1Validator @Inject()(
     }
   }
 
-  private def validatePaymentNatureMemberJourney(index: Int, columns: Seq[String]): Result = {
+  private def validatePaymentNatureMemberJourney(index: Int, columns: Seq[String])(implicit messages: Messages): Result = {
 
     val k = resultFromFormValidationResult[MemberPaymentNature](
       genericPaymentNatureFieldValidation(index, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, memberPaymentNatureFormProvider()),
@@ -395,7 +409,7 @@ class Event1Validator @Inject()(
               Seq(k, s).combineAll
             case "residentialPropertyHeld" =>
               val u = resultFromFormValidationResult[Address](
-                addressValidation(index, columns, fieldNoResidentialAddress), createCommitItem(index, ManualAddressPage(Event1MemberPropertyAddressJourney, _)))
+                addressValidation(index, columns, fieldNoResidentialAddress, isMemberJourney = true, columns = columns), createCommitItem(index, ManualAddressPage(Event1MemberPropertyAddressJourney, _)))
               Seq(k, u).combineAll
             case "tangibleMoveablePropertyHeld" =>
               val v = resultFromFormValidationResult[Option[String]](
@@ -420,7 +434,7 @@ class Event1Validator @Inject()(
 
   }
 
-  private def validatePaymentNatureEmployerJourney(index: Int, columns: Seq[String]): Result = {
+  private def validatePaymentNatureEmployerJourney(index: Int, columns: Seq[String])(implicit messages: Messages): Result = {
 
     val k = resultFromFormValidationResult[EmployerPaymentNature](
       genericPaymentNatureFieldValidation(index, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, employerPaymentNatureFormProvider()), mapPaymentNatureEmployer(columns(10))),

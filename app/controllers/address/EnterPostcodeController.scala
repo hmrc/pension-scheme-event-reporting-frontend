@@ -28,6 +28,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.AddressHelper.retrieveNameManual
 import viewmodels.Message
 import views.html.address.EnterPostcodeView
 
@@ -44,14 +45,13 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
                                         addressLookupConnector: AddressLookupConnector
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
-
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
+
       val page = EnterPostcodePage(addressJourneyType, index)
       Ok(
         view(
-          form,
+          formProvider(retrieveNameManual(request, index)),
           waypoints,
           addressJourneyType,
           addressJourneyType.title(page),
@@ -64,6 +64,7 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
   def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
       implicit request =>
+
         val page = EnterPostcodePage(addressJourneyType, index)
 
         def renderView(formForRender: Form[String]): Future[Result] = {
@@ -81,12 +82,12 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
           )
         }
 
-        form.bindFromRequest().fold(
+        formProvider(retrieveNameManual(request, index)).bindFromRequest().fold(
           formWithErrors => renderView(formWithErrors),
           postCode => {
             addressLookupConnector.addressLookupByPostCode(postCode).flatMap {
               case Nil =>
-                renderView(formWithError(Message("enterPostcode.error.noResults", postCode)))
+                renderView(formWithError(Message("enterPostcode.error.noResults", postCode), retrieveNameManual(request, index)))
               case addresses =>
                 val originalUserAnswers = request.userAnswers
                 val updatedAnswers = originalUserAnswers.setOrException(page, addresses)
@@ -96,14 +97,13 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
 
             } recoverWith {
               case _ =>
-                renderView(formWithError(Message("enterPostcode.error.noResults", postCode)))
+                renderView(formWithError(Message("enterPostcode.error.noResults", postCode), retrieveNameManual(request, index)))
             }
           }
         )
     }
 
-  private def formWithError(message: Message)(implicit request: DataRequest[AnyContent]): Form[String] = {
-    form.withError("postcode", message)
+  private def formWithError(message: Message, name: String)(implicit request: DataRequest[AnyContent]): Form[String] = {
+    formProvider(name).withError("postcode", message)
   }
-
 }

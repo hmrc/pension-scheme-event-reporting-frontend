@@ -29,7 +29,6 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.baseApplicationBuilder.injector
 import uk.gov.hmrc.http.SessionKeys
 import utils.RequiredDataRequest
 

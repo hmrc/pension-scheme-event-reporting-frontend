@@ -16,16 +16,21 @@
 
 package forms.address
 
+import base.SpecBase
+import data.SampleData.companyDetails
 import forms.behaviours.AddressBehaviours
 
-class EnterPostcodeFormProviderSpec extends AddressBehaviours {
+class EnterPostcodeFormProviderSpec extends SpecBase with AddressBehaviours {
 
-  private val requiredKey = "enterPostcode.error.required"
+  private val companyName = companyDetails.companyName
+
+  private val requiredKey = s"Enter $companyName’s postcode"
   private val lengthKey = "enterPostcode.error.length"
-  private val invalid = "enterPostcode.error.invalid"
+  private val invalid = s"$companyName’s postcode is in the wrong format"
   private val fieldName = "value"
 
-  val form = new EnterPostcodeFormProvider()()
+  private val formProvider = new EnterPostcodeFormProvider()
+  private val form = formProvider(companyName)
 
   ".value" - {
     behave like formWithPostCode(

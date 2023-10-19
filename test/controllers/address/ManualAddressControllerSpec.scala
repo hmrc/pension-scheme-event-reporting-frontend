@@ -43,7 +43,8 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new ManualAddressFormProvider(countryOptions)
-  private val form = formProvider()
+  private val companyName = companyDetails.companyName
+  private val form = formProvider(companyName)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
