@@ -20,7 +20,7 @@ import audit.{AuditService, StartNewERAuditEvent}
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.EventSelectionFormProvider
-import models.EventSelection.{Event2, Event6, Event7, Event8, Event8A}
+import models.EventSelection.{Event2, Event25, Event6, Event7, Event8, Event8A}
 import models.enumeration.EventType
 import models.{EventSelection, TaxYear, UserAnswers}
 import pages.{EventSelectionPage, Waypoints}
@@ -97,7 +97,7 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
   private def getFilteredOptions(isEnabled: Boolean, ua: UserAnswers)(implicit messages: Messages): Seq[RadioItem] = {
     val eventsToRemove: Seq[EventSelection] = TaxYear.getSelectedTaxYear(ua).startYear >= "2024" match {
       case true => Seq(Event2, Event6, Event7, Event8, Event8A)
-      case false => Seq() // TODO: Include new events once developed Seq(Event25)
+      case false => Seq(Event25)
     }
     if (isEnabled) {
       EventSelection.options(EventSelection.values.diff(eventsToRemove))
