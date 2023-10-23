@@ -18,10 +18,10 @@ package controllers
 
 import audit.{AuditService, StartNewERAuditEvent}
 import base.SpecBase
-import connectors.UserAnswersCacheConnector
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import forms.EventSelectionFormProvider
 import models.enumeration.{EventType, VersionStatus}
-import models.{EventSelection, TaxYear, VersionInfo}
+import models.{EventSelection, TaxYear, ToggleDetails, VersionInfo}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -44,10 +44,12 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
   private def postRoute: String = routes.EventSelectionController.onSubmit(waypoints).url
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val mockEventConnector = mock[EventReportingConnector]
   private val mockAuditService = mock[AuditService]
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     inject.bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
+    inject.bind[EventReportingConnector].toInstance(mockEventConnector),
     inject.bind[AuditService].toInstance(mockAuditService)
   )
 
@@ -58,6 +60,7 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
 
   override protected def beforeEach(): Unit = {
     reset(mockUserAnswersCacheConnector)
+    reset(mockEventConnector)
     reset(mockAuditService)
   }
 
@@ -66,7 +69,9 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
       val ua = emptyUserAnswers
         .setOrException(TaxYearPage, TaxYear("2022"))
       val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
-
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
+        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
+      )
       val view = application.injector.instanceOf[EventSelectionView]
 
       running(application) {
@@ -77,17 +82,22 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
         val form = formProvider()
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, EventSelection.options(EventSelection.values), waypoints)(request, messages(application)).toString
       }
     }
   }
 
   "POST" - {
     "must redirect to next page on submit (when selecting an option) and send audit event" in {
-      val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, VersionStatus.Submitted))
-      val application = applicationBuilder(None, extraModules).build()
-      running(application) {
 
+      val ua = emptyUserAnswersWithTaxYear.setOrException(TaxYearPage, TaxYear("2022"))
+        .setOrException(VersionInfoPage, VersionInfo(1, VersionStatus.Submitted))
+      val application = applicationBuilder(Some(ua), extraModules).build()
+
+      running(application) {
+        when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
+          Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
+        )
         when(mockUserAnswersCacheConnector.get(any(), any())(any(), any()))
           .thenReturn(Future.successful(Some(ua)))
         doNothing().when(mockAuditService).sendEvent(any())(any(), any())

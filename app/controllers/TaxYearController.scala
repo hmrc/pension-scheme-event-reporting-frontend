@@ -18,7 +18,7 @@ package controllers
 
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.TaxYearFormProvider
+import forms.{TaxYear2024FormProvider, TaxYearFormProvider}
 import models.enumeration.JourneyStartType.{InProgress, PastEventTypes}
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
 import models.requests.DataRequest
@@ -41,10 +41,12 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
                                   userAnswersCacheConnector: UserAnswersCacheConnector,
                                   eventReportingConnector: EventReportingConnector,
                                   formProvider: TaxYearFormProvider,
+                                  formProvider2024: TaxYear2024FormProvider,
                                   view: TaxYearView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
+  private val ltaAbolitionShowHideToggle = "lta-events-show-hide"
+
   private val yearsWhereSubmittedVersionAvailable: EROverview => Seq[String] = erOverview =>
     if (erOverview.versionDetails.exists(_.submittedVersionAvailable)) {
       Seq(erOverview.taxYear.startYear)
@@ -75,49 +77,63 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
   }
 
   private def filteredRadioItems(isEnabled: Boolean)(implicit request: DataRequest[AnyContent]): Seq[RadioItem] = {
-    if(isEnabled) TaxYear.optionsFiltered(taxYear =>  taxYear.startYear >= "2023") else TaxYear.options
+    if (isEnabled) TaxYear.optionsFiltered(taxYear => taxYear.startYear >= "2023") else TaxYear.options
   }
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
-    val preparedForm = request.userAnswers.get(TaxYearPage).fold(form)(form.fill)
-    eventReportingConnector.getFeatureToggle("event-reporting-tax-year").flatMap { toggleData =>
-      Future.successful(renderPage(preparedForm, waypoints, Ok, toggleData.isEnabled))
+    eventReportingConnector.getFeatureToggle(ltaAbolitionShowHideToggle).flatMap { ltaToggle =>
+      val form = getFormProviderByLtaToggle(ltaToggle.isEnabled)
+      val preparedForm = request.userAnswers.get(TaxYearPage).fold(form)(form.fill)
+      eventReportingConnector.getFeatureToggle("event-reporting-tax-year").flatMap { taxYearToggle =>
+        Future.successful(renderPage(preparedForm, waypoints, Ok, taxYearToggle.isEnabled))
+      }
     }
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          eventReportingConnector.getFeatureToggle("event-reporting-tax-year").flatMap { toggleData =>
-            Future.successful(renderPage(formWithErrors, waypoints, BadRequest, toggleData.isEnabled))
-          },
-        value => {
-          val originalUserAnswers = request.userAnswers
-          val vd = originalUserAnswers
-            .get(EventReportingOverviewPage).toSeq.flatten.find(_.taxYear == value).flatMap(_.versionDetails)
-          val versionInfo =
-            (vd.map(_.compiledVersionAvailable), vd.map(_.submittedVersionAvailable), vd.map(_.numberOfVersions)) match {
-              case (Some(true), _, Some(versions)) => VersionInfo(versions, Compiled)
-              case (_, Some(true), Some(versions)) => VersionInfo(versions, Submitted)
-              case _ => VersionInfo(1, NotStarted)
+      eventReportingConnector.getFeatureToggle(ltaAbolitionShowHideToggle).flatMap { ltaToggle =>
+        val form = getFormProviderByLtaToggle(ltaToggle.isEnabled)
+        form.bindFromRequest().fold(
+          formWithErrors =>
+            eventReportingConnector.getFeatureToggle("event-reporting-tax-year").flatMap { taxYearToggle =>
+              Future.successful(renderPage(formWithErrors, waypoints, BadRequest, taxYearToggle.isEnabled))
+            },
+          value => {
+            val originalUserAnswers = request.userAnswers
+            val vd = originalUserAnswers
+              .get(EventReportingOverviewPage).toSeq.flatten.find(_.taxYear == value).flatMap(_.versionDetails)
+            val versionInfo =
+              (vd.map(_.compiledVersionAvailable), vd.map(_.submittedVersionAvailable), vd.map(_.numberOfVersions)) match {
+                case (Some(true), _, Some(versions)) => VersionInfo(versions, Compiled)
+                case (_, Some(true), Some(versions)) => VersionInfo(versions, Submitted)
+                case _ => VersionInfo(1, NotStarted)
+              }
+
+            val futureAfterClearDown = request.userAnswers.get(TaxYearPage) match {
+              case Some(v) if v != value => userAnswersCacheConnector.removeAll(request.pstr)
+              case _ => Future.successful((): Unit)
             }
 
-          val futureAfterClearDown = request.userAnswers.get(TaxYearPage) match {
-            case Some(v) if v != value => userAnswersCacheConnector.removeAll(request.pstr)
-            case _ => Future.successful((): Unit)
-          }
-
-          val updatedAnswers = originalUserAnswers
-            .setOrException(TaxYearPage, value, nonEventTypeData = true)
-            .setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
-          futureAfterClearDown.flatMap { _ =>
-            userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
-              Redirect(TaxYearPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            val updatedAnswers = originalUserAnswers
+              .setOrException(TaxYearPage, value, nonEventTypeData = true)
+              .setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
+            futureAfterClearDown.flatMap { _ =>
+              userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
+                Redirect(TaxYearPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+              }
             }
           }
-        }
-      )
+        )
+      }
   }
 
+  //TODO Remove below method to once 'lta-events-show-hide' toggle removed and use formProvider()
+  private def getFormProviderByLtaToggle(isEnabled: Boolean): Form[TaxYear] = {
+    if (isEnabled) {
+      formProvider2024()
+    } else {
+      formProvider()
+    }
+  }
 }
