@@ -1739,3 +1739,6 @@ genericNino.error.invalid.prefix     = The National Insurance number must begin 
 genericNino.error.invalid.numbers    = The National Insurance number must contain 6 numbers
 genericNino.error.invalid.suffix     = The National Insurance number must end with a letter
 
+
+whatYouWillNeedPage.title = What you will need
+whatYouWillNeedPage.heading = What you will need
