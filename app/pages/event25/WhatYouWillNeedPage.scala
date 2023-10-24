@@ -20,8 +20,8 @@ import play.api.mvc.Call
 import pages.{Waypoints, Page}
 import controllers.event25.routes
 
-case object WhatYouWillNeedPagePage extends Page {
+case object WhatYouWillNeedPage extends Page {
 
   override def route(waypoints: Waypoints): Call =
-    routes.WhatYouWillNeedPageController.onPageLoad(waypoints)
+    routes.WhatYouWillNeedController.onPageLoad(waypoints)
 }

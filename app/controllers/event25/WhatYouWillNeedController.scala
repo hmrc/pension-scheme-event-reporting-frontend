@@ -22,17 +22,17 @@ import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event25.WhatYouWillNeedPageView
+import views.html.event25.WhatYouWillNeedView
 
 import javax.inject.Inject
 
-class WhatYouWillNeedPageController @Inject()(
+class WhatYouWillNeedController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            identify: IdentifierAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            val controllerComponents: MessagesControllerComponents,
-                                           view: WhatYouWillNeedPageView
+                                           view: WhatYouWillNeedView
                                          ) extends FrontendBaseController with I18nSupport {
 
   private val eventType = EventType.Event25

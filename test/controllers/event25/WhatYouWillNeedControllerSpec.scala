@@ -3,10 +3,13 @@ package controllers.event25
 import base.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event25.WhatYouWillNeedPageView
+import views.html.event25.WhatYouWillNeedView
 import controllers.event25.routes._
+import pages.EmptyWaypoints
 
-class WhatYouWillNeedPageControllerSpec extends SpecBase {
+class WhatYouWillNeedControllerSpec extends SpecBase {
+
+  private val waypoints = EmptyWaypoints
 
   "WhatYouWillNeedPage Controller" - {
 
@@ -16,11 +19,11 @@ class WhatYouWillNeedPageControllerSpec extends SpecBase {
 
       running(application) {
 
-        val request = FakeRequest(GET, routes.WhatYouWillNeedPageController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.WhatYouWillNeedController.onPageLoad(waypoints).url)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[WhatYouWillNeedPageView]
+        val view = application.injector.instanceOf[WhatYouWillNeedView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view()(request, messages(application)).toString
