@@ -1739,6 +1739,11 @@ genericNino.error.invalid.prefix     = The National Insurance number must begin 
 genericNino.error.invalid.numbers    = The National Insurance number must contain 6 numbers
 genericNino.error.invalid.suffix     = The National Insurance number must end with a letter
 
-
-whatYouWillNeedPage.title = What you will need
-whatYouWillNeedPage.heading = What you will need
+whatYouWillNeed.event25.title = What you will need
+whatYouWillNeed.event25.heading = What you will need
+whatYouWillNeed.event25.p = To record a higher lump sum allowance event you will need to tell us:
+whatYouWillNeed.event25.item1 = the member's name and National Insurance number
+whatYouWillNeed.event25.item2 = the type and total amount of the event
+whatYouWillNeed.event25.item3 = if the member holds valid protection and, if they do, the type
+whatYouWillNeed.event25.item4 = the implications of a lump sum payment on lump sum allowance and/or death benefit allowance
+whatYouWillNeed.event25.item5 = if excess allowances have been taxed at marginal rate for this member and, if they do, the employer PAYE reference

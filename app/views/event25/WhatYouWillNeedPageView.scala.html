@@ -21,7 +21,21 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("whatYouWillNeedPage.title"))) {
+@layout(pageTitle = titleNoForm(messages("whatYouWillNeed.event25.title"))) {
 
-    <h1 class="govuk-heading-xl">@messages("whatYouWillNeedPage.heading")</h1>
+    <h1 class="govuk-heading-xl">@messages("whatYouWillNeed.event25.heading")</h1>
+
+    <p class="govuk-body">@messages("whatYouWillNeed.event25.p")</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+     <li>@messages("whatYouWillNeed.event25.item1")</li>
+     <li>@messages("whatYouWillNeed.event25.item2")</li>
+     <li>@messages("whatYouWillNeed.event25.item3")</li>
+     <li>@messages("whatYouWillNeed.event25.item4")</li>
+     <li>@messages("whatYouWillNeed.event25.item5")</li>
+    </ul>
+
+    @govukButton(
+        ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit")).asLink("")
+    )
 }
