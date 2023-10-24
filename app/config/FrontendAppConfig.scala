@@ -41,7 +41,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   lazy val pensionSchemeUrl: String = servicesConfig.baseUrl("pensions-scheme")
   lazy val addressLookUp: String = s"${servicesConfig.baseUrl("address-lookup")}"
 
-  lazy val locationCanonicalList: String = loadConfig("location.canonical.list")
+  lazy val locationCanonicalList: String = loadConfig("location.canonical.list.all")
+  lazy val locationCanonicalListEUAndEEA: String = loadConfig("location.canonical.list.UKEUAndEEA")
 
   val betaFeedbackUnauthenticatedUrl: String = getConfigString("contact-frontend.beta-feedback-url.unauthenticated")
 

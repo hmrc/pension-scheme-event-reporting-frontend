@@ -19,6 +19,7 @@ package controllers.event19
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.event19.CountryOrTerritoryFormProvider
+import models.UserAnswers
 import models.enumeration.EventType
 import pages.Waypoints
 import pages.event19.CountryOrTerritoryPage
@@ -26,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.CountryOptions
+import utils.{CountryOptions, CountryOptionsUKEUOrEEA}
 import views.html.event19.CountryOrTerritoryView
 
 import javax.inject.Inject
@@ -39,8 +40,9 @@ class CountryOrTerritoryController @Inject()(val controllerComponents: MessagesC
                                              userAnswersCacheConnector: UserAnswersCacheConnector,
                                              formProvider: CountryOrTerritoryFormProvider,
                                              view: CountryOrTerritoryView,
-                                             val countryOptions: CountryOptions
-                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                             val countryOptions: CountryOptions,
+                                             val countryOptionsUkEuOrEea: CountryOptionsUKEUOrEEA
+                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form: Form[String] = formProvider()
   private val eventType = EventType.Event19
@@ -75,10 +77,15 @@ class CountryOrTerritoryController @Inject()(val controllerComponents: MessagesC
             )
           },
           value => {
-            val originalUserAnswers = request.userAnswers
-            val updatedAnswers = originalUserAnswers.setOrException(page, value)
-            userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-              Redirect(page.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            val originalUserAnswers: UserAnswers = request.userAnswers
+
+            val finalAnswers: UserAnswers =
+              originalUserAnswers
+                .setOrException(page, value)
+                .setOrException(page.booleanPath, countryOptionsUkEuOrEea.isCountryUKEUorEEA(value))
+
+            userAnswersCacheConnector.save(request.pstr, eventType, finalAnswers).map { _ =>
+              Redirect(page.navigate(waypoints, originalUserAnswers, finalAnswers).route)
             }
           }
         )

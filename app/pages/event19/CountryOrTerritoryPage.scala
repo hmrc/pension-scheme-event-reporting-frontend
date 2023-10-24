@@ -26,6 +26,8 @@ case object CountryOrTerritoryPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ "event19" \ toString
 
+  def booleanPath: JsPath = JsPath \ "event19" \ "isUKEUorEEA"
+
   override def toString: String = "CountryOrTerritory"
 
   override def route(waypoints: Waypoints): Call =
