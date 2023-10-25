@@ -254,7 +254,8 @@ POST        /report/:index/event-22-total-input-amount                        co
 GET         /report/:index/event-22-tax-year                                  controllers.common.ChooseTaxYearController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, index: Index)
 POST        /report/:index/event-22-tax-year                                  controllers.common.ChooseTaxYearController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22, index: Index)
 
-GET         /event-reporting-partials                                             controllers.partials.EventReportingTileController.eventReportPartial()
++ nocsrf
+POST         /event-reporting-partials                                             controllers.partials.EventReportingTileController.eventReportPartial
 GET         /view-event-report-in-progress                                        controllers.partials.EventReportingTileLinksController.onClickCompiled
 GET         /view-or-change-past-event-reports                                    controllers.partials.EventReportingTileLinksController.onClickSubmitted
 GET         /event-report                                                     controllers.partials.EventReportingTileLinksController.onClickNew
