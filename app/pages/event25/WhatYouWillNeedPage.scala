@@ -17,11 +17,17 @@
 package pages.event25
 
 import play.api.mvc.Call
-import pages.{Waypoints, Page}
+import pages.{Page, Waypoints}
 import controllers.event25.routes
+import models.{Index, UserAnswers}
+import models.enumeration.EventType
+import pages.common.MembersDetailsPage
 
-case object WhatYouWillNeedPage extends Page {
+case class WhatYouWillNeedPage(index: Index) extends Page {
 
   override def route(waypoints: Waypoints): Call =
-    routes.WhatYouWillNeedController.onPageLoad(waypoints)
+    routes.WhatYouWillNeedController.onPageLoad(waypoints, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    MembersDetailsPage(EventType.Event23, index)
 }
