@@ -60,7 +60,6 @@ class RemoveMemberController @Inject()(
           val vi = request.userAnswers.get(VersionInfoPage)
           val version = vi.map(_.version).getOrElse(0)
           compileService.deleteMember(
-              request.pstr,
               request.userAnswers.eventDataIdentifier(eventType),
               version,
               index.id.toString,

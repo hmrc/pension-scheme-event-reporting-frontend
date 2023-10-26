@@ -31,6 +31,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DataRetrievalService @Inject() (eventReportingConnector: EventReportingConnector) {
   def getEventReportingData[A](implicit request: IdentifierRequest[A], hc:HeaderCarrier): Future[JourneyDataEntry] = {
+    println(request.uri)
+    println(request.rawQueryString)
     val journeyId = request.queryString
       .getOrElse(
         "journeyId",
@@ -50,10 +52,10 @@ class DataRetrievalImpl(eventType: EventType,
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     for {
       journeyData <- dataRetrievalService.getEventReportingData(request, hc)
-      data <- userAnswersCacheConnector.get(journeyData.pstr, eventType)
+      data <- userAnswersCacheConnector.get(journeyData.journeyId, journeyData.pstr, eventType)
     } yield {
       println(journeyData)
-      OptionalDataRequest[A](journeyData.pstr, journeyData.schemeName, journeyData.returnUrl, request, request.loggedInUser, data)
+      OptionalDataRequest[A](journeyData.pstr, journeyData.schemeName, journeyData.returnUrl, request, request.loggedInUser, data, journeyData.journeyId)
     }
   }
 }
@@ -71,9 +73,9 @@ class DataRetrievalNoEventTypeImpl(userAnswersCacheConnector: UserAnswersCacheCo
 
     for {
       journeyData <- dataRetrievalService.getEventReportingData(request, hc)
-      data <- userAnswersCacheConnector.get(journeyData.pstr)
+      data <- userAnswersCacheConnector.get(journeyData.journeyId, journeyData.pstr)
     } yield {
-      OptionalDataRequest[A](journeyData.pstr, journeyData.schemeName, journeyData.returnUrl, request, request.loggedInUser, data)
+      OptionalDataRequest[A](journeyData.pstr, journeyData.schemeName, journeyData.returnUrl, request, request.loggedInUser, data, journeyData.journeyId)
     }
   }
 }

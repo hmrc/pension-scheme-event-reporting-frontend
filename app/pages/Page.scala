@@ -16,14 +16,15 @@
 
 package pages
 
+import models.requests.RequiredSchemeDataRequest
 import models.{CheckMode, NormalMode, UserAnswers}
 import play.api.mvc.Call
 import queries.Gettable
 
 final case class PageAndWaypoints(page: Page, waypoints: Waypoints) {
 
-  lazy val route: Call = page.route(waypoints)
-  lazy val url: String = route.url
+  def route(implicit request: RequiredSchemeDataRequest[_]): Call = page.route(waypoints, request.journeyId)
+  def url(implicit request: RequiredSchemeDataRequest[_]): String = route.url
 }
 
 trait Page {
@@ -64,7 +65,7 @@ trait Page {
   protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     JourneyRecoveryPage
 
-  def route(waypoints: Waypoints): Call
+  def route(waypoints: Waypoints, journeyId: String): Call
 
   def changeLink(waypoints: Waypoints, sourcePage: WaypointPage): PageAndWaypoints = {
     sourcePage match {

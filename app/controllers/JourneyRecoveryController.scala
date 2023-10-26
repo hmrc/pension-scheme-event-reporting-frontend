@@ -37,7 +37,7 @@ class JourneyRecoveryController @Inject()(
                                            config: FrontendAppConfig
                                          ) extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(continueUrl: Option[RedirectUrl] = None): Action[AnyContent] = (identify andThen getData()) {
+  def onPageLoad(continueUrl: Option[RedirectUrl] = None): Action[AnyContent] = identify {
     implicit request =>
       val safeUrl: Option[String] = continueUrl.flatMap {
         unsafeUrl =>
@@ -51,7 +51,7 @@ class JourneyRecoveryController @Inject()(
       }
 
       def startAgainUrl: String =
-        config.schemeDashboardUrl(request.loggedInUser.administratorOrPractitioner, request.returnUrl)
+        config.schemeDashboardUrl(request.loggedInUser.administratorOrPractitioner, ???)
 
       safeUrl
         .map(url => Ok(continueView(url)))

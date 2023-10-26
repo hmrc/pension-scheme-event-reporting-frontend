@@ -20,6 +20,7 @@ import controllers.routes
 import models.requests.{DataRequest, OptionalDataRequest}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,9 +30,9 @@ class DataRequiredActionImpl @Inject()(implicit val executionContext: ExecutionC
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] = {
     request.userAnswers match {
       case None =>
-        Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
+        Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad(Some(RedirectUrl(request.returnUrl))))))
       case Some(data) =>
-        Future.successful(Right(DataRequest(request.pstr, request.schemeName, request.returnUrl, request.request, request.loggedInUser, data)))
+        Future.successful(Right(DataRequest(request.pstr, request.schemeName, request.returnUrl, request.request, request.loggedInUser, data, request.journeyId)))
     }
   }
 }

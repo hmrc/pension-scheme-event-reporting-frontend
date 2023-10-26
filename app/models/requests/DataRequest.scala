@@ -30,6 +30,8 @@ abstract class RequiredSchemeDataRequest[A](request: Request[A]) extends Wrapped
   def returnUrl: String
 
   def loggedInUser: LoggedInUser
+
+  def journeyId: String
 }
 
 case class OptionalDataRequest[A](
@@ -38,7 +40,8 @@ case class OptionalDataRequest[A](
                                    returnUrl: String,
                                    request: Request[A],
                                    loggedInUser: LoggedInUser,
-                                   userAnswers: Option[UserAnswers]
+                                   userAnswers: Option[UserAnswers],
+                                   journeyId: String
                                  ) extends RequiredSchemeDataRequest[A](request) {
   def isReportSubmitted: Boolean = {
     userAnswers match {
@@ -53,7 +56,8 @@ case class DataRequest[A](pstr: String,
                           returnUrl: String,
                           request: Request[A],
                           loggedInUser: LoggedInUser,
-                          userAnswers: UserAnswers
+                          userAnswers: UserAnswers,
+                          journeyId: String
                          ) extends RequiredSchemeDataRequest[A](request) {
 
   // read only is true if the version selected is less than the current report version:

@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.UserAnswers
 import models.enumeration.EventType
+import models.requests.RequiredSchemeDataRequest
 import pages.{TaxYearPage, VersionInfoPage}
 import play.api.http.Status._
 import play.api.libs.json._
@@ -35,12 +36,13 @@ class UserAnswersCacheConnector @Inject()(
 
   private def url = s"${config.eventReportingUrl}/pension-scheme-event-reporting/user-answers"
 
-  private def noEventHeaders(pstr: String) = Seq(
+  private def noEventHeaders(journeyId:String, pstr: String) = Seq(
     "Content-Type" -> "application/json",
+    "journeyId" -> journeyId,
     "pstr" -> pstr
   )
 
-  private def eventHeaders(pstr: String, eventType: EventType, noEventJson: Option[JsObject]): Seq[(String, String)] = {
+  private def eventHeaders(journeyId: String, pstr: String, eventType: EventType, noEventJson: Option[JsObject]): Seq[(String, String)] = {
     val headers = noEventJson match {
       case Some(json) =>
         val taxYear = (json \ TaxYearPage.toString).asOpt[String]
@@ -50,6 +52,7 @@ class UserAnswersCacheConnector @Inject()(
           case (Some(year), Some(version)) =>
             Seq(
               "Content-Type" -> "application/json",
+              "journeyId" -> journeyId,
               "pstr" -> pstr,
               "eventType" -> eventType.toString,
               "year" -> year,
@@ -67,11 +70,11 @@ class UserAnswersCacheConnector @Inject()(
     }
   }
 
-  def get(pstr: String, eventType: EventType)
+  def get(journeyId:String, pstr: String, eventType: EventType)
          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
     for {
-      noEventData <- getJson(noEventHeaders(pstr))
-      eventData <- getJson(eventHeaders(pstr, eventType, noEventData))
+      noEventData <- getJson(noEventHeaders(journeyId, pstr))
+      eventData <- getJson(eventHeaders(journeyId, pstr, eventType, noEventData))
     } yield {
       (eventData, noEventData) match {
         case (Some(a), Some(b)) => Some(UserAnswers(data = a, noEventTypeData = b))
@@ -97,8 +100,8 @@ class UserAnswersCacheConnector @Inject()(
       }
   }
 
-  def get(pstr: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
-    getJson(noEventHeaders(pstr)).map(_.map(d => UserAnswers(noEventTypeData = d)))
+  def get(journeyId:String, pstr: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
+    getJson(noEventHeaders(journeyId, pstr)).map(_.map(d => UserAnswers(noEventTypeData = d)))
   }
 
   def save(pstr: String, eventType: EventType, userAnswers: UserAnswers)
@@ -151,11 +154,12 @@ class UserAnswersCacheConnector @Inject()(
   }
 
   def save(pstr: String, userAnswers: UserAnswers)
-          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier, request: RequiredSchemeDataRequest[_]): Future[Unit] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
-      "pstr" -> pstr
+      "journeyId" -> request.journeyId,
+      "pstr" -> request.pstr
     )
 
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)

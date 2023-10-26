@@ -88,10 +88,11 @@ class EventReportingConnector @Inject()(
       Future.successful(HttpResponse(NOT_FOUND, "Not found"))
   }
 
-  def compileEvent(pstr: String, edi: EventDataIdentifier, currentVersion: Int, delete: Boolean = false)
+  def compileEvent(journeyId: String, pstr: String, edi: EventDataIdentifier, currentVersion: Int, delete: Boolean = false)
                   (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
+      "journeyId" -> journeyId,
       "pstr" -> pstr,
       "eventType" -> edi.eventType.toString,
       "year" -> edi.year,
@@ -220,10 +221,11 @@ class EventReportingConnector @Inject()(
       }
   }
 
-  def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion: Int, memberIdToDelete: String)
+  def deleteMember(journeyId: String, pstr: String, edi: EventDataIdentifier, currentVersion: Int, memberIdToDelete: String)
                   (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
+      "journeyId" -> journeyId,
       "pstr" -> pstr,
       "eventType" -> edi.eventType.toString,
       "year" -> edi.year,

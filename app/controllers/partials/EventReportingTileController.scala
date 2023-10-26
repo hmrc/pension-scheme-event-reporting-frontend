@@ -53,37 +53,34 @@ class EventReportingTileController @Inject()(
       val json = request.body.asJson.getOrElse(throw new RuntimeException("Request body is not json"))
       val pstr = (json \ "pstr").validate[String].getOrElse("PSTR not in json body")
       eventReportingConnector.getOverview(pstr, "ER", minStartDateAsString, maxEndDateAsString).flatMap { seqEROverview =>
-        val ua = UserAnswers().setOrException(EventReportingOverviewPage, seqEROverview, nonEventTypeData = true)
-        userAnswersCacheConnector.removeAll(pstr).flatMap { _ =>
-          userAnswersCacheConnector.save(pstr, ua).map { _ =>
-            val isAnySubmittedReports = seqEROverview.exists(_.versionDetails.exists(_.submittedVersionAvailable))
-            val isAnyCompiledReports = seqEROverview.exists(_.versionDetails.exists(_.compiledVersionAvailable))
-            val compiledLinks = if (isAnyCompiledReports) {
-              Seq(TileLink("compiled", messagesApi("eventReportingTile.link.compiled"), appConfig.erCompiledUrl))
-            } else Nil
+        userAnswersCacheConnector.removeAll(pstr).map { _ =>
+          val isAnySubmittedReports = seqEROverview.exists(_.versionDetails.exists(_.submittedVersionAvailable))
+          val isAnyCompiledReports = seqEROverview.exists(_.versionDetails.exists(_.compiledVersionAvailable))
+          val compiledLinks = if (isAnyCompiledReports) {
+            Seq(TileLink("compiled", messagesApi("eventReportingTile.link.compiled"), appConfig.erCompiledUrl))
+          } else Nil
 
-            val submittedLinks = if (isAnySubmittedReports) {
-              Seq(TileLink("submitted", messagesApi("eventReportingTile.link.submitted"), appConfig.erSubmittedUrl))
-            } else Nil
-            val loginLink = Seq(TileLink("new", messagesApi("eventReportingTile.link.new"), appConfig.erStartNewUrl))
+          val submittedLinks = if (isAnySubmittedReports) {
+            Seq(TileLink("submitted", messagesApi("eventReportingTile.link.submitted"), appConfig.erSubmittedUrl))
+          } else Nil
+          val loginLink = Seq(TileLink("new", messagesApi("eventReportingTile.link.new"), appConfig.erStartNewUrl))
 
-            val subHeading = cardSubheadings(isAnyCompiledReports, seqEROverview)
+          val subHeading = cardSubheadings(isAnyCompiledReports, seqEROverview)
 
-            Ok(Json.toJson(TileCard(
-              "event-reporting",
-              messagesApi("eventReportingTile.heading"),
-              s"""
-              |<p class="card-sub-heading bold govuk-body-m">
-              |<span class="font-xsmall">${subHeading.subHeading}</span>
-              | ${subHeading.subHeadingParams.map { subParam => {
-                s"""<span class="govuk-!-font-weight-bold govuk-!-display-inline-block ${subParam.subHeadingParamClasses}">
-                  ${subParam.subHeadingParam}
-                </span>"""
-              }}.mkString}
-              |</p>""".stripMargin,
-              compiledLinks ++ submittedLinks ++ loginLink
-            )))
-          }
+          Ok(Json.toJson(TileCard(
+            "event-reporting",
+            messagesApi("eventReportingTile.heading"),
+            s"""
+            |<p class="card-sub-heading bold govuk-body-m">
+            |<span class="font-xsmall">${subHeading.subHeading}</span>
+            | ${subHeading.subHeadingParams.map { subParam => {
+              s"""<span class="govuk-!-font-weight-bold govuk-!-display-inline-block ${subParam.subHeadingParamClasses}">
+                ${subParam.subHeadingParam}
+              </span>"""
+            }}.mkString}
+            |</p>""".stripMargin,
+            compiledLinks ++ submittedLinks ++ loginLink
+          )))
         }
       }
     }

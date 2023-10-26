@@ -78,14 +78,14 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
     if(isEnabled) TaxYear.optionsFiltered(taxYear =>  taxYear.startYear >= "2023") else TaxYear.options
   }
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
+  def onPageLoad(waypoints: Waypoints, journeyId:String): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
     val preparedForm = request.userAnswers.get(TaxYearPage).fold(form)(form.fill)
     eventReportingConnector.getFeatureToggle("event-reporting-tax-year").flatMap { toggleData =>
       Future.successful(renderPage(preparedForm, waypoints, Ok, toggleData.isEnabled))
     }
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
+  def onSubmit(waypoints: Waypoints, journeyId:String): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

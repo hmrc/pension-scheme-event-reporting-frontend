@@ -22,6 +22,7 @@ import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.enumeration.EventType
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
+import models.requests.RequiredSchemeDataRequest
 import models.{EROverview, EROverviewVersion, EventDataIdentifier, TaxYear, UserAnswers, VersionInfo}
 import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -42,7 +43,7 @@ class CompileService @Inject()(
                 pstr: String,
                 userAnswers: UserAnswers,
                 delete :Boolean,
-                compileResponse: Future[Unit])(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+                compileResponse: Future[Unit])(implicit headerCarrier: HeaderCarrier, request: RequiredSchemeDataRequest[_]): Future[Unit] = {
 
     val futureOptChangedOverviewSeq = if (newVersionInfo.version > currentVersionInfo.version) {
       updateUAVersionAndOverview(pstr, userAnswers, currentVersionInfo.version, newVersionInfo.version)
@@ -108,33 +109,33 @@ class CompileService @Inject()(
     }
   }
 
-  def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion: Int, memberIdToDelete: String, userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+  def deleteMember(edi: EventDataIdentifier, currentVersion: Int, memberIdToDelete: String, userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier, request: RequiredSchemeDataRequest[_]): Future[Unit] = {
     userAnswers.get(VersionInfoPage) match {
       case Some(vi) =>
         val newVersionInfo = changeVersionInfo(vi)
         doCompile(
           vi,
           newVersionInfo,
-          pstr,
+          request.pstr,
           userAnswers,
           delete = false,
-          eventReportingConnector.deleteMember(pstr, edi, currentVersion, memberIdToDelete)
+          eventReportingConnector.deleteMember(request.journeyId, request.pstr, edi, currentVersion, memberIdToDelete)
         )
       case _ => throw new RuntimeException(s"No version available")
     }
   }
 
-  def compileEvent(eventType: EventType, pstr: String, userAnswers: UserAnswers, delete: Boolean = false)(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+  def compileEvent(eventType: EventType, pstr: String, userAnswers: UserAnswers, delete: Boolean = false)(implicit headerCarrier: HeaderCarrier, request: RequiredSchemeDataRequest[_]): Future[Unit] = {
     userAnswers.get(VersionInfoPage) match {
       case Some(vi) =>
         val newVersionInfo = changeVersionInfo(vi)
         doCompile(
           vi,
           newVersionInfo,
-          pstr,
+          request.pstr,
           userAnswers,
           delete,
-          eventReportingConnector.compileEvent(pstr, userAnswers.eventDataIdentifier(eventType, Some(newVersionInfo)), vi.version, delete)
+          eventReportingConnector.compileEvent(request.journeyId, request.pstr, userAnswers.eventDataIdentifier(eventType, Some(newVersionInfo)), vi.version, delete)
         )
       case _ => throw new RuntimeException(s"No version available")
     }
