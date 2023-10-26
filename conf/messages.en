@@ -1764,3 +1764,12 @@ bceTypeSelection.event25.trivialCommutationDeathBenefit = Trivial commutation lu
 bceTypeSelection.event25.uncrystallisedFunds = Uncrystallised funds pension lump sum
 bceTypeSelection.event25.uncrystallisedFundsDeathBenefit = Uncrystallised funds lump sum death benefit
 bceTypeSelection.event25.windingUp = Winding-up lump sum
+
+totalAmountBenefitCrystallisation.title = How much was the total lump sum allowance?
+totalAmountBenefitCrystallisation.heading = How much was the total lump sum allowance?
+totalAmountBenefitCrystallisation.checkYourAnswersLabel = How much was the total lump sum allowance?
+totalAmountBenefitCrystallisation.error.nonNumeric = The total amount must be an amount of money, like 123 or 123.00
+totalAmountBenefitCrystallisation.error.required = Enter the total amount of the relevant benefit crystallisation event
+totalAmountBenefitCrystallisation.error.negativeValue = The total amount must not be a negative amount of money, like -123.45 or -156.00
+totalAmountBenefitCrystallisation.error.amountTooHigh = The total amount must be £999999999.99 or less
+totalAmountBenefitCrystallisation.change.hidden = How much was the total lump sum allowance?

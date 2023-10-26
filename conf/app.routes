@@ -597,3 +597,6 @@ POST        /report/:index/event-25-member-details             controllers.commo
 
 GET         /report/:index/event-25-type-of-benefit-crystallisation   controllers.event25.BCETypeSelectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /report/:index/event-25-type-of-benefit-crystallisation   controllers.event25.BCETypeSelectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
+GET         /report/:index/event-25-total-amount-benefit-crystallisation    controllers.event25.TotalAmountBenefitCrystallisationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST        /report/:index/event-25-total-amount-benefit-crystallisation    controllers.event25.TotalAmountBenefitCrystallisationController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
