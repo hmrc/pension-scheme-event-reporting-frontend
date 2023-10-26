@@ -14,10 +14,21 @@
  * limitations under the License.
  */
 
-package models.requests
+package models
 
-import models.LoggedInUser
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.libs.json.{Json, OFormat}
 
-case class IdentifierRequest[A] (request: Request[A],
-                                 loggedInUser: LoggedInUser) extends WrappedRequest[A](request)
+import java.time.{Instant, LocalDateTime}
+
+case class JourneyDataEntry(journeyId: String,
+                            pstr: String,
+                            schemeName: String,
+                            returnUrl: String,
+                            externalId: String,
+                            psaPspId: String,
+                            lastUpdated: LocalDateTime,
+                            expireAt: LocalDateTime)
+
+object JourneyDataEntry {
+  implicit val format:OFormat[JourneyDataEntry] = Json.format
+}

@@ -17,57 +17,78 @@
 package controllers.actions
 
 import com.google.inject.ImplementedBy
-import connectors.UserAnswersCacheConnector
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import models.JourneyDataEntry
 import models.enumeration.EventType
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import play.api.mvc.ActionTransformer
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
+class DataRetrievalService @Inject() (eventReportingConnector: EventReportingConnector) {
+  def getEventReportingData[A](implicit request: IdentifierRequest[A], hc:HeaderCarrier): Future[JourneyDataEntry] = {
+    val journeyId = request.queryString
+      .getOrElse(
+        "journeyId",
+        throw new RuntimeException("journeyId query parameter not available")
+      ).head
+    eventReportingConnector.getJourneyData(journeyId)
+  }
+}
+
 class DataRetrievalImpl(eventType: EventType,
-                        userAnswersCacheConnector: UserAnswersCacheConnector
+                        userAnswersCacheConnector: UserAnswersCacheConnector,
+                        dataRetrievalService: DataRetrievalService
                        )(implicit val executionContext: ExecutionContext)
   extends DataRetrieval {
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     for {
-      data <- userAnswersCacheConnector.get(request.pstr, eventType)
+      journeyData <- dataRetrievalService.getEventReportingData(request, hc)
+      data <- userAnswersCacheConnector.get(journeyData.pstr, eventType)
     } yield {
-      OptionalDataRequest[A](request.pstr, request.schemeName, request.returnUrl, request, request.loggedInUser, data)
+      println(journeyData)
+      OptionalDataRequest[A](journeyData.pstr, journeyData.schemeName, journeyData.returnUrl, request, request.loggedInUser, data)
     }
   }
 }
 
-class DataRetrievalNoEventTypeImpl(userAnswersCacheConnector: UserAnswersCacheConnector
+class DataRetrievalNoEventTypeImpl(userAnswersCacheConnector: UserAnswersCacheConnector,
+                                   dataRetrievalService: DataRetrievalService
                                   )(implicit val executionContext: ExecutionContext)
   extends DataRetrieval {
+
+
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     for {
-      data <- userAnswersCacheConnector.get(request.pstr)
+      journeyData <- dataRetrievalService.getEventReportingData(request, hc)
+      data <- userAnswersCacheConnector.get(journeyData.pstr)
     } yield {
-      OptionalDataRequest[A](request.pstr, request.schemeName, request.returnUrl, request, request.loggedInUser, data)
+      OptionalDataRequest[A](journeyData.pstr, journeyData.schemeName, journeyData.returnUrl, request, request.loggedInUser, data)
     }
   }
 }
 
 class DataRetrievalActionImpl @Inject()(
-                                         userAnswersCacheConnector: UserAnswersCacheConnector
+                                         userAnswersCacheConnector: UserAnswersCacheConnector,
+                                         dataRetrievalService: DataRetrievalService
                                        )
                                        (implicit val executionContext: ExecutionContext)
   extends DataRetrievalAction {
   override def apply(eventType: EventType): DataRetrieval =
-    new DataRetrievalImpl(eventType, userAnswersCacheConnector)
+    new DataRetrievalImpl(eventType, userAnswersCacheConnector, dataRetrievalService)
 
   override def apply(): DataRetrieval =
-    new DataRetrievalNoEventTypeImpl(userAnswersCacheConnector)
+    new DataRetrievalNoEventTypeImpl(userAnswersCacheConnector, dataRetrievalService)
 }
 
 @ImplementedBy(classOf[DataRetrievalImpl])

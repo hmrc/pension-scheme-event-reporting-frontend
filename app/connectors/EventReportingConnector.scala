@@ -19,7 +19,7 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.amend.VersionsWithSubmitter
-import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
+import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, JourneyDataEntry, ToggleDetails, UserAnswers}
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json._
@@ -55,6 +55,8 @@ class EventReportingConnector @Inject()(
   private def erListOfVersionsUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/versions"
 
   private def deleteMemberUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/delete-member"
+
+  private def erGetJourneyDataUrl(journeyId:String) = s"${config.eventReportingUrl}/pension-scheme-event-reporting/journey?journeyId=${journeyId}"
 
 
   def getEventReportSummary(pstr: String, reportStartDate: String, version: Int)
@@ -255,6 +257,18 @@ class EventReportingConnector @Inject()(
       }
     } andThen {
       case Failure(t: Throwable) => logger.warn("Unable to get list of versions", t)
+    }
+  }
+
+  def getJourneyData(journeyId: String)(implicit hc: HeaderCarrier): Future[JourneyDataEntry] = {
+    http.GET[HttpResponse](erGetJourneyDataUrl(journeyId))(implicitly, hc, implicitly).map { response =>
+      response.status match {
+        case OK => Json.parse(response.body).validate[JourneyDataEntry] match {
+          case JsSuccess(value, _) => value
+          case JsError(errors) => throw JsResultException(errors)
+        }
+        case _ => handleErrorResponse("GET", erGetJourneyDataUrl(journeyId))(response)
+      }
     }
   }
 }

@@ -18,7 +18,7 @@ package controllers.auth
 
 import config.FrontendAppConfig
 import connectors.{SessionDataCacheConnector, UserAnswersCacheConnector}
-import controllers.actions.IdentifierAction
+import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -31,11 +31,12 @@ class AuthController @Inject()(
                                 val controllerComponents: MessagesControllerComponents,
                                 config: FrontendAppConfig,
                                 identify: IdentifierAction,
+                                getData: DataRetrievalAction,
                                 sessionDataCacheConnector: SessionDataCacheConnector,
                                 userAnswersCacheConnector: UserAnswersCacheConnector
                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def signOut(): Action[AnyContent] = identify.async {
+  def signOut(): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
       sessionDataCacheConnector.removeAll(request.loggedInUser.externalId).flatMap { _ =>
         userAnswersCacheConnector.removeAll(request.pstr)
@@ -43,7 +44,7 @@ class AuthController @Inject()(
       }
   }
 
-  def signOutNoSurvey(): Action[AnyContent] = identify.async {
+  def signOutNoSurvey(): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
       sessionDataCacheConnector.removeAll(request.loggedInUser.externalId).flatMap { _ =>
         userAnswersCacheConnector.removeAll(request.pstr)

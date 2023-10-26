@@ -36,7 +36,6 @@ import scala.concurrent.ExecutionContext
 //noinspection ScalaStyle
 class EventReportingTileController @Inject()(
                                               identify: IdentifierAction,
-                                              getData: DataRetrievalAction,
                                               val controllerComponents: MessagesControllerComponents,
                                               appConfig: FrontendAppConfig,
                                               eventReportingConnector: EventReportingConnector,
@@ -48,7 +47,7 @@ class EventReportingTileController @Inject()(
   import EventReportingTileController._
 
   def eventReportPartial: Action[AnyContent] = {
-    Action.async { implicit request =>
+    identify.async { implicit request =>
 
       implicit val lang: Lang = request.lang
       val json = request.body.asJson.getOrElse(throw new RuntimeException("Request body is not json"))

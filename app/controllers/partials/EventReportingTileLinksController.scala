@@ -55,18 +55,18 @@ class EventReportingTileLinksController @Inject()(
                 .setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
 
               userAnswersCacheConnector.save(request.pstr, ua).map { _ =>
-                Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
+                Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url + "?" + request.rawQueryString)
               }
             case _ =>
               val ua = request.userAnswers.setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)
               userAnswersCacheConnector.save(request.pstr, ua).map { _ =>
-                Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
+                Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url + "?" + request.rawQueryString)
               }
           }
         case _ =>
           val ua = request.userAnswers.setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)
           userAnswersCacheConnector.save(request.pstr, ua).map { _ =>
-            Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
+            Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url + "?" + request.rawQueryString)
           }
       }
     }
@@ -75,7 +75,7 @@ class EventReportingTileLinksController @Inject()(
     (identify andThen getData() andThen requireData).async { implicit request =>
       val ua = request.userAnswers.setOrException(EventReportingTileLinksPage, StartNew, nonEventTypeData = true)
       userAnswersCacheConnector.save(request.pstr, ua).map { _ =>
-        Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints))
+        Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints) + "?" + request.rawQueryString)
       }
     }
 
@@ -86,10 +86,10 @@ class EventReportingTileLinksController @Inject()(
           val ua = request.userAnswers
             .setOrException(EventReportingTileLinksPage, PastEventTypes, nonEventTypeData = true)
           userAnswersCacheConnector.save(request.pstr, ua).map { _ =>
-            Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
+            Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url + "?" + request.rawQueryString)
           }
 
-        case _ => Future.successful(Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url))
+        case _ => Future.successful(Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url + "?" + request.rawQueryString))
       }
     }
 }

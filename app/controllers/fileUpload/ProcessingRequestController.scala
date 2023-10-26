@@ -34,6 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ProcessingRequestController @Inject()(
                                              override val messagesApi: MessagesApi,
                                              identify: IdentifierAction,
+                                             getData: DataRetrievalAction,
                                              val controllerComponents: MessagesControllerComponents,
                                              view: ProcessingRequestView,
                                              parsingAndValidationOutcomeCacheConnector: ParsingAndValidationOutcomeCacheConnector
@@ -41,7 +42,7 @@ class ProcessingRequestController @Inject()(
 
   extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = identify.async {
+  def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
       parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap {
         case Some(ParsingAndValidationOutcome(Success, _, _)) =>

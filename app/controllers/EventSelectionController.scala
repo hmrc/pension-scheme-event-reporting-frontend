@@ -18,7 +18,7 @@ package controllers
 
 import audit.{AuditService, StartNewERAuditEvent}
 import connectors.UserAnswersCacheConnector
-import controllers.actions.IdentifierAction
+import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.EventSelectionFormProvider
 import models.{TaxYear, UserAnswers}
 import models.enumeration.EventType
@@ -33,6 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EventSelectionController @Inject()(val controllerComponents: MessagesControllerComponents,
                                          identify: IdentifierAction,
+                                         getData: DataRetrievalAction,
                                          formProvider: EventSelectionFormProvider,
                                          view: EventSelectionView,
                                          userAnswersCacheConnector: UserAnswersCacheConnector,
@@ -41,11 +42,11 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
 
   private val form = formProvider()
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = identify { implicit request =>
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData())  { implicit request =>
     Ok(view(form, waypoints))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = identify.async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

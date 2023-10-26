@@ -51,26 +51,14 @@ class AuthenticatedIdentifierAction @Inject()(
   private val enrolmentPSA = "HMRC-PODS-ORG"
   private val enrolmentPSP = "HMRC-PODSPP-ORG"
 
-  private def getEventReportingData[A](request: Request[A])(implicit hc: HeaderCarrier): Future[Option[EventReporting]] = {
-    request.session.get(SessionKeys.sessionId) match {
-      case None => Future.successful(None)
-      case Some(sessionId) =>
-        sessionDataCacheConnector.fetch(sessionId).map { optionJsValue =>
-          optionJsValue.flatMap { json =>
-            (json \ "eventReporting").validate[EventReporting].asOpt
-          }
-        }
-    }
-  }
-
   private def withAuthInfo[A](
-                               block: (Option[String], Enrolments, Option[EventReporting]) => Future[Result]
+                               block: (Option[String], Enrolments) => Future[Result]
                              )(implicit request: Request[A], hd: HeaderCarrier): Future[Result] = {
     authorised(Enrolment(enrolmentPSA) or Enrolment(enrolmentPSP)).retrieve(
       Retrievals.externalId and Retrievals.allEnrolments
     ) {
       case optionExternalId ~ enrolments =>
-        getEventReportingData(request).flatMap(block.apply(optionExternalId, enrolments, _))
+        block.apply(optionExternalId, enrolments)
     }
   }
 
@@ -90,13 +78,12 @@ class AuthenticatedIdentifierAction @Inject()(
     implicit val req: Request[A] = request
 
     withAuthInfo {
-      case (Some(_), _, None) => Future.successful(Redirect(config.yourPensionSchemesUrl))
-      case (Some(externalId), enrolments, Some(er)) if bothPsaAndPspEnrolmentsPresent(enrolments) =>
-        actionForBothEnrolments(er, externalId, enrolments, request, block)
-      case (Some(externalId), enrolments, Some(er)) if enrolments.getEnrolment(enrolmentPSA).isDefined =>
-        actionForOneEnrolment(Administrator, er, externalId, enrolments, request, block)
-      case (Some(externalId), enrolments, Some(er)) if enrolments.getEnrolment(enrolmentPSP).isDefined =>
-        actionForOneEnrolment(Practitioner, er, externalId, enrolments, request, block)
+      case (Some(externalId), enrolments) if bothPsaAndPspEnrolmentsPresent(enrolments) =>
+        actionForBothEnrolments(externalId, enrolments, request, block)
+      case (Some(externalId), enrolments) if enrolments.getEnrolment(enrolmentPSA).isDefined =>
+        actionForOneEnrolment(Administrator, externalId, enrolments, request, block)
+      case (Some(externalId), enrolments) if enrolments.getEnrolment(enrolmentPSP).isDefined =>
+        actionForOneEnrolment(Practitioner, externalId, enrolments, request, block)
       case _ => futureUnauthorisedPage
     } recoverWith recoverFromError
   }
@@ -131,24 +118,23 @@ class AuthenticatedIdentifierAction @Inject()(
 
   private def futureUnauthorisedPage: Future[Result] = Future.successful(Redirect(config.youNeedToRegisterUrl))
 
-  private def actionForBothEnrolments[A](eventReporting: EventReporting, externalId: String, enrolments: Enrolments, request: Request[A],
+  private def actionForBothEnrolments[A](externalId: String, enrolments: Enrolments, request: Request[A],
                                          block: IdentifierRequest[A] => Future[Result])(implicit headerCarrier: HeaderCarrier): Future[Result] = {
     administratorOrPractitioner(externalId).flatMap {
       case None => Future.successful(Redirect(Call("GET", config.administratorOrPractitionerUrl)))
       case Some(role) =>
         getLoggedInUser(externalId, role, enrolments) match {
-          case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName, eventReporting.returnUrl, eventReporting.srn))
+          case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser))
           case _ => futureUnauthorisedPage
         }
     }
   }
 
   def actionForOneEnrolment[A](administratorOrPractitioner: AdministratorOrPractitioner,
-                               eventReporting: EventReporting,
                                externalId: String, enrolments: Enrolments, request: Request[A],
                                block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
     getLoggedInUser(externalId, administratorOrPractitioner, enrolments) match {
-      case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName, eventReporting.returnUrl, eventReporting.srn))
+      case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser))
       case _ => futureUnauthorisedPage
     }
   }
