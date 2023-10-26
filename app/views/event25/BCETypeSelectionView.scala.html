@@ -27,13 +27,13 @@
 )
 
 
-@(form: Form[_], waypoints: Waypoints)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(
     pageTitle = title(form, messages("bceTypeSelection.event25.title"))
 ) {
 
-    @formHelper(action = routes.BCETypeSelectionController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.BCETypeSelectionController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))

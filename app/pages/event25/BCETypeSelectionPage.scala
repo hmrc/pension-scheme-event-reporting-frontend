@@ -16,15 +16,16 @@
 
 package pages.event25
 
+import models.Index
 import models.event25.BCETypeSelection
 import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object BCETypeSelectionPage extends QuestionPage[BCETypeSelection] {
+case class BCETypeSelectionPage(index: Index) extends QuestionPage[BCETypeSelection] {
   override def path: JsPath = JsPath \ "event25" \ toString
 
   override def route(waypoints: Waypoints): Call = {
-    controllers.event25.routes.BCETypeSelectionController.onPageLoad(waypoints)
+    controllers.event25.routes.BCETypeSelectionController.onPageLoad(waypoints, index)
   }
 }

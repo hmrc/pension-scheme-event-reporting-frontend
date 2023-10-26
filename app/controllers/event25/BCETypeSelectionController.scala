@@ -19,7 +19,7 @@ package controllers.event25
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event25.BCETypeSelectionFormProvider
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import models.enumeration.EventType
 import pages.Waypoints
 import pages.event25.BCETypeSelectionPage
@@ -42,21 +42,21 @@ class BCETypeSelectionController @Inject()(val controllerComponents: MessagesCon
   val form = formProvider()
   private val eventType = EventType.Event25
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()) {
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData()) {
     implicit request =>
-      Ok(view(form, waypoints))
+      Ok(view(form, waypoints, index))
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
+  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(BCETypeSelectionPage, value)
+          val updatedAnswers = originalUserAnswers.setOrException(BCETypeSelectionPage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(BCETypeSelectionPage.navigate(waypoints,originalUserAnswers, updatedAnswers).route)
+            Redirect(BCETypeSelectionPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )
