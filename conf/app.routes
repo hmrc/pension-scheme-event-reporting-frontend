@@ -600,3 +600,6 @@ POST        /report/:index/event-25-type-of-benefit-crystallisation   controller
 
 GET         /report/:index/event-25-total-amount-benefit-crystallisation    controllers.event25.TotalAmountBenefitCrystallisationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /report/:index/event-25-total-amount-benefit-crystallisation    controllers.event25.TotalAmountBenefitCrystallisationController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
+GET         /report/:index/event-25-does-member-hold-valid-protection       controllers.event25.ValidProtectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST        /report/:index/event-25-does-member-hold-valid-protection       controllers.event25.ValidProtectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)

@@ -22,15 +22,19 @@ import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import pages.{Page, QuestionPage, Waypoints}
 
-case class TotalAmountBenefitCrystallisationPage(index: Index) extends QuestionPage[BigDecimal] {
+case class ValidProtectionPage(index: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "totalAmountBenefitCrystallisation"
+  override def toString: String = "validProtection"
 
   override def route(waypoints: Waypoints): Call =
-    routes.TotalAmountBenefitCrystallisationController.onPageLoad(waypoints, index)
+    routes.ValidProtectionController.onPageLoad(waypoints, index)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    ValidProtectionPage(index)
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    answers.get(this).map {
+      case true  => this
+      case false => this
+    }.orRecover
+  }
 }
