@@ -598,6 +598,9 @@ POST        /report/:memberSummaryPath                         controllers.commo
 GET         /report/:index/event-25-member-details             controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event25, index: Index, memberPageNo: Int = 0)
 POST        /report/:index/event-25-member-details             controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event25, index: Index, memberPageNo: Int = 0)
 
+GET         /report/:index/event-25-payment-details            controllers.event25.CrystallisedDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST        /report/:index/event-25-payment-details            controllers.event25.CrystallisedDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
 GET         /report/:index/event-25-type-of-benefit-crystallisation   controllers.event25.BCETypeSelectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /report/:index/event-25-type-of-benefit-crystallisation   controllers.event25.BCETypeSelectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 

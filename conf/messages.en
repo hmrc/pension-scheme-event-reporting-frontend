@@ -1758,6 +1758,16 @@ whatYouWillNeed.event25.item3 = if the member holds valid protection and, if the
 whatYouWillNeed.event25.item4 = the implications of a lump sum payment on lump sum allowance and/or death benefit allowance
 whatYouWillNeed.event25.item5 = if excess allowances have been taxed at marginal rate for this member and, if they do, the employer PAYE reference
 
+crystallisedDate.heading = When did the higher lump sum allowance crystallisation take place?
+crystallisedDate.title = When did the higher lump sum allowance crystallisation take place?
+crystallisedDate.date.hint = For example, 22 09 2022
+crystallisedDate.date.error.nothingEntered = Enter the date
+crystallisedDate.date.error.noDayMonthOrYear = The date must include a day, month and year
+crystallisedDate.date.error.outsideDateRanges = Enter a real date
+crystallisedDate.date.error.outsideReportedYear = Date must be between {0} and {1}
+crystallisedDate.date.change.hidden = The date of the crystallisation
+crystallisedDate.date.checkYourAnswersLabel = The date the crystallisation take place
+
 bceTypeSelection.event25.title = What was the type of lump sum allowance?
 bceTypeSelection.event25.heading = What was the type of lump sum allowance?
 bceTypeSelection.event25.error.required = Select the type of relevant benefit crystallisation event
