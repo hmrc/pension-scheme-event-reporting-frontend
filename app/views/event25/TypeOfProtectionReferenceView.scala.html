@@ -15,22 +15,23 @@
  *@
 
 @import controllers.event25.routes
-
 @import viewmodels.InputWidth._
 
 @this(
-    layout: templates.Layout,
+    layout: templates.SchemeLayout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, index: Index, protectionTypeDesc: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("totalAmountBenefitCrystallisation.title"))) {
+@layout(pageTitle = title(form, messages("typeOfProtectionReference.title", protectionTypeDesc))) {
 
-    @formHelper(action = routes.TotalAmountBenefitCrystallisationController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.TypeOfProtectionReferenceController.onSubmit(waypoints, index)) {
+
+        <h1 class="govuk-heading-xl">@messages("typeOfProtectionReference.event25.heading")</h1>
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -39,11 +40,10 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("totalAmountBenefitCrystallisation.heading")).asPageHeading()
+                label = LabelViewModel(messages("typeOfProtection.p1", protectionTypeDesc))
             )
-            .asNumeric()
-            .withPrefix(PrefixOrSuffix(content = Text("£")))
-            .withWidth(Fixed5)
+            .withWidth(Full)
+            .withHint(HintViewModel(messages("typeOfProtection.p2")))
         )
 
         @govukButton(

@@ -606,3 +606,6 @@ POST        /report/:index/event-25-does-member-hold-valid-protection       cont
 
 GET         /report/:index/event-25-type-of-protection-held                 controllers.event25.TypeOfProtectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /report/:index/event-25-type-of-protection-held                 controllers.event25.TypeOfProtectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
+GET         /report/:index/event-25-protection-reference                    controllers.event25.TypeOfProtectionReferenceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST        /report/:index/event-25-protection-reference                    controllers.event25.TypeOfProtectionReferenceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)

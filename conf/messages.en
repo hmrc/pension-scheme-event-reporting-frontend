@@ -1137,6 +1137,7 @@ fileUploadWhatYouWillNeed.event23.inset = All the data you have previously added
 typeOfProtection.title = What is the type of protection held for the crystallisation?
 typeOfProtection.heading = What is the type of protection held for the crystallisation?
 typeOfProtection.p1 = This can be found on the member’s LTA certificate.
+typeOfProtection.p2 = The protection reference is between 8 and 15 characters and can be a combination of numbers and letters.
 typeOfProtection.enhancedLifetimeAllowance = Enhanced lifetime allowance
 typeOfProtection.primaryProtection = Primary protection
 typeOfProtection.enhancedProtection = Enhanced protection
@@ -1794,3 +1795,5 @@ typeOfProtection.event25.preCommencement = Pre-commencement pension credits enha
 typeOfProtection.event25.primary = Primary protection
 typeOfProtection.event25.primaryWithProtectedSum = Primary protection with protected lump sum rights of more than £375,000
 typeOfProtection.event25.schemeSpecific = Scheme-specific lump sum protection
+
+typeOfProtectionReference.event25.heading = What is the member's protection reference?
