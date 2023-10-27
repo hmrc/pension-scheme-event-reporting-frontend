@@ -16,25 +16,17 @@
 
 package pages.event25
 
-import controllers.event25.routes
-import models.{Index, UserAnswers}
+import models.Index
+import models.event25.TypeOfProtectionSelection
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Page, QuestionPage, Waypoints}
 
-case class ValidProtectionPage(index: Index) extends QuestionPage[Boolean] {
+case class TypeOfProtectionPage(index: Index) extends QuestionPage[TypeOfProtectionSelection] {
+  override def path: JsPath = JsPath \ "event25" \ toString
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "validProtection"
-
-  override def route(waypoints: Waypoints): Call =
-    routes.ValidProtectionController.onPageLoad(waypoints, index)
-
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(this).map {
-      case true  => TypeOfProtectionPage(index)
-      case false => this
-    }.orRecover
+  override def route(waypoints: Waypoints): Call = {
+    controllers.event25.routes.TypeOfProtectionController.onPageLoad(waypoints, index)
   }
+
 }
