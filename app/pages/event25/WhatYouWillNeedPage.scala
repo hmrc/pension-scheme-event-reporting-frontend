@@ -29,5 +29,5 @@ case class WhatYouWillNeedPage(index: Index) extends Page {
     routes.WhatYouWillNeedController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    MembersDetailsPage(EventType.Event23, index)
+    MembersDetailsPage(EventType.Event25, index)
 }
