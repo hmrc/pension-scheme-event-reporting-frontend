@@ -612,3 +612,6 @@ POST        /report/:index/event-25-protection-reference                    cont
 
 GET         /report/:index/event-25-is-member-over-available-lump-sum-allowance     controllers.event25.OverAllowanceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /report/:index/event-25-is-member-over-available-lump-sum-allowance     controllers.event25.OverAllowanceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
+GET         /report/:index/event-25-is-member-over-available-lump-sum-and-death-benefit-allowance       controllers.event25.OverAllowanceAndDeathBenefitController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST        /report/:index/event-25-is-member-over-available-lump-sum-and-death-benefit-allowance       controllers.event25.OverAllowanceAndDeathBenefitController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)

@@ -1803,3 +1803,9 @@ overAllowance.event25.heading = Has this lump sum payment taken the member over 
 overAllowance.event25.checkYourAnswersLabel = Has this lump sum payment taken the member over their available lump sum allowance?
 overAllowance.event25.error.required = Select yes if this lump sum payment has taken the member over their available lump sum allowance
 overAllowance.event25.change.hidden = Has this lump sum payment taken the member over their available lump sum allowance?
+
+overAllowanceAndDeathBenefit.event25.title = Has this lump sum payment taken the member over their available lump sum and death benefit allowance?
+overAllowanceAndDeathBenefit.event25.heading = Has this lump sum payment taken the member over their available lump sum and death benefit allowance?
+overAllowanceAndDeathBenefit.event25.checkYourAnswersLabel = Has this lump sum payment taken the member over their available lump sum and death benefit allowance?
+overAllowanceAndDeathBenefit.event25.error.required = Select yes if this lump sum payment has taken the member over their available lump sum and death benefit allowance
+overAllowanceAndDeathBenefit.event25.change.hidden = Has this lump sum payment taken the member over their available lump sum and death benefit allowance?
