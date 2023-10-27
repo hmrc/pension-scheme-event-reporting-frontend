@@ -22,19 +22,19 @@ import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import pages.{Page, QuestionPage, Waypoints}
 
-case class ValidProtectionPage(index: Index) extends QuestionPage[Boolean] {
+case class OverAllowancePage(index: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "validProtection"
+  override def toString: String = "overAllowance"
 
   override def route(waypoints: Waypoints): Call =
-    routes.ValidProtectionController.onPageLoad(waypoints, index)
+    routes.OverAllowanceController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
-      case true  => TypeOfProtectionPage(index)
-      case false => OverAllowancePage(index)
+      case true  => this
+      case false => this
     }.orRecover
   }
 }

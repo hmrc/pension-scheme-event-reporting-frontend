@@ -32,7 +32,7 @@ case class TypeOfProtectionPage(index: Index) extends QuestionPage[TypeOfProtect
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
-      case SchemeSpecific => this
+      case SchemeSpecific => OverAllowancePage(index)
       case _ => TypeOfProtectionReferencePage(index)
     }.orRecover
   }

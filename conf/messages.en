@@ -1797,3 +1797,9 @@ typeOfProtection.event25.primaryWithProtectedSum = Primary protection with prote
 typeOfProtection.event25.schemeSpecific = Scheme-specific lump sum protection
 
 typeOfProtectionReference.event25.heading = What is the member's protection reference?
+
+overAllowance.event25.title = Has this lump sum payment taken the member over their available lump sum allowance?
+overAllowance.event25.heading = Has this lump sum payment taken the member over their available lump sum allowance?
+overAllowance.event25.checkYourAnswersLabel = Has this lump sum payment taken the member over their available lump sum allowance?
+overAllowance.event25.error.required = Select yes if this lump sum payment has taken the member over their available lump sum allowance
+overAllowance.event25.change.hidden = Has this lump sum payment taken the member over their available lump sum allowance?

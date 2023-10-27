@@ -16,9 +16,8 @@
 
 package pages.event25
 
-import models.enumeration.EventType
-import pages.common.MembersPage
-import pages.{QuestionPage, Waypoints}
+import models.UserAnswers
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -30,4 +29,7 @@ case class TypeOfProtectionReferencePage(index: Int) extends QuestionPage[String
 
   override def route(waypoints: Waypoints): Call =
     controllers.event25.routes.TypeOfProtectionReferenceController.onPageLoad(waypoints, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    OverAllowancePage(index)
 }
