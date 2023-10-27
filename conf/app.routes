@@ -615,3 +615,6 @@ POST        /report/:index/event-25-is-member-over-available-lump-sum-allowance 
 
 GET         /report/:index/event-25-is-member-over-available-lump-sum-and-death-benefit-allowance       controllers.event25.OverAllowanceAndDeathBenefitController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /report/:index/event-25-is-member-over-available-lump-sum-and-death-benefit-allowance       controllers.event25.OverAllowanceAndDeathBenefitController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
+GET         /report/:index/event-25-marginal-rate                           controllers.event25.MarginalRateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST        /report/:index/event-25-marginal-rate                           controllers.event25.MarginalRateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
