@@ -22,19 +22,15 @@ import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import pages.{Page, QuestionPage, Waypoints}
 
-case class MarginalRatePage(index: Index) extends QuestionPage[Boolean] {
+case class EmployerPayeReferencePage(index: Index) extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "marginalRate"
+  override def toString: String = "employerPayeReference"
 
   override def route(waypoints: Waypoints): Call =
-    routes.MarginalRateController.onPageLoad(waypoints, index)
+    routes.EmployerPayeReferenceController.onPageLoad(waypoints, index)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(this).map {
-      case true  => EmployerPayeReferencePage(index)
-      case false => this
-    }.orRecover
-  }
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    ValidProtectionPage(index)
 }

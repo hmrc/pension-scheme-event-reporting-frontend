@@ -618,3 +618,6 @@ POST        /report/:index/event-25-is-member-over-available-lump-sum-and-death-
 
 GET         /report/:index/event-25-marginal-rate                           controllers.event25.MarginalRateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /report/:index/event-25-marginal-rate                           controllers.event25.MarginalRateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
+GET         /report/:index/event-25-employer-paye-reference                 controllers.event25.EmployerPayeReferenceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST        /report/:index/event-25-employer-paye-reference                 controllers.event25.EmployerPayeReferenceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
