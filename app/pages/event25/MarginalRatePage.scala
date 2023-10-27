@@ -22,19 +22,19 @@ import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import pages.{Page, QuestionPage, Waypoints}
 
-case class OverAllowancePage(index: Index) extends QuestionPage[Boolean] {
+case class MarginalRatePage(index: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "overAllowance"
+  override def toString: String = "marginalRate"
 
   override def route(waypoints: Waypoints): Call =
-    routes.OverAllowanceController.onPageLoad(waypoints, index)
+    routes.MarginalRateController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
-      case true  => MarginalRatePage(index)
-      case false => OverAllowanceAndDeathBenefitPage(index)
+      case true  => this
+      case false => this
     }.orRecover
   }
 }
