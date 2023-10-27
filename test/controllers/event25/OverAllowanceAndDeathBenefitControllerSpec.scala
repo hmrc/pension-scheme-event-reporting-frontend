@@ -18,33 +18,33 @@ package controllers.event25
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event25.MarginalRateFormProvider
+import forms.event25.OverAllowanceAndDeathBenefitFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
-import pages.event25.MarginalRatePage
+import pages.event25.OverAllowanceAndDeathBenefitPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event25.MarginalRateView
+import views.html.event25.OverAllowanceAndDeathBenefitView
 
 import scala.concurrent.Future
 
-class MarginalRateControllerSpec extends SpecBase with BeforeAndAfterEach  {
+class OverAllowanceAndDeathBenefitControllerSpec extends SpecBase with BeforeAndAfterEach  {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new MarginalRateFormProvider()
+  private val formProvider = new OverAllowanceAndDeathBenefitFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.MarginalRateController.onPageLoad(waypoints, 1).url
-  private def postRoute: String = routes.MarginalRateController.onSubmit(waypoints, 1).url
+  private def getRoute: String = routes.OverAllowanceAndDeathBenefitController.onPageLoad(waypoints, 1).url
+  private def postRoute: String = routes.OverAllowanceAndDeathBenefitController.onSubmit(waypoints, 1).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -55,7 +55,7 @@ class MarginalRateControllerSpec extends SpecBase with BeforeAndAfterEach  {
     reset(mockUserAnswersCacheConnector)
   }
 
-  "Marginal Rate Controller" - {
+  "OverAllowanceAndDeathBenefit" - {
 
 
     "must return OK and the correct view for a GET" in {
@@ -67,7 +67,7 @@ class MarginalRateControllerSpec extends SpecBase with BeforeAndAfterEach  {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[MarginalRateView]
+        val view = application.injector.instanceOf[OverAllowanceAndDeathBenefitView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints, 1)(request, messages(application)).toString
@@ -77,14 +77,14 @@ class MarginalRateControllerSpec extends SpecBase with BeforeAndAfterEach  {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(MarginalRatePage(1), true).success.value
+      val userAnswers = UserAnswers().set(OverAllowanceAndDeathBenefitPage(1), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[MarginalRateView]
+        val view = application.injector.instanceOf[OverAllowanceAndDeathBenefitView]
 
         val result = route(application, request).value
 
@@ -106,10 +106,10 @@ class MarginalRateControllerSpec extends SpecBase with BeforeAndAfterEach  {
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(MarginalRatePage(1), true).success.value
+        val updatedAnswers = emptyUserAnswers.set(OverAllowanceAndDeathBenefitPage(1), true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MarginalRatePage(1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual OverAllowanceAndDeathBenefitPage(1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -123,7 +123,7 @@ class MarginalRateControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[MarginalRateView]
+        val view = application.injector.instanceOf[OverAllowanceAndDeathBenefitView]
         val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value
