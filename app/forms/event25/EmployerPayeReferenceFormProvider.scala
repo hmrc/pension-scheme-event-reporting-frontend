@@ -25,12 +25,13 @@ class EmployerPayeReferenceFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("employerPayeReference.event25.error")
+      "value" -> text("employerPayeReference.event25.error.required")
         .verifying(
           firstError(
-            maxLength(12, "employerPayeReference.event25.error"),
-            minLength(9, "employerPayeReference.event25.error"),
-            employerPayeRef("employerPayeReference.event25.error")
+            maxLength(12, "employerPayeReference.event25.error.length"),
+            minLength(9, "employerPayeReference.event25.error.length"),
+            employerPayeRefDigits("employerPayeReference.event25.error.leadingDigits"),
+            employerPayeRefNoSlash("employerPayeReference.event25.error.noSlash"),
           )
         )
     )
