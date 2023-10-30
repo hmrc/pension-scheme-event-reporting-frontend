@@ -19,10 +19,9 @@ package controllers.event25
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event25.TypeOfProtectionFormProvider
-import models.UserAnswers
 import models.event25.TypeOfProtectionSelection
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, reset, times, verify, when}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints

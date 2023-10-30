@@ -1817,6 +1817,7 @@ typeOfProtection.event25.primaryWithProtectedSum = Primary protection with prote
 typeOfProtection.event25.schemeSpecific = Scheme-specific lump sum protection
 
 typeOfProtectionReference.event25.heading = What is the member's protection reference?
+typeOfProtectionReference.event25.error.length = The protection reference is a maximum of 15 characters and a combination of numbers and letters
 
 overAllowance.event25.title = Has this lump sum payment taken the member over their available lump sum allowance?
 overAllowance.event25.heading = Has this lump sum payment taken the member over their available lump sum allowance?

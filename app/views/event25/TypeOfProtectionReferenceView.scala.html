@@ -25,9 +25,9 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, index: Index, protectionTypeDesc: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("typeOfProtectionReference.title", protectionTypeDesc))) {
+@layout(pageTitle = title(form, messages("typeOfProtectionReference.title"))) {
 
     @formHelper(action = routes.TypeOfProtectionReferenceController.onSubmit(waypoints, index)) {
 
@@ -40,7 +40,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("typeOfProtection.p1", protectionTypeDesc))
+                label = LabelViewModel(messages("typeOfProtection.p1"))
             )
             .withWidth(Full)
             .withHint(HintViewModel(messages("typeOfProtection.p2")))

@@ -38,6 +38,7 @@ trait Constraints {
   val psaIdRegex = "^A[0-9]{7}$"
   val employerIdRefDigitsRegex = "^[0-9]{3}[0-9a-zA-Z/]{5,8}$"
   val employerIdRefNoSlashRegex = "^[0-9]{3}/[0-9a-zA-Z]{5,8}"
+  val protectionReferenceRegex = "^[A-Za-z0-9]{1,15}$"
 
   protected def postCode(errorKey: String): Constraint[String] = regexp(regexPostcode, errorKey)
 
