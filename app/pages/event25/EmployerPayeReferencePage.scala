@@ -32,5 +32,5 @@ case class EmployerPayeReferencePage(index: Index) extends QuestionPage[String] 
     routes.EmployerPayeReferenceController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    ValidProtectionPage(index)
+    EmployerPayeReferencePage(index)
 }
