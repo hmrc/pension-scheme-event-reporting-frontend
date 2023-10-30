@@ -1753,10 +1753,10 @@ whatYouWillNeed.event25.title = What you will need
 whatYouWillNeed.event25.heading = What you will need
 whatYouWillNeed.event25.p = To record a higher lump sum allowance event you will need to tell us:
 whatYouWillNeed.event25.item1 = the member's name and National Insurance number
-whatYouWillNeed.event25.item2 = the type and total amount of the event
-whatYouWillNeed.event25.item3 = if the member holds valid protection and, if they do, the type
-whatYouWillNeed.event25.item4 = the implications of a lump sum payment on lump sum allowance and/or death benefit allowance
-whatYouWillNeed.event25.item5 = if excess allowances have been taxed at marginal rate for this member and, if they do, the employer PAYE reference
+whatYouWillNeed.event25.item2 = when crystallisation took place
+whatYouWillNeed.event25.item3 = if the member holds valid form of allowance protection – if they do, tell us the type and the protection reference
+whatYouWillNeed.event25.item4 = if any lump sum payment has taken the member over their available lump sum allowance – if it has, tell us whether the excess was taxed at marginal rate
+whatYouWillNeed.event25.item5 = (if it has been taxed at marginal rate) the employer PAYE reference
 
 crystallisedDate.heading = When did the higher lump sum allowance crystallisation take place?
 crystallisedDate.title = When did the higher lump sum allowance crystallisation take place?
