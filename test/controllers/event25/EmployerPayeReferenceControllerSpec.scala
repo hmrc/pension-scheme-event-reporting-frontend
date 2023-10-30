@@ -93,27 +93,26 @@ class EmployerPayeReferenceControllerSpec extends SpecBase with BeforeAndAfterEa
       }
     }
 
-    // TODO - Fix broken test
-//    "must save the answer and redirect to the next page when valid data is submitted" in {
-//      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-//        .thenReturn(Future.successful(()))
-//
-//      val application =
-//        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-//          .build()
-//
-//      running(application) {
-//        val request =
-//          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "123/AB456"))
-//
-//        val result = route(application, request).value
-//        val updatedAnswers = emptyUserAnswers.set(EmployerPayeReferencePage(0), validValue).success.value
-//
-//        status(result) mustEqual SEE_OTHER
-//        redirectLocation(result).value mustEqual EmployerPayeReferencePage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-//        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
-//      }
-//    }
+    "must save the answer and redirect to the next page when valid data is submitted" in {
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "123/AB456"))
+
+        val result = route(application, request).value
+        val updatedAnswers = emptyUserAnswers.set(EmployerPayeReferencePage(0), validValue).success.value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual EmployerPayeReferencePage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+      }
+    }
 
     "must return bad request when invalid data is submitted" in {
       val application =

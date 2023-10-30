@@ -23,7 +23,8 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class EmployerPayeReferenceFormProviderSpec extends StringFieldBehaviours with Constraints {
 
-  private val errorKey = "employerPayeReference.event25.error"
+  private val lengthErrorKey = "employerPayeReference.event25.error.length"
+  private val requiredErrorKey = "employerPayeReference.event25.error.required"
   private val maxLength = 12
   private val minLength = 9
 
@@ -33,32 +34,32 @@ class EmployerPayeReferenceFormProviderSpec extends StringFieldBehaviours with C
 
     val fieldName = "value"
 
-    // TODO - fix test
+    // TODO - fix test - doesn't allow for multiple constraints?
 //    behave like fieldThatBindsValidData(
 //      form,
 //      fieldName,
-//      RegexpGen.from(employerIdRefRegex)
+//      RegexpGen.from(employerIdRefNoSlashRegex)
 //    )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
       maxLength = maxLength,
-      lengthError = FormError(fieldName, errorKey, Seq(maxLength))
+      lengthError = FormError(fieldName, lengthErrorKey, Seq(maxLength))
     )
 
     behave like fieldWithMinLength(
       form,
       fieldName,
       minLength = minLength,
-      lengthError = FormError(fieldName, errorKey, Seq(minLength))
+      lengthError = FormError(fieldName, lengthErrorKey, Seq(minLength))
     )
 
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, errorKey)
+      requiredError = FormError(fieldName, requiredErrorKey)
     )
   }
 }

@@ -16,12 +16,12 @@
 
 package pages.event25
 
-import play.api.mvc.Call
-import pages.{Page, Waypoints}
 import controllers.event25.routes
-import models.{Index, UserAnswers}
 import models.enumeration.EventType
-import pages.common.{ManualOrUploadPage, MembersDetailsPage}
+import models.{Index, UserAnswers}
+import pages.common.ManualOrUploadPage
+import pages.{Page, Waypoints}
+import play.api.mvc.Call
 
 case class WhatYouWillNeedPage(index: Index) extends Page {
 
