@@ -28,7 +28,7 @@
 
 @(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("crystallisedDate.title"))) {
+@layout(pageTitle = title(form, messages("crystallisedDate.event25.title"))) {
 
     @formHelper(action = routes.CrystallisedDateController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
 
@@ -36,14 +36,14 @@
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = targetField("crystallisedDate", form.errors.head.message)))
         }
 
-        <h1 class="govuk-heading-xl">@messages("crystallisedDate.heading")</h1>
+        <h1 class="govuk-heading-xl">@messages("crystallisedDate.event25.heading")</h1>
 
         @govukDateInput(
             DateViewModel(
                 field = form("crystallisedDate"),
                 legend = Legend()
             )
-            .withHint(Hint(content = Text(messages("crystallisedDate.date.hint"))))
+            .withHint(Hint(content = Text(messages("crystallisedDate.event25.date.hint"))))
         )
 
         @govukButton(

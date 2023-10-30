@@ -26,12 +26,12 @@ class TotalAmountBenefitCrystallisationFormProvider @Inject() extends Mappings {
 
   def apply(): Form[BigDecimal] =
     Form(
-      "value" -> bigDecimal2DP("totalAmountBenefitCrystallisation.error.required",
-        "totalAmountBenefitCrystallisation.error.nonNumeric",
-        "totalAmountBenefitCrystallisation.error.nonNumeric")
+      "value" -> bigDecimal2DP("totalAmountBenefitCrystallisation.event25.error.required",
+        "totalAmountBenefitCrystallisation.event25.error.nonNumeric",
+        "totalAmountBenefitCrystallisation.event25.error.nonNumeric")
           .verifying(
-            minimumValue[BigDecimal](0, "totalAmountBenefitCrystallisation.error.negativeValue"),
-            maximumValue[BigDecimal](maxCrystallisedValue, "totalAmountBenefitCrystallisation.error.amountTooHigh")
+            minimumValue[BigDecimal](0, "totalAmountBenefitCrystallisation.event25.error.negativeValue"),
+            maximumValue[BigDecimal](maxCrystallisedValue, "totalAmountBenefitCrystallisation.event25.error.amountTooHigh")
           )
 
     )

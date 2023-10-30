@@ -34,11 +34,11 @@ object ValidProtectionSummary  {
         val value = if (answer) "site.yes" else "site.no"
 
         SummaryListRowViewModel(
-          key     = "validProtection.checkYourAnswersLabel",
+          key     = "validProtection.event25.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
             ActionItemViewModel("site.change", ValidProtectionPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("validProtection.change.hidden"))
+              .withVisuallyHiddenText(messages("validProtection.event25.change.hidden"))
           )
         )
     }

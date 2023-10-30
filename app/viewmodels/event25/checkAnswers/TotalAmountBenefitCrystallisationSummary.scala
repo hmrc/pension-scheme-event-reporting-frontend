@@ -32,11 +32,11 @@ object TotalAmountBenefitCrystallisationSummary  {
       answer =>
 
         SummaryListRowViewModel(
-          key     = "totalAmountBenefitCrystallisation.checkYourAnswersLabel",
+          key     = "totalAmountBenefitCrystallisation.event25.checkYourAnswersLabel",
           value   = ValueViewModel(answer.toString),
           actions = Seq(
             ActionItemViewModel("site.change", TotalAmountBenefitCrystallisationPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("totalAmountBenefitCrystallisation.change.hidden"))
+              .withVisuallyHiddenText(messages("totalAmountBenefitCrystallisation.event25.change.hidden"))
           )
         )
     }

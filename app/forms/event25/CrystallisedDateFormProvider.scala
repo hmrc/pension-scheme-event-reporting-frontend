@@ -42,7 +42,8 @@ class CrystallisedDateFormProvider @Inject() extends Mappings with Transforms { 
   def apply(max: LocalDate)(implicit messages: Messages): Form[CrystallisedDate] =
     Form(
       mapping(
-        localDateMappingWithDateRange(field = "crystallisedDate", date = (startDate, endDate(max)), outOfRangeKey = "crystallisedDate.date.error.outsideReportedYear")
+        localDateMappingWithDateRange(
+          field = "crystallisedDate", date = (startDate, endDate(max)), outOfRangeKey = "crystallisedDate.event25.date.error.outsideReportedYear")
       )
       (CrystallisedDate.apply)(CrystallisedDate.unapply)
     )

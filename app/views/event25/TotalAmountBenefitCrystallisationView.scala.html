@@ -28,7 +28,7 @@
 
 @(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("totalAmountBenefitCrystallisation.title"))) {
+@layout(pageTitle = title(form, messages("totalAmountBenefitCrystallisation.event25.title"))) {
 
     @formHelper(action = routes.TotalAmountBenefitCrystallisationController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
 
@@ -39,7 +39,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("totalAmountBenefitCrystallisation.heading")).asPageHeading()
+                label = LabelViewModel(messages("totalAmountBenefitCrystallisation.event25.heading")).asPageHeading()
             )
             .asNumeric()
             .withPrefix(PrefixOrSuffix(content = Text("£")))
