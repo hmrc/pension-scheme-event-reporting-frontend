@@ -21,7 +21,7 @@ import pages.{Page, Waypoints}
 import controllers.event25.routes
 import models.{Index, UserAnswers}
 import models.enumeration.EventType
-import pages.common.MembersDetailsPage
+import pages.common.{ManualOrUploadPage, MembersDetailsPage}
 
 case class WhatYouWillNeedPage(index: Index) extends Page {
 
@@ -29,5 +29,5 @@ case class WhatYouWillNeedPage(index: Index) extends Page {
     routes.WhatYouWillNeedController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    MembersDetailsPage(EventType.Event25, index)
+    ManualOrUploadPage(EventType.Event25, index)
 }

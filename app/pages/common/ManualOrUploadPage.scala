@@ -47,7 +47,7 @@ case class ManualOrUploadPage(eventType: EventType, index: Int) extends Question
       case (Event22, _, Some(FileUpload)) => pages.common.FileUploadWhatYouWillNeedPage(eventType)
       case (Event23, _, Some(FileUpload)) => pages.common.FileUploadWhatYouWillNeedPage(eventType)
       case (Event23, index, Some(Manual)) => pages.event23.WhatYouWillNeedPage(index)
-      case (Event25, index, Some(Manual)) => pages.event25.WhatYouWillNeedPage(index)
+      case (Event25, index, Some(Manual)) => MembersDetailsPage(Event25, index)
       case _ => this
     }
 
