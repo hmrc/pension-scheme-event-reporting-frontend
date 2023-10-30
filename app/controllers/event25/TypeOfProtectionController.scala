@@ -44,12 +44,12 @@ class TypeOfProtectionController @Inject()(
   val form = formProvider()
   private val eventType = EventType.Event25
 
-  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData()) {
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) {
     implicit request =>
       Ok(view(form, waypoints, index))
   }
 
-  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData()).async {
+  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

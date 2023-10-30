@@ -1803,6 +1803,7 @@ validProtection.event25.change.hidden = Does the member hold a valid form of all
 typeOfProtection.event25.title = Type of protection held
 typeOfProtection.event25.heading = What type of valid allowance protection is held?
 typeOfProtection.event25.error.required = Select the type of protection held
+typeOfProtection.event25.error.format = Enter the type of protection in the correct format
 typeOfProtection.event25.enhancedProtection = Enhanced protection
 typeOfProtection.event25.enhancedProtectionWithProtectedSum = Enhanced protection with protected lump sum rights of more than £375,000
 typeOfProtection.event25.fixedProtection = Fixed protection
