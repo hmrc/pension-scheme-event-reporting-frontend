@@ -17,7 +17,7 @@
 package controllers.event25
 
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.event25.BCETypeSelectionFormProvider
 import models.{Index, UserAnswers}
 import models.enumeration.EventType
@@ -35,6 +35,7 @@ class BCETypeSelectionController @Inject()(val controllerComponents: MessagesCon
                                            view: BCETypeSelectionView,
                                            identify: IdentifierAction,
                                            getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
                                            formProvider: BCETypeSelectionFormProvider,
                                            userAnswersCacheConnector: UserAnswersCacheConnector
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -42,9 +43,10 @@ class BCETypeSelectionController @Inject()(val controllerComponents: MessagesCon
   val form = formProvider()
   private val eventType = EventType.Event25
 
-  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData()) {
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData() andThen requireData) {
     implicit request =>
-      Ok(view(form, waypoints, index))
+      val preparedForm = request.userAnswers.get(BCETypeSelectionPage(index)).fold(form)(form.fill)
+      Ok(view(preparedForm, waypoints, index))
   }
 
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData()).async {

@@ -17,16 +17,16 @@
 package controllers.event25
 
 import connectors.UserAnswersCacheConnector
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import forms.event25.TypeOfProtectionFormProvider
+import models.enumeration.EventType
 import models.{Index, UserAnswers}
 import pages.Waypoints
+import pages.event25.TypeOfProtectionPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.event25.TypeOfProtectionFormProvider
-import models.enumeration.EventType
 import views.html.event25.TypeOfProtectionView
-import pages.event25.TypeOfProtectionPage
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,6 +36,7 @@ class TypeOfProtectionController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalAction,
+                                            requireData: DataRequiredAction,
                                             view: TypeOfProtectionView,
                                             formProvider: TypeOfProtectionFormProvider,
                                             userAnswersCacheConnector: UserAnswersCacheConnector
@@ -44,9 +45,10 @@ class TypeOfProtectionController @Inject()(
   val form = formProvider()
   private val eventType = EventType.Event25
 
-  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) {
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
     implicit request =>
-      Ok(view(form, waypoints, index))
+      val preparedForm = request.userAnswers.get(TypeOfProtectionPage(index)).fold(form)(form.fill)
+      Ok(view(preparedForm, waypoints, index))
   }
 
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {

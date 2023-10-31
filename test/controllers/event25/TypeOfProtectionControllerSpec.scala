@@ -19,6 +19,7 @@ package controllers.event25
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import forms.event25.TypeOfProtectionFormProvider
+import models.UserAnswers
 import models.event25.TypeOfProtectionSelection
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -73,24 +74,23 @@ class TypeOfProtectionControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    // TODO - fix test - does not store previous checked answer
-//    "must populate the view correctly on a GET when the question has previously been answered" in {
-//
-//      val userAnswers = UserAnswers().set(TypeOfProtectionPage(1), TypeOfProtectionSelection.values.head).success.value
-//
-//      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-//
-//      running(application) {
-//        val request = FakeRequest(GET, getRoute)
-//
-//        val view = application.injector.instanceOf[TypeOfProtectionView]
-//
-//        val result = route(application, request).value
-//
-//        status(result) mustEqual OK
-//        contentAsString(result) mustEqual view(form.fill(TypeOfProtectionSelection.values.head), waypoints, 0)(request, messages(application)).toString
-//      }
-//    }
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+
+      val userAnswers = UserAnswers().set(TypeOfProtectionPage(0), TypeOfProtectionSelection.values.head).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val view = application.injector.instanceOf[TypeOfProtectionView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form.fill(TypeOfProtectionSelection.values.head), waypoints, 0)(request, messages(application)).toString
+      }
+    }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))

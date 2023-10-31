@@ -19,6 +19,7 @@ package controllers.event25
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event25.TypeOfProtectionReferenceFormProvider
+import models.enumeration.EventType
 import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.event25.TypeOfProtectionReferencePage
@@ -39,13 +40,14 @@ class TypeOfProtectionReferenceController @Inject()(val controllerComponents: Me
                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
+  private val eventType = EventType.Event25
 
-  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData()) { implicit request =>
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(TypeOfProtectionReferencePage(index))).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, index))
   }
 
-  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData()).async {
+  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
@@ -53,7 +55,7 @@ class TypeOfProtectionReferenceController @Inject()(val controllerComponents: Me
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(TypeOfProtectionReferencePage(index), value)
-          userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
+          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(TypeOfProtectionReferencePage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }

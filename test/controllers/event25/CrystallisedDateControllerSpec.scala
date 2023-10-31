@@ -20,6 +20,7 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import controllers.event25.CrystallisedDateControllerSpec.crystallisedDate
 import forms.event25.CrystallisedDateFormProvider
+import models.TaxYear
 import models.common.MembersDetails
 import models.enumeration.EventType.Event25
 import models.event25.CrystallisedDate
@@ -27,7 +28,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints, TaxYearPage}
 import pages.common.MembersDetailsPage
 import pages.event25.CrystallisedDatePage
 import play.api.inject.bind
@@ -82,9 +83,9 @@ class CrystallisedDateControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    // TODO - fix test - not remembering details
+    // TODO - fix test
 //    "must populate the view correctly on a GET when the question has previously been answered" in {
-//      val userAnswers = emptyUserAnswersWithTaxYear.setOrException(MembersDetailsPage(Event25, 0), MembersDetails("Jane", "Doe", "AB1233456C"))
+//      val userAnswers = emptyUserAnswersWithTaxYear.setOrException(TaxYearPage, TaxYear("2023"))
 //        .set(CrystallisedDatePage(0), validAnswer).success.value
 //
 //      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()

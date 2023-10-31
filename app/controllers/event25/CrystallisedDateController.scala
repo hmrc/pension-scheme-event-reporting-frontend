@@ -17,7 +17,7 @@
 package controllers.event25
 
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import controllers.event25.CrystallisedDateController.paymentDateOpt
 import forms.event25.CrystallisedDateFormProvider
 import models.enumeration.EventType
@@ -38,6 +38,7 @@ import views.html.event25.CrystallisedDateView
 class CrystallisedDateController @Inject()(val controllerComponents: MessagesControllerComponents,
                                                     identify: IdentifierAction,
                                                     getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
                                                     userAnswersCacheConnector: UserAnswersCacheConnector,
                                                     formProvider: CrystallisedDateFormProvider,
                                                     view: CrystallisedDateView
@@ -52,10 +53,10 @@ class CrystallisedDateController @Inject()(val controllerComponents: MessagesCon
 
   private val eventType = EventType.Event7
 
-  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val startDate = paymentDateOpt(request.userAnswers.flatMap(_.get(TaxYearPage)))
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
+    val startDate = paymentDateOpt(request.userAnswers.get(TaxYearPage))
 
-    val preparedForm = request.userAnswers.flatMap(_.get(CrystallisedDatePage(index))) match {
+    val preparedForm = request.userAnswers.get(CrystallisedDatePage(index)) match {
       case Some(value) => form(startDate = startDate).fill(value)
       case None => form(startDate)
     }

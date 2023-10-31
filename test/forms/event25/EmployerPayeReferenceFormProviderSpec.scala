@@ -19,7 +19,8 @@ package forms.event25
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
 import play.api.data.FormError
-import wolfendale.scalacheck.regexp.RegexpGen
+
+import scala.collection.immutable.ArraySeq
 
 class EmployerPayeReferenceFormProviderSpec extends StringFieldBehaviours with Constraints {
 
@@ -29,17 +30,20 @@ class EmployerPayeReferenceFormProviderSpec extends StringFieldBehaviours with C
   private val minLength = 9
 
   private val form = new EmployerPayeReferenceFormProvider()()
+  val fieldName = "value"
+
+  def valueDetails(value: String): Map[String, String] = Map(fieldName -> value)
 
   ".value" - {
+    "not bind value without 3 digits at front" in {
+      val result = form.bind(valueDetails("abc/123DEF"))
+      result.errors mustEqual Seq(FormError(fieldName, "employerPayeReference.event25.error.leadingDigits", ArraySeq(employerIdRefDigitsRegex)))
+    }
 
-    val fieldName = "value"
-
-    // TODO - fix test - doesn't allow for multiple constraints?
-//    behave like fieldThatBindsValidData(
-//      form,
-//      fieldName,
-//      RegexpGen.from(employerIdRefNoSlashRegex)
-//    )
+    "not bind value without a / as the fourth character" in {
+      val result = form.bind(valueDetails("123abcDEF"))
+      result.errors mustEqual Seq(FormError(fieldName, "employerPayeReference.event25.error.noSlash", ArraySeq(employerIdRefNoSlashRegex)))
+    }
 
     behave like fieldWithMaxLength(
       form,

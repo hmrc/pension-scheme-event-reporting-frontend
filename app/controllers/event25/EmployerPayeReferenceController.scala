@@ -40,7 +40,7 @@ class EmployerPayeReferenceController @Inject()(val controllerComponents: Messag
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event1
+  private val eventType = EventType.Event25
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val preparedForm = request.userAnswers.flatMap(_.get(EmployerPayeReferencePage(index))).fold(form)(form.fill)

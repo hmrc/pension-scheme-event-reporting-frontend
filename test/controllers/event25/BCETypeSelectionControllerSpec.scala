@@ -74,24 +74,23 @@ class BCETypeSelectionControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    // TODO - fix test - does not store previous checked answer
-//    "must populate the view correctly on a GET when the question has previously been answered" in {
-//
-//      val userAnswers = UserAnswers().set(BCETypeSelectionPage(1), BCETypeSelection.values.head).success.value
-//
-//      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-//
-//      running(application) {
-//        val request = FakeRequest(GET, getRoute)
-//
-//        val view = application.injector.instanceOf[BCETypeSelectionView]
-//
-//        val result = route(application, request).value
-//
-//        status(result) mustEqual OK
-//        contentAsString(result) mustEqual view(form.fill(BCETypeSelection.values.head), waypoints, 0)(request, messages(application)).toString
-//      }
-//    }
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+
+      val userAnswers = UserAnswers().set(BCETypeSelectionPage(0), BCETypeSelection.values.head).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val view = application.injector.instanceOf[BCETypeSelectionView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form.fill(BCETypeSelection.values.head), waypoints, 0)(request, messages(application)).toString
+      }
+    }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
