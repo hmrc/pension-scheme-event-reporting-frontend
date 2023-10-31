@@ -25,6 +25,6 @@ import javax.inject.Inject
 class BCETypeSelectionFormProvider @Inject() extends Mappings {
   def apply(): Form[BCETypeSelection] =
     Form(
-      "value" -> enumerable[BCETypeSelection]("eventSelection.error.required")
+      "value" -> enumerable[BCETypeSelection]("bceTypeSelection.event25.error.required", "bceTypeSelection.event25.error.format")
     )
 }

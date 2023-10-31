@@ -1771,6 +1771,7 @@ crystallisedDate.event25.date.checkYourAnswersLabel = The date the crystallisati
 bceTypeSelection.event25.title = What was the type of lump sum allowance?
 bceTypeSelection.event25.heading = What was the type of lump sum allowance?
 bceTypeSelection.event25.error.required = Select the type of relevant benefit crystallisation event
+bceTypeSelection.event25.error.format = Enter the type of benefit crystallisation event in the correct format
 bceTypeSelection.event25.annuityProtection = Annuity protection lump sum death benefit
 bceTypeSelection.event25.definedBenefit = Defined benefit lump sum death benefit
 bceTypeSelection.event25.drawdown = Drawdown pension fund lump sum death benefit
