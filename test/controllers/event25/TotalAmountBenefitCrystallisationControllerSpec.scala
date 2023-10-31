@@ -18,46 +18,46 @@ package controllers.event25
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event25.TypeOfProtectionReferenceFormProvider
+import forms.event25.TotalAmountBenefitCrystallisationFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, reset, times, verify, when}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
+import pages.event25.TotalAmountBenefitCrystallisationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event25.TypeOfProtectionReferenceView
-import pages.event25.TypeOfProtectionReferencePage
+import views.html.event25.TotalAmountBenefitCrystallisationView
 
 import scala.concurrent.Future
 
-class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAfterEach {
+class TotalAmountBenefitCrystallisationControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new TypeOfProtectionReferenceFormProvider()
+  private val formProvider = new TotalAmountBenefitCrystallisationFormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.TypeOfProtectionReferenceController.onPageLoad(waypoints, 1).url
-  private def postRoute: String = routes.TypeOfProtectionReferenceController.onSubmit(waypoints, 1).url
+  private def getRoute: String = routes.TotalAmountBenefitCrystallisationController.onPageLoad(waypoints, 1).url
+  private def postRoute: String = routes.TotalAmountBenefitCrystallisationController.onSubmit(waypoints, 1).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validValue = "abc123DEF"
+  private val validValue: BigDecimal = 33
 
   override def beforeEach: Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
 
-  "TypeOfProtectionReferenceController" - {
+  "TotalAmountBenefitCrystallisation Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -68,7 +68,7 @@ class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAft
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[TypeOfProtectionReferenceView]
+        val view = application.injector.instanceOf[TotalAmountBenefitCrystallisationView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints, 1)(request, messages(application)).toString
@@ -77,14 +77,14 @@ class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAft
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(TypeOfProtectionReferencePage(1), validValue).success.value
+      val userAnswers = UserAnswers().set(TotalAmountBenefitCrystallisationPage(1), validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[TypeOfProtectionReferenceView]
+        val view = application.injector.instanceOf[TotalAmountBenefitCrystallisationView]
 
         val result = route(application, request).value
 
@@ -93,27 +93,26 @@ class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAft
       }
     }
 
-    // TODO - fix test
-//    "must save the answer and redirect to the next page when valid data is submitted" in {
-//      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
-//        .thenReturn(Future.successful(()))
-//
-//      val application =
-//        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
-//          .build()
-//
-//      running(application) {
-//        val request =
-//          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
-//
-//        val result = route(application, request).value
-//        val updatedAnswers = emptyUserAnswers.set(TypeOfProtectionReferencePage(1), validValue).success.value
-//
-//        status(result) mustEqual SEE_OTHER
-//        redirectLocation(result).value mustEqual TypeOfProtectionReferencePage(1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-//        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
-//      }
-//    }
+    "must save the answer and redirect to the next page when valid data is submitted" in {
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "33"))
+
+        val result = route(application, request).value
+        val updatedAnswers = emptyUserAnswers.set(TotalAmountBenefitCrystallisationPage(1), validValue).success.value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual TotalAmountBenefitCrystallisationPage(1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+      }
+    }
 
     "must return bad request when invalid data is submitted" in {
       val application =
@@ -124,7 +123,7 @@ class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAft
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
 
-        val view = application.injector.instanceOf[TypeOfProtectionReferenceView]
+        val view = application.injector.instanceOf[TotalAmountBenefitCrystallisationView]
         val boundForm = form.bind(Map("value" -> ""))
 
         val result = route(application, request).value

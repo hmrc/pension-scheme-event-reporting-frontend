@@ -55,7 +55,7 @@ class ValidProtectionControllerSpec extends SpecBase with BeforeAndAfterEach  {
     reset(mockUserAnswersCacheConnector)
   }
 
-  "Test Controller" - {
+  "ValidProtectionController" - {
 
 
     "must return OK and the correct view for a GET" in {

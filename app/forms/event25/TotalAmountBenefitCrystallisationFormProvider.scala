@@ -31,6 +31,7 @@ class TotalAmountBenefitCrystallisationFormProvider @Inject() extends Mappings {
         "totalAmountBenefitCrystallisation.event25.error.nonNumeric")
           .verifying(
             minimumValue[BigDecimal](0, "totalAmountBenefitCrystallisation.event25.error.negativeValue"),
+            minimumValue[BigDecimal](0.01, "totalAmountBenefitCrystallisation.event25.error.zeroEntered"),
             maximumValue[BigDecimal](maxCrystallisedValue, "totalAmountBenefitCrystallisation.event25.error.amountTooHigh")
           )
 
