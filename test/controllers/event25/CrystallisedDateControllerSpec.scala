@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import controllers.event25.CrystallisedDateControllerSpec.crystallisedDate
 import forms.event25.CrystallisedDateFormProvider
-import models.TaxYear
+import models.{TaxYear, UserAnswers}
 import models.common.MembersDetails
 import models.enumeration.EventType.Event25
 import models.event25.CrystallisedDate
@@ -50,15 +50,15 @@ class CrystallisedDateControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.CrystallisedDateController.onPageLoad(waypoints, 1).url
+  private def getRoute: String = routes.CrystallisedDateController.onPageLoad(waypoints, 0).url
 
-  private def postRoute: String = routes.CrystallisedDateController.onSubmit(waypoints, 1).url
+  private def postRoute: String = routes.CrystallisedDateController.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validAnswer = CrystallisedDate(LocalDate.of(2023, 2, 12))
+  private val validAnswer = CrystallisedDate(LocalDate.of(2022, 2, 12))
 
 
   override def beforeEach: Unit = {
@@ -79,28 +79,26 @@ class CrystallisedDateControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[CrystallisedDateView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, 1)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
       }
     }
 
-    // TODO - fix test
-//    "must populate the view correctly on a GET when the question has previously been answered" in {
-//      val userAnswers = emptyUserAnswersWithTaxYear.setOrException(TaxYearPage, TaxYear("2023"))
-//        .set(CrystallisedDatePage(0), validAnswer).success.value
-//
-//      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-//
-//      running(application) {
-//        val request = FakeRequest(GET, getRoute)
-//
-//        val view = application.injector.instanceOf[CrystallisedDateView]
-//
-//        val result = route(application, request).value
-//
-//        status(result) mustEqual OK
-//        contentAsString(result) mustEqual view(form.fill(validAnswer), waypoints, 1)(request, messages(application)).toString
-//      }
-//    }
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+      val userAnswers = UserAnswers().set(CrystallisedDatePage(0), validAnswer).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val view = application.injector.instanceOf[CrystallisedDateView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form.fill(validAnswer), waypoints, 0)(request, messages(application)).toString
+      }
+    }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
@@ -122,7 +120,7 @@ class CrystallisedDateControllerSpec extends SpecBase with BeforeAndAfterEach {
         val updatedAnswers = emptyUserAnswers.set(CrystallisedDatePage(0), validAnswer).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual CrystallisedDatePage(1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual CrystallisedDatePage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -142,7 +140,7 @@ class CrystallisedDateControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, 1)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
