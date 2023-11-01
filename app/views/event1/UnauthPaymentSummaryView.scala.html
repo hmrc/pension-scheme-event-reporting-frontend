@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import models.enumeration.EventType.Event1
+
 @this(
     layout: templates.SchemeLayout,
     formHelper: FormWithCSRF,
@@ -28,7 +30,7 @@
 
 <h1 class="govuk-heading-l">@messages("unauthPaymentSummary.heading", taxYear)</h1>
 
-@components.MembersSummarySearch(searchValue, searchHref)
+@components.MembersSummarySearch(value = searchValue, searchHref = searchHref, eventType = Event1)
 
     @formHelper(action = controllers.event1.routes.UnauthPaymentSummaryController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
