@@ -3,5 +3,7 @@
 ->         /                                          health.Routes
 
 GET        /admin/metrics                             @com.kenshoo.play.metrics.MetricsController.metrics
+GET         /manage-pension-scheme-event-report/test-only/set-date        controllers.testOnly.DateTestController.onPageLoad()
+POST        /manage-pension-scheme-event-report/test-only/set-date        controllers.testOnly.DateTestController.onSubmit()
 
 

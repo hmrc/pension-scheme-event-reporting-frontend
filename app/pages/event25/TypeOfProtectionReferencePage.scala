@@ -17,19 +17,23 @@
 package pages.event25
 
 import models.UserAnswers
+import models.enumeration.EventType
+import pages.common.MembersPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class TypeOfProtectionReferencePage(index: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ "event25" \ toString
-
-  override def toString: String = "typeOfProtectionReference"
+  override def path: JsPath = MembersPage(EventType.Event25)(index) \ TypeOfProtectionReferencePage.toString
 
   override def route(waypoints: Waypoints): Call =
     controllers.event25.routes.TypeOfProtectionReferenceController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     OverAllowancePage(index)
+}
+
+object TypeOfProtectionReferencePage {
+  override def toString: String = "typeOfProtectionReference"
 }

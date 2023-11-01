@@ -17,14 +17,16 @@
 package pages.event25
 
 import controllers.event25.routes
+import models.enumeration.EventType
 import models.{Index, UserAnswers}
+import pages.common.MembersPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import pages.{Page, QuestionPage, Waypoints}
 
 case class OverAllowancePage(index: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = MembersPage(EventType.Event25)(index) \ OverAllowancePage.toString
 
   override def toString: String = "overAllowance"
 
@@ -37,4 +39,8 @@ case class OverAllowancePage(index: Index) extends QuestionPage[Boolean] {
       case false => OverAllowanceAndDeathBenefitPage(index)
     }.orRecover
   }
+}
+
+object OverAllowancePage {
+  override def toString: String = "overAllowance"
 }

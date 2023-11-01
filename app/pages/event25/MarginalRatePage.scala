@@ -17,16 +17,16 @@
 package pages.event25
 
 import controllers.event25.routes
+import models.enumeration.EventType
 import models.{Index, UserAnswers}
+import pages.common.MembersPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import pages.{Page, QuestionPage, Waypoints}
 
 case class MarginalRatePage(index: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "marginalRate"
+  override def path: JsPath = MembersPage(EventType.Event25)(index) \ MarginalRatePage.toString
 
   override def route(waypoints: Waypoints): Call =
     routes.MarginalRateController.onPageLoad(waypoints, index)
@@ -37,4 +37,8 @@ case class MarginalRatePage(index: Index) extends QuestionPage[Boolean] {
       case false => this
     }.orRecover
   }
+}
+
+object MarginalRatePage {
+  override def toString: String = "marginalRate"
 }

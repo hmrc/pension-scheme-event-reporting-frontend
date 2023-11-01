@@ -17,20 +17,22 @@
 package pages.event25
 
 import controllers.event25.routes
+import models.enumeration.EventType
 import models.{Index, UserAnswers}
+import pages.common.MembersPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import pages.{Page, QuestionPage, Waypoints}
 
 case class TotalAmountBenefitCrystallisationPage(index: Index) extends QuestionPage[BigDecimal] {
-
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "totalAmountBenefitCrystallisation"
-
+  override def path: JsPath = MembersPage(EventType.Event25)(index) \ TotalAmountBenefitCrystallisationPage.toString
   override def route(waypoints: Waypoints): Call =
     routes.TotalAmountBenefitCrystallisationController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     ValidProtectionPage(index)
+}
+
+object TotalAmountBenefitCrystallisationPage {
+  override def toString: String = "totalAmountBenefitCrystallisation"
 }

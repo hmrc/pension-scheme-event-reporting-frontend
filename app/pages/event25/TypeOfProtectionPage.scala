@@ -16,15 +16,17 @@
 
 package pages.event25
 
+import models.enumeration.EventType
 import models.{Index, UserAnswers}
 import models.event25.TypeOfProtectionSelection
 import models.event25.TypeOfProtectionSelection.SchemeSpecific
+import pages.common.MembersPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class TypeOfProtectionPage(index: Index) extends QuestionPage[TypeOfProtectionSelection] {
-  override def path: JsPath = JsPath \ "event25" \ toString
+  override def path: JsPath = MembersPage(EventType.Event25)(index) \ TypeOfProtectionPage.toString
 
   override def route(waypoints: Waypoints): Call = {
     controllers.event25.routes.TypeOfProtectionController.onPageLoad(waypoints, index)
@@ -36,4 +38,8 @@ case class TypeOfProtectionPage(index: Index) extends QuestionPage[TypeOfProtect
       case _ => TypeOfProtectionReferencePage(index)
     }.orRecover
   }
+}
+
+object TypeOfProtectionPage {
+  override def toString: String = "typeOfProtection"
 }

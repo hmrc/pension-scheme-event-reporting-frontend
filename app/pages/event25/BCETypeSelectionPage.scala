@@ -18,13 +18,15 @@ package pages.event25
 
 import models.Index
 import models.UserAnswers
+import models.enumeration.EventType
 import models.event25.BCETypeSelection
+import pages.common.MembersPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class BCETypeSelectionPage(index: Index) extends QuestionPage[BCETypeSelection] {
-  override def path: JsPath = JsPath \ "event25" \ toString
+  override def path: JsPath = MembersPage(EventType.Event25)(index) \ BCETypeSelectionPage.toString
 
   override def route(waypoints: Waypoints): Call = {
     controllers.event25.routes.BCETypeSelectionController.onPageLoad(waypoints, index)
@@ -32,4 +34,8 @@ case class BCETypeSelectionPage(index: Index) extends QuestionPage[BCETypeSelect
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     TotalAmountBenefitCrystallisationPage(index)
+}
+
+object BCETypeSelectionPage {
+  override def toString: String = "bceTypeSelection"
 }
