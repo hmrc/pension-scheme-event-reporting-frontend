@@ -40,16 +40,16 @@ class BCETypeSelectionController @Inject()(val controllerComponents: MessagesCon
                                            userAnswersCacheConnector: UserAnswersCacheConnector
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  private val form = formProvider()
   private val eventType = EventType.Event25
 
-  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData() andThen requireData) {
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(BCETypeSelectionPage(index)).fold(form)(form.fill)
       Ok(view(preparedForm, waypoints, index))
   }
 
-  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData()).async {
+  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

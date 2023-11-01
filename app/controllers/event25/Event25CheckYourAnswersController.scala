@@ -19,6 +19,7 @@ package controllers.event25
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import helpers.ReadOnlyCYA
+import models.enumeration.EventType
 import models.enumeration.EventType.Event25
 import models.requests.DataRequest
 import models.{Index, MemberSummaryPath}
@@ -44,28 +45,28 @@ class Event25CheckYourAnswersController @Inject()(
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: CheckYourAnswersView
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-
+  private val eventType = EventType.Event25
   def onPageLoad(index: Index): Action[AnyContent] =
-    (identify andThen getData(Event25) andThen requireData) { implicit request =>
+    (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val thisPage = Event25CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
       val continueUrl = controllers.event25.routes.Event25CheckYourAnswersController.onClick.url
       val version = request.userAnswers.get(VersionInfoPage).map(_.version)
-      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event25, version, request.readOnly())
+      val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(eventType, version, request.readOnly())
       Ok(view(SummaryListViewModel(rows = buildEvent25CYARows(waypoints, thisPage, index)), continueUrl, readOnlyHeading))
     }
 
   def onClick: Action[AnyContent] =
-    (identify andThen getData(Event25) andThen requireData).async { implicit request =>
-      compileService.compileEvent(Event25, request.pstr, request.userAnswers).map {
+    (identify andThen getData(eventType) andThen requireData).async { implicit request =>
+      compileService.compileEvent(eventType, request.pstr, request.userAnswers).map {
         _ =>
-          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event25)).url)
+          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(eventType)).url)
       }
     }
 
   private def buildEvent25CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event25).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event25).toSeq
+    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), eventType).toSeq ++
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), eventType).toSeq
   }
 }

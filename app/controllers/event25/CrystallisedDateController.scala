@@ -38,7 +38,7 @@ import views.html.event25.CrystallisedDateView
 class CrystallisedDateController @Inject()(val controllerComponents: MessagesControllerComponents,
                                                     identify: IdentifierAction,
                                                     getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
+                                                    requireData: DataRequiredAction,
                                                     userAnswersCacheConnector: UserAnswersCacheConnector,
                                                     formProvider: CrystallisedDateFormProvider,
                                                     view: CrystallisedDateView
@@ -51,7 +51,7 @@ class CrystallisedDateController @Inject()(val controllerComponents: MessagesCon
     )
   }
 
-  private val eventType = EventType.Event7
+  private val eventType = EventType.Event25
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
     val startDate = paymentDateOpt(request.userAnswers.get(TaxYearPage))

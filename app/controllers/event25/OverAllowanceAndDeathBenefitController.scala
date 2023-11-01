@@ -43,8 +43,7 @@ class OverAllowanceAndDeathBenefitController @Inject()(
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val eventType = EventType.Event1
-
+  private val eventType = EventType.Event25
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
     val preparedForm = request.userAnswers.get(OverAllowanceAndDeathBenefitPage(index)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, index))
