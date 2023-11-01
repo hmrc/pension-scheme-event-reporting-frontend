@@ -16,11 +16,9 @@
 
 package pages.event25
 
-import models.event25.{BCETypeSelection, CrystallisedDate}
+import models.event25.BCETypeSelection
 import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
-
-import java.time.LocalDate
 
 class BCETypeSelectionPageSpec extends PageBehaviours {
 

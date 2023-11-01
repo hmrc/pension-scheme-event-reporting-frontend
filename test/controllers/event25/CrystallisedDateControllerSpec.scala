@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import controllers.event25.CrystallisedDateControllerSpec.crystallisedDate
 import forms.event25.CrystallisedDateFormProvider
-import models.{TaxYear, UserAnswers}
+import models.UserAnswers
 import models.common.MembersDetails
 import models.enumeration.EventType.Event25
 import models.event25.CrystallisedDate
@@ -28,7 +28,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{EmptyWaypoints, TaxYearPage}
+import pages.EmptyWaypoints
 import pages.common.MembersDetailsPage
 import pages.event25.CrystallisedDatePage
 import play.api.inject.bind
