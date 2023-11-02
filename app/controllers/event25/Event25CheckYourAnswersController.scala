@@ -20,7 +20,6 @@ import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import helpers.ReadOnlyCYA
 import models.enumeration.EventType
-import models.enumeration.EventType.Event25
 import models.requests.DataRequest
 import models.{Index, MemberSummaryPath}
 import pages.event25.Event25CheckYourAnswersPage
@@ -30,7 +29,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.MembersDetailsSummary
+import viewmodels.checkAnswers.{EmployerPayeReferenceSummary, MarginalRateSummary, MembersDetailsSummary, OverAllowanceAndDeathBenefitSummary, TotalAmountBenefitCrystallisationSummary, ValidProtectionSummary}
+import viewmodels.event25.checkAnswers.{BCETypeSelectionSummary, CrystallisedDateSummary, OverAllowanceSummary, TypeOfProtectionReferenceSummary, TypeOfProtectionSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -67,6 +67,21 @@ class Event25CheckYourAnswersController @Inject()(
   private def buildEvent25CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), eventType).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), eventType).toSeq
+      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), eventType).toSeq ++
+      CrystallisedDateSummary.rowCrystallisedDate(request.userAnswers, waypoints, sourcePage, request.readOnly(), index) ++
+      BCETypeSelectionSummary.rowBCETypeSelection(request.userAnswers, waypoints, index, sourcePage, request.readOnly()) ++
+      TotalAmountBenefitCrystallisationSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
+      ValidProtectionSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
+    //Yes then add next 2
+      TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()) ++
+      TypeOfProtectionReferenceSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), index) ++
+    //else
+      OverAllowanceSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
+    //Yes
+      MarginalRateSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
+    //No Add new summary
+      OverAllowanceAndDeathBenefitSummary.row(request.userAnswers, waypoints, sourcePage, index)++
+    //Yes
+      EmployerPayeReferenceSummary.row(request.userAnswers, waypoints, sourcePage, index)
   }
 }

@@ -627,3 +627,6 @@ POST        /report/:index/event-25-marginal-rate                           cont
 
 GET         /report/:index/event-25-employer-paye-reference                 controllers.event25.EmployerPayeReferenceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /report/:index/event-25-employer-paye-reference                 controllers.event25.EmployerPayeReferenceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
+GET         /report/:index/event-25-check-your-answers                        controllers.event25.Event25CheckYourAnswersController.onPageLoad(index: Index)
+GET         /report/event-25-click                                            controllers.event25.Event25CheckYourAnswersController.onClick

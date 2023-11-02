@@ -17,29 +17,36 @@
 package viewmodels.event25.checkAnswers
 
 import models.{Index, UserAnswers}
-import pages.event25.OverAllowancePage
+import pages.event25.TypeOfProtectionPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, HtmlContent}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object OverAllowanceSummary  {
+object TypeOfProtectionSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OverAllowancePage(index)).map {
+    answers.get(TypeOfProtectionPage(index)).map {
       answer =>
-
-        val value = if (answer) "site.yes" else "site.no"
-
-        SummaryListRowViewModel(
-          key     = "overAllowance.event25.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel("site.change", OverAllowancePage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("overAllowance.event25.change.hidden"))
+        val value = ValueViewModel(
+          HtmlContent(
+            HtmlFormat.escape(messages(s"typeOfProtection.event25.$answer"))
           )
+        )
+
+        SummaryListRow(
+          key = "typeOfProtection.event25.checkYourAnswersLabel",
+          value = value,
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+            ActionItemViewModel("site.change", TypeOfProtectionPage(index).changeLink(waypoints, sourcePage).url)
+              .withVisuallyHiddenText(messages("typeOfProtection.event25.change.hidden"))
+          )))
+          }
         )
     }
 }

@@ -1787,6 +1787,8 @@ bceTypeSelection.event25.trivialCommutationDeathBenefit = Trivial commutation lu
 bceTypeSelection.event25.uncrystallisedFunds = Uncrystallised funds pension lump sum
 bceTypeSelection.event25.uncrystallisedFundsDeathBenefit = Uncrystallised funds lump sum death benefit
 bceTypeSelection.event25.windingUp = Winding-up lump sum
+bceTypeSelection.event25.change.hidden = Type of lump sum allowance
+bceTypeSelection.event25.checkYourAnswersLabel = Type of lump sum allowance
 
 totalAmountBenefitCrystallisation.event25.title = How much was the total lump sum allowance?
 totalAmountBenefitCrystallisation.event25.heading = How much was the total lump sum allowance?
@@ -1819,9 +1821,13 @@ typeOfProtection.event25.preCommencement = Pre-commencement pension credits enha
 typeOfProtection.event25.primary = Primary protection
 typeOfProtection.event25.primaryWithProtectedSum = Primary protection with protected lump sum rights of more than £375,000
 typeOfProtection.event25.schemeSpecific = Scheme-specific lump sum protection
+typeOfProtection.event25.checkYourAnswersLabel = Type of protection held
+typeOfProtection.event25.change.hidden = Type of protection held
 
 typeOfProtectionReference.event25.heading = What is the member's protection reference?
 typeOfProtectionReference.event25.error.length = The protection reference is a maximum of 15 characters and a combination of numbers and letters
+typeOfProtectionReference.event25.checkYourAnswersLabel = Member’s {0} reference
+typeOfProtectionReference.event25.change.hidden = Member’s {0} reference
 
 overAllowance.event25.title = Has this lump sum payment taken the member over their available lump sum allowance?
 overAllowance.event25.heading = Has this lump sum payment taken the member over their available lump sum allowance?

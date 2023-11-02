@@ -17,29 +17,38 @@
 package viewmodels.event25.checkAnswers
 
 import models.{Index, UserAnswers}
-import pages.event25.OverAllowancePage
+import pages.event25.BCETypeSelectionPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object OverAllowanceSummary  {
+object BCETypeSelectionSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
+  def rowBCETypeSelection(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OverAllowancePage(index)).map {
+    answers.get(BCETypeSelectionPage(index)).map {
       answer =>
 
-        val value = if (answer) "site.yes" else "site.no"
-
-        SummaryListRowViewModel(
-          key     = "overAllowance.event25.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel("site.change", OverAllowancePage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("overAllowance.event25.change.hidden"))
+        val value = ValueViewModel(
+          HtmlContent(
+            HtmlFormat.escape(messages(s"bceTypeSelection.event25.$answer"))
           )
+        )
+
+        SummaryListRow(
+          key = "bceTypeSelection.event25.checkYourAnswersLabel",
+          value = value,
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", BCETypeSelectionPage(index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("bceTypeSelection.event25.change.hidden"))
+            )))
+          }
         )
     }
 }
