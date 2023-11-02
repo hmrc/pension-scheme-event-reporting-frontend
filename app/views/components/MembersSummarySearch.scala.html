@@ -14,15 +14,18 @@
  * limitations under the License.
  *@
 
-@(value:Option[String], searchHref: String, hint:Option[String] = None)(implicit messages: Messages)
+@import models.enumeration.EventType
+@import utils.SearchMessagesHelper.titleAndHint
+
+@(value:Option[String], searchHref: String, hint:Option[String] = None, eventType: EventType)(implicit messages: Messages)
 
 <div class="govuk-form-group">
     <h2 class="govuk-label-wrapper"><label class="govuk-label govuk-label--m" for="event-name">
-        @messages("membersSummary.search.title")
+        @messages(titleAndHint(eventType)._1)
     </label>
     </h2>
     <div id="event-name-hint" class="govuk-hint">
-        @messages(hint.getOrElse("membersSummary.search.hint"))
+        @messages(hint.getOrElse(titleAndHint(eventType)._2))
     </div>
     <form action="@searchHref" method="GET">
         <input class="govuk-input govuk-!-width-one-half" id="event-name" name="search" type="text" aria-describedby="event-name-hint" value="@value.getOrElse("")">

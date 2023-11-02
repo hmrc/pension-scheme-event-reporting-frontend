@@ -21,9 +21,10 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import helpers.ReadOnlyCYA
 import models.enumeration.EventType.Event19
 import models.requests.DataRequest
-import pages.event19.Event19CheckYourAnswersPage
+import pages.event19.{CountryOrTerritoryPage, Event19CheckYourAnswersPage}
 import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.JsBoolean
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -57,8 +58,17 @@ class Event19CheckYourAnswersController @Inject()(
 
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event19) andThen requireData).async { implicit request =>
-      compileService.compileEvent(Event19, request.pstr, request.userAnswers).map {
-        _ =>
+
+      val originalUserAnswers = request.userAnswers
+      val isCountryUkEuOrEEA = originalUserAnswers.get(CountryOrTerritoryPage.booleanPath)
+      val countryCodeForNonUkEuOrEEACountries = "ZZ"
+
+      val maybeUpdatedAnswers = isCountryUkEuOrEEA.collect {
+        case JsBoolean(false) =>
+          originalUserAnswers.setOrException(CountryOrTerritoryPage, countryCodeForNonUkEuOrEEACountries)
+      }.getOrElse(originalUserAnswers)
+
+      compileService.compileEvent(Event19, request.pstr, maybeUpdatedAnswers).map { _ =>
           Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
       }
     }
