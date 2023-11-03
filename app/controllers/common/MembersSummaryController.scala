@@ -22,7 +22,7 @@ import forms.mappings.Formatters
 import models.TaxYear.getSelectedTaxYearAsString
 import models.common.MembersSummary
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event2, Event22, Event23, Event3, Event4, Event5, Event6, Event8, Event8A}
+import models.enumeration.EventType.{Event2, Event22, Event23, Event25, Event3, Event4, Event5, Event6, Event8, Event8A}
 import models.{Index, MemberSummaryPath, UserAnswers}
 import pages.common.{MembersPage, MembersSummaryPage}
 import pages.{EmptyWaypoints, Waypoints}
@@ -114,6 +114,7 @@ class MembersSummaryController @Inject()(
                     case Event8A => controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(index).url
                     case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
                     case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
+                    case Event25 => controllers.event25.routes.Event25CheckYourAnswersController.onPageLoad(index).url
                     case _ => throw new RuntimeException("Unknown event type")
                   }
                 )
@@ -132,6 +133,7 @@ class MembersSummaryController @Inject()(
                     case Event8A => controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(index).url
                     case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
                     case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
+                    case Event25 => controllers.event25.routes.Event25CheckYourAnswersController.onPageLoad(index).url
                     case _ => throw new RuntimeException("Unknown event type")
                   }
                 ),

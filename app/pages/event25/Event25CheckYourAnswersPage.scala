@@ -32,7 +32,7 @@ case class Event25CheckYourAnswersPage(index: Index) extends CheckAnswersPage {
   override def toString: String = "CheckYourAnswersPage"
 }
 
-object Event22CheckYourAnswersPage {
+object Event25CheckYourAnswersPage {
 
   def waypointFromString(s: String): Option[Waypoint] = {
     val pattern = """event-25-check-answers-(\d{1,6})""".r.anchored

@@ -70,6 +70,7 @@ object MembersSummary {
     case Event6 => JsPath \ "AmountCrystallisedAndDate" \ "amountCrystallised"
     case Event8 => JsPath \ "lumpSumAmountAndDate" \ "lumpSumAmount"
     case Event8A => JsPath \ "lumpSumAmountAndDate" \ "lumpSumAmount"
+    case Event25 => JsPath \ "totalAmountBenefitCrystallisation"
     case _ => JsPath \ "totalPensionAmounts"
   }
 

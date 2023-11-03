@@ -157,7 +157,8 @@ class EventSummaryController @Inject()(
            EventType.Event4 | EventType.Event5 |
            EventType.Event6 | EventType.Event8 |
            EventType.Event8A | EventType.Event22 |
-           EventType.Event23 => Some(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(eventType)).url)
+           EventType.Event23 | EventType.Event25 =>
+        Some(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(eventType)).url)
       case EventType.Event7 => Some(controllers.event7.routes.Event7MembersSummaryController.onPageLoad(EmptyWaypoints).url)
       case EventType.Event10 => Some(controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
       case EventType.Event11 => Some(controllers.event11.routes.Event11CheckYourAnswersController.onPageLoad.url)
@@ -196,6 +197,7 @@ class EventSummaryController @Inject()(
       case EventType.Event20A => None
       case EventType.Event22 => Some(controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url)
       case EventType.Event23 => Some(controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url)
+      case EventType.Event25 => Some(controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url)
       case EventType.WindUp => Some(controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url)
       case _ =>
         logger.info(s"Missing event type $eventType")
@@ -210,7 +212,8 @@ class EventSummaryController @Inject()(
            EventType.Event4 | EventType.Event5 |
            EventType.Event6 | EventType.Event8 |
            EventType.Event8A | EventType.Event22 |
-           EventType.Event23 => Some(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(eventType)).url)
+           EventType.Event23 | EventType.Event25 =>
+        Some(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(eventType)).url)
       case EventType.Event7 => Some(controllers.event7.routes.Event7MembersSummaryController.onPageLoad(EmptyWaypoints).url)
       case EventType.Event10 => Some(controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
       case EventType.Event11 => Some(controllers.event11.routes.Event11CheckYourAnswersController.onPageLoad.url)

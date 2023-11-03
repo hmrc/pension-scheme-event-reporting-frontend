@@ -584,6 +584,9 @@ POST       /report/:index/remove-event-22                      controllers.commo
 GET        /report/:index/remove-event-23                    controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
 POST       /report/:index/remove-event-23                      controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
 
+GET        /report/:index/remove-event-25                    controllers.common.RemoveMemberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event25, index: Index)
+POST       /report/:index/remove-event-25                      controllers.common.RemoveMemberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event25, index: Index)
+
 GET        /report/:index/event-25-what-you-will-need                controllers.event25.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
 GET        /cannot-resume                                    controllers.CannotResumeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
@@ -628,5 +631,5 @@ POST        /report/:index/event-25-marginal-rate                           cont
 GET         /report/:index/event-25-employer-paye-reference                 controllers.event25.EmployerPayeReferenceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /report/:index/event-25-employer-paye-reference                 controllers.event25.EmployerPayeReferenceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
-GET         /report/:index/event-25-check-your-answers                        controllers.event25.Event25CheckYourAnswersController.onPageLoad(index: Index)
-GET         /report/event-25-click                                            controllers.event25.Event25CheckYourAnswersController.onClick
+GET         /report/:index/event-25-check-your-answers                      controllers.event25.Event25CheckYourAnswersController.onPageLoad(index: Index)
+GET         /report/event-25-click                                          controllers.event25.Event25CheckYourAnswersController.onClick
