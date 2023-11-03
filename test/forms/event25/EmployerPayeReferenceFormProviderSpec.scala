@@ -45,6 +45,11 @@ class EmployerPayeReferenceFormProviderSpec extends StringFieldBehaviours with C
       result.errors mustEqual Seq(FormError(fieldName, "employerPayeReference.event25.error.noSlash", ArraySeq(employerIdRefNoSlashRegex)))
     }
 
+    "not bind value that contains a disallowed character" in {
+      val result = form.bind(valueDetails("123/$abcDEF"))
+      result.errors mustEqual Seq(FormError(fieldName, "employerPayeReference.event25.error.disallowedChars", ArraySeq(employerIdRefDisallowedCharsRegex)))
+    }
+
     behave like fieldWithMaxLength(
       form,
       fieldName,

@@ -38,6 +38,7 @@ trait Constraints {
   val psaIdRegex = "^A[0-9]{7}$"
   val employerIdRefDigitsRegex = "^[0-9]{3}[0-9a-zA-Z/]{5,8}$"
   val employerIdRefNoSlashRegex = "^[0-9]{3}/[0-9a-zA-Z]{5,8}"
+  val employerIdRefDisallowedCharsRegex = "[A-Za-z0-9/]{9,12}"
   val protectionReferenceRegex = "^[A-Za-z0-9]{1,15}$"
 
   protected def postCode(errorKey: String): Constraint[String] = regexp(regexPostcode, errorKey)
@@ -104,6 +105,8 @@ trait Constraints {
   protected def employerPayeRefDigits(errorKey: String): Constraint[String] = regexp(employerIdRefDigitsRegex, errorKey)
 
   protected def employerPayeRefNoSlash(errorKey: String): Constraint[String] = regexp(employerIdRefNoSlashRegex, errorKey)
+
+  protected def employerIdRefDisallowedChars(errorKey: String): Constraint[String] = regexp(employerIdRefDisallowedCharsRegex, errorKey)
 
   implicit def convertToOptionalConstraint[T](constraint: Constraint[T]): Constraint[Option[T]] =
     Constraint {

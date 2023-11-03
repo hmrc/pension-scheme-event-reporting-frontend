@@ -30,6 +30,7 @@ class EmployerPayeReferenceFormProvider @Inject() extends Mappings {
           firstError(
             maxLength(12, "employerPayeReference.event25.error.length"),
             minLength(9, "employerPayeReference.event25.error.length"),
+            employerIdRefDisallowedChars("employerPayeReference.event25.error.disallowedChars"),
             employerPayeRefDigits("employerPayeReference.event25.error.leadingDigits"),
             employerPayeRefNoSlash("employerPayeReference.event25.error.noSlash"),
           )
