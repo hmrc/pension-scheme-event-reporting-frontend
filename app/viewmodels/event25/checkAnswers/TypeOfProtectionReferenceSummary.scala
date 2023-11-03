@@ -17,7 +17,6 @@
 package viewmodels.event25.checkAnswers
 
 import models.UserAnswers
-import models.enumeration.EventType
 import pages.event25.{TypeOfProtectionPage, TypeOfProtectionReferencePage}
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
