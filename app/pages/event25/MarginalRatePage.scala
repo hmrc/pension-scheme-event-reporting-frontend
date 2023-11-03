@@ -34,7 +34,7 @@ case class MarginalRatePage(index: Index) extends QuestionPage[Boolean] {
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
       case true  => EmployerPayeReferencePage(index)
-      case false => this
+      case false => Event25CheckYourAnswersPage(index)
     }.orRecover
   }
 }

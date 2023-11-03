@@ -22,7 +22,7 @@ import helpers.ReadOnlyCYA
 import models.enumeration.EventType
 import models.requests.DataRequest
 import models.{Index, MemberSummaryPath}
-import pages.event25.Event25CheckYourAnswersPage
+import pages.event25.{Event25CheckYourAnswersPage, MarginalRatePage, OverAllowanceAndDeathBenefitPage, OverAllowancePage, ValidProtectionPage}
 import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -72,16 +72,49 @@ class Event25CheckYourAnswersController @Inject()(
       BCETypeSelectionSummary.rowBCETypeSelection(request.userAnswers, waypoints, index, sourcePage, request.readOnly()) ++
       TotalAmountBenefitCrystallisationSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
       ValidProtectionSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
-    //Yes then add next 2
-      TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()) ++
-      TypeOfProtectionReferenceSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), index) ++
-    //else
+      hasValidProtectionRow(waypoints, index, sourcePage) ++
       OverAllowanceSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
-    //Yes
-      MarginalRateSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
-    //No Add new summary
-      OverAllowanceAndDeathBenefitSummary.row(request.userAnswers, waypoints, sourcePage, index)++
-    //Yes
-      EmployerPayeReferenceSummary.row(request.userAnswers, waypoints, sourcePage, index)
+      hasOverAllowanceRow(waypoints, index, sourcePage) ++
+      hasMarginalRateRow(waypoints, index, sourcePage)
+  }
+
+  private def hasValidProtectionRow(waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+                                         (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+
+    request.userAnswers.get(ValidProtectionPage(index)) match {
+      case Some(true) =>
+        (TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()) ++
+          TypeOfProtectionReferenceSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), index)).toSeq
+      case _ =>
+        Nil
+    }
+  }
+
+  private def hasOverAllowanceRow(waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+                                   (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+
+    request.userAnswers.get(OverAllowancePage(index)) match {
+      case Some(true) =>
+        MarginalRateSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq
+      case _ =>
+        request.userAnswers.get(OverAllowanceAndDeathBenefitPage(index)) match {
+          case Some(true) =>
+            (OverAllowanceAndDeathBenefitSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
+              MarginalRateSummary.row(request.userAnswers, waypoints, sourcePage, index)).toSeq
+          case _ =>
+            OverAllowanceAndDeathBenefitSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq
+        }
+    }
+  }
+
+  private def hasMarginalRateRow(waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+                                   (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+
+    request.userAnswers.get(MarginalRatePage(index)) match {
+      case Some(true) =>
+        EmployerPayeReferenceSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq
+      case _ =>
+        Nil
+    }
   }
 }

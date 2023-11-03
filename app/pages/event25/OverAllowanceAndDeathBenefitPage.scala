@@ -34,7 +34,7 @@ case class OverAllowanceAndDeathBenefitPage(index: Index) extends QuestionPage[B
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
       case true  => MarginalRatePage(index)
-      case false => this
+      case false => Event25CheckYourAnswersPage(index)
     }.orRecover
   }
 }
