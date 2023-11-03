@@ -1777,8 +1777,8 @@ crystallisedDate.event25.date.error.nothingEntered = Enter the date
 crystallisedDate.event25.date.error.noDayMonthOrYear = The date must include a day, month and year
 crystallisedDate.event25.date.error.outsideDateRanges = Enter a real date
 crystallisedDate.event25.date.error.outsideReportedYear = Date must be between {0} and {1}
-crystallisedDate.event25.date.change.hidden = The date of the crystallisation
-crystallisedDate.event25.date.checkYourAnswersLabel = The date the crystallisation take place
+crystallisedDate.event25.date.change.hidden = When did the higher lump sum allowance crystallisation take place?
+crystallisedDate.event25.date.checkYourAnswersLabel = When did the higher lump sum allowance crystallisation take place?
 
 bceTypeSelection.event25.title = Type of relevant benefit crystallisation event
 bceTypeSelection.event25.heading = What was the type of lump sum allowance?
@@ -1797,8 +1797,8 @@ bceTypeSelection.event25.trivialCommutationDeathBenefit = Trivial commutation lu
 bceTypeSelection.event25.uncrystallisedFunds = Uncrystallised funds pension lump sum
 bceTypeSelection.event25.uncrystallisedFundsDeathBenefit = Uncrystallised funds lump sum death benefit
 bceTypeSelection.event25.windingUp = Winding-up lump sum
-bceTypeSelection.event25.change.hidden = Type of lump sum allowance
-bceTypeSelection.event25.checkYourAnswersLabel = Type of lump sum allowance
+bceTypeSelection.event25.change.hidden = What was the type of lump sum allowance?
+bceTypeSelection.event25.checkYourAnswersLabel = What was the type of lump sum allowance?
 
 totalAmountBenefitCrystallisation.event25.title = Total amount of the relevant benefit crystallisation event
 totalAmountBenefitCrystallisation.event25.heading = How much was the total lump sum allowance?
@@ -1831,8 +1831,8 @@ typeOfProtection.event25.preCommencement = Pre-commencement pension credits enha
 typeOfProtection.event25.primary = Primary protection
 typeOfProtection.event25.primaryWithProtectedSum = Primary protection with protected lump sum rights of more than £375,000
 typeOfProtection.event25.schemeSpecific = Scheme-specific lump sum protection
-typeOfProtection.event25.checkYourAnswersLabel = Type of protection held
-typeOfProtection.event25.change.hidden = Type of protection held
+typeOfProtection.event25.checkYourAnswersLabel = What type of valid allowance protection is held?
+typeOfProtection.event25.change.hidden = What type of valid allowance protection is held?
 
 typeOfProtectionReference.event25.heading = What is the member's protection reference?
 typeOfProtectionReference.event25.error.length = The protection reference is a maximum of 15 characters and a combination of numbers and letters
