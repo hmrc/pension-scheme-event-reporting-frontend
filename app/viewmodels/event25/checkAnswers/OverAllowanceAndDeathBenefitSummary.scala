@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.event25.checkAnswers
 
 import models.{Index, UserAnswers}
 import pages.{CheckAnswersPage, Waypoints}

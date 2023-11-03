@@ -20,17 +20,18 @@ import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import helpers.ReadOnlyCYA
 import models.enumeration.EventType
+import models.event25.TypeOfProtectionSelection._
 import models.requests.DataRequest
 import models.{Index, MemberSummaryPath}
-import pages.event25.{Event25CheckYourAnswersPage, MarginalRatePage, OverAllowanceAndDeathBenefitPage, OverAllowancePage, ValidProtectionPage}
+import pages.event25._
 import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.{EmployerPayeReferenceSummary, MarginalRateSummary, MembersDetailsSummary, OverAllowanceAndDeathBenefitSummary, TotalAmountBenefitCrystallisationSummary, ValidProtectionSummary}
-import viewmodels.event25.checkAnswers.{BCETypeSelectionSummary, CrystallisedDateSummary, OverAllowanceSummary, TypeOfProtectionReferenceSummary, TypeOfProtectionSummary}
+import viewmodels.checkAnswers.MembersDetailsSummary
+import viewmodels.event25.checkAnswers._
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -74,19 +75,28 @@ class Event25CheckYourAnswersController @Inject()(
       ValidProtectionSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
       hasValidProtectionRow(waypoints, index, sourcePage) ++
       OverAllowanceSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
-      hasOverAllowanceRow(waypoints, index, sourcePage) ++
-      hasMarginalRateRow(waypoints, index, sourcePage)
+      hasOverAllowanceRow(waypoints, index, sourcePage)
   }
 
   private def hasValidProtectionRow(waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
                                          (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-
     request.userAnswers.get(ValidProtectionPage(index)) match {
       case Some(true) =>
         (TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()) ++
-          TypeOfProtectionReferenceSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), index)).toSeq
+          hasProtectionReference(waypoints, index, sourcePage)).toSeq
       case _ =>
         Nil
+    }
+  }
+
+  private def hasProtectionReference(waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+                                   (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+    request.userAnswers.get(TypeOfProtectionPage(index)) match {
+      case Some(SchemeSpecific) => Nil
+      case Some(EnhancedProtection | EnhancedProtectionWithProtectedSum | FixedProtection | FixedProtection2014 | FixedProtection2016 |
+                IndividualProtection2014 | IndividualProtection2016 | PreCommencement | Primary | PrimaryWithProtectedSum) =>
+        TypeOfProtectionReferenceSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq
+      case _ => Nil
     }
   }
 
@@ -95,12 +105,14 @@ class Event25CheckYourAnswersController @Inject()(
 
     request.userAnswers.get(OverAllowancePage(index)) match {
       case Some(true) =>
-        MarginalRateSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq
+        (MarginalRateSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
+          hasMarginalRateRow(waypoints, index, sourcePage)).toSeq
       case _ =>
         request.userAnswers.get(OverAllowanceAndDeathBenefitPage(index)) match {
           case Some(true) =>
             (OverAllowanceAndDeathBenefitSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
-              MarginalRateSummary.row(request.userAnswers, waypoints, sourcePage, index)).toSeq
+              MarginalRateSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
+              hasMarginalRateRow(waypoints, index, sourcePage)).toSeq
           case _ =>
             OverAllowanceAndDeathBenefitSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq
         }
