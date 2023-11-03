@@ -177,6 +177,7 @@ eventSummary.event20 = Event 20: Occupational pension scheme
 eventSummary.event20A = Event 20a: Master Trust scheme
 eventSummary.event22 = Event 22: Annual allowance
 eventSummary.event23 = Event 23: Dual annual allowance
+eventSummary.event25 = Event 25: Higher lump sum allowance
 eventSummary.eventWindUp = Scheme has wound up
 eventSummary.heading.version = Event reporting submission {0}
 
@@ -1770,7 +1771,7 @@ whatYouWillNeed.event25.item4 = if any lump sum payment has taken the member ove
 whatYouWillNeed.event25.item5 = (if it has been taxed at marginal rate) the employer PAYE reference
 
 crystallisedDate.event25.heading = When did the higher lump sum allowance crystallisation take place?
-crystallisedDate.event25.title = When did the higher lump sum allowance crystallisation take place?
+crystallisedDate.event25.title = When was the relevant benefit crystallisation event?
 crystallisedDate.event25.date.hint = For example, 22 09 2022
 crystallisedDate.event25.date.error.nothingEntered = Enter the date
 crystallisedDate.event25.date.error.noDayMonthOrYear = The date must include a day, month and year
@@ -1779,7 +1780,7 @@ crystallisedDate.event25.date.error.outsideReportedYear = Date must be between {
 crystallisedDate.event25.date.change.hidden = The date of the crystallisation
 crystallisedDate.event25.date.checkYourAnswersLabel = The date the crystallisation take place
 
-bceTypeSelection.event25.title = What was the type of lump sum allowance?
+bceTypeSelection.event25.title = Type of relevant benefit crystallisation event
 bceTypeSelection.event25.heading = What was the type of lump sum allowance?
 bceTypeSelection.event25.error.required = Select the type of relevant benefit crystallisation event
 bceTypeSelection.event25.error.format = Enter the type of benefit crystallisation event in the correct format
@@ -1799,7 +1800,7 @@ bceTypeSelection.event25.windingUp = Winding-up lump sum
 bceTypeSelection.event25.change.hidden = Type of lump sum allowance
 bceTypeSelection.event25.checkYourAnswersLabel = Type of lump sum allowance
 
-totalAmountBenefitCrystallisation.event25.title = How much was the total lump sum allowance?
+totalAmountBenefitCrystallisation.event25.title = Total amount of the relevant benefit crystallisation event
 totalAmountBenefitCrystallisation.event25.heading = How much was the total lump sum allowance?
 totalAmountBenefitCrystallisation.event25.checkYourAnswersLabel = How much was the total lump sum allowance?
 totalAmountBenefitCrystallisation.event25.error.nonNumeric = The total amount must be an amount of money, like 123 or 123.00

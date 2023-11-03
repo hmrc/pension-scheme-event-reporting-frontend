@@ -43,8 +43,8 @@ class OverAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach  {
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.OverAllowanceController.onPageLoad(waypoints, 1).url
-  private def postRoute: String = routes.OverAllowanceController.onSubmit(waypoints, 1).url
+  private def getRoute: String = routes.OverAllowanceController.onPageLoad(waypoints, 0).url
+  private def postRoute: String = routes.OverAllowanceController.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -70,14 +70,14 @@ class OverAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val view = application.injector.instanceOf[OverAllowanceView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, 1)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
       }
     }
 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(OverAllowancePage(1), true).success.value
+      val userAnswers = UserAnswers().set(OverAllowancePage(0), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -89,7 +89,7 @@ class OverAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), waypoints, 1)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -106,10 +106,10 @@ class OverAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach  {
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(OverAllowancePage(1), true).success.value
+        val updatedAnswers = emptyUserAnswers.set(OverAllowancePage(0), true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual OverAllowancePage(1).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual OverAllowancePage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -129,7 +129,7 @@ class OverAllowanceControllerSpec extends SpecBase with BeforeAndAfterEach  {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, 1)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

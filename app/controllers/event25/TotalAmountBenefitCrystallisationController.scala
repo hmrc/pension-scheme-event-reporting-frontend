@@ -17,9 +17,9 @@
 package controllers.event25
 
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.event25.TotalAmountBenefitCrystallisationFormProvider
-import models.{Index, UserAnswers}
+import models.Index
 import models.enumeration.EventType
 import pages.Waypoints
 import pages.event25.TotalAmountBenefitCrystallisationPage
@@ -34,6 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TotalAmountBenefitCrystallisationController @Inject()(val controllerComponents: MessagesControllerComponents,
                                       identify: IdentifierAction,
                                       getData: DataRetrievalAction,
+                                      requireData: DataRequiredAction,
                                       userAnswersCacheConnector: UserAnswersCacheConnector,
                                       formProvider: TotalAmountBenefitCrystallisationFormProvider,
                                       view: TotalAmountBenefitCrystallisationView
@@ -42,18 +43,18 @@ class TotalAmountBenefitCrystallisationController @Inject()(val controllerCompon
   private val form = formProvider()
   private val eventType = EventType.Event25
 
-  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(TotalAmountBenefitCrystallisationPage(index))).fold(form)(form.fill)
+  def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
+    val preparedForm = request.userAnswers.get(TotalAmountBenefitCrystallisationPage(index)).fold(form)(form.fill)
     Ok(view(preparedForm, waypoints, index))
   }
 
-  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
+  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
-          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+          val originalUserAnswers = request.userAnswers
           val updatedAnswers = originalUserAnswers.setOrException(TotalAmountBenefitCrystallisationPage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(TotalAmountBenefitCrystallisationPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
