@@ -589,3 +589,6 @@ GET         /on-click-get-version                                controllers.ame
 GET         /report/:memberSummaryPath                         controllers.common.MembersSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, memberSummaryPath: MemberSummaryPath, search: Option[String]?= None)
 GET         /report/:memberSummaryPath/page/:pageNumber        controllers.common.MembersSummaryController.onPageLoadPaginated(waypoints: Waypoints ?= EmptyWaypoints, memberSummaryPath: MemberSummaryPath, pageNumber: Index, search: Option[String] ?= None)
 POST        /report/:memberSummaryPath                         controllers.common.MembersSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, memberSummaryPath: MemberSummaryPath)
+
+GET         /temporary-route/:index                            controllers.common.MembersDetailsBackLinkController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3, index: Index, memberPageNo: Int = 0)
+PUT         /temporary-route/:index                            controllers.common.MembersDetailsBackLinkController.onBackClick(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3, index: Index, memberPageNo: Int = 0)
