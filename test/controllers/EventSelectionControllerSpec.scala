@@ -20,6 +20,7 @@ import audit.{AuditService, StartNewERAuditEvent}
 import base.SpecBase
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import forms.EventSelectionFormProvider
+import models.EventSelection.Event25
 import models.enumeration.{EventType, VersionStatus}
 import models.{EventSelection, TaxYear, ToggleDetails, VersionInfo}
 import org.mockito.ArgumentMatchers
@@ -65,7 +66,7 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
   }
 
   "GET" - {
-    "must return OK and the correct view" in {
+    "must return OK and the correct view for date prior to 2024" in {
       val ua = emptyUserAnswers
         .setOrException(TaxYearPage, TaxYear("2022"))
       val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
@@ -81,8 +82,9 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
         val formProvider = new EventSelectionFormProvider()
         val form = formProvider()
 
+        val expectedEvents = EventSelection.values.diff(Seq(Event25))
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, EventSelection.options(EventSelection.values), waypoints)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, EventSelection.options(expectedEvents), waypoints)(request, messages(application)).toString
       }
     }
   }
