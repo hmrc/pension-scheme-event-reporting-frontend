@@ -20,16 +20,12 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import controllers.event25.CrystallisedDateControllerSpec.crystallisedDate
 import forms.event25.CrystallisedDateFormProvider
-import models.UserAnswers
-import models.common.MembersDetails
-import models.enumeration.EventType.Event25
 import models.event25.CrystallisedDate
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
-import pages.common.MembersDetailsPage
 import pages.event25.CrystallisedDatePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -45,8 +41,9 @@ class CrystallisedDateControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new CrystallisedDateFormProvider()
+  private val stubMin: LocalDate = LocalDate.of(2022, 4, 6)
   private val stubMax: LocalDate = LocalDate.of(2023, 4, 5)
-  private val form = formProvider(stubMax)
+  private val form = formProvider(stubMin, stubMax)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
@@ -58,7 +55,7 @@ class CrystallisedDateControllerSpec extends SpecBase with BeforeAndAfterEach {
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validAnswer = CrystallisedDate(LocalDate.of(2022, 2, 12))
+  private val validAnswer = CrystallisedDate(LocalDate.of(2023, 2, 12))
 
 
   override def beforeEach: Unit = {
@@ -69,7 +66,9 @@ class CrystallisedDateControllerSpec extends SpecBase with BeforeAndAfterEach {
   "CrystallisedDateController" - {
 
     "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = emptyUserAnswersWithTaxYear
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -84,7 +83,7 @@ class CrystallisedDateControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = UserAnswers().set(CrystallisedDatePage(0), validAnswer).success.value
+      val userAnswers = emptyUserAnswersWithTaxYear.set(CrystallisedDatePage(0), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -104,7 +103,7 @@ class CrystallisedDateControllerSpec extends SpecBase with BeforeAndAfterEach {
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
-      val userAnswers = emptyUserAnswersWithTaxYear.setOrException(MembersDetailsPage(Event25, 0), MembersDetails("Jane", "Doe", "AB1233456C"))
+      val userAnswers = emptyUserAnswersWithTaxYear
 
       val application =
         applicationBuilder(userAnswers = Some(userAnswers), extraModules)
@@ -124,10 +123,39 @@ class CrystallisedDateControllerSpec extends SpecBase with BeforeAndAfterEach {
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
+    "must return a bad request when the user enters a date outside of the valid range" in {
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(()))
+
+      val userAnswers = emptyUserAnswersWithTaxYear
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers), extraModules)
+          .build()
+
+      val invalidAnswer = CrystallisedDate(LocalDate.of(2006, 2, 12))
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
+            crystallisedDate(invalidAnswer.date): _*
+          )
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[CrystallisedDateView]
+        val boundForm = form.bind(Map("value" -> invalidAnswer.toString))
+
+        status(result) mustEqual BAD_REQUEST
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
 
     "must return bad request when invalid data is submitted" in {
+      val userAnswers = emptyUserAnswersWithTaxYear
+
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        applicationBuilder(userAnswers = Some(userAnswers), extraModules)
           .build()
 
       running(application) {

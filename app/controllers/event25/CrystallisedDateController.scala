@@ -18,22 +18,19 @@ package controllers.event25
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.event25.CrystallisedDateController.paymentDateOpt
 import forms.event25.CrystallisedDateFormProvider
 import models.enumeration.EventType
-import models.event25.CrystallisedDate
-import models.{Index, Quarters, TaxYear, UserAnswers}
+import models.{Index, TaxYear}
+import pages.Waypoints
 import pages.event25.CrystallisedDatePage
-import pages.{TaxYearPage, Waypoints}
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.event25.CrystallisedDateView
 
 import java.time.{LocalDate, Month}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import views.html.event25.CrystallisedDateView
 
 class CrystallisedDateController @Inject()(val controllerComponents: MessagesControllerComponents,
                                                     identify: IdentifierAction,
@@ -44,47 +41,36 @@ class CrystallisedDateController @Inject()(val controllerComponents: MessagesCon
                                                     view: CrystallisedDateView
                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def form(startDate: LocalDate)(implicit messages: Messages): Form[CrystallisedDate] = {
-    val endDate = Quarters.getQuarter(startDate).endDate
-    formProvider(
-      endDate
-    )
-  }
-
   private val eventType = EventType.Event25
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) { implicit request =>
-    val startDate = paymentDateOpt(request.userAnswers.get(TaxYearPage))
+    val selectedTaxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers).toInt
+    val startDate = LocalDate.of(selectedTaxYear - 1, Month.APRIL, 6)
+    val endDate = LocalDate.of(selectedTaxYear, Month.APRIL, 5)
 
     val preparedForm = request.userAnswers.get(CrystallisedDatePage(index)) match {
-      case Some(value) => form(startDate = startDate).fill(value)
-      case None => form(startDate)
+      case Some(value) => formProvider(startDate, endDate).fill(value)
+      case None => formProvider(startDate, endDate)
     }
     Ok(view(preparedForm, waypoints, index))
   }
 
-  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
-    val startDate = paymentDateOpt(request.userAnswers.flatMap(_.get(TaxYearPage)))
-    form(startDate).bindFromRequest().fold(
+  def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async { implicit request =>
+    val selectedTaxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers).toInt
+    val startDate = LocalDate.of(selectedTaxYear - 1, Month.APRIL, 6)
+    val endDate = LocalDate.of(selectedTaxYear, Month.APRIL, 5)
+
+    formProvider(startDate, endDate).bindFromRequest().fold(
       formWithErrors => {
         Future.successful(BadRequest(view(formWithErrors, waypoints, index)))
       },
       value => {
-        val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+        val originalUserAnswers = request.userAnswers
         val updatedAnswers = originalUserAnswers.setOrException(CrystallisedDatePage(index), value)
         userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
           Redirect(CrystallisedDatePage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
         }
       }
     )
-  }
-}
-
-object CrystallisedDateController {
-  def paymentDateOpt(optTaxYear: Option[TaxYear]): LocalDate = optTaxYear match {
-    case Some(value) =>
-      val taxYear = value.startYear
-      LocalDate.of(Integer.parseInt(taxYear), Month.APRIL, 6)
-    case _ => LocalDate.now()
   }
 }

@@ -28,22 +28,11 @@ import javax.inject.Inject
 
 class CrystallisedDateFormProvider @Inject() extends Mappings with Transforms { // scalastyle:off magic.number
 
-  private val startDate: LocalDate = LocalDate.of(2006, 4, 6)
-
-  private def endDate(date: LocalDate): LocalDate = {
-    date match {
-      case _ if date.isBefore(LocalDate.of(date.getYear, 4, 6)) =>
-        LocalDate.of(date.getYear, 4, 5)
-      case _ =>
-        LocalDate.of(date.getYear + 1, 4, 5)
-    }
-  }
-
-  def apply(max: LocalDate)(implicit messages: Messages): Form[CrystallisedDate] =
+  def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[CrystallisedDate] =
     Form(
       mapping(
         localDateMappingWithDateRange(
-          field = "crystallisedDate", date = (startDate, endDate(max)), outOfRangeKey = "crystallisedDate.event25.date.error.outsideReportedYear")
+          field = "crystallisedDate", date = (min, max), outOfRangeKey = "crystallisedDate.event25.date.error.outsideReportedYear")
       )
       (CrystallisedDate.apply)(CrystallisedDate.unapply)
     )
