@@ -65,7 +65,7 @@ object EventSelection extends Enumerable.Implicits {
 
   case object Event23 extends WithName("event23") with EventSelection
 
-  case object Event25 extends WithName("event25") with EventSelection
+  case object Event24 extends WithName("event24") with EventSelection
 
   case object Or extends WithName("or") with EventSelection
 
@@ -74,7 +74,7 @@ object EventSelection extends Enumerable.Implicits {
   val values: Seq[EventSelection] = Seq(
     Event1, Event2, Event3, Event4, Event5, Event6, Event7, Event8, Event8A, Event10,
     Event11, Event12, Event13, Event14, Event18, Event19, Event20, Event20A, Event22,
-    Event23, Event25, Or, EventWoundUp
+    Event23, Event24, Or, EventWoundUp
   )
 
   def options(values: Seq[EventSelection])(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {

@@ -152,11 +152,11 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
       totalAmount)
 
     behave like testSuite(
-      formProvider(Event25),
-      Event25,
-      sampleMemberJourneyDataEvent25(Event25),
-      SampleData.crystallisedAmountEvent25.setScale(2).toString(),
-      fakeChangeUrl(Event25),
+      formProvider(Event24),
+      Event24,
+      sampleMemberJourneyDataEvent24(Event24),
+      SampleData.crystallisedAmountEvent24.setScale(2).toString(),
+      fakeChangeUrl(Event24),
       totalAmount)
 
 
@@ -188,7 +188,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
       formProvider(Event23), Event23, "260.00", SampleData.event22and23UADataWithPagination(Event23))
 
     behave like testReturnOkAndCorrectViewWithPagination(
-      formProvider(Event25), Event25, "260.00", SampleData.event25UADataWithPagination(Event25))
+      formProvider(Event24), Event24, "260.00", SampleData.event24UADataWithPagination(Event24))
 
   }
 
@@ -388,7 +388,7 @@ object MembersSummaryControllerSpec {
       case Event8A => controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(0).url
       case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url
       case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url
-      case Event25 => controllers.event25.routes.Event25CheckYourAnswersController.onPageLoad(0).url
+      case Event24 => controllers.event24.routes.Event24CheckYourAnswersController.onPageLoad(0).url
       case _ => "Not a member event used on this summary page"
     }
   }
@@ -399,7 +399,7 @@ object MembersSummaryControllerSpec {
            Event4 | Event5 |
            Event6 | Event8 |
            Event8A | Event22 |
-           Event23 | Event25 => RemoveMemberController.onPageLoad(EmptyWaypoints, eventType, index).url
+           Event23 | Event24 => RemoveMemberController.onPageLoad(EmptyWaypoints, eventType, index).url
       case _ => "Not a member event used on this summary page"
     }
   }
@@ -415,7 +415,7 @@ object MembersSummaryControllerSpec {
       case Event8A => controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(index).url
       case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
       case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
-      case Event25 => controllers.event25.routes.Event25CheckYourAnswersController.onPageLoad(index).url
+      case Event24 => controllers.event24.routes.Event24CheckYourAnswersController.onPageLoad(index).url
       case _ => "Not a member event"
     }
   }

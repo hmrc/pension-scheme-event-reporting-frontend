@@ -20,7 +20,7 @@ import audit.{AuditService, StartNewERAuditEvent}
 import base.SpecBase
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import forms.EventSelectionFormProvider
-import models.EventSelection.Event25
+import models.EventSelection.Event24
 import models.enumeration.{EventType, VersionStatus}
 import models.{EventSelection, TaxYear, ToggleDetails, VersionInfo}
 import org.mockito.ArgumentMatchers
@@ -82,7 +82,7 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
         val formProvider = new EventSelectionFormProvider()
         val form = formProvider()
 
-        val expectedEvents = EventSelection.values.diff(Seq(Event25))
+        val expectedEvents = EventSelection.values.diff(Seq(Event24))
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, EventSelection.options(expectedEvents), waypoints)(request, messages(application)).toString
       }

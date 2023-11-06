@@ -29,7 +29,7 @@ import pages.event20.Event20CheckYourAnswersPage
 import pages.event20A.Event20ACheckYourAnswersPage
 import pages.event22.Event22CheckYourAnswersPage
 import pages.event23.Event23CheckYourAnswersPage
-import pages.event25.Event25CheckYourAnswersPage
+import pages.event24.Event24CheckYourAnswersPage
 import pages.event3.Event3CheckYourAnswersPage
 import pages.event4.Event4CheckYourAnswersPage
 import pages.event5.Event5CheckYourAnswersPage
@@ -83,6 +83,6 @@ object Waypoint {
       .orElse(Event13CheckYourAnswersPage.waypointFromString(s))
       .orElse(Event22CheckYourAnswersPage.waypointFromString(s))
       .orElse(Event23CheckYourAnswersPage.waypointFromString(s))
-      .orElse(Event25CheckYourAnswersPage.waypointFromString(s))
+      .orElse(Event24CheckYourAnswersPage.waypointFromString(s))
 
 }
