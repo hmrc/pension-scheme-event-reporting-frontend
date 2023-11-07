@@ -33,11 +33,7 @@
 
     @formHelper(action = submitUrl) {
 
-        @govukButton(
-            ButtonViewModel("← Custom back link")
-                .asLink(controllers.common.routes.
-                    MembersDetailsBackLinkController.onBackClick(waypoints, index).url)
-        )
+        <a class="govuk-link" href=@(controllers.common.routes.MembersDetailsBackLinkController.onBackClick(waypoints, eventType, index, memberPageNo).url)>〱Custom back link</a>
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
