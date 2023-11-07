@@ -20,10 +20,10 @@ import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import helpers.ReadOnlyCYA
 import models.enumeration.EventType
-import models.event24.TypeOfProtectionSelection.{EnhancedProtection, EnhancedProtectionWithProtectedSum, FixedProtection, FixedProtection2014, FixedProtection2016, IndividualProtection2014, IndividualProtection2016, PreCommencement, Primary, PrimaryWithProtectedSum, SchemeSpecific}
+import models.event24.TypeOfProtectionSelection._
 import models.requests.DataRequest
 import models.{Index, MemberSummaryPath}
-import pages.event24.{Event24CheckYourAnswersPage, MarginalRatePage, OverAllowanceAndDeathBenefitPage, OverAllowancePage, TypeOfProtectionPage, ValidProtectionPage}
+import pages.event24._
 import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,7 +31,7 @@ import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.MembersDetailsSummary
-import viewmodels.event24.checkAnswers.{BCETypeSelectionSummary, CrystallisedDateSummary, EmployerPayeReferenceSummary, MarginalRateSummary, OverAllowanceAndDeathBenefitSummary, OverAllowanceSummary, TotalAmountBenefitCrystallisationSummary, TypeOfProtectionReferenceSummary, TypeOfProtectionSummary, ValidProtectionSummary}
+import viewmodels.event24.checkAnswers._
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
