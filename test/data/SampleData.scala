@@ -35,7 +35,7 @@ import models.event12.DateOfChange
 import models.event20.Event20Date
 import models.event20.WhatChange.BecameOccupationalScheme
 import models.event20A.WhatChange.{BecameMasterTrust, CeasedMasterTrust}
-import models.event25.{BCETypeSelection, CrystallisedDate}
+import models.event24.{BCETypeSelection, CrystallisedDate}
 import models.event6.{CrystallisedDetails, TypeOfProtection => Event6TypeOfProtection}
 import models.event7.PaymentDate
 import models.event8.{LumpSumDetails, TypeOfProtection => Event8TypeOfProtection}
@@ -50,7 +50,7 @@ import pages.event10.{BecomeOrCeaseSchemePage, ContractsOrPoliciesPage, SchemeCh
 import pages.event12.{DateOfChangePage, HasSchemeChangedRulesPage}
 import pages.event19.{CountryOrTerritoryPage, DateChangeMadePage}
 import pages.event2.{AmountPaidPage, DatePaidPage}
-import pages.event25.{BCETypeSelectionPage, CrystallisedDatePage, EmployerPayeReferencePage, MarginalRatePage,
+import pages.event24.{BCETypeSelectionPage, CrystallisedDatePage, EmployerPayeReferencePage, MarginalRatePage,
   OverAllowanceAndDeathBenefitPage, OverAllowancePage, TotalAmountBenefitCrystallisationPage, ValidProtectionPage}
 import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage => Event6TypeOfProtectionPage}
 import pages.event7.{CrystallisedAmountPage, LumpSumAmountPage, PaymentDatePage}
@@ -172,7 +172,7 @@ object SampleData extends SpecBase {
   val lumpSumAmountEvent7: BigDecimal = BigDecimal(100.00)
   val crystallisedAmountEvent7: BigDecimal = BigDecimal(50.00)
   val totalPaymentAmountEvent22and23: BigDecimal = BigDecimal(10.00)
-  val crystallisedAmountEvent25: BigDecimal = BigDecimal(10.00)
+  val crystallisedAmountEvent24: BigDecimal = BigDecimal(10.00)
 
   def booleanCYAVal(value: Boolean): String = if (value) "site.yes" else "site.no"
 
@@ -340,28 +340,28 @@ object SampleData extends SpecBase {
         .setOrException(TotalPensionAmountsPage(eventType, i), BigDecimal(10.00))
     }
 
-  def sampleMemberJourneyDataEvent25(eventType: EventType): UserAnswers = UserAnswers()
+  def sampleMemberJourneyDataEvent24(eventType: EventType): UserAnswers = UserAnswers()
     .setOrException(TaxYearPage, TaxYear("2022"))
     .setOrException(MembersDetailsPage(eventType, 0), memberDetails)
     .setOrException(CrystallisedDatePage(0), CrystallisedDate(LocalDate.of(2023, 2, 12)))
     .setOrException(BCETypeSelectionPage(0), BCETypeSelection.Small)
-    .setOrException(TotalAmountBenefitCrystallisationPage(0), crystallisedAmountEvent25)
+    .setOrException(TotalAmountBenefitCrystallisationPage(0), crystallisedAmountEvent24)
     .setOrException(ValidProtectionPage(0), true)
-    .setOrException(pages.event25.TypeOfProtectionReferencePage(0), "abc123DEF")
+    .setOrException(pages.event24.TypeOfProtectionReferencePage(0), "abc123DEF")
     .setOrException(OverAllowancePage(0), false)
     .setOrException(OverAllowanceAndDeathBenefitPage(0), true)
     .setOrException(MarginalRatePage(0), true)
     .setOrException(EmployerPayeReferencePage(0), "123/ABCDE")
 
-  def event25UADataWithPagination(eventType: EventType) =
+  def event24UADataWithPagination(eventType: EventType) =
     (0 to 25).foldLeft(emptyUserAnswersWithTaxYear) { (acc, i) =>
       acc.setOrException(MembersDetailsPage(eventType, i), memberDetails)
         .setOrException(ChooseTaxYearPage(eventType, i), ChooseTaxYear("2015"))(writesTaxYear)
         .setOrException(CrystallisedDatePage(i), CrystallisedDate(LocalDate.of(2023, 2, 12)))
         .setOrException(BCETypeSelectionPage(i), BCETypeSelection.Small)
-        .setOrException(TotalAmountBenefitCrystallisationPage(i), crystallisedAmountEvent25)
+        .setOrException(TotalAmountBenefitCrystallisationPage(i), crystallisedAmountEvent24)
         .setOrException(ValidProtectionPage(i), true)
-        .setOrException(pages.event25.TypeOfProtectionReferencePage(i), "abc123DEF")
+        .setOrException(pages.event24.TypeOfProtectionReferencePage(i), "abc123DEF")
         .setOrException(OverAllowancePage(i), false)
         .setOrException(OverAllowanceAndDeathBenefitPage(i), true)
         .setOrException(MarginalRatePage(i), true)
