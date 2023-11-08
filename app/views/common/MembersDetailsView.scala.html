@@ -27,13 +27,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberPageNo: Int, submitUrl: Call, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, eventType: EventType, memberPageNo: Int, submitUrl: Call)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, if(eventType==Event2) {if(memberPageNo == 1) messages("deceasedMembersDetails.title") else messages("beneficiaryDetails.title") } else messages("membersDetails.title")), showBackLink = false) {
+@layout(pageTitle = title(form, if(eventType==Event2) {if(memberPageNo == 1) messages("deceasedMembersDetails.title") else messages("beneficiaryDetails.title") } else messages("membersDetails.title"))) {
 
     @formHelper(action = submitUrl) {
-
-        <a class="govuk-link" href=@(controllers.common.routes.MembersDetailsBackLinkController.onBackClick(waypoints, eventType, index, memberPageNo).url)>〱Custom back link</a>
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

@@ -58,7 +58,7 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
     (identify andThen getData(eventType)) { implicit request =>
       val form = formProvider(eventType, memberNinos(eventType, indexToInt(index)), memberPageNo)
       val preparedForm = request.userAnswers.flatMap(_.get(MembersDetailsPage(eventType, indexToInt(index), memberPageNo))).fold(form)(form.fill)
-      Ok(view(preparedForm, waypoints, eventType, memberPageNo, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index, memberPageNo), index))
+      Ok(view(preparedForm, waypoints, eventType, memberPageNo, controllers.common.routes.MembersDetailsController.onSubmit(waypoints, eventType, index, memberPageNo)))
     }
 
   def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index, memberPageNo: Int): Action[AnyContent] = (identify andThen getData(eventType)).async {
@@ -83,7 +83,7 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
     val form = formProvider(eventType, memberNinos(eventType, indexToInt(index)), memberPageNo)
     form.bindFromRequest().fold(
       formWithErrors =>
-        Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, memberPageNo, postCall, index))),
+        Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, memberPageNo, postCall))),
       value => {
         val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
         val updatedAnswers = originalUserAnswers.setOrException(page, value)
