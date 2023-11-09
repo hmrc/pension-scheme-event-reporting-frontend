@@ -87,7 +87,7 @@ GET         /report/:index/event-1-check-your-answers                         co
 GET         /report/event-1-click                                             controllers.event1.Event1CheckYourAnswersController.onClick
 
 GET         /report/:index/event-2-check-your-answers                         controllers.event2.Event2CheckYourAnswersController.onPageLoad(index: Index)
-GET         /report/event-2-click                                             controllers.event2.Event2CheckYourAnswersController.onClick
+GET         /report/:index/event-2-click                                      controllers.event2.Event2CheckYourAnswersController.onClick(index: Index)
 
 GET         /report/:index/event-23-check-your-answers                        controllers.event23.Event23CheckYourAnswersController.onPageLoad(index: Index)
 GET         /report/event-23-click                                            controllers.event23.Event23CheckYourAnswersController.onClick
