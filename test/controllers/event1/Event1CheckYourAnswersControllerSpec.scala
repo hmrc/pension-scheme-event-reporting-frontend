@@ -18,14 +18,19 @@ package controllers.event1
 
 import base.SpecBase
 import data.SampleData.{erOverviewSeq, sampleEmployerJourneyDataEvent1, sampleMemberJourneyDataEvent1}
-import models.{TaxYear, VersionInfo}
+import models.common.{MembersDetails, PaymentDetails}
 import models.enumeration.EventType.Event1
 import models.enumeration.VersionStatus.{Compiled, Submitted}
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
+import models.event1.PaymentNature.MemberOther
+import models.event1.WhoReceivedUnauthPayment
+import models.{TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.common.{MembersDetailsPage, PaymentDetailsPage}
+import pages.event1.{DoYouHoldSignedMandatePage, ValueOfUnauthorisedPaymentPage, WhoReceivedUnauthPaymentPage}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
@@ -39,6 +44,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach {
@@ -70,7 +76,7 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(list,
-          continueUrl = "/manage-pension-scheme-event-report/report/event-1-click",
+          continueUrl = "/manage-pension-scheme-event-report/report/1/event-1-click",
           Tuple2(None, None),
           request,
           messages(application)).toString
@@ -91,7 +97,7 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(
           list,
-          continueUrl = "/manage-pension-scheme-event-report/report/event-1-click",
+          continueUrl = "/manage-pension-scheme-event-report/report/1/event-1-click",
           Tuple2(Some(1), Some(Event1)),
           request,
           messages(application)).toString
@@ -248,7 +254,30 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       }
     }
 
-    "must redirect to the correct page onClick" in {
+    "must redirect to the correct page onClick if all expected answers are present" in {
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful())
+
+      val event1Answers = emptyUserAnswers.set(WhoReceivedUnauthPaymentPage(0), WhoReceivedUnauthPayment.Member).get
+        .set(MembersDetailsPage(Event1, 0), MembersDetails("Jane", "Doe", "AB 123456 A")).get
+        .set(DoYouHoldSignedMandatePage(0), true).get
+        .set(ValueOfUnauthorisedPaymentPage(0), false).get
+        .set(pages.event1.member.PaymentNaturePage(0), MemberOther).get
+        .set(PaymentDetailsPage(Event1, 0), PaymentDetails(BigDecimal(123), LocalDate.of(2024, 2, 2))).get
+
+      val userAnswersWithVersionInfo = event1Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event1.routes.Event1CheckYourAnswersController.onClick(0).url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(EmptyWaypoints).url
+        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
+      }
+    }
+    "must redirect to the correct page onClick if an answer is missing" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
         .thenReturn(Future.successful())
 
@@ -256,12 +285,13 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event1.routes.Event1CheckYourAnswersController.onClick.url)
+        val request = FakeRequest(GET, controllers.event1.routes.Event1CheckYourAnswersController.onClick(0).url)
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(EmptyWaypoints).url
-        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
+        redirectLocation(result).value mustEqual s"${
+          controllers.event1.routes.WhoReceivedUnauthPaymentController.onPageLoad(EmptyWaypoints, 0).url
+        }?waypoints=event-1-check-answers-1"
       }
     }
   }

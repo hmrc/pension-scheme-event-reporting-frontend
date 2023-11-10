@@ -18,6 +18,7 @@ package controllers.event4
 
 import base.SpecBase
 import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent3and4and5}
+import models.common.{MembersDetails, PaymentDetails}
 import models.{MemberSummaryPath, TaxYear, VersionInfo}
 import models.enumeration.EventType.Event4
 import models.enumeration.VersionStatus.{Compiled, Submitted}
@@ -26,6 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.common.{MembersDetailsPage, PaymentDetailsPage}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
@@ -39,6 +41,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class Event4CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach {
@@ -71,7 +74,7 @@ class Event4CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(
           list,
-          continueUrl = "/manage-pension-scheme-event-report/report/event-4-click",
+          continueUrl = "/manage-pension-scheme-event-report/report/1/event-4-click",
           Tuple2(None, None),
           request,
           messages(application)).toString
@@ -92,7 +95,7 @@ class Event4CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(
           list,
-          continueUrl = "/manage-pension-scheme-event-report/report/event-4-click",
+          continueUrl = "/manage-pension-scheme-event-report/report/1/event-4-click",
           Tuple2(Some(1), Some(Event4)),
           request,
           messages(application)).toString
@@ -178,15 +181,18 @@ class Event4CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       }
     }
 
-    "must redirect to the correct page onClick" in {
+    "must redirect to the correct page onClick if all answers are present" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
         .thenReturn(Future.successful())
 
-      val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val event4Answers = emptyUserAnswers.set(MembersDetailsPage(Event4, 0), MembersDetails("Jane", "Doe", "AB123456D")).get
+        .set(PaymentDetailsPage(Event4, 0), PaymentDetails(BigDecimal(123), LocalDate.of(2024, 4, 4))).get
+
+      val userAnswersWithVersionInfo = event4Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event4.routes.Event4CheckYourAnswersController.onClick.url)
+        val request = FakeRequest(GET, controllers.event4.routes.Event4CheckYourAnswersController.onClick(0).url)
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -194,7 +200,27 @@ class Event4CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
       }
     }
+    "must redirect to the correct page onClick if an answer is missing" in {
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful())
+
+      val event4Answers = emptyUserAnswers.set(MembersDetailsPage(Event4, 0), MembersDetails("Jane", "Doe", "AB123456D")).get
+
+      val userAnswersWithVersionInfo = event4Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event4.routes.Event4CheckYourAnswersController.onClick(0).url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual s"${
+          controllers.common.routes.PaymentDetailsController.onPageLoad(EmptyWaypoints, Event4, 0).url
+        }?waypoints=event-4-check-answers-1"
+      }
+    }
   }
+
 }
 
 object Event4CheckYourAnswersControllerSpec {

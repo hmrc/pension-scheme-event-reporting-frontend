@@ -35,6 +35,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.UserAnswersValidation
 import viewmodels.address.checkAnswers.ChooseAddressSummary
 import viewmodels.checkAnswers.MembersDetailsSummary
 import viewmodels.event1.checkAnswers._
@@ -52,7 +53,8 @@ class Event1CheckYourAnswersController @Inject()(
                                                   requireData: DataRequiredAction,
                                                   compileService: CompileService,
                                                   val controllerComponents: MessagesControllerComponents,
-                                                  view: CheckYourAnswersView
+                                                  view: CheckYourAnswersView,
+                                                  userAnswersValidation: UserAnswersValidation
                                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] =
@@ -61,19 +63,15 @@ class Event1CheckYourAnswersController @Inject()(
       val thisPage = Event1CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
 
-      val continueUrl = controllers.event1.routes.Event1CheckYourAnswersController.onClick.url
+      val continueUrl = controllers.event1.routes.Event1CheckYourAnswersController.onClick(index).url
       val version = request.userAnswers.get(VersionInfoPage).map(_.version)
       val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event1, version, request.readOnly())
       Ok(view(SummaryListViewModel(rows = buildEvent1CYARows(waypoints, thisPage, index)), continueUrl, readOnlyHeading))
     }
 
-  def onClick: Action[AnyContent] =
+  def onClick(index: Index): Action[AnyContent] =
     (identify andThen getData(Event1) andThen requireData).async { implicit request =>
-      val waypoints = EmptyWaypoints
-      compileService.compileEvent(Event1, request.pstr, request.userAnswers).map {
-        _ =>
-          Redirect(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(waypoints))
-      }
+      userAnswersValidation.event1AnswerValidation(index)
     }
 
   private def event1MemberJourney(index: Int)(implicit request: DataRequest[AnyContent]): Boolean = {
