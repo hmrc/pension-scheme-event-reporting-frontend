@@ -17,21 +17,23 @@
 package utils
 
 import models.enumeration.AddressJourneyType
-import models.enumeration.EventType.{Event1, Event2, Event3, Event4, Event5, Event6, Event7, Event8, Event8A}
+import models.enumeration.EventType.{Event1, Event10, Event11, Event2, Event3, Event4, Event5, Event6, Event7, Event8, Event8A}
 import models.event1.PaymentNature.{OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TransferToNonRegPensionScheme}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.employer.PaymentNature.ResidentialProperty
+import models.event10.BecomeOrCeaseScheme.{ItBecameAnInvestmentRegulatedPensionScheme, ItHasCeasedToBeAnInvestmentRegulatedPensionScheme}
 import models.event3.ReasonForBenefits.Other
-import models.event8.TypeOfProtection
 import models.event8a.PaymentType
 import models.requests.DataRequest
 import models.{Index, MemberSummaryPath}
 import pages.EmptyWaypoints
 import pages.address.ManualAddressPage
 import pages.common.{MembersDetailsPage, PaymentDetailsPage}
+import pages.event1._
 import pages.event1.employer.CompanyDetailsPage
 import pages.event1.member.{ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage, WhoWasTheTransferMadePage}
-import pages.event1._
+import pages.event10.{BecomeOrCeaseSchemePage, ContractsOrPoliciesPage, Event10CheckYourAnswersPage, SchemeChangeDatePage}
+import pages.event11.{Event11CheckYourAnswersPage, HasSchemeChangedRulesInvestmentsInAssetsPage, HasSchemeChangedRulesPage, InvestmentsInAssetsRuleChangeDatePage, UnAuthPaymentsRuleChangeDatePage}
 import pages.event2.{AmountPaidPage, DatePaidPage, Event2CheckYourAnswersPage}
 import pages.event3.{EarlyBenefitsBriefDescriptionPage, Event3CheckYourAnswersPage, ReasonForBenefitsPage}
 import pages.event4.Event4CheckYourAnswersPage
@@ -375,7 +377,7 @@ class UserAnswersValidation @Inject()(compileService: CompileService) {
            (Some(_), Some(PaymentType.PaymentOfASchemeSpecificLumpSum), None, None, Some(_)) =>
         compileService.compileEvent(Event8A, request.pstr, request.userAnswers).map { _ =>
           Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event8A)).url)
-      }
+        }
       case (Some(_), Some(_), Some(_), Some(_), None) => Future.successful(
         Redirect(LumpSumAmountAndDatePage(Event8A, index).changeLink(EmptyWaypoints, Event8CheckYourAnswersPage(index)).url)
       )
@@ -390,6 +392,63 @@ class UserAnswersValidation @Inject()(compileService: CompileService) {
       )
       case _ => Future.successful(
         Redirect(MembersDetailsPage(Event8A, index).changeLink(EmptyWaypoints, Event8ACheckYourAnswersPage(index)).url)
+      )
+    }
+  }
+
+  def event10AnswerValidation()(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
+    val becomeOrCeaseAnswer = request.userAnswers.get(BecomeOrCeaseSchemePage)
+    val schemeChangeDateAnswer = request.userAnswers.get(SchemeChangeDatePage)
+
+    val contractsOrPoliciesAnswer = request.userAnswers.get(ContractsOrPoliciesPage)
+
+    (becomeOrCeaseAnswer, schemeChangeDateAnswer, contractsOrPoliciesAnswer) match {
+      case (Some(ItBecameAnInvestmentRegulatedPensionScheme), Some(_), Some(_)) |
+           (Some(ItHasCeasedToBeAnInvestmentRegulatedPensionScheme), Some(_), _) =>
+        compileService.compileEvent(Event10, request.pstr, request.userAnswers).map { _ =>
+          Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
+        }
+      case (Some(_), None, _) => Future.successful(
+        Redirect(SchemeChangeDatePage.changeLink(EmptyWaypoints, Event10CheckYourAnswersPage()).url)
+      )
+      case (Some(ItBecameAnInvestmentRegulatedPensionScheme), Some(_), None) => Future.successful(
+        Redirect(ContractsOrPoliciesPage.changeLink(EmptyWaypoints, Event10CheckYourAnswersPage()).url)
+      )
+      case _ => Future.successful(
+        Redirect(BecomeOrCeaseSchemePage.changeLink(EmptyWaypoints, Event10CheckYourAnswersPage()).url)
+      )
+
+    }
+  }
+
+  def event11AnswerValidation()(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
+    val hasSchemeChangedRulesAnswer = request.userAnswers.get(HasSchemeChangedRulesPage)
+    val unAuthPaymentsRuleChangeDateAnswer = request.userAnswers.get(UnAuthPaymentsRuleChangeDatePage)
+    val hasSchemeChangedRulesInvestmentsInAssetsAnswer = request.userAnswers.get(HasSchemeChangedRulesInvestmentsInAssetsPage)
+    val investmentsInAssetsRuleChangeDateAnswer = request.userAnswers.get(InvestmentsInAssetsRuleChangeDatePage)
+
+    def hasSchemeChangedRulesInvestmentsInAssetsValidation: Future[Result] = {
+      (hasSchemeChangedRulesInvestmentsInAssetsAnswer, investmentsInAssetsRuleChangeDateAnswer) match {
+        case (Some(true), Some(_)) | (Some(false), _) => compileService.compileEvent(Event11, request.pstr, request.userAnswers).map {
+          _ =>
+            Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
+        }
+        case (Some(true), None) => Future.successful(
+          Redirect(InvestmentsInAssetsRuleChangeDatePage.changeLink(EmptyWaypoints, Event11CheckYourAnswersPage()).url)
+        )
+        case _ => Future.successful(
+          Redirect(HasSchemeChangedRulesInvestmentsInAssetsPage.changeLink(EmptyWaypoints, Event11CheckYourAnswersPage()).url)
+        )
+      }
+    }
+
+    (hasSchemeChangedRulesAnswer, unAuthPaymentsRuleChangeDateAnswer) match {
+      case (Some(true), Some(_)) | (Some(false), _) => hasSchemeChangedRulesInvestmentsInAssetsValidation
+      case (Some(true), None) => Future.successful(
+        Redirect(UnAuthPaymentsRuleChangeDatePage.changeLink(EmptyWaypoints, Event11CheckYourAnswersPage()).url)
+      )
+      case _ => Future.successful (
+        Redirect (HasSchemeChangedRulesPage.changeLink (EmptyWaypoints, Event11CheckYourAnswersPage()).url)
       )
     }
   }

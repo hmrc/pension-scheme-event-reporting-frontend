@@ -28,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.UserAnswersValidation
 import viewmodels.event10.checkAnswers.{BecomeOrCeaseSchemeSummary, ContractsOrPoliciesSummary, SchemeChangeDateSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
@@ -41,7 +42,8 @@ class Event10CheckYourAnswersController @Inject()(
                                                    requireData: DataRequiredAction,
                                                    compileService: CompileService,
                                                    val controllerComponents: MessagesControllerComponents,
-                                                   view: CheckYourAnswersView
+                                                   view: CheckYourAnswersView,
+                                                   userAnswersValidation: UserAnswersValidation
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
@@ -57,9 +59,7 @@ class Event10CheckYourAnswersController @Inject()(
 
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event10) andThen requireData).async { implicit request =>
-      compileService.compileEvent(Event10, request.pstr, request.userAnswers).map { _ =>
-          Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
-      }
+      userAnswersValidation.event10AnswerValidation
     }
 
   private def buildEvent10CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)

@@ -29,11 +29,12 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.UserAnswersValidation
 import viewmodels.event11.checkAnswers.{HasSchemeChangedRulesInvestmentsInAssetsSummary, HasSchemeChangedRulesSummary, InvestmentsInAssetsRuleChangeDateSummary, UnAuthPaymentsRuleChangeDateSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class Event11CheckYourAnswersController @Inject()(
                                                    override val messagesApi: MessagesApi,
@@ -42,7 +43,8 @@ class Event11CheckYourAnswersController @Inject()(
                                                    requireData: DataRequiredAction,
                                                    compileService: CompileService,
                                                    val controllerComponents: MessagesControllerComponents,
-                                                   view: CheckYourAnswersView
+                                                   view: CheckYourAnswersView,
+                                                   userAnswersValidation: UserAnswersValidation
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
@@ -58,18 +60,7 @@ class Event11CheckYourAnswersController @Inject()(
 
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event11) andThen requireData).async { implicit request =>
-      // If answered "No" twice, you cannot submit this event.
-      val maybeNo1 = request.userAnswers.get(HasSchemeChangedRulesPage).getOrElse(false)
-      val maybeNo2 = request.userAnswers.get(HasSchemeChangedRulesInvestmentsInAssetsPage).getOrElse(false)
-      (maybeNo1, maybeNo2) match {
-        case (false, false) =>
-          Future.successful(Redirect(controllers.event11.routes.Event11CannotSubmitController.onPageLoad(EmptyWaypoints).url))
-        case _ =>
-          compileService.compileEvent(Event11, request.pstr, request.userAnswers).map {
-            _ =>
-              Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
-          }
-      }
+      userAnswersValidation.event11AnswerValidation
     }
 
   private def buildEvent11CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, answers: UserAnswers)
