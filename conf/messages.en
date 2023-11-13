@@ -177,6 +177,7 @@ eventSummary.event22 = Event 22: Annual allowance
 eventSummary.event23 = Event 23: Dual annual allowance
 eventSummary.eventWindUp = Scheme has wound up
 eventSummary.heading.version = Event reporting submission {0}
+eventSummary.lockedBy = Event locked by
 
 schemeWindUpDate.title = When was the scheme wound up?
 schemeWindUpDate.heading = When was the scheme wound up?
