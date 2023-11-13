@@ -16,25 +16,35 @@
 
 package utils
 
-import models.enumeration.AddressJourneyType
-import models.enumeration.EventType.{Event1, Event10, Event11, Event2, Event3, Event4, Event5, Event6, Event7, Event8, Event8A}
+import models.TaxYear.{getTaxYear, reads}
+import models.common.ChooseTaxYear
+import models.enumeration.EventType.{Event1, Event10, Event11, Event12, Event13, Event14, Event19, Event2, Event20, Event22, Event23, Event3, Event4, Event5, Event6, Event7, Event8, Event8A}
+import models.enumeration.{AddressJourneyType, EventType}
 import models.event1.PaymentNature.{OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TransferToNonRegPensionScheme}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.employer.PaymentNature.ResidentialProperty
 import models.event10.BecomeOrCeaseScheme.{ItBecameAnInvestmentRegulatedPensionScheme, ItHasCeasedToBeAnInvestmentRegulatedPensionScheme}
+import models.event13.SchemeStructure
 import models.event3.ReasonForBenefits.Other
 import models.event8a.PaymentType
 import models.requests.DataRequest
 import models.{Index, MemberSummaryPath}
 import pages.EmptyWaypoints
 import pages.address.ManualAddressPage
-import pages.common.{MembersDetailsPage, PaymentDetailsPage}
+import pages.common.{ChooseTaxYearPage, MembersDetailsPage, PaymentDetailsPage, TotalPensionAmountsPage}
 import pages.event1._
 import pages.event1.employer.CompanyDetailsPage
 import pages.event1.member.{ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage, WhoWasTheTransferMadePage}
 import pages.event10.{BecomeOrCeaseSchemePage, ContractsOrPoliciesPage, Event10CheckYourAnswersPage, SchemeChangeDatePage}
-import pages.event11.{Event11CheckYourAnswersPage, HasSchemeChangedRulesInvestmentsInAssetsPage, HasSchemeChangedRulesPage, InvestmentsInAssetsRuleChangeDatePage, UnAuthPaymentsRuleChangeDatePage}
+import pages.event11._
+import pages.event12.{DateOfChangePage, Event12CheckYourAnswersPage}
+import pages.event13.{ChangeDatePage, Event13CheckYourAnswersPage, SchemeStructureDescriptionPage, SchemeStructurePage}
+import pages.event14.{Event14CheckYourAnswersPage, HowManySchemeMembersPage}
+import pages.event19.{CountryOrTerritoryPage, DateChangeMadePage, Event19CheckYourAnswersPage}
 import pages.event2.{AmountPaidPage, DatePaidPage, Event2CheckYourAnswersPage}
+import pages.event20.{BecameDatePage, CeasedDatePage, Event20CheckYourAnswersPage, WhatChangePage}
+import pages.event22.Event22CheckYourAnswersPage
+import pages.event23.Event23CheckYourAnswersPage
 import pages.event3.{EarlyBenefitsBriefDescriptionPage, Event3CheckYourAnswersPage, ReasonForBenefitsPage}
 import pages.event4.Event4CheckYourAnswersPage
 import pages.event5.Event5CheckYourAnswersPage
@@ -42,6 +52,7 @@ import pages.event6.{Event6CheckYourAnswersPage, InputProtectionTypePage, TypeOf
 import pages.event7.{CrystallisedAmountPage, Event7CheckYourAnswersPage, LumpSumAmountPage, PaymentDatePage}
 import pages.event8.{Event8CheckYourAnswersPage, LumpSumAmountAndDatePage}
 import pages.event8a.{Event8ACheckYourAnswersPage, PaymentTypePage}
+import play.api.libs.json.JsBoolean
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Result}
 import services.CompileService
@@ -447,9 +458,173 @@ class UserAnswersValidation @Inject()(compileService: CompileService) {
       case (Some(true), None) => Future.successful(
         Redirect(UnAuthPaymentsRuleChangeDatePage.changeLink(EmptyWaypoints, Event11CheckYourAnswersPage()).url)
       )
-      case _ => Future.successful (
-        Redirect (HasSchemeChangedRulesPage.changeLink (EmptyWaypoints, Event11CheckYourAnswersPage()).url)
+      case _ => Future.successful(
+        Redirect(HasSchemeChangedRulesPage.changeLink(EmptyWaypoints, Event11CheckYourAnswersPage()).url)
       )
     }
   }
+
+  def event12AnswerValidation()(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
+    val hasSchemeChangedRulesAnswer = request.userAnswers.get(pages.event12.HasSchemeChangedRulesPage)
+    val dateOfChangeAnswer = request.userAnswers.get(DateOfChangePage)
+
+    (hasSchemeChangedRulesAnswer, dateOfChangeAnswer) match {
+      case (Some(true), Some(_)) => compileService.compileEvent(Event12, request.pstr, request.userAnswers).map {
+        _ =>
+          Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
+      }
+      case (Some(true), None) => Future.successful(
+        Redirect(DateOfChangePage.changeLink(EmptyWaypoints, Event12CheckYourAnswersPage()).url)
+      )
+      case _ => Future.successful(
+        Redirect(pages.event12.HasSchemeChangedRulesPage.changeLink(EmptyWaypoints, Event12CheckYourAnswersPage()).url)
+      )
+    }
+  }
+
+  def event13AnswerValidation()(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
+    val schemeStructureAnswer = request.userAnswers.get(SchemeStructurePage)
+    val schemeDescriptionAnswer = request.userAnswers.get(SchemeStructureDescriptionPage)
+    val changeDateAnswer = request.userAnswers.get(ChangeDatePage)
+
+    (schemeStructureAnswer, schemeDescriptionAnswer, changeDateAnswer) match {
+      case (Some(SchemeStructure.Other), Some(_), Some(_)) =>
+        compileService.compileEvent(Event13, request.pstr, request.userAnswers).map {
+          _ =>
+            Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
+
+        }
+      case (Some(_), _, None) => Future.successful(
+        Redirect(ChangeDatePage.changeLink(EmptyWaypoints, Event13CheckYourAnswersPage()).url)
+      )
+      case (Some(SchemeStructure.Other), None, _) => Future.successful(
+        Redirect(SchemeStructureDescriptionPage.changeLink(EmptyWaypoints, Event13CheckYourAnswersPage()).url)
+      )
+      case (Some(_), _, Some(_)) => {
+        compileService.compileEvent(Event13, request.pstr, request.userAnswers).map {
+          _ =>
+            Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
+
+        }
+      }
+      case _ => Future.successful(
+        Redirect(SchemeStructurePage.changeLink(EmptyWaypoints, Event13CheckYourAnswersPage()).url)
+      )
+    }
+  }
+
+  def event14AnswerValidation()(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
+    val noOfSchemeMembersAnswer = request.userAnswers.get(HowManySchemeMembersPage)
+
+    noOfSchemeMembersAnswer match {
+      case Some(_) => compileService.compileEvent(Event14, request.pstr, request.userAnswers).map {
+        _ =>
+          Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
+      }
+      case _ => Future.successful(
+        Redirect(HowManySchemeMembersPage.changeLink(EmptyWaypoints, Event14CheckYourAnswersPage).url)
+      )
+    }
+  }
+
+  def event19AnswerValidation()(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
+    val countryOrTerritoryAnswer = request.userAnswers.get(CountryOrTerritoryPage)
+    val dateAnswer = request.userAnswers.get(DateChangeMadePage)
+
+    val originalUserAnswers = request.userAnswers
+    val isCountryUkEuOrEEA = originalUserAnswers.get(CountryOrTerritoryPage.booleanPath)
+    val countryCodeForNonUkEuOrEEACountries = "ZZ"
+
+    val maybeUpdatedAnswers = isCountryUkEuOrEEA.collect {
+      case JsBoolean(false) =>
+        originalUserAnswers.setOrException(CountryOrTerritoryPage, countryCodeForNonUkEuOrEEACountries)
+    }.getOrElse(originalUserAnswers)
+
+    (countryOrTerritoryAnswer, dateAnswer) match {
+      case (Some(_), Some(_)) => compileService.compileEvent(Event19, request.pstr, maybeUpdatedAnswers).map { _ =>
+        Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
+      }
+      case (Some(_), None) => Future.successful(
+        Redirect(DateChangeMadePage.changeLink(EmptyWaypoints, Event19CheckYourAnswersPage).url)
+      )
+      case _ => Future.successful(
+        Redirect(CountryOrTerritoryPage.changeLink(EmptyWaypoints, Event19CheckYourAnswersPage).url)
+      )
+    }
+  }
+
+  def event20AnswerValidation()(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
+    val whatChangeAnswer = request.userAnswers.get(WhatChangePage)
+    val becameDateAnswer = request.userAnswers.get(BecameDatePage)
+    val ceasedDateAnswer = request.userAnswers.get(CeasedDatePage)
+
+    (whatChangeAnswer, becameDateAnswer, ceasedDateAnswer) match {
+      case (Some(models.event20.WhatChange.BecameOccupationalScheme), Some(_), _) |
+           (Some(models.event20.WhatChange.CeasedOccupationalScheme), _, Some(_)) =>
+        compileService.compileEvent(Event20, request.pstr, request.userAnswers).map { _ =>
+          Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
+      }
+      case (Some(models.event20.WhatChange.BecameOccupationalScheme), None, _) => Future.successful(
+        Redirect(BecameDatePage.changeLink(EmptyWaypoints, Event20CheckYourAnswersPage()).url)
+      )
+      case (Some(models.event20.WhatChange.CeasedOccupationalScheme), _, None) => Future.successful(
+        Redirect(CeasedDatePage.changeLink(EmptyWaypoints, Event20CheckYourAnswersPage()).url)
+      )
+      case _ => Future.successful(
+        Redirect(WhatChangePage.changeLink(EmptyWaypoints, Event20CheckYourAnswersPage()).url)
+      )
+    }
+  }
+
+  def event22and23AnswerValidation(index: Index, eventType: EventType)
+                                  (implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
+
+    val membersDetailsAnswer = request.userAnswers.get(MembersDetailsPage(eventType, index))
+    val taxYearChosen = getTaxYear(request.userAnswers)
+    val rdsTaxYear = ChooseTaxYear.reads(ChooseTaxYear.enumerable(taxYearChosen))
+    val taxYearAnswer = request.userAnswers.get(ChooseTaxYearPage(eventType, index))(rdsTaxYear)
+    val pensionAmountsAnswer = request.userAnswers.get(TotalPensionAmountsPage(eventType, index))
+
+    def validateEvent22 = {
+      (membersDetailsAnswer, taxYearAnswer, pensionAmountsAnswer) match {
+        case (Some(_), Some(_), Some(_)) => compileService.compileEvent(Event22, request.pstr, request.userAnswers).map {
+          _ =>
+            Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event22)).url)
+        }
+        case (Some(_), Some(_), None) => Future.successful(
+          Redirect(TotalPensionAmountsPage(Event22, index).changeLink(EmptyWaypoints, Event22CheckYourAnswersPage(index)).url)
+        )
+        case (Some(_), None, _) => Future.successful(
+          Redirect(ChooseTaxYearPage(Event22, index).changeLink(EmptyWaypoints, Event22CheckYourAnswersPage(index)).url)
+        )
+        case _ => Future.successful(
+          Redirect(MembersDetailsPage(Event22, index).changeLink(EmptyWaypoints, Event22CheckYourAnswersPage(index)).url)
+        )
+      }
+    }
+
+    def validateEvent23 = {
+      (membersDetailsAnswer, taxYearAnswer, pensionAmountsAnswer) match {
+        case (Some(_), Some(_), Some(_)) => compileService.compileEvent(Event23, request.pstr, request.userAnswers).map {
+          _ =>
+            Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event23)).url)
+        }
+        case (Some(_), Some(_), None) => Future.successful(
+          Redirect(TotalPensionAmountsPage(Event23, index).changeLink(EmptyWaypoints, Event23CheckYourAnswersPage(index)).url)
+        )
+        case (Some(_), None, _) => Future.successful(
+          Redirect(ChooseTaxYearPage(Event23, index).changeLink(EmptyWaypoints, Event23CheckYourAnswersPage(index)).url)
+        )
+        case _ => Future.successful(
+          Redirect(MembersDetailsPage(Event23, index).changeLink(EmptyWaypoints, Event23CheckYourAnswersPage(index)).url)
+        )
+      }
+    }
+
+    eventType match {
+      case Event22 => validateEvent22
+      case _ => validateEvent23
+    }
+  }
+
 }

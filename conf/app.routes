@@ -90,10 +90,10 @@ GET         /report/:index/event-2-check-your-answers                         co
 GET         /report/:index/event-2-click                                      controllers.event2.Event2CheckYourAnswersController.onClick(index: Index)
 
 GET         /report/:index/event-23-check-your-answers                        controllers.event23.Event23CheckYourAnswersController.onPageLoad(index: Index)
-GET         /report/event-23-click                                            controllers.event23.Event23CheckYourAnswersController.onClick
+GET         /report/:index/event-23-click                                     controllers.event23.Event23CheckYourAnswersController.onClick(index: Index)
 
 GET         /report/:index/event-22-check-your-answers                        controllers.event22.Event22CheckYourAnswersController.onPageLoad(index: Index)
-GET         /report/event-22-click                                            controllers.event22.Event22CheckYourAnswersController.onClick
+GET         /report/:index/event-22-click                                     controllers.event22.Event22CheckYourAnswersController.onClick(index: Index)
 
 GET         /report/:index/event-6-check-your-answers                        controllers.event6.Event6CheckYourAnswersController.onPageLoad(index: Index)
 GET         /report/:index/event-6-click                                     controllers.event6.Event6CheckYourAnswersController.onClick(index: Index)

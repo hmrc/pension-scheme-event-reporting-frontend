@@ -17,9 +17,9 @@
 package controllers.event23
 
 import base.SpecBase
-import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent22and23}
+import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent22and23, sampleMemberJourneyDataEvent22and23WithMissingAmount}
 import models.enumeration.EventType.Event23
-import models.enumeration.VersionStatus.{Compiled, Submitted}
+import models.enumeration.VersionStatus.Submitted
 import models.{MemberSummaryPath, TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -70,7 +70,7 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(list,
-          continueUrl = "/manage-pension-scheme-event-report/report/event-23-click",
+          continueUrl = "/manage-pension-scheme-event-report/report/1/event-23-click",
           Tuple2(None, None),
           request = request,
           messages = messages(application)).toString
@@ -91,7 +91,7 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(
           list,
-          continueUrl = "/manage-pension-scheme-event-report/report/event-23-click",
+          continueUrl = "/manage-pension-scheme-event-report/report/1/event-23-click",
           Tuple2(Some(1), Some(Event23)),
           request,
           messages(application)).toString
@@ -178,20 +178,48 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       }
     }
 
-    "must redirect to the correct page onClick" in {
+    "must redirect to the correct page onClick if all answers are present" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
         .thenReturn(Future.successful())
 
-      val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
-      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+      val application = applicationBuilder(
+        userAnswers = Some(sampleMemberJourneyDataEvent22and23(Event23)
+          .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+          .setOrException(EventReportingOverviewPage, erOverviewSeq)
+          .setOrException(VersionInfoPage, VersionInfo(1, Submitted))),
+        extraModules = extraModules
+      ).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onClick.url)
+        val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onClick(0).url)
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event23)).url
         verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
+      }
+    }
+
+    "must redirect to the correct page onClick if an answer is missing" in {
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful())
+
+      val application = applicationBuilder(
+        userAnswers = Some(sampleMemberJourneyDataEvent22and23WithMissingAmount(Event23)
+          .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+          .setOrException(EventReportingOverviewPage, erOverviewSeq)
+          .setOrException(VersionInfoPage, VersionInfo(1, Submitted))),
+        extraModules = extraModules
+      ).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event23.routes.Event23CheckYourAnswersController.onClick(0).url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual s"${
+          controllers.common.routes.TotalPensionAmountsController.onPageLoad(EmptyWaypoints, Event23, 0).url
+        }?waypoints=event-23-check-answers-1"
       }
     }
   }

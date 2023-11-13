@@ -21,14 +21,14 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import helpers.ReadOnlyCYA
 import models.enumeration.EventType.Event19
 import models.requests.DataRequest
-import pages.event19.{CountryOrTerritoryPage, Event19CheckYourAnswersPage}
+import pages.event19.Event19CheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.JsBoolean
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.UserAnswersValidation
 import viewmodels.event19.checkAnswers.{CountryOrTerritorySummary, DateChangeMadeSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
@@ -43,7 +43,8 @@ class Event19CheckYourAnswersController @Inject()(
                                                    compileService: CompileService,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: CheckYourAnswersView,
-                                                   countryOrTerritorySummary: CountryOrTerritorySummary
+                                                   countryOrTerritorySummary: CountryOrTerritorySummary,
+                                                   userAnswersValidation: UserAnswersValidation
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
@@ -58,19 +59,7 @@ class Event19CheckYourAnswersController @Inject()(
 
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event19) andThen requireData).async { implicit request =>
-
-      val originalUserAnswers = request.userAnswers
-      val isCountryUkEuOrEEA = originalUserAnswers.get(CountryOrTerritoryPage.booleanPath)
-      val countryCodeForNonUkEuOrEEACountries = "ZZ"
-
-      val maybeUpdatedAnswers = isCountryUkEuOrEEA.collect {
-        case JsBoolean(false) =>
-          originalUserAnswers.setOrException(CountryOrTerritoryPage, countryCodeForNonUkEuOrEEACountries)
-      }.getOrElse(originalUserAnswers)
-
-      compileService.compileEvent(Event19, request.pstr, maybeUpdatedAnswers).map { _ =>
-          Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
-      }
+      userAnswersValidation.event19AnswerValidation
     }
 
   private def buildEvent19CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage)

@@ -19,28 +19,39 @@ package controllers.event12
 import base.SpecBase
 import data.SampleData.sampleEvent12JourneyData
 import models.enumeration.EventType.Event12
-import models.enumeration.VersionStatus.Submitted
+import models.enumeration.VersionStatus.{Compiled, Submitted}
+import models.event12.DateOfChange
 import models.{EROverview, EROverviewVersion, TaxYear, VersionInfo}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
+import pages.event12.{DateOfChangePage, HasSchemeChangedRulesPage}
+import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
+import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
 import java.time.LocalDate
+import scala.concurrent.Future
 
 class Event12CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
   import Event12CheckYourAnswersControllerSpec._
+
+  private val mockCompileService = mock[CompileService]
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[CompileService].toInstance(mockCompileService)
+  )
 
   "Check Your Answers Controller for Event 12" - {
 
@@ -185,6 +196,45 @@ class Event12CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+    "must redirect to the correct page onClick when all answers are present" in {
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful())
+
+      val event12Answers = emptyUserAnswers.set(HasSchemeChangedRulesPage, true).get
+        .set(DateOfChangePage, DateOfChange(LocalDate.of(2024,4,4))).get
+
+      val userAnswersWithVersionInfo = event12Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onClick.url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url
+        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
+      }
+    }
+
+    "must redirect to the correct page onClick when an answer is missing" in {
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful())
+
+      val event12Answers = emptyUserAnswers.set(HasSchemeChangedRulesPage, true).get
+
+      val userAnswersWithVersionInfo = event12Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onClick.url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual s"${
+          controllers.event12.routes.DateOfChangeController.onPageLoad(EmptyWaypoints).url
+        }?waypoints=event-12-check-answers"
       }
     }
   }

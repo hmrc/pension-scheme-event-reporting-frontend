@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.event20
+package controllers.event13
 
 import base.SpecBase
-import controllers.event20.Event20CheckYourAnswersControllerSpec.{expectedSummaryListRowsEvent20, expectedSummaryListRowsEvent20ViewOnly}
-import data.SampleData.sampleEvent20JourneyData
-import models.enumeration.EventType.Event20
+import data.SampleData.sampleEvent13JourneyData
+import models.enumeration.EventType.Event13
 import models.enumeration.VersionStatus.{Compiled, Submitted}
-import models.event20.Event20Date
+import models.event13.SchemeStructure
 import models.{EROverview, EROverviewVersion, TaxYear, VersionInfo}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
-import org.scalatest.BeforeAndAfterEach
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.event20.{BecameDatePage, WhatChangePage}
+import pages.event13.{ChangeDatePage, SchemeStructureDescriptionPage, SchemeStructurePage}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
@@ -45,7 +43,9 @@ import views.html.CheckYourAnswersView
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach {
+class Event13CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
+
+  import Event13CheckYourAnswersControllerSpec._
 
   private val mockCompileService = mock[CompileService]
 
@@ -53,12 +53,7 @@ class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
     bind[CompileService].toInstance(mockCompileService)
   )
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockCompileService)
-  }
-
-  "Check Your Answers Controller for Event 20" - {
+  "Check Your Answers Controller for Event 13" - {
 
     val erOverviewSeq = Seq(EROverview(
       LocalDate.of(2022, 4, 6),
@@ -90,18 +85,15 @@ class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
+
         val result = route(application, request).value
+
         val view = application.injector.instanceOf[CheckYourAnswersView]
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(
-          list,
-          continueUrl = "/manage-pension-scheme-event-report/report/event-20-click",
-          Tuple2(None, None),
-          request = request,
-          messages = messages(application)).toString
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-12-click")(request, messages(application)).toString
       }
     }
 
@@ -112,7 +104,7 @@ class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, controllers.event13.routes.Event13CheckYourAnswersController.onPageLoad.url)
 
         val result = route(application, request).value
 
@@ -120,19 +112,19 @@ class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-20-click", Tuple2(Some(1), Some(Event20)))(request, messages(application)).toString
+        contentAsString(result) mustEqual
+          view(list, "/manage-pension-scheme-event-report/report/event-13-click", Tuple2(Some(1), Some(Event13)))(request, messages(application)).toString
       }
     }
 
     "must return OK and the correct summary list row items for a GET (change links present)" in {
-
       val mockView = mock[CheckYourAnswersView]
       val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
         inject.bind[CheckYourAnswersView].toInstance(mockView)
       )
 
       val application = applicationBuilder(
-        userAnswers = Some(sampleEvent20JourneyData
+        userAnswers = Some(sampleEvent13JourneyData
           .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
           .setOrException(EventReportingOverviewPage, erOverviewSeq)
           .setOrException(VersionInfoPage, VersionInfo(3, Submitted))),
@@ -144,47 +136,12 @@ class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
       running(application) {
         when(mockView.apply(captor.capture(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
-        val request = FakeRequest(GET, controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, controllers.event13.routes.Event13CheckYourAnswersController.onPageLoad.url)
         val result = route(application, request).value
         status(result) mustEqual OK
 
         val actual: Seq[SummaryListRow] = captor.getValue.rows
-        val expected: Seq[Aliases.SummaryListRow] = expectedSummaryListRowsEvent20
-
-        actual.size mustBe expected.size
-
-        actual.zipWithIndex.map { case (a, i) =>
-          a mustBe expected(i)
-        }
-      }
-    }
-
-    "must return OK and the correct summary list row items for a GET (NO change links present)" in {
-
-      val mockView = mock[CheckYourAnswersView]
-      val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-        inject.bind[CheckYourAnswersView].toInstance(mockView)
-      )
-
-      val application = applicationBuilder(
-        userAnswers = Some(sampleEvent20JourneyData
-          .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
-          .setOrException(EventReportingOverviewPage, erOverviewSeq)
-          .setOrException(VersionInfoPage, VersionInfo(1, Submitted))),
-        extraModules = extraModules
-      ).build()
-
-      val captor: ArgumentCaptor[SummaryList] =
-        ArgumentCaptor.forClass(classOf[SummaryList])
-
-      running(application) {
-        when(mockView.apply(captor.capture(), any(), ArgumentMatchers.eq(Some(1),Some(Event20)))(any(), any())).thenReturn(play.twirl.api.Html(""))
-        val request = FakeRequest(GET, controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
-        val result = route(application, request).value
-        status(result) mustEqual OK
-
-        val actual: Seq[SummaryListRow] = captor.getValue.rows
-        val expected: Seq[Aliases.SummaryListRow] = expectedSummaryListRowsEvent20ViewOnly
+        val expected: Seq[Aliases.SummaryListRow] = expectedSummaryListRowsEvent13
 
         actual.size mustBe expected.size
 
@@ -195,29 +152,31 @@ class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
+
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, controllers.event13.routes.Event13CheckYourAnswersController.onPageLoad.url)
+
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
-
-    "must redirect to the correct page onClick if all answers are present" in {
+    "must redirect to the correct page onClick when all answers are present" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
         .thenReturn(Future.successful())
 
-      val event20Answers = emptyUserAnswers.set(WhatChangePage, models.event20.WhatChange.BecameOccupationalScheme).get
-        .set(BecameDatePage, Event20Date(LocalDate.of(2024, 4, 4))).get
+      val event13Answers = emptyUserAnswers.set(SchemeStructurePage, SchemeStructure.Other).get
+        .set(SchemeStructureDescriptionPage, "foo").get
+        .set(ChangeDatePage, LocalDate.of(2024,4,4)).get
 
-      val userAnswersWithVersionInfo = event20Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val userAnswersWithVersionInfo = event13Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event20.routes.Event20CheckYourAnswersController.onClick.url)
+        val request = FakeRequest(GET, controllers.event13.routes.Event13CheckYourAnswersController.onClick.url)
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -225,31 +184,33 @@ class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
       }
     }
-    "must redirect to the correct page onClick if an answer is missing" in {
+
+    "must redirect to the correct page onClick when an answer is missing" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
         .thenReturn(Future.successful())
 
-      val event20Answers = emptyUserAnswers.set(WhatChangePage, models.event20.WhatChange.BecameOccupationalScheme).get
+      val event13Answers = emptyUserAnswers.set(SchemeStructurePage, SchemeStructure.Other).get
+        .set(ChangeDatePage, LocalDate.of(2024, 4, 4)).get
 
-      val userAnswersWithVersionInfo = event20Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val userAnswersWithVersionInfo = event13Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event20.routes.Event20CheckYourAnswersController.onClick.url)
+        val request = FakeRequest(GET, controllers.event13.routes.Event13CheckYourAnswersController.onClick.url)
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual s"${
-          controllers.event20.routes.BecameDateController.onPageLoad(EmptyWaypoints).url
-        }?waypoints=event-20-check-answers"
+          controllers.event13.routes.SchemeStructureDescriptionController.onPageLoad(EmptyWaypoints).url
+        }?waypoints=event-13-check-answers"
       }
     }
   }
 }
 
-object Event20CheckYourAnswersControllerSpec {
+object Event13CheckYourAnswersControllerSpec {
   private def fakeSummaryListRowWithTextWithHiddenContent(messageKey: String, text: String, changeLink: String, hiddenContentChangeLink: String)
-                                                         (implicit messages: Messages): SummaryListRow = {
+                                                         (implicit messages: Messages): SummaryListRow =
     SummaryListRow(
       Key(
         Text(
@@ -258,65 +219,36 @@ object Event20CheckYourAnswersControllerSpec {
       Value(Text(text), ""), "",
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
-  }
 
-  private def fakeSummaryListRowWithTextWithHiddenContentViewOnly(messageKey: String, text: String)
-                                                         (implicit messages: Messages): SummaryListRow = {
+  private def fakeSummaryListRowWithHtmlContentWithHiddenContent(messageKey: String, htmlContent: String, changeLink: String, hiddenContentChangeLink: String)
+                                                                (implicit messages: Messages): SummaryListRow =
     SummaryListRow(
       Key(
         Text(
           messages(messageKey)
         ), ""),
-      Value(Text(text), ""), ""
-    )
-  }
-
-  private def fakeSummaryListRowWithHtmlWithHiddenContent(messageKey: String, text: String, changeLink: String, hiddenContentChangeLink: String)
-                                                         (implicit messages: Messages): SummaryListRow = {
-    SummaryListRow(
-      Key(
-        Text(
-          messages(messageKey)
-        ), ""),
-      Value(HtmlContent(text), ""), "",
+      Value(HtmlContent(htmlContent), ""), "",
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
-  }
 
-  private def fakeSummaryListRowWithHtmlWithHiddenContentViewOnly(messageKey: String, text: String)
-                                                         (implicit messages: Messages): SummaryListRow = {
-    SummaryListRow(
-      Key(
-        Text(
-          messages(messageKey)
-        ), ""),
-      Value(HtmlContent(text), ""), ""
-    )
-  }
-
-  private def expectedSummaryListRowsEvent20(implicit messages: Messages): Seq[SummaryListRow] = Seq(
-    fakeSummaryListRowWithHtmlWithHiddenContent(
-      "whatChange.checkYourAnswersLabel",
-      "It became an occupational pension scheme",
-      "/manage-pension-scheme-event-report/report/event-20-occupational-pension-scheme?waypoints=event-20-check-answers",
-      "whatChange.change.hidden"
+  private def expectedSummaryListRowsEvent13(implicit messages: Messages): Seq[SummaryListRow] = Seq(
+    fakeSummaryListRowWithHtmlContentWithHiddenContent(
+      "schemeStructure.checkYourAnswersLabel",
+      "Other",
+      "/manage-pension-scheme-event-report/report/event-13-pension-scheme-structure?waypoints=event-13-check-answers",
+      "schemeStructure.change.hidden"
     ),
     fakeSummaryListRowWithTextWithHiddenContent(
-      "becameDate.checkYourAnswersLabel",
-      "12 December 2023",
-      "/manage-pension-scheme-event-report/report/event-20-when-scheme-became-occupational?waypoints=event-20-check-answers",
-      "becameDate.change.hidden"
-    )
-  )
-
-  private def expectedSummaryListRowsEvent20ViewOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
-    fakeSummaryListRowWithHtmlWithHiddenContentViewOnly(
-      "whatChange.checkYourAnswersLabel",
-      "It became an occupational pension scheme"
+      "event13.schemeStructureDescription.checkYourAnswersLabel",
+      "foo",
+      "/manage-pension-scheme-event-report/report/event-13-brief-description-of-scheme-structure?waypoints=event-13-check-answers",
+      "event13.schemeStructureDescription.change.hidden"
     ),
-    fakeSummaryListRowWithTextWithHiddenContentViewOnly(
-      "becameDate.checkYourAnswersLabel",
-      "12 December 2023"
+    fakeSummaryListRowWithTextWithHiddenContent(
+      "event13.changeDate.checkYourAnswersLabel",
+      "04 April 2024",
+      "/manage-pension-scheme-event-report/report/event-13-when-change-was-made?waypoints=event-13-check-answers",
+      "event13.changeDate.change.hidden"
     )
   )
 }
