@@ -35,6 +35,7 @@ import pages.event6.AmountCrystallisedAndDatePage
 import pages.event7.PaymentDatePage
 import pages.event8.LumpSumAmountAndDatePage
 import pages.eventWindUp.SchemeWindUpDatePage
+import play.api.Logger
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import utils.Event2MemberPageNumbers
@@ -76,7 +77,10 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
 
 private object EventSelectionPageUtility {
 
+  private val logger = Logger(classOf[EventSelection])
+
   def adjustedCount(maybeEventType: Option[EventType], userAnswers: UserAnswers): Int = {
+
     val countForEvent = maybeEventType match {
       case Some(Event1) => userAnswers.countAll(MembersOrEmployersPage(Event1))
       case Some(memberBasedEvent@(
@@ -86,38 +90,45 @@ private object EventSelectionPageUtility {
       case _ => 0
     }
 
+    val rangeAsList = (0 until countForEvent).toList
+
     val getIndex = Index.intToIndex _
 
-    val oneOrZero: Option[Any] => Int = {
-      case Some(_) => 1
-      case None => 0
+    val questionWasAnswered: Option[Any] => Boolean = {
+      case Some(_) => true
+      case None => false
     }
 
-    val countJourneyCompletionForEvent = (for {int <- 0 until countForEvent} yield {
-      maybeEventType match {
-        case Some(Event1) =>
-          oneOrZero(userAnswers.get(PaymentValueAndDatePage(getIndex(int))))
-        case Some(Event2) =>
-          oneOrZero(userAnswers.get(DatePaidPage(getIndex(int), Event2)))
-        case Some(event3or4or5@(Event3 | Event4 | Event5)) =>
-          oneOrZero(userAnswers.get(PaymentDetailsPage(event3or4or5, getIndex(int))))
-        case Some(Event6) =>
-          oneOrZero(userAnswers.get(AmountCrystallisedAndDatePage(Event6, getIndex(int))))
-        case Some(Event7) =>
-          oneOrZero(userAnswers.get(PaymentDatePage(getIndex(int))))
-        case Some(event8or8a@(Event8 | Event8A)) =>
-          oneOrZero(userAnswers.get(LumpSumAmountAndDatePage(event8or8a, getIndex(int))))
-        case Some(event22or23@(Event22 | Event23)) =>
-          oneOrZero(userAnswers.get(TotalPensionAmountsPage(event22or23, getIndex(int))))
-        case _ =>
-          countForEvent
-      }
-    }).sum
+    val finalPageInMemberBasedJourney: Int => Boolean = (int: Int) => maybeEventType match {
+      case Some(Event1) =>
+        questionWasAnswered(userAnswers.get(PaymentValueAndDatePage(getIndex(int))))
+      case Some(Event2) =>
+        questionWasAnswered(userAnswers.get(DatePaidPage(getIndex(int), Event2)))
+      case Some(event3or4or5@(Event3 | Event4 | Event5)) =>
+        questionWasAnswered(userAnswers.get(PaymentDetailsPage(event3or4or5, getIndex(int))))
+      case Some(Event6) =>
+        questionWasAnswered(userAnswers.get(AmountCrystallisedAndDatePage(Event6, getIndex(int))))
+      case Some(Event7) =>
+        questionWasAnswered(userAnswers.get(PaymentDatePage(getIndex(int))))
+      case Some(event8or8a@(Event8 | Event8A)) =>
+        questionWasAnswered(userAnswers.get(LumpSumAmountAndDatePage(event8or8a, getIndex(int))))
+      case Some(event22or23@(Event22 | Event23)) =>
+        questionWasAnswered(userAnswers.get(TotalPensionAmountsPage(event22or23, getIndex(int))))
+      case _ => false
+    }
 
-    val difference = countForEvent - countJourneyCompletionForEvent
-    difference match {
-      case difference if difference > 0 => countForEvent - difference
-      case _ => countForEvent
+    val indicesForIncompleteJourneys = rangeAsList.collect {
+      case i if !finalPageInMemberBasedJourney(i) => getIndex(i)
+    }
+
+    if (indicesForIncompleteJourneys.nonEmpty) {
+      logger.info(
+        s"""Journey for Event${maybeEventType} incomplete on indices: ${indicesForIncompleteJourneys}.
+           | Directing user to complete journey at index: ${indicesForIncompleteJourneys.head}""".stripMargin
+      )
+      indicesForIncompleteJourneys.head
+    } else {
+      countForEvent
     }
   }
 }
