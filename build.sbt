@@ -104,3 +104,5 @@ lazy val itSettings = Defaults.itSettings ++ Seq(
   parallelExecution := true,
   fork := true
 )
+
+addCommandAlias("runCoverageCheck", "clean;coverage;test;coverageReport")

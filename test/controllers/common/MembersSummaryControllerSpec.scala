@@ -24,16 +24,16 @@ import data.SampleData
 import data.SampleData._
 import forms.common.MembersSummaryFormProvider
 import helpers.DateHelper
-import models.{Index, MemberSummaryPath, TaxYear, UserAnswers, VersionInfo}
 import models.enumeration.EventType
 import models.enumeration.EventType._
 import models.enumeration.VersionStatus.Submitted
+import models.{Index, MemberSummaryPath, TaxYear, UserAnswers, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import pages.common.MembersSummaryPage
+import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -151,6 +151,14 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
       fakeChangeUrl(Event23),
       totalAmount)
 
+    behave like testSuite(
+      formProvider(Event24),
+      Event24,
+      sampleMemberJourneyDataEvent24(Event24),
+      SampleData.crystallisedAmountEvent24.setScale(2).toString(),
+      fakeChangeUrl(Event24),
+      totalAmount)
+
 
     behave like testReturnOkAndCorrectViewWithPagination(
       formProvider(Event2), Event2, "260.00", SampleData.sampleMemberJourneyDataWithPaginationEvent2)
@@ -178,6 +186,9 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
 
     behave like testReturnOkAndCorrectViewWithPagination(
       formProvider(Event23), Event23, "260.00", SampleData.event22and23UADataWithPagination(Event23))
+
+    behave like testReturnOkAndCorrectViewWithPagination(
+      formProvider(Event24), Event24, "260.00", SampleData.event24UADataWithPagination(Event24))
 
   }
 
@@ -377,6 +388,7 @@ object MembersSummaryControllerSpec {
       case Event8A => controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(0).url
       case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(0).url
       case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(0).url
+      case Event24 => controllers.event24.routes.Event24CheckYourAnswersController.onPageLoad(0).url
       case _ => "Not a member event used on this summary page"
     }
   }
@@ -387,7 +399,7 @@ object MembersSummaryControllerSpec {
            Event4 | Event5 |
            Event6 | Event8 |
            Event8A | Event22 |
-           Event23 => RemoveMemberController.onPageLoad(EmptyWaypoints, eventType, index).url
+           Event23 | Event24 => RemoveMemberController.onPageLoad(EmptyWaypoints, eventType, index).url
       case _ => "Not a member event used on this summary page"
     }
   }
@@ -403,6 +415,7 @@ object MembersSummaryControllerSpec {
       case Event8A => controllers.event8a.routes.Event8ACheckYourAnswersController.onPageLoad(index).url
       case Event22 => controllers.event22.routes.Event22CheckYourAnswersController.onPageLoad(index).url
       case Event23 => controllers.event23.routes.Event23CheckYourAnswersController.onPageLoad(index).url
+      case Event24 => controllers.event24.routes.Event24CheckYourAnswersController.onPageLoad(index).url
       case _ => "Not a member event"
     }
   }

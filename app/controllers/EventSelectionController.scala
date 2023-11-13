@@ -17,10 +17,10 @@
 package controllers
 
 import audit.{AuditService, StartNewERAuditEvent}
-import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.EventSelectionFormProvider
-import models.EventSelection.{Event2, Event6, Event7, Event8, Event8A}
+import models.EventSelection.{Event2, Event24, Event6, Event7, Event8, Event8A}
 import models.enumeration.EventType
 import models.{EventSelection, TaxYear, UserAnswers}
 import pages.{EventSelectionPage, Waypoints}
@@ -40,29 +40,23 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
                                          formProvider: EventSelectionFormProvider,
                                          view: EventSelectionView,
                                          userAnswersCacheConnector: UserAnswersCacheConnector,
-                                         eventReportingConnector: EventReportingConnector,
                                          auditService: AuditService
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
-  private val ltaAbolitionShowHideToggle = "lta-events-show-hide"
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
-    eventReportingConnector.getFeatureToggle(ltaAbolitionShowHideToggle).flatMap { toggleData =>
-      val displayEventList: Seq[RadioItem] = getFilteredOptions(toggleData.isEnabled, request.userAnswers)
-      Future.successful(Ok(view(form, displayEventList, waypoints)))
-    }
+    val displayEventList: Seq[RadioItem] = getFilteredOptions(request.userAnswers)
+    Future.successful(Ok(view(form, displayEventList, waypoints)))
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors =>
-          eventReportingConnector.getFeatureToggle(ltaAbolitionShowHideToggle).flatMap { toggleData =>
-            val displayEventList: Seq[RadioItem] = getFilteredOptions(toggleData.isEnabled, request.userAnswers)
-            Future.successful(BadRequest(view(formWithErrors, displayEventList, waypoints)))
-          }
-        ,
+        formWithErrors => {
+          val displayEventList: Seq[RadioItem] = getFilteredOptions(request.userAnswers)
+          Future.successful(BadRequest(view(formWithErrors, displayEventList, waypoints)))
+        },
         value => {
           EventType.fromEventSelection(value) match {
             case Some(eventType) =>
@@ -85,24 +79,18 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
                 Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
               }
             case _ =>
-              eventReportingConnector.getFeatureToggle(ltaAbolitionShowHideToggle).flatMap { toggleData =>
-                val displayEventList: Seq[RadioItem] = getFilteredOptions(toggleData.isEnabled, request.userAnswers)
-                Future.successful(Ok(view(form, displayEventList, waypoints)))
-              }
+              val displayEventList: Seq[RadioItem] = getFilteredOptions(request.userAnswers)
+              Future.successful(Ok(view(form, displayEventList, waypoints)))
           }
         }
       )
   }
 
-  private def getFilteredOptions(isEnabled: Boolean, ua: UserAnswers)(implicit messages: Messages): Seq[RadioItem] = {
+  private def getFilteredOptions(ua: UserAnswers)(implicit messages: Messages): Seq[RadioItem] = {
     val eventsToRemove: Seq[EventSelection] = TaxYear.getSelectedTaxYear(ua).startYear >= "2024" match {
       case true => Seq(Event2, Event6, Event7, Event8, Event8A)
-      case false => Seq() // TODO: Include new events once developed Seq(Event25)
+      case false => Seq(Event24)
     }
-    if (isEnabled) {
-      EventSelection.options(EventSelection.values.diff(eventsToRemove))
-    } else {
-      EventSelection.options(EventSelection.values)
-    }
+    EventSelection.options(EventSelection.values.diff(eventsToRemove))
   }
 }

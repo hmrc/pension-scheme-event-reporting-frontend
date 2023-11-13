@@ -150,6 +150,8 @@ eventSelection.event22 = Event 22
 eventSelection.event22.hint = Annual allowance
 eventSelection.event23 = Event 23
 eventSelection.event23.hint = Dual annual allowances (money purchase pension savings statement)
+eventSelection.event24 = Event 24
+eventSelection.event24.hint = Higher lump sum allowance
 eventSelection.eventWoundUp = Scheme has wound up
 eventSelection.eventWindUp = this wind up event and reinstate the scheme
 eventSelection.checkYourAnswersLabel = Check your answers
@@ -175,6 +177,7 @@ eventSummary.event20 = Event 20: Occupational pension scheme
 eventSummary.event20A = Event 20a: Master Trust scheme
 eventSummary.event22 = Event 22: Annual allowance
 eventSummary.event23 = Event 23: Dual annual allowance
+eventSummary.event24 = Event 24: Higher lump sum allowance
 eventSummary.eventWindUp = Scheme has wound up
 eventSummary.heading.version = Event reporting submission {0}
 
@@ -214,6 +217,15 @@ manualOrUpload.event23.checkYourAnswersLabel = How do you want to add the dual a
 manualOrUpload.event23.error.required = Select how you want to add the dual annual allowances details
 manualOrUpload.event23.change.hidden = How do you want to add the dual annual allowances details?
 manualOrUpload.event23.fileUpload.hint = Uploading a file will overwrite any data you have previously added for this event
+
+manualOrUpload.event24.title = How do you want to add the lump sum allowance details?
+manualOrUpload.event24.heading = How do you want to add the lump sum allowance details?
+manualOrUpload.event24.manual = Manually enter the details
+manualOrUpload.event24.fileUpload = Upload a file
+manualOrUpload.event24.checkYourAnswersLabel = How do you want to add the lump sum allowance details?
+manualOrUpload.event24.error.required = Select how do you want to add the lump sum allowance details
+manualOrUpload.event24.change.hidden = How do you want to add the lump sum allowance details?
+manualOrUpload.event24.fileUpload.hint = Uploading a file will overwrite any data you have previously added for this event
 
 manualOrUpload.event1.title = How do you want to add the unauthorised payment details?
 manualOrUpload.event1.heading = How do you want to add the unauthorised payment details?
@@ -1020,6 +1032,15 @@ membersSummary.event23.table.header2 = National Insurance number
 membersSummary.event23.table.header3 = Pension input amount
 membersSummary.event23.table.totalTitle = Total amount for this event report
 
+membersSummary.event24.title = Event 24: Higher lump sum allowance in the tax year ending 5 April {0}
+membersSummary.event24.heading = Event 24: Higher lump sum allowance in the tax year ending 5 April {0}
+membersSummary.event24.error.required = Select yes if you want to add another higher lump sum allowance event
+membersSummary.event24.yesno.legend = Do you want to add another entry for this event?
+membersSummary.event24.table.header1 = Member
+membersSummary.event24.table.header2 = National Insurance number
+membersSummary.event24.table.header3 = Relevant crystallisation amount
+membersSummary.event24.table.totalTitle = Total not required
+
 chooseTaxYear.yearRangeRadio = {0} to {1}
 
 chooseTaxYear.event23.title = In which tax year was the money purchase pension savings statement issued?
@@ -1137,6 +1158,7 @@ fileUploadWhatYouWillNeed.event23.inset = All the data you have previously added
 typeOfProtection.title = What is the type of protection held for the crystallisation?
 typeOfProtection.heading = What is the type of protection held for the crystallisation?
 typeOfProtection.p1 = This can be found on the member’s LTA certificate.
+typeOfProtection.p2 = The protection reference is between 8 and 15 characters and can be a combination of numbers and letters.
 typeOfProtection.enhancedLifetimeAllowance = Enhanced lifetime allowance
 typeOfProtection.primaryProtection = Primary protection
 typeOfProtection.enhancedProtection = Enhanced protection
@@ -1739,3 +1761,109 @@ genericNino.error.invalid.prefix     = The National Insurance number must begin 
 genericNino.error.invalid.numbers    = The National Insurance number must contain 6 numbers
 genericNino.error.invalid.suffix     = The National Insurance number must end with a letter
 
+whatYouWillNeed.event24.title = What you will need
+whatYouWillNeed.event24.heading = What you will need
+whatYouWillNeed.event24.p = To record a higher lump sum allowance event you will need to tell us:
+whatYouWillNeed.event24.item1 = the member''s name and National Insurance number
+whatYouWillNeed.event24.item2 = when crystallisation took place
+whatYouWillNeed.event24.item3 = if the member holds valid form of allowance protection – if they do, tell us the type and the protection reference
+whatYouWillNeed.event24.item4 = if any lump sum payment has taken the member over their available lump sum allowance – if it has, tell us whether the excess was taxed at marginal rate
+whatYouWillNeed.event24.item5 = (if it has been taxed at marginal rate) the employer PAYE reference
+
+crystallisedDate.event24.heading = When did the higher lump sum allowance crystallisation take place?
+crystallisedDate.event24.title = When was the relevant benefit crystallisation event?
+crystallisedDate.event24.date.hint = For example, 22 09 2022
+crystallisedDate.event24.date.error.nothingEntered = Enter the date
+crystallisedDate.event24.date.error.noDayMonthOrYear = The date must include a day, month and year
+crystallisedDate.event24.date.error.outsideDateRanges = Enter a real date
+crystallisedDate.event24.date.error.outsideReportedYear = Date must be between {0} and {1}
+crystallisedDate.event24.date.change.hidden = When did the higher lump sum allowance crystallisation take place?
+crystallisedDate.event24.date.checkYourAnswersLabel = When did the higher lump sum allowance crystallisation take place?
+
+bceTypeSelection.event24.title = Type of relevant benefit crystallisation event
+bceTypeSelection.event24.heading = What was the type of lump sum allowance?
+bceTypeSelection.event24.error.required = Select the type of relevant benefit crystallisation event
+bceTypeSelection.event24.error.format = Enter the type of benefit crystallisation event in the correct format
+bceTypeSelection.event24.annuityProtection = Annuity protection lump sum death benefit
+bceTypeSelection.event24.definedBenefit = Defined benefit lump sum death benefit
+bceTypeSelection.event24.drawdown = Drawdown pension fund lump sum death benefit
+bceTypeSelection.event24.flexiAccess = Flexi-access drawdown lump sum death benefit
+bceTypeSelection.event24.commencement = Pension commencement lump sum
+bceTypeSelection.event24.pensionProtection = Pension protection lump sum death benefit
+bceTypeSelection.event24.small = Small lump sum
+bceTypeSelection.event24.standAlone = Stand-alone lump sum
+bceTypeSelection.event24.trivialCommutation = Trivial commutation lump sum
+bceTypeSelection.event24.trivialCommutationDeathBenefit = Trivial commutation lump sum death benefit
+bceTypeSelection.event24.uncrystallisedFunds = Uncrystallised funds pension lump sum
+bceTypeSelection.event24.uncrystallisedFundsDeathBenefit = Uncrystallised funds lump sum death benefit
+bceTypeSelection.event24.windingUp = Winding-up lump sum
+bceTypeSelection.event24.change.hidden = What was the type of lump sum allowance?
+bceTypeSelection.event24.checkYourAnswersLabel = What was the type of lump sum allowance?
+
+totalAmountBenefitCrystallisation.event24.title = Total amount of the relevant benefit crystallisation event
+totalAmountBenefitCrystallisation.event24.heading = How much was the total lump sum allowance?
+totalAmountBenefitCrystallisation.event24.checkYourAnswersLabel = How much was the total lump sum allowance?
+totalAmountBenefitCrystallisation.event24.error.nonNumeric = The total amount must be an amount of money, like 123 or 123.00
+totalAmountBenefitCrystallisation.event24.error.required = Enter the total amount of the relevant benefit crystallisation event
+totalAmountBenefitCrystallisation.event24.error.negativeValue = The total amount must not be a negative amount of money, like -123.45 or -156.00
+totalAmountBenefitCrystallisation.event24.error.amountTooHigh = The total amount must be £999999999.99 or less
+totalAmountBenefitCrystallisation.event24.error.zeroEntered = The amount entered must be greater than zero
+totalAmountBenefitCrystallisation.event24.change.hidden = How much was the total lump sum allowance?
+
+validProtection.event24.title = Does the member hold a valid form of allowance protection?
+validProtection.event24.heading = Does the member hold a valid form of allowance protection?
+validProtection.event24.checkYourAnswersLabel = Does the member hold a valid form of allowance protection?
+validProtection.event24.error.required = Select yes if the member holds a valid protection
+validProtection.event24.change.hidden = Does the member hold a valid form of allowance protection?
+
+typeOfProtection.event24.title = Type of protection held
+typeOfProtection.event24.heading = What type of valid allowance protection is held?
+typeOfProtection.event24.error.required = Select the type of protection held
+typeOfProtection.event24.error.format = Enter the type of protection in the correct format
+typeOfProtection.event24.enhancedProtection = Enhanced protection
+typeOfProtection.event24.enhancedProtectionWithProtectedSum = Enhanced protection with protected lump sum rights of more than £375,000
+typeOfProtection.event24.fixedProtection = Fixed protection
+typeOfProtection.event24.fixedProtection2014 = Fixed protection 2014
+typeOfProtection.event24.fixedProtection2016 = Fixed protection 2016
+typeOfProtection.event24.individualProtection2014 = Individual protection 2014
+typeOfProtection.event24.individualProtection2016 = Individual protection 2016
+typeOfProtection.event24.preCommencement = Pre-commencement pension credits enhancement
+typeOfProtection.event24.primary = Primary protection
+typeOfProtection.event24.primaryWithProtectedSum = Primary protection with protected lump sum rights of more than £375,000
+typeOfProtection.event24.schemeSpecific = Scheme-specific lump sum protection
+typeOfProtection.event24.checkYourAnswersLabel = What type of valid allowance protection is held?
+typeOfProtection.event24.change.hidden = What type of valid allowance protection is held?
+
+typeOfProtectionReference.event24.heading = What is the member's protection reference?
+typeOfProtectionReference.event24.error.length = The protection reference is a maximum of 15 characters and a combination of numbers and letters
+typeOfProtectionReference.event24.checkYourAnswersLabel = Member’s {0} reference
+typeOfProtectionReference.event24.change.hidden = Member’s {0} reference
+
+overAllowance.event24.title = Has this lump sum payment taken the member over their available lump sum allowance?
+overAllowance.event24.heading = Has this lump sum payment taken the member over their available lump sum allowance?
+overAllowance.event24.checkYourAnswersLabel = Has this lump sum payment taken the member over their available lump sum allowance?
+overAllowance.event24.error.required = Select yes if this lump sum payment has taken the member over their available lump sum allowance
+overAllowance.event24.change.hidden = Has this lump sum payment taken the member over their available lump sum allowance?
+
+overAllowanceAndDeathBenefit.event24.title = Has this lump sum payment taken the member over their available lump sum and death benefit allowance?
+overAllowanceAndDeathBenefit.event24.heading = Has this lump sum payment taken the member over their available lump sum and death benefit allowance?
+overAllowanceAndDeathBenefit.event24.checkYourAnswersLabel = Has this lump sum payment taken the member over their available lump sum and death benefit allowance?
+overAllowanceAndDeathBenefit.event24.error.required = Select yes if this lump sum payment has taken the member over their available lump sum and death benefit allowance
+overAllowanceAndDeathBenefit.event24.change.hidden = Has this lump sum payment taken the member over their available lump sum and death benefit allowance?
+
+marginalRate.event24.title = Has the excess been taxed at marginal rate for this member?
+marginalRate.event24.heading = Has the excess been taxed at marginal rate for this member?
+marginalRate.event24.checkYourAnswersLabel = Has the excess been taxed at marginal rate for this member?
+marginalRate.event24.error.required = Select yes if the excess has been taxed at marginal rate for this member
+marginalRate.event24.change.hidden = Has the excess been taxed at marginal rate for this member?
+
+employerPayeReference.event24.title = Employer PAYE reference
+employerPayeReference.event24.heading = What is the employer PAYE reference used to report the excess for this member?
+employerPayeReference.event24.checkYourAnswersLabel = What is the employer PAYE reference used to report the excess for this member?
+employerPayeReference.event24.hint = The employer PAYE reference is a 3-digit number, a forward slash, and a tax office employer reference that is a combination of letters and numbers, like 123/AB456.
+employerPayeReference.event24.error.length = The employer PAYE reference is a 3-digit number, a forward slash, and a tax office employer reference that is a combination of letters and numbers, like 123/AB456.
+employerPayeReference.event24.error.disallowedChars = The employer PAYE reference is a 3-digit number, a forward slash, and a tax office employer reference that is a combination of letters and numbers, like 123/AB456.
+employerPayeReference.event24.error.leadingDigits = The employer PAYE reference must begin with 3 numbers
+employerPayeReference.event24.error.noSlash = The employer PAYE reference''s fourth character must be /
+employerPayeReference.event24.error.required = Enter the employer PAYE reference
+employerPayeReference.event24.change.hidden = What is the employer PAYE reference used to report the excess for this member?
