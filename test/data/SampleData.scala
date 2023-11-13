@@ -49,13 +49,12 @@ import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
 import pages.event10.{BecomeOrCeaseSchemePage, ContractsOrPoliciesPage, SchemeChangeDatePage}
-import pages.event11.{HasSchemeChangedRulesInvestmentsInAssetsPage, HasSchemeChangedRulesPage, InvestmentsInAssetsRuleChangeDatePage, UnAuthPaymentsRuleChangeDatePage}
-import pages.event12.{DateOfChangePage, HasSchemeChangedRulesPage}
+import pages.event11.{HasSchemeChangedRulesInvestmentsInAssetsPage, InvestmentsInAssetsRuleChangeDatePage, UnAuthPaymentsRuleChangeDatePage}
+import pages.event12.DateOfChangePage
 import pages.event13.{ChangeDatePage, SchemeStructureDescriptionPage, SchemeStructurePage}
 import pages.event19.{CountryOrTerritoryPage, DateChangeMadePage}
 import pages.event2.{AmountPaidPage, DatePaidPage}
-import pages.event24.{BCETypeSelectionPage, CrystallisedDatePage, EmployerPayeReferencePage, MarginalRatePage,
-  OverAllowanceAndDeathBenefitPage, OverAllowancePage, TotalAmountBenefitCrystallisationPage, ValidProtectionPage}
+import pages.event24._
 import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage => Event6TypeOfProtectionPage}
 import pages.event7.{CrystallisedAmountPage, LumpSumAmountPage, PaymentDatePage}
 import pages.event8.{LumpSumAmountAndDatePage, TypeOfProtectionReferencePage, TypeOfProtectionPage => Event8TypeOfProtectionPage}

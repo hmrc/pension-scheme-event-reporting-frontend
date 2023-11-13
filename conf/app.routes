@@ -632,7 +632,7 @@ GET         /report/:index/event-24-employer-paye-reference                 cont
 POST        /report/:index/event-24-employer-paye-reference                 controllers.event24.EmployerPayeReferenceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
 GET         /report/:index/event-24-check-your-answers                      controllers.event24.Event24CheckYourAnswersController.onPageLoad(index: Index)
-GET         /report/event-24-click                                          controllers.event24.Event24CheckYourAnswersController.onClick
+GET         /report/:index/event-24-click                                   controllers.event24.Event24CheckYourAnswersController.onClick(index: Index)
 
 GET         /report/remove-24                                               controllers.common.RemoveEventController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event24)
 POST        /report/remove-24                                               controllers.common.RemoveEventController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event24)
