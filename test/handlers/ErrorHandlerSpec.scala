@@ -25,7 +25,6 @@ import pages.EmptyWaypoints
 import play.api.http.Status.OK
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, _}
-import uk.gov.hmrc.http.ExpectationFailedException
 import views.html.NoDataEnteredErrorView
 
 class ErrorHandlerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {

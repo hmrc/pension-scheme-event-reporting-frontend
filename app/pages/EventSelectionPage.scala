@@ -31,6 +31,7 @@ import pages.event14.HowManySchemeMembersPage
 import pages.event18.Event18ConfirmationPage
 import pages.event19.{WhatYouWillNeedPage => event19WhatYouWillNeed}
 import pages.event2.DatePaidPage
+import pages.event24.OverAllowancePage
 import pages.event6.AmountCrystallisedAndDatePage
 import pages.event7.PaymentDatePage
 import pages.event8.LumpSumAmountAndDatePage
@@ -60,6 +61,8 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
         MembersDetailsPage(memberBasedEvent, index)
       case Some(Event2) => // Event2 has 2 separate MembersDetailsPages, route to first
         MembersDetailsPage(Event2, index, Event2MemberPageNumbers.FIRST_PAGE_DECEASED)
+      case Some(Event24) =>
+        event24.WhatYouWillNeedPage(index)
       case Some(Event10) => BecomeOrCeaseSchemePage
       case Some(Event11) => event11WhatYouWillNeed
       case Some(Event12) => HasSchemeChangedRulesPage
@@ -85,7 +88,7 @@ private object EventSelectionPageUtility {
       case Some(Event1) => userAnswers.countAll(MembersOrEmployersPage(Event1))
       case Some(memberBasedEvent@(
         Event2 | Event3 | Event4 | Event5 | Event6 |
-        Event7 | Event8 | Event8A | Event22 | Event23 // TODO: add in Event24 on merge
+        Event7 | Event8 | Event8A | Event22 | Event23 | Event24
         )) => userAnswers.countAll(MembersPage(memberBasedEvent))
       case _ => 0
     }
@@ -114,6 +117,8 @@ private object EventSelectionPageUtility {
         questionWasAnswered(userAnswers.get(LumpSumAmountAndDatePage(event8or8a, getIndex(int))))
       case Some(event22or23@(Event22 | Event23)) =>
         questionWasAnswered(userAnswers.get(TotalPensionAmountsPage(event22or23, getIndex(int))))
+      case Some(Event24) =>
+        questionWasAnswered(userAnswers.get(OverAllowancePage(getIndex(int))))
       case _ => false
     }
 
