@@ -18,7 +18,7 @@ package utils
 
 import models.TaxYear.{getTaxYear, reads}
 import models.common.ChooseTaxYear
-import models.enumeration.EventType.{Event1, Event10, Event11, Event12, Event13, Event14, Event19, Event2, Event20, Event22, Event23, Event3, Event4, Event5, Event6, Event7, Event8, Event8A}
+import models.enumeration.EventType._
 import models.enumeration.{AddressJourneyType, EventType}
 import models.event1.PaymentNature.{OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TransferToNonRegPensionScheme}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
@@ -65,21 +65,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class UserAnswersValidation @Inject()(compileService: CompileService) {
   def validateMemberPaymentNature(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
     val memberPaymentNatureAnswer = request.userAnswers.get(pages.event1.member.PaymentNaturePage(index))
-    // If (Transfer to non-registered pension scheme) -> Transfer Recipient -> Payment Details
     val transferRecipientAnswer = request.userAnswers.get(WhoWasTheTransferMadePage(index))
-
-    // If (Refund of contributions) -> Refund Details -> Payment Details
     val refundDetailsAnswer = request.userAnswers.get(RefundOfContributionsPage(index))
-
-    // If (Overpayment/write off for reasons including death) -> Overpayment Details -> Payment Details
     val overpaymentAnswer = request.userAnswers.get(ReasonForTheOverpaymentOrWriteOffPage(index))
-
-    // If (Residential property held directly or indirectly by an investment-regulated pension scheme) ->
-    // MemberPropertyPostcode -> MemberPropertyAddress -> PaymentDetails
-    // If there's an issue 👇🏻 This might be the problem
     val memberPropertyAddressAnswer = request.userAnswers.get(ManualAddressPage(AddressJourneyType.Event1MemberPropertyAddressJourney, index))
-
-    // If (_) -> Payment Details
     val paymentDetailsAnswer = request.userAnswers.get(PaymentDetailsPage(Event1, index))
 
     (memberPaymentNatureAnswer, transferRecipientAnswer, refundDetailsAnswer, overpaymentAnswer, memberPropertyAddressAnswer, paymentDetailsAnswer) match {
@@ -116,10 +105,7 @@ class UserAnswersValidation @Inject()(compileService: CompileService) {
     val membersDetailsAnswer = request.userAnswers.get(MembersDetailsPage(Event1, index))
     val doYouHoldSignedMandateAnswer = request.userAnswers.get(DoYouHoldSignedMandatePage(index))
     val valueOfUnauthorisedPaymentAnswer = request.userAnswers.get(ValueOfUnauthorisedPaymentPage(index))
-
-    // If value Yes -> Surcharge Page -> PaymentNaturePage
     val surchargeMemberAnswer = request.userAnswers.get(SchemeUnAuthPaySurchargeMemberPage(index))
-    // If value No -> PaymentNaturePage
 
     (membersDetailsAnswer, doYouHoldSignedMandateAnswer, valueOfUnauthorisedPaymentAnswer, surchargeMemberAnswer) match {
       case (Some(_), Some(_), Some(true), Some(_)) | (Some(_), Some(_), Some(false), _) => validateMemberPaymentNature(index)
@@ -140,11 +126,7 @@ class UserAnswersValidation @Inject()(compileService: CompileService) {
 
   def validateEmployerPaymentNature(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
     val employerPaymentNatureAnswer = request.userAnswers.get(pages.event1.employer.PaymentNaturePage(index))
-    // If (Residential property held directly or indirectly by an investment-regulated pension scheme) ->
-    // EmployerPropertyPostcode -> EmployerPropertyAddress -> PaymentDetails
-    // If (_) -> PaymentDetails
     val employerPropertyAddressAnswer = request.userAnswers.get(ManualAddressPage(AddressJourneyType.Event1EmployerPropertyAddressJourney, index))
-
     val paymentDetailsAnswer = request.userAnswers.get(PaymentDetailsPage(Event1, index))
 
     (employerPaymentNatureAnswer, employerPropertyAddressAnswer, paymentDetailsAnswer) match {
