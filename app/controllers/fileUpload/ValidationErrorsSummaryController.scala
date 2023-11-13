@@ -60,11 +60,12 @@ class ValidationErrorsSummaryController @Inject()(
     implicit request =>
       val returnUrl = controllers.fileUpload.routes.FileUploadController.onPageLoad(waypoints, eventType).url
       val fileDownloadInstructionLink = controllers.routes.FileDownloadController.instructionsFile(eventType).url
+      val fileTemplateInstructionLink = controllers.routes.FileDownloadController.templateFile(eventType).url
 
       parsingAndValidationOutcomeCacheConnector.getOutcome.map {
         case Some(outcome@ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _)) =>
           val (errors, totalNumOfErrors) = generateAllErrors(outcome)
-          Ok(view(returnUrl, fileDownloadInstructionLink, errors, totalNumOfErrors))
+          Ok(view(returnUrl, fileDownloadInstructionLink, errors, totalNumOfErrors, fileTemplateInstructionLink))
         case _ => NotFound
       }
   }
