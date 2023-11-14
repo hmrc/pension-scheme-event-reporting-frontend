@@ -68,8 +68,9 @@ class EventSummaryController @Inject()(
               SummaryListRow(
                 key = Key(
                   content = {
-                    val lockedHtml = eventSummary.lockedBy.map(lockedBy => "<br/>" + Message("eventSummary.lockedBy") + " " + lockedBy).getOrElse("")
-                    HtmlContent(Text(Message(s"eventSummary.event${eventSummary.eventType.toString}")).asHtml.toString() + lockedHtml)
+                    val lockedHtml = eventSummary.lockedBy.map(lockedBy => "<br/>" + Message("eventSummary.lockedBy").resolve + " " + lockedBy).getOrElse("")
+                    def notBold(txt: String) = s"""<span style="font-weight:400;">$txt</span>"""
+                    HtmlContent(Text(Message(s"eventSummary.event${eventSummary.eventType.toString}")).asHtml.toString() + notBold(lockedHtml))
                   }
                 ),
                 actions = Some(Actions(
