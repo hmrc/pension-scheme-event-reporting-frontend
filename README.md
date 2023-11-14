@@ -17,6 +17,8 @@ sbt compile
 sbt test
 ```
 
+Run Unit Tests with coverage report: `sbt runCoverageCheck` which runs `clean coverage test coverageReport`
+
 ### Further documentation
 
 A list of links to key files in docs/.

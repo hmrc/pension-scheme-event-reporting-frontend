@@ -23,21 +23,21 @@ import data.SampleData.{erOverviewSeq, memberDetails, sampleMemberJourneyDataEve
 import forms.common.MembersSummaryFormProvider
 import forms.mappings.Formatters
 import helpers.DateHelper
-import models.{Index, VersionInfo}
 import models.enumeration.EventType.Event7
 import models.enumeration.VersionStatus.Submitted
+import models.{Index, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, EventReportingOverviewPage, VersionInfoPage}
 import pages.common.MembersSummaryPage
+import pages.{EmptyWaypoints, EventReportingOverviewPage, VersionInfoPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.EventPaginationService
-import services.EventPaginationService.{PaginationStats, PaginationStatsEvent7}
+import services.EventPaginationService.PaginationStatsEvent7
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import viewmodels.{Message, SummaryListRowWithThreeValues}
 import views.html.event7.Event7MembersSummaryView

@@ -17,7 +17,7 @@
 package pages.common
 
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event2, Event22, Event23, Event3, Event4, Event5, Event6, Event7, Event8, Event8A}
+import models.enumeration.EventType.{Event2, Event22, Event23, Event24, Event3, Event4, Event5, Event6, Event7, Event8, Event8A}
 import models.{Index, MemberSummaryPath, UserAnswers}
 import pages.event7.Event7MembersPage
 import pages.{EventSummaryPage, Page, QuestionPage, Waypoints}
@@ -46,6 +46,7 @@ case class MembersSummaryPage(eventType: EventType, pageNumber: Index) extends Q
       case (Event8A, Some(true)) => MembersDetailsPage(Event8A, answers.countAll(MembersPage(EventType.Event8A)))
       case (Event22, Some(true)) => ManualOrUploadPage(Event22, answers.countAll(MembersPage(EventType.Event22)))
       case (Event23, Some(true)) => ManualOrUploadPage(Event23, answers.countAll(MembersPage(EventType.Event23)))
+      case (Event24, Some(true)) => MembersDetailsPage(Event24, answers.countAll(MembersPage(EventType.Event24)))
       case _ => EventSummaryPage
     }
   }

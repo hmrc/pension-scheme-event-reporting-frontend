@@ -18,7 +18,6 @@ package utils
 
 import com.typesafe.config.ConfigException
 import config.FrontendAppConfig
-import models.address.Address
 import org.apache.commons.lang3.StringUtils
 import play.api.Environment
 import play.api.libs.json.{JsBoolean, Json}
