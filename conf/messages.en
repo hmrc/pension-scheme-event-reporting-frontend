@@ -1700,7 +1700,7 @@ fileUpload.schemeReference.generic.error = scheme reference is missing or in the
 fileUpload.country.generic.error = country is missing or in the wrong format
 fileUpload.paymentDate.generic.error = date of payment or when benefit made available is missing or in the wrong format
 fileUpload.paymentAmount.generic.error = total value or amount of the unauthorised payment is missing or in the wrong format
-fileUpload.overpaymentReason.generic.error = reason for the overpayment/write off is missing or in the wring format
+fileUpload.overpaymentReason.generic.error = reason for the overpayment/write off is missing or in the wrong format
 fileUpload.addressLine1.generic.error = address line 1 is missing or in the wrong format
 fileUpload.addressLine2.generic.error = address line 2 is missing or in the wrong format
 fileUpload.addressLine3.generic.error = address line 3 is missing or in the wrong format
@@ -1716,6 +1716,7 @@ fileUpload.companyNo.generic.error = company number is missing or in the wrong f
 fileUpload.valueOfFund.generic.error = value of fund is missing or in the wrong format
 fileUpload.loanAmount.generic.error = loan amount is missing or in the wrong format
 fileUpload.memberOrEmployer.generic.error = entry of who received the unauthorised payment or deemed unauthorised payment is missing or in the wrong format
+fileUpload.natureOfPayment.generic.error = nature of payment is missing or in the wrong format
 
 eventDescription.event1 = unauthorised payment
 eventDescription.event2 = lump sum death benefit payment

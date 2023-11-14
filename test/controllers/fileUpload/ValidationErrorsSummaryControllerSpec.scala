@@ -58,6 +58,7 @@ class ValidationErrorsSummaryControllerSpec extends SpecBase with BeforeAndAfter
   )
 
   private def fileDownloadInstructionLink(eventType: EventType) = s"/manage-pension-scheme-event-report/event-${eventType.toString}-upload-format-instructions"
+  private def fileDownloadTemplateLink(eventType: EventType)    = s"/manage-pension-scheme-event-report/event-${eventType.toString}-bulk-upload-template"
 
   private def returnUrl(eventType: EventType) = s"/manage-pension-scheme-event-report/report/event-${eventType.toString}-upload"
 
@@ -83,7 +84,7 @@ class ValidationErrorsSummaryControllerSpec extends SpecBase with BeforeAndAfter
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(returnUrl(eventType),
-          fileDownloadInstructionLink(eventType), dummyErrors, 3)(request, messages(application)).toString
+          fileDownloadInstructionLink(eventType), dummyErrors, 3, fileDownloadTemplateLink(eventType))(request, messages(application)).toString
       }
     }
   }
