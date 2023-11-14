@@ -19,10 +19,11 @@ package controllers.event24
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import helpers.ReadOnlyCYA
+import models.Index
 import models.enumeration.EventType
+import models.enumeration.EventType.Event24
 import models.event24.TypeOfProtectionSelection._
 import models.requests.DataRequest
-import models.{Index, MemberSummaryPath}
 import pages.event24._
 import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -61,7 +62,7 @@ class Event24CheckYourAnswersController @Inject()(
 
   def onClick(index: Index): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData).async { implicit request =>
-      userAnswersValidation.event24AnswerValidation(index)
+      userAnswersValidation.validate(Event24, index)
     }
 
   private def buildEvent24CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)

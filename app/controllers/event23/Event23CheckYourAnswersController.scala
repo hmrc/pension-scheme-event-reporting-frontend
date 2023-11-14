@@ -19,9 +19,9 @@ package controllers.event23
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import helpers.ReadOnlyCYA
+import models.Index
 import models.enumeration.EventType.Event23
 import models.requests.DataRequest
-import models.{Index, MemberSummaryPath}
 import pages.event23.Event23CheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -59,7 +59,7 @@ class Event23CheckYourAnswersController @Inject()(
 
   def onClick(index: Index): Action[AnyContent] =
     (identify andThen getData(Event23) andThen requireData).async { implicit request =>
-      userAnswersValidation.event22and23AnswerValidation(index, Event23)
+      userAnswersValidation.validate(Event23, index)
     }
 
   private def buildEvent23CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)

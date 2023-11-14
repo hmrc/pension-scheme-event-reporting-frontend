@@ -71,7 +71,7 @@ class Event1CheckYourAnswersController @Inject()(
 
   def onClick(index: Index): Action[AnyContent] =
     (identify andThen getData(Event1) andThen requireData).async { implicit request =>
-      userAnswersValidation.event1AnswerValidation(index)
+      userAnswersValidation.validate(Event1, index)
     }
 
   private def event1MemberJourney(index: Int)(implicit request: DataRequest[AnyContent]): Boolean = {

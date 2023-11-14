@@ -60,7 +60,7 @@ class Event8CheckYourAnswersController @Inject()(
 
   def onClick(index: Index): Action[AnyContent] =
     (identify andThen getData(Event8) andThen requireData).async { implicit request =>
-      userAnswersValidation.event8AnswerValidation(index)
+      userAnswersValidation.validate(Event8, index)
     }
 
   private def buildEvent8CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)

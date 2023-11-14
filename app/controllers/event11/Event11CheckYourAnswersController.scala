@@ -30,7 +30,12 @@ import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswersValidation
-import viewmodels.event11.checkAnswers.{HasSchemeChangedRulesInvestmentsInAssetsSummary, HasSchemeChangedRulesSummary, InvestmentsInAssetsRuleChangeDateSummary, UnAuthPaymentsRuleChangeDateSummary}
+import viewmodels.event11.checkAnswers.{
+  HasSchemeChangedRulesInvestmentsInAssetsSummary,
+  HasSchemeChangedRulesSummary,
+  InvestmentsInAssetsRuleChangeDateSummary,
+  UnAuthPaymentsRuleChangeDateSummary
+}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
@@ -60,7 +65,7 @@ class Event11CheckYourAnswersController @Inject()(
 
   def onClick: Action[AnyContent] =
     (identify andThen getData(Event11) andThen requireData).async { implicit request =>
-      userAnswersValidation.event11AnswerValidation
+      userAnswersValidation.validate(Event11)
     }
 
   private def buildEvent11CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, answers: UserAnswers)

@@ -62,7 +62,7 @@ class Event3CheckYourAnswersController @Inject()(
 
   def onClick(index: Index): Action[AnyContent] =
     (identify andThen getData(Event3) andThen requireData).async { implicit request =>
-      userAnswersValidation.event3AnswerValidation(index)
+      userAnswersValidation.validate(Event3, index)
     }
 
   private def event3ReasonForBenefitsRows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)
