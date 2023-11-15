@@ -44,7 +44,7 @@ class Event20ACheckYourAnswersController @Inject()(
                                                    connector: EventReportingConnector,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: CheckYourAnswersView,
-                                                   userAnswersValidation: Event20AUserAnswerValidation,
+                                                   userAnswersValidation: Event20AUserAnswerValidation
   )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
