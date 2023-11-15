@@ -78,7 +78,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
         .setOrException(VersionInfoPage, VersionInfo(1, Compiled))
         .setOrException(EventReportingOverviewPage, erOverviewSeq)
 
-      val seqOfEvents = Seq(EventSummary(EventType.Event1, 1, None), EventSummary(EventType.Event18, 1, None))
+      val seqOfEvents = Seq(EventSummary(EventType.Event1, 1, None), EventSummary(EventType.Event8, 1, Some("TestUser")), EventSummary(EventType.Event18, 1, None))
 
       when(mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any())).thenReturn(
         Future.successful(seqOfEvents)
@@ -114,6 +114,17 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
                   href = common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, Event1).url
                 )
               )
+            ))
+          )
+        }, {
+          val eventMessageKey = Message(s"eventSummary.event8")
+          SummaryListRow(
+            key = Key(
+              content = HtmlContent(Text(eventMessageKey).asHtml.toString() + s"""<span style="font-weight:400;"><br/>${Message("eventSummary.lockedBy").resolve} TestUser</span>"""),
+              classes = "govuk-!-width-full"
+            ),
+            actions = Some(Actions(
+              items = Seq()
             ))
           )
         }, {
