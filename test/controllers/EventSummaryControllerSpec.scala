@@ -78,7 +78,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
         .setOrException(VersionInfoPage, VersionInfo(1, Compiled))
         .setOrException(EventReportingOverviewPage, erOverviewSeq)
 
-      val seqOfEvents = Seq(EventSummary(EventType.Event1, 1), EventSummary(EventType.Event18, 1))
+      val seqOfEvents = Seq(EventSummary(EventType.Event1, 1, None), EventSummary(EventType.Event18, 1, None))
 
       when(mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any())).thenReturn(
         Future.successful(seqOfEvents)
@@ -100,7 +100,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
           val eventMessageKey = Message(s"eventSummary.event1")
           SummaryListRow(
             key = Key(
-              content = Text(eventMessageKey),
+              content = HtmlContent(Text(eventMessageKey).asHtml.toString() +"""<span style="font-weight:400;"></span>"""),
               classes = "govuk-!-width-full"
             ),
             actions = Some(Actions(
@@ -120,7 +120,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
           val eventMessageKey = Message(s"eventSummary.event18")
           SummaryListRow(
             key = Key(
-              content = Text(eventMessageKey),
+              content = HtmlContent(Text(eventMessageKey).asHtml.toString() +"""<span style="font-weight:400;"></span>"""),
               classes = "govuk-!-width-full"
             ),
             actions = Some(Actions(
