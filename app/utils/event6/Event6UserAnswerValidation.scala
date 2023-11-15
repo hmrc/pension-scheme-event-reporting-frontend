@@ -21,7 +21,7 @@ import models.enumeration.EventType.Event6
 import models.requests.DataRequest
 import pages.EmptyWaypoints
 import pages.common.{MembersDetailsPage, PaymentDetailsPage}
-import pages.event6.{Event6CheckYourAnswersPage, InputProtectionTypePage, TypeOfProtectionPage}
+import pages.event6.{AmountCrystallisedAndDatePage, Event6CheckYourAnswersPage, InputProtectionTypePage, TypeOfProtectionPage}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Result}
 import services.CompileService
@@ -35,15 +35,15 @@ class Event6UserAnswerValidation @Inject()(compileService: CompileService) {
     val membersDetailsAnswer = request.userAnswers.get(MembersDetailsPage(Event6, index))
     val typeOfProtectionAnswer = request.userAnswers.get(TypeOfProtectionPage(Event6, index))
     val protectionReferenceAnswer = request.userAnswers.get(InputProtectionTypePage(Event6, index))
-    val paymentDetailsAnswer = request.userAnswers.get(PaymentDetailsPage(Event6, index))
+    val amountCrystallisedAndDateAnswer = request.userAnswers.get(AmountCrystallisedAndDatePage(Event6, index))
 
-    (membersDetailsAnswer, typeOfProtectionAnswer, protectionReferenceAnswer, paymentDetailsAnswer) match {
+    (membersDetailsAnswer, typeOfProtectionAnswer, protectionReferenceAnswer, amountCrystallisedAndDateAnswer) match {
       case (Some(_), Some(_), Some(_), Some(_)) => compileService.compileEvent(Event6, request.pstr, request.userAnswers).map {
         _ =>
           Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event6)).url)
       }
       case (Some(_), Some(_), Some(_), None) => Future.successful(
-        Redirect(PaymentDetailsPage(Event6, index).changeLink(EmptyWaypoints, Event6CheckYourAnswersPage(index)).url)
+        Redirect(AmountCrystallisedAndDatePage(Event6, index).changeLink(EmptyWaypoints, Event6CheckYourAnswersPage(index)).url)
       )
       case (Some(_), Some(_), None, _) => Future.successful(
         Redirect(InputProtectionTypePage(Event6, index).changeLink(EmptyWaypoints, Event6CheckYourAnswersPage(index)).url)
