@@ -17,21 +17,17 @@
 package utils.event20A
 
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
-import models.enumeration.EventType.Event20A
 import models.event20A.WhatChange
 import models.requests.DataRequest
 import pages.EmptyWaypoints
 import pages.event20A.{BecameDatePage, CeasedDatePage, Event20ACheckYourAnswersPage, WhatChangePage}
-import play.api.mvc.Results.Redirect
-import play.api.mvc.{AnyContent, Result}
+import play.api.mvc.AnyContent
 import services.CompileService
-import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class Event20AUserAnswerValidation @Inject()(compileService: CompileService){
-  def validateAnswers()(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): String = {
+  def validateAnswers()(implicit request: DataRequest[AnyContent]): String = {
     val whatChangeAnswer = request.userAnswers.get(WhatChangePage)
     val becameDateAnswer = request.userAnswers.get(BecameDatePage)
     val ceasedDateAnswer = request.userAnswers.get(CeasedDatePage)
@@ -42,7 +38,7 @@ class Event20AUserAnswerValidation @Inject()(compileService: CompileService){
         request.loggedInUser.administratorOrPractitioner match {
           case Administrator => controllers.event20A.routes.Event20APsaDeclarationController.onPageLoad(EmptyWaypoints).url
           case Practitioner => controllers.event20A.routes.Event20APspDeclarationController.onPageLoad(EmptyWaypoints).url
-          }
+        }
       }
       case (Some(WhatChange.BecameMasterTrust), None, _) => BecameDatePage.changeLink(EmptyWaypoints, Event20ACheckYourAnswersPage()).url
       case (Some(WhatChange.CeasedMasterTrust), _, None) => CeasedDatePage.changeLink (EmptyWaypoints, Event20ACheckYourAnswersPage()).url

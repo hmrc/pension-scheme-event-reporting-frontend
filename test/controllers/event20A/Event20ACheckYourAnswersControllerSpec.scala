@@ -18,30 +18,48 @@ package controllers.event20A
 
 import base.SpecBase
 import data.SampleData.{sampleEvent20ABecameJourneyData, sampleEvent20ACeasedJourneyData}
+import models.VersionInfo
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
+import models.enumeration.VersionStatus.Compiled
+import models.event20A.WhatChange
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.{EmptyWaypoints, VersionInfoPage}
+import pages.event20A.{BecameDatePage, WhatChangePage}
 import play.api.i18n.Messages
 import play.api.inject
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
+import play.api.inject.bind
+
+import java.time.LocalDate
+import scala.concurrent.Future
 
 class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
+  private val mockCompileService = mock[CompileService]
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[CompileService].toInstance(mockCompileService)
+  )
+
 
   import Event20ACheckYourAnswersControllerSpec._
 
   "Check Your Answers Controller for Event 20A" - {
 
     "must return OK and the correct view for a GET" in {
+      val event20AUserAnswers = emptyUserAnswersWithTaxYear.set(WhatChangePage, WhatChange.BecameMasterTrust).get
+        .set(BecameDatePage, LocalDate.of(2023, 1, 12)).get
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
+      val application = applicationBuilder(userAnswers = Some(event20AUserAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad.url)
@@ -49,7 +67,7 @@ class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFl
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[CheckYourAnswersView]
-        val list = SummaryListViewModel(Seq.empty)
+        val list = SummaryListViewModel(expectedSummaryListRowsEvent20ABecame)
 
         status(result) mustEqual OK
         request.loggedInUser.administratorOrPractitioner match {
