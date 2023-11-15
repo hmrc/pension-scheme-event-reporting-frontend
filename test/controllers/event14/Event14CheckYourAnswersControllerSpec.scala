@@ -18,17 +18,32 @@ package controllers.event14
 
 import base.SpecBase
 import models.enumeration.EventType.Event14
-import models.enumeration.VersionStatus.Submitted
+import models.enumeration.VersionStatus.{Compiled, Submitted}
+import models.event14.HowManySchemeMembers
 import models.{EROverview, EROverviewVersion, TaxYear, VersionInfo}
-import pages.{EventReportingOverviewPage, VersionInfoPage}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
+import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.event14.HowManySchemeMembersPage
+import pages.{EmptyWaypoints, EventReportingOverviewPage, VersionInfoPage}
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.CompileService
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
 import java.time.LocalDate
+import scala.concurrent.Future
 
 class Event14CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
+
+  private val mockCompileService = mock[CompileService]
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[CompileService].toInstance(mockCompileService)
+  )
 
   "Check Your Answers Controller" - {
 
@@ -106,6 +121,42 @@ class Event14CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+    "must redirect to the correct page onClick when all answers are present" in {
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful())
+
+      val event14Answers = emptyUserAnswers.set(HowManySchemeMembersPage, HowManySchemeMembers.OptionOne).get
+
+      val userAnswersWithVersionInfo = event14Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event14.routes.Event14CheckYourAnswersController.onClick.url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url
+        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
+      }
+    }
+
+    "must redirect to the correct page onClick when an answer is missing" in {
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful())
+
+      val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event14.routes.Event14CheckYourAnswersController.onClick.url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual s"${
+          controllers.event14.routes.HowManySchemeMembersController.onPageLoad(EmptyWaypoints).url
+        }?waypoints=event-14-check-answers"
       }
     }
   }

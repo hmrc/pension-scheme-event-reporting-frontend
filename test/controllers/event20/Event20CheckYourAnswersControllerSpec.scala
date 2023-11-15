@@ -21,12 +21,14 @@ import controllers.event20.Event20CheckYourAnswersControllerSpec.{expectedSummar
 import data.SampleData.sampleEvent20JourneyData
 import models.enumeration.EventType.Event20
 import models.enumeration.VersionStatus.{Compiled, Submitted}
+import models.event20.Event20Date
 import models.{EROverview, EROverviewVersion, TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.event20.{BecameDatePage, WhatChangePage}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
@@ -204,11 +206,14 @@ class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       }
     }
 
-    "must redirect to the correct page onClick" in {
+    "must redirect to the correct page onClick if all answers are present" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
         .thenReturn(Future.successful())
 
-      val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val event20Answers = emptyUserAnswers.set(WhatChangePage, models.event20.WhatChange.BecameOccupationalScheme).get
+        .set(BecameDatePage, Event20Date(LocalDate.of(2024, 4, 4))).get
+
+      val userAnswersWithVersionInfo = event20Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
 
       running(application) {
@@ -218,6 +223,25 @@ class Event20CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url
         verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
+      }
+    }
+    "must redirect to the correct page onClick if an answer is missing" in {
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful())
+
+      val event20Answers = emptyUserAnswers.set(WhatChangePage, models.event20.WhatChange.BecameOccupationalScheme).get
+
+      val userAnswersWithVersionInfo = event20Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event20.routes.Event20CheckYourAnswersController.onClick.url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual s"${
+          controllers.event20.routes.BecameDateController.onPageLoad(EmptyWaypoints).url
+        }?waypoints=event-20-check-answers"
       }
     }
   }

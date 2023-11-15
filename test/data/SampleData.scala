@@ -31,7 +31,9 @@ import models.event1.employer.{CompanyDetails, LoanDetails}
 import models.event1.member.SchemeDetails
 import models.event1.{PaymentDetails => Event1PaymentDetails}
 import models.event10.{BecomeOrCeaseScheme, SchemeChangeDate}
+import models.event11.Event11Date
 import models.event12.DateOfChange
+import models.event13.SchemeStructure
 import models.event20.Event20Date
 import models.event20.WhatChange.BecameOccupationalScheme
 import models.event20A.WhatChange.{BecameMasterTrust, CeasedMasterTrust}
@@ -47,11 +49,12 @@ import pages.event1._
 import pages.event1.employer.{CompanyDetailsPage, EmployerTangibleMoveablePropertyPage, PaymentNaturePage => EmployerPaymentNaturePage}
 import pages.event1.member.{BenefitInKindBriefDescriptionPage, PaymentNaturePage => MemberPaymentNaturePage}
 import pages.event10.{BecomeOrCeaseSchemePage, ContractsOrPoliciesPage, SchemeChangeDatePage}
-import pages.event12.{DateOfChangePage, HasSchemeChangedRulesPage}
+import pages.event11.{HasSchemeChangedRulesInvestmentsInAssetsPage, InvestmentsInAssetsRuleChangeDatePage, UnAuthPaymentsRuleChangeDatePage}
+import pages.event12.DateOfChangePage
+import pages.event13.{ChangeDatePage, SchemeStructureDescriptionPage, SchemeStructurePage}
 import pages.event19.{CountryOrTerritoryPage, DateChangeMadePage}
 import pages.event2.{AmountPaidPage, DatePaidPage}
-import pages.event24.{BCETypeSelectionPage, CrystallisedDatePage, EmployerPayeReferencePage, MarginalRatePage,
-  OverAllowanceAndDeathBenefitPage, OverAllowancePage, TotalAmountBenefitCrystallisationPage, ValidProtectionPage}
+import pages.event24._
 import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage => Event6TypeOfProtectionPage}
 import pages.event7.{CrystallisedAmountPage, LumpSumAmountPage, PaymentDatePage}
 import pages.event8.{LumpSumAmountAndDatePage, TypeOfProtectionReferencePage, TypeOfProtectionPage => Event8TypeOfProtectionPage}
@@ -332,6 +335,11 @@ object SampleData extends SpecBase {
     .setOrException(ChooseTaxYearPage(eventType, 0), ChooseTaxYear("2015"))(writesTaxYear)
     .setOrException(TotalPensionAmountsPage(eventType, 0), BigDecimal(10.00))
 
+  def sampleMemberJourneyDataEvent22and23WithMissingAmount(eventType: EventType): UserAnswers = UserAnswers()
+    .setOrException(TaxYearPage, TaxYear("2022"))
+    .setOrException(MembersDetailsPage(eventType, 0), memberDetails)
+    .setOrException(ChooseTaxYearPage(eventType, 0), ChooseTaxYear("2015"))(writesTaxYear)
+
 
   def event22and23UADataWithPagination(eventType: EventType) =
     (0 to 25).foldLeft(emptyUserAnswersWithTaxYear) { (acc, i) =>
@@ -388,10 +396,35 @@ object SampleData extends SpecBase {
       .setOrException(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItHasCeasedToBeAnInvestmentRegulatedPensionScheme)
       .setOrException(SchemeChangeDatePage, SchemeChangeDate(LocalDate.of(2022, 3, 22)))
 
+  def sampleJourneyData11SchemeChangedBothRules: UserAnswers =
+    UserAnswers().setOrException(pages.event11.HasSchemeChangedRulesPage, true)
+      .setOrException(UnAuthPaymentsRuleChangeDatePage, Event11Date(LocalDate.of(2024, 4, 4)))
+      .setOrException(HasSchemeChangedRulesInvestmentsInAssetsPage, true)
+      .setOrException(InvestmentsInAssetsRuleChangeDatePage, Event11Date(LocalDate.of(2024, 4, 4)))
+
+  def sampleJourneyData11SchemeNotChangedInAssets: UserAnswers =
+    UserAnswers().setOrException(pages.event11.HasSchemeChangedRulesPage, true)
+      .setOrException(UnAuthPaymentsRuleChangeDatePage, Event11Date(LocalDate.of(2024, 4, 4)))
+      .setOrException(HasSchemeChangedRulesInvestmentsInAssetsPage, false)
+
+  def sampleJourneyData11SchemeChangedRulesForAssetsOnly: UserAnswers =
+    UserAnswers().setOrException(pages.event11.HasSchemeChangedRulesPage, false)
+      .setOrException(HasSchemeChangedRulesInvestmentsInAssetsPage, true)
+      .setOrException(InvestmentsInAssetsRuleChangeDatePage, Event11Date(LocalDate.of(2024, 4, 4)))
+
+  def sampleJourneyData11SchemeNoChangedRules: UserAnswers =
+    UserAnswers().setOrException(pages.event11.HasSchemeChangedRulesPage, false)
+      .setOrException(HasSchemeChangedRulesInvestmentsInAssetsPage, false)
+
   def sampleEvent12JourneyData: UserAnswers =
     emptyUserAnswersWithTaxYear
-      .setOrException(HasSchemeChangedRulesPage, true)
+      .setOrException(pages.event12.HasSchemeChangedRulesPage, true)
       .setOrException(DateOfChangePage, DateOfChange(LocalDate.of(2022, 3, 22)))
+
+  def sampleEvent13JourneyData: UserAnswers =
+    emptyUserAnswersWithTaxYear.setOrException(SchemeStructurePage, SchemeStructure.Other)
+      .setOrException(SchemeStructureDescriptionPage, "foo")
+      .setOrException(ChangeDatePage, LocalDate.of(2024, 4, 4))
 
   def sampleJourneyData19CountryOrTerritory: UserAnswers =
     UserAnswers()

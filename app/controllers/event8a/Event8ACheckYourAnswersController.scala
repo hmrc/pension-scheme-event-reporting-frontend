@@ -22,7 +22,7 @@ import helpers.ReadOnlyCYA
 import models.enumeration.EventType.Event8A
 import models.event8a.PaymentType
 import models.requests.DataRequest
-import models.{Index, MemberSummaryPath, UserAnswers}
+import models.{Index, UserAnswers}
 import pages.common.MembersDetailsPage
 import pages.event8a.Event8ACheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
@@ -31,6 +31,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.UserAnswersValidation
 import viewmodels.checkAnswers.MembersDetailsSummary
 import viewmodels.event8.checkAnswers.{LumpSumAmountAndDateSummary, TypeOfProtectionReferenceSummary, TypeOfProtectionSummary}
 import viewmodels.event8a.checkAnswers._
@@ -46,7 +47,8 @@ class Event8ACheckYourAnswersController @Inject()(
                                                    requireData: DataRequiredAction,
                                                    compileService: CompileService,
                                                    val controllerComponents: MessagesControllerComponents,
-                                                   view: CheckYourAnswersView
+                                                   view: CheckYourAnswersView,
+                                                   userAnswersValidation: UserAnswersValidation
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport { //scalastyle:off method.length
 
   private def missingDataResult(userAnswers: UserAnswers, index: Index, waypoints: Waypoints) = {
@@ -108,7 +110,7 @@ class Event8ACheckYourAnswersController @Inject()(
     (identify andThen getData(Event8A) andThen requireData) { implicit request =>
       val thisPage = Event8ACheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
-      val continueUrl = controllers.event8a.routes.Event8ACheckYourAnswersController.onClick.url
+      val continueUrl = controllers.event8a.routes.Event8ACheckYourAnswersController.onClick(index).url
       val version = request.userAnswers.get(VersionInfoPage).map(_.version)
       val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event8A, version, request.readOnly())
 
@@ -117,12 +119,9 @@ class Event8ACheckYourAnswersController @Inject()(
       )
     }
 
-  def onClick: Action[AnyContent] =
+  def onClick(index: Index): Action[AnyContent] =
     (identify andThen getData(Event8A) andThen requireData).async { implicit request =>
-      compileService.compileEvent(Event8A, request.pstr, request.userAnswers).map {
-        _ =>
-          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event8A)).url)
-      }
+      userAnswersValidation.validate(Event8A, index)
     }
 
   private def buildEvent8aCYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)

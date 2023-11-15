@@ -20,12 +20,15 @@ import base.SpecBase
 import data.SampleData.{sampleJourneyData10BecameAScheme, sampleJourneyData10CeasedToBecomeAScheme}
 import models.enumeration.EventType.Event10
 import models.enumeration.VersionStatus.{Compiled, Submitted}
+import models.event10.BecomeOrCeaseScheme.ItBecameAnInvestmentRegulatedPensionScheme
+import models.event10.SchemeChangeDate
 import models.{EROverview, EROverviewVersion, TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.event10.{BecomeOrCeaseSchemePage, ContractsOrPoliciesPage, SchemeChangeDatePage}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
@@ -236,11 +239,15 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       }
     }
 
-    "must redirect to the correct page onClick" in {
+    "must redirect to the correct page onClick when all answers are present" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
         .thenReturn(Future.successful())
 
-      val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val event10Answers = emptyUserAnswers.set(BecomeOrCeaseSchemePage, ItBecameAnInvestmentRegulatedPensionScheme).get
+        .set(SchemeChangeDatePage, SchemeChangeDate(LocalDate.of(2024,4,4))).get
+        .set(ContractsOrPoliciesPage, true).get
+
+      val userAnswersWithVersionInfo = event10Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
 
       running(application) {
@@ -250,6 +257,27 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url
         verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
+      }
+    }
+
+    "must redirect to the correct page onClick when an answer is missing" in {
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful())
+
+      val event10Answers = emptyUserAnswers.set(BecomeOrCeaseSchemePage, ItBecameAnInvestmentRegulatedPensionScheme).get
+        .set(ContractsOrPoliciesPage, true).get
+
+      val userAnswersWithVersionInfo = event10Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event10.routes.Event10CheckYourAnswersController.onClick.url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual s"${
+          controllers.event10.routes.SchemeChangeDateController.onPageLoad(EmptyWaypoints).url
+        }?waypoints=event-10-check-answers"
       }
     }
   }

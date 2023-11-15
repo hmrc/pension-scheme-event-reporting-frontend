@@ -18,14 +18,18 @@ package controllers.event8
 
 import base.SpecBase
 import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent8}
-import models.{MemberSummaryPath, TaxYear, VersionInfo}
+import models.common.MembersDetails
 import models.enumeration.EventType.Event8
 import models.enumeration.VersionStatus.{Compiled, Submitted}
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
+import models.event8.{LumpSumDetails, TypeOfProtection}
+import models.{MemberSummaryPath, TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.common.MembersDetailsPage
+import pages.event8.{LumpSumAmountAndDatePage, TypeOfProtectionPage, TypeOfProtectionReferencePage}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
@@ -39,6 +43,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class Event8CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach {
@@ -70,7 +75,7 @@ class Event8CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(list,
-          continueUrl = "/manage-pension-scheme-event-report/report/event-8-click",
+          continueUrl = "/manage-pension-scheme-event-report/report/1/event-8-click",
           Tuple2(None, None),
           request,
           messages(application)).toString
@@ -91,7 +96,7 @@ class Event8CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(
           list,
-          continueUrl = "/manage-pension-scheme-event-report/report/event-8-click",
+          continueUrl = "/manage-pension-scheme-event-report/report/1/event-8-click",
           Tuple2(Some(1), Some(Event8)),
           request,
           messages(application)).toString
@@ -178,20 +183,47 @@ class Event8CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       }
     }
 
-    "must redirect to the correct page onClick" in {
+    "must redirect to the correct page onClick if all answers are present" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
         .thenReturn(Future.successful())
 
-      val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val event8Answers = emptyUserAnswers.set(MembersDetailsPage(Event8, 0), MembersDetails("Jane", "Doe", "AB123456B")).get
+        .set(TypeOfProtectionPage(Event8, 0), TypeOfProtection.PrimaryProtection).get
+        .set(TypeOfProtectionReferencePage(Event8, 0), "abcdefg123").get
+        .set(LumpSumAmountAndDatePage(Event8, 0), LumpSumDetails(BigDecimal(123), LocalDate.of(2024, 4, 4))).get
+
+      val userAnswersWithVersionInfo = event8Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event8.routes.Event8CheckYourAnswersController.onClick.url)
+        val request = FakeRequest(GET, controllers.event8.routes.Event8CheckYourAnswersController.onClick(0).url)
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event8)).url
         verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
+      }
+    }
+
+    "must redirect to the correct page onClick if an answer is missing" in {
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful())
+
+      val event8Answers = emptyUserAnswers.set(MembersDetailsPage(Event8, 0), MembersDetails("Jane", "Doe", "AB123456B")).get
+        .set(TypeOfProtectionReferencePage(Event8, 0), "abcdefg123").get
+        .set(LumpSumAmountAndDatePage(Event8, 0), LumpSumDetails(BigDecimal(123), LocalDate.of(2024, 4, 4))).get
+
+      val userAnswersWithVersionInfo = event8Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event8.routes.Event8CheckYourAnswersController.onClick(0).url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual s"${
+          controllers.event8.routes.TypeOfProtectionController.onPageLoad(EmptyWaypoints, Event8, 0).url
+        }?waypoints=event-8-check-answers-1"
       }
     }
   }

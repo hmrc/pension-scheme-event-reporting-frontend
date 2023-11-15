@@ -20,7 +20,6 @@ import com.google.inject.Inject
 import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.UserAnswers
-import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
 import models.enumeration.EventType.Event20A
 import models.event20A.WhatChange.{BecameMasterTrust, CeasedMasterTrust}
 import models.requests.DataRequest
@@ -30,6 +29,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.event20A.Event20AUserAnswerValidation
 import viewmodels.event20A.checkAnswers._
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
@@ -43,17 +43,15 @@ class Event20ACheckYourAnswersController @Inject()(
                                                    requireData: DataRequiredAction,
                                                    connector: EventReportingConnector,
                                                    val controllerComponents: MessagesControllerComponents,
-                                                   view: CheckYourAnswersView
-                                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                   view: CheckYourAnswersView,
+                                                   userAnswersValidation: Event20AUserAnswerValidation
+  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
     (identify andThen getData(Event20A) andThen requireData) { implicit request =>
       val thisPage = Event20ACheckYourAnswersPage()
       val waypoints = EmptyWaypoints
-      val continueUrl = request.loggedInUser.administratorOrPractitioner match {
-        case Administrator => controllers.event20A.routes.Event20APsaDeclarationController.onPageLoad(waypoints).url
-        case Practitioner => controllers.event20A.routes.Event20APspDeclarationController.onPageLoad(waypoints).url
-      }
+      val continueUrl = userAnswersValidation.validateAnswers
       Ok(view(SummaryListViewModel(rows = buildEvent20ACYARows(waypoints, thisPage, request.userAnswers)), continueUrl))
     }
 

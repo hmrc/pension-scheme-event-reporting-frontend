@@ -17,25 +17,30 @@
 package controllers.event22
 
 import base.SpecBase
-import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent22and23}
-import models.enumeration.EventType.Event22
+import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent22and23, sampleMemberJourneyDataEvent22and23WithMissingAmount, writesTaxYear}
+import models.TaxYear.getTaxYearFromOption
+import models.common.{ChooseTaxYear, MembersDetails}
+import models.enumeration.EventType.{Event2, Event22}
 import models.enumeration.VersionStatus.{Compiled, Submitted}
-import models.{MemberSummaryPath, TaxYear, VersionInfo}
+import models.{MemberSummaryPath, TaxYear, UserAnswers, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.libs.json.Writes
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.Aliases._
+import utils.Event2MemberPageNumbers
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
@@ -70,7 +75,7 @@ class Event22CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(list,
-          continueUrl = "/manage-pension-scheme-event-report/report/event-22-click",
+          continueUrl = "/manage-pension-scheme-event-report/report/1/event-22-click",
           Tuple2(None, None),
           request = request,
           messages = messages(application)).toString
@@ -91,7 +96,7 @@ class Event22CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(
           list,
-          continueUrl = "/manage-pension-scheme-event-report/report/event-22-click",
+          continueUrl = "/manage-pension-scheme-event-report/report/1/event-22-click",
           Tuple2(Some(1), Some(Event22)),
           request,
           messages(application)).toString
@@ -179,20 +184,48 @@ class Event22CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       }
     }
 
-    "must redirect to the correct page onClick" in {
+    "must redirect to the correct page onClick if all answers are present" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
         .thenReturn(Future.successful())
 
-      val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
-      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+      val application = applicationBuilder(
+        userAnswers = Some(sampleMemberJourneyDataEvent22and23(Event22)
+          .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+          .setOrException(EventReportingOverviewPage, erOverviewSeq)
+          .setOrException(VersionInfoPage, VersionInfo(1, Submitted))),
+        extraModules = extraModules
+      ).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event22.routes.Event22CheckYourAnswersController.onClick.url)
+        val request = FakeRequest(GET, controllers.event22.routes.Event22CheckYourAnswersController.onClick(0).url)
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event22)).url
         verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
+      }
+    }
+
+    "must redirect to the correct page onClick if an answer is missing" in {
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful())
+
+      val application = applicationBuilder(
+        userAnswers = Some(sampleMemberJourneyDataEvent22and23WithMissingAmount(Event22)
+          .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+          .setOrException(EventReportingOverviewPage, erOverviewSeq)
+          .setOrException(VersionInfoPage, VersionInfo(1, Submitted))),
+        extraModules = extraModules
+      ).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event22.routes.Event22CheckYourAnswersController.onClick(0).url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual s"${
+          controllers.common.routes.TotalPensionAmountsController.onPageLoad(EmptyWaypoints, Event22, 0).url
+        }?waypoints=event-22-check-answers-1"
       }
     }
   }

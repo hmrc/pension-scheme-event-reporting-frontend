@@ -84,26 +84,26 @@ GET         /report/wind-up-check-your-answers                                co
 GET         /report/event-windup-click                                        controllers.eventWindUp.EventWindUpCheckYourAnswersController.onClick
 
 GET         /report/:index/event-1-check-your-answers                         controllers.event1.Event1CheckYourAnswersController.onPageLoad(index: Index)
-GET         /report/event-1-click                                             controllers.event1.Event1CheckYourAnswersController.onClick
+GET         /report/:index/event-1-click                                      controllers.event1.Event1CheckYourAnswersController.onClick(index: Index)
 
 GET         /report/:index/event-2-check-your-answers                         controllers.event2.Event2CheckYourAnswersController.onPageLoad(index: Index)
-GET         /report/event-2-click                                             controllers.event2.Event2CheckYourAnswersController.onClick
+GET         /report/:index/event-2-click                                      controllers.event2.Event2CheckYourAnswersController.onClick(index: Index)
 
 GET         /report/:index/event-23-check-your-answers                        controllers.event23.Event23CheckYourAnswersController.onPageLoad(index: Index)
-GET         /report/event-23-click                                            controllers.event23.Event23CheckYourAnswersController.onClick
+GET         /report/:index/event-23-click                                     controllers.event23.Event23CheckYourAnswersController.onClick(index: Index)
 
 GET         /report/:index/event-22-check-your-answers                        controllers.event22.Event22CheckYourAnswersController.onPageLoad(index: Index)
-GET         /report/event-22-click                                            controllers.event22.Event22CheckYourAnswersController.onClick
+GET         /report/:index/event-22-click                                     controllers.event22.Event22CheckYourAnswersController.onClick(index: Index)
 
 GET         /report/:index/event-6-check-your-answers                        controllers.event6.Event6CheckYourAnswersController.onPageLoad(index: Index)
-GET         /report/event-6-click                                            controllers.event6.Event6CheckYourAnswersController.onClick
+GET         /report/:index/event-6-click                                     controllers.event6.Event6CheckYourAnswersController.onClick(index: Index)
 
 GET         /report/:index/event-7-check-your-answers                        controllers.event7.Event7CheckYourAnswersController.onPageLoad(index: Index)
-GET         /report/event-7-click                                            controllers.event7.Event7CheckYourAnswersController.onClick
+GET         /report/:index/event-7-click                                     controllers.event7.Event7CheckYourAnswersController.onClick(index: Index)
 
 
 GET         /report/:index/event-8-check-your-answers                        controllers.event8.Event8CheckYourAnswersController.onPageLoad(index: Index)
-GET         /report/event-8-click                                            controllers.event8.Event8CheckYourAnswersController.onClick
+GET         /report/:index/event-8-click                                     controllers.event8.Event8CheckYourAnswersController.onClick(index: Index)
 
 GET         /report/:index/event-1-entry-type                                 controllers.common.ManualOrUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1,  index: Index)
 POST        /report/:index/event-1-entry-type                                 controllers.common.ManualOrUploadController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1, index: Index)
@@ -345,7 +345,7 @@ GET        /report/:index/event-3-payment-details                             co
 POST       /report/:index/event-3-payment-details                             controllers.common.PaymentDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3, index: Index)
 
 GET         /report/:index/event-3-check-your-answers                         controllers.event3.Event3CheckYourAnswersController.onPageLoad(index: Index)
-GET         /report/event-3-click                                             controllers.event3.Event3CheckYourAnswersController.onClick
+GET         /report/:index/event-3-click                                             controllers.event3.Event3CheckYourAnswersController.onClick(index: Index)
 
 GET         /report/:index/event-6-entry-type                                 controllers.common.ManualOrUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6, index: Index)
 POST        /report/:index/event-6-entry-type                                 controllers.common.ManualOrUploadController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6, index: Index)
@@ -390,7 +390,7 @@ GET        /report/:index/event-8a-payment-details                            co
 POST       /report/:index/event-8a-payment-details                            controllers.event8.LumpSumAmountAndDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8A, index: Index)
 
 GET         /report/:index/event-8a-check-your-answers                        controllers.event8a.Event8ACheckYourAnswersController.onPageLoad(index: Index)
-GET         /report/event-8a-click                                            controllers.event8a.Event8ACheckYourAnswersController.onClick
+GET         /report/:index/event-8a-click                                     controllers.event8a.Event8ACheckYourAnswersController.onClick(index: Index)
 
 GET         /report/:index/event-7-member-details                             controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event7, index: Index,  memberPageNo: Int = 0)
 POST        /report/:index/event-7-member-details                             controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event7, index: Index,  memberPageNo: Int = 0)
@@ -421,10 +421,10 @@ GET        /report/:index/event-5-payment-details                             co
 POST       /report/:index/event-5-payment-details                             controllers.common.PaymentDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event5, index: Index)
 
 GET         /report/:index/event-4-check-your-answers                        controllers.event4.Event4CheckYourAnswersController.onPageLoad(index: Index)
-GET         /report/event-4-click                                            controllers.event4.Event4CheckYourAnswersController.onClick
+GET         /report/:index/event-4-click                                     controllers.event4.Event4CheckYourAnswersController.onClick(index: Index)
 
-GET         /report/:index/event-5-check-your-answers                        controllers.event5.Event5CheckYourAnswersController.onPageLoad(index: Index)
-GET         /report/event-5-click                                            controllers.event5.Event5CheckYourAnswersController.onClick
+GET         /report/:index/event-5-check-your-answers                         controllers.event5.Event5CheckYourAnswersController.onPageLoad(index: Index)
+GET         /report/:index/event-5-click                                      controllers.event5.Event5CheckYourAnswersController.onClick(index: Index)
 
 GET        /report/event-10-become-or-ceased                                  controllers.event10.BecomeOrCeaseSchemeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST       /report/event-10-become-or-ceased                                  controllers.event10.BecomeOrCeaseSchemeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
@@ -632,7 +632,7 @@ GET         /report/:index/event-24-employer-paye-reference                 cont
 POST        /report/:index/event-24-employer-paye-reference                 controllers.event24.EmployerPayeReferenceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
 GET         /report/:index/event-24-check-your-answers                      controllers.event24.Event24CheckYourAnswersController.onPageLoad(index: Index)
-GET         /report/event-24-click                                          controllers.event24.Event24CheckYourAnswersController.onClick
+GET         /report/:index/event-24-click                                   controllers.event24.Event24CheckYourAnswersController.onClick(index: Index)
 
 GET         /report/remove-24                                               controllers.common.RemoveEventController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event24)
 POST        /report/remove-24                                               controllers.common.RemoveEventController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event24)

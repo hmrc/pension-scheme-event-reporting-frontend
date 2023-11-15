@@ -19,9 +19,9 @@ package controllers.event23
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import helpers.ReadOnlyCYA
+import models.Index
 import models.enumeration.EventType.Event23
 import models.requests.DataRequest
-import models.{Index, MemberSummaryPath}
 import pages.event23.Event23CheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.UserAnswersValidation
 import viewmodels.checkAnswers.{ChooseTaxYearSummary, MembersDetailsSummary, TotalPensionAmountsSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
@@ -42,25 +43,23 @@ class Event23CheckYourAnswersController @Inject()(
                                                    requireData: DataRequiredAction,
                                                    compileService: CompileService,
                                                    val controllerComponents: MessagesControllerComponents,
-                                                   view: CheckYourAnswersView
+                                                   view: CheckYourAnswersView,
+                                                   userAnswersValidation: UserAnswersValidation
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (identify andThen getData(Event23) andThen requireData) { implicit request =>
       val thisPage = Event23CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
-      val continueUrl = controllers.event23.routes.Event23CheckYourAnswersController.onClick.url
+      val continueUrl = controllers.event23.routes.Event23CheckYourAnswersController.onClick(index).url
       val version = request.userAnswers.get(VersionInfoPage).map(_.version)
       val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event23, version, request.readOnly())
       Ok(view(SummaryListViewModel(rows = buildEvent23CYARows(waypoints, thisPage, index)), continueUrl, readOnlyHeading))
     }
 
-  def onClick: Action[AnyContent] =
+  def onClick(index: Index): Action[AnyContent] =
     (identify andThen getData(Event23) andThen requireData).async { implicit request =>
-      compileService.compileEvent(Event23, request.pstr, request.userAnswers).map {
-        _ =>
-          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event23)).url)
-      }
+      userAnswersValidation.validate(Event23, index)
     }
 
   private def buildEvent23CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)

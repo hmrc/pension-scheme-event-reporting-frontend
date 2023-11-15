@@ -19,7 +19,7 @@ package controllers.event5
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import helpers.ReadOnlyCYA
-import models.{Index, MemberSummaryPath}
+import models.Index
 import models.enumeration.EventType.Event5
 import models.requests.DataRequest
 import pages.event5.Event5CheckYourAnswersPage
@@ -29,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.UserAnswersValidation
 import viewmodels.checkAnswers.MembersDetailsSummary
 import viewmodels.common.checkAnswers.PaymentDetailsSummary
 import viewmodels.govuk.summarylist._
@@ -43,25 +44,23 @@ class Event5CheckYourAnswersController @Inject()(
                                                   requireData: DataRequiredAction,
                                                   compileService: CompileService,
                                                   val controllerComponents: MessagesControllerComponents,
-                                                  view: CheckYourAnswersView
+                                                  view: CheckYourAnswersView,
+                                                  userAnswersValidation: UserAnswersValidation
                                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (identify andThen getData(Event5) andThen requireData) { implicit request =>
       val thisPage = Event5CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
-      val continueUrl = controllers.event5.routes.Event5CheckYourAnswersController.onClick.url
+      val continueUrl = controllers.event5.routes.Event5CheckYourAnswersController.onClick(index).url
       val version = request.userAnswers.get(VersionInfoPage).map(_.version)
       val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(Event5, version, request.readOnly())
       Ok(view(SummaryListViewModel(rows = buildEvent5CYARows(waypoints, thisPage, index)), continueUrl, readOnlyHeading))
     }
 
-  def onClick: Action[AnyContent] =
+  def onClick(index: Index) : Action[AnyContent] =
     (identify andThen getData(Event5) andThen requireData).async { implicit request =>
-      compileService.compileEvent(Event5, request.pstr, request.userAnswers).map {
-        _ =>
-          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event5)).url)
-      }
+      userAnswersValidation.validate(Event5, index)
     }
 
   private def buildEvent5CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)

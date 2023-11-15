@@ -18,14 +18,17 @@ package controllers.event2
 
 import base.SpecBase
 import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent2}
-import models.{MemberSummaryPath, TaxYear, VersionInfo}
+import models.common.MembersDetails
 import models.enumeration.EventType.Event2
 import models.enumeration.VersionStatus.{Compiled, Submitted}
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
+import models.{MemberSummaryPath, TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.common.MembersDetailsPage
+import pages.event2.{AmountPaidPage, DatePaidPage}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
@@ -36,9 +39,11 @@ import play.api.test.Helpers._
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.Aliases._
+import utils.Event2MemberPageNumbers
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 
@@ -71,7 +76,7 @@ class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(list,
-          "/manage-pension-scheme-event-report/report/event-2-click",
+          "/manage-pension-scheme-event-report/report/1/event-2-click",
           Tuple2(None, None),
           request,
           messages(application)).toString
@@ -92,7 +97,7 @@ class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(
           list,
-          continueUrl = "/manage-pension-scheme-event-report/report/event-2-click",
+          continueUrl = "/manage-pension-scheme-event-report/report/1/event-2-click",
           Tuple2(Some(1), Some(Event2)),
           request,
           messages(application)).toString
@@ -179,20 +184,48 @@ class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       }
     }
 
-    "must redirect to the correct page onClick" in {
+    "must redirect to the correct page onClick if all answers are present" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
         .thenReturn(Future.successful())
 
-      val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val event2Answers = emptyUserAnswers
+        .set(MembersDetailsPage(Event2, 0, Event2MemberPageNumbers.FIRST_PAGE_DECEASED), MembersDetails("Jane", "Doe", "AB123456A")).get
+        .set(MembersDetailsPage(Event2, 0, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY), MembersDetails("John", "Doe", "AB123456D")).get
+        .set(AmountPaidPage(0, Event2), BigDecimal(123)).get
+        .set(DatePaidPage(0, Event2), LocalDate.of(2024,1,24)).get
+
+      val userAnswersWithVersionInfo = event2Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event2.routes.Event2CheckYourAnswersController.onClick.url)
+        val request = FakeRequest(GET, controllers.event2.routes.Event2CheckYourAnswersController.onClick(0).url)
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event2)).url
         verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
+      }
+    }
+    "must redirect to the correct page onClick if an answer is missing" in {
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful())
+
+      val event2Answers = emptyUserAnswers
+        .set(MembersDetailsPage(Event2, 0, Event2MemberPageNumbers.FIRST_PAGE_DECEASED), MembersDetails("Jane", "Doe", "AB123456A")).get
+        .set(MembersDetailsPage(Event2, 0, Event2MemberPageNumbers.SECOND_PAGE_BENEFICIARY), MembersDetails("John", "Doe", "AB123456D")).get
+        .set(DatePaidPage(0, Event2), LocalDate.of(2024, 1, 24)).get
+
+      val userAnswersWithVersionInfo = event2Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event2.routes.Event2CheckYourAnswersController.onClick(0).url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual s"${
+          controllers.event2.routes.AmountPaidController.onPageLoad(EmptyWaypoints, 0).url
+        }?waypoints=event-2-check-answers-1"
       }
     }
   }

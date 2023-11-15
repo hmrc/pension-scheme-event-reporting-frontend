@@ -18,14 +18,18 @@ package controllers.event3
 
 import base.SpecBase
 import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent3and4and5}
+import models.common.{MembersDetails, PaymentDetails}
 import models.{MemberSummaryPath, TaxYear, VersionInfo}
 import models.enumeration.EventType.Event3
 import models.enumeration.VersionStatus.{Compiled, Submitted}
+import models.event3.ReasonForBenefits
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.common.{MembersDetailsPage, PaymentDetailsPage}
+import pages.event3.ReasonForBenefitsPage
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
@@ -39,6 +43,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class Event3CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach {
@@ -71,7 +76,7 @@ class Event3CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(
           list,
-          continueUrl = "/manage-pension-scheme-event-report/report/event-3-click",
+          continueUrl = "/manage-pension-scheme-event-report/report/1/event-3-click",
           Tuple2(None, None),
           request,
           messages(application)).toString
@@ -92,7 +97,7 @@ class Event3CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(
           list,
-          continueUrl = "/manage-pension-scheme-event-report/report/event-3-click",
+          continueUrl = "/manage-pension-scheme-event-report/report/1/event-3-click",
           Tuple2(Some(1), Some(Event3)),
           request,
           messages(application)).toString
@@ -180,20 +185,44 @@ class Event3CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       }
     }
 
-    "must redirect to the correct page onClick" in {
+    "must redirect to the correct page onClick if all answers are present" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
         .thenReturn(Future.successful())
 
-      val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val event3Answers = emptyUserAnswers.set(MembersDetailsPage(Event3, 0), MembersDetails("Jane", "Doe", "AB123456D")).get
+        .set(ReasonForBenefitsPage(0), ReasonForBenefits.IllHealth).get
+        .set(PaymentDetailsPage(Event3, 0), PaymentDetails(BigDecimal(123), LocalDate.of(2024, 2, 24))).get
+
+      val userAnswersWithVersionInfo = event3Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event3.routes.Event3CheckYourAnswersController.onClick.url)
+        val request = FakeRequest(GET, controllers.event3.routes.Event3CheckYourAnswersController.onClick(0).url)
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event3)).url
         verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
+      }
+    }
+    "must redirect to the correct page onClick if an answer is missing" in {
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful())
+
+      val event3Answers = emptyUserAnswers.set(MembersDetailsPage(Event3, 0), MembersDetails("Jane", "Doe", "AB123456D")).get
+        .set(PaymentDetailsPage(Event3, 0), PaymentDetails(BigDecimal(123), LocalDate.of(2024, 2, 24))).get
+
+      val userAnswersWithVersionInfo = event3Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event3.routes.Event3CheckYourAnswersController.onClick(0).url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual s"${
+          controllers.event3.routes.ReasonForBenefitsController.onPageLoad(EmptyWaypoints, 0).url
+        }?waypoints=event-3-check-answers-1"
       }
     }
   }

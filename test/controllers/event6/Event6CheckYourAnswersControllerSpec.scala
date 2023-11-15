@@ -18,14 +18,18 @@ package controllers.event6
 
 import base.SpecBase
 import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent6}
-import models.enumeration.EventType.Event6
+import models.common.{MembersDetails, PaymentDetails}
+import models.enumeration.EventType.{Event5, Event6}
 import models.enumeration.VersionStatus.{Compiled, Submitted}
+import models.event6.TypeOfProtection
 import models.{MemberSummaryPath, TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.common.{MembersDetailsPage, PaymentDetailsPage}
+import pages.event6.{InputProtectionTypePage, TypeOfProtectionPage}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
@@ -39,6 +43,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class Event6CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach {
@@ -71,7 +76,7 @@ class Event6CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(
           list,
-          continueUrl = "/manage-pension-scheme-event-report/report/event-6-click",
+          continueUrl = "/manage-pension-scheme-event-report/report/1/event-6-click",
           Tuple2(None, None),
           request,
           messages(application)).toString
@@ -92,7 +97,7 @@ class Event6CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(
           list,
-          continueUrl = "/manage-pension-scheme-event-report/report/event-6-click",
+          continueUrl = "/manage-pension-scheme-event-report/report/1/event-6-click",
           Tuple2(Some(1), Some(Event6)),
           request,
           messages(application)).toString
@@ -179,20 +184,47 @@ class Event6CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       }
     }
 
-    "must redirect to the correct page onClick" in {
+    "must redirect to the correct page onClick if all answers present" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
         .thenReturn(Future.successful())
 
-      val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val event6Answers = emptyUserAnswers.set(MembersDetailsPage(Event6, 0), MembersDetails("Jane", "Doe", "AB123456B")).get
+        .set(TypeOfProtectionPage(Event6, 0), TypeOfProtection.FixedProtection).get
+        .set(InputProtectionTypePage(Event6, 0), "abcdef123").get
+        .set(PaymentDetailsPage(Event6, 0), PaymentDetails(BigDecimal(123), LocalDate.of(2024, 4, 4))).get
+
+      val userAnswersWithVersionInfo = event6Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event6.routes.Event6CheckYourAnswersController.onClick.url)
+        val request = FakeRequest(GET, controllers.event6.routes.Event6CheckYourAnswersController.onClick(0).url)
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event6)).url
         verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
+      }
+    }
+
+    "must redirect to the correct page onClick if an answers is missing" in {
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful())
+
+      val event6Answers = emptyUserAnswers.set(MembersDetailsPage(Event6, 0), MembersDetails("Jane", "Doe", "AB123456B")).get
+        .set(InputProtectionTypePage(Event6, 0), "abcdef123").get
+        .set(PaymentDetailsPage(Event6, 0), PaymentDetails(BigDecimal(123), LocalDate.of(2024, 4, 4))).get
+
+      val userAnswersWithVersionInfo = event6Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(GET, controllers.event6.routes.Event6CheckYourAnswersController.onClick(0).url)
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual s"${
+          controllers.event6.routes.TypeOfProtectionController.onPageLoad(EmptyWaypoints, 0).url
+        }?waypoints=event-6-check-answers-1"
       }
     }
   }

@@ -19,10 +19,11 @@ package controllers.event24
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import helpers.ReadOnlyCYA
+import models.Index
 import models.enumeration.EventType
+import models.enumeration.EventType.Event24
 import models.event24.TypeOfProtectionSelection._
 import models.requests.DataRequest
-import models.{Index, MemberSummaryPath}
 import pages.event24._
 import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -30,6 +31,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.UserAnswersValidation
 import viewmodels.checkAnswers.MembersDetailsSummary
 import viewmodels.event24.checkAnswers._
 import viewmodels.govuk.summarylist._
@@ -44,25 +46,23 @@ class Event24CheckYourAnswersController @Inject()(
                                                    requireData: DataRequiredAction,
                                                    compileService: CompileService,
                                                    val controllerComponents: MessagesControllerComponents,
-                                                   view: CheckYourAnswersView
+                                                   view: CheckYourAnswersView,
+                                                   userAnswersValidation: UserAnswersValidation
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
   private val eventType = EventType.Event24
   def onPageLoad(index: Index): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val thisPage = Event24CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
-      val continueUrl = controllers.event24.routes.Event24CheckYourAnswersController.onClick.url
+      val continueUrl = controllers.event24.routes.Event24CheckYourAnswersController.onClick(index).url
       val version = request.userAnswers.get(VersionInfoPage).map(_.version)
       val readOnlyHeading = ReadOnlyCYA.readOnlyHeading(eventType, version, request.readOnly())
       Ok(view(SummaryListViewModel(rows = buildEvent24CYARows(waypoints, thisPage, index)), continueUrl, readOnlyHeading))
     }
 
-  def onClick: Action[AnyContent] =
+  def onClick(index: Index): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData).async { implicit request =>
-      compileService.compileEvent(eventType, request.pstr, request.userAnswers).map {
-        _ =>
-          Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(eventType)).url)
-      }
+      userAnswersValidation.validate(Event24, index)
     }
 
   private def buildEvent24CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
