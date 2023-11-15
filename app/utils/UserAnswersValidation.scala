@@ -87,7 +87,7 @@ case class UserAnswersValidation @Inject()(compileService: CompileService,
       case Event20 => event20UserAnswerValidation.validateAnswers
       case Event22 => events22and23UserAnswerValidation.validateAnswers(index, Event22)
       case Event23 => events22and23UserAnswerValidation.validateAnswers(index, Event23)
-      case Event24 => event24UserAnswerValidation.validateAnswers(index)
+      case _ => event24UserAnswerValidation.validateAnswers(index)
     }
   }
 }
