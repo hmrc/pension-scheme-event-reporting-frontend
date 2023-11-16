@@ -24,10 +24,10 @@ import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.event1.employer.PaymentNature.ResidentialProperty
 import models.requests.DataRequest
 import pages.EmptyWaypoints
-import pages.address.ManualAddressPage
-import pages.common.{MembersDetailsPage, PaymentDetailsPage}
-import pages.event1.employer.CompanyDetailsPage
+import pages.address.{EnterPostcodePage, ManualAddressPage}
+import pages.common.MembersDetailsPage
 import pages.event1._
+import pages.event1.employer.CompanyDetailsPage
 import pages.event1.member.{ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage, WhoWasTheTransferMadePage}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Result}
@@ -38,38 +38,77 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class Event1UserAnswerValidation @Inject()(compileService: CompileService) {
-  def validateMemberPaymentNature(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
-    val memberPaymentNatureAnswer = request.userAnswers.get(pages.event1.member.PaymentNaturePage(index))
-    val transferRecipientAnswer = request.userAnswers.get(WhoWasTheTransferMadePage(index))
-    val refundDetailsAnswer = request.userAnswers.get(RefundOfContributionsPage(index))
-    val overpaymentAnswer = request.userAnswers.get(ReasonForTheOverpaymentOrWriteOffPage(index))
-    val memberPropertyAddressAnswer = request.userAnswers.get(ManualAddressPage(AddressJourneyType.Event1MemberPropertyAddressJourney, index))
-    val paymentDetailsAnswer = request.userAnswers.get(PaymentDetailsPage(Event1, index))
 
-    (memberPaymentNatureAnswer, transferRecipientAnswer, refundDetailsAnswer, overpaymentAnswer, memberPropertyAddressAnswer, paymentDetailsAnswer) match {
-      case (Some(TransferToNonRegPensionScheme), Some(_), None, None, None, Some(_)) |
-           (Some(RefundOfContributions), None, Some(_), None, None, Some(_)) |
-           (Some(OverpaymentOrWriteOff), None, None, Some(_), None, Some(_)) |
-           (Some(ResidentialPropertyHeld), None, None, None, Some(_), Some(_)) |
-           (Some(_), None, None, None, None, Some(_)) => compileService.compileEvent(Event1, request.pstr, request.userAnswers).map {
+  def validatePaymentDetails(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
+    val paymentDetailsAnswer = request.userAnswers.get(PaymentValueAndDatePage(index))
+
+    paymentDetailsAnswer match {
+      case Some(_) => compileService.compileEvent(Event1, request.pstr, request.userAnswers).map {
         _ => Redirect(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(EmptyWaypoints))
       }
-      case (Some(TransferToNonRegPensionScheme), None, _, _, _, _) => Future.successful(
+      case None => Future.successful(
+        Redirect(PaymentValueAndDatePage(index).changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
+      )
+    }
+  }
+
+  def validateTransferToNonRegPensionScheme(index: Index)
+                                           (implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
+    val transferRecipientAnswer = request.userAnswers.get(WhoWasTheTransferMadePage(index))
+
+    transferRecipientAnswer match {
+      case Some(_) => validatePaymentDetails(index)
+      case None => Future.successful(
         Redirect(WhoWasTheTransferMadePage(index).changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
       )
-      case (Some(RefundOfContributions), _, None, _, _, _) => Future.successful(
+    }
+  }
+
+  def validateRefundOfContributions(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
+    val refundDetailsAnswer = request.userAnswers.get(RefundOfContributionsPage(index))
+
+    refundDetailsAnswer match {
+      case Some(_) => validatePaymentDetails(index)
+      case None => Future.successful(
         Redirect(RefundOfContributionsPage(index).changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
       )
-      case (Some(OverpaymentOrWriteOff), _, _, None, _, _) => Future.successful(
+    }
+  }
+
+  def validateOverpaymentOrWriteOff(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
+    val overpaymentDetailsAnswer = request.userAnswers.get(ReasonForTheOverpaymentOrWriteOffPage(index))
+
+    overpaymentDetailsAnswer match {
+      case Some(_) => validatePaymentDetails(index)
+      case None => Future.successful(
         Redirect(ReasonForTheOverpaymentOrWriteOffPage(index).changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
       )
-      case (Some(ResidentialPropertyHeld), _, _, _, None, _) => Future.successful(
-        Redirect(ManualAddressPage(AddressJourneyType.Event1MemberPropertyAddressJourney, index)
+    }
+  }
+
+  def validateResidentialPropertyHeld(index: Index)
+                                     (implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
+    val postcodeAnswer = request.userAnswers.get(EnterPostcodePage(AddressJourneyType.Event1MemberPropertyAddressJourney, index))
+    val manualAddressAnswer = request.userAnswers.get(ManualAddressPage(AddressJourneyType.Event1MemberPropertyAddressJourney, index))
+
+    (postcodeAnswer, manualAddressAnswer) match {
+      case (Some(_), _) | (_, Some(_)) => validatePaymentDetails(index)
+      case _ => Future.successful(
+        Redirect(EnterPostcodePage(AddressJourneyType.Event1MemberPropertyAddressJourney, index)
           .changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
       )
-      case (Some(_), None, None, None, None, None) => Future.successful(
-        Redirect(PaymentDetailsPage(Event1, index).changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
-      )
+    }
+  }
+
+  def validateMemberPaymentNature(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
+    val memberPaymentNatureAnswer = request.userAnswers.get(pages.event1.member.PaymentNaturePage(index))
+
+    memberPaymentNatureAnswer match {
+      case Some(TransferToNonRegPensionScheme) => validateTransferToNonRegPensionScheme(index)
+      case Some(RefundOfContributions) => validateRefundOfContributions(index)
+      case Some(OverpaymentOrWriteOff) => validateOverpaymentOrWriteOff(index)
+      case Some(ResidentialPropertyHeld) => validateResidentialPropertyHeld(index)
+      case Some(_) => validatePaymentDetails(index)
       case _ => Future.successful(
         Redirect(pages.event1.member.PaymentNaturePage(index).changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
       )
@@ -101,42 +140,45 @@ class Event1UserAnswerValidation @Inject()(compileService: CompileService) {
 
   def validateEmployerPaymentNature(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
     val employerPaymentNatureAnswer = request.userAnswers.get(pages.event1.employer.PaymentNaturePage(index))
+    val employerPostcodeAnswer = request.userAnswers.get(EnterPostcodePage(AddressJourneyType.Event1EmployerPropertyAddressJourney, index))
     val employerPropertyAddressAnswer = request.userAnswers.get(ManualAddressPage(AddressJourneyType.Event1EmployerPropertyAddressJourney, index))
-    val paymentDetailsAnswer = request.userAnswers.get(PaymentDetailsPage(Event1, index))
+    val paymentDetailsAnswer = request.userAnswers.get(PaymentValueAndDatePage(index))
 
-    (employerPaymentNatureAnswer, employerPropertyAddressAnswer, paymentDetailsAnswer) match {
-      case (Some(ResidentialProperty), Some(_), Some(_)) => compileService.compileEvent(Event1, request.pstr, request.userAnswers).map {
+    (employerPaymentNatureAnswer, employerPostcodeAnswer, employerPropertyAddressAnswer, paymentDetailsAnswer) match {
+      case (Some(ResidentialProperty), Some(_), _, Some(_)) |
+           (Some(ResidentialProperty), _, Some(_), Some(_)) => compileService.compileEvent(Event1, request.pstr, request.userAnswers).map {
         _ => Redirect(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(EmptyWaypoints))
       }
-      case (Some(_), None, Some(_)) => compileService.compileEvent(Event1, request.pstr, request.userAnswers).map {
+      case (Some(_), None, None, Some(_)) => compileService.compileEvent(Event1, request.pstr, request.userAnswers).map {
         _ => Redirect(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(EmptyWaypoints))
       }
-      case (Some(ResidentialProperty), None, _) => Future.successful(
+      case (Some(ResidentialProperty), None, None,  _) => Future.successful(
         Redirect(ManualAddressPage(AddressJourneyType.Event1EmployerPropertyAddressJourney, index)
           .changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url
         )
       )
-      case (None, None, None) => Future.successful(
+      case (None, None, None, None) => Future.successful(
         Redirect(pages.event1.employer.PaymentNaturePage(index).changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
       )
       case _ => Future.successful(
-        Redirect(PaymentDetailsPage(Event1, index).changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
+        Redirect(PaymentValueAndDatePage(index).changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
       )
     }
   }
 
   def validateEmployerRoute(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
     val companyDetailsAnswer = request.userAnswers.get(CompanyDetailsPage(index))
+    val companyPostcodeAnswer = request.userAnswers.get(EnterPostcodePage(AddressJourneyType.Event1EmployerAddressJourney, index))
     val companyAddressAnswer = request.userAnswers.get(ManualAddressPage(AddressJourneyType.Event1EmployerAddressJourney, index))
 
-    (companyDetailsAnswer, companyAddressAnswer) match {
-      case (Some(_), Some(_)) => validateEmployerPaymentNature(index)
-      case (None, _) => Future.successful(
-        Redirect(CompanyDetailsPage(index).changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
+    (companyDetailsAnswer, companyPostcodeAnswer, companyAddressAnswer) match {
+      case (Some(_), Some(_), _) | (Some(_), _, Some(_)) => validateEmployerPaymentNature(index)
+      case (Some(_), None, None) => Future.successful(
+        Redirect(EnterPostcodePage(AddressJourneyType.Event1EmployerAddressJourney, index)
+          .changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
       )
       case _ => Future.successful(
-        Redirect(ManualAddressPage(AddressJourneyType.Event1EmployerAddressJourney, index)
-          .changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
+        Redirect(CompanyDetailsPage(index).changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
       )
     }
   }
