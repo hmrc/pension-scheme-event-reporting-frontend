@@ -18,19 +18,19 @@ package controllers.event1
 
 import base.SpecBase
 import data.SampleData.{erOverviewSeq, sampleEmployerJourneyDataEvent1, sampleMemberJourneyDataEvent1}
-import models.common.{MembersDetails, PaymentDetails}
+import models.common.MembersDetails
 import models.enumeration.EventType.Event1
 import models.enumeration.VersionStatus.{Compiled, Submitted}
 import models.event1.PaymentNature.MemberOther
-import models.event1.WhoReceivedUnauthPayment
+import models.event1.{PaymentDetails, WhoReceivedUnauthPayment}
 import models.{TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.common.{MembersDetailsPage, PaymentDetailsPage}
-import pages.event1.{DoYouHoldSignedMandatePage, ValueOfUnauthorisedPaymentPage, WhoReceivedUnauthPaymentPage}
+import pages.common.MembersDetailsPage
+import pages.event1.{DoYouHoldSignedMandatePage, PaymentValueAndDatePage, ValueOfUnauthorisedPaymentPage, WhoReceivedUnauthPaymentPage}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
@@ -263,7 +263,7 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         .set(DoYouHoldSignedMandatePage(0), true).get
         .set(ValueOfUnauthorisedPaymentPage(0), false).get
         .set(pages.event1.member.PaymentNaturePage(0), MemberOther).get
-        .set(PaymentDetailsPage(Event1, 0), PaymentDetails(BigDecimal(123), LocalDate.of(2024, 2, 2))).get
+        .set(PaymentValueAndDatePage(0), PaymentDetails(BigDecimal(123), LocalDate.of(2024, 2, 2))).get
 
       val userAnswersWithVersionInfo = event1Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
