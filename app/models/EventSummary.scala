@@ -19,7 +19,7 @@ package models
 import models.enumeration.EventType
 import play.api.libs.json.{Format, Json}
 
-case class EventSummary(eventType: EventType, recordVersion: Int)
+case class EventSummary(eventType: EventType, recordVersion: Int, lockedBy: Option[String])
 
 object EventSummary {
   implicit val formats: Format[EventSummary] = Json.format[EventSummary]

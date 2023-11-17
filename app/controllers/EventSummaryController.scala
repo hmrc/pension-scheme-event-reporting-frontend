@@ -67,7 +67,11 @@ class EventSummaryController @Inject()(
             seqOfEventTypes.sortBy(sortExpr).map { eventSummary =>
               SummaryListRow(
                 key = Key(
-                  content = Text(Message(s"eventSummary.event${eventSummary.eventType.toString}"))
+                  content = {
+                    val lockedHtml = eventSummary.lockedBy.map(lockedBy => "<br/>" + Message("eventSummary.lockedBy").resolve + " " + lockedBy).getOrElse("")
+                    def notBold(txt: String) = s"""<span style="font-weight:400;">$txt</span>"""
+                    HtmlContent(Text(Message(s"eventSummary.event${eventSummary.eventType.toString}")).asHtml.toString() + notBold(lockedHtml))
+                  }
                 ),
                 actions = Some(Actions(
                   items = if (request.readOnly()) {
@@ -81,13 +85,13 @@ class EventSummaryController @Inject()(
                     ).flatten
                   } else {
                     Seq(
-                      changeLinkForEvent(eventSummary.eventType).map { link =>
+                      changeLinkForEvent(eventSummary.eventType, eventSummary.lockedBy.isDefined).map { link =>
                         ActionItem(
                           content = Text(Message("site.change")),
                           href = link
                         )
                       },
-                      removeLinkForEvent(eventSummary.eventType).map { link =>
+                      removeLinkForEvent(eventSummary.eventType, eventSummary.lockedBy.isDefined).map { link =>
                         ActionItem(
                           content = Text(Message("site.remove")),
                           href = link
@@ -123,7 +127,7 @@ class EventSummaryController @Inject()(
       key = Key(content = Text(Message("eventSummary.event18"))),
       actions = Some(Actions(
         items = Seq(
-          removeLinkForEvent(Event18).map { link =>
+          removeLinkForEvent(Event18, false).map { link =>
             ActionItem(
               content = Text(Message("site.remove")),
               href = link
@@ -150,7 +154,8 @@ class EventSummaryController @Inject()(
       )
   }
 
-  private def changeLinkForEvent(eventType: EventType): Option[String] = {
+  private def changeLinkForEvent(eventType: EventType, locked: Boolean): Option[String] = {
+    if(locked) return None
     eventType match {
       case EventType.Event1 => Some(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(EmptyWaypoints).url)
       case EventType.Event2 | EventType.Event3 |
@@ -175,7 +180,8 @@ class EventSummaryController @Inject()(
     }
   }
 
-  private def removeLinkForEvent(eventType: EventType): Option[String] = {
+  private def removeLinkForEvent(eventType: EventType, locked: Boolean): Option[String] = {
+    if(locked) return None
     eventType match {
       case EventType.Event1 => Some(controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url)
       case EventType.Event2 => Some(controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url)
