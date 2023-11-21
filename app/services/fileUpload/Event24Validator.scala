@@ -310,7 +310,7 @@ class Event24Validator @Inject()(
     }
   }
 
-  private def validateValidProtection(index: Index, columns: Seq[String])(implicit messages: Messages): Result = {
+  private def validateValidProtection(index: Index, columns: Seq[String]): Result = {
     val validProtectionValue = columns(6)
 
     val e = resultFromFormValidationResult[Boolean](

@@ -81,6 +81,19 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
         ValidationError(1, 3, "Date must be between 06 April 2023 and 05 April 2024", "crystallisedDate"),
       ))
     }
+    "return validation errors when present for a duplicate nino" in {
+      val csvFile = CSVParser.split(
+        s"""$header
+                        Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,FIXED,abcdef123,NO,YES,YES,123/ABCDEF
+                        Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,FIXED,abcdef123,NO,YES,YES,123/ABCDEF"""
+
+      )
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
+      val result = validator.validate(csvFile, ua)
+      result mustBe Invalid(Seq(
+        ValidationError(2, 2, "membersDetails.error.nino.notUnique", "nino")
+      ))
+    }
     "return validation errors if present" in {
       DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
       val csvFile = CSVParser.split(
@@ -88,13 +101,17 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
                           ,Doe,AB123456A,13/11/2023,ANN,123,YES,FIXED,abcdef123,NO,YES,YES,123/ABCDEF
                           Jane,,AB123456A,13/11/2023,ANN,123,YES,FIXED,abcdef123,NO,YES,YES,123/ABCDEF
                           Jane,Doe,,13/11/2023,ANN,123,YES,FIXED,abcdef123,NO,YES,YES,123/ABCDEF
-                          Jane,Doe,AB123456A,13/11/2023,ANNI,123,YES,FIXED,abcdef123,NO,YES,YES,123/ABCDEF
-                          Jane,Doe,AB123456B,13/11/2023,ANN,abc,YES,FIXED,abcdef123,NO,YES,YES,123/ABCDEF
-                          Jane,Doe,AB123456C,13/11/2023,ANN,123,,FIXED,abcdef123,NO,YES,YES,123/ABCDEF
-                          Jane,Doe,AB123456D,13/11/2023,ANN,123,YES,FIXES,abcdef123,NO,YES,YES,123/ABCDEF
-                          Jane,Doe,AB123457A,13/11/2023,ANN,123,YES,FIXED,abcdef123,,YES,YES,123/ABCDEF
-                          Jane,Doe,AB123457B,13/11/2023,ANN,123,YES,FIXED,abcdef123,NO,a,YES,123/ABCDEF
-                          Jane,Doe,AB123457C,13/11/2023,ANN,123,YES,FIXED,abcdef123,NO,YES,YES,123^ABCDEF"""
+                          Jane,Doe,AB123456A,,ANN,123,YES,FIXED,abcdef123,NO,YES,YES,123/ABCDEF
+                          Jane,Doe,AB123456B,13/11/202,ANN,123,YES,FIXED,abcdef123,NO,YES,YES,123/ABCDEF
+                          Jane,Doe,AB123456C,13/11/2023,ANNI,123,YES,FIXED,abcdef123,NO,YES,YES,123/ABCDEF
+                          Jane,Doe,AB123456D,13/11/2023,ANN,abc,YES,FIXED,abcdef123,NO,YES,YES,123/ABCDEF
+                          Jane,Doe,AB123457A,13/11/2023,ANN,123,,FIXED,abcdef123,NO,YES,YES,123/ABCDEF
+                          Jane,Doe,AB123457B,13/11/2023,ANN,123,YES,FIXES,abcdef123,NO,YES,YES,123/ABCDEF
+                          Jane,Doe,AB123457C,13/11/2023,ANN,123,YES,FIXED,,NO,YES,YES,123/ABCDEF
+                          Jane,Doe,AB123457D,13/11/2023,ANN,123,YES,FIXED,abcdef123,,YES,YES,123/ABCDEF
+                          Jane,Doe,AB123458A,13/11/2023,ANN,123,YES,FIXED,abcdef123,NO,a,YES,123/ABCDEF
+                          Jane,Doe,AB123458B,13/11/2023,ANN,123,YES,FIXED,abcdef123,NO,YES,YES,123^ABCDEF
+                          Jane,Doe,AB123458C,13/11/2023,ANN,123,YES,FIXED,abcdef123,NO,YES,YES,"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
       val result = validator.validate(csvFile, ua)
@@ -102,14 +119,18 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
         ValidationError(1, 0, "membersDetails.error.firstName.required", "firstName"),
         ValidationError(2, 1, "membersDetails.error.lastName.required", "lastName"),
         ValidationError(3, 2, "membersDetails.error.nino.required", "nino"),
-        ValidationError(4, 4, "bceTypeSelection.error.format", "bceType"),
-        ValidationError(5, 5, "totalAmountBenefitCrystallisation.event24.error.nonNumeric", "totalAmount"),
-        ValidationError(6, 6, "validProtection.event24.error.required", "validProtection"),
-        ValidationError(7, 7, "typeOfProtection.event24.error.format", "protectionType"),
-        ValidationError(8, 9, "overAllowance.event24.error.required", "overAllowance"),
-        ValidationError(9, 10, "error.boolean", "overAllowanceAndDeathBenefit"),
-        ValidationError(10, 12, "employerPayeReference.event24.error.disallowedChars", "employerPayeRef", ArraySeq("[A-Za-z0-9/]{9,12}")),
-      ))
+        ValidationError(4, 3, "genericDate.error.invalid.allFieldsMissing", "crystallisedDate"),
+        ValidationError(5, 3, "genericDate.error.invalid.year", "crystallisedDate"),
+        ValidationError(6, 4, "bceTypeSelection.error.format", "bceType"),
+        ValidationError(7, 5, "totalAmountBenefitCrystallisation.event24.error.nonNumeric", "totalAmount"),
+        ValidationError(8, 6, "validProtection.event24.error.required", "validProtection"),
+        ValidationError(9, 7, "typeOfProtection.event24.error.format", "protectionType"),
+        ValidationError(10, 8, "typeOfProtectionReference.error.required", "protectionReference"),
+        ValidationError(11, 9, "overAllowance.event24.error.required", "overAllowance"),
+        ValidationError(12, 10, "error.boolean", "overAllowanceAndDeathBenefit"),
+        ValidationError(13, 12, "employerPayeReference.event24.error.disallowedChars", "employerPayeRef", ArraySeq("[A-Za-z0-9/]{9,12}")),
+        ValidationError(14, 12, "employerPayeReference.event24.error.required", "employerPayeRef")),
+      )
     }
   }
 }
