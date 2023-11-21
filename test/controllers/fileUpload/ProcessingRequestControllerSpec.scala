@@ -19,7 +19,7 @@ package controllers.fileUpload
 import base.SpecBase
 import connectors.ParsingAndValidationOutcomeCacheConnector
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event22, Event23, Event6}
+import models.enumeration.EventType.{Event1, Event22, Event23, Event24, Event6}
 import models.fileUpload.{ParsingAndValidationOutcome, ParsingAndValidationOutcomeStatus}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -30,8 +30,8 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import scala.concurrent.duration._
 
+import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
 class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
@@ -42,7 +42,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
     bind[ParsingAndValidationOutcomeCacheConnector].to(mockParsingAndValidationOutcomeCacheConnector)
   )
   private val waypoints = EmptyWaypoints
-  private val seqOfEvents = Seq(Event1, Event6, Event22, Event23)
+  private val seqOfEvents = Seq(Event1, Event6, Event22, Event23, Event24)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

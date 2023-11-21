@@ -27,8 +27,8 @@ class BCETypeSelectionFormProviderSpec extends OptionFieldBehaviours {
   ".value" - {
 
     val fieldName = "value"
-    val formatKey = "bceTypeSelection.event24.error.format"
-    val requiredKey = "bceTypeSelection.event24.error.required"
+    val formatKey = "bceTypeSelection.error.format"
+    val requiredKey = "bceTypeSelection.error.required"
 
     behave like optionsField[BCETypeSelection](
       form,
