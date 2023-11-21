@@ -44,6 +44,17 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
   }
 
   "Event 24 Validator" - {
+    "return a valid result if there are no validation errors" in {
+      val validCSVFile = CSVParser.split(
+        s"""$header
+                            Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,FIXED,abcdef123,NO,YES,YES,123/ABCDEF
+                            Jane,Doe,AB123456B,13/11/2023,ANN,123,NO,,,YES,,NO,
+                            Jane,Doe,AB123456C,13/11/2023,ANN,123,YES,S-S,,NO,NO,,"""
+      )
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
+      val result = validator.validate(validCSVFile, ua)
+      result.isValid mustBe true
+    }
     "return validation error for incorrect header" in {
       val csvFile = CSVParser.split("""test""")
       val result = validator.validate(csvFile, UserAnswers())
