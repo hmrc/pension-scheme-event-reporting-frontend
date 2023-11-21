@@ -16,15 +16,15 @@
 
 package utils.event24
 
-import models.{Index, MemberSummaryPath}
 import models.enumeration.EventType.Event24
 import models.event24.TypeOfProtectionSelection
 import models.requests.DataRequest
+import models.{Index, MemberSummaryPath}
 import pages.EmptyWaypoints
 import pages.common.MembersDetailsPage
 import pages.event24._
-import play.api.mvc.{AnyContent, Result}
 import play.api.mvc.Results.Redirect
+import play.api.mvc.{AnyContent, Result}
 import services.CompileService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -79,7 +79,7 @@ class Event24UserAnswerValidation @Inject()(compileService: CompileService) {
   }
 
   def validateSelectProtection(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
-    val selectProtectionAnswer = request.userAnswers.get(pages.event24.TypeOfProtectionPage(index))
+    val selectProtectionAnswer = request.userAnswers.get(TypeOfProtectionPage(index))
     val protectionReferenceAnswer = request.userAnswers.get(TypeOfProtectionReferencePage(index))
 
     (selectProtectionAnswer, protectionReferenceAnswer) match {

@@ -17,7 +17,7 @@
 package helpers.fileUpload
 
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event22, Event6}
+import models.enumeration.EventType.{Event1, Event22, Event23, Event6}
 import models.fileUpload.FileUploadHeaders._
 import services.fileUpload.ValidationError
 
@@ -86,12 +86,26 @@ object FileUploadGenericErrorReporter {
             Event22FieldNames.taxYear -> "fileUpload.taxYear.generic.error",
             Event22FieldNames.totalAmounts -> "fileUpload.totalAmounts.generic.error"
           )
-      case _ =>
+      case Event23 =>
         commonColumnAndErrorMessageMap ++
           Map(
             Event23FieldNames.taxYear -> "fileUpload.taxYear.generic.error",
             Event23FieldNames.totalAmounts -> "fileUpload.totalAmounts.generic.error"
           )
+      case _ =>
+        commonColumnAndErrorMessageMap ++
+        Map(
+          Event24FieldNames.crystallisedDate -> "fileUpload.bceDate.generic.error",
+          Event24FieldNames.bceType -> "fileUpload.bceType.generic.error",
+          Event24FieldNames.totalAmount -> "fileUpload.lumpSumAmount.generic.error",
+          Event24FieldNames.validProtection -> "fileUpload.validProtection.generic.error",
+          Event24FieldNames.protectionType -> "fileUpload.protectionType.generic.error",
+          Event24FieldNames.protectionReference -> "fileUpload.typeOfProtectionReference.generic.error",
+          Event24FieldNames.overAllowance -> "fileUpload.overAllowance.generic.error",
+          Event24FieldNames.overAllowanceAndDeathBenefit -> "fileUpload.overAllowanceAndDeathBenefit.generic.error",
+          Event24FieldNames.marginalRate -> "fileUpload.marginalRate.generic.error",
+          Event24FieldNames.employerPayeRef -> "fileUpload.employerPayeRef.generic.error"
+        )
     }
 
   }
@@ -101,6 +115,7 @@ object FileUploadGenericErrorReporter {
     case EventType.Event6 => eventHeader(eventType)
     case EventType.Event22 => eventHeader(eventType)
     case EventType.Event23 => eventHeader(eventType)
+    case EventType.Event24 => eventHeader(eventType)
     case _ => throw new RuntimeException("Invalid event type")
   }
 

@@ -80,4 +80,20 @@ object FileUploadHeaders {
     val taxYear: String = "taxYear"
     val totalAmounts: String = "totalAmounts"
   }
+
+  object Event24FieldNames {
+    val crystallisedDate = "crystallisedDate"
+    val dateOfEventDay = "crystallisedDate.day"
+    val dateOfEventMonth = "crystallisedDate.month"
+    val dateOfEventYear = "crystallisedDate.year"
+    val bceType = "bceType"
+    val totalAmount = "totalAmount"
+    val validProtection = "validProtection"
+    val protectionType = "protectionType"
+    val protectionReference = "protectionReference"
+    val overAllowance = "overAllowance"
+    val overAllowanceAndDeathBenefit = "overAllowanceAndDeathBenefit"
+    val marginalRate = "marginalRate"
+    val employerPayeRef = "employerPayeRef"
+  }
 }

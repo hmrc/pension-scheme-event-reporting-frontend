@@ -108,6 +108,7 @@ object EventType extends Enumerable.Implicits {
       case Event6 => "benefit crystallisation where the member relies on LTA protections"
       case Event22 => "annual allowance"
       case Event23 => "dual annual allowances"
+      case Event24 => "relevant benefit crystallisation"
       case _ => "EventTypeByName needs to be implemented for other events"
     }
   }
@@ -133,6 +134,7 @@ object EventType extends Enumerable.Implicits {
     case Event6 => "event-6"
     case Event22 => "event-22"
     case Event23 => "event-23"
+    case Event24 => "event-24"
     case _ => throw new RuntimeException(s"Unimplemented event type: $eventType")
   }
 

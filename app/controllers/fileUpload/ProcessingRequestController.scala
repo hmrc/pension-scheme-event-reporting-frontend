@@ -46,11 +46,11 @@ class ProcessingRequestController @Inject()(
       parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap {
         case Some(ParsingAndValidationOutcome(Success, _, _)) =>
           Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints, eventType)))
-        case Some(ParsingAndValidationOutcome(GeneralError, _, _)) =>
+        case Some(ParsingAndValidationOutcome(GeneralError, js, _)) =>
           Future.successful(Redirect(controllers.fileUpload.routes.ProblemWithServiceController.onPageLoad(waypoints, eventType)))
-        case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _)) =>
+        case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, js, _)) =>
           Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsAllController.onPageLoad(waypoints, eventType)))
-        case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _)) =>
+        case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, js, _)) =>
           Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsSummaryController.onPageLoad(waypoints, eventType)))
         case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
         case _ =>
