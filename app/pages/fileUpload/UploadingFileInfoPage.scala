@@ -29,8 +29,4 @@ case class UploadingFileInfoPage(eventType: EventType) extends Page {
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     FileUploadPage(eventType)
   }
-
-  // check-file - FileUploadResultController
-  // ProcessingRequestController
-  // FileUploadSuccessController
 }
