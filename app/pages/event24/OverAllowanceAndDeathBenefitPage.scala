@@ -22,7 +22,7 @@ import models.{Index, UserAnswers}
 import pages.common.MembersPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{EmptyWaypoints, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 
 case class OverAllowanceAndDeathBenefitPage(index: Index) extends QuestionPage[Boolean] {
 
@@ -36,6 +36,19 @@ case class OverAllowanceAndDeathBenefitPage(index: Index) extends QuestionPage[B
       case true  => MarginalRatePage(index)
       case false => Event24CheckYourAnswersPage(index)
     }.orRecover
+  }
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
+    val originalOptionSelected = originalAnswers.get(this)
+    val updatedOptionSelected = updatedAnswers.get(this)
+    val answerIsChanged = originalOptionSelected != updatedOptionSelected
+
+    if (answerIsChanged) {
+      nextPageNormalMode(EmptyWaypoints, updatedAnswers)
+    }
+    else {
+      Event24CheckYourAnswersPage(index)
+    }
   }
 }
 

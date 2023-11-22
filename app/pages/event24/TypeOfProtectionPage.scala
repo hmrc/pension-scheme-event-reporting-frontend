@@ -21,7 +21,7 @@ import models.{Index, UserAnswers}
 import models.event24.TypeOfProtectionSelection
 import models.event24.TypeOfProtectionSelection.SchemeSpecific
 import pages.common.MembersPage
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{EmptyWaypoints, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -37,6 +37,19 @@ case class TypeOfProtectionPage(index: Index) extends QuestionPage[TypeOfProtect
       case SchemeSpecific => OverAllowancePage(index)
       case _ => TypeOfProtectionReferencePage(index)
     }.orRecover
+  }
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
+    val originalOptionSelected = originalAnswers.get(this)
+    val updatedOptionSelected = updatedAnswers.get(this)
+    val answerIsChanged = originalOptionSelected != updatedOptionSelected
+
+    if (answerIsChanged) {
+      nextPageNormalMode(EmptyWaypoints, updatedAnswers)
+    }
+    else {
+      Event24CheckYourAnswersPage(index)
+    }
   }
 }
 
