@@ -24,6 +24,8 @@ import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import pages.{EmptyWaypoints, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 
+import scala.util.{Success, Try}
+
 case class OverAllowancePage(index: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = MembersPage(EventType.Event24)(index) \ OverAllowancePage.toString
@@ -40,17 +42,24 @@ case class OverAllowancePage(index: Index) extends QuestionPage[Boolean] {
     }.orRecover
   }
 
+  override def cleanupBeforeSettingValue(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value match {
+      case Some(true) =>
+        Success(userAnswers
+          .remove(OverAllowanceAndDeathBenefitPage(index))
+          .getOrElse(userAnswers)
+        )
+      case _ => Success(userAnswers)
+    }
+  }
+
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
     val originalOptionSelected = originalAnswers.get(this)
     val updatedOptionSelected = updatedAnswers.get(this)
     val answerIsChanged = originalOptionSelected != updatedOptionSelected
 
-    if (answerIsChanged) {
-      nextPageNormalMode(EmptyWaypoints, updatedAnswers)
-    }
-    else {
-      Event24CheckYourAnswersPage(index)
-    }
+    if (answerIsChanged) { nextPageNormalMode(EmptyWaypoints, originalAnswers, updatedAnswers) }
+    else { Event24CheckYourAnswersPage(index) }
   }
 }
 

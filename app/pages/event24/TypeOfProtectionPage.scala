@@ -25,6 +25,8 @@ import pages.{EmptyWaypoints, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.{Success, Try}
+
 case class TypeOfProtectionPage(index: Index) extends QuestionPage[TypeOfProtectionSelection] {
   override def path: JsPath = MembersPage(EventType.Event24)(index) \ TypeOfProtectionPage.toString
 
@@ -39,17 +41,24 @@ case class TypeOfProtectionPage(index: Index) extends QuestionPage[TypeOfProtect
     }.orRecover
   }
 
+  override def cleanupBeforeSettingValue(value: Option[TypeOfProtectionSelection], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value match {
+      case Some(SchemeSpecific) =>
+        Success(userAnswers
+          .remove(TypeOfProtectionReferencePage(index))
+          .getOrElse(userAnswers)
+        )
+      case _ => Success(userAnswers)
+    }
+  }
+
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
     val originalOptionSelected = originalAnswers.get(this)
     val updatedOptionSelected = updatedAnswers.get(this)
     val answerIsChanged = originalOptionSelected != updatedOptionSelected
 
-    if (answerIsChanged) {
-      nextPageNormalMode(EmptyWaypoints, updatedAnswers)
-    }
-    else {
-      Event24CheckYourAnswersPage(index)
-    }
+    if (answerIsChanged) { nextPageNormalMode(EmptyWaypoints, originalAnswers, updatedAnswers) }
+    else { Event24CheckYourAnswersPage(index) }
   }
 }
 

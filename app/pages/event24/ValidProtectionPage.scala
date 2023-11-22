@@ -41,8 +41,8 @@ case class ValidProtectionPage(index: Index) extends QuestionPage[Boolean] {
   }
 
   override def cleanupBeforeSettingValue(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-    (userAnswers.get(this), value) match {
-      case (Some(true), Some(false)) =>
+    value match {
+      case Some(false) =>
         Success(userAnswers
           .remove(TypeOfProtectionPage(index))
           .flatMap(_.remove(TypeOfProtectionReferencePage(index)))
@@ -57,12 +57,8 @@ case class ValidProtectionPage(index: Index) extends QuestionPage[Boolean] {
     val updatedOptionSelected = updatedAnswers.get(this)
     val answerIsChanged = originalOptionSelected != updatedOptionSelected
 
-    if (answerIsChanged) {
-      nextPageNormalMode(EmptyWaypoints, originalAnswers, updatedAnswers)
-    }
-    else {
-      Event24CheckYourAnswersPage(index)
-    }
+    if (answerIsChanged) { nextPageNormalMode(EmptyWaypoints, originalAnswers, updatedAnswers) }
+    else { Event24CheckYourAnswersPage(index) }
   }
 }
 
