@@ -17,7 +17,7 @@
 package helpers.fileUpload
 
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event22, Event23, Event6}
+import models.enumeration.EventType.{Event1, Event22, Event23, Event24, Event6}
 import models.fileUpload.FileUploadHeaders._
 import services.fileUpload.ValidationError
 
@@ -111,11 +111,7 @@ object FileUploadGenericErrorReporter {
   }
 
   private def getColumnsAndErrorMap(eventType: EventType): ColumnAndErrorMap = eventType match {
-    case EventType.Event1 => eventHeader(eventType)
-    case EventType.Event6 => eventHeader(eventType)
-    case EventType.Event22 => eventHeader(eventType)
-    case EventType.Event23 => eventHeader(eventType)
-    case EventType.Event24 => eventHeader(eventType)
+    case Event1 | Event6 | Event22 | Event23 | Event24  => eventHeader(eventType)
     case _ => throw new RuntimeException("Invalid event type")
   }
 
