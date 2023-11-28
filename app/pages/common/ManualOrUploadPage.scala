@@ -21,8 +21,9 @@ import models.UserAnswers
 import models.common.ManualOrUpload
 import models.common.ManualOrUpload.{FileUpload, Manual}
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event22, Event23, Event6, Event8, Event24}
+import models.enumeration.EventType.{Event1, Event22, Event23, Event24, Event6, Event8}
 import pages.event1.WhoReceivedUnauthPaymentPage
+import pages.fileUpload.UploadingFileInfoPage
 import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -48,6 +49,7 @@ case class ManualOrUploadPage(eventType: EventType, index: Int) extends Question
       case (Event23, _, Some(FileUpload)) => pages.common.FileUploadWhatYouWillNeedPage(eventType)
       case (Event23, index, Some(Manual)) => pages.event23.WhatYouWillNeedPage(index)
       case (Event24, index, Some(Manual)) => MembersDetailsPage(Event24, index)
+      case (Event24, _, Some(FileUpload)) => UploadingFileInfoPage(eventType)
       case _ => this
     }
 

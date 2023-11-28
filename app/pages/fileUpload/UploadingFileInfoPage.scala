@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package forms.event24
+package pages.fileUpload
 
-import forms.mappings.Mappings
-import models.event24.BCETypeSelection
-import play.api.data.Form
+import controllers.fileUpload.routes
+import models.UserAnswers
+import models.enumeration.EventType
+import pages.{Page, Waypoints}
+import play.api.mvc.Call
 
-import javax.inject.Inject
+case class UploadingFileInfoPage(eventType: EventType) extends Page {
+  override def route(waypoints: Waypoints): Call =
+    routes.UploadingFileInfoController.onPageLoad(waypoints)
 
-class BCETypeSelectionFormProvider @Inject() extends Mappings {
-  def apply(): Form[BCETypeSelection] =
-    Form(
-      "value" -> enumerable[BCETypeSelection]("bceTypeSelection.error.required", "bceTypeSelection.error.format")
-    )
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    FileUploadPage(eventType)
+  }
 }

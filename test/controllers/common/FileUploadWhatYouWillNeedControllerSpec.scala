@@ -18,7 +18,7 @@ package controllers.common
 
 import base.SpecBase
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23, Event6}
+import models.enumeration.EventType.{Event22, Event23, Event24, Event6}
 import pages.EmptyWaypoints
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -30,7 +30,7 @@ import scala.concurrent.duration._
 
 class FileUploadWhatYouWillNeedControllerSpec extends SpecBase {
 
-  private val seqOfEvents = Seq(Event6, Event22, Event23)
+  private val seqOfEvents = Seq(Event6, Event22, Event23, Event24)
 
   private def getRoute(eventType: EventType): String = controllers.common.routes.FileUploadWhatYouWillNeedController.onPageLoad(EmptyWaypoints, eventType).url
 

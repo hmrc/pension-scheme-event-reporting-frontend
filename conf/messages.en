@@ -1156,6 +1156,14 @@ fileUploadWhatYouWillNeed.event23.instructions.link.text = instructions explaini
 fileUploadWhatYouWillNeed.event23.template.link.text = latest template file
 fileUploadWhatYouWillNeed.event23.inset = All the data you have previously added for this event will be overwritten when you upload a file.
 
+uploadingFileInfo.event24.title = Uploading a file
+uploadingFileInfo.event24.heading = Uploading a file
+uploadingFileInfo.event24.p1 = Documents previously accepted by HMRC for event reporting purposes are now out of date and cannot be used. For the latest document and information on how to complete it, download:
+uploadingFileInfo.event24.template.link.text = the latest template file
+uploadingFileInfo.event24.item1 = – do not change or delete the header (row 1) or change the order of the columns
+uploadingFileInfo.event24.instructions.link.text = instructions explaining the process and the formatting
+uploadingFileInfo.event24.inset = All the data you have previously added for this charge will be overwritten when you upload a file.
+
 typeOfProtection.title = What is the type of protection held for the crystallisation?
 typeOfProtection.heading = What is the type of protection held for the crystallisation?
 typeOfProtection.p1 = This can be found on the member’s LTA certificate.
@@ -1706,7 +1714,6 @@ fileUpload.addressLine1.generic.error = address line 1 is missing or in the wron
 fileUpload.addressLine2.generic.error = address line 2 is missing or in the wrong format
 fileUpload.addressLine3.generic.error = address line 3 is missing or in the wrong format
 fileUpload.addressLine4.generic.error = address line 4 is missing or in the wrong format
-fileUpload.postCode.generic.error = postcode is missing or in the wrong format
 fileUpload.tangibleDescription.generic.error = tangible description is too long
 fileUpload.courtNameOfPersonOrOrg.generic.error = court name of person or organisation is missing or in the wrong format
 fileUpload.otherDescription.generic.error = other description is too long
@@ -1718,6 +1725,15 @@ fileUpload.valueOfFund.generic.error = value of fund is missing or in the wrong 
 fileUpload.loanAmount.generic.error = loan amount is missing or in the wrong format
 fileUpload.memberOrEmployer.generic.error = entry of who received the unauthorised payment or deemed unauthorised payment is missing or in the wrong format
 fileUpload.natureOfPayment.generic.error = nature of payment is missing or in the wrong format
+
+fileUpload.bceDate.generic.error = benefit crystallisation date is missing or in the wrong format
+fileUpload.bceType.generic.error = type of benefit cystallisation is missing or in the wrong format
+fileUpload.validProtection.generic.error = entry of whether member holds valid protection is missing or in the wrong format
+fileUpload.protectionType.generic.error = type of protection is missing or in the wrong format
+fileUpload.overAllowance.generic.error = entry of whether the lump sum payment has taken the member over their available lump sum allowance is missing or in the wrong format
+fileUpload.overAllowanceAndDeathBenefit.generic.error = entry of whether the lump sum payment has taken the member over their available lump sum allowance and death benefit is missing or in the wrong format
+fileUpload.marginalRate.generic.error = entry of whether the excess has been taxed at marginal rate is missing or in the wrong format
+fileUpload.employerPayeRef.generic.error = employer PAYE reference is missing of in the wrong format. The employer PAYE reference is a 3-digit number, a forward slash, and a tax office employer reference that is a combination of letters and numbers, like 123/AB456.
 
 eventDescription.event1 = unauthorised payment
 eventDescription.event2 = lump sum death benefit payment
@@ -1784,8 +1800,8 @@ crystallisedDate.event24.date.checkYourAnswersLabel = When did the higher lump s
 
 bceTypeSelection.event24.title = Type of relevant benefit crystallisation event
 bceTypeSelection.event24.heading = What was the type of lump sum allowance?
-bceTypeSelection.event24.error.required = Select the type of relevant benefit crystallisation event
-bceTypeSelection.event24.error.format = Enter the type of benefit crystallisation event in the correct format
+bceTypeSelection.error.required = Select the type of relevant benefit crystallisation event
+bceTypeSelection.error.format = Enter the type of benefit crystallisation event in the correct format
 bceTypeSelection.event24.annuityProtection = Annuity protection lump sum death benefit
 bceTypeSelection.event24.definedBenefit = Defined benefit lump sum death benefit
 bceTypeSelection.event24.drawdown = Drawdown pension fund lump sum death benefit

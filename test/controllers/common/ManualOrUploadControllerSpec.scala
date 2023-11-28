@@ -20,7 +20,7 @@ import base.SpecBase
 import forms.common.ManualOrUploadFormProvider
 import models.common.ManualOrUpload
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event22, Event23, Event6}
+import models.enumeration.EventType.{Event1, Event22, Event23, Event6, Event24}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
@@ -35,7 +35,7 @@ import scala.concurrent.duration._
 
 class ManualOrUploadControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
-  private val seqOfEvents = Seq(Event1, Event6, Event22, Event23)
+  private val seqOfEvents = Seq(Event1, Event6, Event22, Event23, Event24)
   private val waypoints = EmptyWaypoints
   private val manualOrUploadFormProvider = new ManualOrUploadFormProvider()
 
