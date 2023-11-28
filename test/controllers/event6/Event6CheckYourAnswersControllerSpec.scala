@@ -21,7 +21,7 @@ import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent6}
 import models.common.{MembersDetails, PaymentDetails}
 import models.enumeration.EventType.{Event5, Event6}
 import models.enumeration.VersionStatus.{Compiled, Submitted}
-import models.event6.TypeOfProtection
+import models.event6.{CrystallisedDetails, TypeOfProtection}
 import models.{MemberSummaryPath, TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -29,7 +29,7 @@ import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.common.{MembersDetailsPage, PaymentDetailsPage}
-import pages.event6.{InputProtectionTypePage, TypeOfProtectionPage}
+import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
@@ -191,7 +191,7 @@ class Event6CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
       val event6Answers = emptyUserAnswers.set(MembersDetailsPage(Event6, 0), MembersDetails("Jane", "Doe", "AB123456B")).get
         .set(TypeOfProtectionPage(Event6, 0), TypeOfProtection.FixedProtection).get
         .set(InputProtectionTypePage(Event6, 0), "abcdef123").get
-        .set(PaymentDetailsPage(Event6, 0), PaymentDetails(BigDecimal(123), LocalDate.of(2024, 4, 4))).get
+        .set(AmountCrystallisedAndDatePage(Event6, 0), CrystallisedDetails(BigDecimal(123), LocalDate.of(2024, 4, 4))).get
 
       val userAnswersWithVersionInfo = event6Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
@@ -212,7 +212,7 @@ class Event6CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
       val event6Answers = emptyUserAnswers.set(MembersDetailsPage(Event6, 0), MembersDetails("Jane", "Doe", "AB123456B")).get
         .set(InputProtectionTypePage(Event6, 0), "abcdef123").get
-        .set(PaymentDetailsPage(Event6, 0), PaymentDetails(BigDecimal(123), LocalDate.of(2024, 4, 4))).get
+        .set(AmountCrystallisedAndDatePage(Event6, 0), CrystallisedDetails(BigDecimal(123), LocalDate.of(2024, 4, 4))).get
 
       val userAnswersWithVersionInfo = event6Answers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
