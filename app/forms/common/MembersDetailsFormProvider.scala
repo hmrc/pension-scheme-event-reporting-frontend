@@ -25,11 +25,9 @@ import play.api.data.Forms.mapping
 import play.api.data.validation.Constraint
 import play.api.data.{Form, Mapping}
 
-import scala.collection.immutable.HashSet
-
 class MembersDetailsFormProvider {
 
-  def apply(eventType: EventType, memberNinos: HashSet[String], memberPageNo: Int = 0): Form[MembersDetails] = {
+  def apply(eventType: EventType, memberPageNo: Int = 0): Form[MembersDetails] = {
 
     val detailsType = (eventType, memberPageNo) match {
       case (Event2, 1) => "deceasedMembersDetails"

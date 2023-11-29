@@ -35,7 +35,6 @@ import play.api.i18n.Messages
 import services.fileUpload.Validator.Result
 
 import java.time.LocalDate
-import scala.collection.immutable.HashSet
 
 class Event6Validator @Inject()(
                                  membersDetailsFormProvider: MembersDetailsFormProvider,
@@ -125,12 +124,11 @@ class Event6Validator @Inject()(
 
   override protected def validateFields(index: Int,
                                         columns: Seq[String],
-                                        taxYear: Int,
-                                        memberNinos: HashSet[String])
+                                        taxYear: Int)
                                        (implicit messages: Messages): Result = {
 
     val a = resultFromFormValidationResultForMembersDetails(
-      memberDetailsValidation(index, columns, membersDetailsFormProvider(Event6, memberNinos, index)),
+      memberDetailsValidation(index, columns, membersDetailsFormProvider(Event6, index)),
       createCommitItem(index, MembersDetailsPage.apply(Event6, _))
     )
 
