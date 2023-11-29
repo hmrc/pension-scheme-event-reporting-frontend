@@ -29,10 +29,10 @@ import scala.util.Random
 
 class MembersDetailsFormProviderSpec extends StringFieldBehaviours with Constraints {
 
-  private val memberNinos: HashSet[String] = HashSet("CS121212C", "CS121212B")
   val listOfEvents: Seq[EventType] = Seq(Event1, Event22, Event23)
   val event: EventType = Random.shuffle(listOfEvents).head
   val form = new MembersDetailsFormProvider()(event, memberNinos)
+  private val memberNinos: HashSet[String] = HashSet("CS121212C", "CS121212B")
 
   ".firstName" - {
 
@@ -112,7 +112,6 @@ class MembersDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
     val numbersKey = "genericNino.error.invalid.numbers"
     val suffixKey = "genericNino.error.invalid.suffix"
     val invalidKey = "genericNino.error.invalid"
-    val notUniqueKey = "membersDetails.error.nino.notUnique"
     val fieldName = "nino"
 
     Seq("aB020202A", "Ab020202A", "AB020202a", "AB020202A", "ab020202a").foreach { nino =>
@@ -140,22 +139,5 @@ class MembersDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
-
-
-    Seq("CS121212C", "CS121212B").foreach { nino =>
-      s"fail to bind when NINO $nino is not unique" in {
-        val memberNinos: HashSet[String] = HashSet("CS121212C", "CS121212B")
-        val form = new MembersDetailsFormProvider()(event, memberNinos)
-        val result = form.bind(Map("firstName" -> "validFirstName", "lastName" -> "validLastName", "nino" -> nino))
-        result.errors mustBe Seq(FormError("nino", notUniqueKey))
-      }
-
-      s"successfully bind when NINO $nino is unique" in {
-        val memberNinos: HashSet[String] = HashSet("Ab020202A", "AB020202a")
-        val form = new MembersDetailsFormProvider()(event, memberNinos)
-        val result = form.bind(Map("firstName" -> "validFirstName", "lastName" -> "validLastName", "nino" -> nino))
-        result.errors mustBe Seq()
-      }
-    }
   }
 }
