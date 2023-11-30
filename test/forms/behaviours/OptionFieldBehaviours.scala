@@ -37,7 +37,10 @@ class OptionFieldBehaviours extends FieldBehaviours {
 
     "not bind invalid values" in {
 
-      val generator = stringsExceptSpecificValues(validValues.map(_.toString))
+      val generator = validValues.headOption match {
+        case Some(_: String) => stringsExceptSpecificValues(validValues.map(_.toString))
+        case _ => stringsExceptSpecificValuesAndNoNewlines(validValues.map(_.toString))
+      }
 
       forAll(generator -> "invalidValue") {
         value =>
