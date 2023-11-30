@@ -16,15 +16,17 @@
 
 package viewmodels.event24.checkAnswers
 
+import forms.mappings.Formatters
 import models.{Index, UserAnswers}
 import pages.{CheckAnswersPage, Waypoints}
 import pages.event24.TotalAmountBenefitCrystallisationPage
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object TotalAmountBenefitCrystallisationSummary  {
+object TotalAmountBenefitCrystallisationSummary extends Formatters{
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
          (implicit messages: Messages): Option[SummaryListRow] =
@@ -33,7 +35,7 @@ object TotalAmountBenefitCrystallisationSummary  {
 
         SummaryListRowViewModel(
           key     = "totalAmountBenefitCrystallisation.event24.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.toString),
+          value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer)}")),
           actions = Seq(
             ActionItemViewModel("site.change", TotalAmountBenefitCrystallisationPage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("totalAmountBenefitCrystallisation.event24.change.hidden"))
