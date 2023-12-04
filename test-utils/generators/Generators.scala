@@ -113,6 +113,9 @@ trait Generators extends PageGenerators with ModelGenerators with UserAnswersEnt
   def nonEmptyString: Gen[String] =
     arbitrary[String] suchThat (_.nonEmpty)
 
+  def nonEmptyStringNoNewlines: Gen[String] =
+    arbitrary[String].filter(s => s.nonEmpty && !s.contains("\n")).map(_.replace("\n", ""))
+
   def stringsWithMaxLength(maxLength: Int): Gen[String] =
     for {
       length <- choose(1, maxLength)
@@ -132,6 +135,9 @@ trait Generators extends PageGenerators with ModelGenerators with UserAnswersEnt
 
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =
     nonEmptyString suchThat (!excluded.contains(_))
+
+  def stringsExceptSpecificValuesAndNoNewlines(excluded: Seq[String]): Gen[String] =
+    nonEmptyStringNoNewlines suchThat (!excluded.contains(_))
 
   def oneOf[T](xs: Seq[Gen[T]]): Gen[T] =
     if (xs.isEmpty) {
