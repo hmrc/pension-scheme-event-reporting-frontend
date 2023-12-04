@@ -127,8 +127,7 @@ class Event22ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
         ValidationError(2, 1, "membersDetails.error.lastName.required", "lastName"),
         ValidationError(2, 2, "genericNino.error.invalid.length", "nino"),
         ValidationError(2, 3, "chooseTaxYear.event22.error.required", "taxYear", Seq("2013", "2023")),
-        ValidationError(2, 4, "totalPensionAmounts.value.error.nothingEntered", "totalAmounts"),
-        ValidationError(4, 2, "membersDetails.error.nino.notUnique", "nino")
+        ValidationError(2, 4, "totalPensionAmounts.value.error.nothingEntered", "totalAmounts")
       ))
     }
 

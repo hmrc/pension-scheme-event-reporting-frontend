@@ -48,8 +48,6 @@ import play.api.i18n.Messages
 import play.api.libs.json.JsString
 import services.fileUpload.Validator.Result
 
-import scala.collection.immutable.HashSet
-
 class Event1Validator @Inject()(
                                  whoReceivedUnauthPaymentFormProvider: WhoReceivedUnauthPaymentFormProvider,
                                  membersDetailsFormProvider: MembersDetailsFormProvider,
@@ -344,8 +342,7 @@ class Event1Validator @Inject()(
 
   override protected def validateFields(index: Int,
                                         columns: Seq[String],
-                                        taxYear: Int,
-                                        memberNinos: HashSet[String])
+                                        taxYear: Int)
                                        (implicit messages: Messages): Result = {
 
     val a = resultFromFormValidationResult[WhoReceivedUnauthPayment](
@@ -357,7 +354,7 @@ class Event1Validator @Inject()(
       case Result(_, Valid(seqCommitItems)) =>
         seqCommitItems.headOption match {
           case Some(ci) => ci.value.as[JsString].value match {
-            case "member" => memberValidation(a, index, columns, taxYear, memberNinos)
+            case "member" => memberValidation(a, index, columns, taxYear)
             case "employer" => employerValidation(a, index, columns, taxYear)
           }
           case _ => throw new RuntimeException("Something went wrong: member or employer not entered/found")
@@ -508,11 +505,10 @@ class Event1Validator @Inject()(
   private def memberValidation(memberOrEmployerResult: Result,
                                index: Int,
                                columns: Seq[String],
-                               taxYear: Int,
-                               memberNinos: HashSet[String])
+                               taxYear: Int)
                               (implicit messages: Messages): Result = {
     val b = resultFromFormValidationResultForMembersDetails(
-      memberDetailsValidation(index, columns, membersDetailsFormProvider(Event1, memberNinos, index)),
+      memberDetailsValidation(index, columns, membersDetailsFormProvider(Event1, index)),
       createCommitItem(index, MembersDetailsPage.apply(Event1, _))
     )
 

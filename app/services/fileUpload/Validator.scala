@@ -55,7 +55,7 @@ object Validator {
 
   val FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty: ValidationError = ValidationError(0, 0, HeaderInvalidOrFileIsEmpty, EMPTY)
 
-  val FileLevelValidationErrorTypeNoDataRowsProvided: ValidationError = ValidationError(0, 0, NoDataRowsProvided, EMPTY)
+  private val FileLevelValidationErrorTypeNoDataRowsProvided: ValidationError = ValidationError(0, 0, NoDataRowsProvided, EMPTY)
 }
 
 trait Validator {
@@ -103,14 +103,13 @@ trait Validator {
     rows.zipWithIndex.foldLeft[Result](monoidResult.empty) {
       case (acc, Tuple2(_, 0)) => acc
       case (acc, Tuple2(row, index)) =>
-        Seq(acc, validateFields(index, row.toIndexedSeq, taxYear, acc.memberNinos)).combineAll
+        Seq(acc, validateFields(index, row.toIndexedSeq, taxYear)).combineAll
     }
   }
 
   protected def validateFields(index: Int,
                                columns: Seq[String],
-                               taxYear: Int,
-                               memberNinos: HashSet[String]
+                               taxYear: Int
                               )(implicit messages: Messages): Result
 
   protected def memberDetailsValidation(index: Int, columns: Seq[String],
@@ -189,13 +188,6 @@ trait Validator {
       case _ => ParsedAddress(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)
     }
   }
-
-  protected final def stringToBoolean(s: String): String =
-    s.toLowerCase match {
-      case "yes" => "true"
-      case "no" => "false"
-      case l => l
-    }
 }
 
 case class ValidationError(row: Int, col: Int, error: String, columnName: String = EMPTY, args: Seq[Any] = Nil)

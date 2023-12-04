@@ -52,7 +52,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private def form(eventType: EventType, members: HashSet[String]): Form[MembersDetails] = formProvider(eventType, members)
+  private def form(eventType: EventType): Form[MembersDetails] = formProvider(eventType)
 
   private def getRoute(eventType: EventType): String = routes.MembersDetailsController.onPageLoad(waypoints, eventType, Index(0), memberPageNo = 0).url
 
@@ -89,7 +89,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(
-          form(eventType, HashSet()),
+          form(eventType),
           waypoints,
           eventType,
           memberPageNo = 0,
@@ -110,7 +110,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view.render(
-          form(eventType, HashSet()).fill(validValue),
+          form(eventType).fill(validValue),
           waypoints,
           eventType,
           memberPageNo = 0,
@@ -151,7 +151,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
       running(application) {
         val request = FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("firstName", "%"), ("lastName", ""), ("nino", "abc"))
         val view = application.injector.instanceOf[MembersDetailsView]
-        val boundForm = form(eventType, HashSet()).bind(Map("firstName" -> "%", "lastName" -> "", "nino" -> "abc"))
+        val boundForm = form(eventType).bind(Map("firstName" -> "%", "lastName" -> "", "nino" -> "abc"))
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
@@ -181,7 +181,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
           FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("firstName", "John"), ("lastName", ""), ("nino", nino))
 
         val view = application.injector.instanceOf[MembersDetailsView]
-        val boundForm = form(eventType, HashSet()).bind(Map("firstName" -> "John", "lastName" -> "", "nino" -> nino))
+        val boundForm = form(eventType).bind(Map("firstName" -> "John", "lastName" -> "", "nino" -> nino))
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST

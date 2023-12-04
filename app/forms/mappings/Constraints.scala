@@ -21,7 +21,6 @@ import uk.gov.hmrc.domain.Nino
 import utils.CountryOptions
 
 import java.time.LocalDate
-import scala.collection.immutable.HashSet
 import scala.language.implicitConversions
 
 trait Constraints {
@@ -30,7 +29,6 @@ trait Constraints {
   val regexPersonOrOrgName = """^[a-zA-Z &`\'\.^\\]{0,160}$"""
   val regexMemberRecipientName = """^[a-zA-Z &`\\\-\'\.^]{0,150}$"""
   val regexPostcode = """^[A-Z]{1,2}[0-9][0-9A-Z]?\s?[0-9][A-Z]{2}$"""
-  val regexPostCodeNonUk = """^([0-9]+-)*[0-9]+$"""
   val regexAddressLine = """^[A-Za-z0-9 &!'‘’(),./\u2014\u2013\u2010\u002d]{1,35}$"""
   val regexSafeText = """^[a-zA-Z0-9\u00C0-\u00FF !#$%&'‘’"“”«»()*+,./:;=?@\\\[\]|~£€¥\u005C\u2014\u2013\u2010\u005F\u005E\u0060\u002d]{1,160}$"""
   val regexCrn = "^[A-Za-z0-9 -]{7,8}$"
@@ -42,8 +40,6 @@ trait Constraints {
   val protectionReferenceRegex = "^[A-Za-z0-9]{1,15}$"
 
   protected def postCode(errorKey: String): Constraint[String] = regexp(regexPostcode, errorKey)
-
-  protected def postCodeNonUk(errorKey: String): Constraint[String] = regexp(regexPostCodeNonUk, errorKey)
 
   protected def addressLine(errorKey: String): Constraint[String] = regexp(regexAddressLine, errorKey)
 
@@ -188,13 +184,6 @@ trait Constraints {
     conditionsAndErrors.collectFirst {
       case (condition, error) if condition(input) => Invalid(error)
     }.getOrElse(Valid)
-  }
-
-  protected def nonUniqueNino(notUniqueKey: String, ninos: HashSet[String]): Constraint[String] = {
-    Constraint {
-      case nino if ninos.contains(nino) => Invalid(notUniqueKey)
-      case _ => Valid
-    }
   }
 
   protected def yearHas4Digits(errorKey: String): Constraint[LocalDate] =

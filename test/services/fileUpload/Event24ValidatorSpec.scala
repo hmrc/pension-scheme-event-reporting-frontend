@@ -81,19 +81,6 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
         ValidationError(1, 3, "Date must be between 06 April 2023 and 05 April 2024", "crystallisedDate"),
       ))
     }
-    "return validation errors when present for a duplicate nino" in {
-      val csvFile = CSVParser.split(
-        s"""$header
-                        Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,FIXED,abcdef123,NO,YES,YES,123/ABCDEF
-                        Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,FIXED,abcdef123,NO,YES,YES,123/ABCDEF"""
-
-      )
-      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
-      val result = validator.validate(csvFile, ua)
-      result mustBe Invalid(Seq(
-        ValidationError(2, 2, "membersDetails.error.nino.notUnique", "nino")
-      ))
-    }
     "return validation errors if present" in {
       DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
       val csvFile = CSVParser.split(
