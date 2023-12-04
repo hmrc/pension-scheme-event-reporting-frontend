@@ -25,12 +25,9 @@ import play.api.data.Forms.mapping
 import play.api.data.validation.Constraint
 import play.api.data.{Form, Mapping}
 
-import scala.collection.immutable.HashSet
-
-
 class MembersDetailsFormProvider {
 
-  def apply(eventType: EventType, memberNinos: HashSet[String], memberPageNo: Int = 0): Form[MembersDetails] = {
+  def apply(eventType: EventType, memberPageNo: Int = 0): Form[MembersDetails] = {
 
     val detailsType = (eventType, memberPageNo) match {
       case (Event2, 1) => "deceasedMembersDetails"
@@ -42,7 +39,7 @@ class MembersDetailsFormProvider {
       mapping(
         nameMapping(firstName, detailsType),
         nameMapping(lastName, detailsType),
-        ninoMapping(detailsType, memberNinos)
+        ninoMapping(detailsType)
       )(MembersDetails.apply)(MembersDetails.unapply)
     )
   }
@@ -57,9 +54,9 @@ object MembersDetailsFormProvider extends Mappings with Transforms {
     field -> text(s"$detailsType.error.$field.required")
       .verifying(nameIsValid(field, detailsType))
 
-  private val ninoMapping: (String, HashSet[String]) => (String, Mapping[String]) = (detailsType: String, memberNinos: HashSet[String]) =>
+  private val ninoMapping: String => (String, Mapping[String]) = (detailsType: String) =>
     nino -> text(s"$detailsType.error.$nino.required").transform(noSpaceWithUpperCaseTransform, noTransform)
-      .verifying(ninoIsValid(detailsType, memberNinos))
+      .verifying(ninoIsValid(detailsType))
 
   private val nameIsValid: (String, String) => Constraint[String] = (nameField: String, detailsType: String) =>
     firstError(
@@ -67,9 +64,5 @@ object MembersDetailsFormProvider extends Mappings with Transforms {
       regexp(regexName, s"$detailsType.error.$nameField.invalid")
     )
 
-  private val ninoIsValid: (String, HashSet[String]) => Constraint[String] = (detailsType: String, memberNinos: HashSet[String]) =>
-    firstError(
-      validNino,
-      nonUniqueNino(s"$detailsType.error.nino.notUnique", memberNinos)
-    )
+  private val ninoIsValid: String => Constraint[String] = (_: String) => validNino
 }

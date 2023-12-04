@@ -103,8 +103,7 @@ class Event6ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         ValidationError(1, 4, "inputProtectionType.error.required", "typeOfProtectionReference"),
         ValidationError(2, 2, "membersDetails.error.nino.required", "nino"),
         ValidationError(2, 3, "typeOfProtection.error.format", "typeOfProtection"),
-        ValidationError(2, 6, "Date must be between 06 April 2006 and 05 April 2024", "crystallisedDate"),
-        ValidationError(4, 2, "membersDetails.error.nino.notUnique", "nino")
+        ValidationError(2, 6, "Date must be between 06 April 2006 and 05 April 2024", "crystallisedDate")
       ))
     }
   }
