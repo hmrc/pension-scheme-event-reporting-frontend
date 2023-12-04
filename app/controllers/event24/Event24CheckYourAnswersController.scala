@@ -50,6 +50,7 @@ class Event24CheckYourAnswersController @Inject()(
                                                    userAnswersValidation: UserAnswersValidation
                                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
   private val eventType = EventType.Event24
+
   def onPageLoad(index: Index): Action[AnyContent] =
     (identify andThen getData(eventType) andThen requireData) { implicit request =>
       val thisPage = Event24CheckYourAnswersPage(index)
@@ -79,7 +80,7 @@ class Event24CheckYourAnswersController @Inject()(
   }
 
   private def hasValidProtectionRow(waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
-                                         (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+                                   (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     request.userAnswers.get(ValidProtectionPage(index)) match {
       case Some(true) =>
         (TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()) ++
@@ -90,18 +91,19 @@ class Event24CheckYourAnswersController @Inject()(
   }
 
   private def hasProtectionReference(waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
-                                   (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+                                    (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
     request.userAnswers.get(TypeOfProtectionPage(index)) match {
       case Some(SchemeSpecific) => Nil
       case Some(EnhancedProtection | EnhancedProtectionWithProtectedSum | FixedProtection | FixedProtection2014 | FixedProtection2016 |
-                IndividualProtection2014 | IndividualProtection2016 | PreCommencement | Primary | PrimaryWithProtectedSum) =>
+                IndividualProtection2014 | IndividualProtection2016 | NonResidenceEnhancement | PensionCreditsPreCRE |
+                PreCommencement | Primary | PrimaryWithProtectedSum | RecognisedOverseasPSTE) =>
         TypeOfProtectionReferenceSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq
       case _ => Nil
     }
   }
 
   private def hasOverAllowanceRow(waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
-                                   (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+                                 (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
 
     request.userAnswers.get(OverAllowancePage(index)) match {
       case Some(true) =>
@@ -120,7 +122,7 @@ class Event24CheckYourAnswersController @Inject()(
   }
 
   private def hasMarginalRateRow(waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
-                                   (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+                                (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
 
     request.userAnswers.get(MarginalRatePage(index)) match {
       case Some(true) =>

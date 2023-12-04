@@ -38,17 +38,23 @@ object TypeOfProtectionSelection extends Enumerable.Implicits {
 
   case object IndividualProtection2016 extends WithName("individualProtection2016") with TypeOfProtectionSelection
 
+  case object NonResidenceEnhancement extends WithName("nonResidenceEnhancement") with TypeOfProtectionSelection
+
+  case object PensionCreditsPreCRE extends WithName("pensionCreditsPreCRE") with TypeOfProtectionSelection
+
   case object PreCommencement extends WithName("preCommencement") with TypeOfProtectionSelection
 
   case object Primary extends WithName("primary") with TypeOfProtectionSelection
 
   case object PrimaryWithProtectedSum extends WithName("primaryWithProtectedSum") with TypeOfProtectionSelection
 
+  case object RecognisedOverseasPSTE extends WithName("recognisedOverseasPSTE") with TypeOfProtectionSelection
+
   case object SchemeSpecific extends WithName("schemeSpecific") with TypeOfProtectionSelection
 
   val values: Seq[TypeOfProtectionSelection] = Seq(EnhancedProtection, EnhancedProtectionWithProtectedSum, FixedProtection,
-    FixedProtection2014, FixedProtection2016, IndividualProtection2014, IndividualProtection2016, PreCommencement, Primary,
-    PrimaryWithProtectedSum, SchemeSpecific)
+    FixedProtection2014, FixedProtection2016, IndividualProtection2014, IndividualProtection2016, NonResidenceEnhancement,
+    PensionCreditsPreCRE, PreCommencement, Primary, PrimaryWithProtectedSum, RecognisedOverseasPSTE, SchemeSpecific)
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
