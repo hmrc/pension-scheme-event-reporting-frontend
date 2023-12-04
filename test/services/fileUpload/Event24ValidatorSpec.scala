@@ -49,7 +49,7 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
         s"""$header
                             Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,FIXED,abcdef123,NO,YES,YES,123/ABCDEF
                             Jane,Doe,AB123456B,13/11/2023,ANN,123,NO,,,YES,,NO,
-                            Jane,Doe,AB123456C,13/11/2023,ANN,123,YES,S-S,,NO,NO,,"""
+                            Jane,Doe,AB123456C,13/11/2023,ANN,123,YES,SPEC,,NO,NO,,"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
       val result = validator.validate(validCSVFile, ua)
@@ -126,14 +126,14 @@ object Event24ValidatorSpec {
   private val header = "First name,Last name,National Insurance number," +
     "When was the relevant benefit crystallisation event? (XX/XX/XXXX)," +
     "What was the type of relevant benefit crystallisation event? (see instructions)," +
-    "What was the total amount of the relevant benefit crystallisation event? (£)," +
-    "Does the member hold a valid protection? (YES/NO)," +
-    "IF YES TO G: What is the type of protection held? (see instructions)," +
+    "What was the total of the relevant benefit crystallisation event? (£)," +
+    "Does the member hold a valid form of protection or enhancement? (YES/NO)," +
+    "IF YES TO G: What type of lifetime allowance protection or enhancement is held? (see instructions)," +
     "What is the member's protection reference? (see instructions)," +
     "Has this lump sum payment taken the member over their available lump sum allowance? (YES/NO)," +
     "IF NO TO J: Has this lump sum payment taken the member over their available lump sum and death benefit allowance? (YES/NO)" +
     ",IF YES TO J or K: Has the excess been taxed at marginal rate for this member?," +
-    "IF YES TO L: Provide the employer PAYE reference used to report the excess for this member"
+    "IF YES TO L:What is the employer PAYE reference used to report the excess for this member? (see instructions)"
 
   private val mockFrontendAppConfig = mock[FrontendAppConfig]
 

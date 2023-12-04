@@ -307,7 +307,7 @@ class Event24Validator @Inject()(
     val overAllowance = validateOverAllowance(index, columns)
 
     protectionTypeValue match {
-      case "S-S" => Seq(f, overAllowance).combineAll
+      case "SPEC" => Seq(f, overAllowance).combineAll
       case _ => Seq(f, g, overAllowance).combineAll
     }
   }
