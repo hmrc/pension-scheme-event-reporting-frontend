@@ -45,6 +45,8 @@ object BCETypeSelection extends Enumerable.Implicits {
 
   case object TrivialCommutationDeathBenefit extends WithName("trivialCommutationDeathBenefit") with BCETypeSelection
 
+  case object SeriousHealthLumpSum extends WithName("seriousHealthLumpSum") with BCETypeSelection
+
   case object UncrystallisedFunds extends WithName("uncrystallisedFunds") with BCETypeSelection
 
   case object UncrystallisedFundsDeathBenefit extends WithName("uncrystallisedFundsDeathBenefit") with BCETypeSelection
@@ -53,15 +55,15 @@ object BCETypeSelection extends Enumerable.Implicits {
 
 
   val values: Seq[BCETypeSelection] = Seq(AnnuityProtection, DefinedBenefit, Drawdown, FlexiAccess, Commencement,
-    PensionProtection, Small, StandAlone, TrivialCommutation, TrivialCommutationDeathBenefit, UncrystallisedFunds,
-    UncrystallisedFundsDeathBenefit, WindingUp)
+    PensionProtection, Small, StandAlone, TrivialCommutation, TrivialCommutationDeathBenefit, SeriousHealthLumpSum,
+    UncrystallisedFunds, UncrystallisedFundsDeathBenefit, WindingUp)
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
       RadioItem(
         content = Text(messages(s"bceTypeSelection.event24.${value.toString.replaceAll("[, ]", "")}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
+        value = Some(value.toString),
+        id = Some(s"value_$index")
       )
   }
 

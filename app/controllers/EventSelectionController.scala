@@ -17,6 +17,7 @@
 package controllers
 
 import audit.{AuditService, StartNewERAuditEvent}
+import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.EventSelectionFormProvider
@@ -40,7 +41,8 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
                                          formProvider: EventSelectionFormProvider,
                                          view: EventSelectionView,
                                          userAnswersCacheConnector: UserAnswersCacheConnector,
-                                         auditService: AuditService
+                                         auditService: AuditService,
+                                         config: FrontendAppConfig
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
@@ -87,7 +89,7 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
   }
 
   private def getFilteredOptions(ua: UserAnswers)(implicit messages: Messages): Seq[RadioItem] = {
-    val eventsToRemove: Seq[EventSelection] = TaxYear.getSelectedTaxYear(ua).startYear >= "2024" match {
+    val eventsToRemove: Seq[EventSelection] = TaxYear.getSelectedTaxYear(ua).startYear.toInt >= config.ltaAbolitionStartYear match {
       case true => Seq(Event2, Event6, Event7, Event8, Event8A)
       case false => Seq(Event24)
     }

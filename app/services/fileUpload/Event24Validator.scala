@@ -38,19 +38,19 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 class Event24Validator @Inject()(
-                                 membersDetailsFormProvider: MembersDetailsFormProvider,
-                                 bceTypeSelectionFormProvider: BCETypeSelectionFormProvider,
-                                 crystallisedDateFormProvider: CrystallisedDateFormProvider,
-                                 employerPayeReferenceFormProvider: EmployerPayeReferenceFormProvider,
-                                 marginalRateFormProvider: MarginalRateFormProvider,
-                                 overAllowanceFormProvider: OverAllowanceFormProvider,
-                                 overAllowanceAndDeathBenefitFormProvider: OverAllowanceAndDeathBenefitFormProvider,
-                                 totalAmountBenefitCrystallisationFormProvider: TotalAmountBenefitCrystallisationFormProvider,
-                                 typeOfProtectionFormProvider: TypeOfProtectionFormProvider,
-                                 typeOfProtectionReferenceFormProvider: TypeOfProtectionReferenceFormProvider,
-                                 validProtectionFormProvider: ValidProtectionFormProvider,
-                                 config: FrontendAppConfig
-                               ) extends Validator {
+                                  membersDetailsFormProvider: MembersDetailsFormProvider,
+                                  bceTypeSelectionFormProvider: BCETypeSelectionFormProvider,
+                                  crystallisedDateFormProvider: CrystallisedDateFormProvider,
+                                  employerPayeReferenceFormProvider: EmployerPayeReferenceFormProvider,
+                                  marginalRateFormProvider: MarginalRateFormProvider,
+                                  overAllowanceFormProvider: OverAllowanceFormProvider,
+                                  overAllowanceAndDeathBenefitFormProvider: OverAllowanceAndDeathBenefitFormProvider,
+                                  totalAmountBenefitCrystallisationFormProvider: TotalAmountBenefitCrystallisationFormProvider,
+                                  typeOfProtectionFormProvider: TypeOfProtectionFormProvider,
+                                  typeOfProtectionReferenceFormProvider: TypeOfProtectionReferenceFormProvider,
+                                  validProtectionFormProvider: ValidProtectionFormProvider,
+                                  config: FrontendAppConfig
+                                ) extends Validator {
 
   override val eventType: EventType = EventType.Event24
 
@@ -72,16 +72,17 @@ class Event24Validator @Inject()(
       "ANN" -> "annuityProtection",
       "DEF" -> "definedBenefit",
       "DRAW" -> "drawdown",
-      "F-A" -> "flexiAccess",
+      "FLEXI" -> "flexiAccess",
       "PCLS" -> "commencement",
       "PROTECTION" -> "pensionProtection",
       "SMALL" -> "small",
       "S-A" -> "standAlone",
       "T LS" -> "trivialCommutation",
       "T DB" -> "trivialCommutationDeathBenefit",
+      "SERIOUS" -> "seriousHealthLumpSum",
       "UN LS" -> "uncrystallisedFunds",
       "UN DB" -> "uncrystallisedFundsDeathBenefit",
-      "W-U" -> "windingUp"
+      "WIND-UP" -> "windingUp"
     )
   }
 
@@ -94,10 +95,13 @@ class Event24Validator @Inject()(
       "FP 2016" -> "fixedProtection2016",
       "IP 2014" -> "individualProtection2014",
       "IP 2016" -> "individualProtection2016",
+      "NON" -> "nonResidenceEnhancement",
+      "CREDITS" -> "pensionCreditsPreCRE",
       "PRE-COMM" -> "preCommencement",
       "PRIMARY" -> "primary",
       "LS 375" -> "primaryWithProtectedSum",
-      "S-S" -> "schemeSpecific"
+      "OVERSEAS" -> "recognisedOverseasPSTE",
+      "SPEC" -> "schemeSpecific"
     )
   }
 
@@ -110,8 +114,8 @@ class Event24Validator @Inject()(
 
     val fields = Seq(
       Field(dateOfEventDay, parsedDate.day, crystallisedDate, fieldNoBCEDate, Some(crystallisedDate)),
-        Field(dateOfEventMonth, parsedDate.month, crystallisedDate, fieldNoBCEDate, Some(crystallisedDate)),
-        Field(dateOfEventYear, parsedDate.year, crystallisedDate, fieldNoBCEDate, Some(crystallisedDate))
+      Field(dateOfEventMonth, parsedDate.month, crystallisedDate, fieldNoBCEDate, Some(crystallisedDate)),
+      Field(dateOfEventYear, parsedDate.year, crystallisedDate, fieldNoBCEDate, Some(crystallisedDate))
     )
 
     val form: Form[CrystallisedDate] = crystallisedDateFormProvider(minDate, maxDate)
@@ -122,7 +126,7 @@ class Event24Validator @Inject()(
     )
   }
 
-  private def bceTypeValidation(index: Index, chargeFields: Seq[String]):  Validated[Seq[ValidationError], BCETypeSelection] = {
+  private def bceTypeValidation(index: Index, chargeFields: Seq[String]): Validated[Seq[ValidationError], BCETypeSelection] = {
     val mappedBCEType = mapBCEType.applyOrElse[String, String](
       chargeFields(fieldNoBCEType),
       (_: String) => "Type of protection is not found or doesn't exist")
@@ -303,7 +307,7 @@ class Event24Validator @Inject()(
     val overAllowance = validateOverAllowance(index, columns)
 
     protectionTypeValue match {
-      case "S-S" => Seq(f, overAllowance).combineAll
+      case "SPEC" => Seq(f, overAllowance).combineAll
       case _ => Seq(f, g, overAllowance).combineAll
     }
   }
