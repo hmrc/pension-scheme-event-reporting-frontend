@@ -1112,6 +1112,13 @@ fileUploadWhatYouWillNeed.event1.instructions.link.text = instructions explainin
 fileUploadWhatYouWillNeed.event1.template.link.text = latest template file
 fileUploadWhatYouWillNeed.event1.inset = All the data you have previously added for this event will be overwritten when you upload a file.
 
+whatYouWillNeed.event2.title = What you will need
+whatYouWillNeed.event2.heading = What you will need
+whatYouWillNeed.event2.p = To record lump sum death benefit payments you will need to tell us the:
+whatYouWillNeed.event2.item1 = deceased member’s name and National Insurance number
+whatYouWillNeed.event2.item2 = name and National Insurance number of the person who was paid (the recipient)
+whatYouWillNeed.event2.item3 = amount and date that the recipient received the payment
+
 fileUploadWhatYouWillNeed.event6.title = What you will need
 fileUploadWhatYouWillNeed.event6.heading = What you will need
 fileUploadWhatYouWillNeed.event6.p1 = To record a benefit crystallisation, where the member relies on an applicable LTA protection, you will need to upload a .csv file and include the following information for each member:

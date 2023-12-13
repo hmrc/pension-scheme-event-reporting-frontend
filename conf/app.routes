@@ -208,6 +208,8 @@ POST        /report/:index/event-1-transfer-recipient                         co
 GET         /report/:index/event-1-scheme-details                             controllers.event1.member.SchemeDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /report/:index/event-1-scheme-details                             controllers.event1.member.SchemeDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
+GET         /report/:index/event-2-what-you-will-need                          controllers.event2.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
 GET         /report/:index/event-2-deceased-member-details                    controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index,memberPageNo: Int = 1)
 POST        /report/:index/event-2-deceased-member-details                    controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index, memberPageNo: Int = 1)
 

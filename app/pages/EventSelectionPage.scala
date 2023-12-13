@@ -59,8 +59,7 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
         ManualOrUploadPage(bulkUploadEvent, index)
       case Some(memberBasedEvent@(Event3 | Event4 | Event5 | Event7 | Event8 | Event8A)) =>
         MembersDetailsPage(memberBasedEvent, index)
-      case Some(Event2) => // Event2 has 2 separate MembersDetailsPages, route to first
-        MembersDetailsPage(Event2, index, Event2MemberPageNumbers.FIRST_PAGE_DECEASED)
+      case Some(Event2) => event2.WhatYouWillNeedPage(index)
       case Some(Event24) =>
         event24.WhatYouWillNeedPage(index)
       case Some(Event10) => BecomeOrCeaseSchemePage
@@ -128,7 +127,7 @@ private object EventSelectionPageUtility {
 
     if (indicesForIncompleteJourneys.nonEmpty) {
       logger.info(
-        s"""Journey for Event${maybeEventType} incomplete on indices: ${indicesForIncompleteJourneys}.
+        s"""Journey for Event$maybeEventType incomplete on indices: $indicesForIncompleteJourneys.
            | Directing user to complete journey at index: ${indicesForIncompleteJourneys.head}""".stripMargin
       )
       indicesForIncompleteJourneys.head
