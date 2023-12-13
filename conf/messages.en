@@ -1589,9 +1589,7 @@ whatYouWillNeed.event19.p = To record a change country or territory of establish
 whatYouWillNeed.event19.item1 = new country or territory
 whatYouWillNeed.event19.item2 = date that the change took place
 
-whatYouWillNeed.event20A.p = For this event, you will need to tell us the date that the scheme either became or ceased to be a Master Trust.
-whatYouWillNeed.event20A.item1 = Awaiting a content update for this page:
-whatYouWillNeed.event20A.item2 = search for whatYouWillNeed.event20A in messages.en to change these list items
+whatYouWillNeed.event20A.p = For this event, you will need to tell us the date that the scheme either became or ceased to be a Master Trust scheme.
 
 ceasedDateMasterTrust.title = When did the scheme cease to be a Master Trust?
 ceasedDateMasterTrust.heading = When did the scheme cease to be a Master Trust?

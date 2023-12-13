@@ -27,11 +27,6 @@
 
         <p class="govuk-body">@messages("whatYouWillNeed.event20A.p")</p>
 
-        <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("whatYouWillNeed.event20A.item1")</li>
-            <li>@messages("whatYouWillNeed.event20A.item2")</li>
-        </ul>
-
         @govukButton(
             ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit")).asLink(continueUrl)
         )
