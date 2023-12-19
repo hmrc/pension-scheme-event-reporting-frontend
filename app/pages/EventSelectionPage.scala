@@ -62,11 +62,11 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
       case Some(Event2) => event2.WhatYouWillNeedPage(index)
       case Some(Event24) =>
         event24.WhatYouWillNeedPage(index)
-      case Some(Event10) => BecomeOrCeaseSchemePage
+      case Some(Event10) => event10.WhatYouWillNeedPage
       case Some(Event11) => event11WhatYouWillNeed
       case Some(Event12) => HasSchemeChangedRulesPage
-      case Some(Event13) => SchemeStructurePage
-      case Some(Event14) => HowManySchemeMembersPage
+      case Some(Event13) => event13.WhatYouWillNeedPage
+      case Some(Event14) => event14.WhatYouWillNeedPage
       case Some(Event18) => Event18ConfirmationPage
       case Some(Event19) => event19WhatYouWillNeed
       case Some(Event20) => event20.WhatYouWillNeedPage

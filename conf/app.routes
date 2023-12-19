@@ -655,3 +655,9 @@ GET         /report/:index/event-24-click                                   cont
 
 GET         /report/remove-24                                               controllers.common.RemoveEventController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event24)
 POST        /report/remove-24                                               controllers.common.RemoveEventController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event24)
+
+GET         /event-10-what-you-will-need                                    controllers.event10.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /event-13-what-you-will-need                                    controllers.event13.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /event-14-what-you-will-need                                    controllers.event14.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)

@@ -1900,3 +1900,11 @@ employerPayeReference.event24.error.leadingDigits = The employer PAYE reference 
 employerPayeReference.event24.error.noSlash = The employer PAYE reference''s fourth character must be /
 employerPayeReference.event24.error.required = Enter the employer PAYE reference
 employerPayeReference.event24.change.hidden = What is the employer PAYE reference used to report the excess for this member?
+
+whatYouWillNeed.event10.p = For this event, you will need to tell us the date that the scheme either became or ceased to be investment regulated.
+
+whatYouWillNeed.event13.p = To record a change in the legal structure of a scheme you will need to tell us:
+whatYouWillNeed.event13.li1 = the new scheme structure
+whatYouWillNeed.event13.li2 = when the change was made
+
+whatYouWillNeed.event14.p = For this event, you will need to tell us how many scheme members there were at the end of the tax year {0}.
