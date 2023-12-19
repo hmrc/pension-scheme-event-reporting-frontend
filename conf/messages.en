@@ -1119,6 +1119,42 @@ whatYouWillNeed.event2.item1 = deceased member’s name and National Insurance n
 whatYouWillNeed.event2.item2 = name and National Insurance number of the person who was paid (the recipient)
 whatYouWillNeed.event2.item3 = amount and date that the recipient received the payment
 
+whatYouWillNeed.common.title = What you will need
+whatYouWillNeed.common.heading = What you will need
+
+whatYouWillNeed.event3.p = To record benefits provided before normal minimum pension age you will need to tell us the:
+whatYouWillNeed.event3.item1 = member’s name and National Insurance number
+whatYouWillNeed.event3.item2 = reason why the benefits are being taken
+whatYouWillNeed.event3.item3 = amount of benefits and the date they were taken
+
+whatYouWillNeed.event4.p = To record a serious ill-health lump sum payment you will need to tell us the:
+whatYouWillNeed.event4.item1 = member’s name and National Insurance number
+whatYouWillNeed.event4.item2 = total amount paid
+whatYouWillNeed.event4.item3 = date of payment
+
+whatYouWillNeed.event5.p = To record the cessation of an ill-health pension you will need to tell us the:
+whatYouWillNeed.event5.item1 = member’s name and National Insurance number
+whatYouWillNeed.event5.item2 = member’s annual rate of pension entitlement immediately before non-payment started
+whatYouWillNeed.event5.item3 = date that non-payment started
+
+whatYouWillNeed.event7.p = To record a pension commencement lump sum more than 25% of the fund where the member does not have primary or enhanced protection, you will need to tell us:
+whatYouWillNeed.event7.item1 = the member’s name and National Insurance number
+whatYouWillNeed.event7.item2 = how much lump sum was paid
+whatYouWillNeed.event7.item3 = how much was crystallised
+whatYouWillNeed.event7.item4 = when the payment was made
+
+whatYouWillNeed.event8.p = To record a pension commencement lump sum where the member has either primary or enhanced protection you will need to tell us:
+whatYouWillNeed.event8.item1 = the member’s name and National Insurance number
+whatYouWillNeed.event8.item2 = details of the protection reference held for the crystallisation
+whatYouWillNeed.event8.item3 = how much lump sum was paid
+whatYouWillNeed.event8.item4 = when the lump sum payment was made
+
+whatYouWillNeed.event8A.p = To record a stand-alone lump sum you will need to tell us the:
+whatYouWillNeed.event8A.item1 = member’s name and National Insurance number
+whatYouWillNeed.event8A.item2 = lump sum payment type
+whatYouWillNeed.event8A.item3 = type of protection held and the associated protection reference
+whatYouWillNeed.event8A.item4 = lump sum amount and when it was paid
+
 fileUploadWhatYouWillNeed.event6.title = What you will need
 fileUploadWhatYouWillNeed.event6.heading = What you will need
 fileUploadWhatYouWillNeed.event6.p1 = To record a benefit crystallisation, where the member relies on an applicable LTA protection, you will need to upload a .csv file and include the following information for each member:

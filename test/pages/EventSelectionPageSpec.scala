@@ -22,7 +22,7 @@ import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event2, Event22, Event23, Event3, Event4, Event5, Event6, Event7, Event8, Event8A}
 import models.{EventSelection, UserAnswers}
 import pages.behaviours.PageBehaviours
-import pages.common.{ManualOrUploadPage, MembersDetailsPage, PaymentDetailsPage, TotalPensionAmountsPage}
+import pages.common.{ManualOrUploadPage, MembersDetailsPage, PaymentDetailsPage, TotalPensionAmountsPage, WhatYouWillNeedPage}
 import pages.event1.PaymentValueAndDatePage
 import pages.event10.BecomeOrCeaseSchemePage
 import pages.event2.DatePaidPage
@@ -49,7 +49,7 @@ class EventSelectionPageSpec extends PageBehaviours {
     testRedirectToIncompleteIndexManualOrUpload(Event6,  models.EventSelection.Event6,  ManualOrUploadPage(Event6, 2))
     testRedirectToIncompleteIndexManualOrUpload(Event22, models.EventSelection.Event22, ManualOrUploadPage(Event22, 2))
     testRedirectToIncompleteIndexManualOrUpload(Event23, models.EventSelection.Event23, ManualOrUploadPage(Event23, 2))
-    testRedirectToIncompleteIndexMemberDetails(Event2,  models.EventSelection.Event2,  MembersDetailsPage(Event2, 2, 1))
+    testRedirectToIncompleteIndexMemberDetailsEvent2(models.EventSelection.Event2,  MembersDetailsPage(Event2, 2, 1))
     testRedirectToIncompleteIndexMemberDetails(Event3,  models.EventSelection.Event3,  MembersDetailsPage(Event3, 2))
     testRedirectToIncompleteIndexMemberDetails(Event4,  models.EventSelection.Event4,  MembersDetailsPage(Event4, 2))
     testRedirectToIncompleteIndexMemberDetails(Event5,  models.EventSelection.Event5,  MembersDetailsPage(Event5, 2))
@@ -80,7 +80,7 @@ class EventSelectionPageSpec extends PageBehaviours {
         .setOrException(DatePaidPage(0, Event2), SampleData.datePaid)
 
       EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe
-        MembersDetailsPage(Event2, 1, 1).route(EmptyWaypoints)
+        event2.WhatYouWillNeedPage(1).route(EmptyWaypoints)
     }
   }
 
@@ -92,7 +92,7 @@ class EventSelectionPageSpec extends PageBehaviours {
         .setOrException(PaymentDetailsPage(eventType, 0), SampleData.paymentDetailsCommon)
 
       EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe
-        MembersDetailsPage(eventType, 1).route(EmptyWaypoints)
+        WhatYouWillNeedPage(eventType, 1).route(EmptyWaypoints)
     }
   }
 
@@ -116,7 +116,7 @@ class EventSelectionPageSpec extends PageBehaviours {
         .setOrException(PaymentDatePage(0), SampleData.event7PaymentDate)
 
       EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe
-        MembersDetailsPage(Event7, 1).route(EmptyWaypoints)
+        WhatYouWillNeedPage(Event7, 1).route(EmptyWaypoints)
     }
   }
 
@@ -128,7 +128,7 @@ class EventSelectionPageSpec extends PageBehaviours {
         .setOrException(LumpSumAmountAndDatePage(eventType, 0), SampleData.lumpSumDetails)
 
       EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe
-        MembersDetailsPage(eventType, 1).route(EmptyWaypoints)
+        WhatYouWillNeedPage(eventType, 1).route(EmptyWaypoints)
     }
   }
 
@@ -155,15 +155,25 @@ class EventSelectionPageSpec extends PageBehaviours {
     }
   }
 
+  private def testRedirectToIncompleteIndexMemberDetailsEvent2(eventSelection: EventSelection, page: MembersDetailsPage): Unit = {
+    s"must redirect to complete missing journey data for first entry in Event2" in {
+      val ua = UserAnswers()
+        .setOrException(EventSelectionPage, eventSelection)
+        .setOrException(MembersDetailsPage(Event2, 0), SampleData.memberDetails)
+        .setOrException(MembersDetailsPage(Event2, 1), SampleData.memberDetails2)
+      EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe
+      event2.WhatYouWillNeedPage(0).route(EmptyWaypoints)
+    }
+  }
+
   private def testRedirectToIncompleteIndexMemberDetails(eventType: EventType, eventSelection: EventSelection, page: MembersDetailsPage): Unit = {
     s"must redirect to complete missing journey data for first entry in Event $eventType" in {
       val ua = UserAnswers()
         .setOrException(EventSelectionPage, eventSelection)
         .setOrException(MembersDetailsPage(eventType, 0), SampleData.memberDetails)
         .setOrException(MembersDetailsPage(eventType, 1), SampleData.memberDetails2)
-      val pageNo = if(eventType == Event2) { 1 } else { 0 }
       EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe
-        MembersDetailsPage(eventType, index = 0, memberPageNo = pageNo).route(EmptyWaypoints)
+        WhatYouWillNeedPage(eventType, 0).route(EmptyWaypoints)
     }
   }
 

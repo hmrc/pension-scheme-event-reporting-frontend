@@ -39,7 +39,6 @@ import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.Logger
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import utils.Event2MemberPageNumbers
 
 case object EventSelectionPage extends QuestionPage[EventSelection] {
 
@@ -58,7 +57,7 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
       case Some(bulkUploadEvent@(Event1 | Event6 | Event22 | Event23)) =>
         ManualOrUploadPage(bulkUploadEvent, index)
       case Some(memberBasedEvent@(Event3 | Event4 | Event5 | Event7 | Event8 | Event8A)) =>
-        MembersDetailsPage(memberBasedEvent, index)
+        WhatYouWillNeedPage(memberBasedEvent, index)
       case Some(Event2) => event2.WhatYouWillNeedPage(index)
       case Some(Event24) =>
         event24.WhatYouWillNeedPage(index)
