@@ -209,6 +209,12 @@ GET         /report/:index/event-1-scheme-details                             co
 POST        /report/:index/event-1-scheme-details                             controllers.event1.member.SchemeDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
 GET         /report/:index/event-2-what-you-will-need                          controllers.event2.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+GET         /report/:index/event-3-what-you-will-need                          controllers.common.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event3, index: Index)
+GET         /report/:index/event-4-what-you-will-need                          controllers.common.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event4, index: Index)
+GET         /report/:index/event-5-what-you-will-need                          controllers.common.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event5, index: Index)
+GET         /report/:index/event-7-what-you-will-need                          controllers.common.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event7, index: Index)
+GET         /report/:index/event-8-what-you-will-need                          controllers.common.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8, index: Index)
+GET         /report/:index/event-8A-what-you-will-need                         controllers.common.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event8A, index: Index)
 
 GET         /report/:index/event-2-deceased-member-details                    controllers.common.MembersDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index,memberPageNo: Int = 1)
 POST        /report/:index/event-2-deceased-member-details                    controllers.common.MembersDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event2, index: Index, memberPageNo: Int = 1)
