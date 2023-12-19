@@ -17,11 +17,10 @@
 package controllers.event14
 
 import base.SpecBase
+import pages.EmptyWaypoints
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.event14.WhatYouWillNeedView
-import controllers.event14.routes._
-import pages.EmptyWaypoints
 
 class WhatYouWillNeedControllerSpec extends SpecBase {
 
@@ -40,7 +39,7 @@ class WhatYouWillNeedControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[WhatYouWillNeedView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(controllers.event14.routes.HowManySchemeMembersController.onPageLoad(EmptyWaypoints).url, "2021 to 2022")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(controllers.event14.routes.HowManySchemeMembersController.onPageLoad(EmptyWaypoints).url, "2022 to 2023")(request, messages(application)).toString
       }
     }
   }

@@ -22,9 +22,8 @@ import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event2, Event22, Event23, Event3, Event4, Event5, Event6, Event7, Event8, Event8A}
 import models.{EventSelection, UserAnswers}
 import pages.behaviours.PageBehaviours
-import pages.common.{ManualOrUploadPage, MembersDetailsPage, PaymentDetailsPage, TotalPensionAmountsPage, WhatYouWillNeedPage}
+import pages.common._
 import pages.event1.PaymentValueAndDatePage
-import pages.event10.BecomeOrCeaseSchemePage
 import pages.event2.DatePaidPage
 import pages.event6.AmountCrystallisedAndDatePage
 import pages.event7.PaymentDatePage
@@ -181,7 +180,7 @@ class EventSelectionPageSpec extends PageBehaviours {
     s"must get the correct page for Event 10" in {
       val ua = UserAnswers()
         .setOrException(EventSelectionPage, EventSelection10)
-      EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe BecomeOrCeaseSchemePage.route(EmptyWaypoints)
+      EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe event10.WhatYouWillNeedPage.route(EmptyWaypoints)
     }
   }
 }
