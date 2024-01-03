@@ -18,24 +18,13 @@ package pages
 
 import controllers.routes
 import models.UserAnswers
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object EventSummaryPage extends QuestionPage[Boolean] {
-
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "eventSummary"
-
+case object CannotSubmitLockedEventsPage extends Page {
   override def route(waypoints: Waypoints): Call =
-    routes.EventSummaryController.onPageLoad(waypoints)
+    routes.CannotSubmitLockedEventsController.onPageLoad(waypoints)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(EventSummaryPage) match {
-      case Some(true) => EventSelectionPage
-      case Some(false) => CannotSubmitLockedEventsPage
-      case _ => JourneyRecoveryPage
-    }
+    WantToSubmitPage
   }
 }
-

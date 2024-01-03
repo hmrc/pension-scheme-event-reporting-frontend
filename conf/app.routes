@@ -24,6 +24,8 @@ POST        /event-summary                                                      
 GET         /report/want-to-submit                                            controllers.WantToSubmitController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /report/want-to-submit                                            controllers.WantToSubmitController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
+GET         /report/event-open-submission-lock                                controllers.CannotSubmitLockedEventsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
 GET        /report/declaration                                               controllers.DeclarationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 GET        /report/declaration-on-click                                      controllers.DeclarationController.onClick(waypoints: Waypoints ?= EmptyWaypoints)
 

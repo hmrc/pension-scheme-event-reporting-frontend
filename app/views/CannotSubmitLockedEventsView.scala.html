@@ -1,0 +1,48 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@this(
+        layout: templates.Layout,
+        govukButton: GovukButton
+)
+
+@(returnUrl: String, seqOfEventTypes: Seq[EventSummary], isMultipleEvents :Boolean)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = titleNoForm(messages("cannotSubmitLockedEvents.title"))) {
+
+    @if(isMultipleEvents) {
+        <h1 class="govuk-heading-xl">@messages("cannotSubmitLockedEvents.multiple.heading")</h1>
+        <p class="govuk-body">@messages("cannotSubmitLockedEvents.multiple.p1")</p>
+        <ul class="govuk-list govuk-list--bullet">
+            @seqOfEventTypes.map { eventSummary =>
+                <li>@messages("cannotSubmitLockedEvents.multiple.item", eventSummary.lockedBy.map(lockedBy => lockedBy).getOrElse(""), eventSummary.eventType.toString, eventSummary.recordVersion)</li>
+            }
+        </ul>
+    } else {
+        <h1 class="govuk-heading-xl">@messages("cannotSubmitLockedEvents.heading")</h1>
+            @seqOfEventTypes.map { eventSummary =>
+                <p class="govuk-body">@messages("cannotSubmitLockedEvents.p1", eventSummary.lockedBy.map(lockedBy => lockedBy).getOrElse(""), eventSummary.eventType.toString)</p>
+            }
+    }
+
+    <p class="govuk-body">
+        @govukButton(
+        ButtonViewModel(messages("site.returnTo", "events list"))
+        .asLink(returnUrl)
+        .withAttribute(("id", "submit"))
+        )
+    </p>
+}
