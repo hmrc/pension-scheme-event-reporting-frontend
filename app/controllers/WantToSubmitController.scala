@@ -56,8 +56,8 @@ class WantToSubmitController @Inject()(
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(WantToSubmitPage, value)
-          val version = updatedAnswers.get(VersionInfoPage).get.version
           val startYear = s"${TaxYear.getSelectedTaxYear(updatedAnswers).startYear}-04-06"
+          val version = updatedAnswers.get(VersionInfoPage).get.version
           eventReportingConnector.getEventReportSummary(request.pstr, startYear, version)
             .flatMap { seqEventSummaries =>
               val currentCompileEventTypes = seqEventSummaries.filter {
