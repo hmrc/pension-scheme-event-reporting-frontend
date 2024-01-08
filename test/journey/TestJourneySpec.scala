@@ -394,11 +394,11 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
   }
 
   "Event 10" - {
-    "testing navigation from the Event Selection page to 'What change has taken place for this pension scheme?' page" in {
+    "testing navigation from the Event Selection page to Event 10 WYWN page" in {
       startingFrom(EventSelectionPage)
         .run(
           submitAnswer(EventSelectionPage, EventSelection.Event10),
-          pageMustBe(BecomeOrCeaseSchemePage)
+          pageMustBe(pages.event10.WhatYouWillNeedPage)
         )
     }
     "testing navigation from 'What change has taken place for this pension scheme?' page to scheme date page (Became a scheme)" in {

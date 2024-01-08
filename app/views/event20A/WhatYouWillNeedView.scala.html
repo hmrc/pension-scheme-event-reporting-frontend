@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,6 @@
         <h1 class="govuk-heading-xl">@messages("whatYouWillNeed.heading")</h1>
 
         <p class="govuk-body">@messages("whatYouWillNeed.event20A.p")</p>
-
-        <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("whatYouWillNeed.event20A.item1")</li>
-            <li>@messages("whatYouWillNeed.event20A.item2")</li>
-        </ul>
 
         @govukButton(
             ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit")).asLink(continueUrl)
