@@ -39,7 +39,6 @@ import pages.eventWindUp.SchemeWindUpDatePage
 import play.api.Logger
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import utils.Event2MemberPageNumbers
 
 case object EventSelectionPage extends QuestionPage[EventSelection] {
 
@@ -58,16 +57,15 @@ case object EventSelectionPage extends QuestionPage[EventSelection] {
       case Some(bulkUploadEvent@(Event1 | Event6 | Event22 | Event23)) =>
         ManualOrUploadPage(bulkUploadEvent, index)
       case Some(memberBasedEvent@(Event3 | Event4 | Event5 | Event7 | Event8 | Event8A)) =>
-        MembersDetailsPage(memberBasedEvent, index)
-      case Some(Event2) => // Event2 has 2 separate MembersDetailsPages, route to first
-        MembersDetailsPage(Event2, index, Event2MemberPageNumbers.FIRST_PAGE_DECEASED)
+        WhatYouWillNeedPage(memberBasedEvent, index)
+      case Some(Event2) => event2.WhatYouWillNeedPage(index)
       case Some(Event24) =>
         event24.WhatYouWillNeedPage(index)
-      case Some(Event10) => BecomeOrCeaseSchemePage
+      case Some(Event10) => event10.WhatYouWillNeedPage
       case Some(Event11) => event11WhatYouWillNeed
       case Some(Event12) => HasSchemeChangedRulesPage
-      case Some(Event13) => SchemeStructurePage
-      case Some(Event14) => HowManySchemeMembersPage
+      case Some(Event13) => event13.WhatYouWillNeedPage
+      case Some(Event14) => event14.WhatYouWillNeedPage
       case Some(Event18) => Event18ConfirmationPage
       case Some(Event19) => event19WhatYouWillNeed
       case Some(Event20) => event20.WhatYouWillNeedPage
@@ -128,7 +126,7 @@ private object EventSelectionPageUtility {
 
     if (indicesForIncompleteJourneys.nonEmpty) {
       logger.info(
-        s"""Journey for Event${maybeEventType} incomplete on indices: ${indicesForIncompleteJourneys}.
+        s"""Journey for Event$maybeEventType incomplete on indices: $indicesForIncompleteJourneys.
            | Directing user to complete journey at index: ${indicesForIncompleteJourneys.head}""".stripMargin
       )
       indicesForIncompleteJourneys.head

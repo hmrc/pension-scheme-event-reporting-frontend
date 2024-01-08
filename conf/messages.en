@@ -1112,6 +1112,49 @@ fileUploadWhatYouWillNeed.event1.instructions.link.text = instructions explainin
 fileUploadWhatYouWillNeed.event1.template.link.text = latest template file
 fileUploadWhatYouWillNeed.event1.inset = All the data you have previously added for this event will be overwritten when you upload a file.
 
+whatYouWillNeed.event2.title = What you will need
+whatYouWillNeed.event2.heading = What you will need
+whatYouWillNeed.event2.p = To record lump sum death benefit payments you will need to tell us the:
+whatYouWillNeed.event2.item1 = deceased member’s name and National Insurance number
+whatYouWillNeed.event2.item2 = name and National Insurance number of the person who was paid (the recipient)
+whatYouWillNeed.event2.item3 = amount and date that the recipient received the payment
+
+whatYouWillNeed.common.title = What you will need
+whatYouWillNeed.common.heading = What you will need
+
+whatYouWillNeed.event3.p = To record benefits provided before normal minimum pension age you will need to tell us the:
+whatYouWillNeed.event3.item1 = member’s name and National Insurance number
+whatYouWillNeed.event3.item2 = reason why the benefits are being taken
+whatYouWillNeed.event3.item3 = amount of benefits and the date they were taken
+
+whatYouWillNeed.event4.p = To record a serious ill-health lump sum payment you will need to tell us the:
+whatYouWillNeed.event4.item1 = member’s name and National Insurance number
+whatYouWillNeed.event4.item2 = total amount paid
+whatYouWillNeed.event4.item3 = date of payment
+
+whatYouWillNeed.event5.p = To record the cessation of an ill-health pension you will need to tell us the:
+whatYouWillNeed.event5.item1 = member’s name and National Insurance number
+whatYouWillNeed.event5.item2 = member’s annual rate of pension entitlement immediately before non-payment started
+whatYouWillNeed.event5.item3 = date that non-payment started
+
+whatYouWillNeed.event7.p = To record a pension commencement lump sum more than 25% of the fund where the member does not have primary or enhanced protection, you will need to tell us:
+whatYouWillNeed.event7.item1 = the member’s name and National Insurance number
+whatYouWillNeed.event7.item2 = how much lump sum was paid
+whatYouWillNeed.event7.item3 = how much was crystallised
+whatYouWillNeed.event7.item4 = when the payment was made
+
+whatYouWillNeed.event8.p = To record a pension commencement lump sum where the member has either primary or enhanced protection you will need to tell us:
+whatYouWillNeed.event8.item1 = the member’s name and National Insurance number
+whatYouWillNeed.event8.item2 = details of the protection reference held for the crystallisation
+whatYouWillNeed.event8.item3 = how much lump sum was paid
+whatYouWillNeed.event8.item4 = when the lump sum payment was made
+
+whatYouWillNeed.event8A.p = To record a stand-alone lump sum you will need to tell us the:
+whatYouWillNeed.event8A.item1 = member’s name and National Insurance number
+whatYouWillNeed.event8A.item2 = lump sum payment type
+whatYouWillNeed.event8A.item3 = type of protection held and the associated protection reference
+whatYouWillNeed.event8A.item4 = lump sum amount and when it was paid
+
 fileUploadWhatYouWillNeed.event6.title = What you will need
 fileUploadWhatYouWillNeed.event6.heading = What you will need
 fileUploadWhatYouWillNeed.event6.p1 = To record a benefit crystallisation, where the member relies on an applicable LTA protection, you will need to upload a .csv file and include the following information for each member:
@@ -1382,7 +1425,7 @@ characterCount = You can enter up to {0} characters
 whatYouWillNeed.event11.title = What you will need
 whatYouWillNeed.event11.heading = What you will need
 whatYouWillNeed.event11.change.hidden = What you will need
-whatYouWillNeed.event11.p = You will need to tell us the date that a scheme's rules are changed if the change was made to:
+whatYouWillNeed.event11.p = You will need to tell us the date that a scheme’s rules are changed if the change was made to:
 whatYouWillNeed.event11.item1 = entitle any person to require the making of unauthorised payments
 whatYouWillNeed.event11.item2 = allow investments in assets other than contracts or policies of insurance
 
@@ -1589,9 +1632,7 @@ whatYouWillNeed.event19.p = To record a change country or territory of establish
 whatYouWillNeed.event19.item1 = new country or territory
 whatYouWillNeed.event19.item2 = date that the change took place
 
-whatYouWillNeed.event20A.p = For this event, you will need to tell us the date that the scheme either became or ceased to be a Master Trust.
-whatYouWillNeed.event20A.item1 = Awaiting a content update for this page:
-whatYouWillNeed.event20A.item2 = search for whatYouWillNeed.event20A in messages.en to change these list items
+whatYouWillNeed.event20A.p = For this event, you will need to tell us the date that the scheme either became or ceased to be a Master Trust scheme.
 
 ceasedDateMasterTrust.title = When did the scheme cease to be a Master Trust?
 ceasedDateMasterTrust.heading = When did the scheme cease to be a Master Trust?
@@ -1895,3 +1936,11 @@ employerPayeReference.event24.error.leadingDigits = The employer PAYE reference 
 employerPayeReference.event24.error.noSlash = The employer PAYE reference''s fourth character must be /
 employerPayeReference.event24.error.required = Enter the employer PAYE reference
 employerPayeReference.event24.change.hidden = What is the employer PAYE reference used to report the excess for this member?
+
+whatYouWillNeed.event10.p = For this event, you will need to tell us the date that the scheme either became or ceased to be investment regulated.
+
+whatYouWillNeed.event13.p = To record a change in the legal structure of a scheme you will need to tell us:
+whatYouWillNeed.event13.li1 = the new scheme structure
+whatYouWillNeed.event13.li2 = when the change was made
+
+whatYouWillNeed.event14.p = For this event, you will need to tell us how many scheme members there were at the end of the tax year {0}.

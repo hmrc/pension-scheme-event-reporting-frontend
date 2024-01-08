@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-        layout: templates.SchemeLayout,
-        govukButton: GovukButton
-)
+package pages.common
 
-@(continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+import controllers.common.routes
+import models.UserAnswers
+import models.enumeration.EventType
+import pages.{Page, Waypoints}
+import play.api.mvc.Call
 
-    @layout(pageTitle = titleNoForm(messages("whatYouWillNeed.title"))) {
+case class WhatYouWillNeedPage(eventType: EventType, index: Int) extends Page {
 
-        <h1 class="govuk-heading-xl">@messages("whatYouWillNeed.heading")</h1>
+  override def route(waypoints: Waypoints): Call =
+    routes.WhatYouWillNeedController.onPageLoad(waypoints, eventType, index)
 
-        <p class="govuk-body">@messages("whatYouWillNeed.event20A.p")</p>
-
-        @govukButton(
-            ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit")).asLink(continueUrl)
-        )
-
-    }
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+  MembersDetailsPage(eventType, index)
+}

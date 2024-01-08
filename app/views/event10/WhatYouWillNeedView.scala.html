@@ -21,14 +21,13 @@
 
 @(continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-    @layout(pageTitle = titleNoForm(messages("whatYouWillNeed.title"))) {
+@layout(pageTitle = titleNoForm(messages("whatYouWillNeed.title"))) {
 
-        <h1 class="govuk-heading-xl">@messages("whatYouWillNeed.heading")</h1>
+    <h1 class="govuk-heading-xl">@messages("whatYouWillNeed.heading")</h1>
 
-        <p class="govuk-body">@messages("whatYouWillNeed.event20A.p")</p>
+    <p class="govuk-body">@messages("whatYouWillNeed.event10.p")</p>
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit")).asLink(continueUrl)
-        )
-
-    }
+    @govukButton(
+        ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit")).asLink(continueUrl)
+    )
+}

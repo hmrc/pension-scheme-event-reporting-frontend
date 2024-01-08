@@ -29,7 +29,7 @@ import scala.util.{Failure, Success, Try}
 case class TaxYear(startYear: String) {
   def endYear: String = (startYear.toInt + 1).toString
 
-  def rangeAsSeqString: Seq[String] = Seq(startYear, endYear)
+  def rangeAsSeqString: (String, String) = (startYear, endYear)
 }
 
 object TaxYear extends Enumerable.Implicits {
@@ -88,6 +88,11 @@ object TaxYear extends Enumerable.Implicits {
   def getSelectedTaxYearAsString(userAnswers: UserAnswers): String = {
     val taxYear = getSelectedTaxYear(userAnswers)
     s"${Integer.parseInt(taxYear.endYear.stripPrefix("TaxYear(").stripSuffix(")").trim)}"
+  }
+
+  def getSelectedTaxYearAsRangeOfStrings(userAnswers: UserAnswers): String = {
+    val (start, end) = getSelectedTaxYear(userAnswers).rangeAsSeqString
+    s"${Integer.parseInt(start.stripPrefix("TaxYear(").stripSuffix(")").trim)} to ${Integer.parseInt(end.stripPrefix("TaxYear(").stripSuffix(")").trim)}"
   }
 
   def getTaxYearFromOption(userAnswers: Option[UserAnswers]): Int = {
