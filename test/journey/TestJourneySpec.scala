@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ import pages.event12.{CannotSubmitPage, DateOfChangePage, Event12CheckYourAnswer
 import pages.event18.Event18ConfirmationPage
 import pages.event20A.{BecameDatePage, CeasedDatePage, Event20ACheckYourAnswersPage, Event20APsaDeclarationPage, WhatChangePage}
 import pages.eventWindUp.{EventWindUpCheckYourAnswersPage, SchemeWindUpDatePage}
-import pages.{DeclarationPage, EventReportingTileLinksPage, EventSelectionPage, EventSummaryPage, TaxYearPage, WantToSubmitPage}
+import pages.{CannotSubmitLockedEventsPage, DeclarationPage, EventReportingTileLinksPage, EventSelectionPage, EventSummaryPage, TaxYearPage, WantToSubmitPage}
 import play.api.libs.json.Writes
 //import pages.fileUpload.FileUploadResultPage
 //import pages.fileUpload.ProcessingRequestPage
@@ -377,11 +377,11 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
       )
   }
 
-  "testing navigation from event summary to wantToSubmit page" in {
+  "testing navigation from event summary to CannotSubmitLockedEventsPage page" in {
     startingFrom(EventSummaryPage)
       .run(
         submitAnswer(EventSummaryPage, false),
-        pageMustBe(WantToSubmitPage)
+        pageMustBe(CannotSubmitLockedEventsPage)
       )
   }
 

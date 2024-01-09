@@ -33,7 +33,7 @@ case object EventSummaryPage extends QuestionPage[Boolean] {
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(EventSummaryPage) match {
       case Some(true) => EventSelectionPage
-      case Some(false) => WantToSubmitPage
+      case Some(false) => CannotSubmitLockedEventsPage
       case _ => JourneyRecoveryPage
     }
   }
