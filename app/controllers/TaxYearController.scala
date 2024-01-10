@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.{TaxYear2024FormProvider, TaxYearFormProvider}
@@ -27,7 +28,6 @@ import pages.{EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPa
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.TaxYearView
 
@@ -42,6 +42,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
                                   eventReportingConnector: EventReportingConnector,
                                   formProvider: TaxYearFormProvider,
                                   formProvider2024: TaxYear2024FormProvider,
+                                  config: FrontendAppConfig,
                                   view: TaxYearView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -61,7 +62,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
       Nil
     }
 
-  private def renderPage(form: Form[TaxYear], waypoints: Waypoints, status: Status, isEnabled: Boolean)(implicit request: DataRequest[AnyContent]): Result = {
+  private def renderPage(form: Form[TaxYear], waypoints: Waypoints, status: Status)(implicit request: DataRequest[AnyContent]): Result = {
     val ua = request.userAnswers
     val radioOptions =
       (ua.get(EventReportingTileLinksPage), ua.get(EventReportingOverviewPage)) match {
@@ -71,22 +72,16 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
         case (Some(InProgress), Some(seqEROverview)) =>
           val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereCompiledVersionAvailable)
           TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear))
-        case _ => filteredRadioItems(isEnabled)
+        case _ => TaxYear.optionsFiltered(taxYear => taxYear.startYear.toInt >= config.eventReportingStartTaxYear)
       }
     status(view(form, waypoints, radioOptions))
-  }
-
-  private def filteredRadioItems(isEnabled: Boolean)(implicit request: DataRequest[AnyContent]): Seq[RadioItem] = {
-    if (isEnabled) TaxYear.optionsFiltered(taxYear => taxYear.startYear >= "2023") else TaxYear.options
   }
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
     eventReportingConnector.getFeatureToggle(ltaAbolitionShowHideToggle).flatMap { ltaToggle =>
       val form = getFormProviderByLtaToggle(ltaToggle.isEnabled)
       val preparedForm = request.userAnswers.get(TaxYearPage).fold(form)(form.fill)
-      eventReportingConnector.getFeatureToggle("event-reporting-tax-year").flatMap { taxYearToggle =>
-        Future.successful(renderPage(preparedForm, waypoints, Ok, taxYearToggle.isEnabled))
-      }
+      Future.successful(renderPage(preparedForm, waypoints, Ok))
     }
   }
 
@@ -96,9 +91,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
         val form = getFormProviderByLtaToggle(ltaToggle.isEnabled)
         form.bindFromRequest().fold(
           formWithErrors =>
-            eventReportingConnector.getFeatureToggle("event-reporting-tax-year").flatMap { taxYearToggle =>
-              Future.successful(renderPage(formWithErrors, waypoints, BadRequest, taxYearToggle.isEnabled))
-            },
+            Future.successful(renderPage(formWithErrors, waypoints, BadRequest)),
           value => {
             val originalUserAnswers = request.userAnswers
             val vd = originalUserAnswers

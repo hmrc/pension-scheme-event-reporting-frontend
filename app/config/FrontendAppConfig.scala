@@ -109,6 +109,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   lazy val emailApiUrl: String = servicesConfig.baseUrl("email")
   lazy val emailSendForce: Boolean = configuration.getOptional[Boolean]("email.force").getOrElse(false)
   lazy val fileReturnTemplateId: String = configuration.get[String]("email.fileReturnTemplateId")
+  lazy val eventReportingStartTaxYear: Int = configuration.get[Int]("eventReportingStartTaxYear")
   lazy val ltaAbolitionStartYear: Int = configuration.get[Int]("ltaAbolitionStartYear")
 
   def eventReportingEmailCallback(
