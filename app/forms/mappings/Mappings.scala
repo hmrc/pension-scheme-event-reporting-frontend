@@ -60,13 +60,6 @@ trait Mappings extends Formatters with Constraints {
                               args: Seq[String] = Seq.empty)(implicit ev: Enumerable[A]): FieldMapping[A] =
     of(enumerableFormatter[A](requiredKey, invalidKey, args))
 
-  //TODO Remove TaxYear2024FormProvider once 'lta-events-show-hide' toggle removed
-  //TODO TaxYear2024FormProvider to select future tax year for testing purpose only
-  protected def enumerable2024[A](requiredKey: String = "error.required",
-                              invalidKey: String = "error.invalid",
-                              args: Seq[String] = Seq.empty, ev: Enumerable[A]): FieldMapping[A] =
-    of(enumerableFormatter2024[A](requiredKey, invalidKey, args, ev))
-
   protected def localDate(
                               invalidKey: String,
                               taxYearValidationDetail: Option[TaxYearValidationDetail] = None,
