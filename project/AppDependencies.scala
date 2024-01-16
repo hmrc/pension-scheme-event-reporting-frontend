@@ -12,7 +12,7 @@ object AppDependencies {
     "uk.gov.hmrc"                   %% "domain"                                 % "8.1.0-play-28",
     "org.typelevel"                 %% "cats-core"                              % "2.9.0",
     "com.univocity"                 %  "univocity-parsers"                      % "2.9.1",
-    "com.fasterxml.jackson.module"  %% "jackson-module-scala"                   % "2.14.2"
+    "com.fasterxml.jackson.module"  %% "jackson-module-scala"                   % "2.16.1"
   )
 
   val test = Seq(
@@ -23,7 +23,7 @@ object AppDependencies {
     "org.scalatestplus.play"  %% "scalatestplus-play"      % "5.1.0",
     "org.pegdown"             %  "pegdown"                 % "1.6.0",
     "com.vladsch.flexmark"    %  "flexmark-all"            % "0.64.0",
-    "com.github.tomakehurst"  %  "wiremock-jre8"           % "2.35.0",
+    "com.github.tomakehurst"  %  "wiremock-jre8"           % "3.0.1",
     "io.github.wolfendale"    %% "scalacheck-gen-regexp"   % "1.1.0"
   ).map(_ % "test, it")
 

@@ -40,7 +40,7 @@ import views.html.CheckYourAnswersView
 import java.time.LocalDate
 
 class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
-  private val mockCompileService = mock[CompileService]g
+  private val mockCompileService = mock[CompileService]
 
 
   import Event20ACheckYourAnswersControllerSpec._
