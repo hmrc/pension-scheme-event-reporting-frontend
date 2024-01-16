@@ -19,7 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.{TaxYear2024FormProvider, TaxYearFormProvider}
+import forms.TaxYearFormProvider
 import models.enumeration.JourneyStartType.{InProgress, PastEventTypes}
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
 import models.requests.DataRequest
@@ -39,14 +39,12 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
                                   getData: DataRetrievalAction,
                                   requireData: DataRequiredAction,
                                   userAnswersCacheConnector: UserAnswersCacheConnector,
-                                  eventReportingConnector: EventReportingConnector,
                                   formProvider: TaxYearFormProvider,
-                                  formProvider2024: TaxYear2024FormProvider,
                                   config: FrontendAppConfig,
                                   view: TaxYearView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val ltaAbolitionShowHideToggle = "lta-events-show-hide"
+  private val form = formProvider()
 
   private val yearsWhereSubmittedVersionAvailable: EROverview => Seq[String] = erOverview =>
     if (erOverview.versionDetails.exists(_.submittedVersionAvailable)) {
@@ -78,55 +76,40 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
   }
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
-    eventReportingConnector.getFeatureToggle(ltaAbolitionShowHideToggle).flatMap { ltaToggle =>
-      val form = getFormProviderByLtaToggle(ltaToggle.isEnabled)
-      val preparedForm = request.userAnswers.get(TaxYearPage).fold(form)(form.fill)
-      Future.successful(renderPage(preparedForm, waypoints, Ok))
-    }
+    val preparedForm = request.userAnswers.get(TaxYearPage).fold(form)(form.fill)
+    Future.successful(renderPage(preparedForm, waypoints, Ok))
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
-      eventReportingConnector.getFeatureToggle(ltaAbolitionShowHideToggle).flatMap { ltaToggle =>
-        val form = getFormProviderByLtaToggle(ltaToggle.isEnabled)
-        form.bindFromRequest().fold(
-          formWithErrors =>
-            Future.successful(renderPage(formWithErrors, waypoints, BadRequest)),
-          value => {
-            val originalUserAnswers = request.userAnswers
-            val vd = originalUserAnswers
-              .get(EventReportingOverviewPage).toSeq.flatten.find(_.taxYear == value).flatMap(_.versionDetails)
-            val versionInfo =
-              (vd.map(_.compiledVersionAvailable), vd.map(_.submittedVersionAvailable), vd.map(_.numberOfVersions)) match {
-                case (Some(true), _, Some(versions)) => VersionInfo(versions, Compiled)
-                case (_, Some(true), Some(versions)) => VersionInfo(versions, Submitted)
-                case _ => VersionInfo(1, NotStarted)
-              }
-
-            val futureAfterClearDown = request.userAnswers.get(TaxYearPage) match {
-              case Some(v) if v != value => userAnswersCacheConnector.removeAll(request.pstr)
-              case _ => Future.successful((): Unit)
+      form.bindFromRequest().fold(
+        formWithErrors =>
+          Future.successful(renderPage(formWithErrors, waypoints, BadRequest)),
+        value => {
+          val originalUserAnswers = request.userAnswers
+          val vd = originalUserAnswers
+            .get(EventReportingOverviewPage).toSeq.flatten.find(_.taxYear == value).flatMap(_.versionDetails)
+          val versionInfo =
+            (vd.map(_.compiledVersionAvailable), vd.map(_.submittedVersionAvailable), vd.map(_.numberOfVersions)) match {
+              case (Some(true), _, Some(versions)) => VersionInfo(versions, Compiled)
+              case (_, Some(true), Some(versions)) => VersionInfo(versions, Submitted)
+              case _ => VersionInfo(1, NotStarted)
             }
 
-            val updatedAnswers = originalUserAnswers
-              .setOrException(TaxYearPage, value, nonEventTypeData = true)
-              .setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
-            futureAfterClearDown.flatMap { _ =>
-              userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
-                Redirect(TaxYearPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
-              }
+          val futureAfterClearDown = request.userAnswers.get(TaxYearPage) match {
+            case Some(v) if v != value => userAnswersCacheConnector.removeAll(request.pstr)
+            case _ => Future.successful((): Unit)
+          }
+
+          val updatedAnswers = originalUserAnswers
+            .setOrException(TaxYearPage, value, nonEventTypeData = true)
+            .setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
+          futureAfterClearDown.flatMap { _ =>
+            userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
+              Redirect(TaxYearPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
             }
           }
-        )
-      }
-  }
-
-  //TODO Remove below method to once 'lta-events-show-hide' toggle removed and use formProvider()
-  private def getFormProviderByLtaToggle(isEnabled: Boolean): Form[TaxYear] = {
-    if (isEnabled) {
-      formProvider2024()
-    } else {
-      formProvider()
-    }
+        }
+      )
   }
 }

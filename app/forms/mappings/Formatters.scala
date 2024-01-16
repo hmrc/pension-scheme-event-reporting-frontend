@@ -200,28 +200,4 @@ trait Formatters {
       override def unbind(key: String, value: A): Map[String, String] =
         baseFormatter.unbind(key, value.toString)
     }
-
-  //TODO Remove TaxYear2024FormProvider once 'lta-events-show-hide' toggle removed
-  //TODO TaxYear2024FormProvider to select future tax year for testing purpose only
-  private[mappings] def enumerableFormatter2024[A](requiredKey: String, invalidKey: String,
-                                                   args: Seq[String] = Seq.empty, ev: Enumerable[A]): Formatter[A] =
-    new Formatter[A] {
-
-      private val baseFormatter = stringFormatter(requiredKey, args)
-
-      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], A] =
-        baseFormatter.bind(key, data).right.flatMap {
-          str =>
-            if (str.isEmpty) {
-              Left(Seq(FormError(key, invalidKey, args)))
-            } else {
-              ev.withName(str)
-                .map(Right.apply)
-                .getOrElse(Left(Seq(FormError(key, invalidKey, args))))
-            }
-        }
-
-      override def unbind(key: String, value: A): Map[String, String] =
-        baseFormatter.unbind(key, value.toString)
-    }
 }

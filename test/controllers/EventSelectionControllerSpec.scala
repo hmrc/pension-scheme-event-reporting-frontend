@@ -70,9 +70,6 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
       val ua = emptyUserAnswers
         .setOrException(TaxYearPage, TaxYear("2022"))
       val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
-      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
-        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
-      )
       val view = application.injector.instanceOf[EventSelectionView]
 
       running(application) {
@@ -97,9 +94,6 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
       val application = applicationBuilder(Some(ua), extraModules).build()
 
       running(application) {
-        when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
-          Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
-        )
         when(mockUserAnswersCacheConnector.get(any(), any())(any(), any()))
           .thenReturn(Future.successful(Some(ua)))
         doNothing().when(mockAuditService).sendEvent(any())(any(), any())
