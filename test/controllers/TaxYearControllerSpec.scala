@@ -17,10 +17,10 @@
 package controllers
 
 import base.SpecBase
-import connectors.UserAnswersCacheConnector
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import forms.TaxYearFormProvider
 import models.enumeration.JourneyStartType.{InProgress, PastEventTypes, StartNew}
-import models.{EROverview, EROverviewVersion, TaxYear, UserAnswers}
+import models.{EROverview, EROverviewVersion, TaxYear, ToggleDetails, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -75,7 +75,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       2,
       submittedVersionAvailable = true,
       compiledVersionAvailable = false)))
-
+  private val mockEventConnector = mock[EventReportingConnector]
   private val erOverview = Seq(overview1, overview2)
 
   override def beforeEach(): Unit = {
@@ -88,8 +88,11 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
     "must return OK and the correct view for a GET with feature toggle OFF" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).bindings(
+        bind[EventReportingConnector].to(mockEventConnector)).build()
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
+        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
+      )
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
@@ -107,7 +110,11 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         .setOrException(EventReportingTileLinksPage, PastEventTypes)
         .setOrException(EventReportingOverviewPage, erOverview)
 
-      val application = applicationBuilder(userAnswers = Some(ua)).build()
+      val application = applicationBuilder(userAnswers = Some(ua)).bindings(
+        bind[EventReportingConnector].to(mockEventConnector)).build()
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
+        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
+      )
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -127,7 +134,11 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         .setOrException(EventReportingTileLinksPage, InProgress)
         .setOrException(EventReportingOverviewPage, erOverview)
 
-      val application = applicationBuilder(userAnswers = Some(ua)).build()
+      val application = applicationBuilder(userAnswers = Some(ua)).bindings(
+        bind[EventReportingConnector].to(mockEventConnector)).build()
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
+        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
+      )
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -147,7 +158,11 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
       val userAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022")).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).bindings(
+        bind[EventReportingConnector].to(mockEventConnector)).build()
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
+        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
+      )
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -167,8 +182,11 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
       val ua = emptyUserAnswers.setOrException(EventReportingTileLinksPage, StartNew)
 
-      val application =
-        applicationBuilder(userAnswers = Some(ua), extraModules).build()
+      val application = applicationBuilder(userAnswers = Some(ua), extraModules).bindings(
+        bind[EventReportingConnector].to(mockEventConnector)).build()
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
+        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
+      )
 
       running(application) {
         val request =
@@ -184,8 +202,11 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
     }
 
     "must return bad request when invalid data is submitted" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
-
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).bindings(
+        bind[EventReportingConnector].to(mockEventConnector)).build()
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
+        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
+      )
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
