@@ -17,10 +17,10 @@
 package controllers
 
 import base.SpecBase
-import connectors.UserAnswersCacheConnector
+import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import forms.TaxYearFormProvider
 import models.enumeration.JourneyStartType.{InProgress, PastEventTypes, StartNew}
-import models.{EROverview, EROverviewVersion, TaxYear, UserAnswers}
+import models.{EROverview, EROverviewVersion, TaxYear, ToggleDetails, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -75,7 +75,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       2,
       submittedVersionAvailable = true,
       compiledVersionAvailable = false)))
-
+  private val mockEventConnector = mock[EventReportingConnector]
   private val erOverview = Seq(overview1, overview2)
 
   override def beforeEach(): Unit = {
@@ -88,8 +88,11 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
     "must return OK and the correct view for a GET with feature toggle OFF" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).bindings(
+        bind[EventReportingConnector].to(mockEventConnector)).build()
+      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
+        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
+      )
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
