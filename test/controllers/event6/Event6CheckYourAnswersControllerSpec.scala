@@ -18,8 +18,8 @@ package controllers.event6
 
 import base.SpecBase
 import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent6}
-import models.common.{MembersDetails, PaymentDetails}
-import models.enumeration.EventType.{Event5, Event6}
+import models.common.MembersDetails
+import models.enumeration.EventType.Event6
 import models.enumeration.VersionStatus.{Compiled, Submitted}
 import models.event6.{CrystallisedDetails, TypeOfProtection}
 import models.{MemberSummaryPath, TaxYear, VersionInfo}
@@ -28,7 +28,7 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.common.{MembersDetailsPage, PaymentDetailsPage}
+import pages.common.MembersDetailsPage
 import pages.event6.{AmountCrystallisedAndDatePage, InputProtectionTypePage, TypeOfProtectionPage}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages

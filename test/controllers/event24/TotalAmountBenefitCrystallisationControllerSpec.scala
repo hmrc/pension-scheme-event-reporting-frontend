@@ -52,7 +52,7 @@ class TotalAmountBenefitCrystallisationControllerSpec extends SpecBase with Befo
 
   private val validValue: BigDecimal = 33
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }

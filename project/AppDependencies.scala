@@ -6,13 +6,13 @@ object AppDependencies {
 
   val compile = Seq(
     play.sbt.PlayImport.ws,
-    "uk.gov.hmrc" %% "play-frontend-hmrc-play-30" % "8.3.0",
+    "uk.gov.hmrc"                   %% "play-frontend-hmrc-play-30"             % "8.3.0",
     "uk.gov.hmrc"                   %% "play-conditional-form-mapping-play-30"  % "2.0.0",
-    "uk.gov.hmrc"                   %% "bootstrap-frontend-play-30"     % bootstrapVersion,
-    "uk.gov.hmrc"                   %% "domain"                         % "8.1.0-play-28",
-    "org.typelevel"                 %% "cats-core"                      % "2.9.0",
-    "com.univocity"                 %  "univocity-parsers"               % "2.9.1",
-    "com.fasterxml.jackson.module"  %% "jackson-module-scala"           % "2.14.2"
+    "uk.gov.hmrc"                   %% "bootstrap-frontend-play-30"             % bootstrapVersion,
+    "uk.gov.hmrc"                   %% "domain"                                 % "8.1.0-play-28",
+    "org.typelevel"                 %% "cats-core"                              % "2.9.0",
+    "com.univocity"                 %  "univocity-parsers"                      % "2.9.1",
+    "com.fasterxml.jackson.module"  %% "jackson-module-scala"                   % "2.14.2"
   )
 
   val test = Seq(

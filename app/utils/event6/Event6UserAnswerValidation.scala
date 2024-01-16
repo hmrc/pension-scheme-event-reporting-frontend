@@ -16,11 +16,11 @@
 
 package utils.event6
 
-import models.{Index, MemberSummaryPath}
 import models.enumeration.EventType.Event6
 import models.requests.DataRequest
+import models.{Index, MemberSummaryPath}
 import pages.EmptyWaypoints
-import pages.common.{MembersDetailsPage, PaymentDetailsPage}
+import pages.common.MembersDetailsPage
 import pages.event6.{AmountCrystallisedAndDatePage, Event6CheckYourAnswersPage, InputProtectionTypePage, TypeOfProtectionPage}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Result}

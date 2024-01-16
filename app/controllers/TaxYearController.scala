@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.TaxYearFormProvider
 import models.enumeration.JourneyStartType.{InProgress, PastEventTypes}

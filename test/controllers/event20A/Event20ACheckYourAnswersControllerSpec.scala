@@ -18,18 +18,16 @@ package controllers.event20A
 
 import base.SpecBase
 import data.SampleData.{sampleEvent20ABecameJourneyData, sampleEvent20ACeasedJourneyData}
-import models.VersionInfo
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
-import models.enumeration.VersionStatus.Compiled
 import models.event20A.WhatChange
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{EmptyWaypoints, VersionInfoPage}
 import pages.event20A.{BecameDatePage, WhatChangePage}
 import play.api.i18n.Messages
 import play.api.inject
+import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -38,17 +36,11 @@ import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
-import play.api.inject.bind
 
 import java.time.LocalDate
-import scala.concurrent.Future
 
 class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
-  private val mockCompileService = mock[CompileService]
-
-  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[CompileService].toInstance(mockCompileService)
-  )
+  private val mockCompileService = mock[CompileService]g
 
 
   import Event20ACheckYourAnswersControllerSpec._
