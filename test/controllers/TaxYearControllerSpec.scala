@@ -50,8 +50,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
   private def postRoute: String = routes.TaxYearController.onSubmit(waypoints).url
 
-  private val radioOptionsWithToggleOff: Seq[RadioItem] = TaxYear.options
-  private val radioOptionsWithToggleOn: Seq[RadioItem] = TaxYear.optionsFiltered(taxYear => taxYear.startYear >= "2023")
+  private val radioOptions: Seq[RadioItem] = TaxYear.optionsFiltered(taxYear => taxYear.startYear >= "2023")
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -76,9 +75,8 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       2,
       submittedVersionAvailable = true,
       compiledVersionAvailable = false)))
-
-  private val erOverview = Seq(overview1, overview2)
   private val mockEventConnector = mock[EventReportingConnector]
+  private val erOverview = Seq(overview1, overview2)
 
   override def beforeEach(): Unit = {
     super.beforeEach
@@ -92,11 +90,9 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).bindings(
         bind[EventReportingConnector].to(mockEventConnector)).build()
-
       when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
+        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
       )
-
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
@@ -105,28 +101,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         val view = application.injector.instanceOf[TaxYearView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, radioOptionsWithToggleOff)(request, messages(application)).toString
-      }
-    }
-
-    "must return OK and the correct view for a GET with feature toggle ON" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).bindings(
-        bind[EventReportingConnector].to(mockEventConnector)).build()
-
-      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = true))
-      )
-
-      running(application) {
-        val request = FakeRequest(GET, getRoute)
-
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[TaxYearView]
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, radioOptionsWithToggleOn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, radioOptions)(request, messages(application)).toString
       }
     }
 
@@ -138,8 +113,9 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       val application = applicationBuilder(userAnswers = Some(ua)).bindings(
         bind[EventReportingConnector].to(mockEventConnector)).build()
       when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
+        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
       )
+
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
@@ -161,7 +137,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       val application = applicationBuilder(userAnswers = Some(ua)).bindings(
         bind[EventReportingConnector].to(mockEventConnector)).build()
       when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
+        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
       )
 
       running(application) {
@@ -178,15 +154,14 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered with feature toggle OFF" in {
+    "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022")).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).bindings(
         bind[EventReportingConnector].to(mockEventConnector)).build()
-
       when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
+        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
       )
 
       running(application) {
@@ -197,30 +172,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(TaxYear.values.head), waypoints, radioOptionsWithToggleOff)(request, messages(application)).toString
-      }
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered with feature toggle ON" in {
-
-      val userAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022")).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).bindings(
-        bind[EventReportingConnector].to(mockEventConnector)).build()
-
-      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = true))
-      )
-
-      running(application) {
-        val request = FakeRequest(GET, getRoute)
-
-        val view = application.injector.instanceOf[TaxYearView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(TaxYear.values.head), waypoints, radioOptionsWithToggleOn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(TaxYear.values.head), waypoints, radioOptions)(request, messages(application)).toString
       }
     }
 
@@ -230,12 +182,10 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
       val ua = emptyUserAnswers.setOrException(EventReportingTileLinksPage, StartNew)
 
-      val application =
-        applicationBuilder(userAnswers = Some(ua), extraModules).bindings(
-          bind[EventReportingConnector].to(mockEventConnector)).build()
-
+      val application = applicationBuilder(userAnswers = Some(ua), extraModules).bindings(
+        bind[EventReportingConnector].to(mockEventConnector)).build()
       when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
+        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
       )
 
       running(application) {
@@ -251,15 +201,12 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       }
     }
 
-    "must return bad request when invalid data is submitted with feature toggle OFF" in {
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).bindings(
-          bind[EventReportingConnector].to(mockEventConnector)).build()
-
+    "must return bad request when invalid data is submitted" in {
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).bindings(
+        bind[EventReportingConnector].to(mockEventConnector)).build()
       when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = false))
+        Future.successful(ToggleDetails("lta-events-show-hide", None, isEnabled = false))
       )
-
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
@@ -270,31 +217,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, radioOptionsWithToggleOff)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
-      }
-    }
-
-    "must return bad request when invalid data is submitted with feature toggle ON" in {
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).bindings(
-          bind[EventReportingConnector].to(mockEventConnector)).build()
-
-      when(mockEventConnector.getFeatureToggle(any())(any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting-tax-year", None, isEnabled = true))
-      )
-
-      running(application) {
-        val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
-
-        val view = application.injector.instanceOf[TaxYearView]
-        val boundForm = form.bind(Map("value" -> "invalid"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, radioOptionsWithToggleOn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, radioOptions)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
