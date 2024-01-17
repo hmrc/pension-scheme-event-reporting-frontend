@@ -23,7 +23,6 @@ object AppDependencies {
     "org.scalatestplus.play"  %% "scalatestplus-play"      % "5.1.0",
     "org.pegdown"             %  "pegdown"                 % "1.6.0",
     "com.vladsch.flexmark"    %  "flexmark-all"            % "0.64.0",
-    "com.github.tomakehurst"  %  "wiremock-jre8"           % "3.0.1",
     "io.github.wolfendale"    %% "scalacheck-gen-regexp"   % "1.1.0"
   ).map(_ % "test, it")
 
