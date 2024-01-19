@@ -19,6 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import connectors.MinimalConnector
 import controllers.actions._
+import handlers.TaxYearNotAvailableException
 import helpers.DateHelper
 import helpers.DateHelper.dateFormatter
 import models.enumeration.AdministratorOrPractitioner.Administrator
@@ -53,7 +54,7 @@ class ReturnSubmittedController @Inject()(
 
       val taxYear = request.userAnswers.get(TaxYearPage) match {
         case Some(taxYear) => s"${taxYear.startYear} ${Messages("confirmation.taxYear.to")} ${taxYear.endYear}"
-        case _ => throw new RuntimeException("Tax year not available on Return Submitted Controller")
+        case _ => throw new TaxYearNotAvailableException("Tax year not available on Return Submitted Controller")
       }
 
       val dateHelper = new DateHelper
