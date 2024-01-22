@@ -22,7 +22,7 @@ import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import forms.EventSelectionFormProvider
 import models.EventSelection.Event24
 import models.enumeration.{EventType, VersionStatus}
-import models.{EventSelection, TaxYear, ToggleDetails, VersionInfo}
+import models.{EventSelection, TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._

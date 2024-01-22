@@ -37,7 +37,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.common.MembersDetailsView
 
-import scala.collection.immutable.HashSet
 import scala.concurrent.Future
 
 class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {

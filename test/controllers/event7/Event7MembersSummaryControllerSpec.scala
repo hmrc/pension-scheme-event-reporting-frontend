@@ -57,8 +57,6 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
   private def getRouteEvent7: String = routes.Event7MembersSummaryController.onPageLoad(waypoints).url
 
-  private def getRouteEvent7WithPagination: String = routes.Event7MembersSummaryController.onPageLoadWithPageNumber(waypoints, 0).url
-
   private def postRouteEvent7: String = routes.Event7MembersSummaryController.onSubmit(waypoints).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -230,13 +228,6 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
       pagerSeq = pagSeq
     )
 
-    private def paginationStats26Members: PaginationStatsEvent7 = fakePaginationStats(
-      fake26MappedMembers.slice(0, 24),
-      26,
-      2,
-      (1, 25),
-      1 to 2
-    )
   }
 
 

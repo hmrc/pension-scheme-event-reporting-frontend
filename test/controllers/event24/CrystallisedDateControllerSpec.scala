@@ -58,7 +58,7 @@ class CrystallisedDateControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val validAnswer = CrystallisedDate(LocalDate.of(2023, 2, 12))
 
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
@@ -142,9 +142,6 @@ class CrystallisedDateControllerSpec extends SpecBase with BeforeAndAfterEach {
           )
 
         val result = route(application, request).value
-
-        val view = application.injector.instanceOf[CrystallisedDateView]
-        val boundForm = form.bind(Map("value" -> invalidAnswer.toString))
 
         status(result) mustEqual BAD_REQUEST
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())

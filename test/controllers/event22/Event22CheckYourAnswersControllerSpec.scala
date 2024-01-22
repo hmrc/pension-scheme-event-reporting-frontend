@@ -17,30 +17,25 @@
 package controllers.event22
 
 import base.SpecBase
-import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent22and23, sampleMemberJourneyDataEvent22and23WithMissingAmount, writesTaxYear}
-import models.TaxYear.getTaxYearFromOption
-import models.common.{ChooseTaxYear, MembersDetails}
-import models.enumeration.EventType.{Event2, Event22}
-import models.enumeration.VersionStatus.{Compiled, Submitted}
-import models.{MemberSummaryPath, TaxYear, UserAnswers, VersionInfo}
+import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent22and23, sampleMemberJourneyDataEvent22and23WithMissingAmount}
+import models.enumeration.EventType.Event22
+import models.enumeration.VersionStatus.Submitted
+import models.{MemberSummaryPath, TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.common.{ChooseTaxYearPage, MembersDetailsPage, TotalPensionAmountsPage}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.i18n.Messages
 import play.api.inject
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.Writes
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.Aliases._
-import utils.Event2MemberPageNumbers
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
