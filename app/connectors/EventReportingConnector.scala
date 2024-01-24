@@ -103,6 +103,7 @@ class EventReportingConnector @Inject()(
         response.status match {
           case NO_CONTENT => ()
           case _ =>
+            logger.error(s"Compile event return an unusual http response with status ${response.status} and body ${response.body}")
             throw new HttpException(response.body, response.status)
         }
       }
