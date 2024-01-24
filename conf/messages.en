@@ -1748,7 +1748,7 @@ cannotSubmitLockedEvents.heading = The event report cannot be submitted because 
 cannotSubmitLockedEvents.p1 = {0} is currently editing event {1}, which must first be closed before the event report can be submitted.
 cannotSubmitLockedEvents.multiple.heading = The event report cannot be submitted because more than one included event is open
 cannotSubmitLockedEvents.multiple.p1 = Before the event report can be submitted:
-cannotSubmitLockedEvents.multiple.item = {0} must close event {1} and version {2}
+cannotSubmitLockedEvents.multiple.item = {0} must close event {1}
 
 removeMember.title = Are you sure you want to remove the {0} event for this member?
 removeMember.heading = Are you sure you want to remove the {0} event for this member?
