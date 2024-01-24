@@ -28,7 +28,7 @@
         <p class="govuk-body">@messages("cannotSubmitLockedEvents.multiple.p1")</p>
         <ul class="govuk-list govuk-list--bullet">
             @seqOfEventTypes.map { eventSummary =>
-                <li>@messages("cannotSubmitLockedEvents.multiple.item", eventSummary.lockedBy.map(lockedBy => lockedBy).getOrElse(""), eventSummary.eventType.toString, eventSummary.recordVersion)</li>
+                <li>@messages("cannotSubmitLockedEvents.multiple.item", eventSummary.lockedBy.map(lockedBy => lockedBy).getOrElse(""), eventSummary.eventType.toString)</li>
             }
         </ul>
     } else {
