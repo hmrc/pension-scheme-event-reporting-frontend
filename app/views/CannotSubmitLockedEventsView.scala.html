@@ -28,13 +28,13 @@
         <p class="govuk-body">@messages("cannotSubmitLockedEvents.multiple.p1")</p>
         <ul class="govuk-list govuk-list--bullet">
             @seqOfEventTypes.map { eventSummary =>
-                <li>@messages("cannotSubmitLockedEvents.multiple.item", eventSummary.lockedBy.map(lockedBy => lockedBy).getOrElse(""), eventSummary.eventType.toString)</li>
+                <li>@messages("cannotSubmitLockedEvents.multiple.item", eventSummary.lockedBy.map(lockedBy => lockedBy).getOrElse("Another user"), eventSummary.eventType.toString)</li>
             }
         </ul>
     } else {
         <h1 class="govuk-heading-xl">@messages("cannotSubmitLockedEvents.heading")</h1>
             @seqOfEventTypes.map { eventSummary =>
-                <p class="govuk-body">@messages("cannotSubmitLockedEvents.p1", eventSummary.lockedBy.map(lockedBy => lockedBy).getOrElse(""), eventSummary.eventType.toString)</p>
+                <p class="govuk-body">@messages("cannotSubmitLockedEvents.p1", eventSummary.lockedBy.map(lockedBy => lockedBy).getOrElse("Another user"), eventSummary.eventType.toString)</p>
             }
     }
 
