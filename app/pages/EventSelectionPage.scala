@@ -23,11 +23,8 @@ import models.{EventSelection, Index, UserAnswers}
 import pages.EventSelectionPageUtility.adjustedCount
 import pages.common._
 import pages.event1.PaymentValueAndDatePage
-import pages.event10.BecomeOrCeaseSchemePage
 import pages.event11.{WhatYouWillNeedPage => event11WhatYouWillNeed}
 import pages.event12.HasSchemeChangedRulesPage
-import pages.event13.SchemeStructurePage
-import pages.event14.HowManySchemeMembersPage
 import pages.event18.Event18ConfirmationPage
 import pages.event19.{WhatYouWillNeedPage => event19WhatYouWillNeed}
 import pages.event2.DatePaidPage

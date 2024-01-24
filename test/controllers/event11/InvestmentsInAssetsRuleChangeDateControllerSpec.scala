@@ -109,7 +109,6 @@ class InvestmentsInAssetsRuleChangeDateControllerSpec extends SpecBase with Befo
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(event11Date(validAnswer.date): _*)
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswersWithTaxYear.set(InvestmentsInAssetsRuleChangeDatePage, validAnswer).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual Event11CheckYourAnswersPage().route(waypoints).url
