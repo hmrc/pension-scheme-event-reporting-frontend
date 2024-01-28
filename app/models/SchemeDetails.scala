@@ -16,34 +16,60 @@
 
 package models
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
-import play.api.libs.json.{JsPath, Json, OFormat, Reads}
+import play.api.libs.json.{Format, Json, OFormat}
 
-case class SchemeDetails(schemeName: String, pstr: String, schemeStatus: String, authorisingPSAID: Option[String])
+import java.time.LocalDate
 
-object SchemeDetails {
+case class PsaName(firstName: Option[String], middleName: Option[String], lastName: Option[String])
 
-  implicit val readsPsa: Reads[SchemeDetails] =
-    (
-      (JsPath \ "schemeName").read[String] and
-        (JsPath \ "pstr").read[String] and
-        (JsPath \ "schemeStatus").read[String]
-      )(
-      (schemeName, pstr, status) => SchemeDetails(schemeName, pstr, status, None)
-    )
-
-  implicit val readsPsp: Reads[SchemeDetails] =
-    (
-      (JsPath \ "schemeName").read[String] and
-        (JsPath \ "pstr").read[String] and
-        (JsPath \ "schemeStatus").read[String] and
-        (JsPath \ "pspDetails" \ "authorisingPSAID" ).read[String]
-      )(
-      (schemeName, pstr, status, authorisingPSAID) => SchemeDetails(schemeName, pstr, status, Some(authorisingPSAID))
-    )
-
-
-  implicit val format: OFormat[SchemeDetails] = Json.format[SchemeDetails]
-
+object PsaName {
+  implicit val formats: OFormat[PsaName] = Json.format[PsaName]
 }
+
+case class AuthorisingPSA(
+                           firstName: Option[String],
+                           lastName: Option[String],
+                           middleName: Option[String],
+                           organisationOrPartnershipName: Option[String]
+                         )
+
+object AuthorisingPSA {
+  implicit val formats: OFormat[AuthorisingPSA] = Json.format[AuthorisingPSA]
+}
+
+case class AuthorisingIndividual(
+                                  firstName: String,
+                                  lastName: String
+                                )
+
+object AuthorisingIndividual {
+  implicit val formats: OFormat[AuthorisingIndividual] = Json.format[AuthorisingIndividual]
+}
+case class PsaDetails(id: String, organisationOrPartnershipName: Option[String], individual: Option[PsaName], relationshipDate: Option[String])
+
+object PsaDetails {
+  implicit val format: Format[PsaDetails] = Json.format[PsaDetails]
+}
+case class PspDetails(clientReference: Option[String]=None,
+                      organisationOrPartnershipName: Option[String],
+                      individual: Option[AuthorisingIndividual],
+                      authorisingPSAID: String,
+                      authorisingPSA: AuthorisingPSA,
+                      relationshipStartDate: LocalDate,
+                      id: String)
+
+object PspDetails {
+  implicit val format: Format[PspDetails] = Json.format[PspDetails]
+}
+case class PsaSchemeDetails(schemeName: String, pstr: String, schemeStatus: String, psaDetails: Seq[PsaDetails])
+object PsaSchemeDetails {
+  implicit val format: Format[PsaSchemeDetails] = Json.format[PsaSchemeDetails]
+}
+
+case class PspSchemeDetails(schemeName: String, pstr: String, schemeStatus: String, pspDetails: Option[PspDetails])
+object PspSchemeDetails {
+  implicit val format: Format[PspSchemeDetails] = Json.format[PspSchemeDetails]
+}
+
+
+
