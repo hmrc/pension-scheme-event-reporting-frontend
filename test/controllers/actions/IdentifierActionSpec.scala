@@ -19,7 +19,7 @@ package controllers.actions
 import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.SessionDataCacheConnector
+import connectors.{SchemeConnector, SessionDataCacheConnector}
 import models.LoggedInUser
 import models.enumeration.AdministratorOrPractitioner
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
@@ -54,6 +54,7 @@ class IdentifierActionSpec
 
   private val mockSessionDataCacheConnector = mock[SessionDataCacheConnector]
   val dummyCall: Call = Call("GET", "/foo")
+  private val mockSchemeConnector = mock[SchemeConnector]
 
   private val mockFrontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
 
@@ -74,7 +75,7 @@ class IdentifierActionSpec
 
   private val authAction = new AuthenticatedIdentifierAction(
     authConnector,
-    mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector)
+    mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector, mockSchemeConnector)
 
   private val psaId = "A0000000"
   private val pspId = "20000000"
@@ -228,7 +229,7 @@ class IdentifierActionSpec
 
     val authAction = new AuthenticatedIdentifierAction(
       new FakeFailingAuthConnector(new MissingBearerToken),
-      mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector
+      mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector, mockSchemeConnector
     )
     val controller = new Harness(authAction)
     val result = controller.onPageLoad()(fakeRequest)
@@ -244,7 +245,7 @@ class IdentifierActionSpec
 
     val authAction = new AuthenticatedIdentifierAction(
       new FakeFailingAuthConnector(new InsufficientEnrolments),
-      mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector
+      mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector, mockSchemeConnector
     )
 
     val testUrl = "/test"
@@ -261,7 +262,7 @@ class IdentifierActionSpec
   "No pstr, schemeName, returnUrl in sessionCache must return runtimeException" in {
     val authAction = new AuthenticatedIdentifierAction(
       new FakeFailingAuthConnector(new InsufficientEnrolments),
-      mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector
+      mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector, mockSchemeConnector
     )
     val controller = new Harness(authAction)
     a[RuntimeException] mustBe thrownBy {
