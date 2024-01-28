@@ -20,7 +20,7 @@ import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{SchemeConnector, SessionDataCacheConnector}
-import models.LoggedInUser
+import models.{AuthorisingPSA, LoggedInUser, PsaDetails, PsaSchemeDetails, PspDetails, PspSchemeDetails}
 import models.enumeration.AdministratorOrPractitioner
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
 import org.mockito.ArgumentMatchers.any
@@ -38,6 +38,7 @@ import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -90,12 +91,21 @@ class IdentifierActionSpec
     Mockito.reset(authConnector)
     Mockito.reset(mockSessionDataCacheConnector)
     Mockito.reset(mockFrontendAppConfig)
+    Mockito.reset(mockSchemeConnector)
     when(mockFrontendAppConfig.loginUrl).thenReturn(dummyCall.url)
     when(mockFrontendAppConfig.loginContinueUrl).thenReturn(dummyCall.url)
     when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
       .thenReturn(Future.successful(None))
     when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
       .thenReturn(Future.successful(None))
+    when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
+      PsaSchemeDetails("test scheme", "test pstr", "test status", Some(Seq(
+        PsaDetails(psaId, None, None, None)
+      ))))
+    )
+    when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+      PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId, AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId)))
+    ))
   }
 
   "Identifier Action" - {

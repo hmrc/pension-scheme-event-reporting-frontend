@@ -61,7 +61,7 @@ case class PspDetails(clientReference: Option[String]=None,
 object PspDetails {
   implicit val format: Format[PspDetails] = Json.format[PspDetails]
 }
-case class PsaSchemeDetails(schemeName: String, pstr: String, schemeStatus: String, psaDetails: Seq[PsaDetails])
+case class PsaSchemeDetails(schemeName: String, pstr: String, schemeStatus: String, psaDetails: Option[Seq[PsaDetails]])
 object PsaSchemeDetails {
   implicit val format: Format[PsaSchemeDetails] = Json.format[PsaSchemeDetails]
 }

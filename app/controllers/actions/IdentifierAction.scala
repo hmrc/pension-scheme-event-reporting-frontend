@@ -189,7 +189,7 @@ class AuthenticatedIdentifierAction @Inject()(
 
   def schemeAuthorisedForPsa(psaId: String, srn: String)(implicit headerCarrier: HeaderCarrier): Future[Boolean] = {
     schemeConnector.getSchemeDetails(psaId, srn, "srn").map { details =>
-      val admins = details.psaDetails.map(_.id)
+      val admins = details.psaDetails.toSeq.flatten.map(_.id)
       admins.contains(psaId)
     } recover { _ => false }
   }
