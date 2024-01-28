@@ -187,13 +187,13 @@ class AuthenticatedIdentifierAction @Inject()(
     }
   }
 
-  def schemeAuthorisedForPsa(psaId: String, srn: String)(implicit headerCarrier: HeaderCarrier): Future[Boolean] = {
+  private def schemeAuthorisedForPsa(psaId: String, srn: String)(implicit headerCarrier: HeaderCarrier): Future[Boolean] = {
     schemeConnector.getSchemeDetails(psaId, srn, "srn").map { details =>
       val admins = details.psaDetails.toSeq.flatten.map(_.id)
       admins.contains(psaId)
     } recover { _ => false }
   }
-  def schemeAuthorisedForPsp(pspId: String, pstr: String)(implicit headerCarrier: HeaderCarrier): Future[Boolean] = {
+  private def schemeAuthorisedForPsp(pspId: String, pstr: String)(implicit headerCarrier: HeaderCarrier): Future[Boolean] = {
     schemeConnector.getPspSchemeDetails(pspId, pstr).map { details =>
       details.pspDetails.exists(_.id == pspId)
     } recover { _ => false }
