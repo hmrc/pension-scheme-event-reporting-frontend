@@ -102,6 +102,9 @@ class EventReportingConnector @Inject()(
       .map { response =>
         response.status match {
           case NO_CONTENT => ()
+          case NOT_FOUND =>
+            logger.error("Compile event returned an unusual http response with status 404 - NOT FOUND")
+            throw new HttpException("Not found", response.status)
           case _ =>
             logger.error(s"Compile event return an unusual http response with status ${response.status} and body ${response.body}")
             throw new HttpException(response.body, response.status)
