@@ -16,6 +16,7 @@
 
 package models
 
+import handlers.TaxYearNotAvailableException
 import pages.TaxYearPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsString, Writes}
@@ -82,7 +83,7 @@ object TaxYear extends Enumerable.Implicits {
   def getSelectedTaxYear(userAnswers: UserAnswers): TaxYear = {
     userAnswers.get(TaxYearPage) match {
       case Some(taxYear) => taxYear
-      case _ => throw new RuntimeException("Tax year unavailable")
+      case _ => throw new TaxYearNotAvailableException("Tax year unavailable")
     }
   }
   def getSelectedTaxYearAsString(userAnswers: UserAnswers): String = {
@@ -96,16 +97,16 @@ object TaxYear extends Enumerable.Implicits {
   }
 
   def getTaxYearFromOption(userAnswers: Option[UserAnswers]): Int = {
-    userAnswers.map(y => getTaxYear(y)).getOrElse(throw new RuntimeException("Tax year not entered"))
+    userAnswers.map(y => getTaxYear(y)).getOrElse(throw new TaxYearNotAvailableException("Tax year not entered"))
   }
 
   def getTaxYear(userAnswers: UserAnswers): Int = {
     userAnswers.get(TaxYearPage) match {
       case Some(year) => Try(year.startYear.toInt) match {
         case Success(value) => value
-        case Failure(exception) => throw new RuntimeException("Tax year is not a number", exception)
+        case Failure(_) => throw new TaxYearNotAvailableException("Tax year is not a number")
       }
-      case _ => throw new RuntimeException("Tax year not entered")
+      case _ => throw new TaxYearNotAvailableException("Tax year not entered")
     }
   }
 

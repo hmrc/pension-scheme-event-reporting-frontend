@@ -17,6 +17,7 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
+import handlers.TaxYearNotAvailableException
 import models.enumeration.EventType
 import models.enumeration.VersionStatus.Compiled
 import models.{TaxYear, UserAnswers, VersionInfo}
@@ -71,7 +72,7 @@ class UserAnswersCacheConnectorSpec
       }
     }
 
-    "throw runtime exception when the backend has returned NOT FOUND for both event and non event data" in {
+    "throw TaxYearNotAvailable exception when the backend has returned NOT FOUND for both event and non event data" in {
       server.stubFor(
         get(urlEqualTo(userAnswersCacheUrl))
           .willReturn(
@@ -80,7 +81,7 @@ class UserAnswersCacheConnectorSpec
           )
       )
 
-      recoverToSucceededIf[RuntimeException] {
+      recoverToSucceededIf[TaxYearNotAvailableException] {
         connector.get(pstr, eventType)
       }
     }

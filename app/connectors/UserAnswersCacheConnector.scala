@@ -18,6 +18,7 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import handlers.TaxYearNotAvailableException
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.{TaxYearPage, VersionInfoPage}
@@ -61,7 +62,7 @@ class UserAnswersCacheConnector @Inject()(
     }
 
     if (headers.isEmpty) {
-      throw new RuntimeException("No tax year or version available")
+      throw new TaxYearNotAvailableException("No tax year or version available")
     } else {
       headers
     }

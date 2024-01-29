@@ -18,7 +18,7 @@ package handlers
 
 import config.FrontendAppConfig
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Results.Ok
+import play.api.mvc.Results.{Ok, Redirect}
 import play.api.mvc.{Request, RequestHeader, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
@@ -40,6 +40,8 @@ class ErrorHandler @Inject()(
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
     exception match {
+      case _ : TaxYearNotAvailableException =>
+        Future.successful(Redirect(config.yourPensionSchemesUrl))
       case _: NothingToSubmitException =>
         Future.successful(Ok(noDataEnteredView(config.manageOverviewDashboardUrl)(Request(request, ""), request2Messages(request))))
       case _ => super.onServerError(request, exception)
