@@ -163,7 +163,7 @@ class AuthenticatedIdentifierAction @Inject()(
     }
   }
 
-  def actionForOneEnrolment[A](administratorOrPractitioner: AdministratorOrPractitioner,
+  private def actionForOneEnrolment[A](administratorOrPractitioner: AdministratorOrPractitioner,
                                eventReporting: EventReporting,
                                externalId: String, enrolments: Enrolments, request: Request[A],
                                block: IdentifierRequest[A] => Future[Result])(implicit headerCarrier: HeaderCarrier): Future[Result] = {
@@ -191,11 +191,17 @@ class AuthenticatedIdentifierAction @Inject()(
     schemeConnector.getSchemeDetails(psaId, srn, "srn").map { details =>
       val admins = details.psaDetails.toSeq.flatten.map(_.id)
       admins.contains(psaId)
-    } recover { _ => false }
+    } recover { err =>
+      logger.error("getSchemeDetails returned an error", err)
+      false
+    }
   }
   private def schemeAuthorisedForPsp(pspId: String, pstr: String)(implicit headerCarrier: HeaderCarrier): Future[Boolean] = {
     schemeConnector.getPspSchemeDetails(pspId, pstr).map { details =>
       details.pspDetails.exists(_.id == pspId)
-    } recover { _ => false }
+    } recover { err =>
+      logger.error("getSchemeDetails returned an error", err)
+      false
+    }
   }
 }
