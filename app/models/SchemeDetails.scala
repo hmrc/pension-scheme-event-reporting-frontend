@@ -50,7 +50,7 @@ case class PsaDetails(id: String, organisationOrPartnershipName: Option[String],
 object PsaDetails {
   implicit val format: Format[PsaDetails] = Json.format[PsaDetails]
 }
-case class PspDetails(clientReference: Option[String]=None,
+case class PspDetails(clientReference: Option[String],
                       organisationOrPartnershipName: Option[String],
                       individual: Option[AuthorisingIndividual],
                       authorisingPSAID: String,

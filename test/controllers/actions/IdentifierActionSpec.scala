@@ -465,9 +465,6 @@ class IdentifierActionSpec
             PsaDetails(psaId + "A", None, None, None)
           ))))
         )
-        when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
-          PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId + "A", AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId)))
-        ))
         when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
           .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
         val controller = new Harness(authAction)
