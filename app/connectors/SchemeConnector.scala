@@ -18,7 +18,7 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import models.SchemeDetails
+import models.{PsaSchemeDetails, PspSchemeDetails}
 import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -56,7 +56,7 @@ class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
     }
   }
   def getSchemeDetails(psaId: String, idNumber: String, schemeIdType: String)
-                      (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[SchemeDetails] = {
+                      (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[PsaSchemeDetails] = {
 
     val url = config.schemeDetailsUrl
 
@@ -73,7 +73,7 @@ class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
       response =>
         response.status match {
           case OK =>
-            Json.parse(response.body).validate[SchemeDetails](SchemeDetails.readsPsa) match {
+            Json.parse(response.body).validate[PsaSchemeDetails] match {
               case JsSuccess(value, _) => value
               case JsError(errors) => throw JsResultException(errors)
             }
@@ -82,7 +82,7 @@ class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
         }
     }
   }
-  def getPspSchemeDetails(pspId: String, pstr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SchemeDetails] = {
+  def getPspSchemeDetails(pspId: String, pstr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PspSchemeDetails] = {
 
     val url = config.pspSchemeDetailsUrl
     val schemeHc = hc.withExtraHeaders("pstr" -> pstr, "pspId" -> pspId)
@@ -90,7 +90,7 @@ class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
     http.GET[HttpResponse](url)(implicitly, schemeHc, implicitly) map { response =>
         response.status match {
           case OK =>
-            Json.parse(response.body).validate[SchemeDetails](SchemeDetails.readsPsp) match {
+            Json.parse(response.body).validate[PspSchemeDetails] match {
               case JsSuccess(value, _) => value
               case JsError(errors) => throw JsResultException(errors)
             }

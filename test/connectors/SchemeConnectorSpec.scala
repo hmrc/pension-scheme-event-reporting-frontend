@@ -17,7 +17,7 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.SchemeDetails
+import models.PsaSchemeDetails
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import play.api.http.Status.OK
@@ -117,7 +117,7 @@ class SchemeConnectorSpec
       val connector = injector.instanceOf[SchemeConnector]
 
       connector.getSchemeDetails(psaId, idNumber, "pstr").map(schemeDetails =>
-        schemeDetails mustBe SchemeDetails("test scheme", "test pstr", "test status", None)
+        schemeDetails mustBe PsaSchemeDetails("test scheme", "test pstr", "test status", None)
       )
     }
 

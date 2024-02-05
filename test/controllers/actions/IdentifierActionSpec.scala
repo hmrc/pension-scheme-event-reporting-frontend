@@ -19,8 +19,8 @@ package controllers.actions
 import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.SessionDataCacheConnector
-import models.LoggedInUser
+import connectors.{SchemeConnector, SessionDataCacheConnector}
+import models.{AuthorisingPSA, LoggedInUser, PsaDetails, PsaSchemeDetails, PspDetails, PspSchemeDetails}
 import models.enumeration.AdministratorOrPractitioner
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
 import org.mockito.ArgumentMatchers.any
@@ -38,6 +38,7 @@ import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -54,6 +55,7 @@ class IdentifierActionSpec
 
   private val mockSessionDataCacheConnector = mock[SessionDataCacheConnector]
   val dummyCall: Call = Call("GET", "/foo")
+  private val mockSchemeConnector = mock[SchemeConnector]
 
   private val mockFrontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
 
@@ -74,7 +76,7 @@ class IdentifierActionSpec
 
   private val authAction = new AuthenticatedIdentifierAction(
     authConnector,
-    mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector)
+    mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector, mockSchemeConnector)
 
   private val psaId = "A0000000"
   private val pspId = "20000000"
@@ -89,12 +91,21 @@ class IdentifierActionSpec
     Mockito.reset(authConnector)
     Mockito.reset(mockSessionDataCacheConnector)
     Mockito.reset(mockFrontendAppConfig)
+    Mockito.reset(mockSchemeConnector)
     when(mockFrontendAppConfig.loginUrl).thenReturn(dummyCall.url)
     when(mockFrontendAppConfig.loginContinueUrl).thenReturn(dummyCall.url)
     when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
       .thenReturn(Future.successful(None))
     when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
       .thenReturn(Future.successful(None))
+    when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
+      PsaSchemeDetails("test scheme", "test pstr", "test status", Some(Seq(
+        PsaDetails(psaId, None, None, None)
+      ))))
+    )
+    when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+      PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId, AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId)))
+    ))
   }
 
   "Identifier Action" - {
@@ -228,7 +239,7 @@ class IdentifierActionSpec
 
     val authAction = new AuthenticatedIdentifierAction(
       new FakeFailingAuthConnector(new MissingBearerToken),
-      mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector
+      mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector, mockSchemeConnector
     )
     val controller = new Harness(authAction)
     val result = controller.onPageLoad()(fakeRequest)
@@ -244,7 +255,7 @@ class IdentifierActionSpec
 
     val authAction = new AuthenticatedIdentifierAction(
       new FakeFailingAuthConnector(new InsufficientEnrolments),
-      mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector
+      mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector, mockSchemeConnector
     )
 
     val testUrl = "/test"
@@ -261,13 +272,382 @@ class IdentifierActionSpec
   "No pstr, schemeName, returnUrl in sessionCache must return runtimeException" in {
     val authAction = new AuthenticatedIdentifierAction(
       new FakeFailingAuthConnector(new InsufficientEnrolments),
-      mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector
+      mockFrontendAppConfig, bodyParsers, mockSessionDataCacheConnector, mockSchemeConnector
     )
     val controller = new Harness(authAction)
     a[RuntimeException] mustBe thrownBy {
       status(controller.onPageLoad()(fakeRequest))
     }
   }
+  "if user logged into the service with both psa and psp enrolments either of those need to associate with the scheme" in {
+    when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
+      PsaSchemeDetails("test scheme", "test pstr", "test status", Some(Seq(
+        PsaDetails(psaId, None, None, None)
+      ))))
+    )
+    when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+      PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId, AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId)))
+    ))
+    when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+      .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
+    val controller = new Harness(authAction)
+    val enrolments = Enrolments(Set(
+      Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None),
+      Enrolment(pspEnrolmentKey, Seq(EnrolmentIdentifier("PSPID", pspId)), "Activated", None)
+    ))
+
+    val pstrInDB = "456"
+    val pstrJson = Json.obj(
+      "eventReporting" -> Json.obj(
+        "pstr" -> pstrInDB,
+        "schemeName" -> "schemeName",
+        "returnUrl" -> "returnUrl",
+        "srn" -> "srn"
+      )
+    )
+
+    when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+      .thenReturn(Future.successful(Some(pstrJson)))
+
+    when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+      .thenReturn(Future.successful(new ~(Some("id"), enrolments)))
+
+    val result = controller.onPageLoad()(fakeRequest)
+    status(result) mustBe OK
+  }
+
+  "must associate with scheme to be allowed to proceed" - {
+    "with PSA enrolment" in {
+      when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
+        PsaSchemeDetails("test scheme", "test pstr", "test status", Some(Seq(
+          PsaDetails(psaId, None, None, None)
+        ))))
+      )
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+        PspSchemeDetails("schemeName", "87219363YN", "Open", None)
+      ))
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+        .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
+      val controller = new Harness(authAction)
+      val enrolments = Enrolments(Set(
+        Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None)
+      ))
+
+      val pstrInDB = "456"
+      val pstrJson = Json.obj(
+        "eventReporting" -> Json.obj(
+          "pstr" -> pstrInDB,
+          "schemeName" -> "schemeName",
+          "returnUrl" -> "returnUrl",
+          "srn" -> "srn"
+        )
+      )
+
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+        .thenReturn(Future.successful(Some(pstrJson)))
+
+      when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(Some("id"), enrolments)))
+
+      val result = controller.onPageLoad()(fakeRequest)
+      status(result) mustBe OK
+    }
+    "with PSP enrolment" in {
+      when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
+        PsaSchemeDetails("test scheme", "test pstr", "test status", None))
+      )
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+        PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId, AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId)))
+      ))
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+        .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
+      val controller = new Harness(authAction)
+      val enrolments = Enrolments(Set(
+        Enrolment(pspEnrolmentKey, Seq(EnrolmentIdentifier("PSPID", pspId)), "Activated", None)
+      ))
+
+      val pstrInDB = "456"
+      val pstrJson = Json.obj(
+        "eventReporting" -> Json.obj(
+          "pstr" -> pstrInDB,
+          "schemeName" -> "schemeName",
+          "returnUrl" -> "returnUrl",
+          "srn" -> "srn"
+        )
+      )
+
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+        .thenReturn(Future.successful(Some(pstrJson)))
+
+      when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(Some("id"), enrolments)))
+
+      val result = controller.onPageLoad()(fakeRequest)
+      status(result) mustBe OK
+    }
+    "with PSA when both enrolments are available" in {
+      when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
+        PsaSchemeDetails("test scheme", "test pstr", "test status", Some(Seq(
+          PsaDetails(psaId, None, None, None)
+        ))))
+      )
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+        PspSchemeDetails("schemeName", "87219363YN", "Open", None)
+      ))
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+        .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
+      val controller = new Harness(authAction)
+      val enrolments = Enrolments(Set(
+        Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None),
+        Enrolment(pspEnrolmentKey, Seq(EnrolmentIdentifier("PSPID", pspId)), "Activated", None)
+      ))
+
+      val pstrInDB = "456"
+      val pstrJson = Json.obj(
+        "eventReporting" -> Json.obj(
+          "pstr" -> pstrInDB,
+          "schemeName" -> "schemeName",
+          "returnUrl" -> "returnUrl",
+          "srn" -> "srn"
+        )
+      )
+
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+        .thenReturn(Future.successful(Some(pstrJson)))
+
+      when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(Some("id"), enrolments)))
+
+      val result = controller.onPageLoad()(fakeRequest)
+      status(result) mustBe OK
+    }
+    "with PSP when both enrolments are available" in {
+      when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
+        PsaSchemeDetails("test scheme", "test pstr", "test status", None))
+      )
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+        PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId, AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId)))
+      ))
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+        .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
+      val controller = new Harness(authAction)
+      val enrolments = Enrolments(Set(
+        Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None),
+        Enrolment(pspEnrolmentKey, Seq(EnrolmentIdentifier("PSPID", pspId)), "Activated", None)
+      ))
+
+      val pstrInDB = "456"
+      val pstrJson = Json.obj(
+        "eventReporting" -> Json.obj(
+          "pstr" -> pstrInDB,
+          "schemeName" -> "schemeName",
+          "returnUrl" -> "returnUrl",
+          "srn" -> "srn"
+        )
+      )
+
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+        .thenReturn(Future.successful(Some(pstrJson)))
+
+      when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(Some("id"), enrolments)))
+
+      val result = controller.onPageLoad()(fakeRequest)
+      status(result) mustBe OK
+    }
+  }
+
+  "must be dismissed when scheme is not associated with" - {
+    "PSA" in {
+      {
+        when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
+          PsaSchemeDetails("test scheme", "test pstr", "test status", Some(Seq(
+            PsaDetails(psaId + "A", None, None, None)
+          ))))
+        )
+        when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+          .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
+        val controller = new Harness(authAction)
+        val enrolments = Enrolments(Set(
+          Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None),
+        ))
+
+        val pstrInDB = "456"
+        val pstrJson = Json.obj(
+          "eventReporting" -> Json.obj(
+            "pstr" -> pstrInDB,
+            "schemeName" -> "schemeName",
+            "returnUrl" -> "returnUrl",
+            "srn" -> "srn"
+          )
+        )
+
+        when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+          .thenReturn(Future.successful(Some(pstrJson)))
+
+        when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+          .thenReturn(Future.successful(new ~(Some("id"), enrolments)))
+
+        val testUrl = "/test"
+
+        when(mockFrontendAppConfig.youNeedToRegisterUrl).thenReturn(testUrl)
+
+        val result = controller.onPageLoad()(fakeRequest)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(testUrl)
+      }
+    }
+    "PSP" in {
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+        PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId, AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId + "A")))
+      ))
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+        .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
+      val controller = new Harness(authAction)
+      val enrolments = Enrolments(Set(
+        Enrolment(pspEnrolmentKey, Seq(EnrolmentIdentifier("PSPID", pspId)), "Activated", None)
+      ))
+
+      val pstrInDB = "456"
+      val pstrJson = Json.obj(
+        "eventReporting" -> Json.obj(
+          "pstr" -> pstrInDB,
+          "schemeName" -> "schemeName",
+          "returnUrl" -> "returnUrl",
+          "srn" -> "srn"
+        )
+      )
+
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+        .thenReturn(Future.successful(Some(pstrJson)))
+
+      when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(Some("id"), enrolments)))
+
+      val testUrl = "/test"
+
+      when(mockFrontendAppConfig.youNeedToRegisterUrl).thenReturn(testUrl)
+
+      val result = controller.onPageLoad()(fakeRequest)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(testUrl)
+    }
+    "PSP and PSP" in {
+      when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
+        PsaSchemeDetails("test scheme", "test pstr", "test status", None))
+      )
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+        PspSchemeDetails("schemeName", "87219363YN", "Open", None)
+      ))
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+        .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
+      val controller = new Harness(authAction)
+      val enrolments = Enrolments(Set(
+        Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None),
+        Enrolment(pspEnrolmentKey, Seq(EnrolmentIdentifier("PSPID", pspId)), "Activated", None)
+      ))
+
+      val pstrInDB = "456"
+      val pstrJson = Json.obj(
+        "eventReporting" -> Json.obj(
+          "pstr" -> pstrInDB,
+          "schemeName" -> "schemeName",
+          "returnUrl" -> "returnUrl",
+          "srn" -> "srn"
+        )
+      )
+
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+        .thenReturn(Future.successful(Some(pstrJson)))
+
+      when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(Some("id"), enrolments)))
+
+      val testUrl = "/test"
+
+      when(mockFrontendAppConfig.youNeedToRegisterUrl).thenReturn(testUrl)
+
+      val result = controller.onPageLoad()(fakeRequest)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(testUrl)
+    }
+  }
+
+  "must not allow access if schemeConnector throws an error" - {
+    "with PSA enrolment" in {
+      when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.failed(new RuntimeException("")))
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+        PspSchemeDetails("schemeName", "87219363YN", "Open", None)
+      ))
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+        .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
+      val controller = new Harness(authAction)
+      val enrolments = Enrolments(Set(
+        Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None)
+      ))
+
+      val pstrInDB = "456"
+      val pstrJson = Json.obj(
+        "eventReporting" -> Json.obj(
+          "pstr" -> pstrInDB,
+          "schemeName" -> "schemeName",
+          "returnUrl" -> "returnUrl",
+          "srn" -> "srn"
+        )
+      )
+
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+        .thenReturn(Future.successful(Some(pstrJson)))
+
+      when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(Some("id"), enrolments)))
+
+      val testUrl = "/test"
+
+      when(mockFrontendAppConfig.youNeedToRegisterUrl).thenReturn(testUrl)
+
+      val result = controller.onPageLoad()(fakeRequest)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(testUrl)
+    }
+    "with PSP enrolment" in {
+      when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
+        PsaSchemeDetails("test scheme", "test pstr", "test status", None))
+      )
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.failed(new RuntimeException("")))
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+        .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
+      val controller = new Harness(authAction)
+      val enrolments = Enrolments(Set(
+        Enrolment(pspEnrolmentKey, Seq(EnrolmentIdentifier("PSPID", pspId)), "Activated", None)
+      ))
+
+      val pstrInDB = "456"
+      val pstrJson = Json.obj(
+        "eventReporting" -> Json.obj(
+          "pstr" -> pstrInDB,
+          "schemeName" -> "schemeName",
+          "returnUrl" -> "returnUrl",
+          "srn" -> "srn"
+        )
+      )
+
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+        .thenReturn(Future.successful(Some(pstrJson)))
+
+      when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(Some("id"), enrolments)))
+
+      val testUrl = "/test"
+
+      when(mockFrontendAppConfig.youNeedToRegisterUrl).thenReturn(testUrl)
+
+      val result = controller.onPageLoad()(fakeRequest)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(testUrl)
+    }
+  }
+
 }
 
 

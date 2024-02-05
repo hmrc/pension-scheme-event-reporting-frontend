@@ -70,7 +70,7 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
       minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
-        schemeDetailsConnector.getPspSchemeDetails(request.loggedInUser.psaIdOrPspId, request.pstr).map(_.authorisingPSAID).flatMap { authorisingPsaId =>
+        schemeDetailsConnector.getPspSchemeDetails(request.loggedInUser.psaIdOrPspId, request.pstr).map(_.pspDetails.map(_.authorisingPSAID)).flatMap { authorisingPsaId =>
           form(authorisingPsaId = authorisingPsaId)
             .bindFromRequest().fold(
             formWithErrors =>
