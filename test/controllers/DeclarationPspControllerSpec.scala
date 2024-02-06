@@ -23,7 +23,7 @@ import data.SampleData.sampleEvent20JourneyData
 import forms.DeclarationPspFormProvider
 import handlers.NothingToSubmitException
 import models.enumeration.VersionStatus.{Compiled, Submitted}
-import models.{SchemeDetails, UserAnswers, VersionInfo}
+import models.{AuthorisingPSA, PspDetails, PspSchemeDetails, UserAnswers, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -39,6 +39,7 @@ import play.api.test.Helpers.{GET, _}
 import services.SubmitService
 import views.html.DeclarationPspView
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{Duration, SECONDS}
 import scala.concurrent.{Await, Future}
@@ -57,7 +58,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val mockEventReportingConnector = mock[EventReportingConnector]
   private val mockSubmitService = mock[SubmitService]
   private val mockMinimalConnector = mock[MinimalConnector]
-  private val mockSchemeDetails = SchemeDetails("schemeName", "87219363YN", "Open", authorisingPsaId)
+  private val mockSchemeDetails = PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, authorisingPsaId.get, AuthorisingPSA(None, None, None, None), LocalDate.now(), "")))
   val testEmail = "test@test.com"
   val mockMinimalDetails: MinimalDetails = {
     MinimalDetails(

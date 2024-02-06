@@ -18,7 +18,7 @@ package controllers.actions
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.SessionDataCacheConnector
+import connectors.{SchemeConnector, SessionDataCacheConnector}
 import models.LoggedInUser
 import models.common.EventReporting
 import models.enumeration.AdministratorOrPractitioner
@@ -32,9 +32,10 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.domain.{PsaId, PspId}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
 import scala.concurrent.{ExecutionContext, Future}
+
 
 trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
 
@@ -42,16 +43,17 @@ class AuthenticatedIdentifierAction @Inject()(
                                                override val authConnector: AuthConnector,
                                                config: FrontendAppConfig,
                                                val parser: BodyParsers.Default,
-                                               sessionDataCacheConnector: SessionDataCacheConnector
+                                               sessionDataCacheConnector: SessionDataCacheConnector,
+                                               schemeConnector: SchemeConnector
                                              )
-                                             (implicit val executionContext: ExecutionContext) extends IdentifierAction with AuthorisedFunctions {
+                                             (implicit val executionContext: ExecutionContext) extends IdentifierAction with AuthorisedFunctions with FrontendHeaderCarrierProvider {
 
   private val logger = Logger(classOf[AuthenticatedIdentifierAction])
 
   private val enrolmentPSA = "HMRC-PODS-ORG"
   private val enrolmentPSP = "HMRC-PODSPP-ORG"
 
-  private def getEventReportingData[A](request: Request[A])(implicit hc: HeaderCarrier): Future[Option[EventReporting]] = {
+  private def getEventReportingData[A](request: Request[A])(implicit headerCarrier: HeaderCarrier): Future[Option[EventReporting]] = {
     request.session.get(SessionKeys.sessionId) match {
       case None => Future.successful(None)
       case Some(sessionId) =>
@@ -65,7 +67,7 @@ class AuthenticatedIdentifierAction @Inject()(
 
   private def withAuthInfo[A](
                                block: (Option[String], Enrolments, Option[EventReporting]) => Future[Result]
-                             )(implicit request: Request[A], hd: HeaderCarrier): Future[Result] = {
+                             )(implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
     authorised(Enrolment(enrolmentPSA) or Enrolment(enrolmentPSP)).retrieve(
       Retrievals.externalId and Retrievals.allEnrolments
     ) {
@@ -86,7 +88,6 @@ class AuthenticatedIdentifierAction @Inject()(
                                request: Request[A],
                                block: IdentifierRequest[A] => Future[Result]
                              ): Future[Result] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     implicit val req: Request[A] = request
 
     withAuthInfo {
@@ -137,19 +138,70 @@ class AuthenticatedIdentifierAction @Inject()(
       case None => Future.successful(Redirect(Call("GET", config.administratorOrPractitionerUrl)))
       case Some(role) =>
         getLoggedInUser(externalId, role, enrolments) match {
-          case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName, eventReporting.returnUrl, eventReporting.srn))
+          case Some(loggedInUser) =>
+            val userAuthorised = for {
+              psaId <- getPsaId(enrolments)
+              pspId <- getPspId(enrolments)
+            } yield {
+              for {
+                psaAuthorised <- schemeAuthorisedForPsa(psaId, eventReporting.srn)
+                pspAuthorised <- schemeAuthorisedForPsp(pspId, eventReporting.pstr)
+              } yield {
+                psaAuthorised || pspAuthorised
+              }
+            }
+
+            userAuthorised.map { authFtr =>
+              authFtr.flatMap {
+                case true => block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName, eventReporting.returnUrl, eventReporting.srn))
+                case false => futureUnauthorisedPage
+              }
+            }.getOrElse(futureUnauthorisedPage)
+
           case _ => futureUnauthorisedPage
         }
     }
   }
 
-  def actionForOneEnrolment[A](administratorOrPractitioner: AdministratorOrPractitioner,
+  private def actionForOneEnrolment[A](administratorOrPractitioner: AdministratorOrPractitioner,
                                eventReporting: EventReporting,
                                externalId: String, enrolments: Enrolments, request: Request[A],
-                               block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
+                               block: IdentifierRequest[A] => Future[Result])(implicit headerCarrier: HeaderCarrier): Future[Result] = {
+
     getLoggedInUser(externalId, administratorOrPractitioner, enrolments) match {
-      case Some(loggedInUser) => block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName, eventReporting.returnUrl, eventReporting.srn))
+      case Some(loggedInUser) =>
+        def proceed = block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName, eventReporting.returnUrl, eventReporting.srn))
+        administratorOrPractitioner match {
+          case AdministratorOrPractitioner.Administrator =>
+            schemeAuthorisedForPsa(loggedInUser.psaIdOrPspId, eventReporting.srn).flatMap {
+              case true => proceed
+              case false => futureUnauthorisedPage
+            }
+          case AdministratorOrPractitioner.Practitioner => schemeAuthorisedForPsp(loggedInUser.psaIdOrPspId, eventReporting.pstr).flatMap {
+            case true => proceed
+            case false => futureUnauthorisedPage
+          }
+        }
+
       case _ => futureUnauthorisedPage
+    }
+  }
+
+  private def schemeAuthorisedForPsa(psaId: String, srn: String)(implicit headerCarrier: HeaderCarrier): Future[Boolean] = {
+    schemeConnector.getSchemeDetails(psaId, srn, "srn").map { details =>
+      val admins = details.psaDetails.toSeq.flatten.map(_.id)
+      admins.contains(psaId)
+    } recover { err =>
+      logger.error("getSchemeDetails returned an error", err)
+      false
+    }
+  }
+  private def schemeAuthorisedForPsp(pspId: String, pstr: String)(implicit headerCarrier: HeaderCarrier): Future[Boolean] = {
+    schemeConnector.getPspSchemeDetails(pspId, pstr).map { details =>
+      details.pspDetails.exists(_.id == pspId)
+    } recover { err =>
+      logger.error("getSchemeDetails returned an error", err)
+      false
     }
   }
 }

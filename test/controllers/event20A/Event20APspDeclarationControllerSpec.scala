@@ -22,7 +22,7 @@ import connectors.{EventReportingConnector, MinimalConnector, SchemeConnector, U
 import data.SampleData.sampleEvent20ABecameJourneyData
 import forms.event20A.Event20APspDeclarationFormProvider
 import models.enumeration.VersionStatus.{Compiled, Submitted}
-import models.{SchemeDetails, VersionInfo}
+import models.{AuthorisingPSA, PspDetails, PspSchemeDetails, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -37,6 +37,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.event20A.Event20APspDeclarationView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterEach {
@@ -53,7 +54,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
   private val mockSchemeDetailsConnector = mock[SchemeConnector]
   private val mockEventReportingConnector = mock[EventReportingConnector]
   private val mockMinimalConnector = mock[MinimalConnector]
-  private val mockSchemeDetails = SchemeDetails("schemeName", "87219363YN", "Open", authorisingPsaId)
+  private val mockSchemeDetails = PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, authorisingPsaId.get, AuthorisingPSA(None, None, None, None), LocalDate.now(), "")))
 
   private def getRoute: String = routes.Event20APspDeclarationController.onPageLoad(waypoints).url
 
