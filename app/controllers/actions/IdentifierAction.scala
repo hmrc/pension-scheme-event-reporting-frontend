@@ -154,7 +154,9 @@ class AuthenticatedIdentifierAction @Inject()(
             userAuthorised.map { authFtr =>
               authFtr.flatMap {
                 case true => block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName, eventReporting.returnUrl, eventReporting.srn))
-                case false => futureUnauthorisedPage
+                case false =>
+                  logger.warn("Potentially prevented unauthorised access")
+                  futureUnauthorisedPage
               }
             }.getOrElse(futureUnauthorisedPage)
 
@@ -175,11 +177,15 @@ class AuthenticatedIdentifierAction @Inject()(
           case AdministratorOrPractitioner.Administrator =>
             schemeAuthorisedForPsa(loggedInUser.psaIdOrPspId, eventReporting.srn).flatMap {
               case true => proceed
-              case false => futureUnauthorisedPage
+              case false =>
+                logger.warn("Potentially prevented unauthorised access")
+                futureUnauthorisedPage
             }
           case AdministratorOrPractitioner.Practitioner => schemeAuthorisedForPsp(loggedInUser.psaIdOrPspId, eventReporting.pstr).flatMap {
             case true => proceed
-            case false => futureUnauthorisedPage
+            case false =>
+              logger.warn("Potentially prevented unauthorised access")
+              futureUnauthorisedPage
           }
         }
 
