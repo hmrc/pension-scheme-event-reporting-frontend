@@ -73,7 +73,6 @@ class Event24Validator @Inject()(
       "DEF" -> "definedBenefit",
       "DRAW" -> "drawdown",
       "FLEXI" -> "flexiAccess",
-      "PCLS" -> "commencement",
       "PROTECTION" -> "pensionProtection",
       "SMALL" -> "small",
       "S-A" -> "standAlone",

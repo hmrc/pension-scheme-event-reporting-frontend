@@ -1862,7 +1862,6 @@ bceTypeSelection.event24.annuityProtection = Annuity protection lump sum death b
 bceTypeSelection.event24.definedBenefit = Defined benefit lump sum death benefit
 bceTypeSelection.event24.drawdown = Drawdown pension fund lump sum death benefit
 bceTypeSelection.event24.flexiAccess = Flexi-access drawdown lump sum death benefit
-bceTypeSelection.event24.commencement = Pension commencement lump sum
 bceTypeSelection.event24.pensionProtection = Pension protection lump sum death benefit
 bceTypeSelection.event24.small = Small lump sum
 bceTypeSelection.event24.standAlone = Stand-alone lump sum
