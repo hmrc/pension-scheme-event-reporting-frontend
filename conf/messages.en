@@ -1844,15 +1844,15 @@ whatYouWillNeed.event24.item3 = if the member holds valid form of allowance prot
 whatYouWillNeed.event24.item4 = if any lump sum payment has taken the member over lump sum allowance or death benefit allowance – if it has, tell us whether the excess was taxed at marginal rate
 whatYouWillNeed.event24.item5 = the employer PAYE reference, if it has been taxed at marginal rate
 
-crystallisedDate.event24.heading = When did the higher lump sum allowance crystallisation take place?
+crystallisedDate.event24.heading = When did the relevant benefit crystallisation event take place?
 crystallisedDate.event24.title = When was the relevant benefit crystallisation event?
 crystallisedDate.event24.date.hint = For example, 22 09 2022
 crystallisedDate.event24.date.error.nothingEntered = Enter the date
 crystallisedDate.event24.date.error.noDayMonthOrYear = The date must include a day, month and year
 crystallisedDate.event24.date.error.outsideDateRanges = Enter a real date
 crystallisedDate.event24.date.error.outsideReportedYear = Date must be between {0} and {1}
-crystallisedDate.event24.date.change.hidden = When did the higher lump sum allowance crystallisation take place?
-crystallisedDate.event24.date.checkYourAnswersLabel = When did the higher lump sum allowance crystallisation take place?
+crystallisedDate.event24.date.change.hidden = When did the relevant benefit crystallisation event take place?
+crystallisedDate.event24.date.checkYourAnswersLabel = When did the relevant benefit crystallisation event take place?
 
 bceTypeSelection.event24.title = Type of relevant benefit crystallisation event
 bceTypeSelection.event24.heading = What was the type of relevant benefit crystallisation event?
