@@ -25,7 +25,7 @@ import forms.event24._
 import models.Index
 import models.enumeration.EventType
 import models.enumeration.EventType.Event24
-import models.event24.{BCETypeSelection, CrystallisedDate, TypeOfProtectionSelection}
+import models.event24.{BCETypeSelection, CrystallisedDate, ProtectionReferenceData, TypeOfProtectionGroup1}
 import models.fileUpload.FileUploadHeaders.Event24FieldNames._
 import models.fileUpload.FileUploadHeaders.valueFormField
 import pages.common.MembersDetailsPage
@@ -46,8 +46,8 @@ class Event24Validator @Inject()(
                                   overAllowanceFormProvider: OverAllowanceFormProvider,
                                   overAllowanceAndDeathBenefitFormProvider: OverAllowanceAndDeathBenefitFormProvider,
                                   totalAmountBenefitCrystallisationFormProvider: TotalAmountBenefitCrystallisationFormProvider,
-                                  typeOfProtectionFormProvider: TypeOfProtectionFormProvider,
-                                  typeOfProtectionReferenceFormProvider: TypeOfProtectionReferenceFormProvider,
+                                  typeOfProtectionFormProvider: TypeOfProtectionGroup1FormProvider,
+                                  typeOfProtectionReferenceFormProvider: TypeOfProtectionGroup1ReferenceFormProvider,
                                   validProtectionFormProvider: ValidProtectionFormProvider,
                                   config: FrontendAppConfig
                                 ) extends Validator {
@@ -179,33 +179,33 @@ class Event24Validator @Inject()(
     )
   }
 
-  private def protectionTypeValidation(index: Index, chargeFields: Seq[String]): Validated[Seq[ValidationError], TypeOfProtectionSelection] = {
-    val mappedProtectionType = mapProtectionType.applyOrElse[String, String](
-      chargeFields(fieldNoProtectionType),
-      (_: String) => "Type of protection is not found or doesn't exist")
-
-    val fields = Seq(
-      Field(valueFormField, mappedProtectionType, protectionType, fieldNoProtectionType)
-    )
-
-    val form: Form[TypeOfProtectionSelection] = typeOfProtectionFormProvider()
-
-    form.bind(Field.seqToMap(fields)).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
-    )
-  }
+//  private def protectionTypeValidation(index: Index, chargeFields: Seq[String]): Validated[Seq[ValidationError], TypeOfProtectionGroup1] = {
+//    val mappedProtectionType = mapProtectionType.applyOrElse[String, String](
+//      chargeFields(fieldNoProtectionType),
+//      (_: String) => "Type of protection is not found or doesn't exist")
+//
+//    val fields = Seq(
+//      Field(valueFormField, mappedProtectionType, protectionType, fieldNoProtectionType)
+//    )
+//
+//    val form: Form[Seq[TypeOfProtectionGroup1]] = typeOfProtectionFormProvider()
+//
+//    form.bind(Field.seqToMap(fields)).fold(
+//      formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
+//      value => Valid(value)
+//    )
+//  }
 
   private def protectionReferenceValidation(index: Index, chargeFields: Seq[String]): Validated[Seq[ValidationError], String] = {
     val fields = Seq(
       Field(valueFormField, chargeFields(fieldNoProtectionReference), protectionReference, fieldNoProtectionReference)
     )
 
-    val form: Form[String] = typeOfProtectionReferenceFormProvider()
+    val form: Form[ProtectionReferenceData] = typeOfProtectionReferenceFormProvider()
 
     form.bind(Field.seqToMap(fields)).fold(
       formWithErrors => Invalid(errorsFromForm(formWithErrors, fields, index)),
-      value => Valid(value)
+      value => Valid(value.toString)
     )
   }
 
@@ -295,19 +295,19 @@ class Event24Validator @Inject()(
   private def validateProtectionType(index: Index, columns: Seq[String]): Result = {
     val protectionTypeValue = columns(7)
 
-    val f = resultFromFormValidationResult[TypeOfProtectionSelection](
-      protectionTypeValidation(index, columns), createCommitItem(index, TypeOfProtectionPage.apply(_))
-    )
+//    val f = resultFromFormValidationResult[TypeOfProtectionGroup1](
+//      protectionTypeValidation(index, columns), createCommitItem(index, TypeOfProtectionGroup1Page.apply(_))
+//    )
 
     val g = resultFromFormValidationResult[String](
-      protectionReferenceValidation(index, columns), createCommitItem(index, TypeOfProtectionReferencePage.apply)
+      protectionReferenceValidation(index, columns), createCommitItem(index, TypeOfProtectionGroup1ReferencePage.apply)
     )
 
     val overAllowance = validateOverAllowance(index, columns)
 
     protectionTypeValue match {
-      case "SPEC" => Seq(f, overAllowance).combineAll
-      case _ => Seq(f, g, overAllowance).combineAll
+      case "SPEC" => Seq(overAllowance).combineAll
+      case _ => Seq(g, overAllowance).combineAll
     }
   }
 

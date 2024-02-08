@@ -18,41 +18,41 @@ package models.event24
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.OptionValues
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
-class TypeOfProtectionSelectionSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class TypeOfProtectionGroup2Spec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
   "Test" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(TypeOfProtectionSelection.values)
+      val gen = Gen.oneOf(TypeOfProtectionGroup2.values)
 
       forAll(gen) {
         test =>
 
-          JsString(test.toString).validate[TypeOfProtectionSelection].asOpt.value mustEqual test
+          JsString(test.toString).validate[TypeOfProtectionGroup2].asOpt.value mustEqual test
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!TypeOfProtectionSelection.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!TypeOfProtectionGroup2.values.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
 
-          JsString(invalidValue).validate[TypeOfProtectionSelection] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[TypeOfProtectionGroup2] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(TypeOfProtectionSelection.values)
+      val gen = Gen.oneOf(TypeOfProtectionGroup2.values)
 
       forAll(gen) {
         test =>

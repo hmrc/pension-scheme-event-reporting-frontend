@@ -18,34 +18,35 @@ package controllers.event24
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event24.TypeOfProtectionFormProvider
+import forms.event24.{TypeOfProtectionGroup1FormProvider, TypeOfProtectionGroup2FormProvider}
 import models.UserAnswers
-import models.event24.TypeOfProtectionSelection
+import models.event24.TypeOfProtectionGroup2.FixedProtection
+import models.event24.{TypeOfProtectionGroup1, TypeOfProtectionGroup2}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
-import pages.event24.TypeOfProtectionPage
+import pages.event24.{TypeOfProtectionGroup1Page, TypeOfProtectionGroup2Page}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event24.TypeOfProtectionView
+import views.html.event24.{TypeOfProtectionGroup1View, TypeOfProtectionGroup2View}
 
 import scala.concurrent.Future
 
-class TypeOfProtectionControllerSpec extends SpecBase with BeforeAndAfterEach {
+class TypeOfProtectionGroup2ControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new TypeOfProtectionFormProvider()
+  private val formProvider = new TypeOfProtectionGroup2FormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.TypeOfProtectionController.onPageLoad(waypoints, 0).url
-  private def postRoute: String = routes.TypeOfProtectionController.onSubmit(waypoints, 0).url
+  private def getRoute: String = routes.TypeOfProtectionGroup2Controller.onPageLoad(waypoints, 0).url
+  private def postRoute: String = routes.TypeOfProtectionGroup2Controller.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -67,7 +68,7 @@ class TypeOfProtectionControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[TypeOfProtectionView]
+        val view = application.injector.instanceOf[TypeOfProtectionGroup2View]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
@@ -76,19 +77,19 @@ class TypeOfProtectionControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(TypeOfProtectionPage(0), TypeOfProtectionSelection.values.head).success.value
+      val userAnswers = UserAnswers().set(TypeOfProtectionGroup2Page(0), TypeOfProtectionGroup2.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[TypeOfProtectionView]
+        val view = application.injector.instanceOf[TypeOfProtectionGroup2View]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(TypeOfProtectionSelection.values.head), waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(TypeOfProtectionGroup2.values.head), waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -102,13 +103,13 @@ class TypeOfProtectionControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", TypeOfProtectionSelection.values.head.toString))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody("value" -> FixedProtection.toString)
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(TypeOfProtectionPage(0), TypeOfProtectionSelection.values.head).success.value
+        val updatedAnswers = emptyUserAnswers.set(TypeOfProtectionGroup2Page(0), FixedProtection).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual TypeOfProtectionPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual TypeOfProtectionGroup2Page(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -122,7 +123,7 @@ class TypeOfProtectionControllerSpec extends SpecBase with BeforeAndAfterEach {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[TypeOfProtectionView]
+        val view = application.injector.instanceOf[TypeOfProtectionGroup2View]
         val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value

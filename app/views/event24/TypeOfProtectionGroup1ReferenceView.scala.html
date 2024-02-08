@@ -16,6 +16,8 @@
 
 @import controllers.event24.routes
 @import viewmodels.InputWidth._
+@import models.event24.TypeOfProtectionGroup1
+@import models.event24.TypeOfProtectionGroup1._
 
 @this(
     layout: templates.SchemeLayout,
@@ -25,26 +27,30 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, index: Index, protectionTypeDesc: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, index: Index, requiredReferenceTypes: Seq[TypeOfProtectionGroup1])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("typeOfProtectionReference.title", protectionTypeDesc))) {
+@layout(pageTitle = title(form, messages("typeOfProtectionReferenceGroup1.event24.title"))) {
 
-    @formHelper(action = routes.TypeOfProtectionReferenceController.onSubmit(waypoints, index)) {
+    @formHelper(action = routes.TypeOfProtectionGroup1ReferenceController.onSubmit(waypoints, index)) {
 
-        <h1 class="govuk-heading-xl">@messages("typeOfProtectionReference.heading", protectionTypeDesc)</h1>
+        <h1 class="govuk-heading-xl">@messages("typeOfProtectionReferenceGroup1.event24.heading")</h1>
+
+        <p class="govuk-body">@messages("typeOfProtection.p1")</p>
+        <div class="govuk-hint">@messages("typeOfProtection.p2")</div>
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @govukInput(
-            InputViewModel(
-                field = form("value"),
-                label = LabelViewModel(messages("typeOfProtection.p1"))
+        @requiredReferenceTypes.map { fieldName =>
+            @govukInput(
+                InputViewModel(
+                    field = form(fieldName.toString),
+                    label = LabelViewModel(messages(s"typeOfProtection.$fieldName"))
+                )
+                .withWidth(TwoThirds)
             )
-            .withWidth(Full)
-            .withHint(HintViewModel(messages("typeOfProtection.p2")))
-        )
+        }
 
         @govukButton(
             ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))

@@ -18,57 +18,48 @@ package controllers.event24
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import forms.event24.TypeOfProtectionReferenceFormProvider
+import forms.event24.TypeOfProtectionGroup2ReferenceFormProvider
 import models.enumeration.EventType
 import models.{Index, UserAnswers}
 import org.apache.commons.lang3.StringUtils
 import pages.Waypoints
-import pages.event24.{TypeOfProtectionPage, TypeOfProtectionReferencePage}
+import pages.event24.{TypeOfProtectionGroup2Page, TypeOfProtectionGroup2ReferencePage}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event24.TypeOfProtectionReferenceView
+import views.html.event24.TypeOfProtectionGroup2ReferenceView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TypeOfProtectionReferenceController @Inject()(val controllerComponents: MessagesControllerComponents,
-                                                    identify: IdentifierAction,
-                                                    getData: DataRetrievalAction,
-                                                    userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                    formProvider: TypeOfProtectionReferenceFormProvider,
-                                                    view: TypeOfProtectionReferenceView
+class TypeOfProtectionGroup2ReferenceController @Inject()(val controllerComponents: MessagesControllerComponents,
+                                                          identify: IdentifierAction,
+                                                          getData: DataRetrievalAction,
+                                                          userAnswersCacheConnector: UserAnswersCacheConnector,
+                                                          formProvider: TypeOfProtectionGroup2ReferenceFormProvider,
+                                                          view: TypeOfProtectionGroup2ReferenceView
                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
   private val eventType = EventType.Event24
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val protectionTypeDesc = getProtectionTypeDesc(request.userAnswers, index)
-    val preparedForm = request.userAnswers.flatMap(_.get(TypeOfProtectionReferencePage(index))).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, index, protectionTypeDesc))
+    val preparedForm = request.userAnswers.flatMap(_.get(TypeOfProtectionGroup2ReferencePage(index))).fold(form)(form.fill)
+    Ok(view(preparedForm, waypoints, index))
   }
 
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
-      val protectionTypeDesc = getProtectionTypeDesc(request.userAnswers, index)
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, index, protectionTypeDesc))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(TypeOfProtectionReferencePage(index), value)
+          val updatedAnswers = originalUserAnswers.setOrException(TypeOfProtectionGroup2ReferencePage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(TypeOfProtectionReferencePage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(TypeOfProtectionGroup2ReferencePage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )
   }
-
-  private def getProtectionTypeDesc(userAnswers: Option[UserAnswers], index: Index)(implicit messages: Messages): String = {
-    userAnswers.flatMap(_.get(TypeOfProtectionPage(index))) match {
-      case Some(typeOfProtection) => messages(s"typeOfProtection.${typeOfProtection.toString}").toLowerCase
-      case _ => StringUtils.EMPTY
-    }
-  }
-  }
+}

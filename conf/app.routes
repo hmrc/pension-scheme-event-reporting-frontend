@@ -640,11 +640,17 @@ POST        /report/:index/event-24-total-amount-benefit-crystallisation    cont
 GET         /report/:index/event-24-does-member-hold-valid-protection       controllers.event24.ValidProtectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /report/:index/event-24-does-member-hold-valid-protection       controllers.event24.ValidProtectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
-GET         /report/:index/event-24-type-of-protection-held                 controllers.event24.TypeOfProtectionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
-POST        /report/:index/event-24-type-of-protection-held                 controllers.event24.TypeOfProtectionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+GET         /report/:index/event-24-type-of-protection-held                 controllers.event24.TypeOfProtectionGroup1Controller.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST        /report/:index/event-24-type-of-protection-held                 controllers.event24.TypeOfProtectionGroup1Controller.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
-GET         /report/:index/event-24-protection-reference                    controllers.event24.TypeOfProtectionReferenceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
-POST        /report/:index/event-24-protection-reference                    controllers.event24.TypeOfProtectionReferenceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+GET         /report/:index/event-24-protection-reference                    controllers.event24.TypeOfProtectionGroup1ReferenceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST        /report/:index/event-24-protection-reference                    controllers.event24.TypeOfProtectionGroup1ReferenceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
+GET         /report/:index/event-24-other-protections-held                  controllers.event24.TypeOfProtectionGroup2Controller.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST        /report/:index/event-24-other-protections-held                  controllers.event24.TypeOfProtectionGroup2Controller.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+
+GET         /report/:index/event-24-other-protection-reference              controllers.event24.TypeOfProtectionGroup2ReferenceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
+POST        /report/:index/event-24-other-protection-reference              controllers.event24.TypeOfProtectionGroup2ReferenceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
 GET         /report/:index/event-24-is-member-over-available-lump-sum-allowance     controllers.event24.OverAllowanceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /report/:index/event-24-is-member-over-available-lump-sum-allowance     controllers.event24.OverAllowanceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)

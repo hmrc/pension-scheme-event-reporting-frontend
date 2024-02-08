@@ -16,52 +16,37 @@
 
 package pages.event24
 
-import controllers.event24.routes
+import models.UserAnswers
 import models.enumeration.EventType
-import models.{Index, UserAnswers}
 import pages.common.MembersPage
 import pages.{EmptyWaypoints, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.{Success, Try}
+case class TypeOfProtectionGroup2ReferencePage(index: Int) extends QuestionPage[String] {
 
-case class ValidProtectionPage(index: Index) extends QuestionPage[Boolean] {
-
-  override def path: JsPath = MembersPage(EventType.Event24)(index) \ ValidProtectionPage.toString
+  override def path: JsPath = MembersPage(EventType.Event24)(index) \ TypeOfProtectionGroup2ReferencePage.toString
 
   override def route(waypoints: Waypoints): Call =
-    routes.ValidProtectionController.onPageLoad(waypoints, index)
+    controllers.event24.routes.TypeOfProtectionGroup2ReferenceController.onPageLoad(waypoints, index)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(this).map {
-      case true => TypeOfProtectionGroup1Page(index)
-      case false => OverAllowancePage(index)
-    }.orRecover
-  }
-
-  override def cleanupBeforeSettingValue(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-    value match {
-      case Some(false) =>
-        Success(userAnswers
-          .remove(TypeOfProtectionGroup1Page(index))
-          .flatMap(_.remove(TypeOfProtectionGroup1ReferencePage(index)))
-          .getOrElse(userAnswers)
-        )
-      case _ => Success(userAnswers)
-    }
-  }
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    OverAllowancePage(index)
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
     val originalOptionSelected = originalAnswers.get(this)
     val updatedOptionSelected = updatedAnswers.get(this)
     val answerIsChanged = originalOptionSelected != updatedOptionSelected
 
-    if (answerIsChanged) { nextPageNormalMode(EmptyWaypoints, originalAnswers, updatedAnswers) }
-    else { Event24CheckYourAnswersPage(index) }
+    if (answerIsChanged) {
+      nextPageNormalMode(EmptyWaypoints, updatedAnswers)
+    }
+    else {
+      Event24CheckYourAnswersPage(index)
+    }
   }
 }
 
-object ValidProtectionPage {
-  override def toString: String = "validProtection"
+object TypeOfProtectionGroup2ReferencePage {
+  override def toString: String = "typeOfProtectionGroup2Reference"
 }

@@ -17,7 +17,7 @@
 package viewmodels.event24.checkAnswers
 
 import models.UserAnswers
-import pages.event24.{TypeOfProtectionPage, TypeOfProtectionReferencePage}
+import pages.event24.{TypeOfProtectionGroup1Page, TypeOfProtectionGroup1ReferencePage}
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -26,26 +26,27 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object TypeOfProtectionReferenceSummary {
+object TypeOfProtectionGroup1ReferenceSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, index: Int)
          (implicit messages: Messages): Option[SummaryListRow] = {
 
-    val protectionType = answers.get(TypeOfProtectionPage(index)) match {
+    val protectionType = answers.get(TypeOfProtectionGroup1Page(index)) match {
       case Some(value) => value
       case _ => None
     }
 
-    answers.get(TypeOfProtectionReferencePage(index)).map {
+    answers.get(TypeOfProtectionGroup1ReferencePage(index)).map {
       answer =>
 
         SummaryListRow(
           key = messages(s"typeOfProtectionReference.event24.checkYourAnswersLabel",
             messages(s"typeOfProtection.event24.${protectionType.toString}").toLowerCase()),
-          value = ValueViewModel(HtmlFormat.escape(answer).toString),
+          // TODO - sort out this value - answer.preCommencement is just a placeholder
+          value = ValueViewModel(HtmlFormat.escape(answer.preCommencement).toString),
           actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
-            ActionItemViewModel("site.change", TypeOfProtectionReferencePage(index).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", TypeOfProtectionGroup1ReferencePage(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("typeOfProtectionReference.event24.change.hidden",
                 messages(s"typeOfProtection.event24.${protectionType.toString}").toLowerCase()))
           )))

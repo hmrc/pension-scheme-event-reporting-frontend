@@ -22,7 +22,7 @@ import helpers.ReadOnlyCYA
 import models.Index
 import models.enumeration.EventType
 import models.enumeration.EventType.Event24
-import models.event24.TypeOfProtectionSelection._
+import models.event24.TypeOfProtectionGroup1.{NonResidenceEnhancement, PensionCreditsPreCRE, PreCommencement, RecognisedOverseasPSTE, SchemeSpecific}
 import models.requests.DataRequest
 import pages.event24._
 import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
@@ -74,33 +74,34 @@ class Event24CheckYourAnswersController @Inject()(
       BCETypeSelectionSummary.rowBCETypeSelection(request.userAnswers, waypoints, index, sourcePage, request.readOnly()) ++
       TotalAmountBenefitCrystallisationSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
       ValidProtectionSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
-      hasValidProtectionRow(waypoints, index, sourcePage) ++
+//      hasValidProtectionRow(waypoints, index, sourcePage) ++
       OverAllowanceSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
       hasOverAllowanceRow(waypoints, index, sourcePage)
   }
+// TODO - ensure all protections listed here
 
-  private def hasValidProtectionRow(waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
-                                   (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    request.userAnswers.get(ValidProtectionPage(index)) match {
-      case Some(true) =>
-        (TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()) ++
-          hasProtectionReference(waypoints, index, sourcePage)).toSeq
-      case _ =>
-        Nil
-    }
-  }
+//  private def hasValidProtectionRow(waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+//                                   (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+//    request.userAnswers.get(ValidProtectionPage(index)) match {
+//      case Some(true) =>
+//        (TypeOfProtectionGroup1Summary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly())
+//          ++
+//          hasProtectionReference(waypoints, index, sourcePage)).toSeq
+//      case _ =>
+//        Nil
+//    }
+//  }
 
-  private def hasProtectionReference(waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
-                                    (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    request.userAnswers.get(TypeOfProtectionPage(index)) match {
-      case Some(SchemeSpecific) => Nil
-      case Some(EnhancedProtection | EnhancedProtectionWithProtectedSum | FixedProtection | FixedProtection2014 | FixedProtection2016 |
-                IndividualProtection2014 | IndividualProtection2016 | NonResidenceEnhancement | PensionCreditsPreCRE |
-                PreCommencement | Primary | PrimaryWithProtectedSum | RecognisedOverseasPSTE) =>
-        TypeOfProtectionReferenceSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq
-      case _ => Nil
-    }
-  }
+//  private def hasProtectionReference(waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
+//                                    (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
+//    request.userAnswers.get(TypeOfProtectionGroup1Page(index)) match {
+//      case Some(SchemeSpecific) => Nil
+//      case Some(NonResidenceEnhancement | PensionCreditsPreCRE |
+//                PreCommencement | RecognisedOverseasPSTE) =>
+//        TypeOfProtectionGroup1ReferenceSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq
+//      case _ => Nil
+//    }
+//  }
 
   private def hasOverAllowanceRow(waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {

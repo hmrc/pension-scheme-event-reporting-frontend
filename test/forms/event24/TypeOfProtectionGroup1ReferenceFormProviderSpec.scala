@@ -21,17 +21,17 @@ import forms.mappings.Constraints
 import play.api.data.FormError
 import wolfendale.scalacheck.regexp.RegexpGen
 
-class TypeOfProtectionReferenceFormProviderSpec extends StringFieldBehaviours with Constraints {
+class TypeOfProtectionGroup1ReferenceFormProviderSpec extends StringFieldBehaviours with Constraints {
 
   private val requiredKey = "typeOfProtectionReference.error.required"
   private val lengthKey = "typeOfProtectionReference.event24.error.length"
   private val maxLength = 15
 
-  private val form = new TypeOfProtectionReferenceFormProvider()()
+  private val form = new TypeOfProtectionGroup1ReferenceFormProvider()()
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName = "nonResidenceEnhancement"
 
     behave like fieldThatBindsValidData(
       form,

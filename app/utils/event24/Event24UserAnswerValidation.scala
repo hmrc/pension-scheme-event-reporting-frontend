@@ -17,7 +17,7 @@
 package utils.event24
 
 import models.enumeration.EventType.Event24
-import models.event24.TypeOfProtectionSelection
+import models.event24.TypeOfProtectionGroup1
 import models.requests.DataRequest
 import models.{Index, MemberSummaryPath}
 import pages.EmptyWaypoints
@@ -79,16 +79,16 @@ class Event24UserAnswerValidation @Inject()(compileService: CompileService) {
   }
 
   def validateSelectProtection(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
-    val selectProtectionAnswer = request.userAnswers.get(TypeOfProtectionPage(index))
-    val protectionReferenceAnswer = request.userAnswers.get(TypeOfProtectionReferencePage(index))
+    val selectProtectionAnswer = request.userAnswers.get(TypeOfProtectionGroup1Page(index))
+    val protectionReferenceAnswer = request.userAnswers.get(TypeOfProtectionGroup1ReferencePage(index))
 
     (selectProtectionAnswer, protectionReferenceAnswer) match {
-      case (Some(TypeOfProtectionSelection.SchemeSpecific), None) | (Some(_), Some(_)) => validateOverAllowance(index)
+//      case (Some(TypeOfProtectionGroup1.SchemeSpecific), None) | (Some(_), Some(_)) => validateOverAllowance(index)
       case (Some(_), None) => Future.successful(
-        Redirect(TypeOfProtectionReferencePage(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url)
+        Redirect(TypeOfProtectionGroup1ReferencePage(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url)
       )
       case _ => Future.successful(
-        Redirect(pages.event24.TypeOfProtectionPage(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url)
+        Redirect(pages.event24.TypeOfProtectionGroup1Page(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url)
       )
     }
   }

@@ -17,14 +17,22 @@
 package forms.event24
 
 import forms.mappings.Mappings
-import models.event24.TypeOfProtectionSelection
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class TypeOfProtectionFormProvider @Inject() extends Mappings {
-  def apply(): Form[TypeOfProtectionSelection] =
+class TypeOfProtectionGroup2ReferenceFormProvider @Inject() extends Mappings {
+
+  val minLength: Int = 8
+  val maxLength: Int = 15
+
+  def apply(): Form[String] =
     Form(
-      "value" -> enumerable[TypeOfProtectionSelection]("typeOfProtection.event24.error.required", "typeOfProtection.event24.error.format")
+      "value" -> text("typeOfProtectionReference.error.required")
+        .verifying(
+          firstError(
+            maxLength(maxLength, "typeOfProtectionReference.event24.error.length"),
+            regexp(protectionReferenceRegex, "typeOfProtectionReference.error.invalid"))
+        )
     )
 }

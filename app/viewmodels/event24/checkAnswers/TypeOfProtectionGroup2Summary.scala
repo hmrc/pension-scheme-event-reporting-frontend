@@ -17,7 +17,7 @@
 package viewmodels.event24.checkAnswers
 
 import models.{Index, UserAnswers}
-import pages.event24.TypeOfProtectionPage
+import pages.event24.TypeOfProtectionGroup2Page
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -26,11 +26,11 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object TypeOfProtectionSummary {
+object TypeOfProtectionGroup2Summary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TypeOfProtectionPage(index)).map {
+    answers.get(TypeOfProtectionGroup2Page(index)).map {
       answer =>
         val value = ValueViewModel(
           HtmlContent(
@@ -43,7 +43,7 @@ object TypeOfProtectionSummary {
           value = value,
           actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
-            ActionItemViewModel("site.change", TypeOfProtectionPage(index).changeLink(waypoints, sourcePage).url)
+            ActionItemViewModel("site.change", TypeOfProtectionGroup2Page(index).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("typeOfProtection.event24.change.hidden"))
           )))
           }

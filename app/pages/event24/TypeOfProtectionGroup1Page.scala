@@ -17,38 +17,31 @@
 package pages.event24
 
 import models.enumeration.EventType
+import models.event24.TypeOfProtectionGroup1
+import models.event24.TypeOfProtectionGroup1.SchemeSpecific
 import models.{Index, UserAnswers}
-import models.event24.TypeOfProtectionSelection
-import models.event24.TypeOfProtectionSelection.SchemeSpecific
 import pages.common.MembersPage
-import pages.{EmptyWaypoints, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{EmptyWaypoints, JourneyRecoveryPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.{Success, Try}
-
-case class TypeOfProtectionPage(index: Index) extends QuestionPage[TypeOfProtectionSelection] {
-  override def path: JsPath = MembersPage(EventType.Event24)(index) \ TypeOfProtectionPage.toString
+case class TypeOfProtectionGroup1Page(index: Index) extends QuestionPage[Set[TypeOfProtectionGroup1]] {
+  override def path: JsPath = MembersPage(EventType.Event24)(index) \ TypeOfProtectionGroup1Page.toString
 
   override def route(waypoints: Waypoints): Call = {
-    controllers.event24.routes.TypeOfProtectionController.onPageLoad(waypoints, index)
+    controllers.event24.routes.TypeOfProtectionGroup1Controller.onPageLoad(waypoints, index)
   }
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    answers.get(this).map {
-      case SchemeSpecific => OverAllowancePage(index)
-      case _ => TypeOfProtectionReferencePage(index)
-    }.orRecover
-  }
-
-  override def cleanupBeforeSettingValue(value: Option[TypeOfProtectionSelection], userAnswers: UserAnswers): Try[UserAnswers] = {
-    value match {
-      case Some(SchemeSpecific) =>
-        Success(userAnswers
-          .remove(TypeOfProtectionReferencePage(index))
-          .getOrElse(userAnswers)
-        )
-      case _ => Success(userAnswers)
+    answers.get(this) match {
+      case Some(values) => {
+        if (values.head == SchemeSpecific) {
+          TypeOfProtectionGroup2Page(index)
+        } else {
+          TypeOfProtectionGroup1ReferencePage(index)
+        }
+      }
+      case _ => JourneyRecoveryPage
     }
   }
 
@@ -62,6 +55,6 @@ case class TypeOfProtectionPage(index: Index) extends QuestionPage[TypeOfProtect
   }
 }
 
-object TypeOfProtectionPage {
-  override def toString: String = "typeOfProtection"
+object TypeOfProtectionGroup1Page {
+  override def toString: String = "typeOfProtectionGroup1"
 }

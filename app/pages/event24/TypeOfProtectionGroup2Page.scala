@@ -16,8 +16,9 @@
 
 package pages.event24
 
-import controllers.event24.routes
 import models.enumeration.EventType
+import models.event24.TypeOfProtectionGroup2
+import models.event24.TypeOfProtectionGroup2.NoOtherProtections
 import models.{Index, UserAnswers}
 import pages.common.MembersPage
 import pages.{EmptyWaypoints, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
@@ -26,26 +27,25 @@ import play.api.mvc.Call
 
 import scala.util.{Success, Try}
 
-case class ValidProtectionPage(index: Index) extends QuestionPage[Boolean] {
+case class TypeOfProtectionGroup2Page(index: Index) extends QuestionPage[TypeOfProtectionGroup2] {
+  override def path: JsPath = MembersPage(EventType.Event24)(index) \ TypeOfProtectionGroup2Page.toString
 
-  override def path: JsPath = MembersPage(EventType.Event24)(index) \ ValidProtectionPage.toString
-
-  override def route(waypoints: Waypoints): Call =
-    routes.ValidProtectionController.onPageLoad(waypoints, index)
+  override def route(waypoints: Waypoints): Call = {
+    controllers.event24.routes.TypeOfProtectionGroup2Controller.onPageLoad(waypoints, index)
+  }
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
-      case true => TypeOfProtectionGroup1Page(index)
-      case false => OverAllowancePage(index)
+      case NoOtherProtections => OverAllowancePage(index)
+      case _ => TypeOfProtectionGroup2ReferencePage(index)
     }.orRecover
   }
 
-  override def cleanupBeforeSettingValue(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanupBeforeSettingValue(value: Option[TypeOfProtectionGroup2], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
-      case Some(false) =>
+      case Some(NoOtherProtections) =>
         Success(userAnswers
-          .remove(TypeOfProtectionGroup1Page(index))
-          .flatMap(_.remove(TypeOfProtectionGroup1ReferencePage(index)))
+          .remove(TypeOfProtectionGroup2ReferencePage(index))
           .getOrElse(userAnswers)
         )
       case _ => Success(userAnswers)
@@ -62,6 +62,6 @@ case class ValidProtectionPage(index: Index) extends QuestionPage[Boolean] {
   }
 }
 
-object ValidProtectionPage {
-  override def toString: String = "validProtection"
+object TypeOfProtectionGroup2Page {
+  override def toString: String = "typeOfProtectionGroup2"
 }

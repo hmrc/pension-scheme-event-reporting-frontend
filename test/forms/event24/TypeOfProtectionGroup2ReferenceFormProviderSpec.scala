@@ -16,25 +16,34 @@
 
 package forms.event24
 
-import forms.behaviours.OptionFieldBehaviours
-import models.event24.TypeOfProtectionSelection
+import forms.behaviours.StringFieldBehaviours
+import forms.mappings.Constraints
 import play.api.data.FormError
+import wolfendale.scalacheck.regexp.RegexpGen
 
-class TypeOfProtectionFormProviderSpec extends OptionFieldBehaviours {
+class TypeOfProtectionGroup2ReferenceFormProviderSpec extends StringFieldBehaviours with Constraints {
 
-  private val form = new TypeOfProtectionFormProvider()()
+  private val requiredKey = "typeOfProtectionReference.error.required"
+  private val lengthKey = "typeOfProtectionReference.event24.error.length"
+  private val maxLength = 15
+
+  private val form = new TypeOfProtectionGroup2ReferenceFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
-    val formatKey = "typeOfProtection.event24.error.format"
-    val requiredKey = "typeOfProtection.event24.error.required"
 
-    behave like optionsField[TypeOfProtectionSelection](
+    behave like fieldThatBindsValidData(
       form,
       fieldName,
-      validValues  = TypeOfProtectionSelection.values,
-      invalidError = FormError(fieldName, formatKey)
+      RegexpGen.from(protectionReferenceRegex)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
