@@ -31,7 +31,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.domain.{PsaId, PspId}
-import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException, SessionKeys}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -205,9 +205,12 @@ class AuthenticatedIdentifierAction @Inject()(
   private def schemeAuthorisedForPsp(pspId: String, pstr: String)(implicit headerCarrier: HeaderCarrier): Future[Boolean] = {
     schemeConnector.getPspSchemeDetails(pspId, pstr).map { details =>
       details.pspDetails.exists(_.id == pspId)
-    } recover { err =>
-      logger.error("getSchemeDetails returned an error", err)
-      false
+    } recover {
+      case notFound: NotFoundException if notFound.message.contains("PSP_RELATIONSHIP_NOT_FOUND") =>
+        false
+      case err =>
+        logger.error("getSchemeDetails returned an error", err)
+        false
     }
   }
 }

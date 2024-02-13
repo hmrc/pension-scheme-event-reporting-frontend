@@ -36,7 +36,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException, SessionKeys}
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -427,6 +427,43 @@ class IdentifierActionSpec
       )
       when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
         PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId, AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId)))
+      ))
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+        .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
+      val controller = new Harness(authAction)
+      val enrolments = Enrolments(Set(
+        Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None),
+        Enrolment(pspEnrolmentKey, Seq(EnrolmentIdentifier("PSPID", pspId)), "Activated", None)
+      ))
+
+      val pstrInDB = "456"
+      val pstrJson = Json.obj(
+        "eventReporting" -> Json.obj(
+          "pstr" -> pstrInDB,
+          "schemeName" -> "schemeName",
+          "returnUrl" -> "returnUrl",
+          "srn" -> "srn"
+        )
+      )
+
+      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+        .thenReturn(Future.successful(Some(pstrJson)))
+
+      when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(Some("id"), enrolments)))
+
+      val result = controller.onPageLoad()(fakeRequest)
+      status(result) mustBe OK
+    }
+
+    "with PSA when both enrolments are available and PSP throw PSP_RELATIONSHIP_NOT_FOUND error" in {
+      when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
+        PsaSchemeDetails("test scheme", "test pstr", "test status", Some(Seq(
+          PsaDetails(psaId, None, None, None)
+        ))))
+      )
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.failed(
+        new NotFoundException("PSP_RELATIONSHIP_NOT_FOUND")
       ))
       when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
         .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
