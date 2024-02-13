@@ -1911,10 +1911,14 @@ typeOfProtection.event24.primary = Primary protection
 typeOfProtection.event24.primaryWithProtectedSum = Primary protection with protected lump sum rights of more than £375,000
 typeOfProtection.event24.recognisedOverseasPSTE = Recognised overseas pension scheme transfer enhancement
 typeOfProtection.event24.schemeSpecific = Scheme-specific lump sum protection
-typeOfProtectionGroup1.event24.checkYourAnswersLabel = What type of protection or enhancement is held for the member’s relevant benefit crystallisation event?
 typeOfProtectionGroup1.event24.change.hidden = What type of protection or enhancement is held for the member’s relevant benefit crystallisation event?
-typeOfProtectionGroup2.event24.checkYourAnswersLabel = Are any other protections or enhancements held for the relevant benefit crystallisation event?
+typeOfProtectionGroup2.event24.checkYourAnswersLabel = Protections or enhancements relied upon for the relevant benefit crystallisation event
 typeOfProtectionGroup2.event24.change.hidden = Are any other protections or enhancements held for the relevant benefit crystallisation event?
+nonResidenceEnhancement.event24.checkYourAnswersLabel = Non-residence reference:
+pensionCreditsPreCRE.event24.checkYourAnswersLabel = Pension credits reference:
+preCommencement.event24.checkYourAnswersLabel = Pre-commencement pension reference:
+recognisedOverseasPSTE.event24.checkYourAnswersLabel = Recognised overseas pension reference:
+schemeSpecific.event24.checkYourAnswersLabel = Scheme specific lump sum protection:
 
 typeOfProtectionReferenceGroup1.event24.heading = What are the associated references for the member’s protections or enhancements?
 typeOfProtectionReferenceGroup1.event24.title = What are the associated references for the member’s protections or enhancements?

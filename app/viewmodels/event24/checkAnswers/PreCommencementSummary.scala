@@ -17,7 +17,7 @@
 package viewmodels.event24.checkAnswers
 
 import models.{Index, UserAnswers}
-import pages.event24.{TypeOfProtectionGroup2Page, TypeOfProtectionGroup2ReferencePage}
+import pages.event24.{TypeOfProtectionGroup1Page, TypeOfProtectionGroup1ReferencePage}
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
@@ -25,25 +25,24 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object TypeOfProtectionGroup2Summary {
+object PreCommencementSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
-         (implicit messages: Messages): Option[SummaryListRow] = {
-    for {
-      typeOfProtectionAnswer <- answers.get(TypeOfProtectionGroup2Page(index))
-      protectionReference <- answers.get(TypeOfProtectionGroup2ReferencePage(index))
-    } yield {
-      val keyText = messages(s"typeOfProtection.event24.$typeOfProtectionAnswer") + ":"
-      SummaryListRow(
-        key = keyText,
-        value = ValueViewModel(protectionReference),
-        actions = if (isReadOnly) None else {
-          Some(Actions(items = Seq(
-            ActionItemViewModel("site.change", TypeOfProtectionGroup2Page(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("typeOfProtection.event24.change.hidden"))
-          )))
-        }
-      )
+         (implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(TypeOfProtectionGroup1ReferencePage(index)).map {
+      answer =>
+
+        val value = answer.preCommencement
+
+        SummaryListRow(
+          key     = "preCommencement.event24.checkYourAnswersLabel",
+          value   = ValueViewModel(value),
+          actions = if (isReadOnly) None else {
+            Some(Actions(items = Seq(
+              ActionItemViewModel("site.change", TypeOfProtectionGroup1Page(index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("typeOfProtection.event24.change.hidden"))
+            )))
+          }
+        )
     }
-  }
 }

@@ -18,21 +18,21 @@ package controllers.event24
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event24.{TypeOfProtectionGroup1FormProvider, TypeOfProtectionGroup2FormProvider}
+import forms.event24.TypeOfProtectionGroup2FormProvider
 import models.UserAnswers
+import models.event24.TypeOfProtectionGroup2
 import models.event24.TypeOfProtectionGroup2.FixedProtection
-import models.event24.{TypeOfProtectionGroup1, TypeOfProtectionGroup2}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
-import pages.event24.{TypeOfProtectionGroup1Page, TypeOfProtectionGroup2Page}
+import pages.event24.TypeOfProtectionGroup2Page
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event24.{TypeOfProtectionGroup1View, TypeOfProtectionGroup2View}
+import views.html.event24.TypeOfProtectionGroup2View
 
 import scala.concurrent.Future
 

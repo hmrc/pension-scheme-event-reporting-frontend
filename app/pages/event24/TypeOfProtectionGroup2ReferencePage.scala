@@ -33,18 +33,8 @@ case class TypeOfProtectionGroup2ReferencePage(index: Int) extends QuestionPage[
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     OverAllowancePage(index)
 
-  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
-    val originalOptionSelected = originalAnswers.get(this)
-    val updatedOptionSelected = updatedAnswers.get(this)
-    val answerIsChanged = originalOptionSelected != updatedOptionSelected
-
-    if (answerIsChanged) {
-      nextPageNormalMode(EmptyWaypoints, updatedAnswers)
-    }
-    else {
-      Event24CheckYourAnswersPage(index)
-    }
-  }
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
+    Event24CheckYourAnswersPage(index)
 }
 
 object TypeOfProtectionGroup2ReferencePage {

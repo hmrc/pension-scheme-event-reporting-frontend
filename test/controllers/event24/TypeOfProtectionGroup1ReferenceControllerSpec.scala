@@ -21,7 +21,6 @@ import connectors.UserAnswersCacheConnector
 import forms.event24.TypeOfProtectionGroup1ReferenceFormProvider
 import models.UserAnswers
 import models.event24.{ProtectionReferenceData, TypeOfProtectionGroup1}
-import models.event24.TypeOfProtectionGroup1.{NonResidenceEnhancement, PensionCreditsPreCRE, PreCommencement, RecognisedOverseasPSTE, SchemeSpecific}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach

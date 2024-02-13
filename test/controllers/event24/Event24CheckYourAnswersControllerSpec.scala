@@ -20,7 +20,7 @@ import base.SpecBase
 import models.common.MembersDetails
 import models.enumeration.EventType.Event24
 import models.enumeration.VersionStatus.{Compiled, Submitted}
-import models.event24.{BCETypeSelection, CrystallisedDate, ProtectionReferenceData, TypeOfProtectionGroup1}
+import models.event24.{BCETypeSelection, CrystallisedDate, ProtectionReferenceData, TypeOfProtectionGroup1, TypeOfProtectionGroup2}
 import models.{EROverview, EROverviewVersion, MemberSummaryPath, TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -128,7 +128,8 @@ class Event24CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         .set(TotalAmountBenefitCrystallisationPage(0), BigDecimal(123)).get
         .set(ValidProtectionPage(0), true).get
         .set(TypeOfProtectionGroup1Page(0), TypeOfProtectionGroup1Answer).get
-        .set(TypeOfProtectionGroup1ReferencePage(0), ProtectionReferenceData("", "", "abcdef123", "")).get
+        .set(TypeOfProtectionGroup1ReferencePage(0), ProtectionReferenceData("", "", "", "abcdef123")).get
+        .set(TypeOfProtectionGroup2Page(0), TypeOfProtectionGroup2.NoOtherProtections).get
         .set(OverAllowancePage(0), false).get
         .set(OverAllowanceAndDeathBenefitPage(0), true).get
         .set(MarginalRatePage(0), true).get
@@ -142,8 +143,8 @@ class Event24CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-//        redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event24)).url
-//        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
+        redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event24)).url
+        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
       }
     }
     "must redirect to the correct page onClick if an answers is missing" in {

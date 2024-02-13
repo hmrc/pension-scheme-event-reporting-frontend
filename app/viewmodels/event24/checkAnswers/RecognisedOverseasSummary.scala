@@ -16,42 +16,33 @@
 
 package viewmodels.event24.checkAnswers
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import pages.event24.{TypeOfProtectionGroup1Page, TypeOfProtectionGroup1ReferencePage}
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object TypeOfProtectionGroup1ReferenceSummary {
+object RecognisedOverseasSummary {
 
-  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, index: Int)
-         (implicit messages: Messages): Option[SummaryListRow] = {
-
-    val protectionType = answers.get(TypeOfProtectionGroup1Page(index)) match {
-      case Some(value) => value
-      case _ => None
-    }
-
+  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TypeOfProtectionGroup1ReferencePage(index)).map {
       answer =>
 
+        val value = answer.recognisedOverseasPSTE
+
         SummaryListRow(
-          key = messages(s"typeOfProtectionReference.event24.checkYourAnswersLabel",
-            messages(s"typeOfProtection.event24.${protectionType.toString}").toLowerCase()),
-          // TODO - sort out this value - answer.preCommencement is just a placeholder
-          value = ValueViewModel(HtmlFormat.escape(answer.preCommencement).toString),
+          key     = "recognisedOverseasPSTE.event24.checkYourAnswersLabel",
+          value   = ValueViewModel(value),
           actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
-            ActionItemViewModel("site.change", TypeOfProtectionGroup1ReferencePage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("typeOfProtectionReference.event24.change.hidden",
-                messages(s"typeOfProtection.event24.${protectionType.toString}").toLowerCase()))
-          )))
+              ActionItemViewModel("site.change", TypeOfProtectionGroup1Page(index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("typeOfProtection.event24.change.hidden"))
+            )))
           }
         )
     }
-  }
 }

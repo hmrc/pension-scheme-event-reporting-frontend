@@ -21,10 +21,9 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.event24.TypeOfProtectionGroup2ReferenceFormProvider
 import models.enumeration.EventType
 import models.{Index, UserAnswers}
-import org.apache.commons.lang3.StringUtils
 import pages.Waypoints
-import pages.event24.{TypeOfProtectionGroup2Page, TypeOfProtectionGroup2ReferencePage}
-import play.api.i18n.{I18nSupport, Messages}
+import pages.event24.TypeOfProtectionGroup2ReferencePage
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event24.TypeOfProtectionGroup2ReferenceView

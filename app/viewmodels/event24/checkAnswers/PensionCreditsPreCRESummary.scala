@@ -17,35 +17,31 @@
 package viewmodels.event24.checkAnswers
 
 import models.{Index, UserAnswers}
-import pages.event24.TypeOfProtectionGroup1Page
+import pages.event24.{TypeOfProtectionGroup1Page, TypeOfProtectionGroup1ReferencePage}
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, HtmlContent}
+import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object TypeOfProtectionGroup1Summary {
+object PensionCreditsPreCRESummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TypeOfProtectionGroup1Page(index)).map {
+    answers.get(TypeOfProtectionGroup1ReferencePage(index)).map {
       answer =>
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"typeOfProtection.event24.$answer"))
-          )
-        )
+
+        val value = answer.pensionCreditsPreCRE
 
         SummaryListRow(
-          key = "typeOfProtection.event24.checkYourAnswersLabel",
-          value = value,
+          key     = "pensionCreditsPreCRE.event24.checkYourAnswersLabel",
+          value   = ValueViewModel(value),
           actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
-            ActionItemViewModel("site.change", TypeOfProtectionGroup1Page(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("typeOfProtection.event24.change.hidden"))
-          )))
+              ActionItemViewModel("site.change", TypeOfProtectionGroup1Page(index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("typeOfProtection.event24.change.hidden"))
+            )))
           }
         )
     }

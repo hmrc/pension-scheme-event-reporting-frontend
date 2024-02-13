@@ -25,7 +25,7 @@ import forms.event24._
 import models.Index
 import models.enumeration.EventType
 import models.enumeration.EventType.Event24
-import models.event24.{BCETypeSelection, CrystallisedDate, ProtectionReferenceData, TypeOfProtectionGroup1}
+import models.event24.{BCETypeSelection, CrystallisedDate, ProtectionReferenceData}
 import models.fileUpload.FileUploadHeaders.Event24FieldNames._
 import models.fileUpload.FileUploadHeaders.valueFormField
 import pages.common.MembersDetailsPage
