@@ -1725,9 +1725,9 @@ problemWithService.p = We could not process your file upload
 problemWithService.link = Try uploading your file again.
 
 chooseTaxYear.event22.error.outsideRange = The tax year must be between {0} and {1}
-pspDeclaration.error.required = Enter the scheme administrator's ID
-pspDeclaration.error.invalid = The scheme administrator's ID must only include letters and numbers
-pspDeclaration.error.length = The scheme administrator's ID must be the letter A followed by 7 numbers, like A 9999999
+pspDeclaration.error.required = Enter the scheme administrator’s ID
+pspDeclaration.error.invalid = The scheme administrator’s ID must only include letters and numbers
+pspDeclaration.error.length = The scheme administrator’s ID must be the letter A followed by 7 numbers, like A 9999999
 PspDeclaration.change.hidden = DeclarationPsp
 pspDeclaration.error.noMatch = Enter the correct pension scheme administrator ID
 
