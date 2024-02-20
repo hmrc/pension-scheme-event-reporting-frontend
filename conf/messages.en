@@ -1572,6 +1572,11 @@ fileUpload.error.rejected.list.b3 = music or other audio files
 fileUpload.error.rejected.list.b4 = any other information that is not text
 fileUpload.error.rejected.p2 = Make sure your file is in the .csv format and remove any unnecessary information. Then upload it again, or upload a different file.
 
+fileUpload.error.invalidHeadersOrEmpty.title = Your file contains invalid headers or is empty
+fileUpload.error.invalidHeadersOrEmpty.heading = Your file contains invalid headers or is empty
+fileUpload.error.invalidHeadersOrEmpty.p1 = Ensure that the file you are uploading is in the same format as the template provided.
+fileUpload.error.invalidHeadersOrEmpty.p2 = Do not delete or change the order of any of the headers.
+
 fileUpload.error.rejected.EntityTooLarge = The file must be smaller than {0}MB
 fileUpload.error.rejected.InvalidArgument = No file has been uploaded
 
@@ -1786,6 +1791,11 @@ fileUpload.bceDate.generic.error = benefit crystallisation date is missing or in
 fileUpload.bceType.generic.error = type of benefit cystallisation is missing or in the wrong format
 fileUpload.validProtection.generic.error = entry of whether member holds valid protection is missing or in the wrong format
 fileUpload.protectionType.generic.error = type of protection is missing or in the wrong format
+fileUpload.nonResidenceReference.generic.error = The non-residence enhancement reference is a maximum of 15 characters and a combination of numbers and letters
+fileUpload.pensionCreditsReference.generic.error = The pension credits reference is a maximum of 15 characters and a combination of numbers and letters
+fileUpload.preCommencementReference.generic.error = The pre-commencement pension credits enhancement reference is a maximum of 15 characters and a combination of numbers and letters
+fileUpload.overseasReference.generic.error = The recognised overseas pension scheme transfer enhancement reference is a maximum of 15 characters and a combination of numbers and letters
+fileUpload.schemeSpecific.generic.error = scheme specific lump sum protection relied upon value is missing or in the wrong format
 fileUpload.overAllowance.generic.error = entry of whether the lump sum payment has taken the member over their available lump sum allowance is missing or in the wrong format
 fileUpload.overAllowanceAndDeathBenefit.generic.error = entry of whether the lump sum payment has taken the member over their available lump sum allowance and death benefit is missing or in the wrong format
 fileUpload.marginalRate.generic.error = entry of whether the excess has been taxed at marginal rate is missing or in the wrong format
@@ -1866,7 +1876,6 @@ bceTypeSelection.event24.pensionProtection = Pension protection lump sum death b
 bceTypeSelection.event24.small = Small lump sum
 bceTypeSelection.event24.standAlone = Stand-alone lump sum
 bceTypeSelection.event24.trivialCommutation = Trivial commutation lump sum
-bceTypeSelection.event24.trivialCommutationDeathBenefit = Trivial commutation lump sum death benefit
 bceTypeSelection.event24.seriousHealthLumpSum = Serious ill health lump sum
 bceTypeSelection.event24.uncrystallisedFunds = Uncrystallised funds pension lump sum
 bceTypeSelection.event24.uncrystallisedFundsDeathBenefit = Uncrystallised funds lump sum death benefit

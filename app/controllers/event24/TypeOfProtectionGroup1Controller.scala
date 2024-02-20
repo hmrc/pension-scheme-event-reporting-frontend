@@ -58,6 +58,7 @@ class TypeOfProtectionGroup1Controller @Inject()(
           Future.successful(BadRequest(view(formWithErrors, waypoints, index)))
         },
         value => {
+          val x = form.bindFromRequest()
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(TypeOfProtectionGroup1Page(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>

@@ -309,6 +309,12 @@ GET         /report/event-22-wrong-format                                     co
 GET         /report/event-23-wrong-format                                     controllers.fileUpload.FileRejectedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 GET         /report/event-24-wrong-format                                     controllers.fileUpload.FileRejectedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event24)
 
+GET         /report/event-1-incorrect-headers-or-empty                        controllers.fileUpload.InvalidHeadersOrEmptyFileController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1)
+GET         /report/event-6-incorrect-headers-or-empty                        controllers.fileUpload.InvalidHeadersOrEmptyFileController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6)
+GET         /report/event-22-incorrect-headers-or-empty                       controllers.fileUpload.InvalidHeadersOrEmptyFileController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
+GET         /report/event-23-incorrect-headers-or-empty                       controllers.fileUpload.InvalidHeadersOrEmptyFileController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
+GET         /report/event-24-incorrect-headers-or-empty                       controllers.fileUpload.InvalidHeadersOrEmptyFileController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event24)
+
 GET         /report/event-1-checking-file                                     controllers.fileUpload.ProcessingRequestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1)
 GET         /report/event-6-checking-file                                     controllers.fileUpload.ProcessingRequestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6)
 GET         /report/event-22-checking-file                                    controllers.fileUpload.ProcessingRequestController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)

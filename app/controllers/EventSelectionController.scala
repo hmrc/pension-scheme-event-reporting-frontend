@@ -89,7 +89,7 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
   }
 
   private def getFilteredOptions(ua: UserAnswers)(implicit messages: Messages): Seq[RadioItem] = {
-    val eventsToRemove: Seq[EventSelection] = TaxYear.getSelectedTaxYear(ua).startYear.toInt >= config.event24StartYear match {
+    val eventsToRemove: Seq[EventSelection] = TaxYear.getSelectedTaxYear(ua).startYear.toInt >= config.ltaAbolitionStartYear match {
       case true => Seq(Event2, Event6, Event7, Event8, Event8A)
       case false => Seq(Event24)
     }

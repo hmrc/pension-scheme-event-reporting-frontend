@@ -302,7 +302,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                              errors: Seq[ValidationError])(implicit messages: Messages): ParsingAndValidationOutcome = {
     errors match {
       case Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty) =>
-        ParsingAndValidationOutcome(status = GeneralError)
+        ParsingAndValidationOutcome(status = IncorrectHeadersOrEmptyFile)
       case _ =>
         if (errors.size <= maximumNumberOfError) {
           ParsingAndValidationOutcome(

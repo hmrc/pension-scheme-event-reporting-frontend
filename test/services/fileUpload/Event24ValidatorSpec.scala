@@ -145,8 +145,10 @@ object Event24ValidatorSpec {
   private val overAllowanceFormProvider = new OverAllowanceFormProvider
   private val overAllowanceAndDeathBenefitFormProvider = new OverAllowanceAndDeathBenefitFormProvider
   private val totalAmountBenefitCrystallisationFormProvider = new TotalAmountBenefitCrystallisationFormProvider
-  private val typeOfProtectionFormProvider = new TypeOfProtectionGroup1FormProvider
-  private val typeOfProtectionReferenceFormProvider = new TypeOfProtectionGroup1ReferenceFormProvider
+  private val typeOfProtectionGroup1FormProvider = new TypeOfProtectionGroup1FormProvider
+  private val typeOfProtectionGroup1ReferenceFormProvider = new TypeOfProtectionGroup1ReferenceFormProvider
+  private val typeOfProtectionGroup2FormProvider = new TypeOfProtectionGroup2FormProvider
+  private val typeOfProtectionGroup2ReferenceFormProvider = new TypeOfProtectionGroup2ReferenceFormProvider
   private val validProtectionFormProvider = new ValidProtectionFormProvider
 
   private val validator = new Event24Validator(
@@ -158,8 +160,10 @@ object Event24ValidatorSpec {
     overAllowanceFormProvider,
     overAllowanceAndDeathBenefitFormProvider,
     totalAmountBenefitCrystallisationFormProvider,
-    typeOfProtectionFormProvider,
-    typeOfProtectionReferenceFormProvider,
+    typeOfProtectionGroup1FormProvider,
+    typeOfProtectionGroup1ReferenceFormProvider,
+    typeOfProtectionGroup2FormProvider,
+    typeOfProtectionGroup2ReferenceFormProvider,
     validProtectionFormProvider,
     mockFrontendAppConfig
   )
