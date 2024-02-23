@@ -21,7 +21,7 @@ import models.event24.TypeOfProtectionGroup2
 import models.event24.TypeOfProtectionGroup2.NoOtherProtections
 import models.{Index, UserAnswers}
 import pages.common.MembersPage
-import pages.{EmptyWaypoints, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

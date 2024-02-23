@@ -19,7 +19,7 @@ package pages.event24
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.common.MembersPage
-import pages.{EmptyWaypoints, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

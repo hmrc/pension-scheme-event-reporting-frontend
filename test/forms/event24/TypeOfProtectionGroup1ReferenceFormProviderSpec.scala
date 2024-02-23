@@ -26,6 +26,7 @@ class TypeOfProtectionGroup1ReferenceFormProviderSpec extends StringFieldBehavio
   private val requiredKey = "typeOfProtectionReference.error.required"
   private val lengthKey = "typeOfProtectionReference.event24.error.length"
   private val maxLength = 15
+  private val minLength = 8
 
   private val form = new TypeOfProtectionGroup1ReferenceFormProvider()()
 
@@ -37,6 +38,13 @@ class TypeOfProtectionGroup1ReferenceFormProviderSpec extends StringFieldBehavio
       form,
       fieldName,
       RegexpGen.from(protectionReferenceRegex)
+    )
+
+    behave like fieldWithMinLength(
+      form,
+      fieldName,
+      minLength = minLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(minLength))
     )
 
     behave like fieldWithMaxLength(

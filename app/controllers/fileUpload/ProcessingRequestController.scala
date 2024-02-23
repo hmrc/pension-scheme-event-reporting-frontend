@@ -20,10 +20,10 @@ import connectors.ParsingAndValidationOutcomeCacheConnector
 import controllers.actions._
 import models.enumeration.EventType
 import models.fileUpload.ParsingAndValidationOutcome
-import models.fileUpload.ParsingAndValidationOutcomeStatus.{GeneralError, IncorrectHeadersOrEmptyFile, Success, ValidationErrorsLessThan10, ValidationErrorsMoreThanOrEqual10}
+import models.fileUpload.ParsingAndValidationOutcomeStatus._
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Results}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.ProcessingRequestView

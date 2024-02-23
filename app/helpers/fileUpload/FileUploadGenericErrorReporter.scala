@@ -94,7 +94,6 @@ object FileUploadGenericErrorReporter {
           )
       case _ =>
         commonColumnAndErrorMessageMap ++
-        // TODO - this needs updating for different fields
         Map(
           Event24FieldNames.crystallisedDate -> "fileUpload.bceDate.generic.error",
           Event24FieldNames.bceType -> "fileUpload.bceType.generic.error",

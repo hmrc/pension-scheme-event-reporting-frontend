@@ -111,6 +111,7 @@ class Event24Validator @Inject()(
       "IP 2016" -> "individualProtection2016",
       "PRIMARY" -> "primary",
       "PRIMARY 375" -> "primaryWithProtectedSum",
+      "" -> "noOtherProtections"
     )
   }
 
@@ -174,6 +175,7 @@ class Event24Validator @Inject()(
       case "PRE-COMM" => Map("value[2]" -> "preCommencement")
       case "OVERSEAS" => Map("value[3]" -> "recognisedOverseasPSTE")
       case "SS" => Map("value[4]" -> "schemeSpecific")
+      case _ => Map("value[0]" -> "")
     }
 
     @tailrec
@@ -192,8 +194,8 @@ class Event24Validator @Inject()(
     val form: Form[Set[TypeOfProtectionGroup1]] = typeOfProtectionGroup1FormProvider()
 
     form.bind(Field.seqToMap(protectionTypeFields)).fold(
-      formWithErrors => Invalid(errorsFromForm(formWithErrors, protectionTypeFields, index)),
-      value => Valid(value)
+        formWithErrors => Invalid(errorsFromForm(formWithErrors, protectionTypeFields, index)),
+        value => Valid(value)
     )
   }
 
@@ -214,7 +216,7 @@ class Event24Validator @Inject()(
     val form: Form[ProtectionReferenceData] = typeOfProtectionGroup1ReferenceFormProvider()
 
     form.bind(Field.seqToMap(fields)).fold(
-      formWithErrors => {
+      _ => {
         val refTypesForm = form.bind(Field.seqToMap(fields))
         val selectedProtectionTypes: Array[String] = chargeFields(fieldNoProtectionTypeGroup1).filterNot(_.isWhitespace).split(",")
 
@@ -224,14 +226,15 @@ class Event24Validator @Inject()(
             case "CREDITS" => TypeOfProtectionGroup1.PensionCreditsPreCRE
             case "PRE-COMM" => TypeOfProtectionGroup1.PreCommencement
             case "OVERSEAS" => TypeOfProtectionGroup1.RecognisedOverseasPSTE
-            case "SS" => TypeOfProtectionGroup1.SchemeSpecific
+            case _ => TypeOfProtectionGroup1.SchemeSpecific
           }
         }}
 
         val validErrors = getValidErrors(refTypesForm.errors, Seq.empty, requiredReferenceTypes)
 
         if (validErrors.nonEmpty) {
-          Invalid(errorsFromForm(formWithErrors, fields, index))
+          val formWithValidErrors = refTypesForm.copy(errors = validErrors)
+          Invalid(errorsFromForm(formWithValidErrors, fields, index))
         } else {
           val formData = refTypesForm.data
           val value = getUserAnswers(formData)
