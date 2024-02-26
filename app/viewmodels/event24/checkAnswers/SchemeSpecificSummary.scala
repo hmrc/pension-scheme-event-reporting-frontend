@@ -35,7 +35,7 @@ object SchemeSpecificSummary {
       actions = if (isReadOnly) None else {
         Some(Actions(items = Seq(
           ActionItemViewModel("site.change", TypeOfProtectionGroup1Page(index).changeLink(waypoints, sourcePage).url)
-            .withVisuallyHiddenText(messages("typeOfProtection.event24.change.hidden"))
+            .withVisuallyHiddenText(messages("typeOfProtectionGroup1.event24.change.hidden"))
         )))
       }
     )

@@ -66,8 +66,7 @@ class TypeOfProtectionGroup1ReferenceController @Inject()(val controllerComponen
             val updatedFormWithErrors = formWithErrors.copy(errors = validErrors)
             Future.successful(BadRequest(view(updatedFormWithErrors, waypoints, index, requiredReferenceTypes)))
           } else {
-              val formData = refTypesForm.data
-            val value = getUserAnswers(formData)
+            val value = getUserAnswers(refTypesForm.data)
 
             val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
             val updatedAnswers = originalUserAnswers.setOrException(TypeOfProtectionGroup1ReferencePage(index), value)
