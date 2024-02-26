@@ -16,16 +16,17 @@
 
 package forms
 
-import forms.mappings.Mappings
+import forms.mappings.{Mappings, Transforms}
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class DeclarationPspFormProvider @Inject() extends Mappings {
+class DeclarationPspFormProvider @Inject() extends Mappings with Transforms{
 
   def apply(authorisingPSAID: Option[String]): Form[String] =
     Form(
       "value" -> text("pspDeclaration.error.required")
+        .transform(authorisingPSAIDWhitespaceRemoval, noTransform)
         .verifying(
           firstError(
             minLength(8, "pspDeclaration.error.length"),
@@ -35,4 +36,8 @@ class DeclarationPspFormProvider @Inject() extends Mappings {
           )
         )
     )
+
+  private def authorisingPSAIDWhitespaceRemoval(value: String): String = {
+    value.filterNot(_.isWhitespace)
+  }
 }
