@@ -39,8 +39,8 @@ object PensionCreditsPreCRESummary {
           value   = ValueViewModel(value),
           actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
-              ActionItemViewModel("site.change", TypeOfProtectionGroup1Page(index).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("typeOfProtectionGroup1.event24.change.hidden"))
+              ActionItemViewModel("site.change", TypeOfProtectionGroup1ReferencePage(index).changeLink(waypoints, sourcePage).url)
+                .withVisuallyHiddenText(messages("typeOfProtectionReferenceGroup1.event24.change.hidden"))
             )))
           }
         )
