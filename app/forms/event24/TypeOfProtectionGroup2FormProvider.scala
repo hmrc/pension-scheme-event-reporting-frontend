@@ -17,14 +17,14 @@
 package forms.event24
 
 import forms.mappings.Mappings
-import models.event24.TypeOfProtectionSelection
+import models.event24.TypeOfProtectionGroup2
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class TypeOfProtectionFormProvider @Inject() extends Mappings {
-  def apply(): Form[TypeOfProtectionSelection] =
+class TypeOfProtectionGroup2FormProvider @Inject() extends Mappings {
+  def apply(): Form[TypeOfProtectionGroup2] =
     Form(
-      "value" -> enumerable[TypeOfProtectionSelection]("typeOfProtection.event24.error.required", "typeOfProtection.event24.error.format")
+      "value" -> enumerable[TypeOfProtectionGroup2]("typeOfProtection.event24.error.required", "typeOfProtection.event24.error.format")
     )
 }

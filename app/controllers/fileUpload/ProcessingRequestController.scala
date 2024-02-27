@@ -20,7 +20,7 @@ import connectors.ParsingAndValidationOutcomeCacheConnector
 import controllers.actions._
 import models.enumeration.EventType
 import models.fileUpload.ParsingAndValidationOutcome
-import models.fileUpload.ParsingAndValidationOutcomeStatus.{GeneralError, Success, ValidationErrorsLessThan10, ValidationErrorsMoreThanOrEqual10}
+import models.fileUpload.ParsingAndValidationOutcomeStatus._
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -46,12 +46,14 @@ class ProcessingRequestController @Inject()(
       parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap {
         case Some(ParsingAndValidationOutcome(Success, _, _)) =>
           Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints, eventType)))
-        case Some(ParsingAndValidationOutcome(GeneralError, _, _)) =>
-          Future.successful(Redirect(controllers.fileUpload.routes.ProblemWithServiceController.onPageLoad(waypoints, eventType)))
+        case Some(ParsingAndValidationOutcome(IncorrectHeadersOrEmptyFile, _, _)) =>
+          Future.successful(Redirect(controllers.fileUpload.routes.InvalidHeadersOrEmptyFileController.onPageLoad(waypoints, eventType)))
         case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _)) =>
           Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsAllController.onPageLoad(waypoints, eventType)))
         case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _)) =>
           Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsSummaryController.onPageLoad(waypoints, eventType)))
+        case Some(ParsingAndValidationOutcome(GeneralError, _, _)) =>
+          Future.successful(Redirect(controllers.fileUpload.routes.ProblemWithServiceController.onPageLoad(waypoints, eventType)))
         case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
         case _ =>
           Future.successful(Ok(view(controllers.routes.JourneyRecoveryController.onPageLoad(None).url)))
@@ -63,11 +65,13 @@ class ProcessingRequestController @Inject()(
       val outcomes = parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap {
         case Some(ParsingAndValidationOutcome(Success, _, _)) =>
           Future.successful(Json.obj("status" -> "processed"))
-        case Some(ParsingAndValidationOutcome(GeneralError, _, _)) =>
+        case Some(ParsingAndValidationOutcome(IncorrectHeadersOrEmptyFile, _, _)) =>
           Future.successful(Json.obj("status" -> "processed"))
         case Some(ParsingAndValidationOutcome(ValidationErrorsLessThan10, _, _)) =>
           Future.successful(Json.obj("status" -> "processed"))
         case Some(ParsingAndValidationOutcome(ValidationErrorsMoreThanOrEqual10, _, _)) =>
+          Future.successful(Json.obj("status" -> "processed"))
+        case Some(ParsingAndValidationOutcome(GeneralError, _, _)) =>
           Future.successful(Json.obj("status" -> "processed"))
         case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
         case _ =>

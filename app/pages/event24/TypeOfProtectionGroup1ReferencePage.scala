@@ -18,35 +18,26 @@ package pages.event24
 
 import models.UserAnswers
 import models.enumeration.EventType
+import models.event24.ProtectionReferenceData
 import pages.common.MembersPage
 import pages.{EmptyWaypoints, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class TypeOfProtectionReferencePage(index: Int) extends QuestionPage[String] {
+case class TypeOfProtectionGroup1ReferencePage(index: Int) extends QuestionPage[ProtectionReferenceData] {
 
-  override def path: JsPath = MembersPage(EventType.Event24)(index) \ TypeOfProtectionReferencePage.toString
+  override def path: JsPath = MembersPage(EventType.Event24)(index) \ TypeOfProtectionGroup1ReferencePage.toString
 
   override def route(waypoints: Waypoints): Call =
-    controllers.event24.routes.TypeOfProtectionReferenceController.onPageLoad(waypoints, index)
+    controllers.event24.routes.TypeOfProtectionGroup1ReferenceController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    OverAllowancePage(index)
+    TypeOfProtectionGroup2Page(index)
 
-  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
-    val originalOptionSelected = originalAnswers.get(this)
-    val updatedOptionSelected = updatedAnswers.get(this)
-    val answerIsChanged = originalOptionSelected != updatedOptionSelected
-
-    if (answerIsChanged) {
-      nextPageNormalMode(EmptyWaypoints, updatedAnswers)
-    }
-    else {
-      Event24CheckYourAnswersPage(index)
-    }
-  }
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
+    Event24CheckYourAnswersPage(index)
 }
 
-object TypeOfProtectionReferencePage {
-  override def toString: String = "typeOfProtectionReference"
+object TypeOfProtectionGroup1ReferencePage {
+  override def toString: String = "typeOfProtectionGroup1Reference"
 }

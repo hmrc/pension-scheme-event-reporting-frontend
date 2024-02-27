@@ -16,13 +16,13 @@
 
 @import controllers.event24.routes
 @import models.enumeration.EventType
-@import models.event24.TypeOfProtectionSelection
+@import models.event24.TypeOfProtectionGroup1
 
 @this(
     layout: templates.SchemeLayout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
+    govukCheckboxes: GovukCheckboxes,
     govukButton: GovukButton
 )
 
@@ -33,17 +33,21 @@
 pageTitle = title(form, messages("typeOfProtection.event24.title"))
 ) {
 
-    @formHelper(action = routes.TypeOfProtectionController.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.TypeOfProtectionGroup1Controller.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
-        @govukRadios(
-            RadiosViewModel(
-                field  = form("value"),
-                legend = LegendViewModel(messages("typeOfProtection.event24.heading")).asPageHeading(),
-                items  = TypeOfProtectionSelection.options
+        <h1 class="govuk-heading-xl">@messages("typeOfProtectionGroup1.event24.heading")</h1>
+        <div class="govuk-hint">@messages("typeOfProtectionGroup1.event24.hint")</div>
+
+        @govukCheckboxes(
+            CheckboxesViewModel(
+                form   = form,
+                name   = "value",
+                legend = LegendViewModel(content = Empty),
+                items  = TypeOfProtectionGroup1.checkboxItems
             )
         )
 

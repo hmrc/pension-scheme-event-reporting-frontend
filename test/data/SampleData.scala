@@ -37,7 +37,7 @@ import models.event13.SchemeStructure
 import models.event20.Event20Date
 import models.event20.WhatChange.BecameOccupationalScheme
 import models.event20A.WhatChange.{BecameMasterTrust, CeasedMasterTrust}
-import models.event24.{BCETypeSelection, CrystallisedDate}
+import models.event24.{BCETypeSelection, CrystallisedDate, ProtectionReferenceData}
 import models.event6.{CrystallisedDetails, TypeOfProtection => Event6TypeOfProtection}
 import models.event7.PaymentDate
 import models.event8.{LumpSumDetails, TypeOfProtection => Event8TypeOfProtection}
@@ -355,7 +355,7 @@ object SampleData extends SpecBase {
     .setOrException(BCETypeSelectionPage(0), BCETypeSelection.Small)
     .setOrException(TotalAmountBenefitCrystallisationPage(0), crystallisedAmountEvent24)
     .setOrException(ValidProtectionPage(0), true)
-    .setOrException(pages.event24.TypeOfProtectionReferencePage(0), "abc123DEF")
+    .setOrException(pages.event24.TypeOfProtectionGroup1ReferencePage(0), ProtectionReferenceData("abc123DEF", "", "", ""))
     .setOrException(OverAllowancePage(0), false)
     .setOrException(OverAllowanceAndDeathBenefitPage(0), true)
     .setOrException(MarginalRatePage(0), true)
@@ -369,7 +369,7 @@ object SampleData extends SpecBase {
         .setOrException(BCETypeSelectionPage(i), BCETypeSelection.Small)
         .setOrException(TotalAmountBenefitCrystallisationPage(i), crystallisedAmountEvent24)
         .setOrException(ValidProtectionPage(i), true)
-        .setOrException(pages.event24.TypeOfProtectionReferencePage(i), "abc123DEF")
+        .setOrException(pages.event24.TypeOfProtectionGroup1ReferencePage(i), ProtectionReferenceData("abc123DEF", "", "", ""))
         .setOrException(OverAllowancePage(i), false)
         .setOrException(OverAllowanceAndDeathBenefitPage(i), true)
         .setOrException(MarginalRatePage(i), true)

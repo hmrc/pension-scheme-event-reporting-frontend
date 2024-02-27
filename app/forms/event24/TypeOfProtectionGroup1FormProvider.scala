@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-package pages.event24
+package forms.event24
 
-import models.event24.TypeOfProtectionSelection
-import org.scalacheck.Arbitrary
-import pages.behaviours.PageBehaviours
+import forms.mappings.Mappings
+import models.event24.TypeOfProtectionGroup1
+import play.api.data.Form
+import play.api.data.Forms.set
 
-class TypeOfProtectionPageSpec extends PageBehaviours {
+import javax.inject.Inject
 
-  "TypeOfProtectionPage" - {
-
-    implicit lazy val arbitraryTypeOfProtectionPage: Arbitrary[TypeOfProtectionSelection] = Arbitrary {
-      TypeOfProtectionSelection.FixedProtection
-    }
-
-    beRetrievable[TypeOfProtectionSelection](TypeOfProtectionPage(0))
-
-    beSettable[TypeOfProtectionSelection](TypeOfProtectionPage(0))
-
-    beRemovable[TypeOfProtectionSelection](TypeOfProtectionPage(0))
-  }
+class TypeOfProtectionGroup1FormProvider @Inject() extends Mappings {
+  def apply(): Form[Set[TypeOfProtectionGroup1]] =
+    Form(
+      "value" -> set(enumerable[TypeOfProtectionGroup1]("typeOfProtection.event24.error.required"))
+        .verifying(nonEmptySet("typeOfProtection.event24.error.required"))
+    )
 }

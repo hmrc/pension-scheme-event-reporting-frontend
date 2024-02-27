@@ -18,27 +18,27 @@ package controllers.event24
 
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.event24.TypeOfProtectionFormProvider
+import forms.event24.TypeOfProtectionGroup2FormProvider
 import models.enumeration.EventType
 import models.{Index, UserAnswers}
 import pages.Waypoints
-import pages.event24.TypeOfProtectionPage
+import pages.event24.TypeOfProtectionGroup2Page
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.event24.TypeOfProtectionView
+import views.html.event24.TypeOfProtectionGroup2View
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class TypeOfProtectionController @Inject()(
+class TypeOfProtectionGroup2Controller @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            view: TypeOfProtectionView,
-                                            formProvider: TypeOfProtectionFormProvider,
+                                            view: TypeOfProtectionGroup2View,
+                                            formProvider: TypeOfProtectionGroup2FormProvider,
                                             userAnswersCacheConnector: UserAnswersCacheConnector
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport{
 
@@ -47,7 +47,7 @@ class TypeOfProtectionController @Inject()(
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(TypeOfProtectionPage(index)).fold(form)(form.fill)
+      val preparedForm = request.userAnswers.get(TypeOfProtectionGroup2Page(index)).fold(form)(form.fill)
       Ok(view(preparedForm, waypoints, index))
   }
 
@@ -58,9 +58,9 @@ class TypeOfProtectionController @Inject()(
           Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(TypeOfProtectionPage(index), value)
+          val updatedAnswers = originalUserAnswers.setOrException(TypeOfProtectionGroup2Page(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(TypeOfProtectionPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(TypeOfProtectionGroup2Page(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }
         }
       )

@@ -16,31 +16,30 @@
 
 package forms.event24
 
-import forms.behaviours.OptionFieldBehaviours
-import models.event24.TypeOfProtectionSelection
+import forms.behaviours.CheckboxFieldBehaviours
+import models.event24.TypeOfProtectionGroup1
 import play.api.data.FormError
 
-class TypeOfProtectionFormProviderSpec extends OptionFieldBehaviours {
+class TypeOfProtectionGroup1FormProviderSpec extends CheckboxFieldBehaviours {
 
-  private val form = new TypeOfProtectionFormProvider()()
+  private val form = new TypeOfProtectionGroup1FormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
-    val formatKey = "typeOfProtection.event24.error.format"
     val requiredKey = "typeOfProtection.event24.error.required"
 
-    behave like optionsField[TypeOfProtectionSelection](
+    behave like checkboxField[TypeOfProtectionGroup1](
       form,
       fieldName,
-      validValues  = TypeOfProtectionSelection.values,
-      invalidError = FormError(fieldName, formatKey)
+      validValues  = TypeOfProtectionGroup1.values,
+      invalidError = FormError(s"$fieldName[0]", "error.invalid")
     )
 
-    behave like mandatoryField(
+    behave like mandatoryCheckboxField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredKey
     )
   }
 }

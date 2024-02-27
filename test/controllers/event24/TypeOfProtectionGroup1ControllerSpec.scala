@@ -18,46 +18,50 @@ package controllers.event24
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event24.TypeOfProtectionReferenceFormProvider
+import forms.event24.TypeOfProtectionGroup1FormProvider
 import models.UserAnswers
+import models.event24.TypeOfProtectionGroup1
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
-import pages.event24.TypeOfProtectionReferencePage
+import pages.event24.TypeOfProtectionGroup1Page
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event24.TypeOfProtectionReferenceView
+import views.html.event24.TypeOfProtectionGroup1View
 
 import scala.concurrent.Future
 
-class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAfterEach {
+class TypeOfProtectionGroup1ControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints
 
-  private val formProvider = new TypeOfProtectionReferenceFormProvider()
+  private val formProvider = new TypeOfProtectionGroup1FormProvider()
   private val form = formProvider()
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.TypeOfProtectionReferenceController.onPageLoad(waypoints, 0).url
-  private def postRoute: String = routes.TypeOfProtectionReferenceController.onSubmit(waypoints, 0).url
+  private def getRoute: String = routes.TypeOfProtectionGroup1Controller.onPageLoad(waypoints, 0).url
+  private def postRoute: String = routes.TypeOfProtectionGroup1Controller.onSubmit(waypoints, 0).url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
-
-  private val validValue = "abc123DEF"
 
   override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
   }
 
-  "TypeOfProtectionReferenceController" - {
+  private val validAnswer: Set[TypeOfProtectionGroup1] = Set(
+    TypeOfProtectionGroup1.PreCommencement,
+    TypeOfProtectionGroup1.PensionCreditsPreCRE
+  )
+
+  "TypeOfProtectionController" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -68,28 +72,28 @@ class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAft
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[TypeOfProtectionReferenceView]
+        val view = application.injector.instanceOf[TypeOfProtectionGroup1View]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, 0, "")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(TypeOfProtectionReferencePage(0), validValue).success.value
+      val userAnswers = UserAnswers().set(TypeOfProtectionGroup1Page(0), Set(TypeOfProtectionGroup1.values.head)).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[TypeOfProtectionReferenceView]
+        val view = application.injector.instanceOf[TypeOfProtectionGroup1View]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, 0, "")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(Set(TypeOfProtectionGroup1.values.head)), waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -103,13 +107,16 @@ class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAft
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "abc123DEF"))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
+            "value[0]" -> "preCommencement",
+            "value[1]" -> "pensionCreditsPreCRE"
+          )
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(TypeOfProtectionReferencePage(0), validValue).success.value
+        val updatedAnswers = emptyUserAnswers.set(TypeOfProtectionGroup1Page(0), validAnswer).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual TypeOfProtectionReferencePage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual TypeOfProtectionGroup1Page(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
@@ -121,15 +128,15 @@ class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAft
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[TypeOfProtectionReferenceView]
-        val boundForm = form.bind(Map("value" -> ""))
+        val view = application.injector.instanceOf[TypeOfProtectionGroup1View]
+        val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, 0, "")(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

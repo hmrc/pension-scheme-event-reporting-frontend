@@ -17,7 +17,8 @@
 package utils.event24
 
 import models.enumeration.EventType.Event24
-import models.event24.TypeOfProtectionSelection
+import models.event24.TypeOfProtectionGroup1._
+import models.event24.TypeOfProtectionGroup2.NoOtherProtections
 import models.requests.DataRequest
 import models.{Index, MemberSummaryPath}
 import pages.EmptyWaypoints
@@ -78,17 +79,47 @@ class Event24UserAnswerValidation @Inject()(compileService: CompileService) {
     }
   }
 
-  def validateSelectProtection(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
-    val selectProtectionAnswer = request.userAnswers.get(TypeOfProtectionPage(index))
-    val protectionReferenceAnswer = request.userAnswers.get(TypeOfProtectionReferencePage(index))
+  def validateGroup2Protection(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
+    val group2Protection = request.userAnswers.get(TypeOfProtectionGroup2Page(index))
+    val group2ProtectionRef = request.userAnswers.get(TypeOfProtectionGroup2ReferencePage(index))
 
-    (selectProtectionAnswer, protectionReferenceAnswer) match {
-      case (Some(TypeOfProtectionSelection.SchemeSpecific), None) | (Some(_), Some(_)) => validateOverAllowance(index)
+    (group2Protection, group2ProtectionRef) match {
+      case (Some(_), Some(_)) | (Some(NoOtherProtections), None) => validateOverAllowance(index)
       case (Some(_), None) => Future.successful(
-        Redirect(TypeOfProtectionReferencePage(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url)
+        Redirect(TypeOfProtectionGroup2ReferencePage(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url)
       )
       case _ => Future.successful(
-        Redirect(pages.event24.TypeOfProtectionPage(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url)
+        Redirect(TypeOfProtectionGroup2Page(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url)
+      )
+    }
+  }
+
+  //noinspection ScalaStyle
+  def validateGroup1Protection(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
+    val group1Protection = request.userAnswers.get(TypeOfProtectionGroup1Page(index))
+    val group1ProtectionRef = request.userAnswers.get(TypeOfProtectionGroup1ReferencePage(index))
+
+    (group1Protection, group1ProtectionRef) match {
+      case (Some(schemeSet), None) =>
+        if (schemeSet.head == SchemeSpecific) {
+          validateGroup2Protection(index)
+        }
+        else {
+          Future.successful(
+            Redirect(TypeOfProtectionGroup1ReferencePage(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url)
+          )
+        }
+      case (Some(schemeSet), Some(ref)) =>
+        if ((schemeSet.toSeq.contains(NonResidenceEnhancement) && ref.nonResidenceEnhancement == "") ||
+             (schemeSet.toSeq.contains(PensionCreditsPreCRE) && ref.pensionCreditsPreCRE == "") ||
+             (schemeSet.toSeq.contains(PreCommencement) && ref.preCommencement == "") ||
+             (schemeSet.toSeq.contains(RecognisedOverseasPSTE) && ref.recognisedOverseasPSTE == "")) {
+          Future.successful(Redirect(TypeOfProtectionGroup1ReferencePage(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url))
+        } else {
+          validateGroup2Protection(index)
+        }
+      case _ => Future.successful(
+        Redirect(TypeOfProtectionGroup1Page(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url)
       )
     }
   }
@@ -97,7 +128,7 @@ class Event24UserAnswerValidation @Inject()(compileService: CompileService) {
     val holdsProtectionAnswer = request.userAnswers.get(ValidProtectionPage(index))
 
     holdsProtectionAnswer match {
-      case Some(true) => validateSelectProtection(index)
+      case Some(true) => validateGroup1Protection(index)
       case Some(false) => validateOverAllowance(index)
       case _ => Future.successful(
         Redirect(ValidProtectionPage(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url)

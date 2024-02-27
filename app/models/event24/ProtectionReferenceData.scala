@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-package forms.event24
+package models.event24
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import play.api.libs.json.{Format, Json}
 
-import javax.inject.Inject
+case class ProtectionReferenceData(
+                                    nonResidenceEnhancement: String,
+                                    pensionCreditsPreCRE: String,
+                                    preCommencement: String,
+                                    recognisedOverseasPSTE: String
+                                  )
 
-class TypeOfProtectionReferenceFormProvider @Inject() extends Mappings {
-
-  val minLength: Int = 8
-  val maxLength: Int = 15
-
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("typeOfProtectionReference.error.required")
-        .verifying(
-          firstError(
-            maxLength(maxLength, "typeOfProtectionReference.event24.error.length"),
-            regexp(protectionReferenceRegex, "typeOfProtectionReference.error.invalid"))
-        )
-    )
+object ProtectionReferenceData {
+  implicit val format: Format[ProtectionReferenceData] = Json.format[ProtectionReferenceData]
 }

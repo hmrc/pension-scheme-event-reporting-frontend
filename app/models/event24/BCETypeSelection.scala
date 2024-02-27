@@ -33,19 +33,15 @@ object BCETypeSelection extends Enumerable.Implicits {
 
   case object FlexiAccess extends WithName("flexiAccess") with BCETypeSelection
 
-  case object Commencement extends WithName("commencement") with BCETypeSelection
-
   case object PensionProtection extends WithName("pensionProtection") with BCETypeSelection
+
+  case object SeriousHealthLumpSum extends WithName("seriousHealthLumpSum") with BCETypeSelection
 
   case object Small extends WithName("small") with BCETypeSelection
 
   case object StandAlone extends WithName("standAlone") with BCETypeSelection
 
   case object TrivialCommutation extends WithName("trivialCommutation") with BCETypeSelection
-
-  case object TrivialCommutationDeathBenefit extends WithName("trivialCommutationDeathBenefit") with BCETypeSelection
-
-  case object SeriousHealthLumpSum extends WithName("seriousHealthLumpSum") with BCETypeSelection
 
   case object UncrystallisedFunds extends WithName("uncrystallisedFunds") with BCETypeSelection
 
@@ -54,9 +50,9 @@ object BCETypeSelection extends Enumerable.Implicits {
   case object WindingUp extends WithName("windingUp") with BCETypeSelection
 
 
-  val values: Seq[BCETypeSelection] = Seq(AnnuityProtection, DefinedBenefit, Drawdown, FlexiAccess, Commencement,
-    PensionProtection, Small, StandAlone, TrivialCommutation, TrivialCommutationDeathBenefit, SeriousHealthLumpSum,
-    UncrystallisedFunds, UncrystallisedFundsDeathBenefit, WindingUp)
+  val values: Seq[BCETypeSelection] = Seq(AnnuityProtection, DefinedBenefit, Drawdown, FlexiAccess, PensionProtection,
+    SeriousHealthLumpSum, Small, StandAlone, TrivialCommutation, UncrystallisedFunds,
+    UncrystallisedFundsDeathBenefit, WindingUp)
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>

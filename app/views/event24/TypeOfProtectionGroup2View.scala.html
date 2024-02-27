@@ -1,0 +1,76 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.event24.routes
+@import models.enumeration.EventType
+@import models.event24.TypeOfProtectionGroup2
+
+@this(
+    layout: templates.SchemeLayout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios: GovukRadios,
+    govukButton: GovukButton
+)
+
+
+@(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+
+@layout(
+pageTitle = title(form, messages("typeOfProtection.event24.title"))
+) {
+
+    @formHelper(action = routes.TypeOfProtectionGroup2Controller.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
+        }
+
+        <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">
+                        @messages("typeOfProtectionGroup2.event24.heading")
+                    </h1>
+                </legend>
+                <div class="govuk-hint">This is optional.</div>
+                <div class="govuk-radios" data-module="govuk-radios">
+                    @TypeOfProtectionGroup2.protectionOptions.map { item =>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="value_@item" name="value" type="radio" value="@item">
+                            <label class="govuk-label govuk-radios__label" for="value_@item">
+                                @messages(s"typeOfProtection.event24.${item.toString.replaceAll("[, ]", "")}")
+                            </label>
+                        </div>
+                    }
+
+                    <div class="govuk-radios__divider">or</div>
+
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="value_noOtherProtections" name="value" type="radio" value="noOtherProtections">
+                        <label class="govuk-label govuk-radios__label" for="value_noOtherProtections">
+                            @messages(s"typeOfProtection.event24.noOtherProtections")
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))
+        )
+    }
+}
