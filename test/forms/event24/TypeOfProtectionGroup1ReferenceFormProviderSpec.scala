@@ -24,7 +24,8 @@ import wolfendale.scalacheck.regexp.RegexpGen
 class TypeOfProtectionGroup1ReferenceFormProviderSpec extends StringFieldBehaviours with Constraints {
 
   private val requiredKey = "typeOfProtectionReference.error.required"
-  private val lengthKey = "typeOfProtectionReference.event24.error.length"
+  private val minLengthKey = "typeOfProtectionReference.event24.error.minLength"
+  private val maxLengthKey = "typeOfProtectionReference.event24.error.maxLength"
   private val maxLength = 15
   private val minLength = 8
 
@@ -44,14 +45,14 @@ class TypeOfProtectionGroup1ReferenceFormProviderSpec extends StringFieldBehavio
       form,
       fieldName,
       minLength = minLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(minLength))
+      lengthError = FormError(fieldName, minLengthKey, Seq(minLength))
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
       maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      lengthError = FormError(fieldName, maxLengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(

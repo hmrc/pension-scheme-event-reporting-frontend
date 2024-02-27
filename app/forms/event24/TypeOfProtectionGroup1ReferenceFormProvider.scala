@@ -35,32 +35,32 @@ class TypeOfProtectionGroup1ReferenceFormProvider @Inject() extends Mappings wit
           .transform(strip, noTransform)
           .verifying(
             firstError(
-              maxLength(maxLength, "typeOfProtectionReference.event24.error.length"),
-              minLength(minLength, "typeOfProtectionReference.event24.error.length"),
+              maxLength(maxLength, "typeOfProtectionReference.event24.error.maxLength"),
+              minLength(minLength, "typeOfProtectionReference.event24.error.minLength"),
               regexp(protectionReferenceRegex, "typeOfProtectionReference.error.invalid"))
           ),
         "pensionCreditsPreCRE" -> text("typeOfProtectionReference.error.required")
           .transform(strip, noTransform)
           .verifying(
             firstError(
-              maxLength(maxLength, "typeOfProtectionReference.event24.error.length"),
-              minLength(minLength, "typeOfProtectionReference.event24.error.length"),
+              maxLength(maxLength, "typeOfProtectionReference.event24.error.maxLength"),
+              minLength(minLength, "typeOfProtectionReference.event24.error.minLength"),
               regexp(protectionReferenceRegex, "typeOfProtectionReference.error.invalid"))
           ),
         "preCommencement" -> text("typeOfProtectionReference.error.required")
           .transform(strip, noTransform)
           .verifying(
             firstError(
-              maxLength(maxLength, "typeOfProtectionReference.event24.error.length"),
-              minLength(minLength, "typeOfProtectionReference.event24.error.length"),
+              maxLength(maxLength, "typeOfProtectionReference.event24.error.maxLength"),
+              minLength(minLength, "typeOfProtectionReference.event24.error.minLength"),
               regexp(protectionReferenceRegex, "typeOfProtectionReference.error.invalid"))
           ),
         "recognisedOverseasPSTE" -> text("typeOfProtectionReference.error.required")
           .transform(strip, noTransform)
           .verifying(
             firstError(
-              maxLength(maxLength, "typeOfProtectionReference.event24.error.length"),
-              minLength(minLength, "typeOfProtectionReference.event24.error.length"),
+              maxLength(maxLength, "typeOfProtectionReference.event24.error.maxLength"),
+              minLength(minLength, "typeOfProtectionReference.event24.error.minLength"),
               regexp(protectionReferenceRegex, "typeOfProtectionReference.error.invalid"))
           )
       )(ProtectionReferenceData.apply)(ProtectionReferenceData.unapply)

@@ -1935,7 +1935,8 @@ typeOfProtectionReferenceGroup1.event24.checkYourAnswersLabel = What are the ass
 typeOfProtectionReferenceGroup2.event24.heading = What is the associated reference for the member’s protection or enhancement?
 typeOfProtectionReferenceGroup2.event24.title = What is the associated reference for the member’s protection or enhancement?
 typeOfProtectionReferenceGroup2.event24.checkYourAnswersLabel = What is the associated reference for the member’s protection or enhancement?
-typeOfProtectionReference.event24.error.length = The protection reference is a maximum of 15 characters and a combination of numbers and letters
+typeOfProtectionReference.event24.error.maxLength = The protection reference is a maximum of 15 characters and a combination of numbers and letters
+typeOfProtectionReference.event24.error.minLength = The protection reference is a minimum of 8 characters and a combination of numbers and letters
 typeOfProtectionReference.event24.checkYourAnswersLabel = Member’s {0} reference
 typeOfProtectionReference.event24.change.hidden = Member’s {0} reference
 

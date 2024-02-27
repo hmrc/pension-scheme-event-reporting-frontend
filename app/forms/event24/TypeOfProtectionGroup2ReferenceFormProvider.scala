@@ -31,7 +31,8 @@ class TypeOfProtectionGroup2ReferenceFormProvider @Inject() extends Mappings {
       "value" -> text("typeOfProtectionReference.error.required")
         .verifying(
           firstError(
-            maxLength(maxLength, "typeOfProtectionReference.event24.error.length"),
+            maxLength(maxLength, "typeOfProtectionReference.event24.error.maxLength"),
+            minLength(minLength, "typeOfProtectionReference.event24.error.minLength"),
             regexp(protectionReferenceRegex, "typeOfProtectionReference.error.invalid"))
         )
     )

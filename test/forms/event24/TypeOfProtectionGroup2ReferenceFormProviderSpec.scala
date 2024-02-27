@@ -24,7 +24,7 @@ import wolfendale.scalacheck.regexp.RegexpGen
 class TypeOfProtectionGroup2ReferenceFormProviderSpec extends StringFieldBehaviours with Constraints {
 
   private val requiredKey = "typeOfProtectionReference.error.required"
-  private val lengthKey = "typeOfProtectionReference.event24.error.length"
+  private val lengthKey = "typeOfProtectionReference.event24.error.maxLength"
   private val maxLength = 15
 
   private val form = new TypeOfProtectionGroup2ReferenceFormProvider()()

@@ -122,7 +122,7 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
         ValidationError(9, 9, "typeOfProtection.event24.error.required", "protectionTypeGroup1"),
         ValidationError(10, 10, "typeOfProtectionReference.error.required", "nonResidenceEnhancement"),
         ValidationError(11, 15, "typeOfProtection.event24.error.format", "protectionTypeGroup2"),
-        ValidationError(12, 16, "typeOfProtectionReference.event24.error.length", "protectionTypeGroup2Reference", ArraySeq(15)),
+        ValidationError(12, 16, "typeOfProtectionReference.event24.error.maxLength", "protectionTypeGroup2Reference", ArraySeq(15)),
         ValidationError(13, 17, "overAllowance.event24.error.required", "overAllowance"),
         ValidationError(14, 18, "overAllowanceAndDeathBenefit.event24.error.required", "overAllowanceAndDeathBenefit"),
         ValidationError(15, 20, "marginalRate.event24.error.required", "marginalRate"),

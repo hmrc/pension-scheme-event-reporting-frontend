@@ -33,7 +33,7 @@ object TypeOfProtectionGroup2Summary {
       typeOfProtectionAnswer <- answers.get(TypeOfProtectionGroup2Page(index))
       protectionReference <- answers.get(TypeOfProtectionGroup2ReferencePage(index))
     } yield {
-      val keyText = messages(s"typeOfProtection.event24.$typeOfProtectionAnswer") + ":"
+      val keyText = messages(s"typeOfProtection.event24.$typeOfProtectionAnswer") + " reference:"
       SummaryListRow(
         key = keyText,
         value = ValueViewModel(protectionReference),
