@@ -36,18 +36,12 @@ object TypeOfProtectionGroup1 extends Enumerable.Implicits {
 
   case object SchemeSpecific extends WithName("schemeSpecific") with TypeOfProtectionGroup1
 
-  val values: Seq[TypeOfProtectionGroup1] = Seq(NonResidenceEnhancement,
-    PensionCreditsPreCRE, PreCommencement, RecognisedOverseasPSTE, SchemeSpecific)
+  case object NoneOfTheAbove extends WithName("noneOfTheAbove") with TypeOfProtectionGroup1
 
-  def checkboxItems(implicit messages: Messages): Seq[CheckboxItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      CheckboxItemViewModel(
-        content = Text(messages(s"typeOfProtection.event24.${value.toString.replaceAll("[, ]", "")}")),
-        fieldId = "value",
-        value = value.toString,
-        index = index
-      )
-  }
+  val values: Seq[TypeOfProtectionGroup1] = Seq(NonResidenceEnhancement,
+    PensionCreditsPreCRE, PreCommencement, RecognisedOverseasPSTE, SchemeSpecific, NoneOfTheAbove)
+
+  val protectionOptions: Seq[TypeOfProtectionGroup1] = values.filter(_ != NoneOfTheAbove)
 
   implicit val enumerable: Enumerable[TypeOfProtectionGroup1] =
     Enumerable(values.map(v => v.toString -> v): _*)
