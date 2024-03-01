@@ -42,14 +42,27 @@ pageTitle = title(form, messages("typeOfProtection.event24.title"))
         <h1 class="govuk-heading-xl">@messages("typeOfProtectionGroup1.event24.heading")</h1>
         <div class="govuk-hint">@messages("typeOfProtectionGroup1.event24.hint")</div>
 
-        @govukCheckboxes(
-            CheckboxesViewModel(
-                form   = form,
-                name   = "value",
-                legend = LegendViewModel(content = Empty),
-                items  = TypeOfProtectionGroup1.checkboxItems
-            )
-        )
+        <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset" aria-describedby="countries-hint">
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                    @TypeOfProtectionGroup1.protectionOptions.zipWithIndex.map { case (item, index) =>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="value_@index" name="value[@index]" type="checkbox" value="@item">
+                            <label class="govuk-label govuk-checkboxes__label" for="value_@index">
+                                @messages(s"typeOfProtection.event24.${item.toString.replaceAll("[, ]", "")}")
+                            </label>
+                        </div>
+                    }
+                    <div class="govuk-checkboxes__divider">or</div>
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="value_5" name="value[5]" type="checkbox" value="noneOfTheAbove" data-behaviour="exclusive">
+                        <label class="govuk-label govuk-checkboxes__label" for="value_5">
+                            @messages(s"typeOfProtection.event24.noneOfTheAbove")
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
 
         @govukButton(
             ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))

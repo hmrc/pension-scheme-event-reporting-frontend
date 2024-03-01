@@ -18,10 +18,10 @@ package pages.event24
 
 import models.enumeration.EventType
 import models.event24.TypeOfProtectionGroup1
-import models.event24.TypeOfProtectionGroup1.SchemeSpecific
+import models.event24.TypeOfProtectionGroup1.{NoneOfTheAbove, SchemeSpecific}
 import models.{Index, UserAnswers}
 import pages.common.MembersPage
-import pages.{EmptyWaypoints, JourneyRecoveryPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{JourneyRecoveryPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -34,13 +34,13 @@ case class TypeOfProtectionGroup1Page(index: Index) extends QuestionPage[Set[Typ
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this) match {
-      case Some(values) => {
-        if (values.head == SchemeSpecific) {
+      case Some(values) =>
+        if ((values.size == 1 && values.head == SchemeSpecific) ||
+          (values.size == 1 && values.head == NoneOfTheAbove)) {
           TypeOfProtectionGroup2Page(index)
         } else {
           TypeOfProtectionGroup1ReferencePage(index)
         }
-      }
       case _ => JourneyRecoveryPage
     }
   }
