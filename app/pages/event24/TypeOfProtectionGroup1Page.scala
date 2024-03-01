@@ -34,13 +34,13 @@ case class TypeOfProtectionGroup1Page(index: Index) extends QuestionPage[Set[Typ
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this) match {
-      case Some(values) => {
-        if (values.head == SchemeSpecific || values.head == NoneOfTheAbove) {
+      case Some(values) =>
+        if ((values.size == 1 && values.head == SchemeSpecific) ||
+          (values.size == 1 && values.head == NoneOfTheAbove)) {
           TypeOfProtectionGroup2Page(index)
         } else {
           TypeOfProtectionGroup1ReferencePage(index)
         }
-      }
       case _ => JourneyRecoveryPage
     }
   }

@@ -101,7 +101,8 @@ class Event24UserAnswerValidation @Inject()(compileService: CompileService) {
 
     (group1Protection, group1ProtectionRef) match {
       case (Some(schemeSet), None) =>
-        if (schemeSet.head == SchemeSpecific || schemeSet.head == NoneOfTheAbove) {
+        if ((schemeSet.size == 1 && schemeSet.head == SchemeSpecific) ||
+          (schemeSet.size == 1 && schemeSet.head == NoneOfTheAbove)) {
           validateGroup2Protection(index)
         }
         else {
