@@ -474,7 +474,7 @@ class Event24Validator @Inject()(
 
     validProtectionValue match {
       case "YES" => Seq(e, validateTypeOfProtectionGroup1(index, columns)).combineAll
-      case _ => e
+      case _ => Seq(e, validateOverAllowance(index, columns)).combineAll
     }
   }
 }
