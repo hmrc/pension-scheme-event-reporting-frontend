@@ -1812,7 +1812,7 @@ eventDescription.event8 = pension commencement lump sum
 eventDescription.event8A = pension commencement lump sum
 eventDescription.event22 = annual allowance
 eventDescription.event23 = dual annual allowance
-eventDescription.event24 = payment of lump sum in relation to relevant benefit crystallisation event
+eventDescription.event24 = payment of lump sum in relation to relevant benefit crystallisation
 
 noDataEnteredError.title = This report cannot be submitted
 noDataEnteredError.heading = This report cannot be submitted
