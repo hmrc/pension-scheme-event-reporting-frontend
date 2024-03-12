@@ -79,6 +79,8 @@ GET         /report/remove-22                                                con
 POST        /report/remove-22                                                controllers.common.RemoveEventController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 GET         /report/remove-23                                                controllers.common.RemoveEventController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
 POST        /report/remove-23                                                controllers.common.RemoveEventController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
+GET         /report/remove-24                                                controllers.common.RemoveEventController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event24)
+POST        /report/remove-24                                                controllers.common.RemoveEventController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event24)
 GET         /report/remove-windUp                                            controllers.common.RemoveEventController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = WindUp)
 POST        /report/remove-windUp                                            controllers.common.RemoveEventController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = WindUp)
 
@@ -672,9 +674,6 @@ POST        /report/:index/event-24-employer-paye-reference                 cont
 
 GET         /report/:index/event-24-check-your-answers                      controllers.event24.Event24CheckYourAnswersController.onPageLoad(index: Index)
 GET         /report/:index/event-24-click                                   controllers.event24.Event24CheckYourAnswersController.onClick(index: Index)
-
-GET         /report/remove-24                                               controllers.common.RemoveEventController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event24)
-POST        /report/remove-24                                               controllers.common.RemoveEventController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event24)
 
 GET         /event-10-what-you-will-need                                    controllers.event10.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
