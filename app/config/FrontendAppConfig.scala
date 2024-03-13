@@ -22,6 +22,8 @@ import models.enumeration.EventType.toRoute
 import models.enumeration.{AdministratorOrPractitioner, EventType}
 import play.api.Configuration
 import play.api.i18n.Lang
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
+import uk.gov.hmrc.play.bootstrap.binders.{OnlyRelative, RedirectUrl}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
@@ -58,6 +60,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   def administratorOrPractitionerUrl: String = loadConfig("urls.administratorOrPractitioner")
 
   def youNeedToRegisterUrl: String = loadConfig("urls.youNeedToRegisterPage")
+  def youNeedToRegisterUrlRelative: String = loadConfig("urls.youNeedToRegisterPageRelative")
 
   def yourPensionSchemesUrl: String = loadConfig("urls.yourPensionSchemes")
 
@@ -136,4 +139,9 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   val validEvent22Header: String = configuration.get[String]("validEvent22Header")
   val validEvent23Header: String = configuration.get[String]("validEvent23Header")
   val validEvent24Header: String = configuration.get[String]("validEvent24Header")
+  def identityValidationFrontEndEntry(relativeCompletionURL: RedirectUrl, relativeFailureURL: RedirectUrl): String = {
+    val url = loadConfig("urls.ivUpliftEntry")
+    val query = s"?origin=pods&confidenceLevel=250&completionURL=${relativeCompletionURL.get(OnlyRelative).url}&failureURL=${relativeFailureURL.get(OnlyRelative).url}"
+    url + query
+  }
 }
