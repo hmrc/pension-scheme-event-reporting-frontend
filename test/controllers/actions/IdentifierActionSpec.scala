@@ -32,6 +32,7 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc.{Action, AnyContent, BodyParsers, Call}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
@@ -682,6 +683,26 @@ class IdentifierActionSpec
       val result = controller.onPageLoad()(fakeRequest)
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(testUrl)
+    }
+
+    "If confidence level is below 250 should redirect to IV journey" in {
+      val testUrl = "/test"
+
+      val authAction = new AuthenticatedIdentifierAction(
+        new FakeFailingAuthConnector(new InsufficientConfidenceLevel),
+        app.injector.instanceOf[FrontendAppConfig],
+        bodyParsers,
+        mockSessionDataCacheConnector,
+        mockSchemeConnector
+      )
+      when(mockFrontendAppConfig.youNeedToRegisterUrlRelative).thenReturn(testUrl)
+      when(mockFrontendAppConfig.youNeedToRegisterUrl).thenReturn(testUrl)
+      when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.failed(InsufficientConfidenceLevel()))
+      val controller = new Harness(authAction)
+      val result = controller.onPageLoad()(FakeRequest("GET", testUrl))
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some("http://localhost:9938/mdtp/uplift?origin=pods&confidenceLevel=250&completionURL=/test&failureURL=/manage-pension-schemes/you-need-to-register")
     }
   }
 
