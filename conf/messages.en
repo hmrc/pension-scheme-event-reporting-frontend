@@ -1850,10 +1850,9 @@ whatYouWillNeed.event24.title = What you will need
 whatYouWillNeed.event24.heading = What you will need
 whatYouWillNeed.event24.p = To record a relevant benefit crystallisation event you will need to tell us:
 whatYouWillNeed.event24.item1 = the member''s name and National Insurance number
-whatYouWillNeed.event24.item2 = the type of benefit crystallisation, total amount, and the date it took place
-whatYouWillNeed.event24.item3 = if the member holds valid form of allowance protection – if they do, tell us the type and the protection reference
-whatYouWillNeed.event24.item4 = if any lump sum payment has taken the member over lump sum allowance or death benefit allowance – if it has, tell us whether the excess was taxed at marginal rate
-whatYouWillNeed.event24.item5 = the employer PAYE reference, if it has been taxed at marginal rate
+whatYouWillNeed.event24.item2 = the type of relevant benefit crystallisation event, the total amount, and the date it took place
+whatYouWillNeed.event24.item3 = if the member holds valid protected allowances – if they do, tell us the type and reference (this could be a protection and/or enhancements)
+whatYouWillNeed.event24.item4 = whether any lump sum payment took the member over their available lump sum allowance or available lump sum and death benefit allowance – if it did, tell us if the excess was taxed at marginal rate and provide the employer PAYE reference
 
 crystallisedDate.event24.heading = When did the relevant benefit crystallisation event take place?
 crystallisedDate.event24.title = When was the relevant benefit crystallisation event?
