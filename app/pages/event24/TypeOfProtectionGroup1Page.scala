@@ -37,7 +37,7 @@ case class TypeOfProtectionGroup1Page(index: Index) extends QuestionPage[Set[Typ
       case Some(values) =>
         if ((values.size == 1 && values.head == SchemeSpecific) ||
           (values.size == 1 && values.head == NoneOfTheAbove)) {
-          TypeOfProtectionGroup2Page(index)
+          OverAllowancePage(index)
         } else {
           TypeOfProtectionGroup1ReferencePage(index)
         }
