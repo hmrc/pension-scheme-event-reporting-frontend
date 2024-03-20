@@ -124,7 +124,7 @@ class Event24CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       val event24Answers = emptyUserAnswers
         .set(MembersDetailsPage(Event24, 0), MembersDetails("Jane", "Doe", "AB123456A")).get
         .set(CrystallisedDatePage(0), CrystallisedDate(LocalDate.of(2024, 4, 4))).get
-        .set(BCETypeSelectionPage(0), BCETypeSelection.Small).get
+        .set(BCETypeSelectionPage(0), BCETypeSelection.StandAlone).get
         .set(TotalAmountBenefitCrystallisationPage(0), BigDecimal(123)).get
         .set(ValidProtectionPage(0), true).get
         .set(TypeOfProtectionGroup1Page(0), TypeOfProtectionGroup1Answer).get
@@ -153,7 +153,7 @@ class Event24CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
       val event24Answers = emptyUserAnswers
         .set(MembersDetailsPage(Event24, 0), MembersDetails("Jane", "Doe", "AB123456A")).get
-        .set(BCETypeSelectionPage(0), BCETypeSelection.Small).get
+        .set(BCETypeSelectionPage(0), BCETypeSelection.StandAlone).get
         .set(TotalAmountBenefitCrystallisationPage(0), BigDecimal(123)).get
         .set(ValidProtectionPage(0), true).get
         .set(TypeOfProtectionGroup1Page(0), TypeOfProtectionGroup1Answer).get
