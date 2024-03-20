@@ -220,13 +220,13 @@ manualOrUpload.event23.error.required = Select how you want to add the dual annu
 manualOrUpload.event23.change.hidden = How do you want to add the dual annual allowances details?
 manualOrUpload.event23.fileUpload.hint = Uploading a file will overwrite any data you have previously added for this event
 
-manualOrUpload.event24.title = How do you want to add the lump sum allowance details?
-manualOrUpload.event24.heading = How do you want to add the lump sum allowance details?
+manualOrUpload.event24.title = How do you want to add the lump sum details?
+manualOrUpload.event24.heading = How do you want to add the lump sum details?
 manualOrUpload.event24.manual = Manually enter the details
 manualOrUpload.event24.fileUpload = Upload a file
-manualOrUpload.event24.checkYourAnswersLabel = How do you want to add the lump sum allowance details?
-manualOrUpload.event24.error.required = Select how do you want to add the lump sum allowance details
-manualOrUpload.event24.change.hidden = How do you want to add the lump sum allowance details?
+manualOrUpload.event24.checkYourAnswersLabel = How do you want to add the lump sum details?
+manualOrUpload.event24.error.required = Select how do you want to add the lump sum details
+manualOrUpload.event24.change.hidden = How do you want to add the lump sum details?
 manualOrUpload.event24.fileUpload.hint = Uploading a file will overwrite any data you have previously added for this event
 
 manualOrUpload.event1.title = How do you want to add the unauthorised payment details?
