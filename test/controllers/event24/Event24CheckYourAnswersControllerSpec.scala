@@ -130,8 +130,8 @@ class Event24CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         .set(TypeOfProtectionGroup1Page(0), TypeOfProtectionGroup1Answer).get
         .set(TypeOfProtectionGroup1ReferencePage(0), ProtectionReferenceData("", "", "", "abcdef123")).get
         .set(TypeOfProtectionGroup2Page(0), TypeOfProtectionGroup2.NoOtherProtections).get
-        .set(OverAllowancePage(0), false).get
-        .set(OverAllowanceAndDeathBenefitPage(0), true).get
+        .set(OverAllowanceAndDeathBenefitPage(0), false).get
+        .set(OverAllowancePage(0), true).get
         .set(MarginalRatePage(0), true).get
         .set(EmployerPayeReferencePage(0), "123/ABCDE").get
 

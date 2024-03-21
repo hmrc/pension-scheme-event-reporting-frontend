@@ -36,7 +36,7 @@ case class ValidProtectionPage(index: Index) extends QuestionPage[Boolean] {
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
       case true => TypeOfProtectionGroup2Page(index)
-      case false => OverAllowancePage(index)
+      case false => OverAllowanceAndDeathBenefitPage(index)
     }.orRecover
   }
 

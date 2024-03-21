@@ -36,16 +36,15 @@ case class OverAllowanceAndDeathBenefitPage(index: Index) extends QuestionPage[B
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
       case true  => MarginalRatePage(index)
-      case false => Event24CheckYourAnswersPage(index)
+      case false => OverAllowancePage(index)
     }.orRecover
   }
 
   override def cleanupBeforeSettingValue(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
-      case Some(false) =>
+      case Some(true) =>
         Success(userAnswers
-          .remove(MarginalRatePage(index))
-          .flatMap(_.remove(EmployerPayeReferencePage(index)))
+          .remove(OverAllowancePage(index))
           .getOrElse(userAnswers)
         )
       case _ => Success(userAnswers)
