@@ -1893,11 +1893,11 @@ totalAmountBenefitCrystallisation.event24.error.amountTooHigh = The total amount
 totalAmountBenefitCrystallisation.event24.error.zeroEntered = The amount entered must be greater than zero
 totalAmountBenefitCrystallisation.event24.change.hidden = What was the total of the relevant benefit crystallisation event?
 
-validProtection.event24.title = Does the member hold valid protection or enhancement for the relevant benefit crystallisation event?
-validProtection.event24.heading = Does the member hold valid protection or enhancement for the relevant benefit crystallisation event?
-validProtection.event24.checkYourAnswersLabel = Does the member hold valid protection or enhancement for the relevant benefit crystallisation event?
+validProtection.event24.title = Does the member hold valid protection or enhancements for the relevant benefit crystallisation event?
+validProtection.event24.heading = Does the member hold valid protection or enhancements for the relevant benefit crystallisation event?
+validProtection.event24.checkYourAnswersLabel = Does the member hold valid protection or enhancements for the relevant benefit crystallisation event?
 validProtection.event24.error.required = Select yes if the member holds a valid protection
-validProtection.event24.change.hidden = Does the member hold valid protection or enhancement for the relevant benefit crystallisation event?
+validProtection.event24.change.hidden = Does the member hold valid protection or enhancements for the relevant benefit crystallisation event?
 
 typeOfProtection.event24.title = Type of protection held
 typeOfProtectionGroup1.event24.heading = What type of protection or enhancement is held for the member’s relevant benefit crystallisation event?
