@@ -30,7 +30,7 @@
 @(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(
-pageTitle = title(form, messages("typeOfProtection.event24.title"))
+pageTitle = title(form, messages("typeOfProtectionGroup1.event24.title"))
 ) {
 
     @formHelper(action = routes.TypeOfProtectionGroup1Controller.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
