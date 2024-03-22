@@ -30,7 +30,7 @@
 @(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(
-pageTitle = title(form, messages("typeOfProtection.event24.title"))
+pageTitle = title(form, messages("typeOfProtectionGroup2.event24.title"))
 ) {
 
     @formHelper(action = routes.TypeOfProtectionGroup2Controller.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
@@ -46,7 +46,6 @@ pageTitle = title(form, messages("typeOfProtection.event24.title"))
                         @messages("typeOfProtectionGroup2.event24.heading")
                     </h1>
                 </legend>
-                <div class="govuk-hint">This is optional.</div>
                 <div class="govuk-radios" data-module="govuk-radios">
                     @TypeOfProtectionGroup2.protectionOptions.map { item =>
                         <div class="govuk-radios__item">
