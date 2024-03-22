@@ -18,6 +18,7 @@ package pages.event24
 
 import controllers.event24.routes
 import models.enumeration.EventType
+import models.event24.BCETypeSelection
 import models.{Index, UserAnswers}
 import pages.common.MembersPage
 import play.api.libs.json.JsPath
@@ -37,7 +38,11 @@ case class OverAllowancePage(index: Index) extends QuestionPage[Boolean] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
-      case true  => MarginalRatePage(index)
+      case true  =>
+        answers.get(BCETypeSelectionPage(index)) match {
+          case Some(typeOfProtectionSelected) if BCETypeSelection.marginalHideValues.contains(typeOfProtectionSelected) => Event24CheckYourAnswersPage(index)
+          case _ => MarginalRatePage(index)
+        }
       case false => Event24CheckYourAnswersPage(index)
     }.orRecover
   }

@@ -47,6 +47,10 @@ object BCETypeSelection extends Enumerable.Implicits {
   val values: Seq[BCETypeSelection] = Seq(AnnuityProtection, DefinedBenefit, Drawdown, FlexiAccess, PensionProtection,
     SeriousHealthLumpSum, StandAlone, UncrystallisedFunds, UncrystallisedFundsDeathBenefit)
 
+  val marginalHideValues: Seq[BCETypeSelection] = Seq(BCETypeSelection.AnnuityProtection,
+    BCETypeSelection.DefinedBenefit, BCETypeSelection.Drawdown, BCETypeSelection.FlexiAccess,
+    BCETypeSelection.PensionProtection, BCETypeSelection.UncrystallisedFundsDeathBenefit)
+
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
       RadioItem(
