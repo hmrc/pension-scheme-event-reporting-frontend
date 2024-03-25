@@ -40,7 +40,8 @@ case class OverAllowancePage(index: Index) extends QuestionPage[Boolean] {
     answers.get(this).map {
       case true  =>
         answers.get(BCETypeSelectionPage(index)) match {
-          case Some(typeOfProtectionSelected) if BCETypeSelection.marginalHideValues.contains(typeOfProtectionSelected) => Event24CheckYourAnswersPage(index)
+          case Some(typeOfProtectionSelected) if BCETypeSelection.hideMarginalRatePageValues.contains(typeOfProtectionSelected) =>
+            Event24CheckYourAnswersPage(index)
           case _ => MarginalRatePage(index)
         }
       case false => Event24CheckYourAnswersPage(index)

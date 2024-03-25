@@ -17,6 +17,7 @@
 package utils.event24
 
 import models.enumeration.EventType.Event24
+import models.event24.BCETypeSelection
 import models.event24.TypeOfProtectionGroup1._
 import models.event24.TypeOfProtectionGroup2.NoOtherProtections
 import models.requests.DataRequest
@@ -51,30 +52,46 @@ class Event24UserAnswerValidation @Inject()(compileService: CompileService) {
     }
   }
 
-  def validateOverAllowanceAndDeathBenefit(index: Index)
+  def validateOverAllowance(index: Index)
                                           (implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
-    val overAllowanceAndDeathBenefitAnswer = request.userAnswers.get(OverAllowanceAndDeathBenefitPage(index))
+    val overAllowanceAnswer = request.userAnswers.get(OverAllowancePage(index))
 
-    overAllowanceAndDeathBenefitAnswer match {
-      case Some(true) => validateMarginalRate(index)
+    overAllowanceAnswer match {
+      case Some(true) =>
+        request.userAnswers.get(BCETypeSelectionPage(index)) match {
+          case Some(typeOfProtectionSelected) if BCETypeSelection.hideMarginalRatePageValues.contains(typeOfProtectionSelected) =>
+            compileService.compileEvent(Event24, request.pstr, request.userAnswers).map {
+              _ =>
+                Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event24)).url)
+            }
+          case _ => validateMarginalRate(index)
+        }
       case Some(false) => compileService.compileEvent(Event24, request.pstr, request.userAnswers).map {
         _ =>
           Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event24)).url)
       }
       case _ => Future.successful(
-        Redirect(OverAllowanceAndDeathBenefitPage(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url)
+        Redirect(OverAllowancePage(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url)
       )
     }
   }
 
-  def validateOverAllowance(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
-    val overAllowanceAnswer = request.userAnswers.get(OverAllowancePage(index))
-
-    overAllowanceAnswer match {
-      case Some(true) => validateMarginalRate(index)
-      case Some(false) => validateOverAllowanceAndDeathBenefit(index)
+  def validateOverAllowanceDeathBenefit(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext,
+                                                      request: DataRequest[AnyContent]): Future[Result] = {
+    val overAllowanceDBAnswer = request.userAnswers.get(OverAllowanceAndDeathBenefitPage(index))
+    overAllowanceDBAnswer match {
+      case Some(true) =>
+        request.userAnswers.get(BCETypeSelectionPage(index)) match {
+          case Some(typeOfProtectionSelected)  if BCETypeSelection.hideMarginalRatePageValues.contains(typeOfProtectionSelected) =>
+            compileService.compileEvent(Event24, request.pstr, request.userAnswers).map {
+              _ =>
+                Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event24)).url)
+            }
+          case _ => validateMarginalRate(index)
+        }
+      case Some(false) => validateOverAllowance(index)
       case _ => Future.successful(
-        Redirect(OverAllowancePage(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url)
+        Redirect(OverAllowanceAndDeathBenefitPage(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url)
       )
     }
   }
@@ -84,7 +101,7 @@ class Event24UserAnswerValidation @Inject()(compileService: CompileService) {
     val group2ProtectionRef = request.userAnswers.get(TypeOfProtectionGroup2ReferencePage(index))
 
     (group2Protection, group2ProtectionRef) match {
-      case (Some(_), Some(_)) | (Some(NoOtherProtections), None) => validateOverAllowance(index)
+      case (Some(_), Some(_)) | (Some(NoOtherProtections), None) => validateOverAllowanceDeathBenefit(index)
       case (Some(_), None) => Future.successful(
         Redirect(TypeOfProtectionGroup2ReferencePage(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url)
       )
@@ -130,7 +147,7 @@ class Event24UserAnswerValidation @Inject()(compileService: CompileService) {
 
     holdsProtectionAnswer match {
       case Some(true) => validateGroup1Protection(index)
-      case Some(false) => validateOverAllowance(index)
+      case Some(false) => validateOverAllowanceDeathBenefit(index)
       case _ => Future.successful(
         Redirect(ValidProtectionPage(index).changeLink(EmptyWaypoints, Event24CheckYourAnswersPage(index)).url)
       )
