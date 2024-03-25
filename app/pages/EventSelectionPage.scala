@@ -28,7 +28,7 @@ import pages.event12.HasSchemeChangedRulesPage
 import pages.event18.Event18ConfirmationPage
 import pages.event19.{WhatYouWillNeedPage => event19WhatYouWillNeed}
 import pages.event2.DatePaidPage
-import pages.event24.OverAllowancePage
+import pages.event24.OverAllowanceAndDeathBenefitPage
 import pages.event6.AmountCrystallisedAndDatePage
 import pages.event7.PaymentDatePage
 import pages.event8.LumpSumAmountAndDatePage
@@ -113,7 +113,7 @@ private object EventSelectionPageUtility {
       case Some(event22or23@(Event22 | Event23)) =>
         questionWasAnswered(userAnswers.get(TotalPensionAmountsPage(event22or23, getIndex(int))))
       case Some(Event24) =>
-        questionWasAnswered(userAnswers.get(OverAllowancePage(getIndex(int))))
+        questionWasAnswered(userAnswers.get(OverAllowanceAndDeathBenefitPage(getIndex(int))))
       case _ => false
     }
 

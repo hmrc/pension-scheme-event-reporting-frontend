@@ -21,10 +21,11 @@ import models.enumeration.EventType
 import controllers.actions._
 import forms.event24.OverAllowanceAndDeathBenefitFormProvider
 import models.Index
+import models.event24.BCETypeSelection
 
 import javax.inject.Inject
 import pages.Waypoints
-import pages.event24.OverAllowanceAndDeathBenefitPage
+import pages.event24.{BCETypeSelectionPage, MarginalRatePage, OverAllowanceAndDeathBenefitPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -55,9 +56,13 @@ class OverAllowanceAndDeathBenefitController @Inject()(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers
-          val updatedAnswers = originalUserAnswers.setOrException(OverAllowanceAndDeathBenefitPage(index), value)
+          val updatedAnswers =  originalUserAnswers.get(BCETypeSelectionPage(index)) match {
+            case Some(typeOfProtectionSelected) if BCETypeSelection.hideMarginalRatePageValues.contains(typeOfProtectionSelected) =>
+              originalUserAnswers.setOrException(OverAllowanceAndDeathBenefitPage(index), value).setOrException(MarginalRatePage(index), false)
+            case _ => originalUserAnswers.setOrException(OverAllowanceAndDeathBenefitPage(index), value)
+          }
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-          Redirect(OverAllowanceAndDeathBenefitPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            Redirect(OverAllowanceAndDeathBenefitPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
         }
       }
     )

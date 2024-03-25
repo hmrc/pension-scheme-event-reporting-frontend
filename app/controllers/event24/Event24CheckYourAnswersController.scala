@@ -80,25 +80,25 @@ class Event24CheckYourAnswersController @Inject()(
       hasRecognisedOverseasRow(waypoints, index, sourcePage) ++
       hasSchemeSpecificRow(waypoints, index, sourcePage) ++
       TypeOfProtectionGroup2Summary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()) ++
-      OverAllowanceSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
+      OverAllowanceAndDeathBenefitSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
       hasOverAllowanceRow(waypoints, index, sourcePage)
   }
 
   private def hasOverAllowanceRow(waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
 
-    request.userAnswers.get(OverAllowancePage(index)) match {
+    request.userAnswers.get(OverAllowanceAndDeathBenefitPage(index)) match {
       case Some(true) =>
         (MarginalRateSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
           hasMarginalRateRow(waypoints, index, sourcePage)).toSeq
       case _ =>
-        request.userAnswers.get(OverAllowanceAndDeathBenefitPage(index)) match {
+        request.userAnswers.get(OverAllowancePage(index)) match {
           case Some(true) =>
-            (OverAllowanceAndDeathBenefitSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
+            (OverAllowanceSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
               MarginalRateSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
               hasMarginalRateRow(waypoints, index, sourcePage)).toSeq
           case _ =>
-            OverAllowanceAndDeathBenefitSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq
+            OverAllowanceSummary.row(request.userAnswers, waypoints, sourcePage, index).toSeq
         }
     }
   }
