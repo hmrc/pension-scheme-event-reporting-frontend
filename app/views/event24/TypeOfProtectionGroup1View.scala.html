@@ -27,7 +27,7 @@
 )
 
 
-@(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], protectionPageVal: String, waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(
 pageTitle = title(form, messages("typeOfProtectionGroup1.event24.title"))
@@ -53,13 +53,15 @@ pageTitle = title(form, messages("typeOfProtectionGroup1.event24.title"))
                             </label>
                         </div>
                     }
-                    <div class="govuk-checkboxes__divider">or</div>
-                    <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="value_5" name="value[5]" type="checkbox" value="noneOfTheAbove" data-behaviour="exclusive">
-                        <label class="govuk-label govuk-checkboxes__label" for="value_5">
-                            @messages(s"typeOfProtection.event24.noneOfTheAbove")
-                        </label>
-                    </div>
+                    @if(protectionPageVal != "noOtherProtections") {
+                        <div class="govuk-checkboxes__divider">or</div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="value_5" name="value[5]" type="checkbox" value="noneOfTheAbove" data-behaviour="exclusive">
+                            <label class="govuk-label govuk-checkboxes__label" for="value_5">
+                                @messages(s"typeOfProtection.event24.noneOfTheAbove")
+                            </label>
+                        </div>
+                    }
                 </div>
             </fieldset>
         </div>
