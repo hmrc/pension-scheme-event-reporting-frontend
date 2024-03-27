@@ -48,16 +48,15 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
     "return a valid result if there are no validation errors" in {
       val validCSVFile = CSVParser.split(
         s"""$header
-                            ,Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123,NO,YES,,YES,123/ABCDEF
-                            ,Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,,"NON, PRE-COMM",12384nd82js,,123hids892h,,,FIXED,abcdef123,NO,YES,,YES,123/ABCDEF
-                            ,Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,,,NO,YES,,YES,123/ABCDEF
-                            ,Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,,,NO,YES,,NO,
-                            ,Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123,YES,,,YES,123/ABCDEF
-                            ,Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123,YES,,,NO,"""
+                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM",12384nd82js,,123hids892h,,,NO,YES,,YES,,123/ABCDEF
+                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,,,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,,,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,NO,,
+                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,YES,,,YES,,123/ABCDEF
+                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,YES,,,NO,,"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
       val result = validator.validate(validCSVFile, ua)
-      println(result)
       result.isValid mustBe true
     }
     "return validation error for incorrect header" in {
@@ -78,7 +77,7 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
       DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
-                          ,Jane,Doe,AB123456A,13/11/2026,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123,NO,YES,,YES,123/ABCDEF"""
+                          ,Jane,Doe,AB123456A,13/11/2026,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
       val result = validator.validate(csvFile, ua)
@@ -90,24 +89,24 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
       DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
-                          ,,Doe,AB123456A,13/11/2023,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123,NO,YES,,YES,123/ABCDEF
-                          ,Jane,,AB123456A,13/11/2023,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123,NO,YES,,YES,123/ABCDEF
-                          ,Jane,Doe,,13/11/2023,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123,NO,YES,,YES,123/ABCDEF
-                          ,Jane,Doe,AB123456A,,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123,NO,YES,,YES,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/202,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123,NO,YES,,YES,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANNI,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123,NO,YES,,YES,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,YES,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123,NO,YES,,YES,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,123,,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123,NO,YES,,YES,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,,,12384nd82js,,123hids892h,,YES,FIXED,abcdef123,NO,YES,,YES,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,,"NON, PRE-COMM,SS",,,123hids892h,,YES,FIXED,abcdef123,NO,YES,,YES,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXEDO,abcdef123,NO,YES,,YES,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123dnskassubcb,NO,YES,,YES,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,123,NO,,,,,,,,,,,YES,,YES,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123,,YES,,YES,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123,NO,,,YES,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123,NO,YES,,,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123,NO,YES,,YES,12:/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,123,YES,,"NON, PRE-COMM,SS",12384nd82js,,123hids892h,,YES,FIXED,abcdef123,NO,YES,,YES,"""
+                          ,,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/202,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANNI,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,YES,YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,,12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXEDO,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123dnskassubcb,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",NO,,,,,,,,,,,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,STAND,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,STAND,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,12:/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,STAND,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
       val result = validator.validate(csvFile, ua)
@@ -120,16 +119,16 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
         ValidationError(6, 5, "bceTypeSelection.error.format", "bceType"),
         ValidationError(7, 6, "totalAmountBenefitCrystallisation.event24.error.nonNumeric", "totalAmount"),
         ValidationError(8, 7, "validProtection.event24.error.required", "validProtection"),
-        ValidationError(9, 9, "typeOfProtection.event24.error.required", "protectionTypeGroup1"),
-        ValidationError(10, 10, "typeOfProtectionReference.error.required", "nonResidenceEnhancement"),
-        ValidationError(11, 15, "typeOfProtection.event24.error.format", "protectionTypeGroup2"),
-        ValidationError(12, 16, "typeOfProtectionReference.event24.error.maxLength", "protectionTypeGroup2Reference", ArraySeq(15)),
-        ValidationError(13, 17, "overAllowance.event24.error.required", "overAllowance"),
-        ValidationError(14, 17, "overAllowance.event24.error.required", "overAllowance"),
-        ValidationError(15, 18, "overAllowanceAndDeathBenefit.event24.error.required", "overAllowanceAndDeathBenefit"),
+        ValidationError(9, 11, "typeOfProtection.event24.error.required", "protectionTypeGroup1"),
+        ValidationError(10, 12, "typeOfProtectionReference.error.required", "nonResidenceEnhancement"),
+        ValidationError(11, 9, "typeOfProtection.event24.error.format", "protectionTypeGroup2"),
+        ValidationError(12, 10, "typeOfProtectionReference.event24.error.maxLength", "protectionTypeGroup2Reference", ArraySeq(15)),
+        ValidationError(13, 17, "overAllowanceAndDeathBenefit.event24.error.required", "overAllowanceAndDeathBenefit"),
+        ValidationError(14, 17, "overAllowanceAndDeathBenefit.event24.error.required", "overAllowanceAndDeathBenefit"),
+        ValidationError(15, 18, "overAllowance.event24.error.required", "overAllowance"),
         ValidationError(16, 20, "marginalRate.event24.error.required", "marginalRate"),
-        ValidationError(17, 21, "employerPayeReference.event24.error.disallowedChars", "employerPayeRef", ArraySeq("[A-Za-z0-9/]{9,12}")),
-        ValidationError(18, 21, "employerPayeReference.event24.error.required", "employerPayeRef")
+        ValidationError(17, 22, "employerPayeReference.event24.error.disallowedChars", "employerPayeRef", ArraySeq("[A-Za-z0-9/]{9,12}")),
+        ValidationError(18, 22, "employerPayeReference.event24.error.required", "employerPayeRef")
       ))
     }
   }
