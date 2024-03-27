@@ -19,7 +19,6 @@ package controllers.actions
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{SchemeConnector, SessionDataCacheConnector}
-import controllers.routes
 import models.LoggedInUser
 import models.common.EventReporting
 import models.enumeration.AdministratorOrPractitioner
@@ -33,7 +32,6 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.domain.{PsaId, PspId}
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException, SessionKeys}
-import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -70,7 +68,7 @@ class AuthenticatedIdentifierAction @Inject()(
   private def withAuthInfo[A](
                                block: (Option[String], Enrolments, Option[EventReporting]) => Future[Result]
                              )(implicit request: Request[A], hc: HeaderCarrier): Future[Result] = {
-    authorised((Enrolment(enrolmentPSA) or Enrolment(enrolmentPSP)) and ConfidenceLevel.L250).retrieve(
+    authorised(Enrolment(enrolmentPSA) or Enrolment(enrolmentPSP)).retrieve(
       Retrievals.externalId and Retrievals.allEnrolments
     ) {
       case optionExternalId ~ enrolments =>
@@ -78,12 +76,7 @@ class AuthenticatedIdentifierAction @Inject()(
     }
   }
 
-  private def recoverFromError(request: RequestHeader): PartialFunction[Throwable, Future[Result]] = {
-    case _: InsufficientConfidenceLevel =>
-      val completionURL = RedirectUrl(request.uri)
-      val failureURL = RedirectUrl(config.youNeedToRegisterUrlRelative)
-      val url = config.identityValidationFrontEndEntry(completionURL, failureURL)
-      Future.successful(SeeOther(url))
+  private def recoverFromError: PartialFunction[Throwable, Future[Result]] = {
     case _: NoActiveSession =>
       Future.successful(Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl))))
     case e: AuthorisationException =>
@@ -106,7 +99,7 @@ class AuthenticatedIdentifierAction @Inject()(
       case (Some(externalId), enrolments, Some(er)) if enrolments.getEnrolment(enrolmentPSP).isDefined =>
         actionForOneEnrolment(Practitioner, er, externalId, enrolments, request, block)
       case _ => futureUnauthorisedPage
-    } recoverWith recoverFromError(request)
+    } recoverWith recoverFromError
   }
 
   private def getPsaId(enrolments: Enrolments): Option[String] =
