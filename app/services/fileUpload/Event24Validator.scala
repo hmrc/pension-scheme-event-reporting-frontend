@@ -174,7 +174,7 @@ class Event24Validator @Inject()(
       case "PRE-COMM" => Map("value[2]" -> "preCommencement")
       case "OVERSEAS" => Map("value[3]" -> "recognisedOverseasPSTE")
       case "SS" => Map("value[4]" -> "schemeSpecific")
-      case _ => Map("value[0]" -> "")
+      case _ => Map("value[0]" -> "noneOfTheAbove")
     }
 
     @tailrec

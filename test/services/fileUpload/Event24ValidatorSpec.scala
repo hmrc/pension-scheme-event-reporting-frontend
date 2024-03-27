@@ -97,7 +97,6 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
                           ,Jane,Doe,AB123456A,13/11/2023,ANNI,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
                           ,Jane,Doe,AB123456A,13/11/2023,ANN,YES,YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
                           ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,,12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
                           ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
                           ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXEDO,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
                           ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123dnskassubcb,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
@@ -119,16 +118,15 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
         ValidationError(6, 5, "bceTypeSelection.error.format", "bceType"),
         ValidationError(7, 6, "totalAmountBenefitCrystallisation.event24.error.nonNumeric", "totalAmount"),
         ValidationError(8, 7, "validProtection.event24.error.required", "validProtection"),
-        ValidationError(9, 11, "typeOfProtection.event24.error.required", "protectionTypeGroup1"),
-        ValidationError(10, 12, "typeOfProtectionReference.error.required", "nonResidenceEnhancement"),
-        ValidationError(11, 9, "typeOfProtection.event24.error.format", "protectionTypeGroup2"),
-        ValidationError(12, 10, "typeOfProtectionReference.event24.error.maxLength", "protectionTypeGroup2Reference", ArraySeq(15)),
+        ValidationError(9, 12, "typeOfProtectionReference.error.required", "nonResidenceEnhancement"),
+        ValidationError(10, 9, "typeOfProtection.event24.error.format", "protectionTypeGroup2"),
+        ValidationError(11, 10, "typeOfProtectionReference.event24.error.maxLength", "protectionTypeGroup2Reference", ArraySeq(15)),
+        ValidationError(12, 17, "overAllowanceAndDeathBenefit.event24.error.required", "overAllowanceAndDeathBenefit"),
         ValidationError(13, 17, "overAllowanceAndDeathBenefit.event24.error.required", "overAllowanceAndDeathBenefit"),
-        ValidationError(14, 17, "overAllowanceAndDeathBenefit.event24.error.required", "overAllowanceAndDeathBenefit"),
-        ValidationError(15, 18, "overAllowance.event24.error.required", "overAllowance"),
-        ValidationError(16, 20, "marginalRate.event24.error.required", "marginalRate"),
-        ValidationError(17, 22, "employerPayeReference.event24.error.disallowedChars", "employerPayeRef", ArraySeq("[A-Za-z0-9/]{9,12}")),
-        ValidationError(18, 22, "employerPayeReference.event24.error.required", "employerPayeRef")
+        ValidationError(14, 18, "overAllowance.event24.error.required", "overAllowance"),
+        ValidationError(15, 20, "marginalRate.event24.error.required", "marginalRate"),
+        ValidationError(16, 22, "employerPayeReference.event24.error.disallowedChars", "employerPayeRef", ArraySeq("[A-Za-z0-9/]{9,12}")),
+        ValidationError(17, 22, "employerPayeReference.event24.error.required", "employerPayeRef")
       ))
     }
   }
