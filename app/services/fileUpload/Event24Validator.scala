@@ -94,10 +94,10 @@ class Event24Validator @Inject()(
       "SERIOUS" -> "seriousHealthLumpSum",
       "STAND" -> "standAlone",
       "UN LS" -> "uncrystallisedFunds",
-      "UN DB" -> "uncrystallisedFundsDeathBenefit",
+      "UN DB" -> "uncrystallisedFundsDeathBenefit"
     )
   }
-  private val hideMarginalRateValues = Seq("ANN","DEF","DRAW","FLEXI","PROTECTION","UN DB")
+  private val hideMarginalRateValues : Seq[String] = Seq("ANN","DEF","DRAW","FLEXI","PROTECTION","UN DB")
 
   private val mapProtectionTypeGroup2: Map[String, String] = {
     Map(
