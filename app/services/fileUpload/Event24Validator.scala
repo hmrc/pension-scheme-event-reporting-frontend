@@ -68,20 +68,21 @@ class Event24Validator @Inject()(
   private val fieldNoBCEType = 5
   private val fieldNoAmount = 6
   private val fieldNoValidProtection = 7
-  private val fieldNoProtectionTypeGroup1 = 9
 
-  private val fieldNoNonResidenceRef = 10
-  private val fieldNoPensionCreditsRef = 11
-  private val fieldNoPreCommencementRef = 12
-  private val fieldNoOverseasRef = 13
-  private val fieldNoSchemeSpecific = 14
+  private val fieldNoProtectionTypeGroup2 = 9
+  private val fieldNoProtectionReferenceGroup2 = 10
 
-  private val fieldNoProtectionTypeGroup2 = 15
-  private val fieldNoProtectionReferenceGroup2 = 16
-  private val fieldNoOverAllowance = 17
-  private val fieldNoOverAllowanceAndDeathBenefit = 18
+  private val fieldNoProtectionTypeGroup1 = 11
+  private val fieldNoNonResidenceRef = 12
+  private val fieldNoPensionCreditsRef = 13
+  private val fieldNoPreCommencementRef = 14
+  private val fieldNoOverseasRef = 15
+  private val fieldNoSchemeSpecific = 16
+
+  private val fieldNoOverAllowanceAndDeathBenefit = 17
+  private val fieldNoOverAllowance = 18
   private val fieldNoMarginalRate = 20
-  private val fieldNoPAYERef = 21
+  private val fieldNoPAYERef = 22
 
   private val mapBCEType: Map[String, String] = {
     Map(
@@ -91,14 +92,12 @@ class Event24Validator @Inject()(
       "FLEXI" -> "flexiAccess",
       "PROTECTION" -> "pensionProtection",
       "SERIOUS" -> "seriousHealthLumpSum",
-      "SMALL" -> "small",
-      "SA" -> "standAlone",
-      "TRIVIAL LS" -> "trivialCommutation",
+      "STAND" -> "standAlone",
       "UN LS" -> "uncrystallisedFunds",
-      "UN DB" -> "uncrystallisedFundsDeathBenefit",
-      "WIND-UP" -> "windingUp"
+      "UN DB" -> "uncrystallisedFundsDeathBenefit"
     )
   }
+  private val hideMarginalRateValues : Seq[String] = Seq("ANN","DEF","DRAW","FLEXI","PROTECTION","UN DB")
 
   private val mapProtectionTypeGroup2: Map[String, String] = {
     Map(
@@ -170,12 +169,12 @@ class Event24Validator @Inject()(
     val spreadsheetValues: Array[String] = chargeFields(fieldNoProtectionTypeGroup1).filterNot(_.isWhitespace).split(",")
 
     def getProtectionTypeString(typeCode: String) = typeCode match {
-      case "NON" => Map("value[0]" -> "nonResidenceEnhancement")
+      case "NON-RESIDENCE" => Map("value[0]" -> "nonResidenceEnhancement")
       case "CREDITS" => Map("value[1]" -> "pensionCreditsPreCRE")
       case "PRE-COMM" => Map("value[2]" -> "preCommencement")
       case "OVERSEAS" => Map("value[3]" -> "recognisedOverseasPSTE")
       case "SS" => Map("value[4]" -> "schemeSpecific")
-      case _ => Map("value[0]" -> "")
+      case _ => Map("value[0]" -> "noneOfTheAbove")
     }
 
     @tailrec
@@ -222,11 +221,12 @@ class Event24Validator @Inject()(
 
         val requiredReferenceTypes: Seq[TypeOfProtectionGroup1] = selectedProtectionTypes.map { typeCode => {
           typeCode match {
-            case "NON" => TypeOfProtectionGroup1.NonResidenceEnhancement
+            case "NON-RESIDENCE" => TypeOfProtectionGroup1.NonResidenceEnhancement
             case "CREDITS" => TypeOfProtectionGroup1.PensionCreditsPreCRE
             case "PRE-COMM" => TypeOfProtectionGroup1.PreCommencement
             case "OVERSEAS" => TypeOfProtectionGroup1.RecognisedOverseasPSTE
-            case _ => TypeOfProtectionGroup1.SchemeSpecific
+            case "SS" => TypeOfProtectionGroup1.SchemeSpecific
+            case _ => TypeOfProtectionGroup1.NoneOfTheAbove
           }
         }}
 
@@ -371,7 +371,6 @@ class Event24Validator @Inject()(
     )
 
     val validProtection = validateValidProtection(index, columns)
-
     Seq(a, b, c, d, validProtection).combineAll
   }
 
@@ -388,78 +387,82 @@ class Event24Validator @Inject()(
         val m = resultFromFormValidationResult[String](
           payeReferenceValidation(index, columns), createCommitItem(index, EmployerPayeReferencePage.apply(_))
         )
-
         Seq(l, m).combineAll
       case _ => l
     }
   }
 
-  private def validateOverAllowance(index: Index, columns: Seq[String]): Result = {
-    val overAllowanceValue = columns(fieldNoOverAllowance)
+  private def validateOverAllowanceDBA(index: Index, columns: Seq[String]): Result = {
     val overAllowanceAndDeathBenefitValue = columns(fieldNoOverAllowanceAndDeathBenefit)
+    val overAllowanceValue = columns(fieldNoOverAllowance)
 
     val j = resultFromFormValidationResult[Boolean](
-      genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoOverAllowance, overAllowance, overAllowanceFormProvider())),
-      createCommitItem(index, OverAllowancePage.apply(_))
-    )
-
-    val k = resultFromFormValidationResult[Boolean](
       genericBooleanFieldValidation(index, columns, FieldInfoForValidation(
         fieldNoOverAllowanceAndDeathBenefit, overAllowanceAndDeathBenefit, overAllowanceAndDeathBenefitFormProvider())
       ),
       createCommitItem(index, OverAllowanceAndDeathBenefitPage.apply(_))
     )
 
+    val k = resultFromFormValidationResult[Boolean](
+      genericBooleanFieldValidation(index, columns, FieldInfoForValidation(fieldNoOverAllowance, overAllowance, overAllowanceFormProvider())),
+      createCommitItem(index, OverAllowancePage.apply(_))
+    )
+
+    val defaultMarginalRateNo = hideMarginalRateValues.contains(columns(fieldNoBCEType))
     val marginalRate = validateMarginalRate(index, columns)
 
-    (overAllowanceValue, overAllowanceAndDeathBenefitValue) match {
-      case ("YES", _) =>
+    (defaultMarginalRateNo, overAllowanceAndDeathBenefitValue, overAllowanceValue) match {
+      case (true, "YES", _) =>
+        Seq(j).combineAll
+      case (true, "NO", "YES") =>
+        Seq(j, k).combineAll
+      case (false, "YES", _) =>
         Seq(j, marginalRate).combineAll
-      case ("NO", "YES") =>
+      case (false, "NO", "YES") =>
         Seq(j, k, marginalRate).combineAll
       case _ => Seq(j, k).combineAll
-    }
-  }
-
-  private def validateTypeOfProtectionGroup2(index: Index, columns: Seq[String]): Result = {
-    val protectionTypeValue = columns(fieldNoProtectionTypeGroup2)
-
-    val h = resultFromFormValidationResult[TypeOfProtectionGroup2](
-      protectionGroup2Validation(index, columns),
-      createCommitItem(index, TypeOfProtectionGroup2Page.apply(_))
-    )
-
-    val i = resultFromFormValidationResult[String](
-      protectionGroup2ReferenceValidation(index, columns),
-      createCommitItem(index, TypeOfProtectionGroup2ReferencePage.apply(_))
-    )
-
-    val overAllowance = validateOverAllowance(index, columns)
-
-    protectionTypeValue match {
-      case "" => Seq(h, overAllowance).combineAll
-      case _ => Seq(h, i, overAllowance).combineAll
     }
   }
 
   private def validateTypeOfProtectionGroup1(index: Index, columns: Seq[String]): Result = {
     val protectionTypeValue = columns(fieldNoProtectionTypeGroup1)
 
-    val f = resultFromFormValidationResult[Set[TypeOfProtectionGroup1]](
+    val h = resultFromFormValidationResult[Set[TypeOfProtectionGroup1]](
       protectionGroup1Validation(index, columns),
       createCommitItem(index, TypeOfProtectionGroup1Page.apply(_))
     )
 
-    val g = resultFromFormValidationResult[ProtectionReferenceData](
+    val i = resultFromFormValidationResult[ProtectionReferenceData](
       protectionReferenceGroup1Validation(index, columns),
       createCommitItem(index, TypeOfProtectionGroup1ReferencePage.apply)
     )
 
-    val typeOfProtectionGroup2 = validateTypeOfProtectionGroup2(index, columns)
+    val overAllowanceDBA = validateOverAllowanceDBA(index, columns)
 
     protectionTypeValue match {
-      case "SCHEME" => Seq(f, typeOfProtectionGroup2).combineAll
-      case _ => Seq(f, g, typeOfProtectionGroup2).combineAll
+      case "SS" => Seq(h, overAllowanceDBA).combineAll
+      case _ => Seq(h, i, overAllowanceDBA).combineAll
+    }
+  }
+
+  private def validateTypeOfProtectionGroup2(index: Index, columns: Seq[String]): Result = {
+    val protectionTypeValue = columns(fieldNoProtectionTypeGroup2)
+
+    val f = resultFromFormValidationResult[TypeOfProtectionGroup2](
+      protectionGroup2Validation(index, columns),
+      createCommitItem(index, TypeOfProtectionGroup2Page.apply(_))
+    )
+
+    val g = resultFromFormValidationResult[String](
+      protectionGroup2ReferenceValidation(index, columns),
+      createCommitItem(index, TypeOfProtectionGroup2ReferencePage.apply(_))
+    )
+
+    val typeOfProtectionGroup1 = validateTypeOfProtectionGroup1(index, columns)
+
+    protectionTypeValue match {
+      case "" => Seq(f, typeOfProtectionGroup1).combineAll
+      case _ => Seq(f, g, typeOfProtectionGroup1).combineAll
     }
   }
 
@@ -473,8 +476,8 @@ class Event24Validator @Inject()(
     )
 
     validProtectionValue match {
-      case "YES" => Seq(e, validateTypeOfProtectionGroup1(index, columns)).combineAll
-      case _ => Seq(e, validateOverAllowance(index, columns)).combineAll
+      case "YES" => Seq(e, validateTypeOfProtectionGroup2(index, columns)).combineAll
+      case _ => Seq(e, validateOverAllowanceDBA(index, columns)).combineAll
     }
   }
 }

@@ -18,6 +18,7 @@ package pages.event24
 
 import controllers.event24.routes
 import models.enumeration.EventType
+import models.event24.BCETypeSelection
 import models.{Index, UserAnswers}
 import pages.common.MembersPage
 import play.api.libs.json.JsPath
@@ -37,16 +38,22 @@ case class OverAllowancePage(index: Index) extends QuestionPage[Boolean] {
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(this).map {
-      case true  => MarginalRatePage(index)
-      case false => OverAllowanceAndDeathBenefitPage(index)
+      case true  =>
+        answers.get(BCETypeSelectionPage(index)) match {
+          case Some(typeOfProtectionSelected) if BCETypeSelection.hideMarginalRatePageValues.contains(typeOfProtectionSelected) =>
+            Event24CheckYourAnswersPage(index)
+          case _ => MarginalRatePage(index)
+        }
+      case false => Event24CheckYourAnswersPage(index)
     }.orRecover
   }
 
   override def cleanupBeforeSettingValue(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
-      case Some(true) =>
+      case Some(false) =>
         Success(userAnswers
-          .remove(OverAllowanceAndDeathBenefitPage(index))
+          .remove(MarginalRatePage(index))
+          .flatMap(_.remove(EmployerPayeReferencePage(index)))
           .getOrElse(userAnswers)
         )
       case _ => Success(userAnswers)

@@ -25,7 +25,7 @@ class BCETypeSelectionPageSpec extends PageBehaviours {
   "BCETypeSelectionPage" - {
 
     implicit lazy val arbitraryBCETypeSelectionPage: Arbitrary[BCETypeSelection] = Arbitrary {
-      BCETypeSelection.WindingUp
+      BCETypeSelection.StandAlone
     }
 
     beRetrievable[BCETypeSelection](BCETypeSelectionPage(0))

@@ -31,7 +31,7 @@ case class TypeOfProtectionGroup2ReferencePage(index: Int) extends QuestionPage[
     controllers.event24.routes.TypeOfProtectionGroup2ReferenceController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    OverAllowancePage(index)
+    TypeOfProtectionGroup1Page(index)
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
     Event24CheckYourAnswersPage(index)

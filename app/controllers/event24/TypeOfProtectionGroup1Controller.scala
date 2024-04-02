@@ -22,7 +22,7 @@ import forms.event24.TypeOfProtectionGroup1FormProvider
 import models.enumeration.EventType
 import models.{Index, UserAnswers}
 import pages.Waypoints
-import pages.event24.TypeOfProtectionGroup1Page
+import pages.event24.{TypeOfProtectionGroup1Page, TypeOfProtectionGroup2Page}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -48,14 +48,16 @@ class TypeOfProtectionGroup1Controller @Inject()(
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(TypeOfProtectionGroup1Page(index)).fold(form)(form.fill)
-      Ok(view(preparedForm, waypoints, index))
+      val protectionPageVal = request.userAnswers.get(TypeOfProtectionGroup2Page(index)).getOrElse("")
+      Ok(view(preparedForm, protectionPageVal.toString, waypoints, index))
   }
 
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
-          Future.successful(BadRequest(view(formWithErrors, waypoints, index)))
+          val protectionPageVal = request.userAnswers.fold(UserAnswers())(identity).get(TypeOfProtectionGroup2Page(index)).getOrElse("")
+          Future.successful(BadRequest(view(formWithErrors, protectionPageVal.toString, waypoints, index)))
         },
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
