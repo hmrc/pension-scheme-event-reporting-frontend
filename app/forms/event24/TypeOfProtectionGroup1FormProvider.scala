@@ -26,11 +26,11 @@ import javax.inject.Inject
 class TypeOfProtectionGroup1FormProvider @Inject() extends Mappings {
   def apply(): Form[Set[TypeOfProtectionGroup1]] =
     Form(
-      "value" -> set(enumerable[TypeOfProtectionGroup1]("typeOfProtection.event24.error.required"))
+      "value" -> set(enumerable[TypeOfProtectionGroup1]("typeOfProtectionGroup1.event24.error.required"))
         .verifying(
           firstError(
-          protectionGroup1Constraint("typeOfProtection.event24.error.invalid"),
-          nonEmptySet("typeOfProtection.event24.error.required"))
+          protectionGroup1Constraint("typeOfProtectionGroup1.event24.error.invalid"),
+          nonEmptySet("typeOfProtectionGroup1.event24.error.required"))
         )
     )
 }
