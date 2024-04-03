@@ -27,6 +27,10 @@ class TypeOfProtectionGroup1FormProvider @Inject() extends Mappings {
   def apply(): Form[Set[TypeOfProtectionGroup1]] =
     Form(
       "value" -> set(enumerable[TypeOfProtectionGroup1]("typeOfProtection.event24.error.required"))
-        .verifying(nonEmptySet("typeOfProtection.event24.error.required"))
+        .verifying(
+          firstError(
+          protectionGroup1Constraint("typeOfProtection.event24.error.invalid"),
+          nonEmptySet("typeOfProtection.event24.error.required"))
+        )
     )
 }
