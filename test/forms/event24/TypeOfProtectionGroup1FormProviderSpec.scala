@@ -27,7 +27,7 @@ class TypeOfProtectionGroup1FormProviderSpec extends CheckboxFieldBehaviours {
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "typeOfProtection.event24.error.required"
+    val requiredKey = "typeOfProtectionGroup1.event24.error.required"
 
     behave like checkboxField[TypeOfProtectionGroup1](
       form,

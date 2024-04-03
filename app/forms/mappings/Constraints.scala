@@ -16,6 +16,7 @@
 
 package forms.mappings
 
+import models.event24.TypeOfProtectionGroup1
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.domain.Nino
 import utils.CountryOptions
@@ -169,6 +170,17 @@ trait Constraints {
         Valid
       case _ =>
         Invalid(errorKey)
+    }
+
+  protected def protectionGroup1Constraint(errorKey: String): Constraint[Set[TypeOfProtectionGroup1]] =
+    Constraint {
+      case set if set.contains(TypeOfProtectionGroup1.NoneOfTheAbove) =>
+          if(set.size == 1){
+            Valid
+          } else {
+            Invalid(errorKey)
+          }
+      case _ => Valid
     }
 
   protected def validNino: Constraint[String] = Constraint { input =>
