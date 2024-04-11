@@ -31,7 +31,7 @@ class TaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyCheck
 
   override def beforeEach(): Unit = {
     super.beforeEach
-    DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
+    DateHelper.setDate(Some(LocalDate.of(2024, 6, 1)))
   }
 
   "TaxYear" - {
@@ -70,10 +70,10 @@ class TaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyCheck
   }
 
   "Values" - {
-    "must return a sequence of 7 year ranges from 2023-2024 to 2017-2018" in {
+    "must return a sequence of 7 year ranges from 2024-2025 to 2018-2019" in {
       TaxYear.values mustEqual
         Seq(
-          TaxYear("2023"), TaxYear("2022"), TaxYear( "2021"), TaxYear( "2020"), TaxYear( "2019"), TaxYear( "2018"), TaxYear( "2017"))
+          TaxYear("2024"), TaxYear("2023"), TaxYear( "2022"), TaxYear( "2021"), TaxYear( "2020"), TaxYear( "2019"), TaxYear( "2018"))
     }
   }
 }
