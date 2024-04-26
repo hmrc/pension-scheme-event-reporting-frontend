@@ -53,6 +53,7 @@ import utils.DateHelper
 
 import java.time.LocalDate
 import scala.collection.immutable.ArraySeq
+import scala.io.Source
 import scala.util.chaining.scalaUtilChainingOps
 
 class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with BeforeAndAfterEach {
@@ -439,6 +440,21 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
           ArraySeq("""^[a-zA-Z &`\'\.^\\]{0,160}$""")),
         ValidationError(6, 17, "employerPaymentNatureDescription.error.length", "otherDescription", ArraySeq(150))
       ))
+    }
+
+    "must validate in an efficient amount of time" in {
+      val start = System.nanoTime()
+      val csvFile = CSVParser.split({
+        val source = Source.fromURL(getClass.getResource("/event1-40k.csv"))
+        val file = source.toArray.mkString
+        source.close()
+        file
+      })
+      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+      validator.validate(csvFile, ua)
+      val end = System.nanoTime()
+      val secondsElapsed = (end - start) / Math.pow(10, 9)
+      println(s"Test took: ${secondsElapsed}s")
     }
 
   }
