@@ -19,6 +19,7 @@ package controllers.fileUpload
 import audit.{AuditService, EventReportingFileValidationAuditEvent, EventReportingUpscanFileDownloadAuditEvent, EventReportingUpscanFileUploadAuditEvent}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
+import cats.implicits.toFoldableOps
 import connectors.{EventReportingConnector, ParsingAndValidationOutcomeCacheConnector, UpscanInitiateConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.fileUpload.FileUploadResultFormProvider
@@ -30,8 +31,11 @@ import models.enumeration.EventType.{Event1, Event22, Event24, Event6, getEventT
 import models.fileUpload.ParsingAndValidationOutcomeStatus._
 import models.fileUpload.{FileUploadResult, ParsingAndValidationOutcome}
 import models.requests.OptionalDataRequest
-import models.{FileUploadOutcomeResponse, UserAnswers}
+import models.{FileUploadOutcomeResponse, TaxYear, UserAnswers}
 import org.apache.commons.lang3.StringUtils.EMPTY
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.scaladsl.{Source, StreamConverters}
+import org.apache.pekko.util.ByteString
 import pages.Waypoints
 import pages.fileUpload.FileUploadResultPage
 import play.api.data.Form
@@ -40,7 +44,8 @@ import play.api.i18n.{I18nSupport, Messages}
 import play.api.libs.json.{JsObject, JsPath, Json}
 import play.api.mvc._
 import services.CompileService
-import services.fileUpload.Validator.FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty
+import services.fileUpload.Validator
+import services.fileUpload.Validator.{FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty, monoidResult}
 import services.fileUpload._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadResultView
@@ -66,7 +71,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                                            event23Validator: Event23Validator,
                                            event24Validator: Event24Validator,
                                            auditService: AuditService
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                          )(implicit ec: ExecutionContext, as: ActorSystem) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
@@ -143,10 +148,12 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
   }
 
   private def performValidation(eventType: EventType,
-                                csvFileContent: String,
+                                source: Source[ByteString, _],
                                 fileName: Option[String])(implicit request: OptionalDataRequest[AnyContent]): Future[Unit] = {
     val startTime = System.currentTimeMillis
-    val parsedCSV = CSVParser.split(csvFileContent)
+
+    val inputStream = source.runWith(StreamConverters.asInputStream())
+
     val uaAfterRemovalOfEventType = Try(request.userAnswers
       .getOrElse(UserAnswers()).removeWithPath(JsPath \ s"event${eventType.toString}")) match {
       case scala.util.Success(ua) => ua
@@ -154,23 +161,44 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
         request.userAnswers.getOrElse(UserAnswers())
     }
 
-    val parserResult = validatorForEvent(eventType).validate(parsedCSV, uaAfterRemovalOfEventType)
+
+    var rowNumber = 0
+    val parserResultFuture = CSVParser.split(inputStream) {
+      case row if rowNumber > 0 =>
+        val taxYear = TaxYear.getTaxYear(uaAfterRemovalOfEventType)
+        val result = validatorForEvent(eventType).validateFields(rowNumber, row, taxYear)
+        rowNumber = rowNumber + 1
+        Some(result)
+      case _ => None
+    }
+
     val endTime = System.currentTimeMillis
 
-    val futureOutcome = parserResult match {
-      case Invalid(errors) =>
-        Future.successful(processInvalid(eventType, errors))
-      case Valid(updatedUA) =>
-        userAnswersCacheConnector.save(request.pstr, eventType, updatedUA).flatMap { _ =>
-          compileService.compileEvent(eventType, request.pstr, updatedUA)
-            .map(_ => ParsingAndValidationOutcome(Success, Json.obj(), fileName))
-        }
+    val validationErrorsFuture = parserResultFuture.map { parserResult =>
+      val combinedResult = parserResult.foldLeft[Validator.Result](monoidResult.empty) {
+        case (acc, result) => Seq(acc, result).combineAll
+      }
+      combinedResult.validated.map(_.foldLeft(uaAfterRemovalOfEventType)((acc, ci) => acc.setOrException(ci.jsPath, ci.value)))
     }
 
-    futureOutcome.flatMap { outcome =>
-      sendValidationAuditEvent(pstr = request.pstr, eventType = eventType, numberOfEntries = parsedCSV.size - 1, fileValidationTimeInSeconds = (endTime - startTime) / 1000, parserResult = parserResult)
-      parsingAndValidationOutcomeCacheConnector.setOutcome(outcome)
+    validationErrorsFuture.flatMap { validationErrors =>
+      val futureOutcome = validationErrors match {
+        case Invalid(errors) =>
+          Future.successful(processInvalid(eventType, errors))
+        case Valid(updatedUA) =>
+          userAnswersCacheConnector.save(request.pstr, eventType, updatedUA).flatMap { _ =>
+            compileService.compileEvent(eventType, request.pstr, updatedUA)
+              .map(_ => ParsingAndValidationOutcome(Success, Json.obj(), fileName))
+          }
+      }
+
+      futureOutcome.flatMap { outcome =>
+        sendValidationAuditEvent(pstr = request.pstr, eventType = eventType, numberOfEntries = rowNumber, fileValidationTimeInSeconds = (endTime - startTime) / 1000, parserResult = validationErrors)
+        parsingAndValidationOutcomeCacheConnector.setOutcome(outcome)
+      }
     }
+
+
   }
 
   private def asyncGetUpscanFileAndParse(eventType: EventType)(implicit request: OptionalDataRequest[AnyContent]): Future[Unit] = {
@@ -184,7 +212,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
               upscanInitiateConnector.download(downloadUrl).flatMap { httpResponse =>
                 sendUpscanFileDownloadAuditEvent(eventType, httpResponse.status, startTime, fileUploadOutcomeResponse)
                 httpResponse.status match {
-                  case OK => performValidation(eventType, httpResponse.body, fileName) recoverWith {
+                  case OK => performValidation(eventType, httpResponse.bodyAsSource, fileName) recoverWith {
                     case e: Throwable =>
                       setGeneralErrorOutcome(s"Unable to download file: download URL = $downloadUrl", fileName, Some(e))
                   }

@@ -122,7 +122,7 @@ class Event6Validator @Inject()(
     )
   }
 
-  override protected def validateFields(index: Int,
+  override def validateFields(index: Int,
                                         columns: Seq[String],
                                         taxYear: Int)
                                        (implicit messages: Messages): Result = {
