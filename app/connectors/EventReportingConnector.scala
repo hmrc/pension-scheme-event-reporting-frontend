@@ -109,7 +109,7 @@ class EventReportingConnector @Inject()(
             logger.error(s"Compile event return an unusual http response with status ${response.status} and body ${response.body}")
             throw new HttpException(response.body, response.status)
         }
-      }
+    }
   }
 
   def submitReport(pstr: String, ua: UserAnswers, version: String)
