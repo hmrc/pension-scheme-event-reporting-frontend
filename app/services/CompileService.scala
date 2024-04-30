@@ -35,6 +35,43 @@ class CompileService @Inject()(
                                 actorSystem: ActorSystem
                               ) (implicit ec: ExecutionContext) {
 
+  private def doCompile(currentVersionInfo: VersionInfo,
+                        newVersionInfo: VersionInfo,
+                        pstr: String,
+                        userAnswers: UserAnswers,
+                        delete: Boolean,
+                        eventType: Option[EventType],
+                        deleteAttr: Option[(String, EventDataIdentifier, Int, String)])(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+
+    val futureOptChangedOverviewSeq = if (newVersionInfo.version > currentVersionInfo.version) {
+      updateUAVersionAndOverview(pstr, userAnswers, currentVersionInfo.version, newVersionInfo.version)
+    } else {
+      Future.successful(None)
+    }
+
+    futureOptChangedOverviewSeq.flatMap { optChangedOverviewSeq =>
+      val uaNonEventTypeVersionUpdated = userAnswers.setOrException(VersionInfoPage, newVersionInfo, nonEventTypeData = true)
+      val updatedUA = optChangedOverviewSeq match {
+        case Some(seqErOverview) => uaNonEventTypeVersionUpdated
+          .setOrException(EventReportingOverviewPage, seqErOverview, nonEventTypeData = true)
+        case _ => uaNonEventTypeVersionUpdated
+      }
+
+      val futureAction = eventType match {
+        case Some(eventTypeVal) =>
+          eventReportingConnector.compileEvent(pstr, updatedUA.eventDataIdentifier(eventTypeVal, Some(newVersionInfo)), currentVersionInfo.version, delete)
+        case None =>
+          deleteAttr match {
+            case Some((pstrVal, edi, currentVersionVal, memberIdToDelete)) =>
+              eventReportingConnector.deleteMember(pstrVal, edi, currentVersionVal, memberIdToDelete)
+            case None => Future.failed(new RuntimeException("Invalid parameters provided"))
+          }
+      }
+
+      userAnswersCacheConnector.save(pstr, updatedUA).flatMap(_ => futureAction)
+    }
+  }
+
   private def updateOverviewSeq(overviewSeq: Seq[EROverview], taxYear: TaxYear, newVersion: Int): Seq[EROverview] = {
     overviewSeq.map { erOverview =>
       if (erOverview.taxYear == taxYear) {
@@ -72,42 +109,7 @@ class CompileService @Inject()(
     }
   }
 
-  private def doCompile(currentVersionInfo: VersionInfo,
-                        newVersionInfo: VersionInfo,
-                        pstr: String,
-                        userAnswers: UserAnswers,
-                        delete: Boolean,
-                        eventType: Option[EventType],
-                        deleteAttr: Option[(String, EventDataIdentifier, Int, String)])(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
 
-    val futureOptChangedOverviewSeq = if (newVersionInfo.version > currentVersionInfo.version) {
-      updateUAVersionAndOverview(pstr, userAnswers, currentVersionInfo.version, newVersionInfo.version)
-    } else {
-      Future.successful(None)
-    }
-
-    futureOptChangedOverviewSeq.flatMap { optChangedOverviewSeq =>
-      val uaNonEventTypeVersionUpdated = userAnswers.setOrException(VersionInfoPage, newVersionInfo, nonEventTypeData = true)
-      val updatedUA = optChangedOverviewSeq match {
-        case Some(seqErOverview) => uaNonEventTypeVersionUpdated
-          .setOrException(EventReportingOverviewPage, seqErOverview, nonEventTypeData = true)
-        case _ => uaNonEventTypeVersionUpdated
-      }
-
-      val futureAction = eventType match {
-        case Some(eventTypeVal) =>
-          eventReportingConnector.compileEvent(pstr, updatedUA.eventDataIdentifier(eventTypeVal, Some(newVersionInfo)), currentVersionInfo.version, delete)
-        case None =>
-          deleteAttr match {
-            case Some((pstrVal, edi, currentVersionVal, memberIdToDelete)) =>
-              eventReportingConnector.deleteMember(pstrVal, edi, currentVersionVal, memberIdToDelete)
-            case None => Future.failed(new RuntimeException("Invalid parameters provided"))
-          }
-      }
-
-      userAnswersCacheConnector.save(pstr, updatedUA).flatMap(_ => futureAction)
-    }
-  }
 
   def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion: Int, memberIdToDelete: String, userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
     userAnswers.get(VersionInfoPage) match {
