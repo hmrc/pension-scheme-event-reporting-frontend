@@ -40,8 +40,7 @@ class CompileService @Inject()(
                         pstr: String,
                         userAnswers: UserAnswers,
                         delete: Boolean,
-                        eventType: Option[EventType],
-                        deleteAttr: Option[(String, EventDataIdentifier, Int, String)])(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+                        eventOrDelete: Either[EventType, (String, EventDataIdentifier, Int, String)])(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
 
     val futureOptChangedOverviewSeq = if (newVersionInfo.version > currentVersionInfo.version) {
       updateUAVersionAndOverview(pstr, userAnswers, currentVersionInfo.version, newVersionInfo.version)
@@ -57,16 +56,12 @@ class CompileService @Inject()(
         case _ => uaNonEventTypeVersionUpdated
       }
 
-      val futureAction = eventType match {
-        case Some(eventTypeVal) =>
+      val futureAction = eventOrDelete match {
+        case Left(eventTypeVal) =>
           eventReportingConnector.compileEvent(pstr, updatedUA.eventDataIdentifier(eventTypeVal, Some(newVersionInfo)), currentVersionInfo.version, delete)
-        case None =>
-          deleteAttr match {
-            case Some((pstrVal, edi, currentVersionVal, memberIdToDelete)) =>
+        case Right((pstrVal, edi, currentVersionVal, memberIdToDelete)) =>
               eventReportingConnector.deleteMember(pstrVal, edi, currentVersionVal, memberIdToDelete)
-            case None => Future.failed(new RuntimeException("Invalid parameters provided"))
           }
-      }
 
       userAnswersCacheConnector.save(pstr, updatedUA).flatMap(_ => futureAction)
     }
@@ -121,8 +116,7 @@ class CompileService @Inject()(
           pstr,
           userAnswers,
           delete = false,
-          None,
-          Some((pstr, edi, currentVersion, memberIdToDelete))
+          eventOrDelete = Right((pstr, edi, currentVersion, memberIdToDelete))
         )
 
       case _ => throw new RuntimeException(s"No version available")
@@ -133,15 +127,13 @@ class CompileService @Inject()(
     userAnswers.get(VersionInfoPage) match {
       case Some(vi) =>
         val newVersionInfo = changeVersionInfo(vi)
-
         doCompile(
           vi,
           newVersionInfo,
           pstr,
           userAnswers,
           delete,
-          Some(eventType),
-          None
+          eventOrDelete = Left(eventType)
         )
       case _ => throw new RuntimeException(s"No version available")
     }
