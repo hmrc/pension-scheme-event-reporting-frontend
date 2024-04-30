@@ -36,12 +36,12 @@ import org.apache.commons.lang3.StringUtils.EMPTY
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.stream.scaladsl.{Source, StreamConverters}
 import org.apache.pekko.util.ByteString
-import pages.Waypoints
+import pages.{TaxYearPage, VersionInfoPage, Waypoints}
 import pages.fileUpload.FileUploadResultPage
+import play.api.Logging
 import play.api.data.Form
-import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, Messages}
-import play.api.libs.json.{JsObject, JsPath, Json}
+import play.api.libs.json.{JsObject, JsPath, JsSuccess, JsValue, Json, Writes}
 import play.api.mvc._
 import services.CompileService
 import services.fileUpload.Validator
@@ -51,6 +51,9 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadResultView
 
 import javax.inject.Inject
+import scala.collection.immutable.VectorMap
+import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
@@ -71,7 +74,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                                            event23Validator: Event23Validator,
                                            event24Validator: Event24Validator,
                                            auditService: AuditService
-                                          )(implicit ec: ExecutionContext, as: ActorSystem) extends FrontendBaseController with I18nSupport {
+                                          )(implicit ec: ExecutionContext, as: ActorSystem) extends FrontendBaseController with I18nSupport with Logging {
 
   private val form = formProvider()
 
@@ -162,38 +165,114 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
     }
 
 
-    var rowNumber = 0
-    val parserResultFuture = CSVParser.split(inputStream) {
-      case row if rowNumber > 0 =>
-        val taxYear = TaxYear.getTaxYear(uaAfterRemovalOfEventType)
-        val result = validatorForEvent(eventType).validateFields(rowNumber, row, taxYear)
-        rowNumber = rowNumber + 1
-        Some(result)
-      case _ => None
+    val validator = validatorForEvent(eventType)
+
+    val errorAccumulator: ArrayBuffer[ValidationError] = new ArrayBuffer()
+    case class JsonStructure(var array: Option[ArrayBuffer[JsonStructure]] = None,
+                             var obj: Option[mutable.Map[String, JsonStructure]] = None,
+                             var value: Option[JsValue] = None)
+    implicit lazy val jsonStructureWrites: Writes[JsonStructure] = new Writes[JsonStructure] {
+      override def writes(o: JsonStructure): JsValue = {
+        (o.array, o.obj, o.value) match {
+          case (Some(value), _, _) => Json.toJson(value.toSeq)
+          case (_, Some(value), _) => Json.toJson(value)
+          case (_, _, Some(value)) => Json.toJson(value)
+          case _ => JsObject.empty
+        }
+      }
     }
+    val dataAccumulator: JsonStructure = JsonStructure()
+    val parserResultFuture = CSVParser.split(inputStream) {
+      case (row, rowNumber) =>
+        Option.when(rowNumber > 0) {
+          val taxYear = TaxYear.getTaxYear(uaAfterRemovalOfEventType)
+          val result = validator.validateFields(rowNumber, row, taxYear)
+          result.validated match {
+            case Valid(results) => results.foreach { result =>
+              var curDataLocation: JsonStructure = dataAccumulator
+              val path = result.jsPath.path
+              val lastPathIndex = result.jsPath.path.size - 1
+              path.zipWithIndex.foreach { case (path, location) =>
+                val pathString = path.toJsonString
+                if(pathString.startsWith("[")) {
+                  val array = curDataLocation.array
+                  if(array.isEmpty) {
+                    val newDataLocation = JsonStructure()
+                    curDataLocation.array = Some(ArrayBuffer(JsonStructure()))
+                    curDataLocation = newDataLocation
+                  } else if(Try(curDataLocation.array.get(rowNumber - 2)).toOption.isDefined) {
+                    curDataLocation = curDataLocation.array.get.apply(rowNumber - 2)
+                  } else {
+                    val newDataLocation = JsonStructure()
+                    curDataLocation.array.get.addOne(newDataLocation)
+                    curDataLocation = newDataLocation
+                  }
+                } else if(pathString.startsWith(".") || pathString.startsWith("[")) {
+                  val objName = pathString.tail
+
+                  def createCurDataLocation(): Unit = {
+                    val newDataLocation = JsonStructure()
+                    curDataLocation.obj = Some(mutable.Map(objName -> newDataLocation))
+                    curDataLocation = newDataLocation
+                  }
+
+                  val opt = curDataLocation.obj
+                  if(opt.isEmpty) {
+                    opt.getOrElse(createCurDataLocation())
+                  } else {
+                    val map = curDataLocation.obj.get
+                    if(!map.contains(objName)) {
+                      val newDataLocation = JsonStructure()
+                      map += (objName -> newDataLocation)
+                      curDataLocation = newDataLocation
+                    } else {
+                      curDataLocation = map(objName)
+                    }
+                  }
+                }
+                if(location == lastPathIndex) {
+                  curDataLocation.value = Some(result.value)
+                }
+              }
+
+              //dataAccumulator = dataAccumulator.deepMerge(result.jsPath.asSingleJson(result.value).get.as[JsObject])
+              /*result.jsPath(result.value).map(jsObj => {
+                println("Initial: " + dataAccumulator)
+                dataAccumulator = dataAccumulator.deepMerge(jsObj.as[JsObject])
+                println("Current: " + dataAccumulator)
+              })*/
+            }
+            case Invalid(errors) => errorAccumulator ++= errors
+          }
+          println(rowNumber)
+          rowNumber
+        }
+    }
+
 
     val endTime = System.currentTimeMillis
 
-    val validationErrorsFuture = parserResultFuture.map { parserResult =>
-      val combinedResult = parserResult.foldLeft[Validator.Result](monoidResult.empty) {
-        case (acc, result) => Seq(acc, result).combineAll
-      }
-      combinedResult.validated.map(_.foldLeft(uaAfterRemovalOfEventType)((acc, ci) => acc.setOrException(ci.jsPath, ci.value)))
-    }
+    parserResultFuture.flatMap { case (_, rowNumber) =>
 
-    validationErrorsFuture.flatMap { validationErrors =>
-      val futureOutcome = validationErrors match {
-        case Invalid(errors) =>
-          Future.successful(processInvalid(eventType, errors))
-        case Valid(updatedUA) =>
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedUA).flatMap { _ =>
-            compileService.compileEvent(eventType, request.pstr, updatedUA)
-              .map(_ => ParsingAndValidationOutcome(Success, Json.obj(), fileName))
+      println("CI completed")
+      val futureOutcome = errorAccumulator match {
+        case ArrayBuffer() =>
+          (uaAfterRemovalOfEventType.get(TaxYearPage), uaAfterRemovalOfEventType.get(VersionInfoPage)) match {
+            case (Some(year), Some(version)) =>
+              userAnswersCacheConnector.save(request.pstr, eventType, Json.toJson(dataAccumulator), year.startYear, version.version.toString).flatMap { _ =>
+                println("UA save completed")
+                compileService.compileEvent(eventType, request.pstr, uaAfterRemovalOfEventType)
+                  .map(_ => ParsingAndValidationOutcome(Success, Json.obj(), fileName))
+              }
+            case (y, v) =>
+              Future.failed(new RuntimeException(s"No tax year or version available: $y / $v"))
           }
+        case errors =>
+          Future.successful(processInvalid(eventType, errors))
       }
 
       futureOutcome.flatMap { outcome =>
-        sendValidationAuditEvent(pstr = request.pstr, eventType = eventType, numberOfEntries = rowNumber, fileValidationTimeInSeconds = (endTime - startTime) / 1000, parserResult = validationErrors)
+        sendValidationAuditEvent(pstr = request.pstr, eventType = eventType, numberOfEntries = rowNumber - 1, fileValidationTimeInSeconds = (endTime - startTime) / 1000, parserResult = Invalid(errorAccumulator.toSeq))
         parsingAndValidationOutcomeCacheConnector.setOutcome(outcome)
       }
     }
@@ -212,10 +291,11 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
               upscanInitiateConnector.download(downloadUrl).flatMap { httpResponse =>
                 sendUpscanFileDownloadAuditEvent(eventType, httpResponse.status, startTime, fileUploadOutcomeResponse)
                 httpResponse.status match {
-                  case OK => performValidation(eventType, httpResponse.bodyAsSource, fileName) recoverWith {
-                    case e: Throwable =>
-                      setGeneralErrorOutcome(s"Unable to download file: download URL = $downloadUrl", fileName, Some(e))
-                  }
+                  case OK =>
+                    performValidation(eventType, httpResponse.bodyAsSource, fileName) recoverWith {
+                      case e: Throwable =>
+                        setGeneralErrorOutcome(s"Unable to download file: download URL = $downloadUrl", fileName, Some(e))
+                    }
                   case e =>
                     setGeneralErrorOutcome(s"Upscan download error response code $e and response body is ${httpResponse.body}", fileName)
                 }
@@ -327,7 +407,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
   }
 
   private def processInvalid(eventType: EventType,
-                             errors: Seq[ValidationError])(implicit messages: Messages): ParsingAndValidationOutcome = {
+                             errors: ArrayBuffer[ValidationError])(implicit messages: Messages): ParsingAndValidationOutcome = {
     errors match {
       case Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty) =>
         ParsingAndValidationOutcome(status = IncorrectHeadersOrEmptyFile)
@@ -336,14 +416,14 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
           ParsingAndValidationOutcome(
             status = ValidationErrorsLessThan10,
             json = Json.obj(
-              "errors" -> Json.arr(errorJson(errors, messages).map(x => Json.toJsFieldJsValueWrapper(x)): _*)
+              "errors" -> Json.arr(errorJson(errors.toSeq, messages).map(x => Json.toJsFieldJsValueWrapper(x)): _*)
             )
           )
         } else {
           ParsingAndValidationOutcome(
             status = ValidationErrorsMoreThanOrEqual10,
             json = Json.obj(
-              "errors" -> FileUploadGenericErrorReporter.generateGenericErrorReport(errors, eventType),
+              "errors" -> FileUploadGenericErrorReporter.generateGenericErrorReport(errors.toSeq, eventType),
               "totalErrors" -> errors.size
             )
           )

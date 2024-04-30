@@ -138,7 +138,7 @@ trait Validator {
       ValidationError(index, field.columnNo, formError.message, field.columnName, formError.args)
     }
   }
-
+  
   protected final def createCommitItem[A](index: Int, page: Int => Gettable[_])(implicit writes: Writes[A]): A => CommitItem =
     a => CommitItem(page(index - 1).path, Json.toJson(a))
 
