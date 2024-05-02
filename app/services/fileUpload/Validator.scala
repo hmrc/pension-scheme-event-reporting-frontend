@@ -21,7 +21,7 @@ import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
 import models.TaxYear.getTaxYear
-import models.UserAnswers
+import models.{TaxYear, UserAnswers}
 import models.common.MembersDetails
 import models.enumeration.EventType
 import models.fileUpload.FileUploadHeaders.MemberDetailsFieldNames
@@ -30,9 +30,11 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json._
 import queries.Gettable
+import services.FastJsonAccumulator
 import services.fileUpload.ValidatorErrorMessages.{HeaderInvalidOrFileIsEmpty, NoDataRowsProvided}
 
 import scala.collection.immutable.HashSet
+import scala.collection.mutable.ArrayBuffer
 
 object ValidatorErrorMessages {
   val HeaderInvalidOrFileIsEmpty = "Header invalid or File is empty"
@@ -79,35 +81,24 @@ trait Validator {
       ""
     }
 
-
-  def validate(rows: Seq[Array[String]], userAnswers: UserAnswers)
-              (implicit messages: Messages): Validated[Seq[ValidationError], UserAnswers] = {
-
-    rows.headOption match {
-      case Some(row) if row.mkString(",").equalsIgnoreCase(validHeader) =>
-        rows.size match {
-          case emptyTemplate if emptyTemplate == 1 =>
-            Invalid(Seq(FileLevelValidationErrorTypeNoDataRowsProvided))
-          case n if n >= 2 =>
-            val x = validateDataRows(rows, getTaxYear(userAnswers))
-            x.validated.map(_.foldLeft(userAnswers)((acc, ci) => acc.setOrException(ci.jsPath, ci.value)))
-          case _ => Invalid(Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty))
+  def validate(rowNumber: Int,
+               row: Seq[String],
+               dataAccumulator: FastJsonAccumulator,
+               errorAccumulator: ArrayBuffer[ValidationError],
+               taxYear: Int)(implicit messages: Messages): Option[Int] = {
+    Option.when(rowNumber > 0) {
+      val result = validateFields(rowNumber, row, taxYear)
+      result.validated match {
+        case Valid(results) => results.foreach { result =>
+          dataAccumulator.addItem(result, rowNumber)
         }
-      case _ =>
-        Invalid(Seq(FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty))
+        case Invalid(errors) => errorAccumulator ++= errors
+      }
+      rowNumber
     }
   }
 
-  private def validateDataRows(rows: Seq[Array[String]], taxYear: Int)
-                              (implicit messages: Messages): Result = {
-    rows.zipWithIndex.foldLeft[Result](monoidResult.empty) {
-      case (acc, Tuple2(_, 0)) => acc
-      case (acc, Tuple2(row, index)) =>
-        Seq(acc, validateFields(index, row.toIndexedSeq, taxYear)).combineAll
-    }
-  }
-
-  def validateFields(index: Int,
+  protected def validateFields(index: Int,
                                columns: Seq[String],
                                taxYear: Int
                               )(implicit messages: Messages): Result
@@ -192,7 +183,7 @@ trait Validator {
 
 case class ValidationError(row: Int, col: Int, error: String, columnName: String = EMPTY, args: Seq[Any] = Nil)
 
-protected case class CommitItem(jsPath: JsPath, value: JsValue)
+case class CommitItem(jsPath: JsPath, value: JsValue)
 
 protected case class Field(formValidationFieldName: String,
                            fieldValue: String,

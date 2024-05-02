@@ -18,8 +18,7 @@ package controllers.fileUpload
 
 import audit.{AuditService, EventReportingFileValidationAuditEvent, EventReportingUpscanFileDownloadAuditEvent, EventReportingUpscanFileUploadAuditEvent}
 import cats.data.Validated
-import cats.data.Validated.{Invalid, Valid}
-import cats.implicits.toFoldableOps
+import cats.data.Validated.Invalid
 import connectors.{EventReportingConnector, ParsingAndValidationOutcomeCacheConnector, UpscanInitiateConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.fileUpload.FileUploadResultFormProvider
@@ -36,23 +35,20 @@ import org.apache.commons.lang3.StringUtils.EMPTY
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.stream.scaladsl.{Source, StreamConverters}
 import org.apache.pekko.util.ByteString
-import pages.{TaxYearPage, VersionInfoPage, Waypoints}
 import pages.fileUpload.FileUploadResultPage
+import pages.{TaxYearPage, VersionInfoPage, Waypoints}
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages}
-import play.api.libs.json.{JsObject, JsPath, JsSuccess, JsValue, Json, Writes}
+import play.api.libs.json.{JsObject, JsPath, Json}
 import play.api.mvc._
-import services.CompileService
-import services.fileUpload.Validator
-import services.fileUpload.Validator.{FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty, monoidResult}
+import services.fileUpload.Validator.FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty
 import services.fileUpload._
+import services.{CompileService, FastJsonAccumulator}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.fileUpload.FileUploadResultView
 
 import javax.inject.Inject
-import scala.collection.immutable.VectorMap
-import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
@@ -167,100 +163,23 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
 
     val validator = validatorForEvent(eventType)
 
-    val errorAccumulator: ArrayBuffer[ValidationError] = new ArrayBuffer()
-    case class JsonStructure(var array: Option[ArrayBuffer[JsonStructure]] = None,
-                             var obj: Option[mutable.Map[String, JsonStructure]] = None,
-                             var value: Option[JsValue] = None)
-    implicit lazy val jsonStructureWrites: Writes[JsonStructure] = new Writes[JsonStructure] {
-      override def writes(o: JsonStructure): JsValue = {
-        (o.array, o.obj, o.value) match {
-          case (Some(value), _, _) => Json.toJson(value.toSeq)
-          case (_, Some(value), _) => Json.toJson(value)
-          case (_, _, Some(value)) => Json.toJson(value)
-          case _ => JsObject.empty
-        }
-      }
+
+    val taxYear = TaxYear.getTaxYear(uaAfterRemovalOfEventType)
+
+    val parserResultFuture = CSVParser.split(inputStream)(new FastJsonAccumulator() -> new ArrayBuffer[ValidationError]()) {
+      case ((dataAccumulator, errorAccumulator), row, rowNumber) =>
+        validator.validate(rowNumber, row, dataAccumulator, errorAccumulator, taxYear)
     }
-    val dataAccumulator: JsonStructure = JsonStructure()
-    val parserResultFuture = CSVParser.split(inputStream) {
-      case (row, rowNumber) =>
-        Option.when(rowNumber > 0) {
-          val taxYear = TaxYear.getTaxYear(uaAfterRemovalOfEventType)
-          val result = validator.validateFields(rowNumber, row, taxYear)
-          result.validated match {
-            case Valid(results) => results.foreach { result =>
-              var curDataLocation: JsonStructure = dataAccumulator
-              val path = result.jsPath.path
-              val lastPathIndex = result.jsPath.path.size - 1
-              path.zipWithIndex.foreach { case (path, location) =>
-                val pathString = path.toJsonString
-                if(pathString.startsWith("[")) {
-                  val array = curDataLocation.array
-                  if(array.isEmpty) {
-                    val newDataLocation = JsonStructure()
-                    curDataLocation.array = Some(ArrayBuffer(JsonStructure()))
-                    curDataLocation = newDataLocation
-                  } else if(Try(curDataLocation.array.get(rowNumber - 2)).toOption.isDefined) {
-                    curDataLocation = curDataLocation.array.get.apply(rowNumber - 2)
-                  } else {
-                    val newDataLocation = JsonStructure()
-                    curDataLocation.array.get.addOne(newDataLocation)
-                    curDataLocation = newDataLocation
-                  }
-                } else if(pathString.startsWith(".") || pathString.startsWith("[")) {
-                  val objName = pathString.tail
-
-                  def createCurDataLocation(): Unit = {
-                    val newDataLocation = JsonStructure()
-                    curDataLocation.obj = Some(mutable.Map(objName -> newDataLocation))
-                    curDataLocation = newDataLocation
-                  }
-
-                  val opt = curDataLocation.obj
-                  if(opt.isEmpty) {
-                    opt.getOrElse(createCurDataLocation())
-                  } else {
-                    val map = curDataLocation.obj.get
-                    if(!map.contains(objName)) {
-                      val newDataLocation = JsonStructure()
-                      map += (objName -> newDataLocation)
-                      curDataLocation = newDataLocation
-                    } else {
-                      curDataLocation = map(objName)
-                    }
-                  }
-                }
-                if(location == lastPathIndex) {
-                  curDataLocation.value = Some(result.value)
-                }
-              }
-
-              //dataAccumulator = dataAccumulator.deepMerge(result.jsPath.asSingleJson(result.value).get.as[JsObject])
-              /*result.jsPath(result.value).map(jsObj => {
-                println("Initial: " + dataAccumulator)
-                dataAccumulator = dataAccumulator.deepMerge(jsObj.as[JsObject])
-                println("Current: " + dataAccumulator)
-              })*/
-            }
-            case Invalid(errors) => errorAccumulator ++= errors
-          }
-          println(rowNumber)
-          rowNumber
-        }
-    }
-
 
     val endTime = System.currentTimeMillis
 
-    parserResultFuture.flatMap { case (_, rowNumber) =>
+    parserResultFuture.flatMap { case ((dataAccumulator, errorAccumulator), rowNumber) =>
 
-      println("CI completed")
       val futureOutcome = errorAccumulator match {
         case ArrayBuffer() =>
           (uaAfterRemovalOfEventType.get(TaxYearPage), uaAfterRemovalOfEventType.get(VersionInfoPage)) match {
             case (Some(year), Some(version)) =>
-              userAnswersCacheConnector.save(request.pstr, eventType, Json.toJson(dataAccumulator), year.startYear, version.version.toString).flatMap { _ =>
-                println("UA save completed")
+              userAnswersCacheConnector.save(request.pstr, eventType, dataAccumulator.toJson, year.startYear, version.version.toString).flatMap { _ =>
                 compileService.compileEvent(eventType, request.pstr, uaAfterRemovalOfEventType)
                   .map(_ => ParsingAndValidationOutcome(Success, Json.obj(), fileName))
               }

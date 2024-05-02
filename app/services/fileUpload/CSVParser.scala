@@ -25,28 +25,26 @@ import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.{Future, Promise}
 import scala.util.Success
 
-private final class AsyncRowProcessor[T](rowExecutor: (Array[String], Int) => Option[T]) extends RowProcessor {
+private final class AsyncRowProcessor[T,Y](acc:Y)(rowExecutor: (Y, Array[String], Int) => Option[T]) extends RowProcessor {
 
-  private val promise = Promise.apply[(Seq[T], Int)]()
-  val future: Future[(Seq[T], Int)] = promise.future
-
-  private val output = ArrayBuffer[T]()
+  private val promise = Promise.apply[(Y, Int)]()
+  val future: Future[(Y, Int)] = promise.future
   private var rowNumber = 0
 
   override def processStarted(context: ParsingContext): Unit = {}
 
   override def rowProcessed(row: Array[String], context: ParsingContext): Unit = {
-    rowExecutor(row.map(_.replaceAll("\\p{C}", "")), rowNumber).map(output.addOne)
+    rowExecutor(acc, row.map(_.replaceAll("\\p{C}", "")), rowNumber)
     rowNumber = rowNumber + 1
   }
 
-  override def processEnded(context: ParsingContext): Unit = promise.complete(Success(output.toSeq -> rowNumber))
+  override def processEnded(context: ParsingContext): Unit = promise.complete(Success(acc -> rowNumber))
 }
 
 object CSVParser {
 
-  def split[T](inputStream: InputStream)(rowExecutor: (Array[String], Int) => Option[T]): Future[(Seq[T], Int)] = {
-    val processor = new AsyncRowProcessor(rowExecutor)
+  def split[T, Y](inputStream: InputStream)(acc:Y)(rowExecutor: (Y, Array[String], Int) => Option[T]): Future[(Y, Int)] = {
+    val processor = new AsyncRowProcessor(acc)(rowExecutor)
     val settings = new CsvParserSettings()
     settings.setNullValue("")
     settings.setEmptyValue("")
