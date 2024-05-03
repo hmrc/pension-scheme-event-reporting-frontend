@@ -115,12 +115,33 @@ class BenefitInKindBriefDescriptionControllerSpec extends SpecBase with BeforeAn
       }
     }
 
+    "must return bad request when submitting data that is too long" in {
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
+
+      val invalidValue = "*" * 161
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", invalidValue))
+
+        val view = application.injector.instanceOf[BenefitInKindBriefDescriptionView]
+        val boundForm = form.bind(Map("value" -> invalidValue))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
+
     "must return bad request when invalid data is submitted" in {
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
           .build()
 
-      val invalidValue = "*" * 151
+      val invalidValue = "~|"
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", invalidValue))

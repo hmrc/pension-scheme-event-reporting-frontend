@@ -22,7 +22,7 @@ import play.api.data.FormError
 class SchemeDetailsFormProviderSpec extends StringFieldBehaviours {
 
   private val validData = "abc"
-  private val maxLength = 150
+  private val maxLength = 160
   private val nameLengthErrorKey = "schemeDetails.error.name.length"
   private val refLengthErrorKey = "schemeDetails.error.ref.length"
 
@@ -44,12 +44,13 @@ class SchemeDetailsFormProviderSpec extends StringFieldBehaviours {
       result.errors mustBe empty
     }
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, nameLengthErrorKey, Seq(maxLength))
-    )
+    s"not bind strings longer than $maxLength characters" in {
+      forAll(stringsLongerThan(maxLength) -> "longString") {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors must contain(FormError(fieldName, nameLengthErrorKey, Seq(maxLength)))
+      }
+    }
   }
 
   ".reference" - {
@@ -68,11 +69,12 @@ class SchemeDetailsFormProviderSpec extends StringFieldBehaviours {
       result.errors mustBe empty
     }
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, refLengthErrorKey, Seq(maxLength))
-    )
+    s"not bind strings longer than $maxLength characters" in {
+      forAll(stringsLongerThan(maxLength) -> "longString") {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors must contain(FormError(fieldName, refLengthErrorKey, Seq(maxLength)))
+      }
+    }
   }
 }

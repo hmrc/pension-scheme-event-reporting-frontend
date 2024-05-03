@@ -500,23 +500,26 @@ schemeUnAuthPaySurchargeMember.change.hidden = Is the scheme paying the unauthor
 errorDescription.title = Give a brief description of the error
 errorDescription.heading = Give a brief description of the error
 errorDescription.checkYourAnswersLabel = Give a brief description of the error
-errorDescription.hint = You can enter a maximum of 150 characters (optional).
+errorDescription.hint = You can enter a maximum of 160 characters (optional).
 errorDescription.error.required = Enter a brief description of the error
-errorDescription.error.length = The error description must be 150 characters or less
+errorDescription.error.length = The error description must be 160 characters or less
+errorDescription.error.invalidCharacters = The error description contains invalid characters
 errorDescription.change.hidden = Give a brief description of the error
 
 benefitsPaidEarly.title = Give a brief description of why the benefits are being paid early
 benefitsPaidEarly.heading = Give a brief description of why the benefits are being paid early
 benefitsPaidEarly.checkYourAnswersLabel = Give a brief description of why the benefits are being paid early
-benefitsPaidEarly.hint = You can enter a maximum of 150 characters (optional).
-benefitsPaidEarly.error.length = The description of why the benefits are being paid early must be 150 characters or less
+benefitsPaidEarly.hint = You can enter a maximum of 160 characters (optional).
+benefitsPaidEarly.error.length = The description of why the benefits are being paid early must be 160 characters or less
+benefitsPaidEarly.error.invalidCharacters = The description of why the benefits are being paid early contains invalid characters
 benefitsPaidEarly.change.hidden = Give a brief description of why the benefits are being paid early
 
 benefitInKindBriefDescription.title = Give a brief description of the benefit in kind
 benefitInKindBriefDescription.heading = Give a brief description of the benefit in kind
-benefitInKindBriefDescription.hint = You can enter a maximum of 150 characters (optional).
+benefitInKindBriefDescription.hint = You can enter a maximum of 160 characters (optional).
 benefitInKindBriefDescription.checkYourAnswersLabel = Give a brief description of the benefit in kind
-benefitInKindBriefDescription.error.length = You can enter a maximum of 150 characters (optional)
+benefitInKindBriefDescription.error.length = You can enter a maximum of 160 characters (optional)
+benefitInKindBriefDescription.error.invalidCharacters = The description contains invalid characters
 benefitInKindBriefDescription.change.hidden = Give a brief description of the benefit in kind
 
 whoWasTheTransferMade.title = Who was the transfer made to?
@@ -535,37 +538,43 @@ schemeDetails.schemeName = Scheme-name (optional)
 schemeDetails.reference = Reference (optional)
 schemeDetails.checkYourAnswersLabel = Scheme details
 schemeDetails.error.required = Enter Scheme details
-schemeDetails.error.name.length = Scheme-name must be 150 characters or less
-schemeDetails.error.ref.length = Reference must be 150 characters or less
+schemeDetails.error.name.length = Scheme-name must be 160 characters or less
+schemeDetails.error.name.invalidCharacters = The scheme-name contains invalid characters
+schemeDetails.error.ref.length = Reference must be 160 characters or less
+schemeDetails.error.ref.invalidCharacters = The reference contains invalid characters
 schemeName.change.hidden = Scheme name
 schemeReference.change.hidden = Reference
 
 memberTangibleMoveableProperty.title = Give a brief description of the tangible moveable property
 memberTangibleMoveableProperty.heading = Give a brief description of the tangible moveable property
-memberTangibleMoveableProperty.hint = You can enter a maximum of 150 characters (optional).
+memberTangibleMoveableProperty.hint = You can enter a maximum of 160 characters (optional).
 memberTangibleMoveableProperty.checkYourAnswersLabel = Give a brief description of the tangible moveable property
-memberTangibleMoveableProperty.error.length = The tangible moveable property must be 150 characters or fewer
+memberTangibleMoveableProperty.error.length = The tangible moveable property must be 160 characters or fewer
+memberTangibleMoveableProperty.error.invalidCharacters = The tangible moveable property description contains invalid characters
 memberTangibleMoveableProperty.change.hidden = Give a brief description of the tangible moveable property
 
 employerTangibleMoveableProperty.title = Give a brief description of the tangible moveable property
 employerTangibleMoveableProperty.heading = Give a brief description of the tangible moveable property
-employerTangibleMoveableProperty.hint = You can enter a maximum of 150 characters (optional).
+employerTangibleMoveableProperty.hint = You can enter a maximum of 160 characters (optional).
 employerTangibleMoveableProperty.checkYourAnswersLabel = Give a brief description of the tangible moveable property
-employerTangibleMoveableProperty.error.length = The tangible moveable property must be 150 characters or fewer
+employerTangibleMoveableProperty.error.length = The tangible moveable property must be 160 characters or fewer
+employerTangibleMoveableProperty.error.invalidCharacters = The tangible moveable property description contains invalid characters
 employerTangibleMoveableProperty.change.hidden = Give a brief description of the tangible moveable property
 
 memberPaymentNatureDescription.title = Give a brief description of the nature of the payment
 memberPaymentNatureDescription.heading = Give a brief description of the nature of the payment
-memberPaymentNatureDescription.hint = You can enter a maximum of 150 characters (optional).
+memberPaymentNatureDescription.hint = You can enter a maximum of 160 characters (optional).
 memberPaymentNatureDescription.checkYourAnswersLabel = Description of the nature of the payment
-memberPaymentNatureDescription.error.length = The nature of the payment must be 150 characters or fewer
+memberPaymentNatureDescription.error.length = The nature of the payment must be 160 characters or fewer
+memberPaymentNatureDescription.error.invalidCharacters = The description contains invalid characters
 memberPaymentNatureDescription.change.hidden = Description of the nature of the payment
 
 employerPaymentNatureDescription.title = Give a brief description of the nature of the payment
 employerPaymentNatureDescription.heading = Give a brief description of the nature of the payment
-employerPaymentNatureDescription.hint = You can enter a maximum of 150 characters (optional).
+employerPaymentNatureDescription.hint = You can enter a maximum of 160 characters (optional).
 employerPaymentNatureDescription.checkYourAnswersLabel = Description of the nature of the payment
-employerPaymentNatureDescription.error.length = The nature of the payment must be 150 characters or fewer
+employerPaymentNatureDescription.error.length = The nature of the payment must be 160 characters or fewer
+employerPaymentNatureDescription.error.invalidCharacters = The description contains invalid characters
 employerPaymentNatureDescription.change.hidden = Description of the nature of the payment
 
 residentialAddress.enterPostcode.title = What is the postcode of the residential property?

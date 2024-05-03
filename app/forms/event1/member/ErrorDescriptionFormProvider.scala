@@ -26,6 +26,8 @@ class ErrorDescriptionFormProvider @Inject() extends Mappings {
   def apply(): Form[Option[String]] =
     Form(
       "value" -> optionalText()
-        .verifying(maxLength(150, "errorDescription.error.length"))
+        .verifying(maxLength(160, "errorDescription.error.length"),
+          regexp(regexEvent1Description, "errorDescription.error.invalidCharacters")
+        )
     )
 }

@@ -17,7 +17,7 @@
 package viewmodels.event24.checkAnswers
 
 import models.{Index, UserAnswers}
-import pages.event24.{TypeOfProtectionGroup1Page, TypeOfProtectionGroup1ReferencePage}
+import pages.event24.TypeOfProtectionGroup1ReferencePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Actions

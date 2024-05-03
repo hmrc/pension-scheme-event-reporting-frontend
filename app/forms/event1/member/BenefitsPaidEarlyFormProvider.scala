@@ -17,17 +17,17 @@
 package forms.event1.member
 
 import forms.mappings.Mappings
-import play.api.data.Forms.single
-import play.api.data.{Form, Forms}
+import play.api.data.Form
 
 import javax.inject.Inject
 
 class BenefitsPaidEarlyFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(): Form[Option[String]] =
     Form(
-      single(
-        "value" -> Forms.text.verifying(maxLength(150, "benefitsPaidEarly.error.length"))
-      )
+        "value" -> optionalText()
+          .verifying(maxLength(160, "benefitsPaidEarly.error.length"),
+          regexp(regexEvent1Description, "benefitsPaidEarly.error.invalidCharacters")
+        )
     )
 }

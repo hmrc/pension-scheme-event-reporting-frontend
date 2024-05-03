@@ -116,8 +116,24 @@ class ErrorDescriptionControllerSpec extends SpecBase with BeforeAndAfterEach wi
       }
     }
 
+    "must return bad request when submitting data that is too long" in {
+      val invalidValue = "A" * 161
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
+      running(application) {
+        val view = application.injector.instanceOf[ErrorDescriptionView]
+        val boundForm = form.bind(Map("value" -> invalidValue))
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", invalidValue))
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view.render(boundForm, waypoints, index = 0, request, messages(application)).toString
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
+
     "must return bad request when invalid data is submitted" in {
-      val invalidValue = "A" * 151
+      val invalidValue = "~|"
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       running(application) {

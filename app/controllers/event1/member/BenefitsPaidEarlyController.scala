@@ -43,7 +43,7 @@ class BenefitsPaidEarlyController @Inject()(val controllerComponents: MessagesCo
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(BenefitsPaidEarlyPage(index))).fold(form)(form.fill)
+    val preparedForm = request.userAnswers.flatMap(_.get(BenefitsPaidEarlyPage(index))).fold(form)( v => form.fill(Some(v)))
     Ok(view(preparedForm, waypoints, index))
   }
 
@@ -55,10 +55,9 @@ class BenefitsPaidEarlyController @Inject()(val controllerComponents: MessagesCo
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
 
-          val updatedAnswers = if (value.nonEmpty) {
-            originalUserAnswers.setOrException(BenefitsPaidEarlyPage(index), value)
-          } else {
-            originalUserAnswers.removeOrException(BenefitsPaidEarlyPage(index))
+          val updatedAnswers = value match {
+            case Some(v) => originalUserAnswers.setOrException(BenefitsPaidEarlyPage(index), v)
+            case _ => originalUserAnswers.removeOrException(BenefitsPaidEarlyPage(index))
           }
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(BenefitsPaidEarlyPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)

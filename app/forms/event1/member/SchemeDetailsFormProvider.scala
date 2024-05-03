@@ -29,9 +29,13 @@ class SchemeDetailsFormProvider @Inject() extends Mappings {
     Form(
       mapping(
         "schemeName" -> optionalText()
-          .verifying(maxLength(150, "schemeDetails.error.name.length")),
+          .verifying(maxLength(160, "schemeDetails.error.name.length"),
+            regexp(regexEvent1Description, "schemeDetails.error.name.invalidCharacters")
+          ),
         "reference" -> optionalText()
-          .verifying(maxLength(150, "schemeDetails.error.ref.length"))
+          .verifying(maxLength(160, "schemeDetails.error.ref.length"),
+            regexp(regexEvent1Description, "schemeDetails.error.ref.invalidCharacters")
+          )
       )(SchemeDetails.apply)(SchemeDetails.unapply)
     )
 }
