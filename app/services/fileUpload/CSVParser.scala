@@ -21,7 +21,6 @@ import com.univocity.parsers.common.processor.RowProcessor
 import com.univocity.parsers.csv.{CsvParser, CsvParserSettings}
 
 import java.io._
-import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.{Future, Promise}
 import scala.util.Success
 

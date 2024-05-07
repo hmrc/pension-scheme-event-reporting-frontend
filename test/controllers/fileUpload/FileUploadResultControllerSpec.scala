@@ -40,6 +40,7 @@ import views.html.fileUpload.FileUploadResultView
 
 import scala.concurrent.Future
 
+//TODO: Add empty file tests
 class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val waypoints = EmptyWaypoints

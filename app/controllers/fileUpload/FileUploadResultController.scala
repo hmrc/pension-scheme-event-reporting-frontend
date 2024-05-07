@@ -170,7 +170,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       case ((dataAccumulator, errorAccumulator), row, rowNumber) =>
         validator.validate(rowNumber, row, dataAccumulator, errorAccumulator, taxYear)
     }
-    
+
     parserResultFuture.flatMap { case ((dataAccumulator, errorAccumulator), rowNumber) =>
 
       if(rowNumber < 2) {
