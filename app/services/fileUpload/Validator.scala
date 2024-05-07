@@ -19,9 +19,6 @@ package services.fileUpload
 import cats.Monoid
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import cats.implicits._
-import models.TaxYear.getTaxYear
-import models.{TaxYear, UserAnswers}
 import models.common.MembersDetails
 import models.enumeration.EventType
 import models.fileUpload.FileUploadHeaders.MemberDetailsFieldNames
@@ -56,8 +53,7 @@ object Validator {
   }
 
   val FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty: ValidationError = ValidationError(0, 0, HeaderInvalidOrFileIsEmpty, EMPTY)
-
-  private val FileLevelValidationErrorTypeNoDataRowsProvided: ValidationError = ValidationError(0, 0, NoDataRowsProvided, EMPTY)
+  val FileLevelValidationErrorTypeNoDataRowsProvided: ValidationError = ValidationError(0, 0, NoDataRowsProvided, EMPTY)
 }
 
 trait Validator {
@@ -85,8 +81,8 @@ trait Validator {
                row: Seq[String],
                dataAccumulator: FastJsonAccumulator,
                errorAccumulator: ArrayBuffer[ValidationError],
-               taxYear: Int)(implicit messages: Messages): Option[Int] = {
-    Option.when(rowNumber > 0) {
+               taxYear: Int)(implicit messages: Messages): Unit = {
+    if(rowNumber > 0) {
       val result = validateFields(rowNumber, row, taxYear)
       result.validated match {
         case Valid(results) => results.foreach { result =>
@@ -94,7 +90,6 @@ trait Validator {
         }
         case Invalid(errors) => errorAccumulator ++= errors
       }
-      rowNumber
     }
   }
 

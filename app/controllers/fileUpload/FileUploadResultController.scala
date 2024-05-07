@@ -170,12 +170,14 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       case ((dataAccumulator, errorAccumulator), row, rowNumber) =>
         validator.validate(rowNumber, row, dataAccumulator, errorAccumulator, taxYear)
     }
-
-    val endTime = System.currentTimeMillis
-
+    
     parserResultFuture.flatMap { case ((dataAccumulator, errorAccumulator), rowNumber) =>
 
-      val futureOutcome = errorAccumulator match {
+      if(rowNumber < 2) {
+        errorAccumulator += FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty
+      }
+
+      val compileEventResponse = errorAccumulator match {
         case ArrayBuffer() =>
           (uaAfterRemovalOfEventType.get(TaxYearPage), uaAfterRemovalOfEventType.get(VersionInfoPage)) match {
             case (Some(year), Some(version)) =>
@@ -190,13 +192,12 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
           Future.successful(processInvalid(eventType, errors))
       }
 
-      futureOutcome.flatMap { outcome =>
+      compileEventResponse.flatMap { outcome =>
+        val endTime = System.currentTimeMillis
         sendValidationAuditEvent(pstr = request.pstr, eventType = eventType, numberOfEntries = rowNumber - 1, fileValidationTimeInSeconds = (endTime - startTime) / 1000, parserResult = Invalid(errorAccumulator.toSeq))
         parsingAndValidationOutcomeCacheConnector.setOutcome(outcome)
       }
     }
-
-
   }
 
   private def asyncGetUpscanFileAndParse(eventType: EventType)(implicit request: OptionalDataRequest[AnyContent]): Future[Unit] = {

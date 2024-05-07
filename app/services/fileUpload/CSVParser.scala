@@ -25,7 +25,7 @@ import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.{Future, Promise}
 import scala.util.Success
 
-private final class AsyncRowProcessor[T,Y](acc:Y)(rowExecutor: (Y, Array[String], Int) => Option[T]) extends RowProcessor {
+private final class AsyncRowProcessor[Y](acc:Y)(rowExecutor: (Y, Array[String], Int) => Unit) extends RowProcessor {
 
   private val promise = Promise.apply[(Y, Int)]()
   val future: Future[(Y, Int)] = promise.future
@@ -43,7 +43,7 @@ private final class AsyncRowProcessor[T,Y](acc:Y)(rowExecutor: (Y, Array[String]
 
 object CSVParser {
 
-  def split[T, Y](inputStream: InputStream)(acc:Y)(rowExecutor: (Y, Array[String], Int) => Option[T]): Future[(Y, Int)] = {
+  def split[Y](inputStream: InputStream)(acc:Y)(rowExecutor: (Y, Array[String], Int) => Unit): Future[(Y, Int)] = {
     val processor = new AsyncRowProcessor(acc)(rowExecutor)
     val settings = new CsvParserSettings()
     settings.setNullValue("")
