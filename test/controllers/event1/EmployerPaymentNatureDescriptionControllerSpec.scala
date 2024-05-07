@@ -136,6 +136,22 @@ class EmployerPaymentNatureDescriptionControllerSpec extends SpecBase with Befor
       }
     }
 
+    "must return bad request when submitting data that is too long" in {
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "A" * 161))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
+
     "must return bad request when invalid data is submitted" in {
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
@@ -143,7 +159,7 @@ class EmployerPaymentNatureDescriptionControllerSpec extends SpecBase with Befor
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "A" * 151))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "~|"))
 
         val result = route(application, request).value
 

@@ -18,11 +18,13 @@ package forms.event1
 
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
+import utils.DateConstraintHandlers.regexEvent1Description
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class MemberPaymentNatureDescriptionFormProviderSpec extends StringFieldBehaviours {
 
   private val lengthKey = "memberPaymentNatureDescription.error.length"
-  private val maxLength = 150
+  private val maxLength = 160
 
   private val form = new MemberPaymentNatureDescriptionFormProvider()()
 
@@ -33,15 +35,16 @@ class MemberPaymentNatureDescriptionFormProviderSpec extends StringFieldBehaviou
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      RegexpGen.from(regexEvent1Description)
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
+    s"not bind strings longer than $maxLength characters" in {
+      forAll(stringsLongerThan(maxLength) -> "longString") {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors must contain(FormError(fieldName, lengthKey, Seq(maxLength)))
+      }
+    }
 
     "bind empty data" in {
       val result = form.bind(Map(fieldName -> "")).apply(fieldName)

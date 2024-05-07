@@ -26,6 +26,8 @@ class MemberTangibleMoveablePropertyFormProvider @Inject() extends Mappings {
   def apply(): Form[Option[String]] =
     Form(
       "value" -> optionalText()
-        .verifying(maxLength(150, "memberTangibleMoveableProperty.error.length"))
+        .verifying(maxLength(160, "memberTangibleMoveableProperty.error.length"),
+          regexp(regexEvent1Description, "memberTangibleMoveableProperty.error.invalidCharacters")
+        )
     )
 }
