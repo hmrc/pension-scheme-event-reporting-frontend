@@ -17,19 +17,10 @@
 package services.fileUpload
 
 import base.SpecBase
-import config.FrontendAppConfig
-import data.SampleData.countryOptions
-import forms.address.ManualAddressFormProvider
-import forms.common.MembersDetailsFormProvider
-import forms.event1.employer.{CompanyDetailsFormProvider, LoanDetailsFormProvider, PaymentNatureFormProvider => employerPaymentNatureFormProvider, UnauthorisedPaymentRecipientNameFormProvider => EmployerUnauthorisedPaymentRecipientNameFormProvider}
-import forms.event1.member._
-import forms.event1.{PaymentNatureFormProvider => memberPaymentNatureFormProvider, _}
-import org.mockito.Mockito
-import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.mockito.MockitoSugar.mock
+import play.api.Configuration
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.FastJsonAccumulator
@@ -44,12 +35,16 @@ import scala.concurrent.duration.DurationInt
 
 class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with BeforeAndAfterEach {
   //scalastyle:off magic.number
-
-  import Event1ValidatorSpec._
-
-  override def beforeEach(): Unit = {
-    Mockito.reset(mockFrontendAppConfig)
-    when(mockFrontendAppConfig.validEvent1Header).thenReturn(header)
+  private val injector = applicationBuilder(None).injector()
+  private val header = injector.instanceOf[Configuration].get[String]("validEvent1Header")
+  private val validator = injector.instanceOf[Event1Validator]
+  
+  def validate(data: String)(implicit messages: Messages): ((FastJsonAccumulator, ArrayBuffer[ValidationError]), Int) = {
+    val inputStream = new ByteArrayInputStream(data.getBytes("UTF-8"))
+    val result = CSVParser.split(inputStream)(new FastJsonAccumulator() -> new ArrayBuffer[ValidationError]()) { case ((dataAccumulator, errorAccumulator), row, rowNumber) =>
+      validator.validate(rowNumber, row, dataAccumulator, errorAccumulator, 2022)
+    }
+    Await.result(result, 5.seconds)
   }
 
   private val validAddress = "10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB"
@@ -87,31 +82,28 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
 
     // The test below passes fine but it is unnecessary to run each time. It serves though as a useful prototype
     // for when we are doing load testing. It generates 10K rows and parses/ validates them.
-    //    "return correctly and in timely fashion (< 30 seconds) when there is a large payload (10K items)" in {
-    //      val payloadMain = (1 to 20000).foldLeft("") { (acc, c) =>
-    //        val nino = "AA" + ("00000" + c.toString).takeRight(6) + "C"
-    //        acc +
-    //          """
-    //""" + s"""member,Joe,Bloggs,$nino,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,08/11/2022"""
-    //      }
-    //
-    //      val validCSVFile = CSVParser.split(
-    //        s"""$header
-    //""" + payloadMain
-    //      )
-    //      val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
-    //      val startTime = System.currentTimeMillis
-    //      val result = validator.validate(validCSVFile, ua)
-    //      val endTime = System.currentTimeMillis
-    //      val timeTaken = (endTime - startTime) / 1000
-    //      result.isValid mustBe true
-    //      println(s"Validated large payload (took $timeTaken seconds)")
-    //      if (timeTaken < 30) {
-    //        assert(true, s"Validated large payload in less than 30 seconds (took $timeTaken seconds)")
-    //      } else {
-    //        assert(false, s"Validated large payload in more than 30 seconds (actually took $timeTaken seconds)")
-    //      }
-    //    }
+//        "return correctly and in timely fashion (< 30 seconds) when there is a large payload (10K items)" in {
+//          val payloadMain = (1 to 20000).foldLeft("") { (acc, c) =>
+//            val nino = "AA" + ("00000" + c.toString).takeRight(6) + "C"
+//            acc +
+//              """
+//    """ + s"""member,Joe,Bloggs,$nino,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.00,08/11/2022"""
+//          }
+//
+//          val data = s"""$header
+//            """ + payloadMain
+//          val startTime = System.currentTimeMillis
+//          val ((output, errors), rowNumber) = validate(data)
+//          val endTime = System.currentTimeMillis
+//          val timeTaken = (endTime - startTime) / 1000
+//          errors.isEmpty mustBe true
+//          println(s"Validated large payload (took $timeTaken seconds)")
+//          if (timeTaken < 30) {
+//            assert(true, s"Validated large payload in less than 30 seconds (took $timeTaken seconds)")
+//          } else {
+//            assert(false, s"Validated large payload in more than 30 seconds (actually took $timeTaken seconds)")
+//          }
+//        }
 
     "return validation errors when present (Member)" in {
 
@@ -298,94 +290,4 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
 
   }
 
-}
-
-object Event1ValidatorSpec {
-
-  def validate(data: String)(implicit messages: Messages): ((FastJsonAccumulator, ArrayBuffer[ValidationError]), Int) = {
-    val inputStream = new ByteArrayInputStream(data.getBytes("UTF-8"))
-    val result = CSVParser.split(inputStream)(new FastJsonAccumulator() -> new ArrayBuffer[ValidationError]()) { case ((dataAccumulator, errorAccumulator), row, rowNumber) =>
-      validator.validate(rowNumber, row, dataAccumulator, errorAccumulator, 2022)
-    }
-    Await.result(result, 5.seconds)
-  }
-
-  private val header = "Member or employer," +
-    "Member: first name,Member: last name,Member: National Insurance number," +
-    "Member: Do you hold a signed mandate from the member to deduct tax from their unauthorised payment? (YES/NO)," +
-    "Member: Is the value of the unauthorised payment more than 25% of the pension fund for the individual? (YES/NO)," +
-    "Member: Is the scheme paying the unauthorised payment surcharge on behalf of the member? (YES/NO)," +
-    "Employer: company or organisation name," +
-    "Employer: company number," +
-    "Employer: company address," +
-    "Member and employer: Nature of the unauthorised payment or deemed unauthorised payment (see instructions for details)," +
-    "If BENEFIT: Give a brief description (up to 150 characters)," +
-    "If COURT: What is the name of the person or organisation that received the unauthorised payment? (see instructions for details)," +
-    "If EARLY: Give a brief description (up to 150 characters)," +
-    "If ERROR: Give a brief description (up to 150 characters)," +
-    "If LOANS: Amount of the loan (£)," +
-    "If LOANS: Value of the fund (£)," +
-    "If OTHER: Give a brief description (up to 150 characters)," +
-    "If OVERPAYMENT: What is the reason for the overpayment/write off? (see instructions for details)," +
-    "If REFUND: Who received the fund? (see instructions for details)," +
-    "If RESIDENTIAL: What is the address of the residential property? (see instructions for details)," +
-    "If TANGIBLE: Give a brief description (up to 150 characters)," +
-    "If TRANSFER: Who was the transfer was made to? (see instructions for details)," +
-    "If TRANSFER: What are the scheme details? (see instructions for details)," +
-    "Member and Employer: Total value or amount of the unauthorised payment (£)," +
-    "Member and employer: Date of payment or when benefit made available (see instructions for details)"
-
-  private val mockFrontendAppConfig = mock[FrontendAppConfig]
-
-  private val whoReceivedUnauthPaymentFormProvider = new WhoReceivedUnauthPaymentFormProvider
-  private val membersDetailsFormProvider = new MembersDetailsFormProvider
-  private val doYouHoldSignedMandateFormProvider = new DoYouHoldSignedMandateFormProvider
-  private val valueOfUnauthorisedPaymentFormProvider = new ValueOfUnauthorisedPaymentFormProvider
-  private val schemeUnAuthPaySurchargeMemberFormProvider = new SchemeUnAuthPaySurchargeMemberFormProvider
-  private val memberPaymentNatureFormProvider = new memberPaymentNatureFormProvider
-  private val benefitInKindBriefDescriptionFormProvider = new BenefitInKindBriefDescriptionFormProvider
-  private val paymentValueAndDateFormProvider = new PaymentValueAndDateFormProvider
-  private val whoWasTheTransferMadeFormProvider = new WhoWasTheTransferMadeFormProvider
-  private val schemeDetailsFormProvider = new SchemeDetailsFormProvider
-  private val errorDescriptionFormProvider = new ErrorDescriptionFormProvider
-  private val benefitsPaidEarlyFormProvider = new BenefitsPaidEarlyFormProvider
-  private val refundOfContributionsFormProvider = new RefundOfContributionsFormProvider
-  private val reasonForTheOverpaymentOrWriteOffFormProvider = new ReasonForTheOverpaymentOrWriteOffFormProvider
-  private val manualAddressFormProvider = new ManualAddressFormProvider(countryOptions)
-  private val memberTangibleMoveablePropertyFormProvider = new MemberTangibleMoveablePropertyFormProvider
-  private val unauthorisedPaymentRecipientNameFormProvider = new UnauthorisedPaymentRecipientNameFormProvider
-  private val memberPaymentNatureDescriptionFormProvider = new MemberPaymentNatureDescriptionFormProvider
-  private val companyDetailsFormProvider = new CompanyDetailsFormProvider
-  private val employerPaymentNatureFormProvider = new employerPaymentNatureFormProvider
-  private val loanDetailsFormProvider = new LoanDetailsFormProvider
-  private val employerTangibleMoveablePropertyFormProvider = new EmployerTangibleMoveablePropertyFormProvider
-  private val employerUnauthorisedPaymentRecipientNameFormProvider = new EmployerUnauthorisedPaymentRecipientNameFormProvider
-  private val employerPaymentNatureDescriptionFormProvider = new EmployerPaymentNatureDescriptionFormProvider
-
-  private val validator = new Event1Validator(
-    whoReceivedUnauthPaymentFormProvider,
-    membersDetailsFormProvider,
-    doYouHoldSignedMandateFormProvider,
-    paymentValueAndDateFormProvider,
-    valueOfUnauthorisedPaymentFormProvider,
-    schemeUnAuthPaySurchargeMemberFormProvider,
-    memberPaymentNatureFormProvider,
-    benefitInKindBriefDescriptionFormProvider,
-    whoWasTheTransferMadeFormProvider,
-    schemeDetailsFormProvider,
-    errorDescriptionFormProvider,
-    benefitsPaidEarlyFormProvider,
-    refundOfContributionsFormProvider,
-    reasonForTheOverpaymentOrWriteOffFormProvider,
-    manualAddressFormProvider,
-    memberTangibleMoveablePropertyFormProvider,
-    unauthorisedPaymentRecipientNameFormProvider,
-    memberPaymentNatureDescriptionFormProvider,
-    companyDetailsFormProvider,
-    employerPaymentNatureFormProvider,
-    loanDetailsFormProvider,
-    employerTangibleMoveablePropertyFormProvider,
-    employerUnauthorisedPaymentRecipientNameFormProvider,
-    employerPaymentNatureDescriptionFormProvider,
-    mockFrontendAppConfig)
 }
