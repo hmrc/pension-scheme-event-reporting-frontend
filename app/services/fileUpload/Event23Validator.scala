@@ -40,7 +40,7 @@ class Event23Validator @Inject()(
                                 ) extends Validator {
   override val eventType: EventType = EventType.Event23
 
-  override protected def validHeader: String = config.validEvent23Header
+  override def validHeader: String = config.validEvent23Header
 
   private val fieldNoTaxYear = 3
   private val fieldNoTotalAmounts = 4

@@ -16,6 +16,7 @@
 
 package utils
 
+import play.api.Logging
 import play.api.libs.json.{JsValue, Json, Writes}
 import services.fileUpload.CommitItem
 
@@ -32,20 +33,26 @@ protected object JsonStructure {
   implicit lazy val jsonStructureWrites: Writes[JsonStructure] = new Writes[JsonStructure] {
     override def writes(o: JsonStructure): JsValue = {
       (o.array, o.obj, o.value) match {
-        case (Some(value), _, _) => Json.toJson(value.toSeq)
-        case (_, Some(value), _) => Json.toJson(value)
-        case (_, _, Some(value)) => Json.toJson(value)
-        case _ => throw new RuntimeException("Incorrect format for FastJsonAccumulator")
+        case (Some(value), None, None) => Json.toJson(value.toSeq)
+        case (None, Some(value), None) => Json.toJson(value)
+        case (None, None, Some(value)) => Json.toJson(value)
+        case _ => throw new RuntimeException()
       }
     }
   }
 }
 
 
-class FastJsonAccumulator {
+class FastJsonAccumulator extends Logging {
 
   private val dataAccumulator = JsonStructure()
   def addItem(commitItem: CommitItem, rowNumber: Int): Unit = {
+    logger.debug(
+      s"""
+        |Commit item:
+        |$commitItem
+        |Row: $rowNumber
+        |""".stripMargin)
     var curDataLocation: JsonStructure = dataAccumulator
     val path = commitItem.jsPath.path
     val lastPathIndex = commitItem.jsPath.path.size - 1
@@ -95,5 +102,13 @@ class FastJsonAccumulator {
     }
   }
 
-  def toJson: JsValue = Json.toJson(dataAccumulator)
+  def toJson: JsValue = try {
+    Json.toJson(dataAccumulator)
+  } catch {
+    case _:RuntimeException => throw new RuntimeException(
+      s"""Incorrect format for FastJsonAccumulator
+         |Structure:
+         |$dataAccumulator
+         |""".stripMargin)
+  }
 }

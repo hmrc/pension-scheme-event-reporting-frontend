@@ -66,7 +66,7 @@ trait Validator {
   protected val fieldNoLastName = 1
   protected val fieldNoNino = 2
 
-  protected def validHeader: String
+  def validHeader: String
 
   // scalastyle:off parameter.number
 

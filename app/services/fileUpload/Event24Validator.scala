@@ -58,7 +58,7 @@ class Event24Validator @Inject()(
 
   override val eventType: EventType = EventType.Event24
 
-  override protected def validHeader: String = config.validEvent24Header
+  override def validHeader: String = config.validEvent24Header
 
   // TODO - check column numbers
   override protected val fieldNoFirstName = 1

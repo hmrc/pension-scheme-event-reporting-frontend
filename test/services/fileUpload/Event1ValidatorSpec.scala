@@ -24,7 +24,7 @@ import utils.DateHelper
 import java.time.LocalDate
 import scala.collection.immutable.ArraySeq
 
-class Event1ValidatorSpec extends BulkUploadSpec("validEvent1Header") with BeforeAndAfterEach {
+class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAndAfterEach {
   //scalastyle:off magic.number
 
   private val validAddress = "10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB"
@@ -254,7 +254,6 @@ class Event1ValidatorSpec extends BulkUploadSpec("validEvent1Header") with Befor
                             $commonUaEmployer,"$validAddress",OTHER,,,,,,,$moreThanMax,,,,,,,1000.00,08/11/2022"""
 
       val ((output, errors), rowNumber) = validate(data)
-
 
       errors mustBe Seq(
         ValidationError(1, 10, "paymentNature.error.required", "natureOfPayment"),
