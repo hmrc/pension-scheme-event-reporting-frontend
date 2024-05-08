@@ -392,7 +392,7 @@ class Event1Validator @Inject()(
                 createCommitItem(index, ErrorDescriptionPage.apply))
               Seq(k, o).combineAll
             case "benefitsPaidEarly" =>
-              val n = resultFromFormValidationResult[String](
+              val n = resultFromFormValidationResult[Option[String]](
                 genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoEarlyDescription, earlyDescription, benefitsPaidEarlyFormProvider())),
                 createCommitItem(index, BenefitsPaidEarlyPage.apply))
               Seq(k, n).combineAll

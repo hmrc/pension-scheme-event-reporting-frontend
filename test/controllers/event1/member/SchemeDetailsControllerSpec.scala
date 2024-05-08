@@ -137,6 +137,24 @@ class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with 
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
+    "must return bad request when submitting data that is too long" in {
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(
+            "schemeName" -> ("a" * 161),
+            "reference" -> ("b" * 161)
+          )
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
     "must return bad request when invalid data is submitted" in {
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
@@ -145,8 +163,8 @@ class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with 
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(
-            "schemeName" -> ("a" * 151),
-            "reference" -> ("b" * 151)
+            "schemeName" -> "~|",
+            "reference" -> "~|"
           )
 
         val result = route(application, request).value

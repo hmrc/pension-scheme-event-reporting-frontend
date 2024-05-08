@@ -16,18 +16,18 @@
 
 package services
 
-import org.apache.pekko.actor.ActorSystem
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.enumeration.EventType
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
 import models.{EROverview, EROverviewVersion, EventDataIdentifier, TaxYear, UserAnswers, VersionInfo}
+import org.apache.pekko.actor.ActorSystem
 import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import uk.gov.hmrc.http.HeaderCarrier
-
 import scala.concurrent.duration.DurationInt
-import scala.concurrent.{ExecutionContext, Future, Promise}
+import scala.concurrent.Promise
+import scala.concurrent.{ExecutionContext, Future}
 
 class CompileService @Inject()(
                                 eventReportingConnector: EventReportingConnector,
@@ -36,13 +36,12 @@ class CompileService @Inject()(
                                 actorSystem: ActorSystem
                               ) (implicit ec: ExecutionContext) {
 
-
   private def doCompile(currentVersionInfo: VersionInfo,
-                newVersionInfo: VersionInfo,
-                pstr: String,
-                userAnswers: UserAnswers,
-                delete :Boolean,
-                compileResponse: Future[Unit])(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+                        newVersionInfo: VersionInfo,
+                        pstr: String,
+                        userAnswers: UserAnswers,
+                        delete :Boolean,
+                        compileResponse: Future[Unit])(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
 
     val futureOptChangedOverviewSeq = if (newVersionInfo.version > currentVersionInfo.version) {
       updateUAVersionAndOverview(pstr, userAnswers, currentVersionInfo.version, newVersionInfo.version)
@@ -108,6 +107,8 @@ class CompileService @Inject()(
     }
   }
 
+
+
   def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion: Int, memberIdToDelete: String, userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
     userAnswers.get(VersionInfoPage) match {
       case Some(vi) =>
@@ -139,4 +140,6 @@ class CompileService @Inject()(
       case _ => throw new RuntimeException(s"No version available")
     }
   }
+
+
 }
