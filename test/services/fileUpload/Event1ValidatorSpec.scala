@@ -19,9 +19,7 @@ package services.fileUpload
 import base.BulkUploadSpec
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
-import utils.DateHelper
 
-import java.time.LocalDate
 import scala.collection.immutable.ArraySeq
 
 class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAndAfterEach {
@@ -86,7 +84,6 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
 
     "return validation errors when present (Member)" in {
 
-      DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val data =
         s"""$header
                         dsfgsd*,Joe,Bloggs,AA234567D,YES,YES,YES,,,,BENEFIT,Description,,,,,,,,,,,,,1000.00,08/11/2022
@@ -147,7 +144,6 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
     }
 
     "return validation errors when present for the payment amount field (Member)" in {
-      DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val data =
         s"""$header
                             member,Steven,Bloggs,AA123456A,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",,08/11/2022
@@ -220,7 +216,6 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
     }
 
     "return validation errors when present for the Company details fields (Employer)" in {
-      DateHelper.setDate(Some(LocalDate.of(2022, 6, 1)))
       val data =
         s"""$header
                             employer,,,,,,,,,"$validAddress",LOANS,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022

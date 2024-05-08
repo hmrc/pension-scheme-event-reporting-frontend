@@ -34,13 +34,11 @@ package services.fileUpload
 
 import base.BulkUploadSpec
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 
 import scala.collection.immutable.ArraySeq
 
-class Event24ValidatorSpec extends BulkUploadSpec[Event24Validator](2023) with Matchers with MockitoSugar with BeforeAndAfterEach {
+class Event24ValidatorSpec extends BulkUploadSpec[Event24Validator](2023) with BeforeAndAfterEach {
 
   //noinspection ScalaStyle
   "Event 24 Validator" - {

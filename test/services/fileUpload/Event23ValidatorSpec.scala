@@ -35,9 +35,6 @@ package services.fileUpload
 import base.BulkUploadSpec
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
-import utils.DateHelper
-
-import java.time.LocalDate
 
 class Event23ValidatorSpec extends BulkUploadSpec[Event23Validator] with BeforeAndAfterEach {
   //scalastyle:off magic.number
@@ -57,7 +54,6 @@ class Event23ValidatorSpec extends BulkUploadSpec[Event23Validator] with BeforeA
     }
 
     "return validation errors when present, including tax year in future" in {
-      DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
       val data = s"""$header
         ,Bloggs,AA234567D,2024,12.20
         Steven,,xyz,,
