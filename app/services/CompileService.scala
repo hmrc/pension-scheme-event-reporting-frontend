@@ -25,7 +25,8 @@ import models.{EROverview, EROverviewVersion, EventDataIdentifier, TaxYear, User
 import org.apache.pekko.actor.ActorSystem
 import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import uk.gov.hmrc.http.HeaderCarrier
-
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.Promise
 import scala.concurrent.{ExecutionContext, Future}
 
 class CompileService @Inject()(
@@ -39,15 +40,14 @@ class CompileService @Inject()(
                         newVersionInfo: VersionInfo,
                         pstr: String,
                         userAnswers: UserAnswers,
-                        delete: Boolean,
-                        eventOrDelete: Either[EventType, (String, EventDataIdentifier, Int, String)])(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+                        delete :Boolean,
+                        compileResponse: Future[Unit])(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
 
     val futureOptChangedOverviewSeq = if (newVersionInfo.version > currentVersionInfo.version) {
       updateUAVersionAndOverview(pstr, userAnswers, currentVersionInfo.version, newVersionInfo.version)
     } else {
       Future.successful(None)
     }
-
     futureOptChangedOverviewSeq.flatMap { optChangedOverviewSeq =>
       val uaNonEventTypeVersionUpdated = userAnswers.setOrException(VersionInfoPage, newVersionInfo, nonEventTypeData = true)
       val updatedUA = optChangedOverviewSeq match {
@@ -55,15 +55,18 @@ class CompileService @Inject()(
           .setOrException(EventReportingOverviewPage, seqErOverview, nonEventTypeData = true)
         case _ => uaNonEventTypeVersionUpdated
       }
-
-      val futureAction = eventOrDelete match {
-        case Left(eventTypeVal) =>
-          eventReportingConnector.compileEvent(pstr, updatedUA.eventDataIdentifier(eventTypeVal, Some(newVersionInfo)), currentVersionInfo.version, delete)
-        case Right((pstrVal, edi, currentVersionVal, memberIdToDelete)) =>
-              eventReportingConnector.deleteMember(pstrVal, edi, currentVersionVal, memberIdToDelete)
+      userAnswersCacheConnector.save(pstr, updatedUA).flatMap { _ =>
+        val response = compileResponse
+        response.map { _ =>
+          appConfig.compileDelayInSeconds match {
+            case v if v > 0 =>
+              val p = Promise[Unit]
+              actorSystem.scheduler.scheduleOnce(v.seconds)(p.success(()))
+              p.future
+            case _ => Future.unit
           }
-
-      userAnswersCacheConnector.save(pstr, updatedUA).flatMap(_ => futureAction)
+        }
+      }
     }
   }
 
@@ -116,9 +119,8 @@ class CompileService @Inject()(
           pstr,
           userAnswers,
           delete = false,
-          eventOrDelete = Right((pstr, edi, currentVersion, memberIdToDelete))
+          eventReportingConnector.deleteMember(pstr, edi, currentVersion, memberIdToDelete)
         )
-
       case _ => throw new RuntimeException(s"No version available")
     }
   }
@@ -133,7 +135,7 @@ class CompileService @Inject()(
           pstr,
           userAnswers,
           delete,
-          eventOrDelete = Left(eventType)
+          eventReportingConnector.compileEvent(pstr, userAnswers.eventDataIdentifier(eventType, Some(newVersionInfo)), vi.version, delete)
         )
       case _ => throw new RuntimeException(s"No version available")
     }
