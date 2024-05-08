@@ -27,8 +27,8 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json._
 import queries.Gettable
-import services.FastJsonAccumulator
 import services.fileUpload.ValidatorErrorMessages.{HeaderInvalidOrFileIsEmpty, NoDataRowsProvided}
+import utils.FastJsonAccumulator
 
 import scala.collection.immutable.HashSet
 import scala.collection.mutable.ArrayBuffer

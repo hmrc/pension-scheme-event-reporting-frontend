@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package services
+package utils
 
 import play.api.libs.json.{JsValue, Json, Writes}
 import services.fileUpload.CommitItem

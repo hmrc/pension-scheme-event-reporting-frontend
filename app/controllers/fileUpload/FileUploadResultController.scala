@@ -44,8 +44,9 @@ import play.api.libs.json.{JsObject, JsPath, Json}
 import play.api.mvc._
 import services.fileUpload.Validator.FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty
 import services.fileUpload._
-import services.{CompileService, FastJsonAccumulator}
+import services.CompileService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.FastJsonAccumulator
 import views.html.fileUpload.FileUploadResultView
 
 import javax.inject.Inject

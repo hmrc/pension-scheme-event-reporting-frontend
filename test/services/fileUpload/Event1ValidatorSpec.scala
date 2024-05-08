@@ -16,41 +16,20 @@
 
 package services.fileUpload
 
-import base.SpecBase
+import base.BulkUploadSpec
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.mockito.MockitoSugar
-import play.api.Configuration
-import play.api.i18n.Messages
 import play.api.libs.json.Json
-import services.FastJsonAccumulator
 import utils.DateHelper
 
-import java.io.ByteArrayInputStream
 import java.time.LocalDate
 import scala.collection.immutable.ArraySeq
-import scala.collection.mutable.ArrayBuffer
-import scala.concurrent.Await
-import scala.concurrent.duration.DurationInt
 
-class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with BeforeAndAfterEach {
+class Event1ValidatorSpec extends BulkUploadSpec("validEvent1Header") with BeforeAndAfterEach {
   //scalastyle:off magic.number
-  private val injector = applicationBuilder(None).injector()
-  private val header = injector.instanceOf[Configuration].get[String]("validEvent1Header")
-  private val validator = injector.instanceOf[Event1Validator]
-  
-  def validate(data: String)(implicit messages: Messages): ((FastJsonAccumulator, ArrayBuffer[ValidationError]), Int) = {
-    val inputStream = new ByteArrayInputStream(data.getBytes("UTF-8"))
-    val result = CSVParser.split(inputStream)(new FastJsonAccumulator() -> new ArrayBuffer[ValidationError]()) { case ((dataAccumulator, errorAccumulator), row, rowNumber) =>
-      validator.validate(rowNumber, row, dataAccumulator, errorAccumulator, 2022)
-    }
-    Await.result(result, 5.seconds)
-  }
 
   private val validAddress = "10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB"
   private val commonUaEmployer = "employer,,,,,,,Company Name,12345678"
   private val moreThanMax: String = "a" * 161
-
 
   "Event 1 validator" - {
     "must return items in user answers when there are no validation errors for Member" in {
