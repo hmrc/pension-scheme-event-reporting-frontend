@@ -19,6 +19,7 @@ package services.fileUpload
 import base.BulkUploadSpec
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
+import utils.DateConstraintHandlers.regexEvent1Description
 
 import scala.collection.immutable.ArraySeq
 
@@ -121,18 +122,24 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
         ValidationError(4, 6, "schemeUnAuthPaySurchargeMember.error.required", "schemeUnAuthPaySurcharge"),
         ValidationError(5, 0, "whoReceivedUnauthPayment.error.required", "memberOrEmployer"),
         ValidationError(6, 10, "paymentNature.error.required", "natureOfPayment"),
-        ValidationError(7, 11, "benefitInKindBriefDescription.error.length", "benefitDescription", ArraySeq(150)),
+        ValidationError(7, 11, "benefitInKindBriefDescription.error.length", "benefitDescription", ArraySeq(160)),
+        ValidationError(7, 11, "benefitInKindBriefDescription.error.invalidCharacters", "benefitDescription", ArraySeq(regexEvent1Description)),
         ValidationError(8, 22, "whoWasTheTransferMade.error.required", "transferMadeTo"),
         ValidationError(9, 4, "doYouHoldSignedMandate.error.format", "doYouHoldSignedMandate"),
         ValidationError(9, 5, "valueOfUnauthorisedPayment.error.format", "valueOfUnauthorisedPayment"),
         ValidationError(10, 6, "schemeUnAuthPaySurchargeMember.error.format", "schemeUnAuthPaySurcharge"),
         ValidationError(11, 10, "paymentNature.error.format", "natureOfPayment"),
         ValidationError(12, 22, "whoWasTheTransferMade.error.format", "transferMadeTo"),
-        ValidationError(13, 23, "schemeDetails.error.name.length", "schemeName", ArraySeq(150)),
-        ValidationError(13, 23, "schemeDetails.error.ref.length", "reference", ArraySeq(150)),
-        ValidationError(14, 14, "errorDescription.error.length", "errorDescription", ArraySeq(150)),
-        ValidationError(15, 21, "memberTangibleMoveableProperty.error.length", "tangibleDescription", ArraySeq(150)),
-        ValidationError(16, 17, "memberPaymentNatureDescription.error.length", "otherDescription", ArraySeq(150)),
+        ValidationError(13, 23, "schemeDetails.error.name.length", "schemeName", ArraySeq(160)),
+        ValidationError(13, 23, "schemeDetails.error.name.invalidCharacters", "schemeName", ArraySeq(regexEvent1Description)),
+        ValidationError(13, 23, "schemeDetails.error.ref.length", "reference", ArraySeq(160)),
+        ValidationError(13, 23, "schemeDetails.error.ref.invalidCharacters", "reference", ArraySeq(regexEvent1Description)),
+        ValidationError(14, 14, "errorDescription.error.length", "errorDescription", ArraySeq(160)),
+        ValidationError(14, 14, "errorDescription.error.invalidCharacters", "errorDescription", ArraySeq(regexEvent1Description)),
+        ValidationError(15, 21, "memberTangibleMoveableProperty.error.length", "tangibleDescription", ArraySeq(160)),
+        ValidationError(15, 21, "memberTangibleMoveableProperty.error.invalidCharacters", "tangibleDescription", ArraySeq(regexEvent1Description)),
+        ValidationError(16, 17, "memberPaymentNatureDescription.error.length", "otherDescription", ArraySeq(160)),
+        ValidationError(16, 17, "memberPaymentNatureDescription.error.invalidCharacters", "otherDescription", ArraySeq(regexEvent1Description)),
         ValidationError(17, 19, "refundOfContributions.error.required", "whoReceivedRefund"),
         ValidationError(18, 19, "refundOfContributions.error.format", "whoReceivedRefund"),
         ValidationError(19, 18, "reasonForTheOverpaymentOrWriteOff.error.required", "overpaymentReason"),
