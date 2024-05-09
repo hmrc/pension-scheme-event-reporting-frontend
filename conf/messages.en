@@ -92,11 +92,10 @@ confirmation.summaryList.l1.scheme = Scheme
 confirmation.summaryList.l2.taxYear = Tax year
 confirmation.summaryList.l3.dateSubmitted = Date submitted
 confirmation.taxYear.to = to
-confirmation.p2 = You must include the correct charge reference with any payment for this submission.
-confirmation.p3 = You can:
-confirmation.li1 = view payments and charge references for your Event reports
-confirmation.li2 = view your other pension schemes
-confirmation.li3 = print this page
+confirmation.p2 = You will receive a charge reference for this submission. It must be included when making any payment.
+confirmation.li1 = View payments and charge references for your event reports
+confirmation.li2 = View your other pension schemes
+confirmation.li3 = Print this page
 
 eventReportingTile.heading = Event Reporting
 eventReportingTile.subHeading = Event report {0} to {1}:
