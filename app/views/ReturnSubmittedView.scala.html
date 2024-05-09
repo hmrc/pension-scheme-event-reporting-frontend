@@ -66,11 +66,12 @@
 <h2 class="govuk-heading-m">What to do next</h2>
 
 <p class="govuk-body">@messages("confirmation.p2")</p>
-
-<ul class="govuk-list govuk-list--spaced">
-    <li>@messages("confirmation.li1")</li>
-    <li><a class="govuk-link" href="@viewOtherPensionSchemesUrl">@messages("confirmation.li2")</a></li>
+<ul class="govuk-list">
+    <li>@messages("confirmation.li2.1") <a class="govuk-link" href="@viewOtherPensionSchemesUrl">@messages("confirmation.li2.2")</a></li>
     <li><a id="print-this-page-link" class="govuk-link" href="">@messages("confirmation.li3")</a></li>
+</ul>
+<br>
+<ul class="govuk-list">
     <li>@templates.ReturnToScheme()</li>
 </ul>
 

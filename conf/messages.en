@@ -93,8 +93,8 @@ confirmation.summaryList.l2.taxYear = Tax year
 confirmation.summaryList.l3.dateSubmitted = Date submitted
 confirmation.taxYear.to = to
 confirmation.p2 = You will receive a charge reference for this submission. It must be included when making any payment.
-confirmation.li1 = View payments and charge references for your event reports
-confirmation.li2 = View your other pension schemes
+confirmation.li2.1 = View your
+confirmation.li2.2 = other pension schemes
 confirmation.li3 = Print this page
 
 eventReportingTile.heading = Event Reporting
