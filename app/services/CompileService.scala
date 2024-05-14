@@ -140,6 +140,4 @@ class CompileService @Inject()(
       case _ => throw new RuntimeException(s"No version available")
     }
   }
-
-
 }
