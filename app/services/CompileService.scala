@@ -16,18 +16,17 @@
 
 package services
 
+import org.apache.pekko.actor.ActorSystem
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.enumeration.EventType
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
 import models.{EROverview, EROverviewVersion, EventDataIdentifier, TaxYear, UserAnswers, VersionInfo}
-import org.apache.pekko.actor.ActorSystem
 import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import uk.gov.hmrc.http.HeaderCarrier
-import scala.concurrent.duration.DurationInt
-import scala.concurrent.Promise
-import scala.concurrent.{ExecutionContext, Future}
+
+import scala.concurrent.{ExecutionContext, Future, Promise}
 
 class CompileService @Inject()(
                                 eventReportingConnector: EventReportingConnector,
@@ -40,14 +39,15 @@ class CompileService @Inject()(
                         newVersionInfo: VersionInfo,
                         pstr: String,
                         userAnswers: UserAnswers,
-                        delete :Boolean,
-                        compileResponse: Future[Unit])(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+                        delete: Boolean,
+                        eventOrDelete: Either[EventType, (String, EventDataIdentifier, Int, String)])(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
 
     val futureOptChangedOverviewSeq = if (newVersionInfo.version > currentVersionInfo.version) {
       updateUAVersionAndOverview(pstr, userAnswers, currentVersionInfo.version, newVersionInfo.version)
     } else {
       Future.successful(None)
     }
+
     futureOptChangedOverviewSeq.flatMap { optChangedOverviewSeq =>
       val uaNonEventTypeVersionUpdated = userAnswers.setOrException(VersionInfoPage, newVersionInfo, nonEventTypeData = true)
       val updatedUA = optChangedOverviewSeq match {
@@ -55,18 +55,15 @@ class CompileService @Inject()(
           .setOrException(EventReportingOverviewPage, seqErOverview, nonEventTypeData = true)
         case _ => uaNonEventTypeVersionUpdated
       }
-      userAnswersCacheConnector.save(pstr, updatedUA).flatMap { _ =>
-        val response = compileResponse
-        response.map { _ =>
-          appConfig.compileDelayInSeconds match {
-            case v if v > 0 =>
-              val p = Promise[Unit]
-              actorSystem.scheduler.scheduleOnce(v.seconds)(p.success(()))
-              p.future
-            case _ => Future.unit
-          }
-        }
+
+      val futureAction = eventOrDelete match {
+        case Left(eventTypeVal) =>
+          eventReportingConnector.compileEvent(pstr, updatedUA.eventDataIdentifier(eventTypeVal, Some(newVersionInfo)), currentVersionInfo.version, delete)
+        case Right((pstrVal, edi, currentVersionVal, memberIdToDelete)) =>
+          eventReportingConnector.deleteMember(pstrVal, edi, currentVersionVal, memberIdToDelete)
       }
+
+      userAnswersCacheConnector.save(pstr, updatedUA).flatMap(_ => futureAction)
     }
   }
 
@@ -119,8 +116,9 @@ class CompileService @Inject()(
           pstr,
           userAnswers,
           delete = false,
-          eventReportingConnector.deleteMember(pstr, edi, currentVersion, memberIdToDelete)
+          eventOrDelete = Right((pstr, edi, currentVersion, memberIdToDelete))
         )
+
       case _ => throw new RuntimeException(s"No version available")
     }
   }
@@ -135,9 +133,11 @@ class CompileService @Inject()(
           pstr,
           userAnswers,
           delete,
-          eventReportingConnector.compileEvent(pstr, userAnswers.eventDataIdentifier(eventType, Some(newVersionInfo)), vi.version, delete)
+          eventOrDelete = Left(eventType)
         )
       case _ => throw new RuntimeException(s"No version available")
     }
   }
+
+
 }
