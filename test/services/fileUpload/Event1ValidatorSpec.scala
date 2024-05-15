@@ -260,11 +260,13 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
       errors mustBe Seq(
         ValidationError(1, 10, "paymentNature.error.required", "natureOfPayment"),
         ValidationError(2, 10, "paymentNature.error.format", "natureOfPayment"),
-        ValidationError(3, 21, "employerTangibleMoveableProperty.error.length", "tangibleDescription", ArraySeq(150)),
+        ValidationError(3, 21, "employerTangibleMoveableProperty.error.length", "tangibleDescription", ArraySeq(160)),
+        ValidationError(3, 21, "employerTangibleMoveableProperty.error.invalidCharacters", "tangibleDescription", ArraySeq(regexEvent1Description)),
         ValidationError(4, 12, "unauthorisedPaymentRecipientName.employer.error.length", "courtNameOfPersonOrOrg", ArraySeq(160)),
         ValidationError(5, 12, "unauthorisedPaymentRecipientName.employer.error.invalid", "courtNameOfPersonOrOrg",
           ArraySeq("""^[a-zA-Z &`\'\.^\\]{0,160}$""")),
-        ValidationError(6, 17, "employerPaymentNatureDescription.error.length", "otherDescription", ArraySeq(150))
+        ValidationError(6, 17, "employerPaymentNatureDescription.error.length", "otherDescription", ArraySeq(160)),
+        ValidationError(6, 17, "employerPaymentNatureDescription.error.invalidCharacters", "otherDescription", ArraySeq(regexEvent1Description))
       )
     }
 

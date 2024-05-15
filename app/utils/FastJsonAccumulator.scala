@@ -61,11 +61,10 @@ class FastJsonAccumulator extends Logging {
       if(pathString.startsWith("[")) {
         val array = curDataLocation.array
         if(array.isEmpty) {
-          val newDataLocation = JsonStructure()
           curDataLocation.array = Some(ArrayBuffer(JsonStructure()))
-          curDataLocation = newDataLocation
-        } else if(Try(curDataLocation.array.get(rowNumber - 2)).toOption.isDefined) {
-          curDataLocation = curDataLocation.array.get.apply(rowNumber - 2)
+        }
+        if(Try(curDataLocation.array.get(rowNumber - 1)).toOption.isDefined) {
+          curDataLocation = curDataLocation.array.get.apply(rowNumber - 1)
         } else {
           val newDataLocation = JsonStructure()
           curDataLocation.array.get.addOne(newDataLocation)
