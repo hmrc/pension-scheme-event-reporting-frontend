@@ -23,7 +23,7 @@ import services.fileUpload.CommitItem
 class FastJsonAccumulatorSpec extends SpecBase {
    "must be able to accumulate correct json for bulk upload" in {
      val accumulator = new FastJsonAccumulator
-     def addRow(number: Int) = {
+     def addRow(number: Int): Unit = {
        accumulator.addItem(
          CommitItem(
            JsPath(
