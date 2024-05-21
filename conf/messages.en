@@ -1053,9 +1053,9 @@ membersSummary.event24.table.totalTitle = Total not required
 
 chooseTaxYear.yearRangeRadio = {0} to {1}
 
-chooseTaxYear.event23.title = In which tax year was the money purchase pension savings statement issued?
-chooseTaxYear.event23.heading = In which tax year was the money purchase pension savings statement issued?
-chooseTaxYear.event23.checkYourAnswersLabel = In which tax year was the money purchase pension savings statement issued
+chooseTaxYear.event23.title = For which tax year was the money purchase pension savings statement issued?
+chooseTaxYear.event23.heading = For which tax year was the money purchase pension savings statement issued?
+chooseTaxYear.event23.checkYourAnswersLabel = For which tax year was the money purchase pension savings statement issued
 chooseTaxYear.event23.error.required = Select the tax year the money purchase pension savings statement was issued
 chooseTaxYear.event23.change.hidden = Select the tax year the money purchase pension savings statement was issued
 
