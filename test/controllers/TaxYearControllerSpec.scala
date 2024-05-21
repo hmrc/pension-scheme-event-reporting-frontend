@@ -81,7 +81,6 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
   override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
-    DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
   }
 
   "TaxYear Controller" - {
