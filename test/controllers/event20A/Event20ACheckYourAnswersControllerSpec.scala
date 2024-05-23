@@ -27,7 +27,6 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.event20A.{BecameDatePage, WhatChangePage}
 import play.api.i18n.Messages
 import play.api.inject
-import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

@@ -499,7 +499,6 @@ schemeUnAuthPaySurchargeMember.change.hidden = Is the scheme paying the unauthor
 errorDescription.title = Give a brief description of the error
 errorDescription.heading = Give a brief description of the error
 errorDescription.checkYourAnswersLabel = Give a brief description of the error
-errorDescription.hint = You can enter a maximum of 160 characters (optional).
 errorDescription.error.required = Enter a brief description of the error
 errorDescription.error.length = The error description must be 160 characters or less
 errorDescription.error.invalidCharacters = The error description contains invalid characters
@@ -508,16 +507,16 @@ errorDescription.change.hidden = Give a brief description of the error
 benefitsPaidEarly.title = Give a brief description of why the benefits are being paid early
 benefitsPaidEarly.heading = Give a brief description of why the benefits are being paid early
 benefitsPaidEarly.checkYourAnswersLabel = Give a brief description of why the benefits are being paid early
-benefitsPaidEarly.hint = You can enter a maximum of 160 characters (optional).
+benefitsPaidEarly.error.required = Enter the description of why benefits are being paid early
 benefitsPaidEarly.error.length = The description of why the benefits are being paid early must be 160 characters or less
 benefitsPaidEarly.error.invalidCharacters = The description of why the benefits are being paid early contains invalid characters
 benefitsPaidEarly.change.hidden = Give a brief description of why the benefits are being paid early
 
 benefitInKindBriefDescription.title = Give a brief description of the benefit in kind
 benefitInKindBriefDescription.heading = Give a brief description of the benefit in kind
-benefitInKindBriefDescription.hint = You can enter a maximum of 160 characters (optional).
 benefitInKindBriefDescription.checkYourAnswersLabel = Give a brief description of the benefit in kind
-benefitInKindBriefDescription.error.length = You can enter a maximum of 160 characters (optional)
+benefitInKindBriefDescription.error.required = Enter the description of the benefit in kind
+benefitInKindBriefDescription.error.length = You can enter a maximum of 160 characters
 benefitInKindBriefDescription.error.invalidCharacters = The description contains invalid characters
 benefitInKindBriefDescription.change.hidden = Give a brief description of the benefit in kind
 
@@ -546,32 +545,32 @@ schemeReference.change.hidden = Reference
 
 memberTangibleMoveableProperty.title = Give a brief description of the tangible moveable property
 memberTangibleMoveableProperty.heading = Give a brief description of the tangible moveable property
-memberTangibleMoveableProperty.hint = You can enter a maximum of 160 characters (optional).
 memberTangibleMoveableProperty.checkYourAnswersLabel = Give a brief description of the tangible moveable property
+memberTangibleMoveableProperty.error.required = Enter the description of the tangible moveable property
 memberTangibleMoveableProperty.error.length = The tangible moveable property must be 160 characters or fewer
 memberTangibleMoveableProperty.error.invalidCharacters = The tangible moveable property description contains invalid characters
 memberTangibleMoveableProperty.change.hidden = Give a brief description of the tangible moveable property
 
 employerTangibleMoveableProperty.title = Give a brief description of the tangible moveable property
 employerTangibleMoveableProperty.heading = Give a brief description of the tangible moveable property
-employerTangibleMoveableProperty.hint = You can enter a maximum of 160 characters (optional).
 employerTangibleMoveableProperty.checkYourAnswersLabel = Give a brief description of the tangible moveable property
+employerTangibleMoveableProperty.error.required = Enter the description of the tangible moveable property
 employerTangibleMoveableProperty.error.length = The tangible moveable property must be 160 characters or fewer
 employerTangibleMoveableProperty.error.invalidCharacters = The tangible moveable property description contains invalid characters
 employerTangibleMoveableProperty.change.hidden = Give a brief description of the tangible moveable property
 
 memberPaymentNatureDescription.title = Give a brief description of the nature of the payment
 memberPaymentNatureDescription.heading = Give a brief description of the nature of the payment
-memberPaymentNatureDescription.hint = You can enter a maximum of 160 characters (optional).
 memberPaymentNatureDescription.checkYourAnswersLabel = Description of the nature of the payment
+memberPaymentNatureDescription.error.required = Enter the description of the nature of the payment
 memberPaymentNatureDescription.error.length = The nature of the payment must be 160 characters or fewer
 memberPaymentNatureDescription.error.invalidCharacters = The description contains invalid characters
 memberPaymentNatureDescription.change.hidden = Description of the nature of the payment
 
 employerPaymentNatureDescription.title = Give a brief description of the nature of the payment
 employerPaymentNatureDescription.heading = Give a brief description of the nature of the payment
-employerPaymentNatureDescription.hint = You can enter a maximum of 160 characters (optional).
 employerPaymentNatureDescription.checkYourAnswersLabel = Description of the nature of the payment
+employerPaymentNatureDescription.error.required = Enter the description of the nature of the payment
 employerPaymentNatureDescription.error.length = The nature of the payment must be 160 characters or fewer
 employerPaymentNatureDescription.error.invalidCharacters = The description contains invalid characters
 employerPaymentNatureDescription.change.hidden = Description of the nature of the payment
@@ -1370,7 +1369,6 @@ event13.changeDate.error.outside.taxYear = Date must be between 6 April {0} and 
 
 event13.schemeStructureDescription.title = Give a brief description of the pension scheme structure
 event13.schemeStructureDescription.heading = Give a brief description of the pension scheme structure
-event13.schemeStructureDescription.hint = You can enter up to 150 characters
 event13.schemeStructureDescription.checkYourAnswersLabel = Description of the scheme structure
 event13.schemeStructureDescription.error.required = Enter description of the pension scheme structure
 event13.schemeStructureDescription.error.length = The scheme structure description must be 150 characters or less

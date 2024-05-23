@@ -23,9 +23,9 @@ import javax.inject.Inject
 
 class BenefitInKindBriefDescriptionFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Option[String]] =
+  def apply(): Form[String] =
     Form(
-      "value" -> optionalText()
+      "value" -> text("benefitInKindBriefDescription.error.required")
         .verifying(maxLength(160, "benefitInKindBriefDescription.error.length"),
           regexp(regexEvent1Description, "benefitInKindBriefDescription.error.invalidCharacters")
         )

@@ -23,9 +23,9 @@ import javax.inject.Inject
 
 class ErrorDescriptionFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Option[String]] =
+  def apply(): Form[String] =
     Form(
-      "value" -> optionalText()
+      "value" -> text("errorDescription.error.required")
         .verifying(maxLength(160, "errorDescription.error.length"),
           regexp(regexEvent1Description, "errorDescription.error.invalidCharacters")
         )

@@ -90,7 +90,7 @@ class EmployerPaymentNatureDescriptionControllerSpec extends SpecBase with Befor
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(Some(validValue)), waypoints, 0)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -115,7 +115,7 @@ class EmployerPaymentNatureDescriptionControllerSpec extends SpecBase with Befor
       }
     }
 
-    "must save the answer and redirect to the next page when valid data is submitted (empty value)" in {
+    "must return bad request when submitting an empty value" in {
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
@@ -128,11 +128,9 @@ class EmployerPaymentNatureDescriptionControllerSpec extends SpecBase with Befor
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(EmployerPaymentNatureDescriptionPage(0), validValue).success.value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual EmployerPaymentNatureDescriptionPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        status(result) mustEqual BAD_REQUEST
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
 

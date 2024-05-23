@@ -23,9 +23,9 @@ import javax.inject.Inject
 
 class EmployerPaymentNatureDescriptionFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Option[String]] =
+  def apply(): Form[String] =
     Form(
-      "value" -> optionalText()
+      "value" -> text("employerPaymentNatureDescription.error.required")
         .verifying(
           maxLength(160, "employerPaymentNatureDescription.error.length"),
           regexp(regexEvent1Description, "employerPaymentNatureDescription.error.invalidCharacters")

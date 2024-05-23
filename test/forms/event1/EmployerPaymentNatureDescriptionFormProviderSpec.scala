@@ -46,10 +46,10 @@ class EmployerPaymentNatureDescriptionFormProviderSpec extends StringFieldBehavi
       }
     }
 
-    "bind empty data" in {
+    "not bind empty data" in {
       val result = form.bind(Map(fieldName -> "")).apply(fieldName)
       result.value.value mustBe ""
-      result.errors mustBe empty
+      result.errors mustBe List(FormError("value", List("employerPaymentNatureDescription.error.required"), List()))
     }
   }
 }
