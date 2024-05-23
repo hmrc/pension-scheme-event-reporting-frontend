@@ -204,7 +204,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
         s"""$header
                                 $commonUaEmployer,"$validAddress",LOANS,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
                                 $commonUaEmployer,"$validAddress",RESIDENTIAL,,,,,,,,,,"$validAddress",,,,1000.00,08/11/2022
-                                $commonUaEmployer,"$validAddress",TANGIBLE,,,,,,,,,,,,,,1000.00,08/11/2022
+                                $commonUaEmployer,"$validAddress",TANGIBLE,,,,,,,,,,,Description,,,1000.00,08/11/2022
                                 $commonUaEmployer,"$validAddress",COURT,,Organisation Name,,,,,,,,,,,,1000.00,08/11/2022
                                 $commonUaEmployer,"$validAddress",OTHER,,,,,,,Description,,,,,,,1000.00,08/11/2022"""
       )
@@ -221,7 +221,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
 
         .pipe(chainUaEmployers(_, 2))
         .setOrException(EmployerPaymentNaturePage(2).path, Json.toJson(TangibleMoveableProperty.toString))
-        .setOrException(EmployerTangibleMoveablePropertyPage(2).path, Json.toJson(None))
+        .setOrException(EmployerTangibleMoveablePropertyPage(2).path, Json.toJson("Description"))
 
         .pipe(chainUaEmployers(_, 3))
         .setOrException(EmployerPaymentNaturePage(3).path, Json.toJson(CourtOrder.toString))

@@ -376,7 +376,7 @@ class Event1Validator @Inject()(
         seqCommitItems.headOption match {
           case Some(ci) => ci.value.as[JsString].value match {
             case "benefitInKind" =>
-              val l = resultFromFormValidationResult[Option[String]](
+              val l = resultFromFormValidationResult[String](
                 genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoBenefitDescription, benefitDescription, benefitInKindBriefDescriptionFormProvider())),
                 createCommitItem(index, BenefitInKindBriefDescriptionPage.apply))
               Seq(k, l).combineAll
@@ -387,12 +387,12 @@ class Event1Validator @Inject()(
                 schemeDetailsValidation(index, columns), createCommitItem(index, SchemeDetailsPage.apply))
               Seq(k, w, x).combineAll
             case "errorCalcTaxFreeLumpSums" =>
-              val o = resultFromFormValidationResult[Option[String]](
+              val o = resultFromFormValidationResult[String](
                 genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoErrorDescription, errorDescription, errorDescriptionFormProvider())),
                 createCommitItem(index, ErrorDescriptionPage.apply))
               Seq(k, o).combineAll
             case "benefitsPaidEarly" =>
-              val n = resultFromFormValidationResult[Option[String]](
+              val n = resultFromFormValidationResult[String](
                 genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoEarlyDescription, earlyDescription, benefitsPaidEarlyFormProvider())),
                 createCommitItem(index, BenefitsPaidEarlyPage.apply))
               Seq(k, n).combineAll
@@ -409,7 +409,7 @@ class Event1Validator @Inject()(
                 addressValidation(index, columns, fieldNoResidentialAddress, isMemberJourney = true, columns = columns), createCommitItem(index, ManualAddressPage(Event1MemberPropertyAddressJourney, _)))
               Seq(k, u).combineAll
             case "tangibleMoveablePropertyHeld" =>
-              val v = resultFromFormValidationResult[Option[String]](
+              val v = resultFromFormValidationResult[String](
                 genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoTangibleDescription, tangibleDescription, memberTangibleMoveablePropertyFormProvider())),
                 createCommitItem(index, MemberTangibleMoveablePropertyPage.apply))
               Seq(k, v).combineAll
@@ -419,7 +419,7 @@ class Event1Validator @Inject()(
                 createCommitItem(index, UnauthorisedPaymentRecipientNamePage.apply))
               Seq(k, m).combineAll
             case "memberOther" =>
-              val r = resultFromFormValidationResult[Option[String]](
+              val r = resultFromFormValidationResult[String](
                 genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoOtherDescription, otherDescription, memberPaymentNatureDescriptionFormProvider())),
                 createCommitItem(index, MemberPaymentNatureDescriptionPage.apply))
               Seq(k, r).combineAll
@@ -451,7 +451,7 @@ class Event1Validator @Inject()(
                 addressValidation(index, columns, fieldNoResidentialAddress), createCommitItem(index, ManualAddressPage(Event1EmployerPropertyAddressJourney, _)))
               Seq(k, u).combineAll
             case "tangibleMoveableProperty" =>
-              val v = resultFromFormValidationResult[Option[String]](
+              val v = resultFromFormValidationResult[String](
                 genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoTangibleDescription, tangibleDescription, employerTangibleMoveablePropertyFormProvider())),
                 createCommitItem(index, EmployerTangibleMoveablePropertyPage.apply))
               Seq(k, v).combineAll
@@ -461,7 +461,7 @@ class Event1Validator @Inject()(
                 createCommitItem(index, EmployerUnauthorisedPaymentRecipientNamePage.apply))
               Seq(k, m).combineAll
             case "employerOther" =>
-              val r = resultFromFormValidationResult[Option[String]](
+              val r = resultFromFormValidationResult[String](
                 genericFieldValidation(index, columns, FieldInfoForValidation(fieldNoOtherDescription, otherDescription, employerPaymentNatureDescriptionFormProvider())),
                 createCommitItem(index, EmployerPaymentNatureDescriptionPage.apply))
               Seq(k, r).combineAll
