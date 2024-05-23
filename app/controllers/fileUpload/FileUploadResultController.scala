@@ -173,7 +173,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
     }
 
     parserResultFuture.flatMap { case ((dataAccumulator, errorAccumulator), rowNumber) =>
-
+      inputStream.close()
       if(rowNumber < 2) {
         errorAccumulator += FileLevelValidationErrorTypeHeaderInvalidOrFileEmpty
       }
