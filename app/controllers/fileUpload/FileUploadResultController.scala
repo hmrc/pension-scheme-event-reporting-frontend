@@ -186,17 +186,17 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                 httpResponse.status match {
                   case OK => performValidation(eventType, httpResponse.body, fileName) recoverWith {
                     case e: Throwable =>
-                      setGeneralErrorOutcome(s"Unable to download file: download URL = $downloadUrl", fileName, Some(e))
+                      setGeneralErrorOutcome("Unable to download file", fileName, Some(e))
                   }
                   case e =>
-                    setGeneralErrorOutcome(s"Upscan download error response code $e and response body is ${httpResponse.body}", fileName)
+                    setGeneralErrorOutcome(s"Upscan download error response code $e", fileName)
                 }
               }
             case None => setGeneralErrorOutcome(
               s"No download url: fileuploadstatus = ${fileUploadOutcomeResponse.fileUploadStatus}", fileName)
           }
         }
-      case _ => setGeneralErrorOutcome(s"No reference number in FileUploadResultController")
+      case _ => setGeneralErrorOutcome("No reference number in FileUploadResultController")
     }
   }
 
