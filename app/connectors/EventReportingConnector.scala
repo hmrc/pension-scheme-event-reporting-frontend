@@ -191,7 +191,7 @@ class EventReportingConnector @Inject()(
           }
         case NOT_FOUND => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.IN_PROGRESS, None, reference, None)
         case _ =>
-          throw new HttpException(response.body, response.status)
+          throw new HttpException(s"getFileUploadOutcome - unexpected status code: ${response.status}", response.status)
       }
 
     }
