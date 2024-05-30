@@ -1,0 +1,132 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.EventReportingOverviewController.OverviewViewModel
+
+@this(
+layout: templates.SchemeLayout,
+formHelper: FormWithCSRF,
+govukErrorSummary: GovukErrorSummary,
+govukRadios: GovukRadios,
+govukButton: GovukButton
+)
+
+@(viewModel: OverviewViewModel)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+
+@layout(pageTitle =messages("eventSummary.title", "selectedTaxYear")) {
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <span class="govuk-caption-l ">
+          @viewModel.schemeName
+      </span>
+
+        <h1 class="govuk-heading-xl">
+            @messages("aftOverview.title")
+        </h1>
+
+        <p class="govuk-body govuk-!-margin-bottom-8">
+            <a class="govuk-link" href="@viewModel.newAftUrl">
+                @messages("aftOverview.startNewAft")
+            </a>
+        </p>
+
+        @if(viewModel.outstandingAmount != messages("aftOverview.totalOutstandingNotAvailable")) {
+        <h3 class="govuk-caption-l govuk-!-margin-top-4 govuk-!-margin-bottom-2">
+            @messages("aftOverview.totalOutstanding")
+        </h3>
+
+        <p class="govuk-heading-l">
+            <strong>
+                @viewModel.outstandingAmount
+            </strong>
+        </p>
+
+        } else {
+        <h3 class="govuk-caption-l govuk-!-margin-top-4 govuk-!-margin-bottom-2">
+            @messages("aftOverview.totalOutstandingNotAvailable")
+        </h3>
+        }
+
+        <p class="govuk-body govuk-!-margin-bottom-6">
+            <a class="govuk-link" href="@viewModel.paymentsAndChargesUrl">
+                @messages("aftOverview.viewOutstanding")
+            </a>
+        </p>
+        <hr>
+
+        @if(viewModel.quartersInProgress.nonEmpty) {
+
+        <h3 class="govuk-heading-m govuk-!-margin-top-6">
+            @messages("aftOverview.inProgress")
+        </h3>
+
+        <ul class="govuk-list">
+            @for(tuple <- viewModel.quartersInProgress) {
+            <li class="govuk-body">
+                <a class="govuk-link" href="@tuple._2">
+                    @tuple._1
+                </a>
+            </li>
+            }
+        </ul>
+        <hr>
+        }
+
+        @if(viewModel.pastYearsAndQuarters.nonEmpty) {
+        <h3 class="govuk-heading-m govuk-!-margin-top-6">
+            @messages("aftOverview.pastAftReturns")
+        </h3>
+
+        @for(tuple <- viewModel.pastYearsAndQuarters) {
+        <h3 class="govuk-heading-s">
+            @tuple._1 to @tuple._1 + 1
+        </h3>
+
+        <ul class="govuk-list">
+            @for(item <- tuple._2) {
+            <li class="govuk-body">
+                <a class="govuk-link" href="@item._2">
+                    @item._1
+                </a>
+            </li>
+            }
+        </ul>
+        }
+
+        }
+
+        <br>
+
+        <p class="govuk-body govuk-!-margin-bottom-6">
+            <a class="govuk-link" href=@viewModel.viewAllPastAftsUrl>
+                @messages("aftOverview.allPastAftReturns")
+            </a>
+        </p>
+
+        <hr>
+
+        <br>
+        <p class="govuk-body">
+            <a href=@viewModel.returnUrl class="govuk-link">
+                @messages("return.to.link", viewModel.schemeName)
+            </a>
+        </p>
+    </div>
+</div>
+
+}
