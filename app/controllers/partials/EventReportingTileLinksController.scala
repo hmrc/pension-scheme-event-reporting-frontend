@@ -43,10 +43,12 @@ class EventReportingTileLinksController @Inject()(
     (identify andThen getData() andThen requireData).async { implicit request =>
       request.userAnswers.get(EventReportingOverviewPage) match {
         case Some(s) =>
+          println(s"EventReportingTileLinksController onClickCompiled:46 >>>>>>>>>>>>>>>> $s")
           val compiledVersionsOnly = s.filter(_.versionDetails.exists(_.compiledVersionAvailable))
           compiledVersionsOnly match {
             case Seq(erOverview) =>
 
+              println(s"EventReportingTileLinksController onClickCompiled:51 >>>>>>>>>>>>>>>> $erOverview")
               val version = erOverview.versionDetails.map(_.numberOfVersions).getOrElse(1)
               val versionInfo = VersionInfo(version, Compiled)
               val ua = request.userAnswers
@@ -58,12 +60,14 @@ class EventReportingTileLinksController @Inject()(
                 Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
               }
             case _ =>
+              println(s"EventReportingTileLinksController onClickCompiled:63 >>>>>>>>>>>>>>>> $compiledVersionsOnly")
               val ua = request.userAnswers.setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)
               userAnswersCacheConnector.save(request.pstr, ua).map { _ =>
                 Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
               }
           }
         case _ =>
+          println(s"EventReportingTileLinksController onClickCompiled:71 >>>>>>>>>>>>>>>> ${request.userAnswers}")
           val ua = request.userAnswers.setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)
           userAnswersCacheConnector.save(request.pstr, ua).map { _ =>
             Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
@@ -83,13 +87,16 @@ class EventReportingTileLinksController @Inject()(
     (identify andThen getData() andThen requireData).async { implicit request =>
       request.userAnswers.get(EventReportingOverviewPage) match {
         case Some(s: Seq[EROverview]) =>
+          println(s"EventReportingTileLinksController onClickSubmitted:91 >>>>>>>>>>>>>>>> $s")
           val ua = request.userAnswers
             .setOrException(EventReportingTileLinksPage, PastEventTypes, nonEventTypeData = true)
           userAnswersCacheConnector.save(request.pstr, ua).map { _ =>
             Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
           }
 
-        case _ => Future.successful(Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url))
+        case _ =>
+          println(s"EventReportingTileLinksController onClickSubmitted:99 >>>>>>>>>>>>>>>> ${request.userAnswers}")
+          Future.successful(Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url))
       }
     }
 }

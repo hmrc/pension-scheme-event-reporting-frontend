@@ -46,9 +46,9 @@ class ReturnHistoryController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()) async {
     implicit request =>
-      println(s"**************>>>>>>>>waypoints: $waypoints")
+      //println(s"**************>>>>>>>>waypoints: $waypoints")
       val currentTaxYear = getTaxYearFromOption(request.userAnswers)
-      println(s"**************>>>>>>>>currentTaxYear: $currentTaxYear")
+      //println(s"**************>>>>>>>>currentTaxYear: $currentTaxYear")
       erConnector.getListOfVersions(request.pstr, currentTaxYear.toString + "-04-06").map { seqVersionsWithSubmitter =>
         val seqVersionsSubmitted = seqVersionsWithSubmitter.filter(versions => versions.versionDetails.status == Submitted)
         val seqRetHistorySummary = seqVersionsSubmitted.map { versionWithSubmitter =>

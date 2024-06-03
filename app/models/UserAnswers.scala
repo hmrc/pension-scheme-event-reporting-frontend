@@ -31,10 +31,10 @@ final case class UserAnswers(
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
     Reads.optionNoError(Reads.at(page.path)).reads(data) match {
       case JsSuccess(a@Some(_), _) =>
-        println("^^^^^^a: " + a)
+        //println("^^^^^^a: " + a)
         a
       case _ =>
-        println("^^^^^^noEventTypeData: " + Reads.optionNoError(Reads.at(page.path)).reads(noEventTypeData).getOrElse(None))
+        //println("^^^^^^noEventTypeData: " + Reads.optionNoError(Reads.at(page.path)).reads(noEventTypeData).getOrElse(None))
         Reads.optionNoError(Reads.at(page.path)).reads(noEventTypeData).getOrElse(None)
     }
   }
