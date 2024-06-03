@@ -26,7 +26,7 @@ govukButton: GovukButton
 
 @(viewModel: OverviewViewModel)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle =messages("eventSummary.title", "selectedTaxYear")) {
+@layout(pageTitle = messages("eventSummary.title", "selectedTaxYear")) {
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -36,18 +36,18 @@ govukButton: GovukButton
       </span>
 
         <h1 class="govuk-heading-xl">
-            @messages("aftOverview.title")
+            @messages("eventReportingOverview.title")
         </h1>
 
         <p class="govuk-body govuk-!-margin-bottom-8">
             <a class="govuk-link" href="@viewModel.newAftUrl">
-                @messages("aftOverview.startNewAft")
+                @messages("eventReportingOverview.startNewAft")
             </a>
         </p>
 
-        @if(viewModel.outstandingAmount != messages("aftOverview.totalOutstandingNotAvailable")) {
+        @if(viewModel.outstandingAmount != messages("eventReportingOverview.totalOutstandingNotAvailable")) {
         <h3 class="govuk-caption-l govuk-!-margin-top-4 govuk-!-margin-bottom-2">
-            @messages("aftOverview.totalOutstanding")
+            @messages("eventReportingOverview.totalOutstanding")
         </h3>
 
         <p class="govuk-heading-l">
@@ -58,13 +58,13 @@ govukButton: GovukButton
 
         } else {
         <h3 class="govuk-caption-l govuk-!-margin-top-4 govuk-!-margin-bottom-2">
-            @messages("aftOverview.totalOutstandingNotAvailable")
+            @messages("eventReportingOverview.totalOutstandingNotAvailable")
         </h3>
         }
 
         <p class="govuk-body govuk-!-margin-bottom-6">
             <a class="govuk-link" href="@viewModel.paymentsAndChargesUrl">
-                @messages("aftOverview.viewOutstanding")
+                @messages("eventReportingOverview.viewOutstanding")
             </a>
         </p>
         <hr>
@@ -72,7 +72,7 @@ govukButton: GovukButton
         @if(viewModel.quartersInProgress.nonEmpty) {
 
         <h3 class="govuk-heading-m govuk-!-margin-top-6">
-            @messages("aftOverview.inProgress")
+            @messages("eventReportingOverview.inProgress")
         </h3>
 
         <ul class="govuk-list">
@@ -89,22 +89,18 @@ govukButton: GovukButton
 
         @if(viewModel.pastYearsAndQuarters.nonEmpty) {
         <h3 class="govuk-heading-m govuk-!-margin-top-6">
-            @messages("aftOverview.pastAftReturns")
+            @messages("eventReportingOverview.pastAftReturns")
         </h3>
 
         @for(tuple <- viewModel.pastYearsAndQuarters) {
-        <h3 class="govuk-heading-s">
-            @tuple._1 to @tuple._1 + 1
-        </h3>
 
         <ul class="govuk-list">
-            @for(item <- tuple._2) {
             <li class="govuk-body">
-                <a class="govuk-link" href="@item._2">
-                    @item._1
+                <a class="govuk-link" href="@tuple._2">
+                    @tuple._1
                 </a>
             </li>
-            }
+
         </ul>
         }
 
@@ -114,7 +110,7 @@ govukButton: GovukButton
 
         <p class="govuk-body govuk-!-margin-bottom-6">
             <a class="govuk-link" href=@viewModel.viewAllPastAftsUrl>
-                @messages("aftOverview.allPastAftReturns")
+                @messages("eventReportingOverview.allPastAftReturns")
             </a>
         </p>
 

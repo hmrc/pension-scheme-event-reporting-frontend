@@ -62,6 +62,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
 
   private def renderPage(form: Form[TaxYear], waypoints: Waypoints, status: Status)(implicit request: DataRequest[AnyContent]): Result = {
     val ua = request.userAnswers
+    println(s"******* ${ua.get(EventReportingTileLinksPage)}, ${ua.get(EventReportingOverviewPage)}")
     val radioOptions =
       (ua.get(EventReportingTileLinksPage), ua.get(EventReportingOverviewPage)) match {
         case (Some(PastEventTypes), Some(seqEROverview)) =>
@@ -70,22 +71,31 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
         case (Some(InProgress), Some(seqEROverview)) =>
           val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereCompiledVersionAvailable)
           TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear))
-        case _ => TaxYear.optionsFiltered(taxYear => taxYear.startYear.toInt >= config.eventReportingStartTaxYear)
+        case _ =>
+          println(s"TaxYearController: eventReportingStartTaxYear ************ ${config.eventReportingStartTaxYear}")
+          TaxYear.optionsFiltered( taxYear =>  taxYear.startYear.toInt >= config.eventReportingStartTaxYear)
       }
+
+    println(s"TaxYearController: radioOptions ************ $radioOptions")
     status(view(form, waypoints, radioOptions))
   }
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
+
+    println(s"TaxYearController: onPageLoad ************ ${request.userAnswers.get(TaxYearPage)}")
     val preparedForm = request.userAnswers.get(TaxYearPage).fold(form)(form.fill)
     Future.successful(renderPage(preparedForm, waypoints, Ok))
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
+
+      println(s"TaxYearController: onSubmit ************ ${request.userAnswers.get(TaxYearPage)}    $waypoints")
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(renderPage(formWithErrors, waypoints, BadRequest)),
         value => {
+          println(s"TaxYearController: onSubmit ************ $value")
           val originalUserAnswers = request.userAnswers
           val vd = originalUserAnswers
             .get(EventReportingOverviewPage).toSeq.flatten.find(_.taxYear == value).flatMap(_.versionDetails)
