@@ -15,6 +15,7 @@
  */
 
 package models.enumeration
+import play.api.mvc.QueryStringBindable
 
 sealed trait JourneyStartType
 

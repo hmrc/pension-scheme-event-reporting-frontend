@@ -20,27 +20,18 @@ import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.EventReportingOverviewController.OverviewViewModel
 import controllers.actions._
-import controllers.routes
-import forms.{EventSummaryFormProvider, TaxYearFormProvider}
-import models.TaxYear.getSelectedTaxYearAsString
-import models.{EROverview, EventSummary, MemberSummaryPath, TaxYear, UserAnswers, VersionInfo}
-import models.enumeration.EventType
-import models.enumeration.EventType.{Event18, Event20A, Event8A, WindUp}
+import controllers.partials.EventReportingTileController.{maxEndDateAsString, minStartDateAsString}
+import models.enumeration.JourneyStartType
 import models.enumeration.JourneyStartType.{InProgress, PastEventTypes}
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
-import models.requests.DataRequest
-import pages.{EmptyWaypoints, EventReportingOverviewPage, EventReportingTileLinksPage, EventSummaryPage, TaxYearPage, VersionInfoPage, Waypoints}
-import play.api.Logger
+import models.{EROverview, TaxYear, UserAnswers, VersionInfo}
+import pages.{EmptyWaypoints, EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage, VersionInfoPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.Message
-import views.html.{EventReportingOverviewView, EventSummaryView, TaxYearView}
+import views.html.EventReportingOverviewView
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 class EventReportingOverviewController @Inject()(
@@ -59,21 +50,28 @@ class EventReportingOverviewController @Inject()(
     val ua = request.userAnswers
 
 
-    //println(s"EventReportingOverviewController>>>>>>>>>>>>>>> EventReportingOverviewPage ${ua.get(EventReportingOverviewPage)}")
-    //println(s"EventReportingOverviewController EventReportingTileLinksPage >>>>>>>>>>>>>>> ${ua.get(EventReportingTileLinksPage)}")
 
     val ovm = for {
       pastYears <- getPastYearsAndUrl(ua, request.pstr)
       inProgressYears <- getInProgressYearAndUrl(ua, request.pstr)
-    } yield OverviewViewModel(pastYearsAndQuarters = pastYears, quartersInProgress = inProgressYears)
+      seqEROverview <- connector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString)
+      isAnySubmittedReports = seqEROverview.exists(_.versionDetails.exists(_.submittedVersionAvailable))
+      isAnyCompiledReports = seqEROverview.exists(_.versionDetails.exists(_.compiledVersionAvailable))
+    } yield OverviewViewModel(pastYears = pastYears, yearsInProgress = inProgressYears, schemeName = request.schemeName,
+      isAnyCompiledReports = isAnyCompiledReports, isAnySubmittedReports = isAnySubmittedReports)
 
 
       ovm.map( y => Ok(view(y)))
   }
 
-  def onSubmit(taxYear: String, waypoints: Waypoints = EmptyWaypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
+  def onSubmit(taxYear: String, journeyType: String,  waypoints: Waypoints = EmptyWaypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
 
+      val jt = journeyType match {
+        case "InProgress" => InProgress
+        case "PastEventTypes" => PastEventTypes
+        case _ => InProgress
+      }
       //println(s"TaxYearController: onSubmit ************ ${request.userAnswers.get(TaxYearPage)}")
       val originalUserAnswers = request.userAnswers
       val vd = originalUserAnswers
@@ -92,6 +90,7 @@ class EventReportingOverviewController @Inject()(
 
       val updatedAnswers = originalUserAnswers
         .setOrException(TaxYearPage, TaxYear(taxYear), nonEventTypeData = true)
+        .setOrException(EventReportingTileLinksPage, jt, nonEventTypeData = true)
         .setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
       futureAfterClearDown.flatMap { _ =>
         userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
@@ -101,7 +100,12 @@ class EventReportingOverviewController @Inject()(
   }
 
   private def getInProgressYearAndUrl(userAnswers: UserAnswers, pstr: String)(implicit hc: HeaderCarrier): Future[Seq[(String, String)]] = {
-      userAnswers.get(EventReportingOverviewPage) match {
+
+    userAnswersCacheConnector.get(pstr) flatMap { ua =>
+      println(s"getPastYearsAndUrl 104 >>>>>>>>>>>>>>>> ${ua.get.get(EventReportingOverviewPage)}")
+
+      val uaFetched = ua.fold(userAnswers)(x => x)
+      uaFetched.get(EventReportingOverviewPage) match {
         case Some(s) =>
           println(s"getInProgressYearAndUrl 104 >>>>>>>>>>>>>>>> $s")
           val compiledVersionsOnly = s.filter(_.versionDetails.exists(_.compiledVersionAvailable))
@@ -111,56 +115,65 @@ class EventReportingOverviewController @Inject()(
               println(s"EventReportingTileLinksController onClickCompiled:51 >>>>>>>>>>>>>>>> $erOverview")
               val version = erOverview.versionDetails.map(_.numberOfVersions).getOrElse(1)
               val versionInfo = VersionInfo(version, Compiled)
-              val ua = userAnswers
+              val ua = uaFetched
                 .setOrException(TaxYearPage, erOverview.taxYear, nonEventTypeData = true)
                 .setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)
                 .setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
 
               userAnswersCacheConnector.save(pstr, ua).map { _ =>
-                Seq((s"${erOverview.taxYear.startYear} to ${erOverview.taxYear.endYear}", routes.EventReportingOverviewController.onSubmit(erOverview.taxYear.startYear).url))
+                Seq((s"${erOverview.taxYear.startYear} to ${erOverview.taxYear.endYear}", routes.EventReportingOverviewController.onSubmit(erOverview.taxYear.startYear, "InProgress").url))
               }
             case _ =>
               println(s"getInProgressYearAndUrl :121 >>>>>>>>>>>>>>>> $compiledVersionsOnly")
-              val ua = userAnswers.setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)
-              userAnswersCacheConnector.save(pstr, ua).map { _ =>
-                getTaxYears(userAnswers).map(x => (s"${x.startYear} to ${x.endYear}", routes.EventReportingOverviewController.onSubmit(x.startYear).url))
+              val uaUpdated = uaFetched.setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)
+              userAnswersCacheConnector.save(pstr, uaUpdated).map { x =>
+                println("")
+                getTaxYears(uaUpdated).map(x => (s"${x.startYear} to ${x.endYear}", routes.EventReportingOverviewController.onSubmit(x.startYear, "InProgress").url))
               }
           }
         case _ =>
-          println(s"getInProgressYearAndUrl :128 >>>>>>>>>>>>>>>> ${userAnswers}")
-          val ua = userAnswers.setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)
-          userAnswersCacheConnector.save(pstr, ua).map { _ =>
-            getTaxYears(userAnswers).map(x => (s"${x.startYear} to ${x.endYear}", routes.EventReportingOverviewController.onSubmit(x.startYear).url))
+          println(s"getInProgressYearAndUrl :128 >>>>>>>>>>>>>>>> ${uaFetched}")
+          val uaUpdated = uaFetched.setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)
+          userAnswersCacheConnector.save(pstr, uaUpdated).map { _ =>
+            getTaxYears(uaUpdated).map(x =>   (s"${x.startYear} to ${x.endYear}", routes.EventReportingOverviewController.onSubmit(x.startYear, "InProgress").url )  )
           }
       }
+    }
   }
 
 
   private def getPastYearsAndUrl(userAnswers: UserAnswers, pstr: String)(implicit hc: HeaderCarrier): Future[Seq[(String, String)]] = {
-    userAnswers.get(EventReportingOverviewPage) match {
-      case Some(s: Seq[EROverview]) =>
-        println(s"EventReportingTileLinksController onClickSubmitted:91 >>>>>>>>>>>>>>>> $s")
-        val ua = userAnswers
-          .setOrException(EventReportingTileLinksPage, PastEventTypes, nonEventTypeData = true)
-        userAnswersCacheConnector.save(pstr, ua).map { _ =>
-          getTaxYears(userAnswers).map( x => (s"${x.startYear} to ${x.endYear}", routes.EventReportingOverviewController.onSubmit(x.startYear).url))
-        }
 
-      case _ =>
-        println(s"EventReportingTileLinksController onClickSubmitted:99 >>>>>>>>>>>>>>>> ${userAnswers}")
-        Future.successful(getTaxYears(userAnswers).map( x => (s"${x.startYear} to ${x.endYear}", routes.EventReportingOverviewController.onSubmit(x.startYear).url)))
+    userAnswersCacheConnector.get(pstr) flatMap { ua =>
+      println(s"getPastYearsAndUrl 104 >>>>>>>>>>>>>>>> ${ua.get.get(EventReportingOverviewPage)}")
+
+      val uaFetched = ua.fold(userAnswers)(x => x)
+      uaFetched.get(EventReportingOverviewPage) match {
+        case Some(s: Seq[EROverview]) =>
+          println(s"EventReportingTileLinksController onClickSubmitted:91 >>>>>>>>>>>>>>>> $s")
+          val uaUpdated = uaFetched.setOrException(EventReportingTileLinksPage, PastEventTypes, nonEventTypeData = true)
+          userAnswersCacheConnector.save(pstr, uaUpdated).map { _ =>
+            getTaxYears(uaUpdated).map(x => (s"${x.startYear} to ${x.endYear}", routes.EventReportingOverviewController.onSubmit(x.startYear, "PastEventTypes").url) )
+          }
+
+        case _ =>
+          println(s"EventReportingTileLinksController onClickSubmitted:99 >>>>>>>>>>>>>>>> ${uaFetched}")
+          Future.successful(getTaxYears(uaFetched).map(x => (s"${x.startYear} to ${x.endYear}", routes.EventReportingOverviewController.onSubmit(x.startYear, "PastEventTypes").url)))
+      }
     }
   }
   private def getTaxYears(ua: UserAnswers): Seq[TaxYear] = {
         (ua.get(EventReportingTileLinksPage), ua.get(EventReportingOverviewPage)) match {
           case (Some(PastEventTypes), Some(seqEROverview)) =>
+            println(s">>>>> EventReportingOverviewController: getTaxYears ************ $seqEROverview")
             val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereSubmittedVersionAvailable)
             TaxYear.optionsFilteredTaxYear(taxYear => applicableYears.contains(taxYear.startYear))
           case (Some(InProgress), Some(seqEROverview)) =>
+            println(s">>>>> EventReportingOverviewController: getTaxYears ************ $seqEROverview")
             val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereCompiledVersionAvailable)
             TaxYear.optionsFilteredTaxYear(taxYear => applicableYears.contains(taxYear.startYear))
           case _ =>
-            println(s"TaxYearController: eventReportingStartTaxYear ************ ${config.eventReportingStartTaxYear}")
+            println(s">>>>> EventReportingOverviewController: eventReportingStartTaxYear ************ ${config.eventReportingStartTaxYear}")
             TaxYear.optionsFilteredTaxYear( taxYear =>  taxYear.startYear.toInt >= config.eventReportingStartTaxYear)
       }
  }
@@ -188,8 +201,10 @@ object EventReportingOverviewController {
                                 paymentsAndChargesUrl: String = "paymentsAndChargesUrl",
                                 schemeName: String =  "schemeName",
                                 outstandingAmount: String = "outstandingAmount",
-                                quartersInProgress: Seq[(String, String)] = Seq.empty,
-                                pastYearsAndQuarters: Seq[(String, String)],
-                                viewAllPastAftsUrl: String = "viewAllPastAftsUrl"
+                                yearsInProgress: Seq[(String, String)] = Seq.empty,
+                                pastYears: Seq[(String, String)],
+                                viewAllPastAftsUrl: String = "viewAllPastAftsUrl",
+                                isAnySubmittedReports: Boolean = false,
+                                isAnyCompiledReports: Boolean = false
                               )
 }
