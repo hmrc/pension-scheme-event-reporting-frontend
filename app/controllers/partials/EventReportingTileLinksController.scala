@@ -89,8 +89,7 @@ class EventReportingTileLinksController @Inject()(
             Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
           }
 
-        case _ =>
-          Future.successful(Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url))
+        case _ => Future.successful(Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url))
       }
     }
 }

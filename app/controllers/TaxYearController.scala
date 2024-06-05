@@ -74,13 +74,11 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
           TaxYear.optionsFiltered( taxYear =>  taxYear.startYear.toInt >= config.eventReportingStartTaxYear)
       }
 
-    //println(s"TaxYearController: radioOptions ************ $radioOptions")
     status(view(form, waypoints, radioOptions))
   }
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
 
-    //println(s"TaxYearController: onPageLoad ************ ${request.userAnswers.get(TaxYearPage)}")
     val preparedForm = request.userAnswers.get(TaxYearPage).fold(form)(form.fill)
     Future.successful(renderPage(preparedForm, waypoints, Ok))
   }
