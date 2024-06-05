@@ -103,14 +103,11 @@ class EventReportingOverviewController @Inject()(
 
 object EventReportingOverviewController {
   case class OverviewViewModel(
-                                returnUrl: String = "returnUrl",
-                                newAftUrl: String = "newAftUrl",
                                 paymentsAndChargesUrl: String = "paymentsAndChargesUrl",
                                 schemeName: String =  "schemeName",
-                                outstandingAmount: String = "outstandingAmount",
-                                yearsInProgress: Seq[(String, String)] = Seq.empty,
+                                outstandingAmount: String = "TODO",
+                                yearsInProgress: Seq[(String, String)],
                                 pastYears: Seq[(String, String)],
-                                viewAllPastAftsUrl: String = "viewAllPastAftsUrl",
                                 isAnySubmittedReports: Boolean = false,
                                 isAnyCompiledReports: Boolean = false
                               )
