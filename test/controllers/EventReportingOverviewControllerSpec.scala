@@ -17,27 +17,21 @@
 package controllers
 
 import base.SpecBase
-import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
-import models.{TaxYear, UserAnswers}
-import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito._
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AsyncWordSpec
-import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, EventReportingOverviewPage, EventReportingTileLinksPage}
-import play.api.mvc._
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import services.EventReportingOverviewService
-import uk.gov.hmrc.http.HeaderCarrier
-import views.html.EventReportingOverviewView
 import forms.TaxYearFormProvider
 import models.enumeration.JourneyStartType.StartNew
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
+import pages.{EmptyWaypoints, EventReportingTileLinksPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import uk.gov.hmrc.http.HeaderCarrier
+import viewmodels.OverviewViewModel
+import views.html.EventReportingOverviewView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -49,6 +43,7 @@ class EventReportingOverviewControllerSpec extends SpecBase with BeforeAndAfterE
 
   private val waypoints = EmptyWaypoints
   val ua = emptyUserAnswers.setOrException(EventReportingTileLinksPage, StartNew)
+  val ovm = OverviewViewModel(pastYears = Seq(("", "")), yearsInProgress = Seq(("", "")), schemeName = "schemeName", newEventReportingUrl = "/manage-pension-scheme-event-report/select-tax-year")
 
   private val formProvider = new TaxYearFormProvider()
   private val form = formProvider()
@@ -97,9 +92,8 @@ class EventReportingOverviewControllerSpec extends SpecBase with BeforeAndAfterE
 
         val view = application.injector.instanceOf[EventReportingOverviewView]
 
-//        val ovm = OverviewViewModel(pastYears = Seq(("", "")), yearsInProgress = Seq(("", "")), schemeName = "")
         status(result) mustEqual OK
-//        contentAsString(result) mustEqual view(ovm)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(ovm)(request, messages(application)).toString
       }
     }
   }

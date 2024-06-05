@@ -18,23 +18,22 @@ package controllers
 
 import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
-import controllers.EventReportingOverviewController.OverviewViewModel
 import controllers.actions._
 import controllers.partials.EventReportingTileController.{maxEndDateAsString, minStartDateAsString}
-import models.enumeration.JourneyStartType
 import models.enumeration.JourneyStartType.{InProgress, PastEventTypes}
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
-import models.{EROverview, TaxYear, UserAnswers, VersionInfo}
+import models.{TaxYear, VersionInfo}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage, VersionInfoPage, Waypoints}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.EventReportingOverviewService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.OverviewViewModel
 import views.html.EventReportingOverviewView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+
 class EventReportingOverviewController @Inject()(
                                                   val controllerComponents: MessagesControllerComponents,
                                                   identify: IdentifierAction,
@@ -102,16 +101,3 @@ class EventReportingOverviewController @Inject()(
   }
 }
 
-object EventReportingOverviewController {
-  case class OverviewViewModel(
-                                newEventReportingUrl: String = "newAftUrl",
-                                paymentsAndChargesUrl: String = "paymentsAndChargesUrl",
-                                schemeName: String =  "schemeName",
-                                outstandingAmount: String = "ToDo",
-                                yearsInProgress: Seq[(String, String)] = Seq.empty,
-                                pastYears: Seq[(String, String)],
-                                viewAllPastAftsUrl: String = "viewAllPastAftsUrl",
-                                isAnySubmittedReports: Boolean = false,
-                                isAnyCompiledReports: Boolean = false
-                              )
-}
