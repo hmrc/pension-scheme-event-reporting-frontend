@@ -70,8 +70,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
         case (Some(InProgress), Some(seqEROverview)) =>
           val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereCompiledVersionAvailable)
           TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear))
-        case _ =>
-          TaxYear.optionsFiltered( taxYear =>  taxYear.startYear.toInt >= config.eventReportingStartTaxYear)
+        case _ => TaxYear.optionsFiltered( taxYear =>  taxYear.startYear.toInt >= config.eventReportingStartTaxYear)
       }
 
     status(view(form, waypoints, radioOptions))
