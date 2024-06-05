@@ -1992,10 +1992,10 @@ whatYouWillNeed.event14.p = For this event, you will need to tell us how many sc
 
 
 eventReportingOverview.title                           = Event reporting: overview
-eventReportingOverview.startNewAft                     = Start a new event report
+eventReportingOverview.startNewEventReporting                     = Start a new event report
 eventReportingOverview.totalOutstanding                = Total outstanding payments:
 eventReportingOverview.totalOutstandingNotAvailable    = The amount outstanding is not currently available on this screen. You can view it using the link below.
 eventReportingOverview.viewOutstanding                 = View all outstanding payments and charges
 eventReportingOverview.inProgress                      = In progress
-eventReportingOverview.pastAftReturns                  = Past event reports
-eventReportingOverview.allPastAftReturns               = View or change all past event reports
+eventReportingOverview.pastEventReportingReturns                  = Past event reports
+eventReportingOverview.allPastEventReportingReturns               = View or change all past event reports

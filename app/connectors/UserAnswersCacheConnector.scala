@@ -70,7 +70,6 @@ class UserAnswersCacheConnector @Inject()(
 
   def get(pstr: String, eventType: EventType)
          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
-    println("******************* why i am here>>>>...")
     for {
       noEventData <- getJson(noEventHeaders(pstr))
       eventData <- getJson(eventHeaders(pstr, eventType, noEventData))
@@ -100,7 +99,6 @@ class UserAnswersCacheConnector @Inject()(
   }
 
   def get(pstr: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
-    println("******************* why i am here...")
     getJson(noEventHeaders(pstr)).map(_.map(d => UserAnswers(noEventTypeData = d)))
   }
 

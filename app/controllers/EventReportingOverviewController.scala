@@ -60,7 +60,8 @@ class EventReportingOverviewController @Inject()(
       isAnySubmittedReports = seqEROverview.exists(_.versionDetails.exists(_.submittedVersionAvailable))
       isAnyCompiledReports = seqEROverview.exists(_.versionDetails.exists(_.compiledVersionAvailable))
     } yield OverviewViewModel(pastYears = pastYears, yearsInProgress = inProgressYears, schemeName = request.schemeName,
-      isAnyCompiledReports = isAnyCompiledReports, isAnySubmittedReports = isAnySubmittedReports)
+      isAnyCompiledReports = isAnyCompiledReports, isAnySubmittedReports = isAnySubmittedReports,
+      newEventReportingUrl = controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
 
 
       ovm.map( y => Ok(view(y)))
@@ -103,11 +104,13 @@ class EventReportingOverviewController @Inject()(
 
 object EventReportingOverviewController {
   case class OverviewViewModel(
+                                newEventReportingUrl: String = "newAftUrl",
                                 paymentsAndChargesUrl: String = "paymentsAndChargesUrl",
                                 schemeName: String =  "schemeName",
-                                outstandingAmount: String = "TODO",
-                                yearsInProgress: Seq[(String, String)],
+                                outstandingAmount: String = "ToDo",
+                                yearsInProgress: Seq[(String, String)] = Seq.empty,
                                 pastYears: Seq[(String, String)],
+                                viewAllPastAftsUrl: String = "viewAllPastAftsUrl",
                                 isAnySubmittedReports: Boolean = false,
                                 isAnyCompiledReports: Boolean = false
                               )

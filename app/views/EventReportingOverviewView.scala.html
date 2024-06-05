@@ -40,8 +40,8 @@ govukButton: GovukButton
         </h1>
 
         <p class="govuk-body govuk-!-margin-bottom-8">
-            <a class="govuk-link" href="@viewModel.newAftUrl">
-                @messages("eventReportingOverview.startNewAft")
+            <a class="govuk-link" href="@viewModel.newEventReportingUrl">
+                @messages("eventReportingOverview.startNewEventReporting")
             </a>
         </p>
 
@@ -89,7 +89,7 @@ govukButton: GovukButton
 
         @if(viewModel.pastYears.nonEmpty && viewModel.isAnySubmittedReports) {
         <h3 class="govuk-heading-m govuk-!-margin-top-6">
-            @messages("eventReportingOverview.pastAftReturns")
+            @messages("eventReportingOverview.pastEventReportingReturns")
         </h3>
 
         @for(tuple <- viewModel.pastYears) {

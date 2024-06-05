@@ -55,7 +55,6 @@ object TaxYear extends Enumerable.Implicits {
     values.zipWithIndex.flatMap {
       case (value, index) =>
         if (func(value)) {
-          println(s"optionsFiltered >>>>>>>>>> ${value.startYear}, ${value.endYear}")
           Seq(RadioItem(
             content = Text(messages("chooseTaxYear.yearRangeRadio", value.startYear, value.endYear)),
             value = Some(value.startYear),
@@ -119,7 +118,6 @@ object TaxYear extends Enumerable.Implicits {
     userAnswers.get(TaxYearPage) match {
       case Some(year) => Try(year.startYear.toInt) match {
         case Success(value) =>
-          //println(s"^^^^^^^^^^^^TaxYear.getTaxYear: $value")
           value
         case Failure(_) => throw new TaxYearNotAvailableException("Tax year is not a number")
       }
