@@ -40,7 +40,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   lazy val pensionsAdministratorUrl: String = servicesConfig.baseUrl("pension-administrator")
   lazy val pensionSchemeUrl: String = servicesConfig.baseUrl("pensions-scheme")
   lazy val addressLookUp: String = s"${servicesConfig.baseUrl("address-lookup")}"
-
+  lazy val erOutstandingPaymentAmountURL: String = configuration.get[String](path = "urls.erOutstandingPaymentAmount")
   lazy val locationCanonicalList: String = loadConfig("location.canonical.list.all")
   lazy val locationCanonicalListEUAndEEA: String = loadConfig("location.canonical.list.UKEUAndEEA")
 

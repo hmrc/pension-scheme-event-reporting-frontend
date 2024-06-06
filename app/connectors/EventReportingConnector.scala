@@ -261,6 +261,22 @@ class EventReportingConnector @Inject()(
       case Failure(t: Throwable) => logger.warn("Unable to get list of versions", t)
     }
   }
+
+  def getErOutstandingPaymentAmount(srn: String)(implicit headerCarrier: HeaderCarrier): Future[String] = {
+    val hc = headerCarrier.withExtraHeaders("srn" -> srn)
+    val erAmountURL = config.erOutstandingPaymentAmountURL.format("S2400000041")
+    http.GET[HttpResponse](erAmountURL)(implicitly, hc, implicitly).map { response =>
+      response.status match {
+        case OK =>
+        {
+          println(response.body)
+          "£00.00"
+        }
+        case NOT_FOUND => "£00.00"
+        case _ => handleErrorResponse("GET", erAmountURL)(response)
+      }
+    }
+  }
 }
 
 

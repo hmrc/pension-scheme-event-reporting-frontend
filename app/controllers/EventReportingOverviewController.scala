@@ -56,10 +56,11 @@ class EventReportingOverviewController @Inject()(
       pastYears <- service.getPastYearsAndUrl(ua, request.pstr)
       inProgressYears <- service.getInProgressYearAndUrl(ua, request.pstr)
       seqEROverview <- connector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString)
+      outstandingAmount <- connector.getErOutstandingPaymentAmount(request.pstr)
       isAnySubmittedReports = seqEROverview.exists(_.versionDetails.exists(_.submittedVersionAvailable))
       isAnyCompiledReports = seqEROverview.exists(_.versionDetails.exists(_.compiledVersionAvailable))
     } yield OverviewViewModel(pastYears = pastYears, yearsInProgress = inProgressYears, schemeName = request.schemeName,
-      isAnyCompiledReports = isAnyCompiledReports, isAnySubmittedReports = isAnySubmittedReports,
+      outstandingAmount = outstandingAmount, isAnyCompiledReports = isAnyCompiledReports, isAnySubmittedReports = isAnySubmittedReports,
       newEventReportingUrl = controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
 
 
