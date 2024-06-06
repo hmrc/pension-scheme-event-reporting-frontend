@@ -43,7 +43,7 @@ class EventReportingOverviewControllerSpec extends SpecBase with BeforeAndAfterE
 
   private val waypoints = EmptyWaypoints
   val ua = emptyUserAnswers.setOrException(EventReportingTileLinksPage, StartNew)
-  val ovm = OverviewViewModel(pastYears = Seq(("", "")), yearsInProgress = Seq(("", "")), schemeName = "schemeName", newEventReportingUrl = "/manage-pension-scheme-event-report/select-tax-year")
+  val ovm = OverviewViewModel(pastYears = Seq(("", "")), yearsInProgress = Seq(("", "")), schemeName = "schemeName", newEventReportingUrl = "/manage-pension-scheme-event-report/event-reporting-date?taxYear=&journeyType=StartNew")
 
   private val formProvider = new TaxYearFormProvider()
   private val form = formProvider()
