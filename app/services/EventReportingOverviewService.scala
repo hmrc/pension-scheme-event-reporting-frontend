@@ -18,12 +18,11 @@ package services
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import connectors.UserAnswersCacheConnector
 import controllers.routes
 import models.enumeration.JourneyStartType.{InProgress, PastEventTypes}
 import models.enumeration.VersionStatus.Compiled
 import models.{EROverview, TaxYear, UserAnswers, VersionInfo}
-import org.apache.pekko.actor.ActorSystem
 import pages.{EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage, VersionInfoPage}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -57,7 +56,6 @@ class EventReportingOverviewService @Inject()(
             case _ =>
               val uaUpdated = uaFetched.setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)
               userAnswersCacheConnector.save(pstr, uaUpdated).map { x =>
-                println("")
                 getTaxYears(uaUpdated).map(x => (s"${x.startYear} to ${x.endYear}", routes.EventReportingOverviewController.onSubmit(x.startYear, "InProgress").url))
               }
           }
@@ -70,6 +68,13 @@ class EventReportingOverviewService @Inject()(
     }
   }
 
+  def linkForOutstandingAmount(srn: String, outstandingAmount: String): String = {
+    if (outstandingAmount == "£0.00") {
+      config.financialOverviewURL.format(srn)
+    } else {
+      config.selectChargesYearURL.format(srn, "event-reporting")
+    }
+  }
 
   def getPastYearsAndUrl(userAnswers: UserAnswers, pstr: String)(implicit hc: HeaderCarrier): Future[Seq[(String, String)]] = {
 

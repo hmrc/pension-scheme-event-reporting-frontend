@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import connectors.{EventReportingConnector, AFTFrontendConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.partials.EventReportingTileController.{maxEndDateAsString, minStartDateAsString}
@@ -43,7 +42,6 @@ class EventReportingOverviewController @Inject()(
                                                   aftConnector: AFTFrontendConnector,
                                                   service: EventReportingOverviewService,
                                                   userAnswersCacheConnector: UserAnswersCacheConnector,
-                                                  config: FrontendAppConfig,
                                                   view: EventReportingOverviewView
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -61,7 +59,7 @@ class EventReportingOverviewController @Inject()(
       isAnySubmittedReports = seqEROverview.exists(_.versionDetails.exists(_.submittedVersionAvailable))
       isAnyCompiledReports = seqEROverview.exists(_.versionDetails.exists(_.compiledVersionAvailable))
     } yield OverviewViewModel(pastYears = pastYears, yearsInProgress = inProgressYears, schemeName = request.schemeName,
-      outstandingAmount = outstandingAmount.toString(), paymentsAndChargesUrl = linkForOutstandingAmount(srn, outstandingAmount.toString()),
+      outstandingAmount = outstandingAmount.toString(), paymentsAndChargesUrl = service.linkForOutstandingAmount(srn, outstandingAmount.toString()),
       isAnyCompiledReports = isAnyCompiledReports, isAnySubmittedReports = isAnySubmittedReports,
       newEventReportingUrl = routes.EventReportingOverviewController.onSubmit("", "StartNew").url )
 
@@ -114,12 +112,5 @@ class EventReportingOverviewController @Inject()(
           }
       }
   }
-
-  private val linkForOutstandingAmount: (String, String) => String = (srn, outstandingAmount) =>
-    if (outstandingAmount == "£0.00") {
-      config.financialOverviewURL.format(srn)
-    } else {
-      config.selectChargesYearURL.format(srn, "event-reporting")
-    }
 }
 

@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import config.FrontendAppConfig
 import connectors.{AFTFrontendConnector, EventReportingConnector, UserAnswersCacheConnector}
 import forms.TaxYearFormProvider
 import models.enumeration.JourneyStartType.StartNew
@@ -31,6 +30,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import services.EventReportingOverviewService
 import uk.gov.hmrc.http.HeaderCarrier
 import viewmodels.OverviewViewModel
 import views.html.EventReportingOverviewView
@@ -42,12 +42,12 @@ class EventReportingOverviewControllerSpec extends SpecBase with BeforeAndAfterE
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
+  private val mockEventReportingOverviewService = mock[EventReportingOverviewService]
 
   private val waypoints = EmptyWaypoints
-  val ua = emptyUserAnswers.setOrException(EventReportingTileLinksPage, StartNew)
-  val ovm = OverviewViewModel(pastYears = Seq(("", "")), yearsInProgress = Seq(("", "")), schemeName = "schemeName",
-    outstandingAmount = "£19.00",
-    paymentsAndChargesUrl = "/manage-pension-scheme-accounting-for-tax/S2400000041/financial-overview/event-reporting/select-charges-year",
+  private val ua = emptyUserAnswers.setOrException(EventReportingTileLinksPage, StartNew)
+  private val ovm = OverviewViewModel(pastYears = Seq(("", "")), yearsInProgress = Seq(("", "")), schemeName = "schemeName",
+    outstandingAmount = "£19.00", paymentsAndChargesUrl ="dummyUrl",
       newEventReportingUrl = "/manage-pension-scheme-event-report/event-reporting-date?taxYear=&journeyType=StartNew")
 
   private val formProvider = new TaxYearFormProvider()
@@ -56,8 +56,6 @@ class EventReportingOverviewControllerSpec extends SpecBase with BeforeAndAfterE
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockEventReportingConnector = mock[EventReportingConnector]
   private val mockAFTFrontendConnector = mock[AFTFrontendConnector]
-  private val mockAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
-  private val dummyUrl = "dummy"
   private def getRoute: String = routes.EventReportingOverviewController.onPageLoad("S2400000041").url
 
   private def postRoute: String = routes.EventReportingOverviewController.onSubmit("2022", "InProgress").url
@@ -66,14 +64,9 @@ class EventReportingOverviewControllerSpec extends SpecBase with BeforeAndAfterE
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
     bind[EventReportingConnector].toInstance(mockEventReportingConnector),
     bind[AFTFrontendConnector].toInstance(mockAFTFrontendConnector),
-    bind[FrontendAppConfig].toInstance(mockAppConfig),
+    bind[EventReportingOverviewService].toInstance(mockEventReportingOverviewService)
   )
 
-  override def beforeEach(): Unit = {
-    reset(mockAppConfig)
-    when(mockAppConfig.erOutstandingPaymentAmountURL).thenReturn(dummyUrl)
-    super.beforeEach()
-  }
   "EventReportingOverviewController" - {
 
     "must return OK and the correct view for a GET with feature toggle OFF" in {
@@ -82,21 +75,24 @@ class EventReportingOverviewControllerSpec extends SpecBase with BeforeAndAfterE
       val application =  applicationBuilder(userAnswers = Some(ua), extraModules).build()
 
       when(mockUserAnswersCacheConnector.get(any()) (any(), any()))
-        .thenReturn(Future.successful((Some(ua))))
+        .thenReturn(Future.successful(Some(ua)))
       when(mockUserAnswersCacheConnector.get(any()) (any(), any()) )
         .thenReturn(Future.successful(None))
 
       when(mockUserAnswersCacheConnector.get(any(), any()) (any(), any()))
-        .thenReturn(Future.successful((Some(ua))))
+        .thenReturn(Future.successful(Some(ua)))
 
       when(mockUserAnswersCacheConnector.save(any(), any()) (any(), any()))
         .thenReturn(Future.successful(()))
       when(mockUserAnswersCacheConnector.removeAll(any())(any(), any()))
         .thenReturn(Future.successful(()))
       when(mockEventReportingConnector.getOverview(any(), any(), any(), any())(any()))
-        .thenReturn(Future.successful((Seq.empty)))
+        .thenReturn(Future.successful(Seq.empty))
       when(mockAFTFrontendConnector.getErOutstandingPaymentAmount(any())(any(), any()))
         .thenReturn(Future(amountHtml))
+      when(mockEventReportingOverviewService.linkForOutstandingAmount(any(),any())).thenReturn("dummyUrl")
+      when(mockEventReportingOverviewService.getPastYearsAndUrl(any(), any())(any())).thenReturn(Future.successful(Seq(("", ""))))
+      when(mockEventReportingOverviewService.getInProgressYearAndUrl(any(), any())(any())).thenReturn(Future.successful(Seq(("", ""))))
 
       running(application) {
 
