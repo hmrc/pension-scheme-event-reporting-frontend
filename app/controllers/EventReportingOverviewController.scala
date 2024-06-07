@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import connectors.{EventReportingConnector, AFTFrontendConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.partials.EventReportingTileController.{maxEndDateAsString, minStartDateAsString}
 import models.enumeration.JourneyStartType.{InProgress, PastEventTypes, StartNew}
@@ -40,13 +40,14 @@ class EventReportingOverviewController @Inject()(
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   connector: EventReportingConnector,
+                                                  aftConnector: AFTFrontendConnector,
                                                   service: EventReportingOverviewService,
                                                   userAnswersCacheConnector: UserAnswersCacheConnector,
                                                   config: FrontendAppConfig,
                                                   view: EventReportingOverviewView
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
+  def onPageLoad(srn : String): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
 
     val ua = request.userAnswers
 
@@ -56,9 +57,11 @@ class EventReportingOverviewController @Inject()(
       pastYears <- service.getPastYearsAndUrl(ua, request.pstr)
       inProgressYears <- service.getInProgressYearAndUrl(ua, request.pstr)
       seqEROverview <- connector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString)
+      outstandingAmount <- aftConnector.getErOutstandingPaymentAmount(srn)
       isAnySubmittedReports = seqEROverview.exists(_.versionDetails.exists(_.submittedVersionAvailable))
       isAnyCompiledReports = seqEROverview.exists(_.versionDetails.exists(_.compiledVersionAvailable))
     } yield OverviewViewModel(pastYears = pastYears, yearsInProgress = inProgressYears, schemeName = request.schemeName,
+      outstandingAmount = outstandingAmount.toString(), paymentsAndChargesUrl = linkForOutstandingAmount(srn, outstandingAmount.toString()),
       isAnyCompiledReports = isAnyCompiledReports, isAnySubmittedReports = isAnySubmittedReports,
       newEventReportingUrl = routes.EventReportingOverviewController.onSubmit("", "StartNew").url )
 
@@ -111,5 +114,12 @@ class EventReportingOverviewController @Inject()(
           }
       }
   }
+
+  private val linkForOutstandingAmount: (String, String) => String = (srn, outstandingAmount) =>
+    if (outstandingAmount == "£0.00") {
+      config.financialOverviewURL.format(srn)
+    } else {
+      config.selectChargesYearURL.format(srn, "event-reporting")
+    }
 }
 

@@ -10,6 +10,7 @@ object AppDependencies {
     "uk.gov.hmrc"                   %% "play-conditional-form-mapping-play-30"  % "2.0.0",
     "uk.gov.hmrc"                   %% "bootstrap-frontend-play-30"             % bootstrapVersion,
     "uk.gov.hmrc"                   %% "domain"                                 % "8.1.0-play-28",
+    "uk.gov.hmrc"                   %% "play-partials-play-30"                  % "9.1.0",
     "org.typelevel"                 %% "cats-core"                              % "2.9.0",
     "com.univocity"                 %  "univocity-parsers"                      % "2.9.1",
     "com.fasterxml.jackson.module"  %% "jackson-module-scala"                   % "2.16.1"

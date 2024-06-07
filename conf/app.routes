@@ -681,6 +681,6 @@ GET         /event-13-what-you-will-need                                    cont
 
 GET         /event-14-what-you-will-need                                    controllers.event14.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET         /event-reporting                                                controllers.EventReportingOverviewController.onPageLoad()
+GET         /:srn/event-reporting                                           controllers.EventReportingOverviewController.onPageLoad(srn : String)
 GET         /event-reporting-date                                           controllers.EventReportingOverviewController.onSubmit(taxYear: String, journeyType: String)
 
