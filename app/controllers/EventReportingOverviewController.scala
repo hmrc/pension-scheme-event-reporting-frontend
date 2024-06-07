@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.partials.EventReportingTileController.{maxEndDateAsString, minStartDateAsString}
-import models.enumeration.JourneyStartType.{InProgress, PastEventTypes}
+import models.enumeration.JourneyStartType.{InProgress, PastEventTypes, StartNew}
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
 import models.{TaxYear, VersionInfo}
 import pages.{EmptyWaypoints, EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage, VersionInfoPage, Waypoints}
@@ -56,12 +56,11 @@ class EventReportingOverviewController @Inject()(
       pastYears <- service.getPastYearsAndUrl(ua, request.pstr)
       inProgressYears <- service.getInProgressYearAndUrl(ua, request.pstr)
       seqEROverview <- connector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString)
-      outstandingAmount <- connector.getErOutstandingPaymentAmount(request.pstr)
       isAnySubmittedReports = seqEROverview.exists(_.versionDetails.exists(_.submittedVersionAvailable))
       isAnyCompiledReports = seqEROverview.exists(_.versionDetails.exists(_.compiledVersionAvailable))
     } yield OverviewViewModel(pastYears = pastYears, yearsInProgress = inProgressYears, schemeName = request.schemeName,
-      outstandingAmount = outstandingAmount, isAnyCompiledReports = isAnyCompiledReports, isAnySubmittedReports = isAnySubmittedReports,
-      newEventReportingUrl = controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints).url)
+      isAnyCompiledReports = isAnyCompiledReports, isAnySubmittedReports = isAnySubmittedReports,
+      newEventReportingUrl = routes.EventReportingOverviewController.onSubmit("", "StartNew").url )
 
 
       ovm.map( y => Ok(view(y)))
@@ -73,7 +72,7 @@ class EventReportingOverviewController @Inject()(
       val jt = journeyType match {
         case "InProgress" => InProgress
         case "PastEventTypes" => PastEventTypes
-        case _ => InProgress
+        case "StartNew" => StartNew
       }
       val originalUserAnswers = request.userAnswers
       val vd = originalUserAnswers
@@ -90,14 +89,26 @@ class EventReportingOverviewController @Inject()(
         case _ => Future.successful((): Unit)
       }
 
-      val updatedAnswers = originalUserAnswers
-        .setOrException(TaxYearPage, TaxYear(taxYear), nonEventTypeData = true)
-        .setOrException(EventReportingTileLinksPage, jt, nonEventTypeData = true)
-        .setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
-      futureAfterClearDown.flatMap { _ =>
-        userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
-          Redirect(TaxYearPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
-        }
+      jt match {
+        case InProgress | PastEventTypes =>
+          val updatedAnswers = originalUserAnswers
+            .setOrException(TaxYearPage, TaxYear(taxYear), nonEventTypeData = true)
+            .setOrException(EventReportingTileLinksPage, jt, nonEventTypeData = true)
+            .setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
+          futureAfterClearDown.flatMap {
+            _ =>
+              userAnswersCacheConnector.save(request.pstr, updatedAnswers).map {
+                _ =>
+                  Redirect(TaxYearPage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+              }
+          }
+        case StartNew =>
+          val updatedAnswers = originalUserAnswers
+            .setOrException(EventReportingTileLinksPage, StartNew, nonEventTypeData = true)
+
+          userAnswersCacheConnector.save(request.pstr, updatedAnswers).map {
+            _ => Redirect(controllers.routes.TaxYearController.onPageLoad(waypoints).url)
+          }
       }
   }
 }
