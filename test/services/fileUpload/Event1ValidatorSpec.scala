@@ -190,7 +190,7 @@ class Event1ValidatorSpec extends SpecBase with Matchers with MockitoSugar with 
 //      val endTime = System.currentTimeMillis
 //      val timeTaken = (endTime - startTime) / 1000
 //      result.isValid mustBe true
-//      println(s"Validated large payload (took $timeTaken seconds)")
+//      //println(s"Validated large payload (took $timeTaken seconds)")
 //      if (timeTaken < 30) {
 //        assert(true, s"Validated large payload in less than 30 seconds (took $timeTaken seconds)")
 //      } else {

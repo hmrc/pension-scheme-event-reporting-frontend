@@ -67,6 +67,20 @@ object TaxYear extends Enumerable.Implicits {
     }
   }
 
+  def optionsFilteredTaxYear(func: TaxYear => Boolean): Seq[TaxYear] = {
+    values.zipWithIndex.flatMap {
+      case (value, index) =>
+        if (func(value)) {
+          Seq(TaxYear(
+            value.startYear
+          )
+          )
+        } else {
+          Nil
+        }
+    }
+  }
+
   def yearRange(currentDate: LocalDate): Seq[TaxYear] = {
     val endOfTaxYear = LocalDate.of(currentDate.getYear, 4, 5)
     val startOfTaxYear = LocalDate.of(currentDate.getYear, 4, 6)
@@ -103,7 +117,8 @@ object TaxYear extends Enumerable.Implicits {
   def getTaxYear(userAnswers: UserAnswers): Int = {
     userAnswers.get(TaxYearPage) match {
       case Some(year) => Try(year.startYear.toInt) match {
-        case Success(value) => value
+        case Success(value) =>
+          value
         case Failure(_) => throw new TaxYearNotAvailableException("Tax year is not a number")
       }
       case _ => throw new TaxYearNotAvailableException("Tax year not entered")

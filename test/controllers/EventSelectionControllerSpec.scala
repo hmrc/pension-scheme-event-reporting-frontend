@@ -73,6 +73,8 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
       val view = application.injector.instanceOf[EventSelectionView]
 
       running(application) {
+        when(mockUserAnswersCacheConnector.get(any(), any())(any(), any()))
+          .thenReturn(Future.successful(Some(ua)))
         val request = FakeRequest(GET, routes.EventSelectionController.onPageLoad().url)
         val result = route(application, request).value
 

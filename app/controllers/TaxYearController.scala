@@ -70,18 +70,21 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
         case (Some(InProgress), Some(seqEROverview)) =>
           val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereCompiledVersionAvailable)
           TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear))
-        case _ => TaxYear.optionsFiltered(taxYear => taxYear.startYear.toInt >= config.eventReportingStartTaxYear)
+        case _ => TaxYear.optionsFiltered( taxYear =>  taxYear.startYear.toInt >= config.eventReportingStartTaxYear)
       }
+
     status(view(form, waypoints, radioOptions))
   }
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
+
     val preparedForm = request.userAnswers.get(TaxYearPage).fold(form)(form.fill)
     Future.successful(renderPage(preparedForm, waypoints, Ok))
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
+
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(renderPage(formWithErrors, waypoints, BadRequest)),

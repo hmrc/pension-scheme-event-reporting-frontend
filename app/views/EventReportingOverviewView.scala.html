@@ -1,0 +1,114 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import viewmodels.OverviewViewModel
+
+@this(
+layout: templates.SchemeLayout,
+formHelper: FormWithCSRF,
+govukErrorSummary: GovukErrorSummary,
+govukRadios: GovukRadios,
+govukButton: GovukButton
+)
+
+@(viewModel: OverviewViewModel)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+
+@layout(pageTitle = messages("eventSummary.title", "selectedTaxYear")) {
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <span class="govuk-caption-l ">
+          @viewModel.schemeName
+      </span>
+
+        <h1 class="govuk-heading-xl">
+            @messages("eventReportingOverview.title")
+        </h1>
+
+        <p class="govuk-body govuk-!-margin-bottom-8">
+            <a class="govuk-link" href="@viewModel.newEventReportingUrl">
+                @messages("eventReportingOverview.startNewEventReporting")
+            </a>
+        </p>
+
+        @if(viewModel.outstandingAmount != messages("eventReportingOverview.totalOutstandingNotAvailable")) {
+        <h3 class="govuk-caption-l govuk-!-margin-top-4 govuk-!-margin-bottom-2">
+            @messages("eventReportingOverview.totalOutstanding")
+        </h3>
+
+        <p class="govuk-heading-l">
+            <strong>
+                @viewModel.outstandingAmount
+            </strong>
+        </p>
+
+        } else {
+        <h3 class="govuk-caption-l govuk-!-margin-top-4 govuk-!-margin-bottom-2">
+            @messages("eventReportingOverview.totalOutstandingNotAvailable")
+        </h3>
+        }
+
+        <p class="govuk-body govuk-!-margin-bottom-6">
+            <a class="govuk-link" href="@viewModel.paymentsAndChargesUrl">
+                @messages("eventReportingOverview.viewOutstanding")
+            </a>
+        </p>
+        <hr>
+
+        @if(viewModel.yearsInProgress.nonEmpty && viewModel.isAnyCompiledReports) {
+
+        <h3 class="govuk-heading-m govuk-!-margin-top-6">
+            @messages("eventReportingOverview.inProgress")
+        </h3>
+
+        <ul class="govuk-list">
+            @for(tuple <- viewModel.yearsInProgress) {
+            <li class="govuk-body">
+                <a class="govuk-link" href="@tuple._2">
+                    @tuple._1
+                </a>
+            </li>
+            }
+        </ul>
+        <hr>
+        }
+
+        @if(viewModel.pastYears.nonEmpty && viewModel.isAnySubmittedReports) {
+        <h3 class="govuk-heading-m govuk-!-margin-top-6">
+            @messages("eventReportingOverview.pastEventReportingReturns")
+        </h3>
+
+        @for(tuple <- viewModel.pastYears) {
+
+        <ul class="govuk-list">
+            <li class="govuk-body">
+                <a class="govuk-link" href="@tuple._2">
+                    @tuple._1
+                </a>
+            </li>
+
+        </ul>
+        }
+
+        }
+      <hr>
+     <br>
+
+    </div>
+</div>
+
+}
