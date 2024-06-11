@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EventReportingOverviewService @Inject()(
                                                userAnswersCacheConnector: UserAnswersCacheConnector,
-                                               config: FrontendAppConfig,
+                                               config: FrontendAppConfig
                                              ) (implicit ec: ExecutionContext) {
 
   def getInProgressYearAndUrl(userAnswers: UserAnswers, pstr: String)(implicit hc: HeaderCarrier): Future[Seq[(String, String)]] = {
