@@ -19,27 +19,20 @@ package services
 import base.SpecBase
 import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
-import data.SampleData.convertScalaFuture
 import models.enumeration.EventType.Event1
-import org.mockito.Mockito._
-import org.mockito.ArgumentMatchers._
-import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.play.PlaySpec
-
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
-import uk.gov.hmrc.http.HeaderCarrier
+import models.enumeration.VersionStatus.Compiled
 import models.{EROverview, EROverviewVersion, EventDataIdentifier, TaxYear, UserAnswers, VersionInfo}
-import models.enumeration.JourneyStartType.InProgress
-import models.enumeration.VersionStatus.{Compiled, NotStarted}
-import org.apache.pekko.actor.ActorSystem
+import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito._
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage, VersionInfoPage}
+import pages.VersionInfoPage
+import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class EventReportingOverviewServiceSpec extends SpecBase with BeforeAndAfterEach {
 

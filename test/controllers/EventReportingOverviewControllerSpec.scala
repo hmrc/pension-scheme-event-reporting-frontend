@@ -18,13 +18,12 @@ package controllers
 
 import base.SpecBase
 import connectors.{AFTFrontendConnector, EventReportingConnector, UserAnswersCacheConnector}
-import forms.TaxYearFormProvider
 import models.enumeration.JourneyStartType.StartNew
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, EventReportingTileLinksPage}
+import pages.EventReportingTileLinksPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -44,21 +43,16 @@ class EventReportingOverviewControllerSpec extends SpecBase with BeforeAndAfterE
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
   private val mockEventReportingOverviewService = mock[EventReportingOverviewService]
 
-  private val waypoints = EmptyWaypoints
   private val ua = emptyUserAnswers.setOrException(EventReportingTileLinksPage, StartNew)
   private val ovm = OverviewViewModel(pastYears = Seq(("", "")), yearsInProgress = Seq(("", "")), schemeName = "schemeName",
     outstandingAmount = "£19.00", paymentsAndChargesUrl ="dummyUrl",
       newEventReportingUrl = "/manage-pension-scheme-event-report/event-reporting-date?taxYear=&journeyType=StartNew")
 
-  private val formProvider = new TaxYearFormProvider()
-  private val form = formProvider()
   private val amountHtml = Html("£19.00")
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockEventReportingConnector = mock[EventReportingConnector]
   private val mockAFTFrontendConnector = mock[AFTFrontendConnector]
   private def getRoute: String = routes.EventReportingOverviewController.onPageLoad("S2400000041").url
-
-  private def postRoute: String = routes.EventReportingOverviewController.onSubmit("2022", "InProgress").url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),

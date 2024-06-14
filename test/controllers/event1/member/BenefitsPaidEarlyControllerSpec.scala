@@ -104,8 +104,6 @@ class BenefitsPaidEarlyControllerSpec extends SpecBase with BeforeAndAfterEach w
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       running(application) {
         val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", invalidValue))
-        val view = application.injector.instanceOf[BenefitsPaidEarlyView]
-        val boundForm = form.bind(Map("value" -> invalidValue))
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
