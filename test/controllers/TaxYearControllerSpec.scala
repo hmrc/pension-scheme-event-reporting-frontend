@@ -31,7 +31,6 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import utils.DateHelper
 import views.html.TaxYearView
 
 import java.time.LocalDate
