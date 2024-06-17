@@ -18,10 +18,11 @@ package controllers
 
 import audit.{AuditService, EventReportingSubmissionEmailAuditEvent}
 import config.FrontendAppConfig
-import connectors.{EmailConnector, EmailStatus, MinimalConnector}
+import connectors.{EmailConnector, EmailStatus, EventReportingConnector, MinimalConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import handlers.NothingToSubmitException
-import models.enumeration.AdministratorOrPractitioner
+import models.TaxYear.getTaxYear
+import models.enumeration.{AdministratorOrPractitioner, EventType}
 import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}
 import pages.{VersionInfoPage, Waypoints}
@@ -50,12 +51,15 @@ class DeclarationController @Inject()(
                                        minimalConnector: MinimalConnector,
                                        auditService: AuditService,
                                        config: FrontendAppConfig,
-                                       declarationView: DeclarationView
+                                       declarationView: DeclarationView,
+                                       erConnector: EventReportingConnector,
+                                       uaConnector: UserAnswersCacheConnector
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
   private val logger = Logger(classOf[DeclarationController])
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) {
     implicit request =>
+      isReportDuplicate(request.pstr, 2023)
       if (request.isReportSubmitted) {
         Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
       } else {
@@ -156,5 +160,18 @@ class DeclarationController @Inject()(
       "psaDeclaration1" -> "Selected",
       "psaDeclaration2" -> "Selected"
     )
+  }
+
+  def isReportDuplicate(pstr: String, currentTaxYear: Int)(implicit headerCarrier: HeaderCarrier) = {
+    val versions = erConnector.getListOfVersions(pstr, currentTaxYear.toString + "-04-06")
+    versions.map(version =>
+      logger.info(s"versions are: $version")
+    )
+    val event22UserAnswers = uaConnector.get(pstr, EventType.Event22)
+    event22UserAnswers.map {
+      case Some(values) => logger.info(s"event22 user answers are: $values")
+      case None => logger.info(s"there are no user answers")
+    }
+    versions
   }
 }
