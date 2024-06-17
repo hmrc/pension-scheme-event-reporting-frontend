@@ -61,7 +61,7 @@ class DeclarationController @Inject()(
     implicit request =>
       val currentTaxYear = request.userAnswers.get(TaxYearPage) match {
         case Some(value) => value
-        case _ => TaxYear("2022")
+        case _ => TaxYear("2023")
       }
       isReportDuplicate(request.pstr, currentTaxYear)
       if (request.isReportSubmitted) {
