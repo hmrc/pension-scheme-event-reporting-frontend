@@ -59,8 +59,7 @@ class DeclarationController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) {
     implicit request =>
-      val currentTaxYear = getTaxYear(request.userAnswers)
-      isReportDuplicate(request.pstr, currentTaxYear)
+      isReportDuplicate(request.pstr, 2023)
       if (request.isReportSubmitted) {
         Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
       } else {
