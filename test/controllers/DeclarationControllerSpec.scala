@@ -18,7 +18,7 @@ package controllers
 
 import audit.AuditService
 import base.SpecBase
-import connectors.MinimalConnector.MinimalDetails
+import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
 import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector}
 import handlers.NothingToSubmitException
 import models.VersionInfo
@@ -73,7 +73,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
   "Declaration Controller" - {
 
     "must return OK and the correct view for a GET when when isReportSubmitted is false" in {
-      val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
+      val userAnswersWithVersionInfo = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo)).build()
 
       running(application) {
