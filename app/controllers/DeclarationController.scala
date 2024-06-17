@@ -25,7 +25,7 @@ import models.TaxYear.getTaxYear
 import models.enumeration.{AdministratorOrPractitioner, EventType}
 import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}
-import pages.{VersionInfoPage, Waypoints}
+import pages.{TaxYearPage, VersionInfoPage, Waypoints}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
@@ -59,7 +59,11 @@ class DeclarationController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) {
     implicit request =>
-      isReportDuplicate(request.pstr, 2023)
+      val currentTaxYear = request.userAnswers.get(TaxYearPage) match {
+        case Some(value) => value
+        case _ => TaxYear("2023")
+      }
+      isReportDuplicate(request.pstr, currentTaxYear)
       if (request.isReportSubmitted) {
         Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
       } else {
@@ -162,8 +166,8 @@ class DeclarationController @Inject()(
     )
   }
 
-  def isReportDuplicate(pstr: String, currentTaxYear: Int)(implicit headerCarrier: HeaderCarrier) = {
-    val versions = erConnector.getListOfVersions(pstr, currentTaxYear.toString + "-04-06")
+  def isReportDuplicate(pstr: String, currentTaxYear: TaxYear)(implicit headerCarrier: HeaderCarrier) = {
+    val versions = erConnector.getListOfVersions(pstr, currentTaxYear.startYear + "-04-06")
     versions.map(version =>
       logger.info(s"versions are: $version")
     )
