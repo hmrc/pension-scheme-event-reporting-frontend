@@ -40,6 +40,8 @@ class EventReportingConnector @Inject()(
 
   private def eventRepSummaryUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/event-summary"
 
+  private def compareEventReportsUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/compare"
+
   private def eventCompileUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/compile"
 
   private def eventSubmitUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event-declaration-report"
@@ -75,6 +77,30 @@ class EventReportingConnector @Inject()(
           case NOT_FOUND => Nil
           case OK =>
             response.json.as[Seq[EventSummary]]
+          case _ =>
+            throw new HttpException(response.body, response.status)
+        }
+      }
+  }
+
+  def getEventReportComparison(pstr: String, reportStartDate: Int, version: Int)
+                           (implicit headerCarrier: HeaderCarrier): Future[Boolean] = {
+
+    val headers: Seq[(String, String)] = Seq(
+      "Content-Type" -> "application/json",
+      "pstr" -> pstr,
+      "reportVersionNumber" -> version.toString,
+      "reportStartDate" -> reportStartDate.toString,
+    )
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.GET[HttpResponse](compareEventReportsUrl)(implicitly, hc, implicitly)
+      .recoverWith(mapExceptionsToStatus)
+      .map { response =>
+        response.status match {
+          case OK =>
+            println(s"\n\n\n response is: ${response.json}")
+            response.json.as[Boolean]
           case _ =>
             throw new HttpException(response.body, response.status)
         }

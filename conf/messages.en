@@ -1529,6 +1529,8 @@ cannotSubmit.title = You cannot submit a report for this event
 cannotSubmit.heading = You cannot submit a report for this event
 cannotSubmit.p1 = You do not meet the criteria to submit a report for this event at this time.
 
+duplicateReport.p1 = You have attempted to submit an event report but no changes have been made.
+
 howManySchemeMembers.title = How many scheme members were there at the end of the tax year {0}?
 howManySchemeMembers.heading = How many scheme members were there at the end of the tax year {0}?
 howManySchemeMembers.0 = 0

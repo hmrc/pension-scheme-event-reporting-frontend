@@ -57,18 +57,28 @@ class DeclarationController @Inject()(
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
   private val logger = Logger(classOf[DeclarationController])
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) {
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
+      val version = request.userAnswers.get(VersionInfoPage) match {
+        case Some(v) => v.version
+        case _ => 1
+      }
       val currentTaxYear = request.userAnswers.get(TaxYearPage) match {
         case Some(value) => value
         case _ => TaxYear("2022")
       }
-      isReportDuplicate(request.pstr, currentTaxYear)
-      if (request.isReportSubmitted) {
-        Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
-      } else {
-        Ok(declarationView(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
+
+      isReportDuplicate(request.pstr, currentTaxYear, version).map { isReportDuplicateResult =>
+        if (request.isReportSubmitted) {
+          Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
+        } else if (isReportDuplicateResult) {
+          Redirect(controllers.routes.DuplicateReportController.onPageLoad())
+        }
+        else {
+          Ok(declarationView(continueUrl = controllers.routes.DeclarationController.onClick(waypoints).url))
+        }
       }
+
   }
 
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
@@ -166,16 +176,11 @@ class DeclarationController @Inject()(
     )
   }
 
-  def isReportDuplicate(pstr: String, currentTaxYear: TaxYear)(implicit headerCarrier: HeaderCarrier) = {
-    val versions = erConnector.getListOfVersions(pstr, currentTaxYear.startYear + "-04-06")
-    versions.map(version =>
-      logger.info(s"versions are: $version")
-    )
-    val event22UserAnswers = uaConnector.get(pstr, EventType.Event22)
-    event22UserAnswers.map {
-      case Some(values) => logger.info(s"event22 user answers are: $values")
-      case None => logger.info(s"there are no user answers")
-    }
-    versions
+  def isReportDuplicate(pstr: String, currentTaxYear: TaxYear, version: Int)(implicit headerCarrier: HeaderCarrier) = {
+    erConnector.getEventReportComparison(pstr, currentTaxYear.startYear.toInt, version)
+//      .map {comparisonResult =>
+//      println(s"\n\n\n comparisonResult is: $comparisonResult")
+//      comparisonResult
+//    }
   }
 }
