@@ -1991,7 +1991,7 @@ whatYouWillNeed.event13.li2 = when the change was made
 whatYouWillNeed.event14.p = For this event, you will need to tell us how many scheme members there were at the end of the tax year {0}.
 
 
-eventReportingOverview.title                           = Event reporting: overview
+eventReportingOverview.title                           = Event reporting overview
 eventReportingOverview.startNewEventReporting                     = Start a new event report
 eventReportingOverview.totalOutstanding                = Total outstanding payments:
 eventReportingOverview.totalOutstandingNotAvailable    = The amount outstanding is not currently available on this screen. You can view it using the link below.
