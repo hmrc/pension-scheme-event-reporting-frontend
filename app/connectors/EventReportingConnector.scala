@@ -106,8 +106,8 @@ class EventReportingConnector @Inject()(
             logger.error("Compile event returned an unusual http response with status 404 - NOT FOUND")
             throw new HttpException("Not found", response.status)
           case _ =>
-            logger.error(s"Compile event return an unusual http response with status ${response.status} and body ${response.body}")
-            throw new HttpException(response.body, response.status)
+            logger.error(s"Compile event return an unusual http response with status ${response.status}")
+            throw new HttpException(s"Unexpected status code: ${response.status}", response.status)
         }
     }
   }
@@ -191,7 +191,7 @@ class EventReportingConnector @Inject()(
           }
         case NOT_FOUND => FileUploadOutcomeResponse(None, FileUploadOutcomeStatus.IN_PROGRESS, None, reference, None)
         case _ =>
-          throw new HttpException(response.body, response.status)
+          throw new HttpException(s"getFileUploadOutcome - unexpected status code: ${response.status}", response.status)
       }
 
     }

@@ -680,3 +680,7 @@ GET         /event-10-what-you-will-need                                    cont
 GET         /event-13-what-you-will-need                                    controllers.event13.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /event-14-what-you-will-need                                    controllers.event14.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+
+GET         /:srn/event-reporting                                           controllers.EventReportingOverviewController.onPageLoad(srn : String)
+GET         /event-reporting-date                                           controllers.EventReportingOverviewController.onSubmit(taxYear: String, journeyType: String)
+

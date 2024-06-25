@@ -23,9 +23,9 @@ import javax.inject.Inject
 
 class BenefitsPaidEarlyFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Option[String]] =
+  def apply(): Form[String] =
     Form(
-        "value" -> optionalText()
+        "value" -> text("benefitsPaidEarly.error.required")
           .verifying(maxLength(160, "benefitsPaidEarly.error.length"),
           regexp(regexEvent1Description, "benefitsPaidEarly.error.invalidCharacters")
         )

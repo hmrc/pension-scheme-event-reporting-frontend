@@ -79,7 +79,7 @@ class ErrorDescriptionControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form.fill(Some(validValue)), waypoints, index = 0, request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(form.fill(validValue), waypoints, index = 0, request, messages(application)).toString
       }
     }
 
@@ -99,7 +99,7 @@ class ErrorDescriptionControllerSpec extends SpecBase with BeforeAndAfterEach wi
       }
     }
 
-    "must save the answer and redirect to the next page when valid data is submitted (empty value)" in {
+    "must return bad request when submitting an empty value" in {
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
@@ -108,11 +108,9 @@ class ErrorDescriptionControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(ErrorDescriptionPage(0), validValue).success.value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ErrorDescriptionPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        status(result) mustEqual BAD_REQUEST
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
 

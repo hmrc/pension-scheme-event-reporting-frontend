@@ -79,7 +79,7 @@ class BenefitsPaidEarlyControllerSpec extends SpecBase with BeforeAndAfterEach w
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form.fill(Some(validValue)), waypoints, index = 0, request, messages(application)).toString
+        contentAsString(result) mustEqual view.render(form.fill(validValue), waypoints, index = 0, request, messages(application)).toString
       }
     }
 
@@ -98,7 +98,18 @@ class BenefitsPaidEarlyControllerSpec extends SpecBase with BeforeAndAfterEach w
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
       }
     }
+    "must return bad request when submitting an empty value" in {
+      val invalidValue = ""
 
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
+      running(application) {
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", invalidValue))
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
     "must return bad request when submitting data that is too long" in {
       val invalidValue = "*" * 161
 

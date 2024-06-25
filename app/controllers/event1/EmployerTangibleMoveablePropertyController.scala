@@ -43,7 +43,7 @@ class EmployerTangibleMoveablePropertyController @Inject()(val controllerCompone
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val preparedForm = request.userAnswers.flatMap(_.get(EmployerTangibleMoveablePropertyPage(index))).fold(form) { v => form.fill(Some(v)) }
+    val preparedForm = request.userAnswers.flatMap(_.get(EmployerTangibleMoveablePropertyPage(index))).fold(form) { v => form.fill(v) }
     Ok(view(preparedForm, waypoints, index))
   }
 
@@ -54,10 +54,7 @@ class EmployerTangibleMoveablePropertyController @Inject()(val controllerCompone
           Future.successful(BadRequest(view(formWithErrors, waypoints, index))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = value match {
-            case Some(v) => originalUserAnswers.setOrException(EmployerTangibleMoveablePropertyPage(index), v)
-            case None => originalUserAnswers.removeOrException(EmployerTangibleMoveablePropertyPage(index))
-          }
+          val updatedAnswers = originalUserAnswers.setOrException(EmployerTangibleMoveablePropertyPage(index), value)
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(EmployerTangibleMoveablePropertyPage(index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }

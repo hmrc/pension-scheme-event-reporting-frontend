@@ -16,11 +16,13 @@
 
 @import controllers.event1.routes
 
+@import uk.gov.hmrc.govukfrontend.views.Aliases.CharacterCount
+
 @this(
         layout: templates.SchemeLayout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
-        govukTextarea: GovukTextarea,
+        govukCharacterCount: GovukCharacterCount,
         govukButton: GovukButton
 )
 
@@ -34,16 +36,14 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @govukTextarea(
-            Textarea(
-                id = form("value").id,
-                name = form("value").name,
-                hint = Some(HintViewModel(messages("memberPaymentNatureDescription.hint"))),
-                label = LabelViewModel(messages("memberPaymentNatureDescription.heading")).asPageHeading(),
-                value = form("value").value,
-                errorMessage = form("value").error.map(error => ErrorMessage(content = error.format))
-            )
-        )
+        @govukCharacterCount(CharacterCount(
+            id = form("value").id,
+            name = form("value").name,
+            maxLength = Some(160),
+            label = LabelViewModel(messages("memberPaymentNatureDescription.heading")).asPageHeading(),
+            value = form("value").value,
+            errorMessage = form("value").error.map(error => ErrorMessage(content = error.format))
+        ))
 
         @govukButton(
             ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))
