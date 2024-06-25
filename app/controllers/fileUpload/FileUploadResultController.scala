@@ -212,7 +212,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
               upscanInitiateConnector.download(downloadUrl).flatMap { httpResponse =>
                 sendUpscanFileDownloadAuditEvent(eventType, httpResponse.status, startTime, fileUploadOutcomeResponse)
                 httpResponse.status match {
-                  case OK => performValidation(eventType, httpResponse.body, fileName) recoverWith {
+                  case OK => performValidation(eventType, httpResponse.bodyAsSource, fileName) recoverWith {
                     case e: Throwable =>
                       setGeneralErrorOutcome("Unable to download file", fileName, Some(e))
                   }

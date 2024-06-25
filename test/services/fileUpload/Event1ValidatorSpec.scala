@@ -46,7 +46,7 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
                                 member,Joe,Bloggs,AA345678B,YES,NO,,,,,OTHER,,,,,,,Description,,,,,,,1000.00,08/11/2022
                                 $commonUaEmployer,"$validAddress",LOANS,,,,,10.00,20.57,,,,,,,,1000.00,08/11/2022
                                 $commonUaEmployer,"$validAddress",RESIDENTIAL,,,,,,,,,,"$validAddress",,,,1000.00,08/11/2022
-                                $commonUaEmployer,"$validAddress",TANGIBLE,,,,,,,,,,,,,,1000.00,08/11/2022
+                                $commonUaEmployer,"$validAddress",TANGIBLE,,,,,,,,,,,Description,,,1000.00,08/11/2022
                                 $commonUaEmployer,"$validAddress",COURT,,Organisation Name,,,,,,,,,,,,1000.00,08/11/2022
                                 $commonUaEmployer,"$validAddress",OTHER,,,,,,,Description,,,,,,,1000.00,08/11/2022"""
       val ((output, errors), rowNumber) = validate(data)
