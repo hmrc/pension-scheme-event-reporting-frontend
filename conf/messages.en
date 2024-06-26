@@ -1511,7 +1511,7 @@ contractsOrPolicies.change.hidden = Whether all investments consist of either co
 hasSchemeChangedRules.title = If the scheme was treated as more than one scheme before 6 April 2006, did it change its rules?
 hasSchemeChangedRules.heading = If the scheme was treated as more than one scheme before 6 April 2006, did it change its rules?
 hasSchemeChangedRules.hint = Select no if scheme was treated as one scheme before 6 April 2006.
-hasSchemeChangedRules.checkYourAnswersLabel = Did scheme change its rules – if treated as more that one scheme before 6 April 2006?
+hasSchemeChangedRules.checkYourAnswersLabel = Did scheme change its rules – if treated as more than one scheme before 6 April 2006?
 hasSchemeChangedRules.error.required = Select if the scheme has changed its rules
 hasSchemeChangedRules.change.hidden = Whether scheme treated as more than one scheme before 6 April 2006 changed its rules
 
