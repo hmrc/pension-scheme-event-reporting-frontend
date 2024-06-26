@@ -23,10 +23,11 @@ import play.api.data.FormError
 class RemoveMemberFormProviderSpec extends BooleanFieldBehaviours with SpecBase {
 
   private val eventTypeMessage = "unauthorised payment"
-  private val requiredKey = messages("removeMember.error.required", eventTypeMessage)
+  private val memberName = "Jane Doe"
+  private val requiredKey = messages("removeMember.error.required", eventTypeMessage, memberName)
   private val invalidKey = "error.boolean"
 
-  val form = new RemoveMemberFormProvider()(eventTypeMessage)
+  val form = new RemoveMemberFormProvider()(requiredKey)
 
   ".value" - {
 
