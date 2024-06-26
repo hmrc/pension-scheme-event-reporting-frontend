@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package forms.common
+package models.enumeration
 
-import forms.mappings.Mappings
-import play.api.data.Form
-import play.api.i18n.Messages
+sealed trait MessageType
 
-import javax.inject.Inject
+object MessageType extends Enumerable.Implicits {
+  case object Title extends WithName("title") with MessageType
 
-class RemoveMemberFormProvider @Inject() extends Mappings {
-  def apply(errorMessage: String): Form[Boolean] =
-    Form(
-      "value" -> boolean(errorMessage)
-    )
+  case object Heading extends WithName("heading") with MessageType
+
+  case object Error extends WithName("error") with MessageType
+
+  private val values: List[MessageType] = List(Title, Heading, Error)
+
+  implicit val enumerable: Enumerable[MessageType] =
+    Enumerable(values.map(v => v.toString -> v): _*)
 }
