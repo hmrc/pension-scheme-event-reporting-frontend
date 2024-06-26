@@ -28,22 +28,31 @@ class LoanDetailsFormProvider @Inject() extends Mappings with Transforms {
 
   import LoanDetailsFormProvider._
 
+  // TODO - update tests
   def apply(): Form[LoanDetails] =
     Form(
       mapping("loanAmount" ->
+        // TODO - change to bigDecimal2DP()
         optionBigDecimal2DP(
+          // TODO - add error to messages
+//          "loanDetails.loanAmount.nothingEntered",
           "loanDetails.loanAmount.notANumber",
           "loanDetails.loanAmount.tooManyDecimals")
           .verifying(
             maximumValue[BigDecimal](maxPaymentValue, "loanDetails.loanAmount.amountTooHigh"),
-            minimumValue[BigDecimal](0, "loanDetails.loanAmount.negative")
+            minimumValue[BigDecimal](0, "loanDetails.loanAmount.negative"),
+            // TODO - add error to messages
+//            minimumValue[BigDecimal](0.01, "loanDetails.loanAmount.zeroAmount")
           ), "fundValue" ->
+        // TODO - change to bigDecimal2DP()
         optionBigDecimal2DP(
           "loanDetails.fundValue.notANumber",
           "loanDetails.fundValue.tooManyDecimals")
           .verifying(
             maximumValue[BigDecimal](maxPaymentValue, "loanDetails.fundValue.amountTooHigh"),
-            minimumValue[BigDecimal](0, "loanDetails.fundValue.negative")
+            minimumValue[BigDecimal](0, "loanDetails.fundValue.negative"),
+            // TODO - add error to messages
+//            minimumValue[BigDecimal](0.01, "loanDetails.fundValue.zeroAmount")
           )
       )
       (LoanDetails.apply)(LoanDetails.unapply)
