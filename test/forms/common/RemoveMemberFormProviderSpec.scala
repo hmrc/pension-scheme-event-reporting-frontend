@@ -27,7 +27,7 @@ class RemoveMemberFormProviderSpec extends BooleanFieldBehaviours with SpecBase 
   private val requiredKey = messages("removeMember.error.required", eventTypeMessage, memberName)
   private val invalidKey = "error.boolean"
 
-  val form = new RemoveMemberFormProvider()(eventTypeMessage, memberName)
+  val form = new RemoveMemberFormProvider()(requiredKey)
 
   ".value" - {
 
