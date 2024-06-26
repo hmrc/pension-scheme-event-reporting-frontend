@@ -1481,15 +1481,12 @@ becomeOrCeaseScheme.checkYourAnswersLabel = What change has taken place for this
 becomeOrCeaseScheme.error.required = Select what change has taken place
 becomeOrCeaseScheme.change.hidden = Whether this pension scheme became or ceased to be investment regulated
 
-itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.title = When did the scheme become an investment regulated pension scheme?
-itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.heading = When did the scheme become an investment regulated pension scheme?
-itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.title = When did this scheme cease to be an investment regulated pension scheme?
-itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.heading = When did this scheme cease to be an investment regulated pension scheme?
+itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.title = When did the pension scheme become investment regulated?
+itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.heading = When did the pension scheme become investment regulated?
+itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.title = When did the pension scheme cease to be investment regulated?
+itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.heading = When did the pension scheme cease to be investment regulated?
 
 schemeChangeDate.hint = For example, 27 3 2007
-
-itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.checkYourAnswersLabel = When pension scheme became investment regulated
-itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.checkYourAnswersLabel = When pension scheme ceased to be investment regulated
 
 schemeChangeDate.error.nothingEntered = Enter the date
 schemeChangeDate.error.noDayMonthOrYear = The date must include a day, month and year
