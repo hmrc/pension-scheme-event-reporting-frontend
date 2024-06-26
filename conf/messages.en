@@ -1819,10 +1819,10 @@ eventDescription.event5 = the cessation of ill-health pension
 eventDescription.event6 = the benefit crystallisation
 
 eventDescription.event7.part1 = lump sum charge of 25% or more
-eventDescription.event7.part2 = has no primary or enhanced protection
+eventDescription.event7.part2 = no primary or enhanced protection
 
 eventDescription.event8.part1 = lump sum
-eventDescription.event8.part2 = has either primary or enhanced protection
+eventDescription.event8.part2 = either primary or enhanced protection
 
 eventDescription.event8A = the pension commencement lump sum
 eventDescription.event22 = the annual allowance
