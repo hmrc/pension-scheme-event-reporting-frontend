@@ -1192,7 +1192,7 @@ fileUploadWhatYouWillNeed.event22.item5 = – do not change or delete the header
 fileUploadWhatYouWillNeed.event22.item5.prefix = the
 fileUploadWhatYouWillNeed.event22.instructions.link.text = instructions explaining the process and the formatting that should be used
 fileUploadWhatYouWillNeed.event22.template.link.text = latest template file
-fileUploadWhatYouWillNeed.event22.inset = All the data you have previously added for this event will be overwritten when you upload a file.
+fileUploadWhatYouWillNeed.event22.inset = All the data you have previously added for this charge will be overwritten when you upload a file.
 
 fileUploadWhatYouWillNeed.event23.title = What you will need
 fileUploadWhatYouWillNeed.event23.heading = What you will need
@@ -1207,7 +1207,7 @@ fileUploadWhatYouWillNeed.event23.item5 = – do not change or delete the header
 fileUploadWhatYouWillNeed.event23.item5.prefix = the
 fileUploadWhatYouWillNeed.event23.instructions.link.text = instructions explaining the process and the formatting that should be used
 fileUploadWhatYouWillNeed.event23.template.link.text = latest template file
-fileUploadWhatYouWillNeed.event23.inset = All the data you have previously added for this event will be overwritten when you upload a file.
+fileUploadWhatYouWillNeed.event23.inset = All the data you have previously added for this charge will be overwritten when you upload a file.
 
 uploadingFileInfo.event24.title = Uploading a file
 uploadingFileInfo.event24.heading = Uploading a file
