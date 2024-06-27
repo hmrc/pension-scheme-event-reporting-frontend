@@ -36,11 +36,148 @@ class Event24ValidatorSpec extends BulkUploadSpec[Event24Validator](2023) with B
                             ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,YES,,,NO,,"""
 
       val ((output, errors), rowNumber) = validate(data)
-
-      //TODO: Figure out if the below is correct
-      println(Json.prettyPrint(output.toJson))
       rowNumber mustBe 7
       errors.isEmpty mustBe true
+      output.toJson mustBe Json.parse("""{
+                                        |  "event24" : {
+                                        |    "members" : [ {
+                                        |      "overAllowance" : true,
+                                        |      "overAllowanceAndDeathBenefit" : false,
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Jane",
+                                        |        "lastName" : "Doe",
+                                        |        "nino" : "AB123456A"
+                                        |      },
+                                        |      "typeOfProtectionGroup1Reference" : {
+                                        |        "nonResidenceEnhancement" : "12384nd82js",
+                                        |        "pensionCreditsPreCRE" : "",
+                                        |        "preCommencement" : "123hids892h",
+                                        |        "recognisedOverseasPSTE" : ""
+                                        |      },
+                                        |      "bceTypeSelection" : "annuityProtection",
+                                        |      "typeOfProtectionGroup2" : "fixedProtection",
+                                        |      "typeOfProtectionGroup1" : [ "nonResidenceEnhancement", "preCommencement", "schemeSpecific" ],
+                                        |      "typeOfProtectionGroup2Reference" : "abcdef123",
+                                        |      "totalAmountBenefitCrystallisation" : 12300,
+                                        |      "crystallisedDate" : {
+                                        |        "date" : "2023-11-13"
+                                        |      },
+                                        |      "validProtection" : true
+                                        |    }, {
+                                        |      "overAllowance" : true,
+                                        |      "overAllowanceAndDeathBenefit" : false,
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Jane",
+                                        |        "lastName" : "Doe",
+                                        |        "nino" : "AB123456A"
+                                        |      },
+                                        |      "typeOfProtectionGroup1Reference" : {
+                                        |        "nonResidenceEnhancement" : "12384nd82js",
+                                        |        "pensionCreditsPreCRE" : "",
+                                        |        "preCommencement" : "123hids892h",
+                                        |        "recognisedOverseasPSTE" : ""
+                                        |      },
+                                        |      "bceTypeSelection" : "annuityProtection",
+                                        |      "typeOfProtectionGroup2" : "fixedProtection",
+                                        |      "typeOfProtectionGroup1" : [ "nonResidenceEnhancement", "preCommencement" ],
+                                        |      "typeOfProtectionGroup2Reference" : "abcdef123",
+                                        |      "totalAmountBenefitCrystallisation" : 12300,
+                                        |      "crystallisedDate" : {
+                                        |        "date" : "2023-11-13"
+                                        |      },
+                                        |      "validProtection" : true
+                                        |    }, {
+                                        |      "overAllowance" : true,
+                                        |      "overAllowanceAndDeathBenefit" : false,
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Jane",
+                                        |        "lastName" : "Doe",
+                                        |        "nino" : "AB123456A"
+                                        |      },
+                                        |      "typeOfProtectionGroup1Reference" : {
+                                        |        "nonResidenceEnhancement" : "12384nd82js",
+                                        |        "pensionCreditsPreCRE" : "",
+                                        |        "preCommencement" : "123hids892h",
+                                        |        "recognisedOverseasPSTE" : ""
+                                        |      },
+                                        |      "bceTypeSelection" : "annuityProtection",
+                                        |      "typeOfProtectionGroup2" : "noOtherProtections",
+                                        |      "typeOfProtectionGroup1" : [ "nonResidenceEnhancement", "preCommencement", "schemeSpecific" ],
+                                        |      "totalAmountBenefitCrystallisation" : 12300,
+                                        |      "crystallisedDate" : {
+                                        |        "date" : "2023-11-13"
+                                        |      },
+                                        |      "validProtection" : true
+                                        |    }, {
+                                        |      "overAllowance" : true,
+                                        |      "overAllowanceAndDeathBenefit" : false,
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Jane",
+                                        |        "lastName" : "Doe",
+                                        |        "nino" : "AB123456A"
+                                        |      },
+                                        |      "typeOfProtectionGroup1Reference" : {
+                                        |        "nonResidenceEnhancement" : "12384nd82js",
+                                        |        "pensionCreditsPreCRE" : "",
+                                        |        "preCommencement" : "123hids892h",
+                                        |        "recognisedOverseasPSTE" : ""
+                                        |      },
+                                        |      "bceTypeSelection" : "annuityProtection",
+                                        |      "typeOfProtectionGroup2" : "noOtherProtections",
+                                        |      "typeOfProtectionGroup1" : [ "nonResidenceEnhancement", "preCommencement", "schemeSpecific" ],
+                                        |      "totalAmountBenefitCrystallisation" : 12300,
+                                        |      "crystallisedDate" : {
+                                        |        "date" : "2023-11-13"
+                                        |      },
+                                        |      "validProtection" : true
+                                        |    }, {
+                                        |      "overAllowanceAndDeathBenefit" : true,
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Jane",
+                                        |        "lastName" : "Doe",
+                                        |        "nino" : "AB123456A"
+                                        |      },
+                                        |      "typeOfProtectionGroup1Reference" : {
+                                        |        "nonResidenceEnhancement" : "12384nd82js",
+                                        |        "pensionCreditsPreCRE" : "",
+                                        |        "preCommencement" : "123hids892h",
+                                        |        "recognisedOverseasPSTE" : ""
+                                        |      },
+                                        |      "bceTypeSelection" : "annuityProtection",
+                                        |      "typeOfProtectionGroup2" : "fixedProtection",
+                                        |      "typeOfProtectionGroup1" : [ "nonResidenceEnhancement", "preCommencement", "schemeSpecific" ],
+                                        |      "typeOfProtectionGroup2Reference" : "abcdef123",
+                                        |      "totalAmountBenefitCrystallisation" : 12300,
+                                        |      "crystallisedDate" : {
+                                        |        "date" : "2023-11-13"
+                                        |      },
+                                        |      "validProtection" : true
+                                        |    }, {
+                                        |      "overAllowanceAndDeathBenefit" : true,
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Jane",
+                                        |        "lastName" : "Doe",
+                                        |        "nino" : "AB123456A"
+                                        |      },
+                                        |      "typeOfProtectionGroup1Reference" : {
+                                        |        "nonResidenceEnhancement" : "12384nd82js",
+                                        |        "pensionCreditsPreCRE" : "",
+                                        |        "preCommencement" : "123hids892h",
+                                        |        "recognisedOverseasPSTE" : ""
+                                        |      },
+                                        |      "bceTypeSelection" : "annuityProtection",
+                                        |      "typeOfProtectionGroup2" : "fixedProtection",
+                                        |      "typeOfProtectionGroup1" : [ "nonResidenceEnhancement", "preCommencement", "schemeSpecific" ],
+                                        |      "typeOfProtectionGroup2Reference" : "abcdef123",
+                                        |      "totalAmountBenefitCrystallisation" : 12300,
+                                        |      "crystallisedDate" : {
+                                        |        "date" : "2023-11-13"
+                                        |      },
+                                        |      "validProtection" : true
+                                        |    } ]
+                                        |  }
+                                        |}
+                                        |""".stripMargin)
     }
 
     "return validation errors when tax year out of range" in {

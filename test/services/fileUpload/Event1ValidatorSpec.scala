@@ -50,11 +50,317 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
                                 $commonUaEmployer,"$validAddress",COURT,,Organisation Name,,,,,,,,,,,,1000.00,08/11/2022
                                 $commonUaEmployer,"$validAddress",OTHER,,,,,,,Description,,,,,,,1000.00,08/11/2022"""
       val ((output, errors), rowNumber) = validate(data)
-      //TODO: Figure out if the below is correct
-      println(Json.prettyPrint(output.toJson))
+
       rowNumber mustBe 16
       errors.isEmpty mustBe true
-
+      output.toJson mustBe Json.parse("""{
+                                        |  "event1" : {
+                                        |    "membersOrEmployers" : [ {
+                                        |      "doYouHoldSignedMandate" : true,
+                                        |      "schemeUnAuthPaySurchargeMember" : true,
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Joe",
+                                        |        "lastName" : "Bloggs",
+                                        |        "nino" : "AA123456A"
+                                        |      },
+                                        |      "whoReceivedUnauthPayment" : "member",
+                                        |      "paymentValueAndDate" : {
+                                        |        "paymentValue" : 1000,
+                                        |        "paymentDate" : "2022-11-08"
+                                        |      },
+                                        |      "paymentNatureMember" : "benefitInKind",
+                                        |      "benefitInKindBriefDescription" : "Description",
+                                        |      "valueOfUnauthorisedPayment" : true
+                                        |    }, {
+                                        |      "schemeDetails" : {
+                                        |        "schemeName" : "SchemeName",
+                                        |        "reference" : "SchemeReference"
+                                        |      },
+                                        |      "doYouHoldSignedMandate" : true,
+                                        |      "schemeUnAuthPaySurchargeMember" : false,
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Joe",
+                                        |        "lastName" : "Bloggs",
+                                        |        "nino" : "AA123456B"
+                                        |      },
+                                        |      "whoWasTheTransferMade" : "anEmployerFinanced",
+                                        |      "whoReceivedUnauthPayment" : "member",
+                                        |      "paymentValueAndDate" : {
+                                        |        "paymentValue" : 1000,
+                                        |        "paymentDate" : "2022-11-08"
+                                        |      },
+                                        |      "paymentNatureMember" : "transferToNonRegPensionScheme",
+                                        |      "valueOfUnauthorisedPayment" : true
+                                        |    }, {
+                                        |      "doYouHoldSignedMandate" : true,
+                                        |      "errorDescription" : "Description",
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Joe",
+                                        |        "lastName" : "Bloggs",
+                                        |        "nino" : "AA123456C"
+                                        |      },
+                                        |      "whoReceivedUnauthPayment" : "member",
+                                        |      "paymentValueAndDate" : {
+                                        |        "paymentValue" : 1000,
+                                        |        "paymentDate" : "2022-11-08"
+                                        |      },
+                                        |      "paymentNatureMember" : "errorCalcTaxFreeLumpSums",
+                                        |      "valueOfUnauthorisedPayment" : false
+                                        |    }, {
+                                        |      "doYouHoldSignedMandate" : true,
+                                        |      "schemeUnAuthPaySurchargeMember" : false,
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Joe",
+                                        |        "lastName" : "Bloggs",
+                                        |        "nino" : "AA123456D"
+                                        |      },
+                                        |      "benefitsPaidEarly" : "Description",
+                                        |      "whoReceivedUnauthPayment" : "member",
+                                        |      "paymentValueAndDate" : {
+                                        |        "paymentValue" : 1000,
+                                        |        "paymentDate" : "2022-11-08"
+                                        |      },
+                                        |      "paymentNatureMember" : "benefitsPaidEarly",
+                                        |      "valueOfUnauthorisedPayment" : true
+                                        |    }, {
+                                        |      "doYouHoldSignedMandate" : true,
+                                        |      "schemeUnAuthPaySurchargeMember" : true,
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Joe",
+                                        |        "lastName" : "Bloggs",
+                                        |        "nino" : "AA234567A"
+                                        |      },
+                                        |      "refundOfContributions" : "widowOrOrphan",
+                                        |      "whoReceivedUnauthPayment" : "member",
+                                        |      "paymentValueAndDate" : {
+                                        |        "paymentValue" : 1000,
+                                        |        "paymentDate" : "2022-11-08"
+                                        |      },
+                                        |      "paymentNatureMember" : "refundOfContributions",
+                                        |      "valueOfUnauthorisedPayment" : true
+                                        |    }, {
+                                        |      "doYouHoldSignedMandate" : true,
+                                        |      "schemeUnAuthPaySurchargeMember" : false,
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Joe",
+                                        |        "lastName" : "Bloggs",
+                                        |        "nino" : "AA234567B"
+                                        |      },
+                                        |      "whoReceivedUnauthPayment" : "member",
+                                        |      "paymentValueAndDate" : {
+                                        |        "paymentValue" : 1000,
+                                        |        "paymentDate" : "2022-11-08"
+                                        |      },
+                                        |      "paymentNatureMember" : "overpaymentOrWriteOff",
+                                        |      "reasonForTheOverpaymentOrWriteOff" : "dependentNoLongerQualifiedForPension",
+                                        |      "valueOfUnauthorisedPayment" : true
+                                        |    }, {
+                                        |      "doYouHoldSignedMandate" : true,
+                                        |      "schemeUnAuthPaySurchargeMember" : false,
+                                        |      "memberResidentialAddress" : {
+                                        |        "address" : {
+                                        |          "addressLine1" : "10 Other Place",
+                                        |          "addressLine2" : "Some District",
+                                        |          "addressLine3" : "Anytown",
+                                        |          "addressLine4" : "Anyplace",
+                                        |          "postcode" : "ZZ1 1ZZ",
+                                        |          "country" : "GB"
+                                        |        }
+                                        |      },
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Joe",
+                                        |        "lastName" : "Bloggs",
+                                        |        "nino" : "AA234567C"
+                                        |      },
+                                        |      "whoReceivedUnauthPayment" : "member",
+                                        |      "paymentValueAndDate" : {
+                                        |        "paymentValue" : 1000,
+                                        |        "paymentDate" : "2022-11-08"
+                                        |      },
+                                        |      "paymentNatureMember" : "residentialPropertyHeld",
+                                        |      "valueOfUnauthorisedPayment" : true
+                                        |    }, {
+                                        |      "doYouHoldSignedMandate" : true,
+                                        |      "schemeUnAuthPaySurchargeMember" : true,
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Joe",
+                                        |        "lastName" : "Bloggs",
+                                        |        "nino" : "AA234567D"
+                                        |      },
+                                        |      "whoReceivedUnauthPayment" : "member",
+                                        |      "paymentValueAndDate" : {
+                                        |        "paymentValue" : 1000,
+                                        |        "paymentDate" : "2022-11-08"
+                                        |      },
+                                        |      "memberTangibleMoveableProperty" : "Description",
+                                        |      "paymentNatureMember" : "tangibleMoveablePropertyHeld",
+                                        |      "valueOfUnauthorisedPayment" : true
+                                        |    }, {
+                                        |      "doYouHoldSignedMandate" : true,
+                                        |      "schemeUnAuthPaySurchargeMember" : true,
+                                        |      "unauthorisedPaymentRecipientName" : "John",
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Joe",
+                                        |        "lastName" : "Bloggs",
+                                        |        "nino" : "AA345678A"
+                                        |      },
+                                        |      "whoReceivedUnauthPayment" : "member",
+                                        |      "paymentValueAndDate" : {
+                                        |        "paymentValue" : 1000,
+                                        |        "paymentDate" : "2022-11-08"
+                                        |      },
+                                        |      "paymentNatureMember" : "courtOrConfiscationOrder",
+                                        |      "valueOfUnauthorisedPayment" : true
+                                        |    }, {
+                                        |      "memberPaymentNatureDescription" : "Description",
+                                        |      "doYouHoldSignedMandate" : true,
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Joe",
+                                        |        "lastName" : "Bloggs",
+                                        |        "nino" : "AA345678B"
+                                        |      },
+                                        |      "whoReceivedUnauthPayment" : "member",
+                                        |      "paymentValueAndDate" : {
+                                        |        "paymentValue" : 1000,
+                                        |        "paymentDate" : "2022-11-08"
+                                        |      },
+                                        |      "paymentNatureMember" : "memberOther",
+                                        |      "valueOfUnauthorisedPayment" : false
+                                        |    }, {
+                                        |      "event1" : {
+                                        |        "companyDetails" : {
+                                        |          "companyName" : "Company Name",
+                                        |          "companyNumber" : "12345678"
+                                        |        }
+                                        |      },
+                                        |      "employerAddress" : {
+                                        |        "address" : {
+                                        |          "addressLine1" : "10 Other Place",
+                                        |          "addressLine2" : "Some District",
+                                        |          "addressLine3" : "Anytown",
+                                        |          "addressLine4" : "Anyplace",
+                                        |          "postcode" : "ZZ1 1ZZ",
+                                        |          "country" : "GB"
+                                        |        }
+                                        |      },
+                                        |      "loanDetails" : {
+                                        |        "loanAmount" : 10,
+                                        |        "fundValue" : 20.57
+                                        |      },
+                                        |      "whoReceivedUnauthPayment" : "employer",
+                                        |      "paymentValueAndDate" : {
+                                        |        "paymentValue" : 1000,
+                                        |        "paymentDate" : "2022-11-08"
+                                        |      },
+                                        |      "paymentNatureEmployer" : "loansExceeding50PercentOfFundValue"
+                                        |    }, {
+                                        |      "event1" : {
+                                        |        "companyDetails" : {
+                                        |          "companyName" : "Company Name",
+                                        |          "companyNumber" : "12345678"
+                                        |        }
+                                        |      },
+                                        |      "employerAddress" : {
+                                        |        "address" : {
+                                        |          "addressLine1" : "10 Other Place",
+                                        |          "addressLine2" : "Some District",
+                                        |          "addressLine3" : "Anytown",
+                                        |          "addressLine4" : "Anyplace",
+                                        |          "postcode" : "ZZ1 1ZZ",
+                                        |          "country" : "GB"
+                                        |        }
+                                        |      },
+                                        |      "whoReceivedUnauthPayment" : "employer",
+                                        |      "paymentValueAndDate" : {
+                                        |        "paymentValue" : 1000,
+                                        |        "paymentDate" : "2022-11-08"
+                                        |      },
+                                        |      "paymentNatureEmployer" : "residentialProperty",
+                                        |      "employerResidentialAddress" : {
+                                        |        "address" : {
+                                        |          "addressLine1" : "10 Other Place",
+                                        |          "addressLine2" : "Some District",
+                                        |          "addressLine3" : "Anytown",
+                                        |          "addressLine4" : "Anyplace",
+                                        |          "postcode" : "ZZ1 1ZZ",
+                                        |          "country" : "GB"
+                                        |        }
+                                        |      }
+                                        |    }, {
+                                        |      "event1" : {
+                                        |        "companyDetails" : {
+                                        |          "companyName" : "Company Name",
+                                        |          "companyNumber" : "12345678"
+                                        |        }
+                                        |      },
+                                        |      "employerTangibleMoveableProperty" : "Description",
+                                        |      "employerAddress" : {
+                                        |        "address" : {
+                                        |          "addressLine1" : "10 Other Place",
+                                        |          "addressLine2" : "Some District",
+                                        |          "addressLine3" : "Anytown",
+                                        |          "addressLine4" : "Anyplace",
+                                        |          "postcode" : "ZZ1 1ZZ",
+                                        |          "country" : "GB"
+                                        |        }
+                                        |      },
+                                        |      "whoReceivedUnauthPayment" : "employer",
+                                        |      "paymentValueAndDate" : {
+                                        |        "paymentValue" : 1000,
+                                        |        "paymentDate" : "2022-11-08"
+                                        |      },
+                                        |      "paymentNatureEmployer" : "tangibleMoveableProperty"
+                                        |    }, {
+                                        |      "event1" : {
+                                        |        "companyDetails" : {
+                                        |          "companyName" : "Company Name",
+                                        |          "companyNumber" : "12345678"
+                                        |        }
+                                        |      },
+                                        |  "employerAddress" : {
+                                        |        "address" : {
+                                        |          "addressLine1" : "10 Other Place",
+                                        |          "addressLine2" : "Some District",
+                                        |          "addressLine3" : "Anytown",
+                                        |          "addressLine4" : "Anyplace",
+                                        |          "postcode" : "ZZ1 1ZZ",
+                                        |          "country" : "GB"
+                                        |        }
+                                        |      },
+                                        |      "unauthorisedPaymentRecipientName" : "Organisation Name",
+                                        |      "whoReceivedUnauthPayment" : "employer",
+                                        |      "paymentValueAndDate" : {
+                                        |        "paymentValue" : 1000,
+                                        |        "paymentDate" : "2022-11-08"
+                                        |      },
+                                        |      "paymentNatureEmployer" : "courtOrder"
+                                        |    }, {
+                                        |      "event1" : {
+                                        |        "companyDetails" : {
+                                        |          "companyName" : "Company Name",
+                                        |          "companyNumber" : "12345678"
+                                        |        }
+                                        |      },
+                                        |      "employerAddress" : {
+                                        |        "address" : {
+                                        |          "addressLine1" : "10 Other Place",
+                                        |          "addressLine2" : "Some District",
+                                        |          "addressLine3" : "Anytown",
+                                        |          "addressLine4" : "Anyplace",
+                                        |          "postcode" : "ZZ1 1ZZ",
+                                        |          "country" : "GB"
+                                        |        }
+                                        |      },
+                                        |      "employerPaymentNatureDescription" : "Description",
+                                        |      "whoReceivedUnauthPayment" : "employer",
+                                        |      "paymentValueAndDate" : {
+                                        |        "paymentValue" : 1000,
+                                        |        "paymentDate" : "2022-11-08"
+                                        |      },
+                                        |      "paymentNatureEmployer" : "employerOther"
+                                        |    } ]
+                                        |  }
+                                        |}""".stripMargin)
 
     }
 

@@ -31,10 +31,37 @@ class Event6ValidatorSpec extends BulkUploadSpec[Event6Validator] with BeforeAnd
 
       val ((output, errors), rowNumber) = validate(data)
 
-      //TODO: Figure out if the below is correct
-      println(Json.prettyPrint(output.toJson))
       rowNumber mustBe 3
       errors.isEmpty mustBe true
+      output.toJson mustBe Json.parse("""{
+                                        |  "event6" : {
+                                        |    "members" : [ {
+                                        |      "inputProtectionType" : "1234567A",
+                                        |      "AmountCrystallisedAndDate" : {
+                                        |        "amountCrystallised" : 10,
+                                        |        "crystallisedDate" : "2022-11-08"
+                                        |      },
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Joe",
+                                        |        "lastName" : "Bloggs",
+                                        |        "nino" : "AA234567D"
+                                        |      },
+                                        |      "typeOfProtection" : "enhancedLifetimeAllowance"
+                                        |    }, {
+                                        |      "inputProtectionType" : "1234567A",
+                                        |      "AmountCrystallisedAndDate" : {
+                                        |        "amountCrystallised" : 10,
+                                        |        "crystallisedDate" : "2022-08-12"
+                                        |      },
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Steven",
+                                        |        "lastName" : "Bloggs",
+                                        |        "nino" : "AA123456C"
+                                        |      },
+                                        |      "typeOfProtection" : "fixedProtection2014"
+                                        |    } ]
+                                        |  }
+                                        |}""".stripMargin)
     }
 
     "return validation errors when present, including tax year in future" in {

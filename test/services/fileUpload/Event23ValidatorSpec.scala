@@ -30,11 +30,29 @@ class Event23ValidatorSpec extends BulkUploadSpec[Event23Validator] with BeforeA
                             Steven,Bloggs,AA123456C,2022 to 2023,13.20"""
 
       val ((output, errors), rowNumber) = validate(data)
-
-      //TODO: Figure out if the below is correct
-      println(Json.prettyPrint(output.toJson))
       rowNumber mustBe 3
       errors.isEmpty mustBe true
+      output.toJson mustBe Json.parse("""{
+                                        |  "event23" : {
+                                        |    "members" : [ {
+                                        |      "chooseTaxYear" : "2020",
+                                        |      "totalPensionAmounts" : 12.2,
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Joe",
+                                        |        "lastName" : "Bloggs",
+                                        |        "nino" : "AA234567D"
+                                        |      }
+                                        |    }, {
+                                        |      "chooseTaxYear" : "2022",
+                                        |      "totalPensionAmounts" : 13.2,
+                                        |      "membersDetails" : {
+                                        |        "firstName" : "Steven",
+                                        |        "lastName" : "Bloggs",
+                                        |        "nino" : "AA123456C"
+                                        |      }
+                                        |    } ]
+                                        |  }
+                                        |}""".stripMargin)
     }
 
     "return validation errors when present, including tax year in future" in {
