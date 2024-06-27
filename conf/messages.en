@@ -280,7 +280,7 @@ whatYouWillNeed.item1 = the member’s name and National Insurance number
 whatYouWillNeed.item2 = if you hold a signed mandate from the member to deduct tax from their unauthorised payment
 whatYouWillNeed.item3 = if the value of the unauthorised payment is more than 25% of the pension fund for the individual
 whatYouWillNeed.item4 = if the scheme is paying the unauthorised payment surcharge on behalf of the member
-whatYouWillNeed.item5 = the nature of the payment
+whatYouWillNeed.item5 = the nature of the unauthorised payment or deemed unauthorised payment
 whatYouWillNeed.item6 = the payment value and date
 
 whatYouWillNeed.event22.title = What you will need
@@ -407,7 +407,7 @@ employer.whatYouWillNeed.p = To record an unauthorised payment you will need to 
 employer.whatYouWillNeed.item1 = the company or organisation name
 employer.whatYouWillNeed.item2 = the company number
 employer.whatYouWillNeed.item3 = the company address
-employer.whatYouWillNeed.item4 = the nature of the payment
+employer.whatYouWillNeed.item4 = the nature of the unauthorised payment or deemed unauthorised payment
 employer.whatYouWillNeed.item5 = the payment value and date
 
 companyDetails.title = Company details
@@ -478,8 +478,6 @@ address.country = Country
 entityType.theCompany = the company
 entityType.theResidentialProperty = the residential property
 
-paymentNature.title = Nature of the payment or deemed payment
-paymentNature.heading = Nature of the payment or deemed payment
 paymentNature.loansExceeding50PercentOfFundValue = Loans to or in respect of the employer exceeding 50% of the value of the fund
 paymentNature.residentialProperty  = Residential property held directly or indirectly by an investment-regulated pension scheme
 paymentNature.tangibleMoveableProperty  = Tangible moveable property held directly or indirectly by an investment-regulated pension scheme
