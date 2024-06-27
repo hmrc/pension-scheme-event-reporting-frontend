@@ -132,7 +132,7 @@ eventSelection.event10.hint = The scheme becomes or ceases to be an investment r
 eventSelection.event11 = Event 11
 eventSelection.event11.hint = Changes in scheme rules
 eventSelection.event12 = Event 12
-eventSelection.event12.hint = Changes to rules of a scheme treated as more than 1 scheme before 6 April 2006
+eventSelection.event12.hint = Changes to rules of a scheme treated as more than one scheme before 6 April 2006
 eventSelection.event13 = Event 13
 eventSelection.event13.hint = Change in legal structure of scheme
 eventSelection.event14 = Event 14
@@ -1505,11 +1505,12 @@ contractsOrPolicies.checkYourAnswersLabel = Do all investments consist of either
 contractsOrPolicies.error.required = Select yes if all investments consist of either contracts or policies of insurance
 contractsOrPolicies.change.hidden = Whether all investments consist of either contracts or policies of insurance
 
-hasSchemeChangedRules.title = Has the scheme that was treated as 2 or more schemes immediately before 6 April 2006 changed its rules?
-hasSchemeChangedRules.heading = Has the scheme that was treated as 2 or more schemes immediately before 6 April 2006 changed its rules?
-hasSchemeChangedRules.checkYourAnswersLabel = Did scheme treated as 2 or more schemes before 6 April 2006 change its rules?
+hasSchemeChangedRules.title = If the scheme was treated as more than one scheme before 6 April 2006, did it change its rules?
+hasSchemeChangedRules.heading = If the scheme was treated as more than one scheme before 6 April 2006, did it change its rules?
+hasSchemeChangedRules.hint = Select no if scheme was treated as one scheme before 6 April 2006.
+hasSchemeChangedRules.checkYourAnswersLabel = Did scheme change its rules – if treated as more than one scheme before 6 April 2006?
 hasSchemeChangedRules.error.required = Select if the scheme has changed its rules
-hasSchemeChangedRules.change.hidden = Whether scheme treated as 2 or more schemes before 6 April 2006 changed its rules
+hasSchemeChangedRules.change.hidden = Whether scheme treated as more than one scheme before 6 April 2006 changed its rules
 
 dateOfChange.title = When did this change take effect?
 dateOfChange.heading = When did this change take effect?
@@ -1759,10 +1760,13 @@ cannotSubmitLockedEvents.multiple.heading = The event report cannot be submitted
 cannotSubmitLockedEvents.multiple.p1 = Before the event report can be submitted:
 cannotSubmitLockedEvents.multiple.item = {0} must close event {1}
 
-removeMember.title = Are you sure you want to remove the {0} event for this member?
-removeMember.heading = Are you sure you want to remove the {0} event for this member?
-removeMember.error.required = Select yes if you want to remove the {0} event for this member
-removeMember.change.hidden = Are you sure you want to remove the {0} event for this member?
+removeMember.title = Are you sure you want to remove {0} for {1}?
+removeMember.heading = Are you sure you want to remove {0} for {1}?
+removeMember.error.required = Select yes if you want to remove {0} for {1}
+
+removeMember.commencementLumpSum.title = Are you sure you want to remove the {0} where {1} has {2}?
+removeMember.commencementLumpSum.heading = Are you sure you want to remove the {0} where {1} has {2}?
+removeMember.commencementLumpSum.error.required = Select yes if you want to remove the {0} where {1} has {2}
 
 membersDetails.error.nino.notUnique = This National Insurance number is already in use for this event and cannot be duplicated
 
@@ -1805,18 +1809,23 @@ fileUpload.overAllowanceAndDeathBenefit.generic.error = entry of whether the lum
 fileUpload.marginalRate.generic.error = entry of whether the excess has been taxed at marginal rate is missing or in the wrong format
 fileUpload.employerPayeRef.generic.error = employer PAYE reference is missing of in the wrong format. The employer PAYE reference is a 3-digit number, a forward slash, and a tax office employer reference that is a combination of letters and numbers, like 123/AB456.
 
-eventDescription.event1 = unauthorised payment
-eventDescription.event2 = lump sum death benefit payment
-eventDescription.event3 = benefits provided before normal minimum pension age
-eventDescription.event4 = payment of serious ill-health lump sum
-eventDescription.event5 = cessation of ill-health pension
-eventDescription.event6 = benefit crystallisation event
-eventDescription.event7 = pension commencement lump sum
-eventDescription.event8 = pension commencement lump sum
-eventDescription.event8A = pension commencement lump sum
-eventDescription.event22 = annual allowance
-eventDescription.event23 = dual annual allowance
-eventDescription.event24 = payment of lump sum in relation to relevant benefit crystallisation
+eventDescription.event1 = the unauthorised payment
+eventDescription.event2 = the lump sum death benefit payment
+eventDescription.event3 = the benefits provided before normal minimum pension age
+eventDescription.event4 = the serious ill-health lump sum
+eventDescription.event5 = the cessation of ill-health pension
+eventDescription.event6 = the benefit crystallisation
+
+eventDescription.event7.part1 = lump sum charge of 25% or more
+eventDescription.event7.part2 = no primary or enhanced protection
+
+eventDescription.event8.part1 = lump sum
+eventDescription.event8.part2 = either primary or enhanced protection
+
+eventDescription.event8A = the pension commencement lump sum
+eventDescription.event22 = the annual allowance
+eventDescription.event23 = dual annual allowances
+eventDescription.event24 = the relevant benefit crystallisation event
 
 noDataEnteredError.title = This report cannot be submitted
 noDataEnteredError.heading = This report cannot be submitted

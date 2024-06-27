@@ -18,7 +18,7 @@ package controllers.common
 
 import base.SpecBase
 import connectors.EventReportingConnector
-import data.SampleData.{sampleMemberJourneyDataEvent1, sampleMemberJourneyDataEvent3and4and5}
+import data.SampleData.{memberDetails, sampleMemberJourneyDataEvent1, sampleMemberJourneyDataEvent3and4and5}
 import forms.common.RemoveMemberFormProvider
 import models.enumeration.EventType.{Event1, Event5}
 import org.mockito.ArgumentMatchers.any
@@ -41,6 +41,13 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val waypoints = EmptyWaypoints
   private val formProvider = new RemoveMemberFormProvider()
   private val formEvent1 = formProvider("unauthorised payment")
+  private val event1TypeMessage = messages(s"eventDescription.event1")
+  private val event5TypeMessage = messages(s"eventDescription.event5")
+  private val memberName = memberDetails.fullName
+  private val event1Title = messages("removeMember.title", event1TypeMessage, memberName)
+  private val event1Heading = messages("removeMember.heading", event1TypeMessage, memberName)
+  private val event5Title = messages("removeMember.title", event5TypeMessage, memberName)
+  private val event5Heading = messages("removeMember.heading", event5TypeMessage, memberName)
   private val formEvent5 = formProvider("cessation of ill-health pension")
   private val mockEventReportingConnector = mock[EventReportingConnector]
   private val mockCompileService = mock[CompileService]
@@ -78,7 +85,8 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
           formEvent1,
           waypoints,
           Event1,
-          eventTypeMessage = "unauthorised payment",
+          event1Title,
+          event1Heading,
           index = 0,
           request,
           messages(application)).toString
@@ -98,7 +106,8 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
           formEvent5,
           waypoints,
           Event5,
-          eventTypeMessage = "cessation of ill-health pension",
+          event5Title,
+          event5Heading,
           index = 0,
           request = request,
           messages = messages(application)).toString
@@ -119,7 +128,8 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
           formEvent1.fill(true),
           waypoints,
           Event1,
-          eventTypeMessage = "unauthorised payment",
+          event1Title,
+          event1Heading,
           index = 0,
           request = request,
           messages = messages(application)).toString
@@ -140,7 +150,8 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
           formEvent5.fill(true),
           waypoints,
           Event5,
-          eventTypeMessage = "cessation of ill-health pension",
+          event5Title,
+          event5Heading,
           index = 0,
           request = request,
           messages = messages(application)).toString
@@ -195,7 +206,8 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
           boundForm,
           waypoints,
           Event1,
-          eventTypeMessage = "unauthorised payment",
+          event1Title,
+          event1Heading,
           index = 0,
           request = request,
           messages = messages(application)).toString
@@ -216,7 +228,8 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
           boundForm,
           waypoints,
           Event5,
-          eventTypeMessage = "cessation of ill-health pension",
+          event5Title,
+          event5Heading,
           index = 0,
           request = request,
           messages = messages(application)).toString
