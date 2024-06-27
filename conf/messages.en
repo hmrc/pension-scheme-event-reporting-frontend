@@ -132,7 +132,7 @@ eventSelection.event10.hint = The scheme becomes or ceases to be an investment r
 eventSelection.event11 = Event 11
 eventSelection.event11.hint = Changes in scheme rules
 eventSelection.event12 = Event 12
-eventSelection.event12.hint = Changes to rules of a scheme treated as more than 1 scheme before 6 April 2006
+eventSelection.event12.hint = Changes to rules of a scheme treated as more than one scheme before 6 April 2006
 eventSelection.event13 = Event 13
 eventSelection.event13.hint = Change in legal structure of scheme
 eventSelection.event14 = Event 14
@@ -1508,11 +1508,12 @@ contractsOrPolicies.checkYourAnswersLabel = Do all investments consist of either
 contractsOrPolicies.error.required = Select yes if all investments consist of either contracts or policies of insurance
 contractsOrPolicies.change.hidden = Whether all investments consist of either contracts or policies of insurance
 
-hasSchemeChangedRules.title = Has the scheme that was treated as 2 or more schemes immediately before 6 April 2006 changed its rules?
-hasSchemeChangedRules.heading = Has the scheme that was treated as 2 or more schemes immediately before 6 April 2006 changed its rules?
-hasSchemeChangedRules.checkYourAnswersLabel = Did scheme treated as 2 or more schemes before 6 April 2006 change its rules?
+hasSchemeChangedRules.title = If the scheme was treated as more than one scheme before 6 April 2006, did it change its rules?
+hasSchemeChangedRules.heading = If the scheme was treated as more than one scheme before 6 April 2006, did it change its rules?
+hasSchemeChangedRules.hint = Select no if scheme was treated as one scheme before 6 April 2006.
+hasSchemeChangedRules.checkYourAnswersLabel = Did scheme change its rules – if treated as more than one scheme before 6 April 2006?
 hasSchemeChangedRules.error.required = Select if the scheme has changed its rules
-hasSchemeChangedRules.change.hidden = Whether scheme treated as 2 or more schemes before 6 April 2006 changed its rules
+hasSchemeChangedRules.change.hidden = Whether scheme treated as more than one scheme before 6 April 2006 changed its rules
 
 dateOfChange.title = When did this change take effect?
 dateOfChange.heading = When did this change take effect?
