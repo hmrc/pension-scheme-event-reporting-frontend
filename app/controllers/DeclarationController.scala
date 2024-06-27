@@ -21,7 +21,6 @@ import config.FrontendAppConfig
 import connectors.{EmailConnector, EmailStatus, EventReportingConnector, MinimalConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import handlers.NothingToSubmitException
-import models.TaxYear.getTaxYear
 import models.enumeration.{AdministratorOrPractitioner, EventType}
 import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}

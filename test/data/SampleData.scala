@@ -179,7 +179,7 @@ object SampleData extends SpecBase {
 
   def booleanCYAVal(value: Boolean): String = if (value) "site.yes" else "site.no"
 
-  val loanDetails: LoanDetails = LoanDetails(Some(BigDecimal(10.00)), Some(BigDecimal(20.57)))
+  val loanDetails: LoanDetails = LoanDetails(BigDecimal(10.00), BigDecimal(20.57))
 
   val schemeDetails: SchemeDetails = SchemeDetails(Some("SchemeName"), Some("SchemeReference"))
 
