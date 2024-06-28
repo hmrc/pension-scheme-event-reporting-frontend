@@ -28,7 +28,6 @@ class LoanDetailsFormProvider @Inject() extends Mappings with Transforms {
 
   import LoanDetailsFormProvider._
 
-  // TODO - update tests
   def apply(): Form[LoanDetails] =
     Form(
       mapping("loanAmount" ->
