@@ -199,7 +199,6 @@ class EventSummaryController @Inject()(
         case true => Some(controllers.routes.EventSummaryController.onPageLoadForEvent18ViewOnlyLink().url)
         case false => None
       }
-      case EventType.Event18 => None
       case EventType.Event19 => Some(controllers.event19.routes.Event19CheckYourAnswersController.onPageLoad.url)
       case EventType.Event20 => Some(controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
       case EventType.WindUp => None
