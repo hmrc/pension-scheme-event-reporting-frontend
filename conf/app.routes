@@ -625,6 +625,7 @@ POST       /report/:index/remove-event-24                      controllers.commo
 GET        /report/:index/event-24-what-you-will-need                controllers.event24.WhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
 GET        /cannot-resume                                    controllers.CannotResumeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
+GET        /no-eventdata-change                                    controllers.NoEventDataChangeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 
 GET         /variations/return-history                           controllers.amend.ReturnHistoryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 GET         /on-click-get-version                                controllers.amend.ReturnHistoryController.onClick(waypoints: Waypoints ?= EmptyWaypoints, version: String)

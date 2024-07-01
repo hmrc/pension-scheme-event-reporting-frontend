@@ -18,7 +18,7 @@ package controllers
 
 import audit.{AuditService, EventReportingSubmissionEmailAuditEvent}
 import config.FrontendAppConfig
-import connectors.{EmailConnector, EmailStatus, MinimalConnector}
+import connectors.{EmailConnector, EmailStatus, MinimalConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import handlers.NothingToSubmitException
 import models.enumeration.AdministratorOrPractitioner
@@ -48,6 +48,7 @@ class DeclarationController @Inject()(
                                        val controllerComponents: MessagesControllerComponents,
                                        emailConnector: EmailConnector,
                                        minimalConnector: MinimalConnector,
+                                       userAnswersCacheConnector: UserAnswersCacheConnector,
                                        auditService: AuditService,
                                        config: FrontendAppConfig,
                                        declarationView: DeclarationView
@@ -56,6 +57,8 @@ class DeclarationController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) {
     implicit request =>
+
+
       if (request.isReportSubmitted) {
         Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
       } else {
@@ -68,6 +71,21 @@ class DeclarationController @Inject()(
 
       request.userAnswers.getOrElse(throw new NothingToSubmitException("User data not available"))
 
+      userAnswersCacheConnector.getAllEventsInSession(request.pstr).map { eventReports =>
+        println(s">>>>>>onClick >>>> <<<<<<<<<<<<<<<<<<<<******************DeclarationController  seq of event Reports = ${eventReports}")
+        eventReports.groupBy(_.edi.eventType).foreach { case (eventType, reports) =>
+          println(s"******************DeclarationController  eventType = ${eventType} reports = ${reports}")
+
+          val ifcond = (reports.size == 2) && (reports.head.data == reports.last.data)
+          println(s"******************DeclarationController  ifcond = ${ifcond}")
+          if(reports.size == 2 && (reports.head.data == reports.last.data)){
+            println(s"******************DeclarationController  ifcond = ${reports.size}")
+            Future.successful(Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints).url))
+          }
+        }
+      }
+
+      println(s"******************DeclarationController  userAnswers = ${request.userAnswers}")
       requireData.invokeBlock(request, { implicit request: DataRequest[_] =>
         val data: UserAnswers = UserAnswers(
           declarationData(

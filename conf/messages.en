@@ -1835,6 +1835,10 @@ noDataEnteredError.p3 = to enter data before submitting
 
 cannotResume.title = This event report has been submitted and is with HMRC
 cannotResume.heading = This event report has been submitted and is with HMRC
+
+NoEventDataChange.title = This event report has been submitted but nothing changed
+NoEventDataChange.heading = This event report has been submitted but nothing changed
+
 cannotResume.p1 = You cannot resume this journey.
 
 genericDate.error.invalid = Enter the real date

@@ -17,6 +17,7 @@
 package models.enumeration
 
 import models.EventSelection
+import play.api.libs.json.{Format, JsError, JsResult, JsString, JsSuccess, JsValue}
 import play.api.mvc.{JavascriptLiteral, QueryStringBindable}
 
 sealed trait EventType
@@ -142,4 +143,16 @@ object EventType extends Enumerable.Implicits {
 
   implicit val enumerable: Enumerable[EventType] =
     Enumerable(values.map(v => v.toString -> v): _*)
+
+  implicit val formats: Format[EventType] = new Format[EventType] {
+    override def writes(o: EventType): JsValue = JsString(o.toString)
+
+    override def reads(json: JsValue): JsResult[EventType] = {
+      val jsonAsString = json.as[String]
+      values.find(_.toString == jsonAsString) match {
+        case Some(eventType) => JsSuccess(eventType)
+        case None => JsError(s"Unknown event type: $jsonAsString")
+      }
+    }
+  }
 }

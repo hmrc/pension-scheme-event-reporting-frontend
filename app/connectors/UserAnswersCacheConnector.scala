@@ -19,7 +19,7 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import handlers.TaxYearNotAvailableException
-import models.UserAnswers
+import models.{EventDataIdentifier, EventReportCacheEntry, UserAnswers}
 import models.enumeration.EventType
 import pages.{TaxYearPage, VersionInfoPage}
 import play.api.http.Status._
@@ -27,6 +27,7 @@ import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
 
+import java.time.LocalDateTime
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserAnswersCacheConnector @Inject()(
@@ -35,6 +36,7 @@ class UserAnswersCacheConnector @Inject()(
                                          ) {
 
   private def url = s"${config.eventReportingUrl}/pension-scheme-event-reporting/user-answers"
+  private def urlForEvents = s"${config.eventReportingUrl}/pension-scheme-event-reporting/session-event-reporting"
 
   private def noEventHeaders(pstr: String) = Seq(
     "Content-Type" -> "application/json",
@@ -81,6 +83,32 @@ class UserAnswersCacheConnector @Inject()(
         case (None, None) => None
       }
     }
+  }
+
+  def getAllEventsInSession(pstr: String)
+         (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[EventReportCacheEntry]] = {
+    Seq(
+      "Content-Type" -> "application/json",
+      "pstr" -> pstr
+    )
+    http.GET[HttpResponse](urlForEvents)(implicitly, hc, implicitly)
+      .recoverWith(mapExceptionsToStatus)
+      .map { response =>
+        response.status match {
+          case NOT_FOUND =>
+            println(s"<<<<<<<<<<<<In Not_FOUND*************** ${response.body}")
+            Seq.empty
+          case OK =>
+            println(s"<<<<<<<<<<<<In OK *************** ${response.body}")
+            response.json.as[Seq[EventReportCacheEntry]]
+          case _ =>
+            throw new HttpException(response.body, response.status)
+        }
+      }.recoverWith{
+        case ex: Exception =>
+          println(s"<<<<<<<<<<<<<<In recoverWith*************** and exception is $ex")
+          Future.successful(Seq.empty[EventReportCacheEntry])
+      }
   }
 
   private def getJson(headers: Seq[(String, String)])(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier) = {

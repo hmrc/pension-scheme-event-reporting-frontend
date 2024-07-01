@@ -41,6 +41,7 @@ class Event3UserAnswerValidation @Inject()(compileService: CompileService) {
     (membersDetailsAnswer, reasonForBenefitsAnswer, earlyBenefitsDescriptionAnswer, paymentDetailsAnswer) match {
       case (Some(_), Some(Other), Some(_), Some(_)) => compileService.compileEvent(Event3, request.pstr, request.userAnswers).map {
         _ =>
+          println(s"******************Redirecting to MembersSummaryController for Event3")
           Redirect(controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event3)).url)
       }
       case (Some(_), Some(_), None, Some(_)) => compileService.compileEvent(Event3, request.pstr, request.userAnswers).map {
