@@ -297,7 +297,7 @@ whatYouWillNeed.event23.p = To record a money purchase pension savings statement
 whatYouWillNeed.event23.item1 = their name
 whatYouWillNeed.event23.item2 = their National Insurance number
 whatYouWillNeed.event23.item3 = the tax year in which the money purchase pension savings statement was issued
-whatYouWillNeed.event23.item4 = the total of the member's pension input amounts for money purchase arrangements under the scheme in the relevant tax year
+whatYouWillNeed.event23.item4 = the total of the members pension input amounts for money purchase arrangements under the scheme, which can include defined benefits, in the relevant tax year
 
 membersDetails.title = Member’s details
 membersDetails.heading = Member’s details
@@ -1072,8 +1072,8 @@ totalPensionAmounts.event22.heading = What is the total of the member’s pensio
 totalPensionAmounts.event22.checkYourAnswersLabel = What is the total of the member’s pension input amounts for all arrangements under the scheme for the tax year
 totalPensionAmounts.event22.change.hidden = What is the total of the member’s pension input amounts for all arrangements under the scheme for the tax year
 
-totalPensionAmounts.event23.title = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year
-totalPensionAmounts.event23.heading = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year
+totalPensionAmounts.event23.title = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme, which can include defined benefits, for the tax year
+totalPensionAmounts.event23.heading = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme, which can include defined benefits, for the tax year
 totalPensionAmounts.event23.checkYourAnswersLabel = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year
 totalPensionAmounts.event23.change.hidden = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year
 
@@ -1202,7 +1202,7 @@ fileUploadWhatYouWillNeed.event23.heading = What you will need
 fileUploadWhatYouWillNeed.event23.item1 = their name
 fileUploadWhatYouWillNeed.event23.item2 = their National Insurance number
 fileUploadWhatYouWillNeed.event23.item3 = the tax year in which the money purchase pension savings statement was issued
-fileUploadWhatYouWillNeed.event23.item4 = the total of the member’s pension input amounts, for money purchase arrangements, under the scheme in the relevant tax year
+fileUploadWhatYouWillNeed.event23.item4 = the total of the members pension input amounts for money purchase arrangements under the scheme, which can include defined benefits, in the relevant tax year
 fileUploadWhatYouWillNeed.event23.item5 = – do not change or delete the header (row 1) or change the order of the columns
 fileUploadWhatYouWillNeed.event23.item5.prefix = the
 fileUploadWhatYouWillNeed.event23.instructions.link.text = instructions explaining the process and the formatting that should be used

@@ -18,13 +18,13 @@ package controllers
 
 import audit.{AuditService, EventReportingSubmissionEmailAuditEvent}
 import config.FrontendAppConfig
-import connectors.{EmailConnector, EmailStatus, EventReportingConnector, MinimalConnector, UserAnswersCacheConnector}
+import connectors.{EmailConnector, EmailStatus, MinimalConnector}
 import controllers.actions._
 import handlers.NothingToSubmitException
-import models.enumeration.{AdministratorOrPractitioner, EventType}
+import models.enumeration.AdministratorOrPractitioner
 import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}
-import pages.{TaxYearPage, VersionInfoPage, Waypoints}
+import pages.{VersionInfoPage, Waypoints}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}

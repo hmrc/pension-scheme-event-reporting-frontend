@@ -18,7 +18,7 @@ package controllers
 
 import audit.AuditService
 import base.SpecBase
-import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
+import connectors.MinimalConnector.MinimalDetails
 import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector}
 import handlers.NothingToSubmitException
 import models.VersionInfo
