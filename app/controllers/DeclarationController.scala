@@ -72,14 +72,10 @@ class DeclarationController @Inject()(
       request.userAnswers.getOrElse(throw new NothingToSubmitException("User data not available"))
 
       val isAnyEventDataChanged = userAnswersCacheConnector.getAllEventsInSession(request.pstr).map { eventReports =>
-        println(s">>>>>>onClick >>>> <<<<<<<<<<<<<<<<<<<<******************DeclarationController  seq of event Reports = ${eventReports}")
         eventReports.groupBy(_.edi.eventType).map { case (eventType, reports) =>
-          println(s"******************DeclarationController  eventType = ${eventType} reports = ${reports}")
 
           val ifcond = (reports.size == 2) && (reports.head.data == reports.last.data)
-          println(s"******************DeclarationController  ifcond = ${ifcond}")
           if(reports.size == 2 && (reports.head.data == reports.last.data)){
-            println(s"******************DeclarationController  ifcond = ${reports.size}")
             false
           }
           else{
@@ -88,7 +84,6 @@ class DeclarationController @Inject()(
         }
       }.map(x => x.toList.contains(true))
 
-      println(s"******************DeclarationController  userAnswers = ${request.userAnswers}")
       requireData.invokeBlock(request, { implicit request: DataRequest[_] =>
         val data: UserAnswers = UserAnswers(
           declarationData(
@@ -118,12 +113,10 @@ class DeclarationController @Inject()(
                 logger.warn(s"Unable to submit declaration because no data changed")
                 Redirect(controllers.routes.NoEventDataChangeController.onPageLoad(waypoints).url)
               case OK if isAnyEventDataChange =>
-                println(s"******************DeclarationController  isAnyEventDataChanged true = ${isAnyEventDataChange}")
                 emailFuture.map(es => logger.info(s"Sent Email with status: ${es}"))
                   Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
 
               case OK =>
-                println(s"******************DeclarationController  isAnyEventDataChanged = ${isAnyEventDataChange}")
                 Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
               case BAD_REQUEST =>
                 logger.warn(s"Unable to submit declaration because it has already been submitted)")

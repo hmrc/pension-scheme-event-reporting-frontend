@@ -96,17 +96,14 @@ class UserAnswersCacheConnector @Inject()(
       .map { response =>
         response.status match {
           case NOT_FOUND =>
-            println(s"<<<<<<<<<<<<In Not_FOUND*************** ${response.body}")
             Seq.empty
           case OK =>
-            println(s"<<<<<<<<<<<<In OK *************** ${response.body}")
             response.json.as[Seq[EventReportCacheEntry]]
           case _ =>
             throw new HttpException(response.body, response.status)
         }
       }.recoverWith{
         case ex: Exception =>
-          println(s"<<<<<<<<<<<<<<In recoverWith*************** and exception is $ex")
           Future.successful(Seq.empty[EventReportCacheEntry])
       }
   }

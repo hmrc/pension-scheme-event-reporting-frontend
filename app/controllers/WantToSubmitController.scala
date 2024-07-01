@@ -55,9 +55,7 @@ class WantToSubmitController @Inject()(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          println(s"******************originalUserAnswers = $originalUserAnswers")
           val updatedAnswers = originalUserAnswers.setOrException(WantToSubmitPage, value)
-          println(s"******************updatedAnswers = $updatedAnswers")
           val startYear = s"${TaxYear.getSelectedTaxYear(updatedAnswers).startYear}-04-06"
           val version = updatedAnswers.get(VersionInfoPage).get.version
           eventReportingConnector.getEventReportSummary(request.pstr, startYear, version)
@@ -66,7 +64,6 @@ class WantToSubmitController @Inject()(
                 _.recordVersion == version
               }.map(_.eventType)
 
-              println(s"******************currentCompileEventTypes = $currentCompileEventTypes")
               userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
                 if (value) {
                   lazy val isCurrentTaxYear = TaxYear.isCurrentTaxYear(updatedAnswers)

@@ -62,7 +62,6 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
         value => {
           EventType.fromEventSelection(value) match {
             case Some(eventType) =>
-              println(s"******************EventSelectionController  eventType = $eventType")
               val futureUA = userAnswersCacheConnector.get(request.pstr, eventType).map {
                 case Some(ua) => ua
                 case None => UserAnswers()
