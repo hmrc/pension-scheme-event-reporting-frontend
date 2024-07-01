@@ -18,7 +18,6 @@ package viewmodels.event1.employer.checkAnswers
 
 import forms.mappings.Formatters
 import models.{Index, UserAnswers}
-import org.apache.commons.lang3.StringUtils
 import pages.event1.employer.LoanDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
@@ -38,7 +37,7 @@ object LoanDetailsSummary extends Formatters {
 
         val value = ValueViewModel(
           HtmlContent(
-            Html(answer.loanAmount.map(t => s"£${currencyFormatter.format(t)}").getOrElse(StringUtils.EMPTY))
+            Html(s"£${currencyFormatter.format(answer.loanAmount)}")
           )
         )
 
@@ -61,7 +60,7 @@ object LoanDetailsSummary extends Formatters {
 
         val value = ValueViewModel(
           HtmlContent(
-            Html(answer.fundValue.map(t => s"£${currencyFormatter.format(t)}").getOrElse(StringUtils.EMPTY))
+            Html(s"£${currencyFormatter.format(answer.fundValue)}")
           )
         )
 

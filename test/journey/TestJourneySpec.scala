@@ -359,7 +359,7 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
     startingFrom(employer.PaymentNaturePage(0))
       .run(
         submitAnswer(employer.PaymentNaturePage(0), LoansExceeding50PercentOfFundValue),
-        submitAnswer(LoanDetailsPage(0), LoanDetails(Some(1000.00), Some(2000.22))),
+        submitAnswer(LoanDetailsPage(0), LoanDetails(1000.00, 2000.22)),
         submitAnswer(PaymentValueAndDatePage(0), PaymentDetails(1000.00, LocalDate.now())),
         goToChangeAnswer(employer.PaymentNaturePage(0)),
         submitAnswer(employer.PaymentNaturePage(0), TangibleMoveableProperty),

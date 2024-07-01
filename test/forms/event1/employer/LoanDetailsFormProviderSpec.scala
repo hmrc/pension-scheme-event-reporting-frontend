@@ -25,15 +25,20 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
   private val loanAmountKey = "loanAmount"
   private val fundValueKey = "fundValue"
 
+  private val loanAmountRequiredKey = "loanDetails.loanAmount.nothingEntered"
   private val loanAmountNotANumberErrorKey = "loanDetails.loanAmount.notANumber"
   private val loanAmountTooManyDecimalsKey = "loanDetails.loanAmount.tooManyDecimals"
   private val loanAmountNegativeKey = "loanDetails.loanAmount.negative"
   private val loanAmountAmountTooHighErrorKey = "loanDetails.loanAmount.amountTooHigh"
+  private val loanAmountMustNotBeZero = "loanDetails.loanAmount.zeroAmount"
 
+  private val fundValueRequiredKey = "loanDetails.fundValue.nothingEntered"
   private val fundValueNotANumberErrorKey = "loanDetails.fundValue.notANumber"
   private val fundValueTooManyDecimalsKey = "loanDetails.fundValue.tooManyDecimals"
   private val fundValueNegativeKey = "loanDetails.fundValue.negative"
   private val fundValueAmountTooHighErrorKey = "loanDetails.fundValue.amountTooHigh"
+  private val fundValueMustNotBeZero = "loanDetails.fundValue.zeroAmount"
+
 
   private def details(loanAmount: String = "12.34",
                       fundValue: String = "1.00"
@@ -44,6 +49,12 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
     )
 
   "loanAmount" - {
+    behave like mandatoryField(
+      form,
+      loanAmountKey,
+      requiredError = FormError(loanAmountKey, loanAmountRequiredKey)
+    )
+
     "not bind non-numeric numbers" in {
       forAll(nonNumerics -> "nonNumeric") {
         nonNumeric: String =>
@@ -76,13 +87,19 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
       }
     }
 
-    "bind 0.00 when positive value bound" in {
+    "not bind 0.00" in {
       val result = form.bind(details(loanAmount = "0.00"))
-      result.errors mustBe Seq.empty
+      result.errors.headOption.map(_.message) mustEqual Some(loanAmountMustNotBeZero)
     }
   }
 
   "fundValue" - {
+    behave like mandatoryField(
+      form,
+      fundValueKey,
+      requiredError = FormError(fundValueKey, fundValueRequiredKey)
+    )
+
     "not bind non-numeric numbers" in {
       forAll(nonNumerics -> "nonNumeric") {
         nonNumeric: String =>
@@ -115,9 +132,9 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
       }
     }
 
-    "bind 0.00 when positive value" in {
+    "not bind 0.00" in {
       val result = form.bind(details(fundValue = "0.00"))
-      result.errors mustBe Seq.empty
+      result.errors.headOption.map(_.message) mustEqual Some(fundValueMustNotBeZero)
     }
   }
 }
