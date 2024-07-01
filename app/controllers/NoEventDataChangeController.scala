@@ -16,7 +16,6 @@
 
 package controllers
 
-import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -32,12 +31,15 @@ class NoEventDataChangeController @Inject()(
                                         identify: IdentifierAction,
                                         getData: DataRetrievalAction,
                                         val controllerComponents: MessagesControllerComponents,
-                                        userAnswersCacheConnector: UserAnswersCacheConnector,
                                         view: NoEventDataChangeView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
-  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify).async {
-      Future.successful(Ok)
+  def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
+    implicit request =>
+      Future.successful(Ok(view()))
   }
+
+
 }
+

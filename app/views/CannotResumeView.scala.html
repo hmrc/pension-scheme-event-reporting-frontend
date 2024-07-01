@@ -21,9 +21,9 @@
 
 @()(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("NoEventDataChange.title")), showBackLink = false) {
+@layout(pageTitle = titleNoForm(messages("cannotResume.title")), showBackLink = false) {
 
-   <h1 class="govuk-heading-xl">@messages("NoEventDataChange.heading")</h1>
+   <h1 class="govuk-heading-xl">@messages("cannotResume.heading")</h1>
    <p class="govuk-body">@messages("cannotResume.p1")</p>
 
 }

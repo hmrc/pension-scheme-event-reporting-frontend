@@ -71,19 +71,22 @@ class DeclarationController @Inject()(
 
       request.userAnswers.getOrElse(throw new NothingToSubmitException("User data not available"))
 
-      userAnswersCacheConnector.getAllEventsInSession(request.pstr).map { eventReports =>
+      val isAnyEventDataChanged = userAnswersCacheConnector.getAllEventsInSession(request.pstr).map { eventReports =>
         println(s">>>>>>onClick >>>> <<<<<<<<<<<<<<<<<<<<******************DeclarationController  seq of event Reports = ${eventReports}")
-        eventReports.groupBy(_.edi.eventType).foreach { case (eventType, reports) =>
+        eventReports.groupBy(_.edi.eventType).map { case (eventType, reports) =>
           println(s"******************DeclarationController  eventType = ${eventType} reports = ${reports}")
 
           val ifcond = (reports.size == 2) && (reports.head.data == reports.last.data)
           println(s"******************DeclarationController  ifcond = ${ifcond}")
           if(reports.size == 2 && (reports.head.data == reports.last.data)){
             println(s"******************DeclarationController  ifcond = ${reports.size}")
-            Future.successful(Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints).url))
+            false
+          }
+          else{
+            true
           }
         }
-      }
+      }.map(x => x.toList.contains(true))
 
       println(s"******************DeclarationController  userAnswers = ${request.userAnswers}")
       requireData.invokeBlock(request, { implicit request: DataRequest[_] =>
@@ -104,18 +107,37 @@ class DeclarationController @Inject()(
           sendEmail(minimalDetails.name, email, taxYear, schemeName)
         }
 
-        submitService.submitReport(request.pstr, data).flatMap { result =>
-          result.header.status match {
-            case OK => emailFuture.map(_ => Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
-            case BAD_REQUEST =>
-              logger.warn(s"Unable to submit declaration because it has already been submitted)")
-              Future.successful(Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints).url))
-            case NOT_FOUND =>
-              logger.warn(s"Unable to submit declaration because there is nothing to submit (nothing in compile state)")
-              Future.successful(Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url))
-            case _ => throw new RuntimeException(s"Invalid response returned from submit report: ${result.header.status}")
-          }
+
+        for {
+          isAnyEventDataChanges <- isAnyEventDataChanged
+          submitResults <- submitService.submitReport(request.pstr, data)
+        }yield (submitResults, isAnyEventDataChanges) match {
+          case (submitResult, isAnyEventDataChange) =>
+            submitResult.header.status match {
+              case OK if !isAnyEventDataChange =>
+                logger.warn(s"Unable to submit declaration because no data changed")
+                Redirect(controllers.routes.NoEventDataChangeController.onPageLoad(waypoints).url)
+              case OK if isAnyEventDataChange =>
+                println(s"******************DeclarationController  isAnyEventDataChanged true = ${isAnyEventDataChange}")
+                emailFuture.map(es => logger.info(s"Sent Email with status: ${es}"))
+                  Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
+
+              case OK =>
+                println(s"******************DeclarationController  isAnyEventDataChanged = ${isAnyEventDataChange}")
+                Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
+              case BAD_REQUEST =>
+                logger.warn(s"Unable to submit declaration because it has already been submitted)")
+                Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints).url)
+              case NOT_FOUND =>
+                logger.warn(s"Unable to submit declaration because there is nothing to submit (nothing in compile state)")
+                Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
+              case _ => throw new RuntimeException(s"Invalid response returned from submit report: ${submitResult.header.status}")
+            }
         }
+
+
+
+
       })
   }
 
