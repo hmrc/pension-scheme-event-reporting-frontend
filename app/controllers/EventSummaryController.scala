@@ -96,6 +96,14 @@ class EventSummaryController @Inject()(
                             )
                           }
                         ).flatten
+                      case WindUp =>
+                        Seq(
+                          removeLinkForEvent(eventSummary.eventType, eventSummary.lockedBy.isDefined).map { link =>
+                            ActionItem(
+                              content = Text(Message("site.remove")),
+                              href = link
+                            )
+                          }).flatten
                       case _ =>
                         Seq(
                           changeLinkForEvent(eventSummary.eventType, eventSummary.lockedBy.isDefined, reportSubmitted = true).map { link =>
