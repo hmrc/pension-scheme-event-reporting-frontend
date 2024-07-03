@@ -6,6 +6,7 @@ site.remove = Remove
 site.change = Change
 site.view = View
 site.viewOrChange = View or change
+site.changeOrView = Change or view
 site.no = No
 site.yes = Yes
 site.continue = Continue

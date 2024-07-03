@@ -20,10 +20,11 @@ import connectors.EventReportingConnector
 import controllers.actions._
 import forms.EventSummaryFormProvider
 import models.TaxYear.getSelectedTaxYearAsString
-import models.{EventSummary, MemberSummaryPath, UserAnswers}
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event18, Event20A, Event8A, WindUp}
+import models.enumeration.VersionStatus.Submitted
 import models.requests.DataRequest
+import models.{EventSummary, MemberSummaryPath, UserAnswers}
 import pages.{EmptyWaypoints, EventSummaryPage, TaxYearPage, VersionInfoPage, Waypoints}
 import play.api.Logger
 import play.api.i18n.I18nSupport
@@ -58,6 +59,7 @@ class EventSummaryController @Inject()(
     }
   }
 
+  //noinspection ScalaStyle
   private def summaryListRows(implicit request: DataRequest[AnyContent]): Future[Seq[SummaryListRow]] = {
     (request.userAnswers.get(TaxYearPage), request.userAnswers.get(VersionInfoPage)) match {
       case (Some(taxYear), Some(versionInfo)) =>
@@ -83,6 +85,34 @@ class EventSummaryController @Inject()(
                         )
                       }
                     ).flatten
+                  } else if (versionInfo.status == Submitted) {
+                    eventSummary.eventType match {
+                      case Event20A =>
+                        Seq(
+                          viewOnlyLinkForEvent(eventSummary.eventType).map { link =>
+                            ActionItem(
+                              content = Text(Message("site.view")),
+                              href = link
+                            )
+                          }
+                        ).flatten
+                      case WindUp =>
+                        Seq(
+                          removeLinkForEvent(eventSummary.eventType, eventSummary.lockedBy.isDefined).map { link =>
+                            ActionItem(
+                              content = Text(Message("site.remove")),
+                              href = link
+                            )
+                          }).flatten
+                      case _ =>
+                        Seq(
+                          changeLinkForEvent(eventSummary.eventType, eventSummary.lockedBy.isDefined, reportSubmitted = true).map { link =>
+                            ActionItem(
+                              content = Text(Message("site.changeOrView")),
+                              href = link
+                            )
+                          }).flatten
+                    }
                   } else {
                     Seq(
                       changeLinkForEvent(eventSummary.eventType, eventSummary.lockedBy.isDefined).map { link =>
@@ -154,7 +184,7 @@ class EventSummaryController @Inject()(
       )
   }
 
-  private def changeLinkForEvent(eventType: EventType, locked: Boolean): Option[String] = {
+  private def changeLinkForEvent(eventType: EventType, locked: Boolean, reportSubmitted: Boolean = false): Option[String] = {
     if(locked) return None
     eventType match {
       case EventType.Event1 => Some(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(EmptyWaypoints).url)
@@ -169,8 +199,14 @@ class EventSummaryController @Inject()(
       case EventType.Event11 => Some(controllers.event11.routes.Event11CheckYourAnswersController.onPageLoad.url)
       case EventType.Event12 => Some(controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
       case EventType.Event13 => Some(controllers.event13.routes.Event13CheckYourAnswersController.onPageLoad.url)
-      case EventType.Event14 => None
-      case EventType.Event18 => None
+      case EventType.Event14 => reportSubmitted match {
+        case true => Some(controllers.event14.routes.Event14CheckYourAnswersController.onPageLoad().url)
+        case false => None
+      }
+      case EventType.Event18 => reportSubmitted match {
+        case true => Some(controllers.routes.EventSummaryController.onPageLoadForEvent18ViewOnlyLink().url)
+        case false => None
+      }
       case EventType.Event19 => Some(controllers.event19.routes.Event19CheckYourAnswersController.onPageLoad.url)
       case EventType.Event20 => Some(controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
       case EventType.WindUp => None
@@ -229,6 +265,7 @@ class EventSummaryController @Inject()(
       case EventType.Event18 => Some(controllers.routes.EventSummaryController.onPageLoadForEvent18ViewOnlyLink(EmptyWaypoints).url)
       case EventType.Event19 => Some(controllers.event19.routes.Event19CheckYourAnswersController.onPageLoad.url)
       case EventType.Event20 => Some(controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
+      case EventType.Event20A => Some(controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad.url)
       case EventType.WindUp => Some(controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onPageLoad().url)
       case _ =>
         logger.error(s"Missing event type $eventType")
