@@ -67,17 +67,14 @@ class WantToSubmitController @Inject()(
               userAnswersCacheConnector.save(request.pstr, updatedAnswers).flatMap { _ =>
                 if (value) {
                   lazy val isCurrentTaxYear = TaxYear.isCurrentTaxYear(updatedAnswers)
-                  println(s"*************** WantToSubmitController isCurrentTaxYear: $isCurrentTaxYear ***************")
                   if (currentCompileEventTypes.contains(WindUp) || currentCompileEventTypes.contains(Event20A) || !isCurrentTaxYear) {
                     request.loggedInUser.administratorOrPractitioner match {
                       case Administrator => Future.successful(Redirect(routes.DeclarationController.onPageLoad(waypoints)))
                       case Practitioner => Future.successful(Redirect(routes.DeclarationPspController.onPageLoad(waypoints)))
                     }
                   } else if (isCurrentTaxYear) {
-                    println(s"*************** WantToSubmitController isCurrentTaxYear: $isCurrentTaxYear ***************")
                     Future.successful(Redirect(controllers.routes.CannotSubmitController.onPageLoad(waypoints).url))
                   } else {
-                    println(s"*************** else  returnUrl: ${request.returnUrl} ***************")
                     Future.successful(Redirect(request.returnUrl))
                   }
                 } else {

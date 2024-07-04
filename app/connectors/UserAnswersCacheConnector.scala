@@ -19,7 +19,7 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import handlers.TaxYearNotAvailableException
-import models.{EventDataIdentifier, EventReportCacheEntry, UserAnswers}
+import models.UserAnswers
 import models.enumeration.EventType
 import pages.{TaxYearPage, VersionInfoPage}
 import play.api.http.Status._
@@ -27,7 +27,6 @@ import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
 
-import java.time.LocalDateTime
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserAnswersCacheConnector @Inject()(
@@ -36,7 +35,6 @@ class UserAnswersCacheConnector @Inject()(
                                          ) {
 
   private def url = s"${config.eventReportingUrl}/pension-scheme-event-reporting/user-answers"
-  private def urlForEvents = s"${config.eventReportingUrl}/pension-scheme-event-reporting/session-event-reporting"
 
   private def noEventHeaders(pstr: String) = Seq(
     "Content-Type" -> "application/json",
@@ -84,8 +82,6 @@ class UserAnswersCacheConnector @Inject()(
       }
     }
   }
-
-
 
   private def getJson(headers: Seq[(String, String)])(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier) = {
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
@@ -199,5 +195,4 @@ class UserAnswersCacheConnector @Inject()(
       }
   }
 }
-
 

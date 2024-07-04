@@ -18,7 +18,7 @@ package controllers
 
 import audit.{AuditService, EventReportingSubmissionEmailAuditEvent}
 import config.FrontendAppConfig
-import connectors.{EmailConnector, EmailStatus, MinimalConnector, UserAnswersCacheConnector}
+import connectors.{EmailConnector, EmailStatus, MinimalConnector}
 import controllers.actions._
 import handlers.NothingToSubmitException
 import models.enumeration.AdministratorOrPractitioner
@@ -48,7 +48,6 @@ class DeclarationController @Inject()(
                                        val controllerComponents: MessagesControllerComponents,
                                        emailConnector: EmailConnector,
                                        minimalConnector: MinimalConnector,
-                                       userAnswersCacheConnector: UserAnswersCacheConnector,
                                        auditService: AuditService,
                                        config: FrontendAppConfig,
                                        declarationView: DeclarationView
@@ -57,7 +56,6 @@ class DeclarationController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) {
     implicit request =>
-
       if (request.isReportSubmitted) {
         Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
       } else {
@@ -68,9 +66,7 @@ class DeclarationController @Inject()(
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
 
-      println(s"*************** DeclarationController onClick waypoints: $waypoints ***************")
       request.userAnswers.getOrElse(throw new NothingToSubmitException("User data not available"))
-
 
       requireData.invokeBlock(request, { implicit request: DataRequest[_] =>
         val data: UserAnswers = UserAnswers(
@@ -90,27 +86,18 @@ class DeclarationController @Inject()(
           sendEmail(minimalDetails.name, email, taxYear, schemeName)
         }
 
-        for {
-          submitResults <- submitService.submitReport(request.pstr, data)
-        }yield (submitResults) match {
-          case submitResult =>
-            submitResult.header.status match {
-              case OK  =>
-                emailFuture.map(es => logger.info(s"Sent Email with status: ${es}"))
-                  Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
-              case BAD_REQUEST =>
-                logger.warn(s"Unable to submit declaration because it has already been submitted)")
-                Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints).url)
-              case NOT_FOUND =>
-                logger.warn(s"Unable to submit declaration because there is nothing to submit (nothing in compile state)")
-                Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url)
-              case _ => throw new RuntimeException(s"Invalid response returned from submit report: ${submitResult.header.status}")
-            }
+        submitService.submitReport(request.pstr, data).flatMap { result =>
+          result.header.status match {
+            case OK => emailFuture.map(_ => Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
+            case BAD_REQUEST =>
+              logger.warn(s"Unable to submit declaration because it has already been submitted)")
+              Future.successful(Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints).url))
+            case NOT_FOUND =>
+              logger.warn(s"Unable to submit declaration because there is nothing to submit (nothing in compile state)")
+              Future.successful(Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url))
+            case _ => throw new RuntimeException(s"Invalid response returned from submit report: ${result.header.status}")
+          }
         }
-
-
-
-
       })
   }
 

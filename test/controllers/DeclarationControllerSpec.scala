@@ -21,7 +21,6 @@ import base.SpecBase
 import connectors.MinimalConnector.MinimalDetails
 import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector, UserAnswersCacheConnector}
 import handlers.NothingToSubmitException
-import models.{EventDataIdentifier, EventReportCacheEntry, VersionInfo}
 import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.enumeration.EventType
 import models.enumeration.VersionStatus.{Compiled, Submitted}

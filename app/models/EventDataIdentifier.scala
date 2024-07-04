@@ -17,40 +17,4 @@
 package models
 
 import models.enumeration.EventType
-import play.api.libs.json.{Format, JsPath, JsResult, JsValue, Json}
-import models.enumeration.EventType
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json._
-
-import java.time.LocalDateTime
-
-case class EventReportCacheEntry(pstr: String, edi: EventDataIdentifier, data: JsValue, lastUpdated: LocalDateTime, expireAt: LocalDateTime)
-
-object EventReportCacheEntry {
-  implicit val formats: Format[EventReportCacheEntry] = Json.format[EventReportCacheEntry]
-}
-
-case class EventDataIdentifier(eventType: EventType, year: String, version: String, externalId:String = "")
-
-object EventDataIdentifier {
-  implicit val formats: Format[EventDataIdentifier] = new Format[EventDataIdentifier] {
-    override def writes(o: EventDataIdentifier): JsValue = {
-      Json.obj(
-        "eventType" -> o.eventType.toString,
-        "year" -> o.year,
-        "version" -> o.version,
-        "externalId" -> o.externalId
-      )
-    }
-
-    override def reads(json: JsValue): JsResult[EventDataIdentifier] = {
-      (
-        (JsPath \ "eventType").read[EventType](EventType.formats) and
-          (JsPath \ "year").read[Int] and
-          (JsPath \ "version").read[Int] and
-          (JsPath \ "externalId").read[String]
-        )(
-        (eventType, year, version, externalId) => EventDataIdentifier(eventType, year.toString, version.toString, externalId)
-      ).reads(json)
-    }
-  }}
+case class EventDataIdentifier(eventType: EventType, year: String, version: String)
