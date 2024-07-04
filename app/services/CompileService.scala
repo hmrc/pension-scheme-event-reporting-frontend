@@ -24,9 +24,7 @@ import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
 import models.{EROverview, EROverviewVersion, EventDataIdentifier, TaxYear, UserAnswers, VersionInfo}
 import org.apache.pekko.actor.ActorSystem
 import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
-import play.api.Logging
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Results.NotFound
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,7 +34,7 @@ class CompileService @Inject()(
                                 userAnswersCacheConnector: UserAnswersCacheConnector,
                                 appConfig: FrontendAppConfig,
                                 actorSystem: ActorSystem
-                              ) (implicit ec: ExecutionContext) extends Logging  {
+                              ) (implicit ec: ExecutionContext) {
 
   private def doCompile(currentVersionInfo: VersionInfo,
                         newVersionInfo: VersionInfo,
@@ -163,10 +161,7 @@ class CompileService @Inject()(
     }
   }
 
-
   private def isEventDataNotModified(oldUserAnswers: Option[JsObject], newUserAnswers: Option[JsObject]) = {
-    println(s"*************** $oldUserAnswers")
-    println(s"*************** $newUserAnswers")
     oldUserAnswers.getOrElse(Json.obj()) == newUserAnswers.getOrElse(Json.obj())
   }
 

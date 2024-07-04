@@ -17,7 +17,6 @@
 package models.enumeration
 
 import models.EventSelection
-import play.api.libs.json.{Format, JsError, JsResult, JsString, JsSuccess, JsValue}
 import play.api.mvc.{JavascriptLiteral, QueryStringBindable}
 
 sealed trait EventType
@@ -143,5 +142,4 @@ object EventType extends Enumerable.Implicits {
 
   implicit val enumerable: Enumerable[EventType] =
     Enumerable(values.map(v => v.toString -> v): _*)
-
 }

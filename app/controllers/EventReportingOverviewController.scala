@@ -49,6 +49,8 @@ class EventReportingOverviewController @Inject()(
 
     val ua = request.userAnswers
 
+
+
     val ovm = for {
       pastYears <- service.getPastYearsAndUrl(ua, request.pstr)
       inProgressYears <- service.getInProgressYearAndUrl(ua, request.pstr)
