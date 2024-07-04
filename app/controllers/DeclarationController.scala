@@ -58,7 +58,6 @@ class DeclarationController @Inject()(
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) {
     implicit request =>
 
-
       if (request.isReportSubmitted) {
         Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
       } else {
@@ -69,20 +68,9 @@ class DeclarationController @Inject()(
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
     implicit request =>
 
+      println(s"*************** DeclarationController onClick waypoints: $waypoints ***************")
       request.userAnswers.getOrElse(throw new NothingToSubmitException("User data not available"))
 
-      val isAnyEventDataChanged = userAnswersCacheConnector.getAllEventsInSession(request.pstr).map { eventReports =>
-        eventReports.groupBy(_.edi.eventType).map { case (eventType, reports) =>
-
-          val ifcond = (reports.size == 2) && (reports.head.data == reports.last.data)
-          if(reports.size == 2 && (reports.head.data == reports.last.data)){
-            false
-          }
-          else{
-            true
-          }
-        }
-      }.map(x => x.toList.contains(true))
 
       requireData.invokeBlock(request, { implicit request: DataRequest[_] =>
         val data: UserAnswers = UserAnswers(
@@ -102,22 +90,14 @@ class DeclarationController @Inject()(
           sendEmail(minimalDetails.name, email, taxYear, schemeName)
         }
 
-
         for {
-          isAnyEventDataChanges <- isAnyEventDataChanged
           submitResults <- submitService.submitReport(request.pstr, data)
-        }yield (submitResults, isAnyEventDataChanges) match {
-          case (submitResult, isAnyEventDataChange) =>
+        }yield (submitResults) match {
+          case submitResult =>
             submitResult.header.status match {
-              case OK if !isAnyEventDataChange =>
-                logger.warn(s"Unable to submit declaration because no data changed")
-                Redirect(controllers.routes.NoEventDataChangeController.onPageLoad(waypoints).url)
-              case OK if isAnyEventDataChange =>
+              case OK  =>
                 emailFuture.map(es => logger.info(s"Sent Email with status: ${es}"))
                   Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
-
-              case OK =>
-                Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url)
               case BAD_REQUEST =>
                 logger.warn(s"Unable to submit declaration because it has already been submitted)")
                 Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints).url)

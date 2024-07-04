@@ -50,6 +50,7 @@ class EventReportingOverviewController @Inject()(
     val ua = request.userAnswers
 
 
+    println(s"*************** EventReportingOverviewController SRN: $srn ***************")
 
     val ovm = for {
       pastYears <- service.getPastYearsAndUrl(ua, request.pstr)

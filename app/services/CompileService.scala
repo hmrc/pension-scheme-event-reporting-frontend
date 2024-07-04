@@ -24,6 +24,7 @@ import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
 import models.{EROverview, EROverviewVersion, EventDataIdentifier, TaxYear, UserAnswers, VersionInfo}
 import org.apache.pekko.actor.ActorSystem
 import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
+import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,7 +34,7 @@ class CompileService @Inject()(
                                 userAnswersCacheConnector: UserAnswersCacheConnector,
                                 appConfig: FrontendAppConfig,
                                 actorSystem: ActorSystem
-                              ) (implicit ec: ExecutionContext) {
+                              ) (implicit ec: ExecutionContext) extends Logging  {
 
   private def doCompile(currentVersionInfo: VersionInfo,
                         newVersionInfo: VersionInfo,
@@ -63,7 +64,15 @@ class CompileService @Inject()(
           eventReportingConnector.deleteMember(pstrVal, edi, currentVersionVal, memberIdToDelete)
       }
 
-      userAnswersCacheConnector.save(pstr, updatedUA).flatMap(_ => futureAction)
+      userAnswersCacheConnector.save(pstr, updatedUA).flatMap{_ =>
+
+        futureAction.recoverWith({
+          case _: Exception =>
+            logger.warn(s"********************Failed to compile event for pstr, so reverting back the event reporting cashe userAnswers... to : $userAnswers")
+            userAnswersCacheConnector.save(pstr, userAnswers)
+        })
+
+    }
     }
   }
 

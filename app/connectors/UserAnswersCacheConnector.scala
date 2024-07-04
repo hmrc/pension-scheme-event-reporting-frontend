@@ -85,28 +85,7 @@ class UserAnswersCacheConnector @Inject()(
     }
   }
 
-  def getAllEventsInSession(pstr: String)
-         (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[EventReportCacheEntry]] = {
-    Seq(
-      "Content-Type" -> "application/json",
-      "pstr" -> pstr
-    )
-    http.GET[HttpResponse](urlForEvents)(implicitly, hc, implicitly)
-      .recoverWith(mapExceptionsToStatus)
-      .map { response =>
-        response.status match {
-          case NOT_FOUND =>
-            Seq.empty
-          case OK =>
-            response.json.as[Seq[EventReportCacheEntry]]
-          case _ =>
-            throw new HttpException(response.body, response.status)
-        }
-      }.recoverWith{
-        case ex: Exception =>
-          Future.successful(Seq.empty[EventReportCacheEntry])
-      }
-  }
+
 
   private def getJson(headers: Seq[(String, String)])(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier) = {
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
