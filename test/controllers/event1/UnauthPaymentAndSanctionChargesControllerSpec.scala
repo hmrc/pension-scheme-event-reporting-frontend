@@ -38,7 +38,7 @@ class UnauthPaymentAndSanctionChargesControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[UnauthPaymentAndSanctionChargesView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(controllers.routes.EventSummaryController.onPageLoad().url)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(controllers.routes.EventSummaryController.onPageLoad().url)(request, messages(application)).toString
       }
     }
   }

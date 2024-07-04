@@ -65,7 +65,7 @@ class UnauthorisedPaymentRecipientNameControllerSpec extends SpecBase with Befor
         val view = application.injector.instanceOf[UnauthorisedPaymentRecipientNameView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form, waypoints, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(form, waypoints, index = 0, request, messages(application)).toString
       }
     }
 
@@ -79,7 +79,7 @@ class UnauthorisedPaymentRecipientNameControllerSpec extends SpecBase with Befor
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form.fill(Some(validValue)), waypoints, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(form.fill(Some(validValue)), waypoints, index = 0, request, messages(application)).toString
       }
     }
 
@@ -110,7 +110,7 @@ class UnauthorisedPaymentRecipientNameControllerSpec extends SpecBase with Befor
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view.render(boundForm, waypoints, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(boundForm, waypoints, index = 0, request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
@@ -126,7 +126,7 @@ class UnauthorisedPaymentRecipientNameControllerSpec extends SpecBase with Befor
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view.render(boundForm, waypoints, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(boundForm, waypoints, index = 0, request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

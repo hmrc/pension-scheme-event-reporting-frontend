@@ -44,7 +44,6 @@ trait SpecBase
 
   val userAnswersId: String = "id"
 
-
   def fakeRequest = FakeRequest("", "").withSession(
     SessionKeys.sessionId -> "sessionId"
   )
@@ -55,7 +54,6 @@ trait SpecBase
   def emptyUserAnswers: UserAnswers = UserAnswers()
   def emptyUserAnswersWithTaxYear: UserAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022"), nonEventTypeData = true).get
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
-
 
   private val app = applicationBuilder(None).build()
 
@@ -85,4 +83,7 @@ trait SpecBase
 
   protected implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 
+  implicit class StringOps(s: String) {
+    def removeAllNonces(): String = s.replaceAll("""nonce="[^"]*"""", "")
+  }
 }

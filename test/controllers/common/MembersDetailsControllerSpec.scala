@@ -87,7 +87,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
         val view = application.injector.instanceOf[MembersDetailsView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces()mustEqual view.render(
           form(eventType),
           waypoints,
           eventType,
@@ -108,7 +108,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces()mustEqual view.render(
           form(eventType).fill(validValue),
           waypoints,
           eventType,
@@ -154,7 +154,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces()mustEqual view.render(
           boundForm,
           waypoints,
           eventType,
@@ -184,7 +184,7 @@ class MembersDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces()mustEqual view.render(
           boundForm,
           waypoints,
           eventType,

@@ -78,7 +78,7 @@ class TypeOfProtectionControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val view = application.injector.instanceOf[TypeOfProtectionView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, event8, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, event8, 0)(request, messages(application)).toString
       }
     }
 
@@ -96,7 +96,7 @@ class TypeOfProtectionControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(TypeOfProtection.values.head), waypoints, event8, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form.fill(TypeOfProtection.values.head), waypoints, event8, 0)(request, messages(application)).toString
       }
     }
 
@@ -136,7 +136,7 @@ class TypeOfProtectionControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, event8, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints, event8, 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
@@ -156,7 +156,7 @@ class TypeOfProtectionControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val view = application.injector.instanceOf[TypeOfProtectionView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, event8a, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, event8a, 0)(request, messages(application)).toString
       }
     }
 
@@ -174,7 +174,7 @@ class TypeOfProtectionControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(TypeOfProtection.values.head), waypoints, event8a, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form.fill(TypeOfProtection.values.head), waypoints, event8a, 0)(request, messages(application)).toString
       }
     }
 
@@ -214,7 +214,7 @@ class TypeOfProtectionControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, event8a, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints, event8a, 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

@@ -98,7 +98,7 @@ class EventReportingOverviewControllerSpec extends SpecBase with BeforeAndAfterE
         val view = application.injector.instanceOf[EventReportingOverviewView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(ovm)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(ovm)(request, messages(application)).toString
       }
     }
   }

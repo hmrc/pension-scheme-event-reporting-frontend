@@ -67,7 +67,7 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         val view = application.injector.instanceOf[LoanDetailsView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form, waypoints, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(form, waypoints, index = 0, request, messages(application)).toString
       }
     }
 
@@ -81,7 +81,7 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form.fill(validValue), waypoints, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(form.fill(validValue), waypoints, index = 0, request, messages(application)).toString
       }
     }
 

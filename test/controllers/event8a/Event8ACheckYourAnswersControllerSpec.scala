@@ -76,7 +76,7 @@ class Event8ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val list = SummaryListViewModel(expectedMemberSummaryListRowsEvent8A)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces() mustEqual view.render(
           list,
           continueUrl = "/manage-pension-scheme-event-report/report/1/event-8a-click",
           Tuple2(None, None),
@@ -97,7 +97,7 @@ class Event8ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val list = SummaryListViewModel(expectedMemberSummaryListRowsEvent8AViewOnly)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces() mustEqual view.render(
           list,
           continueUrl = "/manage-pension-scheme-event-report/report/1/event-8a-click",
           Tuple2(Some(1), Some(Event8A)),

@@ -49,7 +49,7 @@ class ProblemWithServiceControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[ProblemWithServiceView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(returnUrl)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(returnUrl)(request, messages(application)).toString
       }
     }
   }

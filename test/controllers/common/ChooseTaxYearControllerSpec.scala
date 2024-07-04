@@ -90,7 +90,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val view = application.injector.instanceOf[ChooseTaxYearView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form(eventType), waypoints, eventType, index = 0, maxTaxYear, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(form(eventType), waypoints, eventType, index = 0, maxTaxYear, request, messages(application)).toString
       }
 
       Await.result(application.stop(), 10.seconds)
@@ -112,7 +112,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form(eventType).fill(
+        contentAsString(result).removeAllNonces()mustEqual view.render(form(eventType).fill(
           ChooseTaxYear.values(maxTaxYear).head),
           waypoints,
           eventType,
@@ -162,7 +162,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view.render(boundForm, waypoints, eventType, 0, maxTaxYear, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(boundForm, waypoints, eventType, 0, maxTaxYear, request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
 

@@ -69,7 +69,7 @@ class RemoveEventControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[RemoveEventView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form, waypoints, Event18, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(form, waypoints, Event18, request, messages(application)).toString
       }
     }
 
@@ -96,7 +96,7 @@ class RemoveEventControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, Event18)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, Event18)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

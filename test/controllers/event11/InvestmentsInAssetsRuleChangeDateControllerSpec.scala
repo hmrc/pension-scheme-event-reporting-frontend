@@ -76,7 +76,7 @@ class InvestmentsInAssetsRuleChangeDateControllerSpec extends SpecBase with Befo
         val view = application.injector.instanceOf[InvestmentsInAssetsRuleChangeDateView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form, waypoints)(request, messages(application)).toString
       }
     }
 
@@ -92,7 +92,7 @@ class InvestmentsInAssetsRuleChangeDateControllerSpec extends SpecBase with Befo
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form.fill(validAnswer), waypoints)(request, messages(application)).toString
       }
     }
 
@@ -131,7 +131,7 @@ class InvestmentsInAssetsRuleChangeDateControllerSpec extends SpecBase with Befo
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
