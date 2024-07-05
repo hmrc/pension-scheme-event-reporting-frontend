@@ -117,6 +117,8 @@ class CompileService @Inject()(
         oldNewFuture.flatMap {
           case x if isEventDataNotModified(x._1.map(_.data), x._2.map(_.data)) =>
             Future.successful(())
+
+          case _ =>
             val newVersionInfo = changeVersionInfo(vi)
             doCompile(
               vi,
