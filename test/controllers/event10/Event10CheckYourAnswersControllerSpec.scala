@@ -121,7 +121,8 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-10-click", Tuple2(Some(1), Some(Event10)))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list, "/manage-pension-scheme-event-report/report/event-10-click",
+          Tuple2(Some(1), Some(Event10)))(request, messages(application)).toString
       }
     }
 
@@ -211,7 +212,8 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         ArgumentCaptor.forClass(classOf[SummaryList])
 
       running(application) {
-        when(mockView.apply(captor.capture(), any(), ArgumentMatchers.eq(Some(1),Some(Event10)))(any(), any())).thenReturn(play.twirl.api.Html(""))
+        when(mockView.apply(captor.capture(), any(),
+          ArgumentMatchers.eq(Some(1),Some(Event10)))(any(), any())).thenReturn(play.twirl.api.Html(""))
         val request = FakeRequest(GET, controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
         val result = route(application, request).value
         status(result) mustEqual OK
@@ -284,7 +286,8 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 }
 
 object Event10CheckYourAnswersControllerSpec {
-  private def fakeSummaryListRowWithHtmlContentWithHiddenContent(messageKey: String, htmlContent: String, changeLink: String, hiddenContentChangeLink: String)
+  private def fakeSummaryListRowWithHtmlContentWithHiddenContent(messageKey: String, htmlContent: String, changeLink: String,
+                                                                 hiddenContentChangeLink: String)
                                                                 (implicit messages: Messages): SummaryListRow =
     SummaryListRow(
       Key(
@@ -302,10 +305,11 @@ object Event10CheckYourAnswersControllerSpec {
         Text(
           messages(messageKey)
         ), ""),
-      Value(HtmlContent(htmlContent), ""), "",
+      Value(HtmlContent(htmlContent), ""), ""
     )
 
-  private def fakeSummaryListRowWithTextWithHiddenContent(messageKey: String, text: String, changeLink: String, hiddenContentChangeLink: String)
+  private def fakeSummaryListRowWithTextWithHiddenContent(messageKey: String, text: String, changeLink: String,
+                                                          hiddenContentChangeLink: String)
                                                          (implicit messages: Messages): SummaryListRow =
     SummaryListRow(
       Key(
@@ -341,7 +345,8 @@ object Event10CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithTextWithHiddenContent(
       "contractsOrPolicies.checkYourAnswersLabel",
       "Yes",
-      "/manage-pension-scheme-event-report/report/event-10-are-investments-contracts-or-policies-of-insurance?waypoints=event-10-check-answers",
+      "/manage-pension-scheme-event-report/report/event-10-are-investments-contracts" +
+        "-or-policies-of-insurance?waypoints=event-10-check-answers",
       "contractsOrPolicies.change.hidden"
     )
   )
@@ -361,7 +366,8 @@ object Event10CheckYourAnswersControllerSpec {
     )
   )
 
-  private def expectedMemberSummaryListRowsEvent10CeasedToBecomeASchemeViewOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
+  private def expectedMemberSummaryListRowsEvent10CeasedToBecomeASchemeViewOnly
+                                      (implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "becomeOrCeaseScheme.checkYourAnswersLabel",
       "It has ceased to be an investment regulated pension scheme"

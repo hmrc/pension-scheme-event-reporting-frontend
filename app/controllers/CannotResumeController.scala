@@ -16,10 +16,8 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
-import models.enumeration.AdministratorOrPractitioner.Administrator
 import pages.Waypoints
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -45,7 +43,6 @@ class CannotResumeController @Inject()(
         case Some(_) => userAnswersCacheConnector.removeAll(request.pstr)
         case _ => Future.successful((): Unit)
       }
-
       futureRemoval.map(_ => Ok(view()))
   }
 }

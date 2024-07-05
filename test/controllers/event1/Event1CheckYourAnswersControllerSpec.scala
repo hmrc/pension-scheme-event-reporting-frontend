@@ -156,7 +156,8 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         ArgumentCaptor.forClass(classOf[SummaryList])
 
       running(application) {
-        when(mockView.apply(captor.capture(), any(), ArgumentMatchers.eq(Some(1), Some(Event1)))(any(), any())).thenReturn(play.twirl.api.Html(""))
+        when(mockView.apply(captor.capture(), any(), ArgumentMatchers.eq(Some(1), Some(Event1)))
+        (any(), any())).thenReturn(play.twirl.api.Html(""))
         val request = FakeRequest(GET, controllers.event1.routes.Event1CheckYourAnswersController.onPageLoad(0).url)
         val result = route(application, request).value
         status(result) mustEqual OK
@@ -224,7 +225,8 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         ArgumentCaptor.forClass(classOf[SummaryList])
 
       running(application) {
-        when(mockView.apply(captor.capture(), any(), ArgumentMatchers.eq(Some(1), Some(Event1)))(any(), any())).thenReturn(play.twirl.api.Html(""))
+        when(mockView.apply(captor.capture(), any(), ArgumentMatchers.eq(Some(1),
+          Some(Event1)))(any(), any())).thenReturn(play.twirl.api.Html(""))
         val request = FakeRequest(GET, controllers.event1.routes.Event1CheckYourAnswersController.onPageLoad(0).url)
         val result = route(application, request).value
         status(result) mustEqual OK
@@ -321,7 +323,8 @@ object Event1CheckYourAnswersControllerSpec {
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(messageKey)), "", Map()))))
     )
 
-  private def fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(messageKey: String, htmlContent: String, changeLink: String, hiddenKey: String)
+  private def fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(messageKey: String, htmlContent: String,
+                                                                           changeLink: String, hiddenKey: String)
                                                                           (implicit messages: Messages): SummaryListRow =
     SummaryListRow(
       Key(
@@ -332,7 +335,10 @@ object Event1CheckYourAnswersControllerSpec {
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenKey)), "", Map()))))
     )
 
-  private def fakeSummaryListRowWithHtmlContentWithHiddenContent(messageKey: String, htmlContent: String, changeLink: String, hiddenContentChangeLink: String)
+  private def fakeSummaryListRowWithHtmlContentWithHiddenContent(messageKey: String,
+                                                                 htmlContent: String,
+                                                                 changeLink: String,
+                                                                 hiddenContentChangeLink: String)
                                                                 (implicit messages: Messages): SummaryListRow =
     SummaryListRow(
       Key(
@@ -343,7 +349,9 @@ object Event1CheckYourAnswersControllerSpec {
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
 
-  private def fakeSummaryListRowWithTextWithHiddenContent(messageKey: String, text: String, changeLink: String, hiddenContentChangeLink: String)
+  private def fakeSummaryListRowWithTextWithHiddenContent(messageKey: String, text: String,
+                                                          changeLink: String,
+                                                          hiddenContentChangeLink: String)
                                                          (implicit messages: Messages): SummaryListRow =
     SummaryListRow(
       Key(
@@ -493,7 +501,10 @@ object Event1CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContent(
       "companyDetails.CYA.companyAddress",
-      """<span class="govuk-!-display-block">addr11</span><span class="govuk-!-display-block">addr12</span><span class="govuk-!-display-block">addr13</span><span class="govuk-!-display-block">addr14</span><span class="govuk-!-display-block">zz11zz</span><span class="govuk-!-display-block">United Kingdom</span>""",
+      """<span class="govuk-!-display-block">addr11</span><span class="govuk-!-display-block">addr12</span>
+        |<span class="govuk-!-display-block">addr13</span><span class="govuk-!-display-block">addr14</span>
+        |<span class="govuk-!-display-block">zz11zz</span>
+        |<span class="govuk-!-display-block">United Kingdom</span>""".stripMargin,
       "/manage-pension-scheme-event-report/report/1/event-1-company-postcode?waypoints=event-1-check-answers-1"
     ),
     fakeSummaryListRowWithHtmlContent(
@@ -531,7 +542,9 @@ object Event1CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentViewOnly(
       "companyDetails.CYA.companyAddress",
-      """<span class="govuk-!-display-block">addr11</span><span class="govuk-!-display-block">addr12</span><span class="govuk-!-display-block">addr13</span><span class="govuk-!-display-block">addr14</span><span class="govuk-!-display-block">zz11zz</span><span class="govuk-!-display-block">United Kingdom</span>""",
+      """<span class="govuk-!-display-block">addr11</span><span class="govuk-!-display-block">addr12</span>
+        |<span class="govuk-!-display-block">addr13</span><span class="govuk-!-display-block">addr14</span>
+        |<span class="govuk-!-display-block">zz11zz</span><span class="govuk-!-display-block">United Kingdom</span>""".stripMargin,
     ),
     fakeSummaryListRowWithHtmlContentViewOnly(
       "paymentNature.checkYourAnswersLabel",
