@@ -14,17 +14,7 @@
  * limitations under the License.
  *@
 
-@this(
-        layout: templates.SchemeLayoutDashboard,
-        govukButton: GovukButton
-)
-
 @()(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
-
-@layout(pageTitle = titleNoForm(messages("cannotResume.title")), showBackLink = false) {
-
-   <h1 class="govuk-heading-xl">@messages("cannotResume.heading")</h1>
-   <p class="govuk-body">@messages("cannotResume.p1")</p>
-
-
-}
+<p class="govuk-body">
+  <a href="@request.returnUrl" class="govuk-link">@messages("site.returnTo", request.schemeName) dashboard</a>
+</p>

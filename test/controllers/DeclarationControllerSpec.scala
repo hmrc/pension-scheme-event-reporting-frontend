@@ -21,6 +21,7 @@ import base.SpecBase
 import connectors.MinimalConnector.MinimalDetails
 import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector, UserAnswersCacheConnector}
 import handlers.NothingToSubmitException
+import models.VersionInfo
 import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.enumeration.EventType
 import models.enumeration.VersionStatus.{Compiled, Submitted}
@@ -66,16 +67,6 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
     bind[SubmitService].toInstance(mockSubmitService)
   )
 
-  val seqEventReports: Seq[EventReportCacheEntry] = Seq(EventReportCacheEntry("pstr",
-                                                  EventDataIdentifier(EventType.Event1, "2023", "1", "externalId"),
-                                                    JsObject(Seq.empty),
-                                                    LocalDateTime.now(),
-                                                    LocalDateTime.now().plusHours(12)),
-                                                  EventReportCacheEntry("pstr",
-                                                    EventDataIdentifier(EventType.Event1, "2023", "1", "externalId"),
-                                                    JsObject(Seq.empty),
-                                                    LocalDateTime.now(),
-                                                    LocalDateTime.now().plusHours(12)))
 
   override protected def beforeEach(): Unit = {
     reset(mockERConnector)
@@ -126,14 +117,11 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       val organisationName = "Test company ltd"
       val minimalDetails = MinimalDetails(testEmail, isPsaSuspended = false, Some(organisationName), None, rlsFlag = false, deceasedFlag = false)
 
-      val seqEventReportsModified = Seq(seqEventReports.head.copy(data = Json.obj("key" -> "value")), seqEventReports.last)
 
       when(mockERConnector.submitReport(any(), any(), any())(any())).thenReturn(Future.successful(NoContent))
-      when(mockUserAnswersConnector.getAllEventsInSession(any())(any(), any())).thenReturn(Future.successful(seqEventReportsModified))
       when(mockUserAnswersConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(()))
 
       when(mockERConnector.submitReport(any(), any(), any())(any())).thenReturn(Future.successful(NoContent))
-      when(mockUserAnswersConnector.getAllEventsInSession(any())(any(), any())).thenReturn(Future.successful(seqEventReportsModified))
       when(mockUserAnswersConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(()))
       doNothing().when(mockAuditService).sendEvent(any())(any(), any())
       when(mockEmailConnector.sendEmail(
@@ -194,7 +182,6 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         .thenReturn(Future.successful(EmailSent))
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
       when(mockSubmitService.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(BadRequest))
-      when(mockUserAnswersConnector.getAllEventsInSession(any())(any(), any())).thenReturn(Future.successful(seqEventReports))
       when(mockUserAnswersConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(()))
 
       val application =
@@ -214,42 +201,6 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       }
     }
 
-    "must redirect to the no changes made page for method onClick when no changes are made in a event report" in {
-      val testEmail = "test@test.com"
-      val templateId = "pods_event_report_submitted"
-      val organisationName = "Test company ltd"
-      val minimalDetails = MinimalDetails(testEmail, isPsaSuspended = false, Some(organisationName), None, rlsFlag = false, deceasedFlag = false)
 
-      when(mockERConnector.submitReport(any(), any(), any())(any())).thenReturn(Future.successful(BadRequest))
-      doNothing().when(mockAuditService).sendEvent(any())(any(), any())
-      when(mockEmailConnector.sendEmail(
-        schemeAdministratorType = ArgumentMatchers.eq(Administrator),
-        requestId = any(), psaOrPspId = any(), pstr = any(),
-        emailAddress = ArgumentMatchers.eq(testEmail),
-        templateId = ArgumentMatchers.eq(templateId),
-        templateParams = any(),
-        reportVersion = any())(any(), any()))
-        .thenReturn(Future.successful(EmailSent))
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
-      when(mockSubmitService.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(Ok))
-      when(mockUserAnswersConnector.getAllEventsInSession(any())(any(), any())).thenReturn(Future.successful(seqEventReports))
-      when(mockUserAnswersConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(()))
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled))), extraModules)
-          .build()
-
-      running(application) {
-        val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        verify(mockEmailConnector, times(0)).sendEmail(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())
-        verify(mockAuditService, times(0)).sendEvent(any())(any(), any())
-        verify(mockSubmitService, times(1)).submitReport(any(), any())(any(), any())
-        redirectLocation(result).value mustEqual routes.NoEventDataChangeController.onPageLoad(waypoints).url
-      }
-    }
   }
 }

@@ -15,16 +15,14 @@
  *@
 
 @this(
-        layout: templates.SchemeLayoutDashboard,
-        govukButton: GovukButton
+  layout:templates.Layout
 )
 
-@()(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true)(contentBlock: Html)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("cannotResume.title")), showBackLink = false) {
-
-   <h1 class="govuk-heading-xl">@messages("cannotResume.heading")</h1>
-   <p class="govuk-body">@messages("cannotResume.p1")</p>
-
-
+@content = {
+  @contentBlock
+  @templates.ReturnToSchemeDashboard()
 }
+
+@layout(pageTitle, showBackLink, timeout, showSignOut)(content)
