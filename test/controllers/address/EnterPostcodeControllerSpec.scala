@@ -75,7 +75,7 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val view = application.injector.instanceOf[EnterPostcodeView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form, waypoints, Event1EmployerAddressJourney,
+        contentAsString(result).removeAllNonces() mustEqual view.render(form, waypoints, Event1EmployerAddressJourney,
           messages("enterPostcode.title", "the company"),
           messages("enterPostcode.heading", companyDetails.companyName), index = 0, request, messages(application)).toString
       }

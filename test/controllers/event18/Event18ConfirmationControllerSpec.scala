@@ -75,7 +75,7 @@ class Event18ConfirmationControllerSpec extends SpecBase with BeforeAndAfterEach
         val view = application.injector.instanceOf[Event18ConfirmationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(getRouteOnClick, waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(getRouteOnClick, waypoints)(request, messages(application)).toString
       }
     }
   }

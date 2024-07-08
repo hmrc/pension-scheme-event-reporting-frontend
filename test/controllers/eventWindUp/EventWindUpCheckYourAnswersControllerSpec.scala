@@ -70,7 +70,7 @@ class EventWindUpCheckYourAnswersControllerSpec extends SpecBase with SummaryLis
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list,
+        contentAsString(result).removeAllNonces() mustEqual view(list,
           "/manage-pension-scheme-event-report/report/event-windup-click")(request, messages(application)).toString
       }
     }
@@ -90,7 +90,7 @@ class EventWindUpCheckYourAnswersControllerSpec extends SpecBase with SummaryLis
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list,
+        contentAsString(result).removeAllNonces() mustEqual view(list,
           "/manage-pension-scheme-event-report/report/event-windup-click", Tuple2(Some(1), Some(WindUp)))(request, messages(application)).toString
       }
     }

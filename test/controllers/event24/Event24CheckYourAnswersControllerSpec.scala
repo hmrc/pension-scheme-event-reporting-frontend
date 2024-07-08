@@ -96,7 +96,7 @@ class Event24CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces() mustEqual view.render(
           list,
           continueUrl = "/manage-pension-scheme-event-report/report/1/event-24-click",
           Tuple2(None, None),

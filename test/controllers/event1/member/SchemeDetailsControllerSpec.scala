@@ -74,7 +74,7 @@ class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val view = application.injector.instanceOf[SchemeDetailsView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form, waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -92,7 +92,7 @@ class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form.fill(validValue), waypoints, 0)(request, messages(application)).toString
       }
     }
 

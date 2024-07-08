@@ -71,7 +71,7 @@ class TypeOfProtectionGroup2ReferenceControllerSpec extends SpecBase with Before
         val view = application.injector.instanceOf[TypeOfProtectionGroup2ReferenceView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -89,7 +89,7 @@ class TypeOfProtectionGroup2ReferenceControllerSpec extends SpecBase with Before
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form.fill(validValue), waypoints, 0)(request, messages(application)).toString
       }
     }
 

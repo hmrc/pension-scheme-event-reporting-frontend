@@ -85,7 +85,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         val view = application.injector.instanceOf[DeclarationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(routes.DeclarationController.onClick(waypoints).url)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(routes.DeclarationController.onClick(waypoints).url)(request, messages(application)).toString
       }
     }
 

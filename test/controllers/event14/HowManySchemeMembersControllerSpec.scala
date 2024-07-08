@@ -73,7 +73,7 @@ class HowManySchemeMembersControllerSpec extends SpecBase with BeforeAndAfterEac
         val view = application.injector.instanceOf[HowManySchemeMembersView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, taxYearRange)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form, waypoints, taxYearRange)(request, messages(application)).toString
       }
     }
 
@@ -93,7 +93,7 @@ class HowManySchemeMembersControllerSpec extends SpecBase with BeforeAndAfterEac
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(HowManySchemeMembers.values.head), waypoints, taxYearRange)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form.fill(HowManySchemeMembers.values.head), waypoints, taxYearRange)(request, messages(application)).toString
       }
     }
 
@@ -133,7 +133,7 @@ class HowManySchemeMembersControllerSpec extends SpecBase with BeforeAndAfterEac
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, taxYearRange)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, taxYearRange)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

@@ -94,7 +94,7 @@ class ValidationErrorsAllControllerSpec extends SpecBase with BeforeAndAfterEach
           ValidationErrorForRendering(cell = "B2", error = "error2", columnName = "column2")
         )
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(returnUrl(eventType),
+        contentAsString(result).removeAllNonces() mustEqual view(returnUrl(eventType),
           fileDownloadInstructionLink(eventType), dummyErrors, fileDownloadTemplateLink(eventType))(request, messages(application)).toString
       }
     }

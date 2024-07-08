@@ -99,7 +99,7 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
         status(result) mustEqual OK
         verify(mockUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
 
-        contentAsString(result).filterNot(_.isWhitespace) mustEqual view(card)(request, messages(application)).toString.filterNot(_.isWhitespace)
+        contentAsString(result).filterNot(_.isWhitespace).removeAllNonces() mustEqual view(card)(request, messages(application)).toString.filterNot(_.isWhitespace)
       }
     }
 
@@ -132,7 +132,7 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
 
         status(result) mustEqual OK
         verify(mockUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
-        contentAsString(result) mustEqual ""
+        contentAsString(result).removeAllNonces()mustEqual ""
       }
     }
   }

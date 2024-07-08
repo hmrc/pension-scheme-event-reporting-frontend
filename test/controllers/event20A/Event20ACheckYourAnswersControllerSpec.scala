@@ -63,10 +63,10 @@ class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFl
         status(result) mustEqual OK
         request.loggedInUser.administratorOrPractitioner match {
           case Administrator =>
-            contentAsString(result) mustEqual view(
+            contentAsString(result).removeAllNonces() mustEqual view(
               list, "/manage-pension-scheme-event-report/report/event-20a-declaration-PSA")(request, messages(application)).toString
           case Practitioner =>
-            contentAsString(result) mustEqual view(
+            contentAsString(result).removeAllNonces() mustEqual view(
               list, "/manage-pension-scheme-event-report/report/event-20a-declaration-PSP")(request, messages(application)).toString
         }
       }

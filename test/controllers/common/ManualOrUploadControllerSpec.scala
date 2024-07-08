@@ -65,7 +65,7 @@ class ManualOrUploadControllerSpec extends SpecBase with BeforeAndAfterEach with
         val view = application.injector.instanceOf[ManualOrUploadView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form(eventType), waypoints, eventType, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(form(eventType), waypoints, eventType, index = 0, request, messages(application)).toString
       }
 
       Await.result(application.stop(), 10.seconds)
@@ -102,7 +102,7 @@ class ManualOrUploadControllerSpec extends SpecBase with BeforeAndAfterEach with
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view.render(boundForm, waypoints, eventType, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(boundForm, waypoints, eventType, index = 0, request, messages(application)).toString
       }
 
       Await.result(application.stop(), 10.seconds)

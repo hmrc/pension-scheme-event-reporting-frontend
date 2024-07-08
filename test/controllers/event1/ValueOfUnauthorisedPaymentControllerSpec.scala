@@ -71,7 +71,7 @@ class ValueOfUnauthorisedPaymentControllerSpec extends SpecBase with BeforeAndAf
         val view = application.injector.instanceOf[ValueOfUnauthorisedPaymentView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form, waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -90,7 +90,7 @@ class ValueOfUnauthorisedPaymentControllerSpec extends SpecBase with BeforeAndAf
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form.fill(true), waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -131,7 +131,7 @@ class ValueOfUnauthorisedPaymentControllerSpec extends SpecBase with BeforeAndAf
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
       }
     }

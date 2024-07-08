@@ -65,7 +65,7 @@ class PaymentNatureControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val view = application.injector.instanceOf[PaymentNatureView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form, waypoints, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(form, waypoints, index = 0, request, messages(application)).toString
       }
     }
 
@@ -79,7 +79,7 @@ class PaymentNatureControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form.fill(PaymentNature.values.head), waypoints, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(form.fill(PaymentNature.values.head), waypoints, index = 0, request, messages(application)).toString
       }
     }
 
@@ -109,7 +109,7 @@ class PaymentNatureControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view.render(boundForm, waypoints, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(boundForm, waypoints, index = 0, request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

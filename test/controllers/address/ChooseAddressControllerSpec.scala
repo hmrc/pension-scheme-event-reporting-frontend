@@ -74,7 +74,7 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val view = application.injector.instanceOf[ChooseAddressView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual
+        contentAsString(result).removeAllNonces() mustEqual
           view.render(form, waypoints, Event1EmployerAddressJourney,
             messages("chooseAddress.title", "the company"),
             messages("chooseAddress.heading", companyDetails.companyName),

@@ -80,7 +80,7 @@ class DatePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[DatePaidView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, "Joe Bloggs", index = 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form, waypoints, "Joe Bloggs", index = 0)(request, messages(application)).toString
       }
     }
 
@@ -96,7 +96,7 @@ class DatePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), waypoints, "Joe Bloggs", 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form.fill(validAnswer), waypoints, "Joe Bloggs", 0)(request, messages(application)).toString
       }
     }
 
@@ -140,7 +140,7 @@ class DatePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, "Joe Bloggs", 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, "Joe Bloggs", 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
