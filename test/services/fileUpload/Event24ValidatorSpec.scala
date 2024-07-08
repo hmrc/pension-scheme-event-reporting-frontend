@@ -51,21 +51,12 @@ class Event24ValidatorSpec extends SpecBase
     "return a valid result if there are no validation errors" in {
       val validCSVFile = CSVParser.split(
         s"""$header
-           |,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,
-           |YES,,YES,,123/ABCDEF
-           |,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM",12384nd82js,,123hids892h,,,NO,YES,,YES,
-           |,123/ABCDEF
-           |,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,,,"NON-RESIDENCE,
-           |PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
-           |,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,,,"NON-RESIDENCE,
-           |PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,NO,,
-           |,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,YES,,,YES,
-           |,123/ABCDEF
-           |,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,YES,,,NO,,""".stripMargin
+                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM",12384nd82js,,123hids892h,,,NO,YES,,YES,,123/ABCDEF
+                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,,,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,,,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,NO,,
+                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,YES,,,YES,,123/ABCDEF
+                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,YES,,,NO,,"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
       val result = validator.validate(validCSVFile, ua)
@@ -91,9 +82,7 @@ class Event24ValidatorSpec extends SpecBase
       DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
-           |,Jane,Doe,AB123456A,13/11/2026,ANN,"123,00",YES,,FIXED,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,
-           |,YES,,123/ABCDEF""".stripMargin
+                          ,Jane,Doe,AB123456A,13/11/2026,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
       val result = validator.validate(csvFile, ua)
@@ -106,53 +95,23 @@ class Event24ValidatorSpec extends SpecBase
       DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
       val csvFile = CSVParser.split(
         s"""$header
-           |,,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,
-           |,YES,,123/ABCDEF
-           |,Jane,,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,
-           |,YES,,123/ABCDEF
-           |,Jane,Doe,,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,
-           |PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
-           |,Jane,Doe,AB123456A,,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,
-           |PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
-           |,Jane,Doe,AB123456A,13/11/202,ANN,"123,00",YES,,FIXED,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,
-           |,YES,,123/ABCDEF
-           |,Jane,Doe,AB123456A,13/11/2023,ANNI,"123,00",YES,,FIXED,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,
-           |,YES,,123/ABCDEF
-           |,Jane,Doe,AB123456A,13/11/2023,ANN,YES,YES,,FIXED,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,
-           |,YES,,123/ABCDEF
-           |,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",,,,FIXED,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,
-           |,YES,,123/ABCDEF
-           |,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM,SS",,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
-           |,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXEDO,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,
-           |,YES,,123/ABCDEF
-           |,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123dnskassubcb,
-           |"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,
-           |,YES,,123/ABCDEF
-           |,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",NO,,,,,,,,,,,YES,,YES,
-           |,123/ABCDEF
-           |,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,,YES,,YES,
-           |,123/ABCDEF
-           |,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,,,YES,
-           |,123/ABCDEF
-           |,Jane,Doe,AB123456A,13/11/2023,STAND,"123,00",YES,,FIXED,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,
-           |,,,123/ABCDEF
-           |,Jane,Doe,AB123456A,13/11/2023,STAND,"123,00",YES,,FIXED,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,
-           |,YES,,12:/ABCDEF
-           |,Jane,Doe,AB123456A,13/11/2023,STAND,"123,00",YES,,FIXED,abcdef123,
-           |"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,
-           |,YES,,""".stripMargin
+                          ,,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/202,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANNI,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,YES,YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXEDO,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123dnskassubcb,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",NO,,,,,,,,,,,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,,YES,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,,,YES,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,STAND,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,,,123/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,STAND,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,12:/ABCDEF
+                          ,Jane,Doe,AB123456A,13/11/2023,STAND,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,"""
       )
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
       val result = validator.validate(csvFile, ua)
