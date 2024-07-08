@@ -16,8 +16,6 @@
 
 package services
 
-import viewmodels.{SummaryListRowWithThreeValues, SummaryListRowWithTwoValues}
-
 import javax.inject.Singleton
 
 @Singleton
@@ -26,27 +24,12 @@ class EventPaginationService {
   import EventPaginationService._
 
 
-  def paginateMappedMembers(mappedMembers: Seq[SummaryListRowWithTwoValues], pageNumber: Int): PaginationStats = {
+  def paginateMappedMembers[T](mappedMembers: Seq[T], pageNumber: Int): PaginationStats[T] = {
     val totalNumberOfMembers = mappedMembers.length
     val totNumOfPages = totalNumberOfPages(totalNumberOfMembers, pageSize)
     val pagStartAndEnd = pageStartAndEnd(pageNumber, totalNumberOfMembers, pageSize)
     val pagerSeqForNav = pagerSeq(pageNumber, totNumOfPages)
     PaginationStats(
-      mappedMembers.slice(pagStartAndEnd._1 - 1, pagStartAndEnd._2),
-      totalNumberOfMembers,
-      totNumOfPages,
-      pagStartAndEnd,
-      pagerSeqForNav
-    )
-  }
-
-  def paginateMappedMembersThreeValues(mappedMembers: Seq[SummaryListRowWithThreeValues], pageNumber: Int): PaginationStatsEvent7 = {
-    val totalNumberOfMembers = mappedMembers.length
-    val totNumOfPages = totalNumberOfPages(totalNumberOfMembers, pageSize)
-    val pagStartAndEnd = pageStartAndEnd(pageNumber, totalNumberOfMembers, pageSize)
-    val pagerSeqForNav = pagerSeq(pageNumber, totNumOfPages)
-
-    PaginationStatsEvent7(
       mappedMembers.slice(pagStartAndEnd._1 - 1, pagStartAndEnd._2),
       totalNumberOfMembers,
       totNumOfPages,
@@ -96,20 +79,12 @@ class EventPaginationService {
 
 object EventPaginationService {
 
-  case class PaginationStatsEvent7(
-                              slicedMembers: Seq[SummaryListRowWithThreeValues],
-                              totalNumberOfMembers: Int,
-                              totalNumberOfPages: Int,
-                              pageStartAndEnd: (Int, Int),
-                              pagerSeq: Seq[Int]
-                            )
-
-  case class PaginationStats(
-                               slicedMembers: Seq[SummaryListRowWithTwoValues],
+  case class PaginationStats[+T](
+                               slicedMembers: Seq[T],
                                totalNumberOfMembers: Int,
                                totalNumberOfPages: Int,
                                pageStartAndEnd: (Int, Int),
                                pagerSeq: Seq[Int]
                              )
-  private val pageSize = 25
+  val pageSize = 25
 }

@@ -256,6 +256,9 @@ GET         /report/event-1-paying-charges                                    co
 GET         /report/event-1-summary                                           controllers.event1.UnauthPaymentSummaryController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, search:Option[String] ?= None)
 POST        /report/event-1-summary                                           controllers.event1.UnauthPaymentSummaryController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
+GET         /report/event-1-summary/:page                                     controllers.event1.UnauthPaymentSummaryController.onPageLoadPaginated(waypoints: Waypoints ?= EmptyWaypoints, search:Option[String] ?= None, page:Index)
+POST        /report/event-1-summary/:page                                     controllers.event1.UnauthPaymentSummaryController.onSubmitPaginated(waypoints: Waypoints ?= EmptyWaypoints, page:Index)
+
 GET         /report/:index/event-23-tax-year                                  controllers.common.ChooseTaxYearController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
 POST        /report/:index/event-23-tax-year                                  controllers.common.ChooseTaxYearController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)
 GET         /report/:index/event-23-total-input-amount                        controllers.common.TotalPensionAmountsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23, index: Index)

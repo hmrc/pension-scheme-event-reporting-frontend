@@ -1,0 +1,52 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import services.EventPaginationService.PaginationStats
+@(page: Index, paginationStats: PaginationStats[Any], pageLink: Index => Call)
+
+@pageNumber = @{page.toInt}
+
+@if(paginationStats.totalNumberOfPages > 1) {
+
+    <div class="govuk-!-margin-bottom-9" id="page-nav">
+        <p class="govuk-body">@(s"Showing ${paginationStats.pageStartAndEnd._1} – ${paginationStats.pageStartAndEnd._2} of ${paginationStats.totalNumberOfMembers} members")</p>
+        <nav class="govuk-margin-top-5" aria-label="page">
+            <ul class="govuk-list">
+                @if((pageNumber + 1) >= 2) {
+                    <li class="govuk-!-display-inline govuk-!-margin-right-2">
+                        <a href="@pageLink(pageNumber - 1)" id="value-@(pageNumber - 1)" class="govuk-link">Previous</a>
+                    </li>
+                }
+                @for(link <- paginationStats.pagerSeq) {
+                    @if(link != (pageNumber + 1)){
+                        <li class="govuk-!-display-inline govuk-!-margin-right-2">
+                            <a href="@pageLink(link - 1)" id="value-@(link)" class="govuk-link">@(link)</a>
+                        </li>
+                    } else {
+                        <li class="govuk-!-display-inline govuk-!-margin-right-2">
+                        @(link)
+                        </li>
+                    }
+                }
+                @if((pageNumber + 1) < paginationStats.totalNumberOfPages) {
+                    <li class="govuk-!-display-inline">
+                        <a href="@pageLink(pageNumber + 1)" id="value-@(pageNumber + 1)" class="govuk-link">Next</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+}

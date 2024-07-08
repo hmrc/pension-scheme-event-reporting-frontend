@@ -126,7 +126,7 @@ object EventPaginationServiceSpec {
                                  totPages: Int,
                                  pagStartEnd: (Int, Int),
                                  pagSeq: Seq[Int]
-                                 ): PaginationStats = PaginationStats(
+                                 )= PaginationStats(
     slicedMembers = slicedMems,
     totalNumberOfMembers = totMems,
     totalNumberOfPages = totPages,
