@@ -50,7 +50,7 @@ class LoanDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
 
   private def postRoute: String = routes.LoanDetailsController.onSubmit(waypoints, 0).url
 
-  private val validValue = LoanDetails(Some(BigDecimal(12.12)), Some(BigDecimal(13.13)))
+  private val validValue = LoanDetails(BigDecimal(12.12), BigDecimal(13.13))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
