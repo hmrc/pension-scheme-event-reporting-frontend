@@ -544,7 +544,7 @@ object Event1CheckYourAnswersControllerSpec {
       "companyDetails.CYA.companyAddress",
       """<span class="govuk-!-display-block">addr11</span><span class="govuk-!-display-block">addr12</span>
         |<span class="govuk-!-display-block">addr13</span><span class="govuk-!-display-block">addr14</span>
-        |<span class="govuk-!-display-block">zz11zz</span><span class="govuk-!-display-block">United Kingdom</span>""".stripMargin,
+        |<span class="govuk-!-display-block">zz11zz</span><span class="govuk-!-display-block">United Kingdom</span>""".stripMargin
     ),
     fakeSummaryListRowWithHtmlContentViewOnly(
       "paymentNature.checkYourAnswersLabel",
