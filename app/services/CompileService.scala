@@ -24,6 +24,7 @@ import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
 import models.{EROverview, EROverviewVersion, EventDataIdentifier, TaxYear, UserAnswers, VersionInfo}
 import org.apache.pekko.actor.ActorSystem
 import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
+import play.api.Logging
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -34,7 +35,7 @@ class CompileService @Inject()(
                                 userAnswersCacheConnector: UserAnswersCacheConnector,
                                 appConfig: FrontendAppConfig,
                                 actorSystem: ActorSystem
-                              ) (implicit ec: ExecutionContext) {
+                              ) (implicit ec: ExecutionContext) extends Logging{
 
   private def doCompile(currentVersionInfo: VersionInfo,
                         newVersionInfo: VersionInfo,
@@ -116,6 +117,7 @@ class CompileService @Inject()(
 
         oldNewFuture.flatMap {
           case x if isEventDataNotModified(x._1.map(_.data), x._2.map(_.data)) =>
+            logger.warn(s"Data not modified for pstr: $pstr, event: ${edi.eventType}, version: $currentVersion")
             Future.successful(())
 
           case _ =>
@@ -145,6 +147,7 @@ class CompileService @Inject()(
 
         oldNewFuture.flatMap {
           case x if isEventDataNotModified(x._1.map(_.data), x._2.map(_.data)) =>
+            logger.warn(s"Data not modified for pstr: $pstr, event: $eventType version: ${vi.version}")
             Future.successful(())
 
           case _ =>
