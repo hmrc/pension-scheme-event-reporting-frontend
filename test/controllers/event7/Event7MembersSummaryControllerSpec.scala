@@ -111,7 +111,7 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent7, waypoints, Event7, expectedSeq, "150.00", "2023", eventPaginationService.paginateMappedMembers(expectedSeq, 1), Index(0), searchValue = None,
+          contentAsString(result).removeAllNonces() mustEqual view(formEvent7, waypoints, Event7, expectedSeq, "150.00", "2023", eventPaginationService.paginateMappedMembers(expectedSeq, 1), Index(0), searchValue = None,
             searchHref = "/manage-pension-scheme-event-report/report/event-7-summary")(request, messages(application)).toString
         }
       }
@@ -137,7 +137,7 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
             pagerSeq = Seq(1, 2))
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formEvent7, waypoints, Event7, fake26MappedMembers, "3,900.00", "2023", expectedPaginationStats, 0)(request, messages(application)).toString
+          contentAsString(result).removeAllNonces()mustEqual view(formEvent7, waypoints, Event7, fake26MappedMembers, "3,900.00", "2023", expectedPaginationStats, 0)(request, messages(application)).toString
         }
       } */
 
@@ -185,7 +185,7 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, waypoints, Event7, Nil, "0.00", "2023", emptyPageStats, Index(0), None, "/manage-pension-scheme-event-report/report/event-7-summary")(request, messages(application)).toString
+          contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, Event7, Nil, "0.00", "2023", emptyPageStats, Index(0), None, "/manage-pension-scheme-event-report/report/event-7-summary")(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
         }
       }

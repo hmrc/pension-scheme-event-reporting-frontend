@@ -71,7 +71,7 @@ class WhatChangeControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
         val view = application.injector.instanceOf[WhatChangeView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints)(request, messages(application)).toString
       }
     }
 
@@ -89,7 +89,7 @@ class WhatChangeControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(WhatChange.values.head), waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form.fill(WhatChange.values.head), waypoints)(request, messages(application)).toString
       }
     }
 
@@ -129,7 +129,7 @@ class WhatChangeControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

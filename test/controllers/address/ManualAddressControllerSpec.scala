@@ -76,7 +76,7 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val view = application.injector.instanceOf[ManualAddressView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form, waypoints, Event1EmployerAddressJourney,
+        contentAsString(result).removeAllNonces() mustEqual view.render(form, waypoints, Event1EmployerAddressJourney,
           Messages("address.title", entityType),
           Messages("address.heading", companyDetails.companyName), countryOptions.options, index = 0, request, messages(application)).toString
       }
@@ -94,7 +94,7 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form.fill(seqAddresses.head), waypoints, Event1EmployerAddressJourney,
+        contentAsString(result).removeAllNonces() mustEqual view.render(form.fill(seqAddresses.head), waypoints, Event1EmployerAddressJourney,
           Messages("address.title", entityType),
           Messages("address.heading", companyDetails.companyName), countryOptions.options, index = 0, request, messages(application)).toString
       }

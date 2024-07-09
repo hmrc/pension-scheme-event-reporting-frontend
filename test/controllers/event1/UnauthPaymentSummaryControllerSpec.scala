@@ -125,7 +125,7 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, expectedSeq, paginationStats(application, expectedSeq), Index(0), "8,544.00", taxYear,
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, expectedSeq, paginationStats(application, expectedSeq), Index(0), "8,544.00", taxYear,
           None, "/manage-pension-scheme-event-report/report/event-1-summary/1")(request, messages(application)).toString
       }
 
@@ -175,7 +175,7 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, Nil, paginationStats(application, Seq[SummaryListRow]()), Index(0), "0.00", taxYear,
+        contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints, Nil, paginationStats(application, Seq[SummaryListRow]()), Index(0), "0.00", taxYear,
           None, "/manage-pension-scheme-event-report/report/event-1-summary/1")(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
       }

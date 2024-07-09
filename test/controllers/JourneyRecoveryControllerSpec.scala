@@ -43,7 +43,7 @@ class JourneyRecoveryControllerSpec extends SpecBase {
           val continueView = application.injector.instanceOf[JourneyRecoveryContinueView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual continueView(continueUrl.unsafeValue)(request, messages(application)).toString
+          contentAsString(result).removeAllNonces() mustEqual continueView(continueUrl.unsafeValue)(request, messages(application)).toString
         }
       }
     }
@@ -63,7 +63,7 @@ class JourneyRecoveryControllerSpec extends SpecBase {
           val startAgainView = application.injector.instanceOf[JourneyRecoveryStartAgainView]
           val appConfig = application.injector.instanceOf[FrontendAppConfig]
           status(result) mustEqual OK
-          contentAsString(result) mustEqual startAgainView(appConfig.schemeDashboardUrl(Administrator, "srn"))(request, messages(application)).toString
+          contentAsString(result).removeAllNonces() mustEqual startAgainView(appConfig.schemeDashboardUrl(Administrator, "srn"))(request, messages(application)).toString
         }
       }
     }
@@ -84,7 +84,7 @@ class JourneyRecoveryControllerSpec extends SpecBase {
           val appConfig = application.injector.instanceOf[FrontendAppConfig]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual startAgainView(appConfig.schemeDashboardUrl(Administrator, "srn"))(request, messages(application)).toString
+          contentAsString(result).removeAllNonces() mustEqual startAgainView(appConfig.schemeDashboardUrl(Administrator, "srn"))(request, messages(application)).toString
         }
       }
     }

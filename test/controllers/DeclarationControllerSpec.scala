@@ -18,7 +18,7 @@ package controllers
 
 import audit.AuditService
 import base.SpecBase
-import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
+import connectors.MinimalConnector.MinimalDetails
 import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector}
 import handlers.NothingToSubmitException
 import models.VersionInfo
@@ -85,7 +85,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         val view = application.injector.instanceOf[DeclarationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(routes.DeclarationController.onClick(waypoints).url)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(routes.DeclarationController.onClick(waypoints).url)(request, messages(application)).toString
       }
     }
 

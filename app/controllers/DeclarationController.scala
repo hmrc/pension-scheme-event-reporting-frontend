@@ -18,14 +18,13 @@ package controllers
 
 import audit.{AuditService, EventReportingSubmissionEmailAuditEvent}
 import config.FrontendAppConfig
-import connectors.{EmailConnector, EmailStatus, EventReportingConnector, MinimalConnector, UserAnswersCacheConnector}
+import connectors.{EmailConnector, EmailStatus, MinimalConnector}
 import controllers.actions._
 import handlers.NothingToSubmitException
-import models.TaxYear.getTaxYear
-import models.enumeration.{AdministratorOrPractitioner, EventType}
+import models.enumeration.AdministratorOrPractitioner
 import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}
-import pages.{TaxYearPage, VersionInfoPage, Waypoints}
+import pages.{VersionInfoPage, Waypoints}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsObject, Json}
@@ -51,19 +50,12 @@ class DeclarationController @Inject()(
                                        minimalConnector: MinimalConnector,
                                        auditService: AuditService,
                                        config: FrontendAppConfig,
-                                       declarationView: DeclarationView,
-                                       erConnector: EventReportingConnector,
-                                       uaConnector: UserAnswersCacheConnector
+                                       declarationView: DeclarationView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
   private val logger = Logger(classOf[DeclarationController])
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData) {
     implicit request =>
-      val currentTaxYear = request.userAnswers.get(TaxYearPage) match {
-        case Some(value) => value
-        case _ => TaxYear("2023")
-      }
-      isReportDuplicate(request.pstr, currentTaxYear)
       if (request.isReportSubmitted) {
         Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
       } else {
@@ -164,18 +156,5 @@ class DeclarationController @Inject()(
       "psaDeclaration1" -> "Selected",
       "psaDeclaration2" -> "Selected"
     )
-  }
-
-  def isReportDuplicate(pstr: String, currentTaxYear: TaxYear)(implicit headerCarrier: HeaderCarrier) = {
-    val versions = erConnector.getListOfVersions(pstr, currentTaxYear.startYear + "-04-06")
-    versions.map(version =>
-      logger.info(s"versions are: $version")
-    )
-    val event22UserAnswers = uaConnector.get(pstr, EventType.Event22)
-    event22UserAnswers.map {
-      case Some(values) => logger.info(s"event22 user answers are: $values")
-      case None => logger.info(s"there are no user answers")
-    }
-    versions
   }
 }

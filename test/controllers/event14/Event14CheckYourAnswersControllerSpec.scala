@@ -85,7 +85,7 @@ class Event14CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list,
+        contentAsString(result).removeAllNonces()mustEqual view(list,
           "/manage-pension-scheme-event-report/report/event-14-click")(request, messages(application)).toString
       }
     }
@@ -105,7 +105,7 @@ class Event14CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list,
+        contentAsString(result).removeAllNonces()mustEqual view(list,
           "/manage-pension-scheme-event-report/report/event-14-click", Tuple2(Some(1), Some(Event14)))(request, messages(application)).toString
       }
     }

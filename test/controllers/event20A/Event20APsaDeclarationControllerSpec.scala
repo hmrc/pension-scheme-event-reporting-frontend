@@ -76,7 +76,7 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
         val view = application.injector.instanceOf[Event20APsaDeclarationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces() mustEqual view.render(
           schemeName, pstr, taxYear, adminName, controllers.event20A.routes.Event20APsaDeclarationController.onClick(EmptyWaypoints).url,
           request, messages(application)
         ).toString

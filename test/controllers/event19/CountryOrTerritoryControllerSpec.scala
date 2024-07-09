@@ -72,7 +72,7 @@ class CountryOrTerritoryControllerSpec extends SpecBase with BeforeAndAfterEach 
         val view = application.injector.instanceOf[CountryOrTerritoryView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, countryOptions.options)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, countryOptions.options)(request, messages(application)).toString
       }
     }
 
@@ -90,7 +90,7 @@ class CountryOrTerritoryControllerSpec extends SpecBase with BeforeAndAfterEach 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(seqAddresses.head.country), waypoints, countryOptions.options)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form.fill(seqAddresses.head.country), waypoints, countryOptions.options)(request, messages(application)).toString
       }
     }
 

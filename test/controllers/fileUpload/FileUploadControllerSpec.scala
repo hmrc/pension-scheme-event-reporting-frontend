@@ -87,7 +87,7 @@ class FileUploadControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[FileUploadView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual
+        contentAsString(result).removeAllNonces() mustEqual
           view(waypoints, getEventTypeByName(eventType), eventType,
             Call("post", upscanInitiateResponse.postTarget), formFieldsMap, None)(request, messages(application)).toString
       }

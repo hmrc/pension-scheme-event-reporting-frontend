@@ -75,7 +75,7 @@ class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(list,
+        contentAsString(result).removeAllNonces()mustEqual view.render(list,
           "/manage-pension-scheme-event-report/report/1/event-2-click",
           Tuple2(None, None),
           request,
@@ -95,7 +95,7 @@ class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces()mustEqual view.render(
           list,
           continueUrl = "/manage-pension-scheme-event-report/report/1/event-2-click",
           Tuple2(Some(1), Some(Event2)),

@@ -133,7 +133,7 @@ trait ModelGenerators {
       for {
         loanAmount <- arbitrary[BigDecimal].map(_.setScale(2, RoundingMode.FLOOR))
         fundValue <- arbitrary[BigDecimal].map(_.setScale(2, RoundingMode.FLOOR))
-      } yield LoanDetails(Some(loanAmount), Some(fundValue))
+      } yield LoanDetails(loanAmount, fundValue)
     }
 
   implicit lazy val arbitrarySchemeDetails: Arbitrary[SchemeDetails] =

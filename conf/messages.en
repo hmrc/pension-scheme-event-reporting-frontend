@@ -6,6 +6,7 @@ site.remove = Remove
 site.change = Change
 site.view = View
 site.viewOrChange = View or change
+site.changeOrView = Change or view
 site.no = No
 site.yes = Yes
 site.continue = Continue
@@ -119,11 +120,11 @@ eventSelection.event4.hint = Payment of serious ill-health lump sum
 eventSelection.event5 = Event 5
 eventSelection.event5.hint = Cessation of ill-health pension
 eventSelection.event6 = Event 6
-eventSelection.event6.hint = Benefit crystallisation events (BCEs) with reduced or eliminated liability
+eventSelection.event6.hint = Benefit crystallisation where the member relies on LTA protections
 eventSelection.event7 = Event 7
 eventSelection.event7.hint = Pension commencement lump sum more than 25% of the fund where the member does not have primary/enhanced protection
 eventSelection.event8 = Event 8
-eventSelection.event8.hint = Pension commencement lump sum with primary/enhanced protection
+eventSelection.event8.hint = Pension commencement lump sum where the member has either primary or enhanced protection
 eventSelection.event8a = Event 8A
 eventSelection.event8A = Event 8A
 eventSelection.event8a.hint = Stand-alone lump sums
@@ -132,7 +133,7 @@ eventSelection.event10.hint = The scheme becomes or ceases to be an investment r
 eventSelection.event11 = Event 11
 eventSelection.event11.hint = Changes in scheme rules
 eventSelection.event12 = Event 12
-eventSelection.event12.hint = Changes to rules of a scheme treated as more than 1 scheme before 6 April 2006
+eventSelection.event12.hint = Changes to rules of a scheme treated as more than one scheme before 6 April 2006
 eventSelection.event13 = Event 13
 eventSelection.event13.hint = Change in legal structure of scheme
 eventSelection.event14 = Event 14
@@ -162,9 +163,9 @@ eventSummary.event2 = Event 2: Lump sum death benefit payments more than 50% of 
 eventSummary.event3 = Event 3: Benefits provided before normal minimum pension age
 eventSummary.event4 = Event 4: Payment of serious ill-health lump sum
 eventSummary.event5 = Event 5: Cessation of ill-health pension
-eventSummary.event6 = Event 6: Benefit crystallisation events with reduced or eliminated liability
+eventSummary.event6 = Event 6: Benefit crystallisation where the member relies on LTA protections
 eventSummary.event7 = Event 7: Pension commencement lump sum without primary/enhanced protection
-eventSummary.event8 = Event 8: Pension commencement lump sum with primary/enhanced protection
+eventSummary.event8 = Event 8: Pension commencement lump sum where the member has either primary or enhanced protection
 eventSummary.event8A = Event 8a: Standalone lump sums
 eventSummary.event10 = Event 10: Investment-regulated pension scheme
 eventSummary.event11 = Event 11: Changes in scheme rules
@@ -256,8 +257,8 @@ whoReceivedUnauthPayment.error.format = You must enter either "member" or "emplo
 whoReceivedUnauthPayment.change.hidden = Who received the unauthorised payment or deemed unauthorised payment?
 whoReceivedUnauthPayment.member.hint = If a deemed unauthorised payment is being reported, you must select this option
 
-paymentNature.title = Nature of the payment or deemed payment
-paymentNature.heading = Nature of the payment or deemed payment
+paymentNature.title = Nature of the unauthorised payment or deemed unauthorised payment
+paymentNature.heading = Nature of the unauthorised payment or deemed unauthorised payment
 paymentNature.benefitInKind = Benefit in kind
 paymentNature.transferToNonRegPensionScheme = Transfer to non-registered pension scheme
 paymentNature.errorCalcTaxFreeLumpSums = Error in calculating tax-free lump sums
@@ -280,7 +281,7 @@ whatYouWillNeed.item1 = the member’s name and National Insurance number
 whatYouWillNeed.item2 = if you hold a signed mandate from the member to deduct tax from their unauthorised payment
 whatYouWillNeed.item3 = if the value of the unauthorised payment is more than 25% of the pension fund for the individual
 whatYouWillNeed.item4 = if the scheme is paying the unauthorised payment surcharge on behalf of the member
-whatYouWillNeed.item5 = the nature of the payment
+whatYouWillNeed.item5 = the nature of the unauthorised payment or deemed unauthorised payment
 whatYouWillNeed.item6 = the payment value and date
 
 whatYouWillNeed.event22.title = What you will need
@@ -297,7 +298,7 @@ whatYouWillNeed.event23.p = To record a money purchase pension savings statement
 whatYouWillNeed.event23.item1 = their name
 whatYouWillNeed.event23.item2 = their National Insurance number
 whatYouWillNeed.event23.item3 = the tax year in which the money purchase pension savings statement was issued
-whatYouWillNeed.event23.item4 = the total of the member's pension input amounts for money purchase arrangements under the scheme in the relevant tax year
+whatYouWillNeed.event23.item4 = the total of the members pension input amounts for money purchase arrangements under the scheme, which can include defined benefits, in the relevant tax year
 
 membersDetails.title = Member’s details
 membersDetails.heading = Member’s details
@@ -407,7 +408,7 @@ employer.whatYouWillNeed.p = To record an unauthorised payment you will need to 
 employer.whatYouWillNeed.item1 = the company or organisation name
 employer.whatYouWillNeed.item2 = the company number
 employer.whatYouWillNeed.item3 = the company address
-employer.whatYouWillNeed.item4 = the nature of the payment
+employer.whatYouWillNeed.item4 = the nature of the unauthorised payment or deemed unauthorised payment
 employer.whatYouWillNeed.item5 = the payment value and date
 
 companyDetails.title = Company details
@@ -478,8 +479,6 @@ address.country = Country
 entityType.theCompany = the company
 entityType.theResidentialProperty = the residential property
 
-paymentNature.title = Nature of the payment or deemed payment
-paymentNature.heading = Nature of the payment or deemed payment
 paymentNature.loansExceeding50PercentOfFundValue = Loans to or in respect of the employer exceeding 50% of the value of the fund
 paymentNature.residentialProperty  = Residential property held directly or indirectly by an investment-regulated pension scheme
 paymentNature.tangibleMoveableProperty  = Tangible moveable property held directly or indirectly by an investment-regulated pension scheme
@@ -656,18 +655,22 @@ fundAmount.change.hidden = Fund amount
 loanDetails.CYA.loanAmountLabel = Loan Amount
 loanDetails.CYA.fundValueLabel = Fund Amount
 
+loanDetails.loanAmount.nothingEntered = Enter the loan amount
 loanDetails.loanAmount.notANumber = The loan amount must be an amount of money, like £123.45 or £156.00
 loanDetails.loanAmount.tooManyDecimals = The loan amount can only include pounds and pence, like £123.45 or £156.00
 loanDetails.loanAmount.amountTooHigh = The loan amount must be £999999999.99 or less
 loanDetails.loanAmount.negative = The loan amount must not be a negative amount of money, like -£123.45 or -£156.00
+loanDetails.loanAmount.zeroAmount = The loan amount cannot be zero
 
+loanDetails.fundValue.nothingEntered = Enter the fund value
 loanDetails.fundValue.notANumber = The fund value must be an amount of money, like £123.45 or £156.00
 loanDetails.fundValue.tooManyDecimals = The fund value can only include pounds and pence, like £123.45 or £156.00
 loanDetails.fundValue.amountTooHigh = The fund value must be £999999999.99 or less
 loanDetails.fundValue.negative = The fund value must not be a negative amount of money, like -£123.45 or -£156.00
+loanDetails.fundValue.zeroAmount = The fund value cannot be zero
 
-loanDetails.loanAmount.heading = Amount of the loan (optional)
-loanDetails.fundValue.heading = Value of the fund (optional)
+loanDetails.loanAmount.heading = Amount of the loan
+loanDetails.fundValue.heading = Value of the fund
 
 country.AD = Andorra
 country.AE = United Arab Emirates
@@ -1070,8 +1073,8 @@ totalPensionAmounts.event22.heading = What is the total of the member’s pensio
 totalPensionAmounts.event22.checkYourAnswersLabel = What is the total of the member’s pension input amounts for all arrangements under the scheme for the tax year
 totalPensionAmounts.event22.change.hidden = What is the total of the member’s pension input amounts for all arrangements under the scheme for the tax year
 
-totalPensionAmounts.event23.title = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year
-totalPensionAmounts.event23.heading = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year
+totalPensionAmounts.event23.title = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme, which can include defined benefits, for the tax year
+totalPensionAmounts.event23.heading = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme, which can include defined benefits, for the tax year
 totalPensionAmounts.event23.checkYourAnswersLabel = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year
 totalPensionAmounts.event23.change.hidden = What is the total of the member’s pension input amounts for money purchase arrangements under the scheme for the tax year
 
@@ -1200,7 +1203,7 @@ fileUploadWhatYouWillNeed.event23.heading = What you will need
 fileUploadWhatYouWillNeed.event23.item1 = their name
 fileUploadWhatYouWillNeed.event23.item2 = their National Insurance number
 fileUploadWhatYouWillNeed.event23.item3 = the tax year in which the money purchase pension savings statement was issued
-fileUploadWhatYouWillNeed.event23.item4 = the total of the member’s pension input amounts, for money purchase arrangements, under the scheme in the relevant tax year
+fileUploadWhatYouWillNeed.event23.item4 = the total of the members pension input amounts for money purchase arrangements under the scheme, which can include defined benefits, in the relevant tax year
 fileUploadWhatYouWillNeed.event23.item5 = – do not change or delete the header (row 1) or change the order of the columns
 fileUploadWhatYouWillNeed.event23.item5.prefix = the
 fileUploadWhatYouWillNeed.event23.instructions.link.text = instructions explaining the process and the formatting that should be used
@@ -1481,15 +1484,12 @@ becomeOrCeaseScheme.checkYourAnswersLabel = What change has taken place for this
 becomeOrCeaseScheme.error.required = Select what change has taken place
 becomeOrCeaseScheme.change.hidden = Whether this pension scheme became or ceased to be investment regulated
 
-itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.title = When did the scheme become an investment regulated pension scheme?
-itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.heading = When did the scheme become an investment regulated pension scheme?
-itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.title = When did this scheme cease to be an investment regulated pension scheme?
-itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.heading = When did this scheme cease to be an investment regulated pension scheme?
+itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.title = When did the pension scheme become investment regulated?
+itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.heading = When did the pension scheme become investment regulated?
+itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.title = When did the pension scheme cease to be investment regulated?
+itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.heading = When did the pension scheme cease to be investment regulated?
 
 schemeChangeDate.hint = For example, 27 3 2007
-
-itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.checkYourAnswersLabel = When pension scheme became investment regulated
-itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.checkYourAnswersLabel = When pension scheme ceased to be investment regulated
 
 schemeChangeDate.error.nothingEntered = Enter the date
 schemeChangeDate.error.noDayMonthOrYear = The date must include a day, month and year
@@ -1508,11 +1508,12 @@ contractsOrPolicies.checkYourAnswersLabel = Do all investments consist of either
 contractsOrPolicies.error.required = Select yes if all investments consist of either contracts or policies of insurance
 contractsOrPolicies.change.hidden = Whether all investments consist of either contracts or policies of insurance
 
-hasSchemeChangedRules.title = Has the scheme that was treated as 2 or more schemes immediately before 6 April 2006 changed its rules?
-hasSchemeChangedRules.heading = Has the scheme that was treated as 2 or more schemes immediately before 6 April 2006 changed its rules?
-hasSchemeChangedRules.checkYourAnswersLabel = Did scheme treated as 2 or more schemes before 6 April 2006 change its rules?
+hasSchemeChangedRules.title = If the scheme was treated as more than one scheme before 6 April 2006, did it change its rules?
+hasSchemeChangedRules.heading = If the scheme was treated as more than one scheme before 6 April 2006, did it change its rules?
+hasSchemeChangedRules.hint = Select no if scheme was treated as one scheme before 6 April 2006.
+hasSchemeChangedRules.checkYourAnswersLabel = Did scheme change its rules – if treated as more than one scheme before 6 April 2006?
 hasSchemeChangedRules.error.required = Select if the scheme has changed its rules
-hasSchemeChangedRules.change.hidden = Whether scheme treated as 2 or more schemes before 6 April 2006 changed its rules
+hasSchemeChangedRules.change.hidden = Whether scheme treated as more than one scheme before 6 April 2006 changed its rules
 
 dateOfChange.title = When did this change take effect?
 dateOfChange.heading = When did this change take effect?
@@ -1762,10 +1763,13 @@ cannotSubmitLockedEvents.multiple.heading = The event report cannot be submitted
 cannotSubmitLockedEvents.multiple.p1 = Before the event report can be submitted:
 cannotSubmitLockedEvents.multiple.item = {0} must close event {1}
 
-removeMember.title = Are you sure you want to remove the {0} event for this member?
-removeMember.heading = Are you sure you want to remove the {0} event for this member?
-removeMember.error.required = Select yes if you want to remove the {0} event for this member
-removeMember.change.hidden = Are you sure you want to remove the {0} event for this member?
+removeMember.title = Are you sure you want to remove {0} for {1}?
+removeMember.heading = Are you sure you want to remove {0} for {1}?
+removeMember.error.required = Select yes if you want to remove {0} for {1}
+
+removeMember.commencementLumpSum.title = Are you sure you want to remove the {0} where {1} has {2}?
+removeMember.commencementLumpSum.heading = Are you sure you want to remove the {0} where {1} has {2}?
+removeMember.commencementLumpSum.error.required = Select yes if you want to remove the {0} where {1} has {2}
 
 membersDetails.error.nino.notUnique = This National Insurance number is already in use for this event and cannot be duplicated
 
@@ -1808,18 +1812,23 @@ fileUpload.overAllowanceAndDeathBenefit.generic.error = entry of whether the lum
 fileUpload.marginalRate.generic.error = entry of whether the excess has been taxed at marginal rate is missing or in the wrong format
 fileUpload.employerPayeRef.generic.error = employer PAYE reference is missing of in the wrong format. The employer PAYE reference is a 3-digit number, a forward slash, and a tax office employer reference that is a combination of letters and numbers, like 123/AB456.
 
-eventDescription.event1 = unauthorised payment
-eventDescription.event2 = lump sum death benefit payment
-eventDescription.event3 = benefits provided before normal minimum pension age
-eventDescription.event4 = payment of serious ill-health lump sum
-eventDescription.event5 = cessation of ill-health pension
-eventDescription.event6 = benefit crystallisation event
-eventDescription.event7 = pension commencement lump sum
-eventDescription.event8 = pension commencement lump sum
-eventDescription.event8A = pension commencement lump sum
-eventDescription.event22 = annual allowance
-eventDescription.event23 = dual annual allowance
-eventDescription.event24 = payment of lump sum in relation to relevant benefit crystallisation
+eventDescription.event1 = the unauthorised payment
+eventDescription.event2 = the lump sum death benefit payment
+eventDescription.event3 = the benefits provided before normal minimum pension age
+eventDescription.event4 = the serious ill-health lump sum
+eventDescription.event5 = the cessation of ill-health pension
+eventDescription.event6 = the benefit crystallisation
+
+eventDescription.event7.part1 = lump sum charge of 25% or more
+eventDescription.event7.part2 = no primary or enhanced protection
+
+eventDescription.event8.part1 = lump sum
+eventDescription.event8.part2 = either primary or enhanced protection
+
+eventDescription.event8A = the pension commencement lump sum
+eventDescription.event22 = the annual allowance
+eventDescription.event23 = dual annual allowances
+eventDescription.event24 = the relevant benefit crystallisation event
 
 noDataEnteredError.title = This report cannot be submitted
 noDataEnteredError.heading = This report cannot be submitted
@@ -1991,7 +2000,7 @@ whatYouWillNeed.event13.li2 = when the change was made
 whatYouWillNeed.event14.p = For this event, you will need to tell us how many scheme members there were at the end of the tax year {0}.
 
 
-eventReportingOverview.title                           = Event reporting: overview
+eventReportingOverview.title                           = Event reporting overview
 eventReportingOverview.startNewEventReporting                     = Start a new event report
 eventReportingOverview.totalOutstanding                = Total outstanding payments:
 eventReportingOverview.totalOutstandingNotAvailable    = The amount outstanding is not currently available on this screen. You can view it using the link below.

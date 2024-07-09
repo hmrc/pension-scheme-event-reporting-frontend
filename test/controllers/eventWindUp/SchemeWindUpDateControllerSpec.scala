@@ -81,7 +81,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val view = application.injector.instanceOf[SchemeWindUpDateView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints)(request, messages(application)).toString
       }
     }
 
@@ -100,7 +100,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form.fill(validAnswer), waypoints)(request, messages(application)).toString
       }
     }
 
@@ -152,7 +152,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints)(request, messages(application)).toString
       }
     }
   }

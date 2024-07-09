@@ -58,7 +58,7 @@ class CannotResumeControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[CannotResumeView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view()(request, messages(application)).toString
       }
     }
   }

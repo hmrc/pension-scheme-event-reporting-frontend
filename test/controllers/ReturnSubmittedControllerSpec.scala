@@ -70,7 +70,7 @@ class ReturnSubmittedControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
 
-        contentAsString(result) mustEqual
+        contentAsString(result).removeAllNonces() mustEqual
           view(
             routes.ReturnSubmittedController.onPageLoad(waypoints).url,
             yourPensionSchemesUrl,
@@ -99,7 +99,7 @@ class ReturnSubmittedControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
 
-        contentAsString(result) mustEqual
+        contentAsString(result).removeAllNonces() mustEqual
           view(
             routes.ReturnSubmittedController.onPageLoad(waypoints).url,
             listPspUrl,

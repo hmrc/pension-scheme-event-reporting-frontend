@@ -70,7 +70,7 @@ class ReasonForBenefitsControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[ReasonForBenefitsView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form, waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -88,7 +88,7 @@ class ReasonForBenefitsControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(ReasonForBenefits.values.head), waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form.fill(ReasonForBenefits.values.head), waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -128,7 +128,7 @@ class ReasonForBenefitsControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

@@ -99,7 +99,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
         val view = application.injector.instanceOf[Event20APspDeclarationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(schemeName, pstr, taxYear, practitionerName, form, waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(schemeName, pstr, taxYear, practitionerName, form, waypoints)(request, messages(application)).toString
       }
     }
 
@@ -133,7 +133,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(
+        contentAsString(result).removeAllNonces() mustEqual view(
           schemeName, pstr, taxYear, practitionerName, form.fill(validValue), waypoints)(request, messages(application)).toString
       }
     }
@@ -181,7 +181,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(schemeName, pstr, taxYear, practitionerName, boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(schemeName, pstr, taxYear, practitionerName, boundForm, waypoints)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

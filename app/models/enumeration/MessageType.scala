@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package models.event1.employer
+package models.enumeration
 
-import play.api.libs.json.{Format, Json}
+sealed trait MessageType
 
-case class LoanDetails(loanAmount: BigDecimal, fundValue: BigDecimal)
+object MessageType extends Enumerable.Implicits {
+  case object Title extends WithName("title") with MessageType
 
-object LoanDetails {
-  implicit val formats: Format[LoanDetails] = Json.format[LoanDetails]
+  case object Heading extends WithName("heading") with MessageType
+
+  case object Error extends WithName("error") with MessageType
+
+  private val values: List[MessageType] = List(Title, Heading, Error)
+
+  implicit val enumerable: Enumerable[MessageType] =
+    Enumerable(values.map(v => v.toString -> v): _*)
 }

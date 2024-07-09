@@ -90,7 +90,7 @@ class CannotSubmitLockedEventsControllerSpec extends SpecBase with SummaryListFl
         val eventSelectionUrl = routes.EventSelectionController.onPageLoad().url
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(eventSelectionUrl, expectedSeqOfEvent, false)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(eventSelectionUrl, expectedSeqOfEvent, false)(request, messages(application)).toString
       }
     }
 
@@ -122,7 +122,7 @@ class CannotSubmitLockedEventsControllerSpec extends SpecBase with SummaryListFl
         val eventSelectionUrl = routes.EventSelectionController.onPageLoad().url
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(eventSelectionUrl, expectedSeqOfEvents, true)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(eventSelectionUrl, expectedSeqOfEvents, true)(request, messages(application)).toString
       }
     }
 

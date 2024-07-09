@@ -237,7 +237,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
             ))
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form, waypoints, eventType, expectedSeq, totalAmount,
+        contentAsString(result).removeAllNonces()mustEqual view.render(form, waypoints, eventType, expectedSeq, totalAmount,
           selectedTaxYear = "2023",
           request = request,
           messages = messages(application),
@@ -306,7 +306,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           request,
           messages(application)).toString
 
-        contentAsString(result) mustEqual expectedView
+        contentAsString(result).removeAllNonces()mustEqual expectedView
       }
     }
   }
@@ -356,7 +356,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces()mustEqual view.render(
           boundForm,
           waypoints,
           eventType,

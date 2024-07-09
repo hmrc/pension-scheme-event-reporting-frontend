@@ -65,7 +65,7 @@ class BenefitsPaidEarlyControllerSpec extends SpecBase with BeforeAndAfterEach w
         val view = application.injector.instanceOf[BenefitsPaidEarlyView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form, waypoints, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(form, waypoints, index = 0, request, messages(application)).toString
       }
     }
 
@@ -79,7 +79,7 @@ class BenefitsPaidEarlyControllerSpec extends SpecBase with BeforeAndAfterEach w
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form.fill(validValue), waypoints, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(form.fill(validValue), waypoints, index = 0, request, messages(application)).toString
       }
     }
 
@@ -121,7 +121,7 @@ class BenefitsPaidEarlyControllerSpec extends SpecBase with BeforeAndAfterEach w
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view.render(boundForm, waypoints, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(boundForm, waypoints, index = 0, request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
@@ -137,7 +137,7 @@ class BenefitsPaidEarlyControllerSpec extends SpecBase with BeforeAndAfterEach w
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view.render(boundForm, waypoints, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(boundForm, waypoints, index = 0, request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

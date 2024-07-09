@@ -18,14 +18,12 @@ package forms.common
 
 import forms.mappings.Mappings
 import play.api.data.Form
-import play.api.i18n.Messages
 
 import javax.inject.Inject
 
 class RemoveMemberFormProvider @Inject() extends Mappings {
-
-  def apply(eventTypeMessage: String)(implicit messages: Messages): Form[Boolean] =
+  def apply(errorMessage: String): Form[Boolean] =
     Form(
-      "value" -> boolean(messages("removeMember.error.required", eventTypeMessage))
+      "value" -> boolean(errorMessage)
     )
 }

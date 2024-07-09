@@ -106,7 +106,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[DeclarationPspView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(practitionerName, form, waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(practitionerName, form, waypoints)(request, messages(application)).toString
       }
     }
 
@@ -139,7 +139,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(practitionerName, form.fill(validValue), waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(practitionerName, form.fill(validValue), waypoints)(request, messages(application)).toString
       }
     }
 
@@ -188,7 +188,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(practitionerName, boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(practitionerName, boundForm, waypoints)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
