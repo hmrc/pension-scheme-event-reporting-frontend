@@ -36,6 +36,8 @@
         <input type="hidden" name="@key" value="@value">
     }
 
+    <input type="hidden" name="upscanFields" value="@upscanFields">
+
         <h1 class="govuk-heading-xl">@messages("fileUpload.heading", eventByName)</h1>
 
         <details class="govuk-details" data-module="govuk-details">
@@ -105,8 +107,7 @@
             id = "file-input",
             name = "file",
             label = Label(content = messages("fileUpload.upload.label")),
-            errorMessage = errorMessage,
-            attributes = Map("accept" -> ".csv,application/csv", "required" -> "required")
+            errorMessage = errorMessage
         ))
 
         @govukButton(

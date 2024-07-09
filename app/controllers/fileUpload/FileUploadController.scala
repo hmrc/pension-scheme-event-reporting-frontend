@@ -16,23 +16,31 @@
 
 package controllers.fileUpload
 
+import audit.{AuditService, EventReportingUpscanFileUploadAuditEvent}
 import config.FrontendAppConfig
-import connectors.UpscanInitiateConnector
+import connectors.{EventReportingConnector, UpscanInitiateConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import forms.fileUpload.FileUploadResultFormProvider
+import models.{FileUploadOutcomeResponse, UserAnswers}
+import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.EventType
 import models.enumeration.EventType.getEventTypeByName
-import models.requests.DataRequest
+import models.fileUpload.FileUploadResult
+import models.requests.{DataRequest, OptionalDataRequest}
 import pages.Waypoints
+import pages.fileUpload.{FileUploadPage, FileUploadResultPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.fileUpload.FileUploadView
+import views.html.fileUpload.{FileUploadResultView, FileUploadView}
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 
@@ -41,16 +49,21 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
                                      getData: DataRetrievalAction,
                                      requireData: DataRequiredAction,
                                      upscanInitiateConnector: UpscanInitiateConnector,
+                                     formProvider: FileUploadResultFormProvider,
+                                     eventReportingConnector: EventReportingConnector,
+                                     auditService: AuditService,
+                                     resultView: FileUploadResultView,
                                      appConfig: FrontendAppConfig,
                                      view: FileUploadView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+  private val form = formProvider()
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)
     andThen requireData).async { implicit request =>
 
-    val successRedirectUrl = appConfig.successEndPointTarget(eventType)
+    val checkingRedirectUrl = appConfig.checkingEndPointTarget(eventType)
     val errorRedirectUrl = appConfig.failureEndPointTarget(eventType)
-    upscanInitiateConnector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), eventType).map { uir =>
+    upscanInitiateConnector.initiateV2(Some(checkingRedirectUrl), Some(errorRedirectUrl), eventType).map { uir =>
 
       val isFileNotFoundErrorPresent = Try(request.request.queryString("errorMessage")) match {
         case Success(value) => value.contains("""'file' field not found""")
@@ -75,5 +88,72 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
     } else {
       None
     }
+  }
+
+  def onSubmit(waypoints: Waypoints, eventType: EventType): Action[AnyContent] =  (identify andThen getData(eventType)) async {
+    implicit request =>
+      val preparedForm = request.userAnswers.flatMap(_.get(FileUploadResultPage(eventType))).fold(form)(form.fill)
+      val isFileNotFoundErrorPresent = Try(request.queryString("errorMessage")) match {
+        case Success(value) => value.contains("""'file' field not found""")
+        case Failure(_) => false
+      }
+      if (isFileNotFoundErrorPresent) {
+        val errorRedirectUrl = appConfig.failureEndPointTarget(eventType)
+       // Future.successful(Redirect(errorRedirectUrl))
+
+        request.queryString.get("key").flatMap(_.headOption) match {
+          case Some(uploadIdReference) =>
+            val formFields = Map("key" -> uploadIdReference)
+            def noFileUploaded(implicit messages: Messages): Option[ErrorMessage] = {
+              Some(ErrorMessage(content = HtmlContent(Html(messages("fileUpload.error.rejected.InvalidArgument")))))
+            }
+          Future.successful(Ok(view(waypoints, getEventTypeByName(eventType), eventType, Call("post", errorRedirectUrl), formFields, noFileUploaded)))
+
+          case _ =>
+            Future.successful(BadRequest("Missing Key"))
+        }
+
+      } else {
+        renderView(waypoints, eventType, preparedForm, Ok)
+      }
+  }
+  private def renderView(waypoints: Waypoints, eventType: EventType, preparedForm: Form[FileUploadResult], status: Status)
+                        (implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
+    val startTime = System.currentTimeMillis
+    request.request.queryString.get("key").flatMap(_.headOption) match {
+      case Some(uploadIdReference) =>
+        val submitUrl = Call("POST", routes.FileUploadResultController.onSubmit(waypoints, eventType).url + s"?key=$uploadIdReference")
+        eventReportingConnector.getFileUploadOutcome(uploadIdReference).map {
+          case FileUploadOutcomeResponse(_, IN_PROGRESS, _, _, _) =>
+            status(resultView(preparedForm, waypoints, getEventTypeByName(eventType), None, submitUrl))
+          case fileUploadOutcomeResponse@FileUploadOutcomeResponse(fileName@Some(_), SUCCESS, _, _, _) =>
+            sendUpscanFileUploadAuditEvent(eventType, fileUploadOutcomeResponse, startTime)
+            status(resultView(preparedForm, waypoints, getEventTypeByName(eventType), fileName, submitUrl))
+          case fileUploadOutcomeResponse@FileUploadOutcomeResponse(_, FAILURE, _, _, _) =>
+            sendUpscanFileUploadAuditEvent(eventType, fileUploadOutcomeResponse, startTime)
+            Redirect(controllers.fileUpload.routes.FileRejectedController.onPageLoad(waypoints, eventType).url)
+          case _ => throw new RuntimeException("UploadId reference does not exist")
+        }
+      case _ => Future.successful(BadRequest("Missing Key"))
+    }
+  }
+  private def sendUpscanFileUploadAuditEvent(
+                                              eventType: EventType,
+                                              fileUploadOutcomeResponse: FileUploadOutcomeResponse,
+                                              startTime: Long)(implicit request: OptionalDataRequest[AnyContent]): Unit = {
+
+    val endTime = System.currentTimeMillis
+    val duration = endTime - startTime
+
+    auditService.sendEvent(
+      EventReportingUpscanFileUploadAuditEvent(
+        eventType = eventType,
+        psaOrPspId = request.loggedInUser.psaIdOrPspId,
+        pstr = request.pstr,
+        schemeAdministratorType = request.loggedInUser.administratorOrPractitioner,
+        outcome = Right(fileUploadOutcomeResponse),
+        uploadTimeInMilliSeconds = duration
+      )
+    )
   }
 }

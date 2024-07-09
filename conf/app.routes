@@ -296,6 +296,7 @@ POST        /report/event-1-check                                             co
 GET         /report/event-6-check                                             controllers.fileUpload.FileUploadResultController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6)
 POST        /report/event-6-check                                             controllers.fileUpload.FileUploadResultController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6)
 
+GET         /report/event-22-checking                                         controllers.fileUpload.FileUploadController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 GET         /report/event-22-check                                            controllers.fileUpload.FileUploadResultController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 POST        /report/event-22-check                                            controllers.fileUpload.FileUploadResultController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 

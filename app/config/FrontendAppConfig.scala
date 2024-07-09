@@ -81,6 +81,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   def successEndPointTarget(eventType: EventType): String = loadConfig("upscan.success-endpoint").format(toRoute(eventType))
 
+  def checkingEndPointTarget(eventType: EventType): String = loadConfig("upscan.checking-endpoint").format(toRoute(eventType))
+
   def failureEndPointTarget(eventType: EventType): String = loadConfig("upscan.failure-endpoint").format(toRoute(eventType))
 
   lazy val maxUploadFileSize: Int = configuration.getOptional[Int]("upscan.maxUploadFileSizeMb").getOrElse(1)
