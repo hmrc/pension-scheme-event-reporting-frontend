@@ -138,5 +138,5 @@ class EventReportingTileController @Inject()(
 
 object EventReportingTileController {
   val minStartDateAsString = "2000-04-06"
-  val maxEndDateAsString = s"${LocalDate.now().getYear + 1}-04-05"
+  def maxEndDateAsString = s"${LocalDate.now().getYear + 1}-04-05"
 }
