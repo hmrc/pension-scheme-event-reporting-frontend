@@ -74,7 +74,8 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
           val yearsInProgressOrSubmitted: Seq[Int] = seqEROverview.collect{
             case x if x.versionDetails.exists(x => x.compiledVersionAvailable || x.submittedVersionAvailable) => x.taxYear.startYear.toInt
           }
-          TaxYear.optionsFiltered( taxYear => !yearsInProgressOrSubmitted.contains(taxYear.startYear.toInt))
+          TaxYear.optionsFiltered( taxYear => taxYear.startYear.toInt >= config.eventReportingStartTaxYear &&
+                                              !yearsInProgressOrSubmitted.contains(taxYear.startYear.toInt))
         case _ =>
           TaxYear.optionsFiltered( taxYear =>  taxYear.startYear.toInt >= config.eventReportingStartTaxYear)
       }
