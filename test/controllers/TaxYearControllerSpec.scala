@@ -141,6 +141,37 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       }
     }
 
+    "must return OK and the correct view for a GET when a start new event chosen from tile page" in {
+
+      val overViewWithNewYear = EROverview(
+        LocalDate.of(2023, 4, 6),
+        LocalDate.of(2024, 4, 5),
+        TaxYear("2023"),
+        tpssReportPresent = false,
+        Some(EROverviewVersion(
+          3,
+          submittedVersionAvailable = false,
+          compiledVersionAvailable = false)))
+      val ua = emptyUserAnswers
+        .setOrException(EventReportingTileLinksPage, StartNew)
+        .setOrException(EventReportingOverviewPage, Seq(overViewWithNewYear.copy(taxYear = TaxYear("2024")), overViewWithNewYear) ++ erOverview)
+
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val result = route(application, request).value
+
+        val radioOptions: Seq[RadioItem] = TaxYear.optionsFiltered(taxYear => taxYear.startYear == "2024" ||taxYear.startYear == "2023" )
+
+        val view = application.injector.instanceOf[TaxYearView]
+
+        status(result) mustEqual OK
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, radioOptions)(request, messages(application)).toString
+      }
+    }
+
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022")).success.value
