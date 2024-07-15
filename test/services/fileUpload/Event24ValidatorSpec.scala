@@ -35,7 +35,11 @@ import utils.DateHelper
 import java.time.LocalDate
 import scala.collection.immutable.ArraySeq
 
-class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with BeforeAndAfterEach {
+class Event24ValidatorSpec extends SpecBase
+  with Matchers
+  with MockitoSugar
+  with BeforeAndAfterEach {
+
   import Event24ValidatorSpec._
 
   override def beforeEach(): Unit = {
@@ -43,7 +47,6 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
     when(mockFrontendAppConfig.validEvent24Header).thenReturn(header)
   }
 
-  //noinspection ScalaStyle
   "Event 24 Validator" - {
     "return a valid result if there are no validation errors" in {
       val validCSVFile = CSVParser.split(
@@ -59,6 +62,7 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
       val result = validator.validate(validCSVFile, ua)
       result.isValid mustBe true
     }
+
     "return validation error for incorrect header" in {
       val csvFile = CSVParser.split("""test""")
       val result = validator.validate(csvFile, UserAnswers())
@@ -73,6 +77,7 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
         ValidationError(0, 0, HeaderInvalidOrFileIsEmpty)
       ))
     }
+
     "return validation errors when tax year out of range" in {
       DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
       val csvFile = CSVParser.split(
@@ -82,9 +87,10 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2023"), nonEventTypeData = true)
       val result = validator.validate(csvFile, ua)
       result mustBe Invalid(Seq(
-        ValidationError(1, 4, "Date must be between 06 April 2023 and 05 April 2024", "crystallisedDate"),
+        ValidationError(1, 4, "Date must be between 06 April 2023 and 05 April 2024", "crystallisedDate")
       ))
     }
+
     "return validation errors if present" in {
       DateHelper.setDate(Some(LocalDate.of(2023, 6, 1)))
       val csvFile = CSVParser.split(
@@ -120,12 +126,14 @@ class Event24ValidatorSpec extends SpecBase with Matchers with MockitoSugar with
         ValidationError(8, 7, "validProtection.event24.error.required", "validProtection"),
         ValidationError(9, 12, "typeOfProtectionReference.error.required", "nonResidenceEnhancement"),
         ValidationError(10, 9, "typeOfProtection.event24.error.format", "protectionTypeGroup2"),
-        ValidationError(11, 10, "typeOfProtectionReference.event24.error.maxLength", "protectionTypeGroup2Reference", ArraySeq(15)),
+        ValidationError(11, 10, "typeOfProtectionReference.event24.error.maxLength",
+          "protectionTypeGroup2Reference", ArraySeq(15)),
         ValidationError(12, 17, "overAllowanceAndDeathBenefit.event24.error.required", "overAllowanceAndDeathBenefit"),
         ValidationError(13, 17, "overAllowanceAndDeathBenefit.event24.error.required", "overAllowanceAndDeathBenefit"),
         ValidationError(14, 18, "overAllowance.event24.error.required", "overAllowance"),
         ValidationError(15, 20, "marginalRate.event24.error.required", "marginalRate"),
-        ValidationError(16, 22, "employerPayeReference.event24.error.disallowedChars", "employerPayeRef", ArraySeq("[A-Za-z0-9/]{9,12}")),
+        ValidationError(16, 22, "employerPayeReference.event24.error.disallowedChars", "employerPayeRef",
+          ArraySeq("[A-Za-z0-9/]{9,12}")),
         ValidationError(17, 22, "employerPayeReference.event24.error.required", "employerPayeRef")
       ))
     }

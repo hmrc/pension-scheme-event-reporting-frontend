@@ -30,7 +30,7 @@ class ChangeDateFormProviderSpec(implicit messages: Messages) extends DateBehavi
 
     val validData = datesBetween(
       min = LocalDate.of(2000, 4, 6),
-      max = LocalDate.of(2001, 4, 5),
+      max = LocalDate.of(2001, 4, 5)
     )
 
     behave like dateField(form, "value", validData)

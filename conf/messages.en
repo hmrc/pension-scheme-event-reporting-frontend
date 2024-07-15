@@ -1836,10 +1836,9 @@ noDataEnteredError.p1 = No data has been entered
 noDataEnteredError.p2 = Return to the pensions dashboard
 noDataEnteredError.p3 = to enter data before submitting
 
-cannotResume.title = This event report has been submitted and is with HMRC
-cannotResume.heading = This event report has been submitted and is with HMRC
-cannotResume.p1 = You cannot resume this journey.
-
+cannotResume.title = This event report cannot be submitted
+cannotResume.heading = This event report cannot be submitted
+cannotResume.p1 = You have attempted to amend or create an event report but no changes have been made.
 genericDate.error.invalid = Enter the real date
 genericDate.error.invalid.day = The day is invalid
 genericDate.error.invalid.month = The month is invalid

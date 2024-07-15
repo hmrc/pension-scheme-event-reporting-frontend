@@ -24,6 +24,8 @@ import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
 import models.{EROverview, EROverviewVersion, EventDataIdentifier, TaxYear, UserAnswers, VersionInfo}
 import org.apache.pekko.actor.ActorSystem
 import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
+import play.api.Logging
+import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,7 +35,7 @@ class CompileService @Inject()(
                                 userAnswersCacheConnector: UserAnswersCacheConnector,
                                 appConfig: FrontendAppConfig,
                                 actorSystem: ActorSystem
-                              ) (implicit ec: ExecutionContext) {
+                              ) (implicit ec: ExecutionContext) extends Logging{
 
   private def doCompile(currentVersionInfo: VersionInfo,
                         newVersionInfo: VersionInfo,
@@ -62,8 +64,7 @@ class CompileService @Inject()(
         case Right((pstrVal, edi, currentVersionVal, memberIdToDelete)) =>
           eventReportingConnector.deleteMember(pstrVal, edi, currentVersionVal, memberIdToDelete)
       }
-
-      userAnswersCacheConnector.save(pstr, updatedUA).flatMap(_ => futureAction)
+      userAnswersCacheConnector.save(pstr, updatedUA).flatMap{_ => futureAction}
     }
   }
 
@@ -109,34 +110,64 @@ class CompileService @Inject()(
   def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion: Int, memberIdToDelete: String, userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
     userAnswers.get(VersionInfoPage) match {
       case Some(vi) =>
-        val newVersionInfo = changeVersionInfo(vi)
-        doCompile(
-          vi,
-          newVersionInfo,
-          pstr,
-          userAnswers,
-          delete = false,
-          eventOrDelete = Right((pstr, edi, currentVersion, memberIdToDelete))
-        )
+        val oldNewFuture = for {
+          oldUserAnswers <- userAnswersCacheConnector.get(pstr, edi.eventType)
+          newUserAnswers <- userAnswersCacheConnector.get(pstr + "_original_cache", edi.eventType)
+        } yield (oldUserAnswers, newUserAnswers)
+
+        oldNewFuture.flatMap {
+          case x if isEventDataNotModified(x._1.map(_.data), x._2.map(_.data)) =>
+            logger.warn(s"Data not modified for pstr: $pstr, event: ${edi.eventType}, version: $currentVersion")
+            Future.successful(())
+
+          case _ =>
+            val newVersionInfo = changeVersionInfo(vi)
+            doCompile(
+              vi,
+              newVersionInfo,
+              pstr,
+              userAnswers,
+              delete = false,
+              eventOrDelete = Right((pstr, edi, currentVersion, memberIdToDelete))
+            )
+        }
 
       case _ => throw new RuntimeException(s"No version available")
     }
   }
+  def compileEvent(eventType: EventType, pstr: String, userAnswers: UserAnswers, delete: Boolean = false)
+                  (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
 
-  def compileEvent(eventType: EventType, pstr: String, userAnswers: UserAnswers, delete: Boolean = false)(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
     userAnswers.get(VersionInfoPage) match {
       case Some(vi) =>
-        val newVersionInfo = changeVersionInfo(vi)
-        doCompile(
-          vi,
-          newVersionInfo,
-          pstr,
-          userAnswers,
-          delete,
-          eventOrDelete = Left(eventType)
-        )
-      case _ => throw new RuntimeException(s"No version available")
+        val oldNewFuture = for {
+          oldUserAnswers <- userAnswersCacheConnector.get(pstr, eventType)
+          newUserAnswers <- userAnswersCacheConnector.get(pstr + "_original_cache", eventType)
+        } yield (oldUserAnswers, newUserAnswers)
+
+        oldNewFuture.flatMap {
+          case x if isEventDataNotModified(x._1.map(_.data), x._2.map(_.data)) =>
+            logger.warn(s"Data not modified for pstr: $pstr, event: $eventType version: ${vi.version}")
+            Future.successful(())
+
+          case _ =>
+            val newVersionInfo = changeVersionInfo(vi)
+            doCompile(
+              vi,
+              newVersionInfo,
+              pstr,
+              userAnswers,
+              delete,
+              eventOrDelete = Left(eventType)
+            )
+        }
+
+      case None => Future.failed(new RuntimeException("No version available"))
     }
+  }
+
+  private def isEventDataNotModified(oldUserAnswers: Option[JsObject], newUserAnswers: Option[JsObject]) = {
+    oldUserAnswers.getOrElse(Json.obj()) == newUserAnswers.getOrElse(Json.obj())
   }
 
 

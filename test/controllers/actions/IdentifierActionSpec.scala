@@ -48,7 +48,8 @@ class IdentifierActionSpec
   private class FakeFailingAuthConnector @Inject()(exceptionToReturn: Throwable) extends AuthConnector {
     val serviceUrl: String = ""
 
-    override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] =
+    override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])
+                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] =
       Future.failed(exceptionToReturn)
 
   }
@@ -104,7 +105,9 @@ class IdentifierActionSpec
       ))))
     )
     when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
-      PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId, AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId)))
+      PspSchemeDetails("schemeName", "87219363YN", "Open",
+                        Some(PspDetails(None, None, None, psaId,
+                        AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId)))
     ))
   }
 
@@ -506,7 +509,7 @@ class IdentifierActionSpec
           .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
         val controller = new Harness(authAction)
         val enrolments = Enrolments(Set(
-          Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None),
+          Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None)
         ))
 
         val pstrInDB = "456"

@@ -47,6 +47,8 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
     LocalDate.now(), LocalDate.now().plusYears(1),
     currentTaxYear, tpssReportPresent = false,
     Some(EROverviewVersion(1, submittedVersionAvailable = true, compiledVersionAvailable = false))))
+  val oldUserAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022")).success.value
+  val newUserAnswers = UserAnswers().set(TaxYearPage, TaxYear("2023")).success.value
 
   private val mockEventReportingConnector = mock[EventReportingConnector]
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
@@ -72,6 +74,12 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
       when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any))
         .thenReturn(Future.successful((): Unit))
 
+      when(mockUserAnswersCacheConnector.get(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+        .thenReturn(Future.successful(Some(newUserAnswers)))
+
+      when(mockUserAnswersCacheConnector.get(ArgumentMatchers.eq(pstr + "_original_cache"), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+        .thenReturn(Future.successful(Some(oldUserAnswers)))
+
       val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, NotStarted), nonEventTypeData = true)
       whenReady(compileService.compileEvent(Event1, pstr, ua)) { _ =>
         verify(mockUserAnswersCacheConnector, times(1))
@@ -86,6 +94,12 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
       val edi = EventDataIdentifier(Event1, taxYear, "2")
       when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any))
         .thenReturn(Future.successful((): Unit))
+      when(mockUserAnswersCacheConnector.get(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+        .thenReturn(Future.successful(Some(newUserAnswers)))
+
+      when(mockUserAnswersCacheConnector.get(ArgumentMatchers.eq(pstr + "_original_cache"), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+        .thenReturn(Future.successful(Some(oldUserAnswers)))
+
       val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(2, Compiled), nonEventTypeData = true)
       whenReady(compileService.compileEvent(Event1, pstr, ua)) { _ =>
         verify(mockUserAnswersCacheConnector, times(1))
@@ -103,6 +117,12 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
       when(mockUserAnswersCacheConnector
         .changeVersion(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq("1"), ArgumentMatchers.eq("2"))(any(), any()))
         .thenReturn(Future.successful((): Unit))
+      when(mockUserAnswersCacheConnector.get(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+        .thenReturn(Future.successful(Some(newUserAnswers)))
+
+      when(mockUserAnswersCacheConnector.get(ArgumentMatchers.eq(pstr + "_original_cache"), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+        .thenReturn(Future.successful(Some(oldUserAnswers)))
+
       val ua = emptyUserAnswersWithTaxYear
         .setOrException(TaxYearPage, currentTaxYear, nonEventTypeData = true)
         .setOrException(EventReportingOverviewPage, seqEROverview, nonEventTypeData = true)
