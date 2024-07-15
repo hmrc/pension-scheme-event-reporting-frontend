@@ -91,7 +91,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[FileUploadResultView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, getEventTypeByName(eventType), Some("testFile"),
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, getEventTypeByName(eventType), Some("testFile"),
           Call("POST", postRoute(eventType) + "?key=123"))(request, messages(application)).toString
       }
     }
@@ -110,7 +110,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[FileUploadResultView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, getEventTypeByName(eventType),
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, getEventTypeByName(eventType),
           None, Call("POST", postRoute(eventType) + "?key=123"))(request, messages(application)).toString
       }
     }

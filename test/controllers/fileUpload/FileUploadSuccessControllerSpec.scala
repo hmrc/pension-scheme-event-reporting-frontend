@@ -83,7 +83,7 @@ class FileUploadSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
         val fileName = expectedOutcome.fileName.getOrElse("Your file")
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(continueUrl(eventType), fileName)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(continueUrl(eventType), fileName)(request, messages(application)).toString
       }
     }
   }

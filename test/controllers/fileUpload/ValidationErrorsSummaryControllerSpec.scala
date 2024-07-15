@@ -83,7 +83,7 @@ class ValidationErrorsSummaryControllerSpec extends SpecBase with BeforeAndAfter
         val view = application.injector.instanceOf[ValidationErrorsSummaryView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(returnUrl(eventType),
+        contentAsString(result).removeAllNonces() mustEqual view(returnUrl(eventType),
           fileDownloadInstructionLink(eventType), dummyErrors, 3, fileDownloadTemplateLink(eventType))(request, messages(application)).toString
       }
     }

@@ -77,7 +77,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
         val view = application.injector.instanceOf[TotalPensionAmountsView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form, waypoints, eventType, StringUtils.EMPTY, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(form, waypoints, eventType, StringUtils.EMPTY, index = 0, request, messages(application)).toString
       }
     }
   }
@@ -93,7 +93,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces()mustEqual view.render(
           form.fill(validValue),
           waypoints,
           eventType,
@@ -133,7 +133,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view.render(boundForm, waypoints, eventType, StringUtils.EMPTY, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(boundForm, waypoints, eventType, StringUtils.EMPTY, index = 0, request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

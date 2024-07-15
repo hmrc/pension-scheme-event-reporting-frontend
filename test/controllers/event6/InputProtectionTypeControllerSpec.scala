@@ -98,7 +98,7 @@ class InputProtectionTypeControllerSpec extends SpecBase with BeforeAndAfterEach
         val view = application.injector.instanceOf[InputProtectionTypeView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, 0, protectionType)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form, waypoints, 0, protectionType)(request, messages(application)).toString
       }
     }
   }
@@ -117,7 +117,7 @@ class InputProtectionTypeControllerSpec extends SpecBase with BeforeAndAfterEach
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("ABCDE123"), waypoints, 0, protectionTypeDesc)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form.fill("ABCDE123"), waypoints, 0, protectionTypeDesc)(request, messages(application)).toString
       }
     }
   }
@@ -162,7 +162,7 @@ class InputProtectionTypeControllerSpec extends SpecBase with BeforeAndAfterEach
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, 0, protectionTypeDesc)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, 0, protectionTypeDesc)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

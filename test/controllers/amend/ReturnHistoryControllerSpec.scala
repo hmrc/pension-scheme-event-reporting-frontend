@@ -67,7 +67,7 @@ class ReturnHistoryControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[ReturnHistoryView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(seqOfReturnHistorySummary,
+        contentAsString(result).removeAllNonces()mustEqual view.render(seqOfReturnHistorySummary,
           taxYearStart = "2022",
           taxYearEnd = "2023",
           schemeName = "schemeName",

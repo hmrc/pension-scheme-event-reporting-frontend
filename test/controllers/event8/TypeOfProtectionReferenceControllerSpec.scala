@@ -93,7 +93,7 @@ class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAft
         val view = application.injector.instanceOf[TypeOfProtectionReferenceView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, eventType, 0, protectionType)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, eventType, 0, protectionType)(request, messages(application)).toString
       }
     }
   }
@@ -112,7 +112,7 @@ class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAft
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("ABCDE123"), waypoints, eventType, 0, protectionTypeDesc)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form.fill("ABCDE123"), waypoints, eventType, 0, protectionTypeDesc)(request, messages(application)).toString
       }
     }
   }
@@ -157,7 +157,7 @@ class TypeOfProtectionReferenceControllerSpec extends SpecBase with BeforeAndAft
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, eventType, 0, protectionTypeDesc)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints, eventType, 0, protectionTypeDesc)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

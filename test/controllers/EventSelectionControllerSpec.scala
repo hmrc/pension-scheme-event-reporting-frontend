@@ -83,7 +83,7 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
 
         val expectedEvents = EventSelection.values.diff(Seq(Event24))
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, EventSelection.options(expectedEvents), waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, EventSelection.options(expectedEvents), waypoints)(request, messages(application)).toString
       }
     }
   }

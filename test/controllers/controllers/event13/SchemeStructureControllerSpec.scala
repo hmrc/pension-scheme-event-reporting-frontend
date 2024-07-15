@@ -65,7 +65,7 @@ class SchemeStructureControllerSpec extends SpecBase with BeforeAndAfterEach wit
         val view = application.injector.instanceOf[SchemeStructureView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form, waypoints, request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view.render(form, waypoints, request, messages(application)).toString
       }
     }
 
@@ -79,7 +79,7 @@ class SchemeStructureControllerSpec extends SpecBase with BeforeAndAfterEach wit
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(form.fill(SchemeStructure.values.head), waypoints, request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view.render(form.fill(SchemeStructure.values.head), waypoints, request, messages(application)).toString
       }
     }
 
@@ -109,7 +109,7 @@ class SchemeStructureControllerSpec extends SpecBase with BeforeAndAfterEach wit
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view.render(boundForm, waypoints, request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view.render(boundForm, waypoints, request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }

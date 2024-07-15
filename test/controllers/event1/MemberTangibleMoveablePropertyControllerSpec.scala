@@ -72,7 +72,7 @@ class MemberTangibleMoveablePropertyControllerSpec extends SpecBase with BeforeA
         val view = application.injector.instanceOf[MemberTangibleMoveablePropertyView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form, waypoints, 0)(request, messages(application)).toString
       }
     }
 
@@ -90,7 +90,7 @@ class MemberTangibleMoveablePropertyControllerSpec extends SpecBase with BeforeA
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validValue), waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form.fill(validValue), waypoints, 0)(request, messages(application)).toString
       }
     }
 

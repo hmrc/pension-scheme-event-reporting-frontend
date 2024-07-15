@@ -39,7 +39,7 @@ class CannotSubmitControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[CannotSubmitView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(continueUrl)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(continueUrl)(request, messages(application)).toString
       }
     }
   }

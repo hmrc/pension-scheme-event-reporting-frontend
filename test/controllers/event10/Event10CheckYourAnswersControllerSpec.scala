@@ -98,7 +98,7 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces() mustEqual view.render(
           list,
           continueUrl = "/manage-pension-scheme-event-report/report/event-10-click", Tuple2(None, None),
           request,
@@ -366,8 +366,7 @@ object Event10CheckYourAnswersControllerSpec {
     )
   )
 
-  private def expectedMemberSummaryListRowsEvent10CeasedToBecomeASchemeViewOnly
-                                      (implicit messages: Messages): Seq[SummaryListRow] = Seq(
+  private def expectedMemberSummaryListRowsEvent10CeasedToBecomeASchemeViewOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "becomeOrCeaseScheme.checkYourAnswersLabel",
       "It has ceased to be an investment regulated pension scheme"

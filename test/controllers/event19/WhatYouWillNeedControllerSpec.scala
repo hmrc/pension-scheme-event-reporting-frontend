@@ -41,7 +41,7 @@ class WhatYouWillNeedControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[WhatYouWillNeedView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual
+        contentAsString(result).removeAllNonces() mustEqual
           view(controllers.event19.routes.CountryOrTerritoryController.onPageLoad(waypoints).url)(request, messages(application)).toString
       }
     }

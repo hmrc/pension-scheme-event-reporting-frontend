@@ -81,7 +81,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[RemoveMemberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces()mustEqual view.render(
           formEvent1,
           waypoints,
           Event1,
@@ -102,7 +102,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
         val view = application.injector.instanceOf[RemoveMemberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces()mustEqual view.render(
           formEvent5,
           waypoints,
           Event5,
@@ -124,7 +124,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces()mustEqual view.render(
           formEvent1.fill(true),
           waypoints,
           Event1,
@@ -146,7 +146,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces()mustEqual view.render(
           formEvent5.fill(true),
           waypoints,
           Event5,
@@ -202,7 +202,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces()mustEqual view.render(
           boundForm,
           waypoints,
           Event1,
@@ -224,7 +224,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view.render(
+        contentAsString(result).removeAllNonces()mustEqual view.render(
           boundForm,
           waypoints,
           Event5,
