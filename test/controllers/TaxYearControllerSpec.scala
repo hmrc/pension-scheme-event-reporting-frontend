@@ -161,7 +161,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       }
     }
 
-    "must return OK and the correct view for a GET when a start new event chosen from tile page" in {
+    "must return OK and the correct view for a GET when start new event chosen from tile page" in {
 
       val ua = emptyUserAnswers
         .setOrException(EventReportingTileLinksPage, StartNew)
@@ -183,7 +183,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       }
     }
 
-    "must return OK and the correct view for a GET when a start new event chosen and no events left" in {
+    "must return OK and the correct view for a GET when start new event chosen and no events left" in {
 
       val submittedVersion = Some(EROverviewVersion(
         3,

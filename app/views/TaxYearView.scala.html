@@ -46,7 +46,7 @@
         )
     } else{
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-            @messages("taxYear.youCanNotSubmit")
+            @messages("taxYear.youCanNotStart")
         </h1>
 
         <p class="govuk-body">
@@ -54,12 +54,9 @@
         </p>
 
         <p class="govuk-body">@messages("taxYear.viewEventReportingOverview")
-            <a id="redirect-to-tpss" class="govuk-link"
-               href=@eventReportingUrl>@messages("taxYear.viewEventReportLink")
-            </a>
-        </p>
+            <a id="redirect-to-tpss" class="govuk-link" href=@eventReportingUrl>@messages("taxYear.viewEventReportLink")</a>@messages("taxYear.period")
+        </p><br><br>
     }
-
 
     }
 }
