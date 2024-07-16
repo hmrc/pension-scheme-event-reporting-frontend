@@ -1099,6 +1099,11 @@ removeEvent.change.hidden = Are you sure you want to remove {0}?
 
 taxYear.title = Which tax year are you submitting an event report for?
 taxYear.heading = Which tax year are you submitting an event report for?
+taxYear.youCanNotSubmit = You cannot submit an event report
+taxYear.noEventsLeft = All available event reports are either in progress or have been submitted.
+taxYear.viewEventReportingOverview = You can view, amend or submit a report on
+taxYear.viewEventReportLink = event reporting overview.
+
 taxYear.checkYourAnswersLabel = Which tax year are you submitting an event report for?
 taxYear.error.required = Select a tax year
 taxYear.change.hidden = Which tax year are you submitting an event report for?
