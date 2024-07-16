@@ -22,7 +22,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, radioOptions: Seq[RadioItem])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, radioOptions: Seq[RadioItem], eventReportingUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("taxYear.title"))) {
 
@@ -32,6 +32,7 @@
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
+    @if(radioOptions.length > 0){
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
@@ -43,5 +44,22 @@
         @govukButton(
             ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))
         )
+    } else{
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+            @messages("taxYear.youCanNotSubmit")
+        </h1>
+
+        <p class="govuk-body">
+            @messages("taxYear.noEventsLeft")
+        </p>
+
+        <p class="govuk-body">@messages("taxYear.viewEventReportingOverview")
+            <a id="redirect-to-tpss" class="govuk-link"
+               href=@eventReportingUrl>@messages("taxYear.viewEventReportLink")
+            </a>
+        </p>
+    }
+
+
     }
 }
