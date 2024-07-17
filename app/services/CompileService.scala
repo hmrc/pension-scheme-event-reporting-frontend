@@ -115,7 +115,7 @@ class CompileService @Inject()(
             logger.warn(s"Data not modified for pstr: $pstr, event: ${edi.eventType}, version: $currentVersion")
             Future.successful(())
 
-          case _ =>
+          case Some(x) if x =>
             val newVersionInfo = changeVersionInfo(vi)
             doCompile(
               vi,
@@ -125,6 +125,7 @@ class CompileService @Inject()(
               delete = false,
               eventOrDelete = Right((pstr, edi, currentVersion, memberIdToDelete))
             )
+          case _ => throw new RuntimeException(s"Data Changed Checks failed for $pstr")
         }
       case _ => throw new RuntimeException(s"No version available")
     }
@@ -151,7 +152,7 @@ class CompileService @Inject()(
               eventOrDelete = Left(eventType)
             )
 
-          case _ => throw new RuntimeException(s"Data Changed or not Checks failed for $pstr and $eventType")
+          case _ => throw new RuntimeException(s"Data Changed Checks failed for $pstr and $eventType")
         }
 
       case None => Future.failed(new RuntimeException("No version available"))

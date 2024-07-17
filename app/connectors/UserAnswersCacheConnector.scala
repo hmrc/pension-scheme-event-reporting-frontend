@@ -87,10 +87,8 @@ class UserAnswersCacheConnector @Inject()(
 
   def isDataModified(pstr: String, eventType: EventType)
          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[Boolean]] = {
-    println(s"*************pstr: $pstr, eventType: $eventType")
     getJson(noEventHeaders(pstr)).flatMap {
       case Some(noEventData) =>
-        println(s" *************noEventData: $noEventData")
         val headers = eventHeaders(pstr, eventType, Some(noEventData))
         val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
         http.GET[HttpResponse](isDataModifiedUrl)(implicitly, hc, ec)
@@ -108,7 +106,6 @@ class UserAnswersCacheConnector @Inject()(
             }
           }
       case None =>
-        println(s" *************noEventData: None")
         Future.successful(None)
     }
   }
