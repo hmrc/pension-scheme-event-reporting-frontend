@@ -44,6 +44,7 @@ class UserAnswersCacheConnectorSpec
 
   private lazy val connector: UserAnswersCacheConnector = injector.instanceOf[UserAnswersCacheConnector]
   private val userAnswersCacheUrl = s"/pension-scheme-event-reporting/user-answers"
+  private val compareUrl = s"/pension-scheme-event-reporting/compare"
 
   private val validResponse =
     Json.obj(
@@ -165,6 +166,74 @@ class UserAnswersCacheConnectorSpec
       }
     }
 
+  }
+
+  "isDataModified" must {
+    "return successfully when the backend has returned OK and a correct response" in {
+      server.stubFor(
+        get(urlEqualTo(userAnswersCacheUrl))
+          .willReturn(
+            ok(Json.stringify(userAnswersForSave.data))
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      server.stubFor(
+        get(urlEqualTo(compareUrl))
+          .willReturn(
+            ok(true.toString)
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      connector.isDataModified(pstr, eventType) map {
+        _ mustBe Some(true)
+      }
+    }
+
+    "return None when the backend has returned NOT FOUND for both event and non event data" in {
+      server.stubFor(
+        get(urlEqualTo(userAnswersCacheUrl))
+          .willReturn(
+            notFound
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      server.stubFor(
+        get(urlEqualTo(compareUrl))
+          .willReturn(
+            notFound
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      connector.isDataModified(pstr, eventType) map {
+        _ mustBe None
+      }
+    }
+
+    "return BadRequestException when the backend has returned bad request response" in {
+      server.stubFor(
+        get(urlEqualTo(userAnswersCacheUrl))
+          .willReturn(
+            badRequest
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      server.stubFor(
+        get(urlEqualTo(compareUrl))
+          .willReturn(
+            ok(true.toString)
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      recoverToSucceededIf[HttpException] {
+        connector.isDataModified(pstr, eventType)
+      }
+    }
   }
 
   "removeAll" must {
