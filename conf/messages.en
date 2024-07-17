@@ -1836,6 +1836,13 @@ noDataEnteredError.p1 = No data has been entered
 noDataEnteredError.p2 = Return to the pensions dashboard
 noDataEnteredError.p3 = to enter data before submitting
 
+pageNotFound404.title = Page not found
+pageNotFound404.heading = Page not found
+pageNotFound404.p1 = If you typed the web address, check it is correct.
+pageNotFound404.p2 = If you pasted the web address, check you copied the entire address.
+pageNotFound404.p3 = If the web address is correct or you selected a link or button,
+pageNotFound404.p4 = contact HMRC.
+
 cannotResume.title = This event report cannot be submitted
 cannotResume.heading = This event report cannot be submitted
 cannotResume.p1 = You have attempted to amend or create an event report but no changes have been made.
