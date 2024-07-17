@@ -74,6 +74,9 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
       when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any))
         .thenReturn(Future.successful((): Unit))
 
+      when(mockUserAnswersCacheConnector.isDataModified(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+        .thenReturn(Future.successful(Some(true)))
+
       when(mockUserAnswersCacheConnector.get(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any()))
         .thenReturn(Future.successful(Some(newUserAnswers)))
 
@@ -96,7 +99,8 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
         .thenReturn(Future.successful((): Unit))
       when(mockUserAnswersCacheConnector.get(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any()))
         .thenReturn(Future.successful(Some(newUserAnswers)))
-
+      when(mockUserAnswersCacheConnector.isDataModified(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+        .thenReturn(Future.successful(Some(true)))
       when(mockUserAnswersCacheConnector.get(ArgumentMatchers.eq(pstr + "_original_cache"), ArgumentMatchers.eq(edi.eventType))(any(), any()))
         .thenReturn(Future.successful(Some(oldUserAnswers)))
 
@@ -119,7 +123,8 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
         .thenReturn(Future.successful((): Unit))
       when(mockUserAnswersCacheConnector.get(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any()))
         .thenReturn(Future.successful(Some(newUserAnswers)))
-
+      when(mockUserAnswersCacheConnector.isDataModified(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+        .thenReturn(Future.successful(Some(true)))
       when(mockUserAnswersCacheConnector.get(ArgumentMatchers.eq(pstr + "_original_cache"), ArgumentMatchers.eq(edi.eventType))(any(), any()))
         .thenReturn(Future.successful(Some(oldUserAnswers)))
 
