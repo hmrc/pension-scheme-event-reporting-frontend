@@ -40,7 +40,7 @@ class ErrorHandler @Inject()(
     view(pageTitle, heading, message)
 
   override def notFoundTemplate(implicit request: Request[_]): Html =
-    pageNotFoundView(config.contactHmrcURL)(Request(request, ""), request2Messages(request))
+    pageNotFoundView(config.contactHmrcURL)
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
     exception match {
