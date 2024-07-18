@@ -61,6 +61,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
     }
 
   private def renderPage(form: Form[TaxYear], waypoints: Waypoints, status: Status)(implicit request: DataRequest[AnyContent]): Result = {
+
     val ua = request.userAnswers
     val radioOptions =
       (ua.get(EventReportingTileLinksPage), ua.get(EventReportingOverviewPage)) match {
@@ -70,10 +71,17 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
         case (Some(InProgress), Some(seqEROverview)) =>
           val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereCompiledVersionAvailable)
           TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear))
-        case _ => TaxYear.optionsFiltered( taxYear =>  taxYear.startYear.toInt >= config.eventReportingStartTaxYear)
+        case (Some(_), Some(seqEROverview)) =>
+          val yearsInProgressOrSubmitted: Seq[Int] = seqEROverview.collect{
+            case x if x.versionDetails.exists(x => x.compiledVersionAvailable || x.submittedVersionAvailable) => x.taxYear.startYear.toInt
+          }
+          TaxYear.optionsFiltered( taxYear => taxYear.startYear.toInt >= config.eventReportingStartTaxYear &&
+                                              !yearsInProgressOrSubmitted.contains(taxYear.startYear.toInt))
+        case _ =>
+          TaxYear.optionsFiltered( taxYear =>  taxYear.startYear.toInt >= config.eventReportingStartTaxYear)
       }
 
-    status(view(form, waypoints, radioOptions))
+    status(view(form, waypoints, radioOptions, routes.EventReportingOverviewController.onPageLoad(request.pstr).url))
   }
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>

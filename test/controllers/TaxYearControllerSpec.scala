@@ -75,8 +75,28 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
       submittedVersionAvailable = true,
       compiledVersionAvailable = false)))
 
+  private val overview3 =  EROverview(
+    LocalDate.of(2023, 4, 6),
+    LocalDate.of(2024, 4, 5),
+    TaxYear("2023"),
+    tpssReportPresent = false,
+    Some(EROverviewVersion(
+      3,
+      submittedVersionAvailable = false,
+      compiledVersionAvailable = false)))
+
+  private val overview4 =  EROverview(
+    LocalDate.of(2024, 4, 6),
+    LocalDate.of(2025, 4, 5),
+    TaxYear("2024"),
+    tpssReportPresent = false,
+    Some(EROverviewVersion(
+      3,
+      submittedVersionAvailable = false,
+      compiledVersionAvailable = false)))
   private val erOverview = Seq(overview1, overview2)
 
+  private val eventReportingUrl = "/manage-pension-scheme-event-report/87219363YN/event-reporting"
   override def beforeEach(): Unit = {
     super.beforeEach
     reset(mockUserAnswersCacheConnector)
@@ -96,7 +116,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         val view = application.injector.instanceOf[TaxYearView]
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, radioOptions)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, radioOptions, eventReportingUrl)(request, messages(application)).toString
       }
     }
 
@@ -116,7 +136,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         val view = application.injector.instanceOf[TaxYearView]
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, radioOptions)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, radioOptions, eventReportingUrl)(request, messages(application)).toString
       }
     }
 
@@ -137,7 +157,54 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         val view = application.injector.instanceOf[TaxYearView]
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, radioOptions)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, radioOptions, eventReportingUrl)(request, messages(application)).toString
+      }
+    }
+
+    "must return OK and the correct view for a GET when start new event chosen from tile page" in {
+
+      val ua = emptyUserAnswers
+        .setOrException(EventReportingTileLinksPage, StartNew)
+        .setOrException(EventReportingOverviewPage, Seq(overview3, overview4) ++ erOverview)
+
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val result = route(application, request).value
+
+        val radioOptions: Seq[RadioItem] = TaxYear.optionsFiltered(taxYear => taxYear.startYear == "2024" ||taxYear.startYear == "2023" )
+
+        val view = application.injector.instanceOf[TaxYearView]
+
+        status(result) mustEqual OK
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, radioOptions, eventReportingUrl)(request, messages(application)).toString
+      }
+    }
+
+    "must return OK and the correct view for a GET when start new event chosen and no events left" in {
+
+      val submittedVersion = Some(EROverviewVersion(
+        3,
+        submittedVersionAvailable = true,
+        compiledVersionAvailable = false))
+
+      val ua = emptyUserAnswers
+        .setOrException(EventReportingTileLinksPage, StartNew)
+        .setOrException(EventReportingOverviewPage, Seq(overview3.copy(versionDetails = submittedVersion), overview4.copy(versionDetails = submittedVersion) ) ++ erOverview)
+
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[TaxYearView]
+
+        status(result) mustEqual OK
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, Seq.empty[RadioItem], eventReportingUrl)(request, messages(application)).toString
       }
     }
 
@@ -155,7 +222,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces() mustEqual view(form.fill(TaxYear.values.head), waypoints, radioOptions)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form.fill(TaxYear.values.head), waypoints, radioOptions, eventReportingUrl)(request, messages(application)).toString
       }
     }
 
@@ -194,7 +261,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints, radioOptions)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints, radioOptions, eventReportingUrl)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
