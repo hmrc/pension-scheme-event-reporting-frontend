@@ -22,6 +22,7 @@ import handlers.TaxYearNotAvailableException
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.{TaxYearPage, VersionInfoPage}
+import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -32,9 +33,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class UserAnswersCacheConnector @Inject()(
                                            config: FrontendAppConfig,
                                            http: HttpClient
-                                         ) {
+                                         ) extends Logging {
 
   private def url = s"${config.eventReportingUrl}/pension-scheme-event-reporting/user-answers"
+  private def isDataModifiedUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/compare"
 
   private def noEventHeaders(pstr: String) = Seq(
     "Content-Type" -> "application/json",
@@ -80,6 +82,31 @@ class UserAnswersCacheConnector @Inject()(
         case (Some(a), None) => Some(UserAnswers(data = a))
         case (None, None) => None
       }
+    }
+  }
+
+  def isDataModified(pstr: String, eventType: EventType)
+         (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[Boolean]] = {
+    getJson(noEventHeaders(pstr)).flatMap {
+      case Some(noEventData) =>
+        val headers = eventHeaders(pstr, eventType, Some(noEventData))
+        val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+        http.GET[HttpResponse](isDataModifiedUrl)(implicitly, hc, ec)
+          .map { response =>
+            response.status match {
+              case NOT_FOUND => None
+              case OK => response.json.validate[Boolean] match {
+                case JsSuccess(isDataChanged, _) => Some(isDataChanged)
+                case JsError(errors) =>
+                  logger.warn(s"Unable to de-serialise the response $errors")
+                  None
+              }
+              case _ =>
+                None
+            }
+          }
+      case None =>
+        Future.successful(None)
     }
   }
 
