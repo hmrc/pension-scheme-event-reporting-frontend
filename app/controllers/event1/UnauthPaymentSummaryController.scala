@@ -22,13 +22,14 @@ import forms.mappings.Formatters
 import models.enumeration.EventType
 import models.enumeration.EventType.Event1
 import models.event1.MembersOrEmployersSummary
-import models.{TaxYear, UserAnswers}
+import models.{Index, TaxYear, UserAnswers}
 import pages.common.MembersOrEmployersPage
 import pages.event1.UnauthPaymentSummaryPage
 import pages.{EmptyWaypoints, Waypoints}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
+import services.EventPaginationService
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -45,29 +46,34 @@ class UnauthPaymentSummaryController @Inject()(
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 formProvider: UnauthPaymentSummaryFormProvider,
-                                                view: UnauthPaymentSummaryView
+                                                view: UnauthPaymentSummaryView,
+                                                eventPaginationService: EventPaginationService
                                               ) extends FrontendBaseController with I18nSupport with Formatters {
 
   private val form = formProvider()
 
-  def onPageLoad(waypoints: Waypoints, search: Option[String] = None): Action[AnyContent] = (identify andThen getData(EventType.Event1) andThen requireData) { implicit request =>
+
+  def onPageLoad(waypoints: Waypoints, search: Option[String]): Action[AnyContent] = onPageLoadPaginated(waypoints, search, Index(0))
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = onSubmitPaginated(waypoints, Index(0))
+
+  def onPageLoadPaginated(waypoints: Waypoints, search: Option[String] = None, page: Index): Action[AnyContent] = (identify andThen getData(EventType.Event1) andThen requireData) { implicit request =>
     val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
     val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers, request.readOnly(), search.map(_.toLowerCase))
-    Ok(view(form, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers), taxYear, search,
-      routes.UnauthPaymentSummaryController.onPageLoad(waypoints, None).url))
+    Ok(view(form, waypoints, mappedMemberOrEmployer, eventPaginationService.paginateMappedMembers(mappedMemberOrEmployer, page), page, sumValue(request.userAnswers), taxYear, search,
+      routes.UnauthPaymentSummaryController.onPageLoadPaginated(waypoints, None, page).url))
   }
 
   private def sumValue(userAnswers: UserAnswers): String =
     currencyFormatter.format(userAnswers.sumAll(MembersOrEmployersPage(EventType.Event1), MembersOrEmployersSummary.readsMemberOrEmployerValue))
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(EventType.Event1) andThen requireData) {
+  def onSubmitPaginated(waypoints: Waypoints, page: Index): Action[AnyContent] = (identify andThen getData(EventType.Event1) andThen requireData) {
     implicit request =>
       val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
       form.bindFromRequest().fold(
         formWithErrors => {
           val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers, request.readOnly(), None)
-          BadRequest(view(formWithErrors, waypoints, mappedMemberOrEmployer, sumValue(request.userAnswers), taxYear, None,
-            routes.UnauthPaymentSummaryController.onPageLoad(waypoints, None).url))
+          BadRequest(view(formWithErrors, waypoints, mappedMemberOrEmployer, eventPaginationService.paginateMappedMembers(mappedMemberOrEmployer,page), page, sumValue(request.userAnswers), taxYear, None,
+            routes.UnauthPaymentSummaryController.onPageLoadPaginated(waypoints, None, page).url))
         },
         value => {
           val userAnswerUpdated = request.userAnswers.setOrException(UnauthPaymentSummaryPage, value)
@@ -76,7 +82,9 @@ class UnauthPaymentSummaryController @Inject()(
       )
   }
 
-  private def getMappedMemberOrEmployer(userAnswers: UserAnswers, isReadOnly: Boolean, searchTerm: Option[String])
+  private def getMappedMemberOrEmployer(userAnswers: UserAnswers,
+                                        isReadOnly: Boolean,
+                                        searchTerm: Option[String])
                                        (implicit messages: Messages): Seq[SummaryListRow] = {
     def searchTermFilter(membersSummary: MembersOrEmployersSummary) = searchTerm.forall { searchTerm =>
       val ninoMatches = membersSummary.nino.exists { nino => nino.toLowerCase.contains(searchTerm) }
@@ -84,8 +92,10 @@ class UnauthPaymentSummaryController @Inject()(
       ninoMatches || membersSummary.name.toLowerCase.contains(searchTerm) || companyNumberMatches
     }
 
-    userAnswers.getAll(MembersOrEmployersPage(EventType.Event1))(MembersOrEmployersSummary.readsMemberOrEmployer).zipWithIndex.collect {
-      case (memberOrEmployerSummary, index) if !memberOrEmployerSummary.memberStatus.contains("Deleted") && searchTermFilter(memberOrEmployerSummary) =>
+    userAnswers.getAll(MembersOrEmployersPage(EventType.Event1))(MembersOrEmployersSummary.readsMemberOrEmployer)
+      .filter(memberOrEmployerSummary => !memberOrEmployerSummary.memberStatus.contains("Deleted") && searchTermFilter(memberOrEmployerSummary))
+      .zipWithIndex.collect {
+      case (memberOrEmployerSummary, index) =>
         //TODO PODS-8617: Remove front-end filter. Values should be filtered via MongoDB with an index or by refactor
         val value = ValueViewModel(HtmlFormat.escape(currencyFormatter.format(memberOrEmployerSummary.unauthorisedPaymentValue)).toString)
         SummaryListRow(

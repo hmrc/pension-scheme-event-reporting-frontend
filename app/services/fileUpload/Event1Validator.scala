@@ -78,7 +78,7 @@ class Event1Validator @Inject()(
 
   override val eventType: EventType = EventType.Event1
 
-  override protected def validHeader: String = config.validEvent1Header
+  override def validHeader: String = config.validEvent1Header
 
   private val fieldNoMemberOrEmployer = 0
   override protected val fieldNoFirstName = 1
@@ -340,7 +340,7 @@ class Event1Validator @Inject()(
     )
   }
 
-  override protected def validateFields(index: Int,
+  override def validateFields(index: Int,
                                         columns: Seq[String],
                                         taxYear: Int)
                                        (implicit messages: Messages): Result = {

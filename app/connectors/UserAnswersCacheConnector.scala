@@ -102,29 +102,35 @@ class UserAnswersCacheConnector @Inject()(
     getJson(noEventHeaders(pstr)).map(_.map(d => UserAnswers(noEventTypeData = d)))
   }
 
+  def save(pstr: String, eventType: EventType, userAnswers: JsValue, startYear: String, version: String)
+          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+
+    val headers: Seq[(String, String)] = Seq(
+      "Content-Type" -> "application/json",
+      "pstr" -> pstr,
+      "eventType" -> eventType.toString,
+      "year" -> startYear,
+      "version" -> version
+    )
+
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.POST[JsValue, HttpResponse](url, userAnswers)(implicitly, implicitly, hc, implicitly)
+      .map { response =>
+        response.status match {
+          case OK => ()
+          case _ =>
+            throw new HttpException(response.body, response.status)
+        }
+      }
+  }
+
   def save(pstr: String, eventType: EventType, userAnswers: UserAnswers)
           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
 
     (userAnswers.get(TaxYearPage), userAnswers.get(VersionInfoPage)) match {
       case (Some(year), Some(version)) =>
-        val headers: Seq[(String, String)] = Seq(
-          "Content-Type" -> "application/json",
-          "pstr" -> pstr,
-          "eventType" -> eventType.toString,
-          "year" -> year.startYear,
-          "version" -> version.version.toString
-        )
-
-        val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-
-        http.POST[JsValue, HttpResponse](url, userAnswers.data)(implicitly, implicitly, hc, implicitly)
-          .map { response =>
-            response.status match {
-              case OK => ()
-              case _ =>
-                throw new HttpException(response.body, response.status)
-            }
-          }
+        save(pstr, eventType, userAnswers.data, year.startYear, version.version.toString)
       case (y, v) =>
         Future.failed(new RuntimeException(s"No tax year or version available: $y / $v"))
     }

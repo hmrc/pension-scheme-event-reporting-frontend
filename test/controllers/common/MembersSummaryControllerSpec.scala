@@ -271,7 +271,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           ))
         ))
 
-      when(mockEventPaginationService.paginateMappedMembers(any(), any())).thenReturn(paginationStats26Members(fakeMembers))
+      when(mockEventPaginationService.paginateMappedMembers[SummaryListRowWithTwoValues](any(), any())).thenReturn(paginationStats26Members(fakeMembers))
 
       val application = applicationBuilder(userAnswers = Some(sampleData
         .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
@@ -420,7 +420,7 @@ object MembersSummaryControllerSpec {
     }
   }
 
-  private def paginationStats26Members(fakeMembers: Seq[SummaryListRowWithTwoValues]): PaginationStats = PaginationStats(
+  private def paginationStats26Members(fakeMembers: Seq[SummaryListRowWithTwoValues]) = PaginationStats(
     fakeMembers.slice(lowerBound, upperBound),
     totalMembers,
     totalNumberOfPages = 2,

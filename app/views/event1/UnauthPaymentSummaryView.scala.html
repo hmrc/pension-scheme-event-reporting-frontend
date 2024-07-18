@@ -15,7 +15,8 @@
  *@
 
 @import models.enumeration.EventType.Event1
-
+@import services.EventPaginationService.PaginationStats
+@import views.html.templates.pagination
 @this(
     layout: templates.SchemeLayout,
     formHelper: FormWithCSRF,
@@ -24,7 +25,16 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, memberOrEmployerSeq: Seq[SummaryListRow], total: String, taxYear: String, searchValue: Option[String], searchHref: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+
+@(form: Form[_],
+        waypoints: Waypoints,
+        memberOrEmployerSeq: Seq[SummaryListRow],
+        paginationStats: PaginationStats[SummaryListRow],
+        pageNumber: Index,
+        total: String,
+        taxYear: String,
+        searchValue: Option[String],
+        searchHref: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("unauthPaymentSummary.title", taxYear))) {
 
@@ -32,19 +42,21 @@
 
 @components.MembersSummarySearch(value = searchValue, searchHref = searchHref, eventType = Event1)
 
-    @formHelper(action = controllers.event1.routes.UnauthPaymentSummaryController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.event1.routes.UnauthPaymentSummaryController.onSubmitPaginated(waypoints, pageNumber), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
         @components.entity_table_list(
-            memberOrEmployerSeq,
+            paginationStats.slicedMembers,
             colOne = "unauthPaymentSummary.table.header1",
             colTwo = "unauthPaymentSummary.table.header2",
             total,
             caption = messages("unauthPaymentSummary.heading", taxYear)
         )
+
+        @pagination(pageNumber, paginationStats, controllers.event1.routes.UnauthPaymentSummaryController.onPageLoadPaginated(waypoints, searchValue, _))
 
         @govukRadios(
             RadiosViewModel.yesNo(

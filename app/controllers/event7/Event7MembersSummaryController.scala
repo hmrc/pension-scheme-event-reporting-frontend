@@ -57,7 +57,7 @@ class Event7MembersSummaryController @Inject()(
       val form = formProvider(eventType)
       val mappedMembers = getMappedMembers(request.userAnswers, request.readOnly(), search.map(_.toLowerCase))
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
-      val paginationStats = eventPaginationService.paginateMappedMembersThreeValues(mappedMembers, pageNumber)
+      val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, pageNumber)
       Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers), selectedTaxYear, paginationStats, pageNumber, search, routes.Event7MembersSummaryController.onPageLoad(waypoints, None).url))
     }
 
@@ -71,7 +71,7 @@ class Event7MembersSummaryController @Inject()(
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       form.bindFromRequest().fold(
         formWithErrors => {
-          val paginationStats = eventPaginationService.paginateMappedMembersThreeValues(mappedMembers, 0)
+          val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, 0)
           BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers), selectedTaxYear, paginationStats, Index(0), None, routes.Event7MembersSummaryController.onPageLoad(waypoints, None).url))
         },
         value => {
