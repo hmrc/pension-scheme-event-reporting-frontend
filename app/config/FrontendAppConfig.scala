@@ -79,6 +79,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
    def manageOverviewDashboardUrl: String = loadConfig("urls.manageOverviewDashboard")
 
+  def contactHmrcURL: String = loadConfig("urls.contactHmrcURL")
+
   def successEndPointTarget(eventType: EventType): String = loadConfig("upscan.success-endpoint").format(toRoute(eventType))
 
   def failureEndPointTarget(eventType: EventType): String = loadConfig("upscan.failure-endpoint").format(toRoute(eventType))
