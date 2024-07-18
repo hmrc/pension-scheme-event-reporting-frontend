@@ -58,7 +58,7 @@ class Event24Validator @Inject()(
 
   override val eventType: EventType = EventType.Event24
 
-  override protected def validHeader: String = config.validEvent24Header
+  override def validHeader: String = config.validEvent24Header
 
   // TODO - check column numbers
   override protected val fieldNoFirstName = 1
@@ -351,7 +351,7 @@ class Event24Validator @Inject()(
     )
   }
 
-  override protected def validateFields(index: Int,
+  override def validateFields(index: Int,
                                         columns: Seq[String],
                                         taxYear: Int)
                                        (implicit messages: Messages): Result = {

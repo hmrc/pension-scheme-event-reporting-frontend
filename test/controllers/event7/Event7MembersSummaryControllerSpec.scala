@@ -19,7 +19,7 @@ package controllers.event7
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import data.SampleData
-import data.SampleData.{erOverviewSeq, memberDetails, sampleMemberJourneyDataEvent7}
+import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent7}
 import forms.common.MembersSummaryFormProvider
 import forms.mappings.Formatters
 import helpers.DateHelper
@@ -37,7 +37,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.EventPaginationService
-import services.EventPaginationService.PaginationStatsEvent7
+import services.EventPaginationService.PaginationStats
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, Text}
 import viewmodels.{Message, SummaryListRowWithThreeValues}
 import views.html.event7.Event7MembersSummaryView
@@ -111,7 +111,7 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
 
           status(result) mustEqual OK
-          contentAsString(result).removeAllNonces() mustEqual view(formEvent7, waypoints, Event7, expectedSeq, "150.00", "2023", eventPaginationService.paginateMappedMembersThreeValues(expectedSeq, 1), Index(0), searchValue = None,
+          contentAsString(result).removeAllNonces() mustEqual view(formEvent7, waypoints, Event7, expectedSeq, "150.00", "2023", eventPaginationService.paginateMappedMembers(expectedSeq, 1), Index(0), searchValue = None,
             searchHref = "/manage-pension-scheme-event-report/report/event-7-summary")(request, messages(application)).toString
         }
       }
@@ -166,8 +166,8 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
       "must return bad request when invalid data is submitted" in {
         when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(()))
-        val emptyPageStats = PaginationStatsEvent7(Seq(), 0, 1, (0, 1), Seq())
-        when(mockEventPaginationService.paginateMappedMembersThreeValues(any(), any())).thenReturn(emptyPageStats)
+        val emptyPageStats = PaginationStats[SummaryListRowWithThreeValues](Seq(), 0, 1, (0, 1), Seq())
+        when(mockEventPaginationService.paginateMappedMembers[SummaryListRowWithThreeValues](any(), any())).thenReturn(emptyPageStats)
 
         val application =
           applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear

@@ -16,27 +16,41 @@
 
 package services.fileUpload
 
+import com.univocity.parsers.common.ParsingContext
+import com.univocity.parsers.common.processor.RowProcessor
 import com.univocity.parsers.csv.{CsvParser, CsvParserSettings}
 
 import java.io._
-import scala.jdk.CollectionConverters.ListHasAsScala
+import scala.concurrent.{Future, Promise}
+import scala.util.Success
+
+private final class AsyncRowProcessor[Y](acc:Y)(rowExecutor: (Y, Array[String], Int) => Unit) extends RowProcessor {
+
+  private val promise = Promise.apply[(Y, Int)]()
+  val future: Future[(Y, Int)] = promise.future
+  private var rowNumber = 0
+
+  override def processStarted(context: ParsingContext): Unit = {}
+
+  override def rowProcessed(row: Array[String], context: ParsingContext): Unit = {
+    rowExecutor(acc, row.map(_.replaceAll("\\p{C}", "")), rowNumber)
+    rowNumber = rowNumber + 1
+  }
+
+  override def processEnded(context: ParsingContext): Unit = promise.complete(Success(acc -> rowNumber))
+}
 
 object CSVParser {
 
-  def split(content: String): Seq[Array[String]] = {
+  def split[Y](inputStream: InputStream)(acc:Y)(rowExecutor: (Y, Array[String], Int) => Unit): Future[(Y, Int)] = {
+    val processor = new AsyncRowProcessor(acc)(rowExecutor)
     val settings = new CsvParserSettings()
     settings.setNullValue("")
     settings.setEmptyValue("")
+    settings.setProcessor(processor)
     val parser = new CsvParser(settings)
-    removeNonPrintableChars(parser.parseAll(new StringReader(content)).asScala.toSeq)
+    parser.parse(inputStream)
+    processor.future
   }
 
-  //removes non-printable characters like ^M$
-  private def removeNonPrintableChars(csvContent: Seq[Array[String]]): Seq[Array[String]] = {
-    for {
-      lines <- csvContent
-    } yield {
-      lines.map(lines => lines.replaceAll("\\p{C}", ""))
-    }
-  }
 }

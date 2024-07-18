@@ -21,18 +21,20 @@ import connectors.UserAnswersCacheConnector
 import data.SampleData.{erOverviewSeq, userAnswersWithOneMemberAndEmployerEvent1}
 import forms.event1.UnauthPaymentSummaryFormProvider
 import models.enumeration.VersionStatus.Submitted
-import models.{TaxYear, VersionInfo}
+import models.{Index, TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.event1.UnauthPaymentSummaryPage
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
+import play.api.Application
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.EventPaginationService
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import views.html.event1.UnauthPaymentSummaryView
 
@@ -46,6 +48,11 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
   private val form = formProvider()
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val taxYear = "2023"
+
+  private def paginationStats(application: Application, members: Seq[SummaryListRow]) = {
+    val paginationService = application.injector.instanceOf[EventPaginationService]
+    paginationService.paginateMappedMembers(members, 0)
+  }
 
   private def getRoute: String = routes.UnauthPaymentSummaryController.onPageLoad(waypoints).url
 
@@ -118,8 +125,8 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual view(form, waypoints, expectedSeq, "8,544.00", taxYear,
-          None, "/manage-pension-scheme-event-report/report/event-1-summary")(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, expectedSeq, paginationStats(application, expectedSeq), Index(0), "8,544.00", taxYear,
+          None, "/manage-pension-scheme-event-report/report/event-1-summary/1")(request, messages(application)).toString
       }
 
       Await.result(application.stop(), 10.seconds)
@@ -168,8 +175,8 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, Nil, "0.00", taxYear,
-          None, "/manage-pension-scheme-event-report/report/event-1-summary")(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints, Nil, paginationStats(application, Seq[SummaryListRow]()), Index(0), "0.00", taxYear,
+          None, "/manage-pension-scheme-event-report/report/event-1-summary/1")(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
       }
 

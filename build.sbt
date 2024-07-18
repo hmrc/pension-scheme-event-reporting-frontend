@@ -106,3 +106,7 @@ lazy val itSettings = Defaults.itSettings ++ Seq(
 )
 
 addCommandAlias("runCoverageCheck", "clean;coverage;test;coverageReport")
+
+javaOptions in Universal ++= Seq(
+  "-J-Xms256m",
+  "-J-Xmx256m")

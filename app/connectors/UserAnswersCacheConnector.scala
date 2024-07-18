@@ -22,6 +22,7 @@ import handlers.TaxYearNotAvailableException
 import models.UserAnswers
 import models.enumeration.EventType
 import pages.{TaxYearPage, VersionInfoPage}
+import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -32,9 +33,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class UserAnswersCacheConnector @Inject()(
                                            config: FrontendAppConfig,
                                            http: HttpClient
-                                         ) {
+                                         ) extends Logging {
 
   private def url = s"${config.eventReportingUrl}/pension-scheme-event-reporting/user-answers"
+  private def isDataModifiedUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/compare"
 
   private def noEventHeaders(pstr: String) = Seq(
     "Content-Type" -> "application/json",
@@ -83,6 +85,31 @@ class UserAnswersCacheConnector @Inject()(
     }
   }
 
+  def isDataModified(pstr: String, eventType: EventType)
+         (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[Boolean]] = {
+    getJson(noEventHeaders(pstr)).flatMap {
+      case Some(noEventData) =>
+        val headers = eventHeaders(pstr, eventType, Some(noEventData))
+        val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+        http.GET[HttpResponse](isDataModifiedUrl)(implicitly, hc, ec)
+          .map { response =>
+            response.status match {
+              case NOT_FOUND => None
+              case OK => response.json.validate[Boolean] match {
+                case JsSuccess(isDataChanged, _) => Some(isDataChanged)
+                case JsError(errors) =>
+                  logger.warn(s"Unable to de-serialise the response $errors")
+                  None
+              }
+              case _ =>
+                None
+            }
+          }
+      case None =>
+        Future.successful(None)
+    }
+  }
+
   private def getJson(headers: Seq[(String, String)])(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier) = {
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
@@ -102,29 +129,35 @@ class UserAnswersCacheConnector @Inject()(
     getJson(noEventHeaders(pstr)).map(_.map(d => UserAnswers(noEventTypeData = d)))
   }
 
+  def save(pstr: String, eventType: EventType, userAnswers: JsValue, startYear: String, version: String)
+          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+
+    val headers: Seq[(String, String)] = Seq(
+      "Content-Type" -> "application/json",
+      "pstr" -> pstr,
+      "eventType" -> eventType.toString,
+      "year" -> startYear,
+      "version" -> version
+    )
+
+    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
+
+    http.POST[JsValue, HttpResponse](url, userAnswers)(implicitly, implicitly, hc, implicitly)
+      .map { response =>
+        response.status match {
+          case OK => ()
+          case _ =>
+            throw new HttpException(response.body, response.status)
+        }
+      }
+  }
+
   def save(pstr: String, eventType: EventType, userAnswers: UserAnswers)
           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
 
     (userAnswers.get(TaxYearPage), userAnswers.get(VersionInfoPage)) match {
       case (Some(year), Some(version)) =>
-        val headers: Seq[(String, String)] = Seq(
-          "Content-Type" -> "application/json",
-          "pstr" -> pstr,
-          "eventType" -> eventType.toString,
-          "year" -> year.startYear,
-          "version" -> version.version.toString
-        )
-
-        val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-
-        http.POST[JsValue, HttpResponse](url, userAnswers.data)(implicitly, implicitly, hc, implicitly)
-          .map { response =>
-            response.status match {
-              case OK => ()
-              case _ =>
-                throw new HttpException(response.body, response.status)
-            }
-          }
+        save(pstr, eventType, userAnswers.data, year.startYear, version.version.toString)
       case (y, v) =>
         Future.failed(new RuntimeException(s"No tax year or version available: $y / $v"))
     }
