@@ -24,7 +24,6 @@ import scala.collection.immutable.ArraySeq
 
 class Event24ValidatorSpec extends BulkUploadSpec[Event24Validator](2023) with BeforeAndAfterEach {
 
-  //noinspection ScalaStyle
   "Event 24 Validator" - {
     "return a valid result if there are no validation errors" in {
       val data =s"""$header
@@ -190,6 +189,7 @@ class Event24ValidatorSpec extends BulkUploadSpec[Event24Validator](2023) with B
         ValidationError(1, 4, "Date must be between 06 April 2023 and 05 April 2024", "crystallisedDate"),
       )
     }
+
     "return validation errors if present" in {
       val data = s"""$header
                           ,,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
@@ -224,12 +224,14 @@ class Event24ValidatorSpec extends BulkUploadSpec[Event24Validator](2023) with B
         ValidationError(8, 7, "validProtection.event24.error.required", "validProtection"),
         ValidationError(9, 12, "typeOfProtectionReference.error.required", "nonResidenceEnhancement"),
         ValidationError(10, 9, "typeOfProtection.event24.error.format", "protectionTypeGroup2"),
-        ValidationError(11, 10, "typeOfProtectionReference.event24.error.maxLength", "protectionTypeGroup2Reference", ArraySeq(15)),
+        ValidationError(11, 10, "typeOfProtectionReference.event24.error.maxLength",
+          "protectionTypeGroup2Reference", ArraySeq(15)),
         ValidationError(12, 17, "overAllowanceAndDeathBenefit.event24.error.required", "overAllowanceAndDeathBenefit"),
         ValidationError(13, 17, "overAllowanceAndDeathBenefit.event24.error.required", "overAllowanceAndDeathBenefit"),
         ValidationError(14, 18, "overAllowance.event24.error.required", "overAllowance"),
         ValidationError(15, 20, "marginalRate.event24.error.required", "marginalRate"),
-        ValidationError(16, 22, "employerPayeReference.event24.error.disallowedChars", "employerPayeRef", ArraySeq("[A-Za-z0-9/]{9,12}")),
+        ValidationError(16, 22, "employerPayeReference.event24.error.disallowedChars", "employerPayeRef",
+          ArraySeq("[A-Za-z0-9/]{9,12}")),
         ValidationError(17, 22, "employerPayeReference.event24.error.required", "employerPayeRef")
       )
     }

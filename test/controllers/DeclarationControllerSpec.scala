@@ -19,10 +19,11 @@ package controllers
 import audit.AuditService
 import base.SpecBase
 import connectors.MinimalConnector.MinimalDetails
-import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector}
+import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector, UserAnswersCacheConnector}
 import handlers.NothingToSubmitException
 import models.VersionInfo
 import models.enumeration.AdministratorOrPractitioner.Administrator
+import models.enumeration.EventType
 import models.enumeration.VersionStatus.{Compiled, Submitted}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -34,12 +35,14 @@ import pages.{EmptyWaypoints, VersionInfoPage}
 import play.api.http.Status.OK
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.Results.{BadRequest, NoContent, Ok}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, _}
 import services.SubmitService
 import views.html.DeclarationView
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
@@ -52,6 +55,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
   private val mockAuditService = mock[AuditService]
   private val mockEmailConnector = mock[EmailConnector]
   private val mockMinimalConnector = mock[MinimalConnector]
+  private val mockUserAnswersConnector = mock[UserAnswersCacheConnector]
   private val mockSubmitService = mock[SubmitService]
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -59,14 +63,17 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
     bind[EmailConnector].toInstance(mockEmailConnector),
     bind[AuditService].toInstance(mockAuditService),
     bind[MinimalConnector].toInstance(mockMinimalConnector),
+    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersConnector),
     bind[SubmitService].toInstance(mockSubmitService)
   )
+
 
   override protected def beforeEach(): Unit = {
     reset(mockERConnector)
     reset(mockAuditService)
     reset(mockEmailConnector)
     reset(mockMinimalConnector)
+    reset(mockUserAnswersConnector)
     reset(mockSubmitService)
   }
 
@@ -110,7 +117,12 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       val organisationName = "Test company ltd"
       val minimalDetails = MinimalDetails(testEmail, isPsaSuspended = false, Some(organisationName), None, rlsFlag = false, deceasedFlag = false)
 
+
       when(mockERConnector.submitReport(any(), any(), any())(any())).thenReturn(Future.successful(NoContent))
+      when(mockUserAnswersConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(()))
+
+      when(mockERConnector.submitReport(any(), any(), any())(any())).thenReturn(Future.successful(NoContent))
+      when(mockUserAnswersConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(()))
       doNothing().when(mockAuditService).sendEvent(any())(any(), any())
       when(mockEmailConnector.sendEmail(
         schemeAdministratorType = ArgumentMatchers.eq(Administrator),
@@ -170,6 +182,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         .thenReturn(Future.successful(EmailSent))
       when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
       when(mockSubmitService.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(BadRequest))
+      when(mockUserAnswersConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(()))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled))), extraModules)
@@ -187,5 +200,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         redirectLocation(result).value mustEqual routes.CannotResumeController.onPageLoad(waypoints).url
       }
     }
+
+
   }
 }

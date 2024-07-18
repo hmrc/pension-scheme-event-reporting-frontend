@@ -89,7 +89,7 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
       val application = applicationBuilder(userAnswers =
         Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(3, Submitted))
-        .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
+          .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
@@ -110,7 +110,7 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
       val application = applicationBuilder(userAnswers =
         Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
-        .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
+          .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
         val request = FakeRequest(GET, controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
@@ -296,13 +296,13 @@ object Event10CheckYourAnswersControllerSpec {
     )
 
   private def fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(messageKey: String, htmlContent: String)
-                                                                (implicit messages: Messages): SummaryListRow =
+                                                                        (implicit messages: Messages): SummaryListRow =
     SummaryListRow(
       Key(
         Text(
           messages(messageKey)
         ), ""),
-      Value(HtmlContent(htmlContent), ""), "",
+      Value(HtmlContent(htmlContent), ""), ""
     )
 
   private def fakeSummaryListRowWithTextWithHiddenContent(messageKey: String, text: String, changeLink: String, hiddenContentChangeLink: String)

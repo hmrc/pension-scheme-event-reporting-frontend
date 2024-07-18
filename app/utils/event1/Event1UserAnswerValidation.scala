@@ -145,23 +145,20 @@ class Event1UserAnswerValidation @Inject()(compileService: CompileService) {
     val paymentDetailsAnswer = request.userAnswers.get(PaymentValueAndDatePage(index))
 
     (employerPaymentNatureAnswer, employerPostcodeAnswer, employerPropertyAddressAnswer, paymentDetailsAnswer) match {
-      case (Some(ResidentialProperty), Some(_), _, Some(_)) |
-           (Some(ResidentialProperty), _, Some(_), Some(_)) => compileService.compileEvent(Event1, request.pstr, request.userAnswers).map {
+      case (Some(_), Some(_), _, Some(_)) |
+           (Some(_), _, Some(_), Some(_)) => compileService.compileEvent(Event1, request.pstr, request.userAnswers).map {
         _ => Redirect(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(EmptyWaypoints))
       }
-      case (Some(_), None, None, Some(_)) => compileService.compileEvent(Event1, request.pstr, request.userAnswers).map {
-        _ => Redirect(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(EmptyWaypoints))
-      }
-      case (Some(ResidentialProperty), None, None,  _) => Future.successful(
+      case (Some(_), None, None,  _) => Future.successful(
         Redirect(ManualAddressPage(AddressJourneyType.Event1EmployerPropertyAddressJourney, index)
           .changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url
         )
       )
-      case (None, None, None, None) => Future.successful(
-        Redirect(pages.event1.employer.PaymentNaturePage(index).changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
+      case (Some(_), Some(_), None, None) | (Some(_), None, Some(_), None) => Future.successful(
+        Redirect(PaymentValueAndDatePage(index).changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
       )
       case _ => Future.successful(
-        Redirect(PaymentValueAndDatePage(index).changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
+        Redirect(pages.event1.employer.PaymentNaturePage(index).changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
       )
     }
   }
