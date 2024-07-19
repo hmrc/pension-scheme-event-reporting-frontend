@@ -51,18 +51,18 @@ class EventReportingOverviewService @Inject()(
                 .setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
 
               userAnswersCacheConnector.save(pstr, ua).map { _ =>
-                Seq((s"${erOverview.taxYear.startYear} to ${erOverview.taxYear.endYear}", routes.EventReportingOverviewController.onSubmit(erOverview.taxYear.startYear, "InProgress").url))
+                Seq((s"6 April ${erOverview.taxYear.startYear} to 5 April ${erOverview.taxYear.endYear}", routes.EventReportingOverviewController.onSubmit(erOverview.taxYear.startYear, "InProgress").url))
               }
             case _ =>
               val uaUpdated = uaFetched.setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)
               userAnswersCacheConnector.save(pstr, uaUpdated).map { x =>
-                getTaxYears(uaUpdated).map(x => (s"${x.startYear} to ${x.endYear}", routes.EventReportingOverviewController.onSubmit(x.startYear, "InProgress").url))
+                getTaxYears(uaUpdated).map(x => (s"6 April ${x.startYear} to 5 April ${x.endYear}", routes.EventReportingOverviewController.onSubmit(x.startYear, "InProgress").url))
               }
           }
         case _ =>
           val uaUpdated = uaFetched.setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)
           userAnswersCacheConnector.save(pstr, uaUpdated).map { _ =>
-            getTaxYears(uaUpdated).map(x =>   (s"${x.startYear} to ${x.endYear}", routes.EventReportingOverviewController.onSubmit(x.startYear, "InProgress").url )  )
+            getTaxYears(uaUpdated).map(x =>   (s"6 April ${x.startYear} to 5 April ${x.endYear}", routes.EventReportingOverviewController.onSubmit(x.startYear, "InProgress").url )  )
           }
       }
     }
@@ -85,11 +85,11 @@ class EventReportingOverviewService @Inject()(
         case Some(s: Seq[EROverview]) =>
           val uaUpdated = uaFetched.setOrException(EventReportingTileLinksPage, PastEventTypes, nonEventTypeData = true)
           userAnswersCacheConnector.save(pstr, uaUpdated).map { _ =>
-            getTaxYears(uaUpdated).map(x => (s"${x.startYear} to ${x.endYear}", routes.EventReportingOverviewController.onSubmit(x.startYear, "PastEventTypes").url) )
+            getTaxYears(uaUpdated).map(x => (s"6 April ${x.startYear} to 5 April ${x.endYear}", routes.EventReportingOverviewController.onSubmit(x.startYear, "PastEventTypes").url) )
           }
 
         case _ =>
-          Future.successful(getTaxYears(uaFetched).map(x => (s"${x.startYear} to ${x.endYear}", routes.EventReportingOverviewController.onSubmit(x.startYear, "PastEventTypes").url)))
+          Future.successful(getTaxYears(uaFetched).map(x => (s"6 April ${x.startYear} to 5 April ${x.endYear}", routes.EventReportingOverviewController.onSubmit(x.startYear, "PastEventTypes").url)))
       }
     }
   }

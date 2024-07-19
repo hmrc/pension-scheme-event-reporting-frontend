@@ -21,7 +21,6 @@ import models.enumeration.AddressJourneyType
 import models.enumeration.EventType.Event1
 import models.event1.PaymentNature.{OverpaymentOrWriteOff, RefundOfContributions, ResidentialPropertyHeld, TransferToNonRegPensionScheme}
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
-import models.event1.employer.PaymentNature.ResidentialProperty
 import models.requests.DataRequest
 import pages.EmptyWaypoints
 import pages.address.{EnterPostcodePage, ManualAddressPage}

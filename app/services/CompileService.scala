@@ -25,7 +25,6 @@ import models.{EROverview, EROverviewVersion, EventDataIdentifier, TaxYear, User
 import org.apache.pekko.actor.ActorSystem
 import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.Logging
-import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
