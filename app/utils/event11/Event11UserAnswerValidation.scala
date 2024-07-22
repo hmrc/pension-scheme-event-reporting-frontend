@@ -35,8 +35,11 @@ class Event11UserAnswerValidation @Inject()(compileService: CompileService) {
     val hasSchemeChangedRulesInvestmentsInAssetsAnswer = request.userAnswers.get(HasSchemeChangedRulesInvestmentsInAssetsPage)
     val investmentsInAssetsRuleChangeDateAnswer = request.userAnswers.get(InvestmentsInAssetsRuleChangeDatePage)
 
-    def hasSchemeChangedRulesInvestmentsInAssetsValidation: Future[Result] = {
+    def hasSchemeChangedRulesInvestmentsInAssetsValidation(firstAnswer: Boolean): Future[Result] = {
       (hasSchemeChangedRulesInvestmentsInAssetsAnswer, investmentsInAssetsRuleChangeDateAnswer) match {
+        case (Some(false), _) if !firstAnswer => Future.successful(
+          Redirect(controllers.event11.routes.Event11CannotSubmitController.onPageLoad(EmptyWaypoints).url)
+        )
         case (Some(true), Some(_)) | (Some(false), _) => compileService.compileEvent(Event11, request.pstr, request.userAnswers).map {
           _ =>
             Redirect(controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url)
@@ -51,7 +54,8 @@ class Event11UserAnswerValidation @Inject()(compileService: CompileService) {
     }
 
     (hasSchemeChangedRulesAnswer, unAuthPaymentsRuleChangeDateAnswer) match {
-      case (Some(true), Some(_)) | (Some(false), _) => hasSchemeChangedRulesInvestmentsInAssetsValidation
+      case (Some(true), Some(_)) => hasSchemeChangedRulesInvestmentsInAssetsValidation(true)
+      case (Some(false), _) => hasSchemeChangedRulesInvestmentsInAssetsValidation(false)
       case (Some(true), None) => Future.successful(
         Redirect(UnAuthPaymentsRuleChangeDatePage.changeLink(EmptyWaypoints, Event11CheckYourAnswersPage()).url)
       )
