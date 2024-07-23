@@ -28,9 +28,6 @@ govukButton: GovukButton
 
 @layout(pageTitle = messages("eventSummary.title", "selectedTaxYear")) {
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-
       <span class="govuk-caption-xl">
           @viewModel.schemeName
       </span>
@@ -39,14 +36,14 @@ govukButton: GovukButton
             @messages("eventReportingOverview.title")
         </h1>
 
-        <p class="govuk-body govuk-!-margin-bottom-8">
+        <p class="govuk-body">
             <a class="govuk-link" href="@viewModel.newEventReportingUrl">
                 @messages("eventReportingOverview.startNewEventReporting")
             </a>
         </p>
 
         @if(viewModel.outstandingAmount != messages("eventReportingOverview.totalOutstandingNotAvailable")) {
-        <h3 class="govuk-caption-l govuk-!-margin-top-4 govuk-!-margin-bottom-2">
+        <h3 class="govuk-caption-l govuk-!-margin-top-8 govuk-!-margin-bottom-2">
             @messages("eventReportingOverview.totalOutstanding")
         </h3>
 
@@ -57,7 +54,7 @@ govukButton: GovukButton
         </p>
 
         } else {
-        <h3 class="govuk-caption-l govuk-!-margin-top-4 govuk-!-margin-bottom-2">
+        <h3 class="govuk-caption-l govuk-!-margin-top-8 govuk-!-margin-bottom-2">
             @messages("eventReportingOverview.totalOutstandingNotAvailable")
         </h3>
         }
@@ -107,8 +104,5 @@ govukButton: GovukButton
         }
       <hr>
      <br>
-
-    </div>
-</div>
 
 }
