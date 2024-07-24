@@ -35,7 +35,7 @@ object HasSchemeChangedRulesSummary {
         val value: String = if (answer) {
           "Yes"
         } else {
-          "The scheme has not changed its rules to allow any person to make unauthorised payment"
+          "No"
         }
 
         SummaryListRow(
