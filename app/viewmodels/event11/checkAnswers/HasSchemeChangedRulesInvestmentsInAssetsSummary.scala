@@ -35,7 +35,7 @@ object HasSchemeChangedRulesInvestmentsInAssetsSummary  {
         val value = if (answer) {
           "Yes"
         } else {
-          "The scheme has not changed its rules to allow investments in assets other than contracts or policies of insurance"
+          "No"
         }
 
         SummaryListRow(

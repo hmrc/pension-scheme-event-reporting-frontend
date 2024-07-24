@@ -1532,9 +1532,10 @@ dateOfChange.error.outsideDateRanges = Enter a real date
 dateOfChange.error.outsideReportedYear = The date must be between {0} and {1}
 dateOfChange.change.hidden = The date for when the scheme changed its rules
 
-cannotSubmit.title = You cannot submit a report for this event
-cannotSubmit.heading = You cannot submit a report for this event
-cannotSubmit.p1 = You do not meet the criteria to submit a report for this event at this time.
+cannotSubmit.title = This event is not required
+cannotSubmit.heading = This event is not required
+cannotSubmit.p1 = You selected no to the question in this event so it cannot be submitted.
+cannotSubmit.events.list = Return to events list
 
 howManySchemeMembers.title = How many scheme members were there at the end of the tax year {0}?
 howManySchemeMembers.heading = How many scheme members were there at the end of the tax year {0}?

@@ -346,7 +346,7 @@ object Event11CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "hasSchemeChangedRulesInvestmentsInAssets.checkYourAnswersLabel",
-      "The scheme has not changed its rules to allow investments in assets other than contracts or policies of insurance",
+      "No",
       "/manage-pension-scheme-event-report/report/event-11-rule-change-to-allow-investments-in-assets?waypoints=event-11-check-answers",
       "hasSchemeChangedRulesInvestmentsInAssets.change.hidden"
     )
@@ -355,7 +355,7 @@ object Event11CheckYourAnswersControllerSpec {
   private def expectedMemberSummaryListRowsEvent11ChangedRulesForAssetsOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "hasSchemeChangedRules.event11.checkYourAnswersLabel",
-      "The scheme has not changed its rules to allow any person to make unauthorised payment",
+      "No",
       "/manage-pension-scheme-event-report/report/event-11-rule-change-to-allow-unauthorised-payments?waypoints=event-11-check-answers",
       "hasSchemeChangedRules.change.hidden"
     ),
