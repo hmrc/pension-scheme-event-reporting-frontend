@@ -25,19 +25,19 @@
 
 
 
-@(seqOfReturnHistorySummary:Seq[ReturnHistorySummary], taxYearStart: String, taxYearEnd: String, schemeName: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(seqOfReturnHistorySummary:Seq[ReturnHistorySummary], taxYearEnd: String, schemeName: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("returnHistory.title", taxYearStart, taxYearEnd))) {
+@layout(pageTitle = titleNoForm(messages("returnHistory.title", taxYearEnd))) {
 
     <span class="govuk-caption-xl">@schemeName</span>
 
-    <h1 class="govuk-heading-l">@messages("returnHistory.heading", taxYearStart, taxYearEnd)</h1>
+    <h1 class="govuk-heading-l">@messages("returnHistory.heading", taxYearEnd)</h1>
 
     @components.entity_returnHistory_table_list(
         seqOfReturnHistorySummary,
         messages("returnHistory.table.header1"),
         messages("returnHistory.table.header2"),
         messages("returnHistory.table.header3"),
-        caption = messages("returnHistory.heading", taxYearStart, taxYearEnd)
+        caption = messages("returnHistory.heading", taxYearEnd)
     )
 }

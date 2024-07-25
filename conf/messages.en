@@ -1861,8 +1861,8 @@ genericDate.error.invalid.missingInformation = The date must include a
 genericDate.error.invalid.allFieldsMissing = The date must include a day, month and year
 genericDate.error.outsideRelevantTaxYear = Date must be between 6 April {0} and 5 April {1}
 
-returnHistory.title = Event reporting return history for {0} to {1}
-returnHistory.heading = Event reporting return history for {0} to {1}
+returnHistory.title = Event reporting return history for tax year ending 5 April {0}
+returnHistory.heading = Event reporting return history for tax year ending 5 April {0}
 returnHistory.table.header1 = Submission
 returnHistory.table.header2 = Status
 returnHistory.table.header3 = Submitted by

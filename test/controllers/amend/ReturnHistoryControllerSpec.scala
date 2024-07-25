@@ -68,7 +68,6 @@ class ReturnHistoryControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual OK
         contentAsString(result).removeAllNonces()mustEqual view.render(seqOfReturnHistorySummary,
-          taxYearStart = "2022",
           taxYearEnd = "2023",
           schemeName = "schemeName",
           request = request,
