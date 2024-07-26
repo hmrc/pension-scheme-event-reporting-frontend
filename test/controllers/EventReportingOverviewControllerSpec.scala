@@ -96,7 +96,7 @@ class EventReportingOverviewControllerSpec extends SpecBase with BeforeAndAfterE
         val result = route(application, request).value
         val view = application.injector.instanceOf[EventReportingOverviewView]
 
-        val ovm = OverviewViewModel(pastYears = Seq(("", "")), yearsInProgress = Seq(("", "")), schemeName= "dummyScheme",
+        val ovm = OverviewViewModel(pastYears = Seq(("", "")), yearsInProgress = Seq(("", "")), schemeName= "schemeName",
           outstandingAmount = "£19.00", paymentsAndChargesUrl = "dummyUrl",
           newEventReportingUrl = appConfig.erStartNewUrl)
 
