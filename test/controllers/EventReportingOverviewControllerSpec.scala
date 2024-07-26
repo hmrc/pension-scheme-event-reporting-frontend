@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import config.FrontendAppConfig
 import connectors.{AFTFrontendConnector, EventReportingConnector, UserAnswersCacheConnector}
 import models.enumeration.JourneyStartType.StartNew
 import org.mockito.ArgumentMatchers.any
@@ -44,9 +45,6 @@ class EventReportingOverviewControllerSpec extends SpecBase with BeforeAndAfterE
   private val mockEventReportingOverviewService = mock[EventReportingOverviewService]
 
   private val ua = emptyUserAnswers.setOrException(EventReportingTileLinksPage, StartNew)
-  private val ovm = OverviewViewModel(pastYears = Seq(("", "")), yearsInProgress = Seq(("", "")), schemeName = "schemeName",
-    outstandingAmount = "£19.00", paymentsAndChargesUrl ="dummyUrl",
-      newEventReportingUrl = "http://localhost:8216/manage-pension-scheme-event-report/event-report")
 
   private val amountHtml = Html("£19.00")
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
@@ -88,14 +86,19 @@ class EventReportingOverviewControllerSpec extends SpecBase with BeforeAndAfterE
       when(mockEventReportingOverviewService.getPastYearsAndUrl(any(), any())(any())).thenReturn(Future.successful(Seq(("", ""))))
       when(mockEventReportingOverviewService.getInProgressYearAndUrl(any(), any())(any())).thenReturn(Future.successful(Seq(("", ""))))
 
+      val appConfig = application.injector.instanceOf[FrontendAppConfig]
+
       running(application) {
 
 
         val request = FakeRequest(GET, getRoute)
 
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[EventReportingOverviewView]
+
+        val ovm = OverviewViewModel(pastYears = Seq(("", "")), yearsInProgress = Seq(("", "")), schemeName= "dummyScheme",
+          outstandingAmount = "£19.00", paymentsAndChargesUrl = "dummyUrl",
+          newEventReportingUrl = appConfig.erStartNewUrl)
 
         status(result) mustEqual OK
         contentAsString(result).removeAllNonces() mustEqual view(ovm)(request, messages(application)).toString
