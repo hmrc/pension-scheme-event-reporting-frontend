@@ -46,7 +46,7 @@ class EventReportingOverviewControllerSpec extends SpecBase with BeforeAndAfterE
   private val ua = emptyUserAnswers.setOrException(EventReportingTileLinksPage, StartNew)
   private val ovm = OverviewViewModel(pastYears = Seq(("", "")), yearsInProgress = Seq(("", "")), schemeName = "schemeName",
     outstandingAmount = "£19.00", paymentsAndChargesUrl ="dummyUrl",
-      newEventReportingUrl = "/manage-pension-scheme-event-report/event-reporting-date?taxYear=&journeyType=StartNew")
+      newEventReportingUrl = "http://localhost:8216/manage-pension-scheme-event-report/event-report")
 
   private val amountHtml = Html("£19.00")
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]

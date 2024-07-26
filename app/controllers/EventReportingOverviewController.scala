@@ -16,7 +16,8 @@
 
 package controllers
 
-import connectors.{EventReportingConnector, AFTFrontendConnector, UserAnswersCacheConnector}
+import config.FrontendAppConfig
+import connectors.{AFTFrontendConnector, EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.partials.EventReportingTileController.{maxEndDateAsString, minStartDateAsString}
 import models.enumeration.JourneyStartType.{InProgress, PastEventTypes, StartNew}
@@ -40,6 +41,7 @@ class EventReportingOverviewController @Inject()(
                                                   requireData: DataRequiredAction,
                                                   connector: EventReportingConnector,
                                                   aftConnector: AFTFrontendConnector,
+                                                  appConfig: FrontendAppConfig,
                                                   service: EventReportingOverviewService,
                                                   userAnswersCacheConnector: UserAnswersCacheConnector,
                                                   view: EventReportingOverviewView
@@ -61,7 +63,7 @@ class EventReportingOverviewController @Inject()(
     } yield OverviewViewModel(pastYears = pastYears, yearsInProgress = inProgressYears, schemeName = request.schemeName,
       outstandingAmount = outstandingAmount.toString(), paymentsAndChargesUrl = service.linkForOutstandingAmount(srn, outstandingAmount.toString()),
       isAnyCompiledReports = isAnyCompiledReports, isAnySubmittedReports = isAnySubmittedReports,
-      newEventReportingUrl = routes.EventReportingOverviewController.onSubmit("", "StartNew").url )
+      newEventReportingUrl = appConfig.erStartNewUrl)
 
 
       ovm.map( y => Ok(view(y)))
@@ -104,11 +106,9 @@ class EventReportingOverviewController @Inject()(
               }
           }
         case StartNew =>
-          val updatedAnswers = originalUserAnswers
-            .setOrException(EventReportingTileLinksPage, StartNew, nonEventTypeData = true)
-
-          userAnswersCacheConnector.save(request.pstr, updatedAnswers).map {
-            _ => Redirect(controllers.routes.TaxYearController.onPageLoad(waypoints).url)
+          val updatedAnswers = originalUserAnswers.setOrException(EventReportingTileLinksPage, StartNew, nonEventTypeData = true)
+          userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
+            Redirect(controllers.routes.TaxYearController.onPageLoad(EmptyWaypoints))
           }
       }
   }
