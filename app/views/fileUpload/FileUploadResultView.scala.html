@@ -45,6 +45,8 @@
 
         <p class="govuk-body">
             @if(fileName.isEmpty) {
+                @messages("fileUploadResult.notify.refresh")
+                <br>
                 @messages("fileUploadResult.status.inProgress")
             } else {
                 @fileName.map{ name =>
