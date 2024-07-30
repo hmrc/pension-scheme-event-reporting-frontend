@@ -53,7 +53,7 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
             addresses,
             index
           ))
-        case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None).url)
+        case _ => throw new RuntimeException("User answers not available")
       }
     }
 

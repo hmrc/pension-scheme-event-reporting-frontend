@@ -112,14 +112,15 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(FileUploadResultPage(eventType), value)
           val redirectResultPage: Result = Redirect(FileUploadResultPage(eventType).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).flatMap { _ =>
             if (value == FileUploadResult.Yes) {
               parsingAndValidationOutcomeCacheConnector
                 .deleteOutcome
                 .flatMap(_ => asyncGetUpscanFileAndParse(eventType))
-              redirectResultPage
+                .map(_ => redirectResultPage)
+
             } else {
-              redirectResultPage
+              Future.successful(redirectResultPage)
             }
           }
         }
@@ -213,8 +214,8 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
                 sendUpscanFileDownloadAuditEvent(eventType, httpResponse.status, startTime, fileUploadOutcomeResponse)
                 httpResponse.status match {
                   case OK => performValidation(eventType, httpResponse.bodyAsSource, fileName) recoverWith {
-                    case e: Throwable =>
-                      setGeneralErrorOutcome("Unable to download file", fileName, Some(e))
+                    case e =>
+                      throw new RuntimeException("Unable to download file", e) //TODO: Might need to handle this in error handler.
                   }
                   case e =>
                     setGeneralErrorOutcome(s"Upscan download error response code $e", fileName)
