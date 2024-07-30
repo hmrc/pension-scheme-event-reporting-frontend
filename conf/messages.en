@@ -1576,6 +1576,7 @@ fileUploadResult.checkYourAnswersLabel = fileUploadResult
 fileUploadResult.error.required = Select yes to add this file
 fileUploadResult.change.hidden = FileUploadResult
 fileUploadResult.status.inProgress = In progress
+fileUploadResult.notify.refresh = This page will refresh after the file has been checked
 
 fileUpload.error.rejected.title = Your file is in the wrong format
 fileUpload.error.rejected.heading = Your file is in the wrong format
