@@ -26,7 +26,7 @@ import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.enumeration.EventType
 import models.enumeration.EventType.getEventTypeByName
 import models.fileUpload.FileUploadResult
-import models.requests.{DataRequest, OptionalDataRequest}
+import models.requests.DataRequest
 import pages.Waypoints
 import pages.fileUpload.FileUploadResultPage
 import play.api.data.Form
@@ -98,7 +98,6 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
 
       request.queryString.get("key").flatMap(_.headOption) match {
         case Some(uploadIdReference) =>
-          val formFields = Map("key" -> uploadIdReference)
           val errorCode = getErrorCode(request.queryString)
 
           if (isFileNotFound(request.request.queryString)) {
