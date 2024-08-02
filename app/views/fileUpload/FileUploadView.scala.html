@@ -35,6 +35,7 @@
     @for((key, value) <- upscanFields){
         <input type="hidden" name="@key" value="@value">
     }
+        <input type="hidden" name="upscanFields" value="@upscanFields">
 
         <h1 class="govuk-heading-xl">@messages("fileUpload.heading", eventByName)</h1>
 
