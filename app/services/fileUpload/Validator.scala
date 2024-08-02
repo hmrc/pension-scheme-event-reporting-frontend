@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json._
 import queries.Gettable
-import services.fileUpload.ValidatorErrorMessages.{HeaderInvalidOrFileIsEmpty, NoDataRowsProvided}
+import services.fileUpload.ValidatorErrorMessages.{HeaderInvalidOrFileIsEmpty, NoDataRowsProvided, HeaderNotInExpectedFormat}
 import utils.FastJsonAccumulator
 
 import scala.collection.immutable.HashSet
@@ -35,6 +35,7 @@ import scala.collection.mutable.ArrayBuffer
 
 object ValidatorErrorMessages {
   val HeaderInvalidOrFileIsEmpty = "Header invalid or File is empty"
+  val HeaderNotInExpectedFormat = "Header is not in the expected format"
   val NoDataRowsProvided = "No data has been added to the file"
 }
 
@@ -82,6 +83,11 @@ trait Validator {
                dataAccumulator: FastJsonAccumulator,
                errorAccumulator: ArrayBuffer[ValidationError],
                taxYear: Int)(implicit messages: Messages): Unit = {
+    if(rowNumber == 0){
+      if(!validHeader.isEmpty &&  !validHeader.replace("\"","").equals(row.mkString(","))){
+        errorAccumulator ++= ArrayBuffer(ValidationError(0, 0, HeaderNotInExpectedFormat, EMPTY))
+      }
+    }
     if(rowNumber > 0) {
       val result = validateFields(rowNumber, row, taxYear)
       result.validated match {
