@@ -476,6 +476,27 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
       )
     }
 
+    "return validation errors when header is not in expected format" in {
+      val data =
+        s"""SomeErrorHeader
+                            member,Steven,Bloggs,AA123456A,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",,08/11/2022
+                            member,Steven,Bloggs,AA123456B,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1.1.0,08/11/2022
+                            member,Steven,Bloggs,AA123456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",1000.99999,08/11/2022
+                            member,Steven,Bloggs,AA123456D,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",-1000.00,08/11/2022
+                            member,Steven,Bloggs,AA223456C,YES,YES,NO,,,,TRANSFER,,,,,,,,,,,,EFRBS,"SchemeName,SchemeReference",9999999999.99,08/11/2022"""
+
+
+      val ((output, errors), rowNumber) = validate(data)
+      errors mustBe Seq(
+        ValidationError(0, 0, "Header is not in the expected format", ""),
+        ValidationError(1, 24, "paymentValueAndDate.value.error.nothingEntered", "paymentValue"),
+        ValidationError(2, 24, "paymentValueAndDate.value.error.notANumber", "paymentValue"),
+        ValidationError(3, 24, "paymentValueAndDate.value.error.tooManyDecimals", "paymentValue"),
+        ValidationError(4, 24, "paymentValueAndDate.value.error.negative", "paymentValue", ArraySeq(0)),
+        ValidationError(5, 24, "paymentValueAndDate.value.error.amountTooHigh", "paymentValue", ArraySeq(999999999.99))
+      )
+    }
+
     "return validation errors when present for the date field, including tax year in future" in {
       val data =
         s"""$header
