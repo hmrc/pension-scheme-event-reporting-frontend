@@ -17,12 +17,14 @@
 package handlers
 
 import config.FrontendAppConfig
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.{Ok, Redirect}
-import play.api.mvc.{Request, RequestHeader, Result}
+import play.api.mvc.{Request, RequestHeader, Result, Results}
 import play.twirl.api.Html
+import uk.gov.hmrc.http.HttpException
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import views.html.{ErrorTemplate, NoDataEnteredErrorView, PageNotFoundErrorView}
+import views.html.{ErrorTemplate, NoDataEnteredErrorView, PageNotFoundErrorView, UserLockedView}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
@@ -33,8 +35,9 @@ class ErrorHandler @Inject()(
                               view: ErrorTemplate,
                               noDataEnteredView: NoDataEnteredErrorView,
                               pageNotFoundView: PageNotFoundErrorView,
+                              userLockedView: UserLockedView,
                               config: FrontendAppConfig
-                            ) extends FrontendErrorHandler with I18nSupport {
+                            ) extends FrontendErrorHandler with I18nSupport with Logging {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
     view(pageTitle, heading, message)
@@ -44,6 +47,9 @@ class ErrorHandler @Inject()(
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
     exception match {
+      case e: HttpException if e.message.contains("EVENT_LOCKED") =>
+        logger.warn("User is locked on " + request.uri)
+        Future.successful(new Results.Status(e.responseCode)(userLockedView(config.contactHmrcURL)(Request(request, ""), request2Messages(request))))
       case _ : TaxYearNotAvailableException =>
         Future.successful(Redirect(config.yourPensionSchemesUrl))
       case _: NothingToSubmitException =>

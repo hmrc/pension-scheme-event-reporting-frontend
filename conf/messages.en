@@ -1850,6 +1850,8 @@ pageNotFound404.p2 = If you pasted the web address, check you copied the entire 
 pageNotFound404.p3 = If the web address is correct or you selected a link or button,
 pageNotFound404.p4 = contact HMRC.
 
+userLocked.text = Event is locked by a user
+
 cannotResume.title = This event report cannot be submitted
 cannotResume.heading = This event report cannot be submitted
 cannotResume.p1 = You have attempted to amend or create an event report but no changes have been made.
