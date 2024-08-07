@@ -27,16 +27,18 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json._
 import queries.Gettable
-import services.fileUpload.ValidatorErrorMessages.{HeaderInvalidOrFileIsEmpty, NoDataRowsProvided, HeaderNotInExpectedFormat}
+import services.fileUpload.ValidatorErrorMessages.{HeaderInvalidOrFileIsEmpty, HeaderNotInExpectedFormat, MisMatchInNumberOfColumns, NoDataRowsProvided}
 import utils.FastJsonAccumulator
 
 import scala.collection.immutable.HashSet
 import scala.collection.mutable.ArrayBuffer
+import scala.util.matching.Regex
 
 object ValidatorErrorMessages {
   val HeaderInvalidOrFileIsEmpty = "Header invalid or File is empty"
   val HeaderNotInExpectedFormat = "Header is not in the expected format"
   val NoDataRowsProvided = "No data has been added to the file"
+  val MisMatchInNumberOfColumns = "Mismatch between the expected and actual number of columns in the line"
 }
 
 object Validator {
@@ -66,7 +68,7 @@ trait Validator {
   protected val fieldNoFirstName = 0
   protected val fieldNoLastName = 1
   protected val fieldNoNino = 2
-
+  protected val patternForHeaderSplit = new Regex("""(?:"([^"]*)"|([^,]*))""")
   def validHeader: String
 
   // scalastyle:off parameter.number
@@ -89,12 +91,17 @@ trait Validator {
       }
     }
     if(rowNumber > 0) {
-      val result = validateFields(rowNumber, row, taxYear)
-      result.validated match {
-        case Valid(results) => results.foreach { result =>
-          dataAccumulator.addItem(result, rowNumber)
+      if(patternForHeaderSplit.findAllIn(validHeader).toList.filter(_.nonEmpty).size == row.size) {
+        val result = validateFields(rowNumber, row, taxYear)
+        result.validated match {
+          case Valid(results) => results.foreach { result =>
+            dataAccumulator.addItem(result, rowNumber)
+          }
+          case Invalid(errors) => errorAccumulator ++= errors
         }
-        case Invalid(errors) => errorAccumulator ++= errors
+      }
+      else{
+        errorAccumulator ++= ArrayBuffer(ValidationError(rowNumber, 0, MisMatchInNumberOfColumns, EMPTY))
       }
     }
   }
