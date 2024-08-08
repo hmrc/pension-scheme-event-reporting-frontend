@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import connectors.{AFTFrontendConnector, EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.partials.EventReportingTileController.{maxEndDateAsString, minStartDateAsString}
@@ -41,7 +40,6 @@ class EventReportingOverviewController @Inject()(
                                                   requireData: DataRequiredAction,
                                                   connector: EventReportingConnector,
                                                   aftConnector: AFTFrontendConnector,
-                                                  appConfig: FrontendAppConfig,
                                                   service: EventReportingOverviewService,
                                                   userAnswersCacheConnector: UserAnswersCacheConnector,
                                                   view: EventReportingOverviewView
@@ -56,6 +54,7 @@ class EventReportingOverviewController @Inject()(
     val ovm = for {
       pastYears <- service.getPastYearsAndUrl(ua, request.pstr)
       inProgressYears <- service.getInProgressYearAndUrl(ua, request.pstr)
+      startNewURL <- service.getStartNewUrl(ua, request.pstr)
       seqEROverview <- connector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString)
       outstandingAmount <- aftConnector.getErOutstandingPaymentAmount(srn)
       isAnySubmittedReports = seqEROverview.exists(_.versionDetails.exists(_.submittedVersionAvailable))
@@ -63,7 +62,7 @@ class EventReportingOverviewController @Inject()(
     } yield OverviewViewModel(pastYears = pastYears, yearsInProgress = inProgressYears, schemeName = request.schemeName,
       outstandingAmount = outstandingAmount.toString(), paymentsAndChargesUrl = service.linkForOutstandingAmount(srn, outstandingAmount.toString()),
       isAnyCompiledReports = isAnyCompiledReports, isAnySubmittedReports = isAnySubmittedReports,
-      newEventReportingUrl = appConfig.erStartNewUrl)
+      newEventReportingUrl = startNewURL)
 
 
       ovm.map( y => Ok(view(y)))

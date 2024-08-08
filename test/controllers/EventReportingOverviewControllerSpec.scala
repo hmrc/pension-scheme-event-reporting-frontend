@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import config.FrontendAppConfig
 import connectors.{AFTFrontendConnector, EventReportingConnector, UserAnswersCacheConnector}
 import models.enumeration.JourneyStartType.StartNew
 import org.mockito.ArgumentMatchers.any
@@ -85,8 +84,7 @@ class EventReportingOverviewControllerSpec extends SpecBase with BeforeAndAfterE
       when(mockEventReportingOverviewService.linkForOutstandingAmount(any(),any())).thenReturn("dummyUrl")
       when(mockEventReportingOverviewService.getPastYearsAndUrl(any(), any())(any())).thenReturn(Future.successful(Seq(("", ""))))
       when(mockEventReportingOverviewService.getInProgressYearAndUrl(any(), any())(any())).thenReturn(Future.successful(Seq(("", ""))))
-
-      val appConfig = application.injector.instanceOf[FrontendAppConfig]
+      when(mockEventReportingOverviewService.getStartNewUrl(any(), any())(any())).thenReturn(Future.successful("dummyUrl"))
 
       running(application) {
 
@@ -98,7 +96,7 @@ class EventReportingOverviewControllerSpec extends SpecBase with BeforeAndAfterE
 
         val ovm = OverviewViewModel(pastYears = Seq(("", "")), yearsInProgress = Seq(("", "")), schemeName= "schemeName",
           outstandingAmount = "£19.00", paymentsAndChargesUrl = "dummyUrl",
-          newEventReportingUrl = appConfig.erStartNewUrl)
+          newEventReportingUrl = "dummyUrl")
 
         status(result) mustEqual OK
         contentAsString(result).removeAllNonces() mustEqual view(ovm)(request, messages(application)).toString

@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.routes
-import models.enumeration.JourneyStartType.{InProgress, PastEventTypes}
+import models.enumeration.JourneyStartType.{InProgress, PastEventTypes, StartNew}
 import models.enumeration.VersionStatus.Compiled
 import models.{EROverview, TaxYear, UserAnswers, VersionInfo}
 import pages.{EventReportingOverviewPage, EventReportingTileLinksPage, TaxYearPage, VersionInfoPage}
@@ -33,6 +33,12 @@ class EventReportingOverviewService @Inject()(
                                                config: FrontendAppConfig
                                              ) (implicit ec: ExecutionContext) {
 
+  def getStartNewUrl(userAnswers: UserAnswers, pstr: String)(implicit hc: HeaderCarrier): Future[String] = {
+    val ua = userAnswers.setOrException(EventReportingTileLinksPage, StartNew, nonEventTypeData = true)
+    userAnswersCacheConnector.save(pstr, ua).map { _ =>
+      config.erStartNewUrl
+    }
+  }
   def getInProgressYearAndUrl(userAnswers: UserAnswers, pstr: String)(implicit hc: HeaderCarrier): Future[Seq[(String, String)]] = {
 
     userAnswersCacheConnector.get(pstr) flatMap { ua =>
