@@ -158,6 +158,23 @@ class CompileService @Inject()(
 
     userAnswers.get(VersionInfoPage) match {
       case Some(vi) =>
+        val newVersionInfo = changeVersionInfo(vi)
+        doCompile(
+          vi,
+          newVersionInfo,
+          pstr,
+          userAnswers,
+          delete,
+          eventOrDelete = Left(eventType)
+        )
+      case None => Future.failed(new RuntimeException("No version available"))
+    }
+
+    //TODO: The data modified check introduces a problem with new event report. Where the last member will not be included in the compile. -Pavel Vjalicin
+    //TODO: The members are dislayed correctly, but the last member is missing.
+    //TODO: The issue has to do with NotStarted logic below.
+    /*userAnswers.get(VersionInfoPage) match {
+      case Some(vi) =>
         if (vi.status == NotStarted) {
           val newVersionInfo = changeVersionInfo(vi)
           doCompile(
@@ -181,14 +198,13 @@ class CompileService @Inject()(
                 eventOrDelete = Left(eventType)
               )
             case Some(x) if !x =>
-              logger.warn(s"Data not modified for pstr: $pstr, event: $eventType version: ${vi.version}")
-              Future.successful(())
+              throw new RuntimeException(s"Data not modified for pstr: $pstr, event: $eventType version: ${vi.version}")
             case _ => throw new RuntimeException(s"Data Changed Checks failed for $pstr and $eventType")
           }
         }
 
 
       case None => Future.failed(new RuntimeException("No version available"))
-    }
+    }*/
   }
 }
