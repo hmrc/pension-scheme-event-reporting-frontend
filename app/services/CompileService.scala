@@ -57,13 +57,14 @@ class CompileService @Inject()(
         case _ => uaNonEventTypeVersionUpdated
       }
 
-      val futureAction = eventOrDelete match {
-        case Left(eventTypeVal) =>
-          eventReportingConnector.compileEvent(pstr, updatedUA.eventDataIdentifier(eventTypeVal, Some(newVersionInfo)), currentVersionInfo.version, delete)
-        case Right((pstrVal, edi, currentVersionVal, memberIdToDelete)) =>
-          eventReportingConnector.deleteMember(pstrVal, edi, currentVersionVal, memberIdToDelete)
+      userAnswersCacheConnector.save(pstr, updatedUA).map { _ =>
+        eventOrDelete match {
+          case Left(eventTypeVal) =>
+            eventReportingConnector.compileEvent(pstr, updatedUA.eventDataIdentifier(eventTypeVal, Some(newVersionInfo)), currentVersionInfo.version, delete)
+          case Right((pstrVal, edi, currentVersionVal, memberIdToDelete)) =>
+            eventReportingConnector.deleteMember(pstrVal, edi, currentVersionVal, memberIdToDelete)
+        }
       }
-      userAnswersCacheConnector.save(pstr, updatedUA).flatMap{_ => futureAction}
     }
   }
 
