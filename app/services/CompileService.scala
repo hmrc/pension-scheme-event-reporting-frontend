@@ -27,7 +27,8 @@ import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.{ExecutionContext, Future, Promise}
 
 class CompileService @Inject()(
                                 eventReportingConnector: EventReportingConnector,
@@ -57,12 +58,22 @@ class CompileService @Inject()(
         case _ => uaNonEventTypeVersionUpdated
       }
 
+      def delay = appConfig.compileDelayInSeconds match {
+        case v if v > 0 =>
+          val p = Promise[Unit]
+          actorSystem.scheduler.scheduleOnce(v.seconds)(p.success(()))
+          p.future
+        case _ => Future.unit
+      }
+
       userAnswersCacheConnector.save(pstr, updatedUA).map { _ =>
         eventOrDelete match {
           case Left(eventTypeVal) =>
             eventReportingConnector.compileEvent(pstr, updatedUA.eventDataIdentifier(eventTypeVal, Some(newVersionInfo)), currentVersionInfo.version, delete)
+              .map { _ => delay }
           case Right((pstrVal, edi, currentVersionVal, memberIdToDelete)) =>
             eventReportingConnector.deleteMember(pstrVal, edi, currentVersionVal, memberIdToDelete)
+              .map { _ => delay }
         }
       }
     }
