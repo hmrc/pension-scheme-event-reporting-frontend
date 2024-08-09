@@ -27,7 +27,8 @@ import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.{ExecutionContext, Future, Promise}
 
 class CompileService @Inject()(
                                 eventReportingConnector: EventReportingConnector,
@@ -57,12 +58,22 @@ class CompileService @Inject()(
         case _ => uaNonEventTypeVersionUpdated
       }
 
+      def delay = appConfig.compileDelayInSeconds match {
+        case v if v > 0 =>
+          val p = Promise[Unit]
+          actorSystem.scheduler.scheduleOnce(v.seconds)(p.success(()))
+          p.future
+        case _ => Future.unit
+      }
+
       userAnswersCacheConnector.save(pstr, updatedUA).map { _ =>
         eventOrDelete match {
           case Left(eventTypeVal) =>
             eventReportingConnector.compileEvent(pstr, updatedUA.eventDataIdentifier(eventTypeVal, Some(newVersionInfo)), currentVersionInfo.version, delete)
+              .map { _ => delay }
           case Right((pstrVal, edi, currentVersionVal, memberIdToDelete)) =>
             eventReportingConnector.deleteMember(pstrVal, edi, currentVersionVal, memberIdToDelete)
+              .map { _ => delay }
         }
       }
     }
@@ -147,6 +158,23 @@ class CompileService @Inject()(
 
     userAnswers.get(VersionInfoPage) match {
       case Some(vi) =>
+        val newVersionInfo = changeVersionInfo(vi)
+        doCompile(
+          vi,
+          newVersionInfo,
+          pstr,
+          userAnswers,
+          delete,
+          eventOrDelete = Left(eventType)
+        )
+      case None => Future.failed(new RuntimeException("No version available"))
+    }
+
+    //TODO: The data modified check introduces a problem with new event report. Where the last member will not be included in the compile. -Pavel Vjalicin
+    //TODO: The members are dislayed correctly, but the last member is missing.
+    //TODO: The issue has to do with NotStarted logic below.
+    /*userAnswers.get(VersionInfoPage) match {
+      case Some(vi) =>
         if (vi.status == NotStarted) {
           val newVersionInfo = changeVersionInfo(vi)
           doCompile(
@@ -170,14 +198,13 @@ class CompileService @Inject()(
                 eventOrDelete = Left(eventType)
               )
             case Some(x) if !x =>
-              logger.warn(s"Data not modified for pstr: $pstr, event: $eventType version: ${vi.version}")
-              Future.successful(())
+              throw new RuntimeException(s"Data not modified for pstr: $pstr, event: $eventType version: ${vi.version}")
             case _ => throw new RuntimeException(s"Data Changed Checks failed for $pstr and $eventType")
           }
         }
 
 
       case None => Future.failed(new RuntimeException("No version available"))
-    }
+    }*/
   }
 }
