@@ -156,23 +156,6 @@ class CompileService @Inject()(
   def compileEvent(eventType: EventType, pstr: String, userAnswers: UserAnswers, delete: Boolean = false)
                   (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
 
-//    userAnswers.get(VersionInfoPage) match {
-//      case Some(vi) =>
-//        val newVersionInfo = changeVersionInfo(vi)
-//        doCompile(
-//          vi,
-//          newVersionInfo,
-//          pstr,
-//          userAnswers,
-//          delete,
-//          eventOrDelete = Left(eventType)
-//        )
-//      case None => Future.failed(new RuntimeException("No version available"))
-//    }
-
-    //TODO: The data modified check introduces a problem with new event report. Where the last member will not be included in the compile. -Pavel Vjalicin
-    //TODO: The members are dislayed correctly, but the last member is missing.
-    //TODO: The issue has to do with NotStarted logic below.
     userAnswers.get(VersionInfoPage) match {
       case Some(vi) =>
         if (vi.status == NotStarted) {
