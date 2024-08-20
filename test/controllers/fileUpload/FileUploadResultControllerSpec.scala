@@ -17,7 +17,7 @@
 package controllers.fileUpload
 
 import base.SpecBase
-import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import connectors.{EventReportingConnector, ParsingAndValidationOutcomeCacheConnector, UserAnswersCacheConnector}
 import forms.fileUpload.FileUploadResultFormProvider
 import models.FileUploadOutcomeResponse
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
@@ -51,10 +51,12 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockERConnector = mock[EventReportingConnector]
+  private val mockParsingAndValidationOutcomeCacheConnector = mock[ParsingAndValidationOutcomeCacheConnector]
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
-    bind[EventReportingConnector].toInstance(mockERConnector)
+    bind[EventReportingConnector].toInstance(mockERConnector),
+    bind[ParsingAndValidationOutcomeCacheConnector].toInstance(mockParsingAndValidationOutcomeCacheConnector)
   )
 
   private def getRoute(eventType: EventType): String = routes.FileUploadResultController.onPageLoad(waypoints, eventType).url
@@ -63,8 +65,11 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    reset(mockParsingAndValidationOutcomeCacheConnector)
     reset(mockUserAnswersCacheConnector)
     reset(mockERConnector)
+    when(mockParsingAndValidationOutcomeCacheConnector.deleteOutcome(any(), any())).thenReturn(Future.successful())
+    when(mockParsingAndValidationOutcomeCacheConnector.setOutcome(any())(any(), any())).thenReturn(Future.successful())
   }
 
   "FileUploadResult Controller" - {
