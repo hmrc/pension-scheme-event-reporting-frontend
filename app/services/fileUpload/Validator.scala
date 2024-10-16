@@ -86,7 +86,7 @@ trait Validator {
                errorAccumulator: ArrayBuffer[ValidationError],
                taxYear: Int)(implicit messages: Messages): Unit = {
     if(rowNumber == 0){
-      if(!validHeader.isEmpty &&  !validHeader.replace("\"","").equals(row.mkString(","))){
+      if(!validHeader.isEmpty &&  !validHeader.replace("\"","").equalsIgnoreCase(row.mkString(","))){
         errorAccumulator ++= ArrayBuffer(ValidationError(0, 0, HeaderNotInExpectedFormat, EMPTY))
       }
     }
