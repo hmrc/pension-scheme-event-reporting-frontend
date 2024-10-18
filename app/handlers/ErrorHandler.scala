@@ -25,22 +25,29 @@ import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.{ErrorTemplate, NoDataEnteredErrorView, PageNotFoundErrorView}
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ErrorHandler @Inject()(
                               val messagesApi: MessagesApi,
-                              view: ErrorTemplate,
+                              errorTemplateView: ErrorTemplate,
                               noDataEnteredView: NoDataEnteredErrorView,
                               pageNotFoundView: PageNotFoundErrorView,
                               config: FrontendAppConfig
-                            ) extends FrontendErrorHandler with I18nSupport {
+                            ) (implicit val ec: ExecutionContext)
+  extends FrontendErrorHandler with I18nSupport {
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
-    view(pageTitle, heading, message)
+  def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] = {
+    implicit def requestImplicit: Request[_] = Request(request, "")
 
-  override def notFoundTemplate(implicit request: Request[_]): Html =
-    pageNotFoundView(config.contactHmrcURL)
+    Future.successful(errorTemplateView(pageTitle, heading, message))
+  }
+
+  override def notFoundTemplate(implicit request: RequestHeader): Future[Html] = {
+    implicit def requestImplicit: Request[_] = Request(request, "")
+
+    Future.successful(pageNotFoundView(config.contactHmrcURL))
+  }
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
     exception match {
@@ -51,4 +58,5 @@ class ErrorHandler @Inject()(
       case _ => super.onServerError(request, exception)
     }
   }
+
 }
