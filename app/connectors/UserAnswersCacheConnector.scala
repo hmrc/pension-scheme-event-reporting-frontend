@@ -27,20 +27,21 @@ import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.HttpClientV2
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserAnswersCacheConnector @Inject()(
                                            config: FrontendAppConfig,
-                                           http: HttpClient
+                                           http: HttpClientV2
                                          ) extends Logging {
 
-  private def url = s"${config.eventReportingUrl}/pension-scheme-event-reporting/user-answers"
-  private def isDataModifiedUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/compare"
+  private def url = url"${config.eventReportingUrl}/pension-scheme-event-reporting/user-answers"
+  private def isDataModifiedUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/compare"
 
   private def noEventHeaders(pstr: String) = Seq(
-    "Content-Type" -> "application/json",
-    "pstr" -> pstr
+    ("Content-Type", "application/json"),
+    ("pstr", pstr)
   )
 
   private def eventHeaders(pstr: String, eventType: EventType, noEventJson: Option[JsObject]): Seq[(String, String)] = {
@@ -91,7 +92,7 @@ class UserAnswersCacheConnector @Inject()(
       case Some(noEventData) =>
         val headers = eventHeaders(pstr, eventType, Some(noEventData))
         val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-        http.GET[HttpResponse](isDataModifiedUrl)(implicitly, hc, ec)
+        http.get(isDataModifiedUrl).setHeader(headers: _*).execute[HttpResponse]
           .map { response =>
             response.status match {
               case NOT_FOUND => None
@@ -111,9 +112,8 @@ class UserAnswersCacheConnector @Inject()(
   }
 
   private def getJson(headers: Seq[(String, String)])(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier) = {
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.GET[HttpResponse](url)(implicitly, hc, implicitly)
+    http.get(url).setHeader(headers: _*).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -140,9 +140,7 @@ class UserAnswersCacheConnector @Inject()(
       "version" -> version
     )
 
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-
-    http.POST[JsValue, HttpResponse](url, userAnswers)(implicitly, implicitly, hc, implicitly)
+    http.post(url).withBody(userAnswers).setHeader(headers: _*).execute[HttpResponse]
       .map { response =>
         response.status match {
           case OK => ()
@@ -172,9 +170,7 @@ class UserAnswersCacheConnector @Inject()(
       "newVersion" -> newVersion
     )
 
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-
-    http.PUT[JsValue, HttpResponse](url, Json.obj())(implicitly, implicitly, hc, implicitly)
+    http.put(url).withBody(Json.obj()).setHeader(headers: _*).execute[HttpResponse]
       .map { response =>
         response.status match {
           case NOT_FOUND | NO_CONTENT => ()
@@ -192,8 +188,7 @@ class UserAnswersCacheConnector @Inject()(
       "pstr" -> pstr
     )
 
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-    http.POST[JsValue, HttpResponse](url, userAnswers.noEventTypeData)(implicitly, implicitly, hc, implicitly)
+    http.post(url).withBody(userAnswers.noEventTypeData).setHeader(headers: _*).execute[HttpResponse]
       .map { response =>
         response.status match {
           case OK => ()
@@ -216,9 +211,7 @@ class UserAnswersCacheConnector @Inject()(
       "pstr" -> pstr
     )
 
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-
-    http.DELETE[HttpResponse](url)(implicitly, hc, implicitly)
+    http.delete(url).setHeader(headers: _*).execute[HttpResponse]
       .map { response =>
         response.status match {
           case OK => ()

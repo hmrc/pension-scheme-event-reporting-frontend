@@ -25,7 +25,8 @@ import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, StringContextOps}
 
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -39,7 +40,7 @@ case object EmailNotSent extends WithName("EmailNotSent") with EmailStatus
 
 class EmailConnector @Inject()(
                                 appConfig: FrontendAppConfig,
-                                http: HttpClient,
+                                httpClientV2: HttpClientV2,
                                 crypto: ApplicationCrypto
                               ) {
 
@@ -71,13 +72,15 @@ class EmailConnector @Inject()(
                  templateParams: Map[String, String],
                  reportVersion: String
                )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailStatus] = {
-    val emailServiceUrl = s"${appConfig.emailApiUrl}/hmrc/email"
+    val emailServiceUrl = url"${appConfig.emailApiUrl}/hmrc/email"
 
     val sendEmailReq = SendEmailRequest(List(emailAddress), templateId, templateParams, appConfig.emailSendForce,
       callBackUrl(schemeAdministratorType, requestId, psaOrPspId, pstr, emailAddress, reportVersion))
     val jsonData = Json.toJson(sendEmailReq)
 
-    http.POST[JsValue, HttpResponse](emailServiceUrl, jsonData).map { response =>
+    httpClientV2
+      .post(emailServiceUrl)
+      .withBody(jsonData).execute[HttpResponse].map { response =>
       response.status match {
         case ACCEPTED =>
           logger.debug(s"Email sent successfully")

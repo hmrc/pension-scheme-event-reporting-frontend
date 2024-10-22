@@ -22,21 +22,23 @@ import play.api.Logger
 import play.api.mvc.Request
 import play.twirl.api.Html
 import services.HeaderCarrierFunctions
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, StringContextOps}
 import uk.gov.hmrc.play.partials.HtmlPartial
 import uk.gov.hmrc.play.partials.HtmlPartial.connectionExceptionsAsHtmlPartialFailure
 
+import java.net.URL
 import scala.concurrent.{ExecutionContext, Future}
 
-class AFTFrontendConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
+class AFTFrontendConnector @Inject()(httpClientV2: HttpClientV2, config: FrontendAppConfig) {
 
   private val logger = Logger(classOf[AFTFrontendConnector])
 
   def getErOutstandingPaymentAmount[A](srn: String)
                            (implicit request: Request[A], ec: ExecutionContext): Future[Html] =
-    retrievePartial(config.erOutstandingPaymentAmountURL.format(srn))
+    retrievePartial(url"${config.erOutstandingPaymentAmountURL.format(srn)}")
 
-  private def retrievePartial[A](url: String, extraHeaders: Seq[(String, String)] = Seq.empty)
+  private def retrievePartial[A](url: URL, extraHeaders: Seq[(String, String)] = Seq.empty)
                                 (implicit request: Request[A], ec: ExecutionContext): Future[Html] = {
 
     implicit val hc: HeaderCarrier =
@@ -45,7 +47,10 @@ class AFTFrontendConnector @Inject()(http: HttpClient, config: FrontendAppConfig
         .toHeaderCarrier
         .withExtraHeaders(extraHeaders: _*)
 
-    http.GET[HtmlPartial](url) recover connectionExceptionsAsHtmlPartialFailure map {
+    httpClientV2.get(url)
+      .setHeader(extraHeaders: _*)
+      .execute[HtmlPartial] recover
+            connectionExceptionsAsHtmlPartialFailure map {
       case HtmlPartial.Success(_, content) =>
         content
       case HtmlPartial.Failure(_, _) =>
