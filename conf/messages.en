@@ -2020,5 +2020,7 @@ eventReportingOverview.totalOutstanding                = Total outstanding event
 eventReportingOverview.totalOutstandingNotAvailable    = The amount outstanding is not currently available on this screen. You can view it using the link below.
 eventReportingOverview.viewOutstanding                 = View outstanding payments and charges
 eventReportingOverview.inProgress                      = In progress
+eventReportingOverview.noReportsInProgress             = There are no event reports in progress.
 eventReportingOverview.pastEventReportingReturns       = Past event reports
+eventReportingOverview.noPastReturns                   = There are no past event reports.
 eventReportingOverview.allPastEventReportingReturns    = View or change all past event reports
