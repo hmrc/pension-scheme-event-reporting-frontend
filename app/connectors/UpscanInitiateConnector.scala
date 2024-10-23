@@ -29,7 +29,7 @@ import play.api.mvc.AnyContent
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, StringContextOps}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import java.net.URL
 import javax.inject.Inject
@@ -74,7 +74,7 @@ object PreparedUpload {
   implicit val format: Reads[PreparedUpload] = Json.reads[PreparedUpload]
 }
 
-class UpscanInitiateConnector @Inject()(httpClient: HttpClient, httpClientV2: HttpClientV2, appConfig: FrontendAppConfig,
+class UpscanInitiateConnector @Inject()(httpClientV2: HttpClientV2, appConfig: FrontendAppConfig,
                                         auditService: AuditService)(implicit ec: ExecutionContext) {
 
   private val headers = Seq(

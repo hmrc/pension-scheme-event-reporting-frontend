@@ -91,7 +91,6 @@ class UserAnswersCacheConnector @Inject()(
     getJson(noEventHeaders(pstr)).flatMap {
       case Some(noEventData) =>
         val headers = eventHeaders(pstr, eventType, Some(noEventData))
-        val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
         http.get(isDataModifiedUrl).setHeader(headers: _*).execute[HttpResponse]
           .map { response =>
             response.status match {
