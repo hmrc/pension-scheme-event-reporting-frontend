@@ -21,26 +21,27 @@ import config.FrontendAppConfig
 import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HttpClient, _}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http._
 import utils.HttpResponseHelper
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MinimalConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
+class MinimalConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig)
   extends HttpResponseHelper {
 
   import MinimalConnector._
 
   def getMinimalDetails(idName: String, idValue: String)
                        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalDetails] =
-    minDetails(hc.withExtraHeaders(idName -> idValue))
+    minDetails(Seq((idName, idValue)))
 
-  private def minDetails(hcWithId: HeaderCarrier)
-                        (implicit ec: ExecutionContext): Future[MinimalDetails] = {
+  private def minDetails(headers: Seq[(String, String)])
+                        (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[MinimalDetails] = {
 
-    val url = config.minimalDetailsUrl
+    val url = url"${config.minimalDetailsUrl}"
 
-    http.GET[HttpResponse](url)(implicitly, hcWithId, implicitly) map {
+    http.get(url).setHeader(headers: _*).execute[HttpResponse] map {
       response =>
         response.status match {
           case OK =>
@@ -50,7 +51,7 @@ class MinimalConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
             }
           case FORBIDDEN if response.body.contains("DELIMITED_PSAID") => throw new DelimitedAdminException
           case _ =>
-            handleErrorResponse("GET", url)(response)
+            handleErrorResponse("GET", url.toString)(response)
         }
     }
   }

@@ -23,6 +23,7 @@ import org.scalatest.wordspec.AsyncWordSpec
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.twirl.api.Html
+import uk.gov.hmrc.http.StringContextOps
 import utils.WireMockHelper
 
 class AFTFrontendConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper with OptionValues {

@@ -21,18 +21,21 @@ import config.FrontendAppConfig
 import models.enumeration.EventType
 import models.requests.DataRequest
 import models.{UpscanFileReference, UpscanInitiateResponse}
+import org.apache.pekko.util.ByteString
 import play.api.Logger
 import play.api.libs.json._
+import play.api.libs.ws.{BodyWritable, InMemoryBody}
 import play.api.mvc.AnyContent
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import java.net.URL
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
+import scala.reflect.runtime.universe._
 
 sealed trait UpscanInitiateRequest
 
@@ -71,11 +74,11 @@ object PreparedUpload {
   implicit val format: Reads[PreparedUpload] = Json.reads[PreparedUpload]
 }
 
-class UpscanInitiateConnector @Inject()(httpClient: HttpClient, httpClientV2: HttpClientV2, appConfig: FrontendAppConfig,
+class UpscanInitiateConnector @Inject()(httpClientV2: HttpClientV2, appConfig: FrontendAppConfig,
                                         auditService: AuditService)(implicit ec: ExecutionContext) {
 
-  private val headers = Map(
-    HeaderNames.CONTENT_TYPE -> "application/json"
+  private val headers = Seq(
+    (HeaderNames.CONTENT_TYPE, "application/json")
   )
   private val logger = Logger(classOf[UpscanInitiateConnector])
 
@@ -90,13 +93,21 @@ class UpscanInitiateConnector @Inject()(httpClient: HttpClient, httpClientV2: Ht
       errorRedirect = redirectOnError,
       maximumFileSize = Some(appConfig.maxUploadFileSize * (1024 * 1024))
     )
-    initiate(appConfig.initiateV2Url, req, eventType)
+    initiate(url"${appConfig.initiateV2Url}", req, eventType)
   }
 
-  private def initiate[T](url: String, initialRequest: T, eventType: EventType)(
+  private def initiate[T: TypeTag](url: URL, initialRequest: T, eventType: EventType)(
     implicit request: DataRequest[AnyContent], headerCarrier: HeaderCarrier, wts: Writes[T]): Future[UpscanInitiateResponse] = {
+    // Define an implicit BodyWritable for any type T that has a Writes[T]
+    implicit def jsonBodyWritable[T](implicit writes: Writes[T]): BodyWritable[T] = {
+      BodyWritable(a => InMemoryBody(ByteString.fromString(Json.stringify(Json.toJson(a)))), "application/json")
+    }
     val startTime = System.currentTimeMillis
-    httpClient.POST[T, PreparedUpload](url, initialRequest, headers.toSeq).map {
+    httpClientV2.post(url)
+      .withBody(initialRequest)
+      .setHeader(headers: _*)
+      .execute[PreparedUpload]
+      .map {
       response =>
         val fileReference = UpscanFileReference(response.reference.reference)
         val postTarget = response.uploadRequest.href
