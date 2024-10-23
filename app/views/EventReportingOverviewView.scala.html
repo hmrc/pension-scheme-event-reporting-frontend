@@ -66,43 +66,48 @@ govukButton: GovukButton
         </p>
         <hr>
 
-        @if(viewModel.yearsInProgress.nonEmpty && viewModel.isAnyCompiledReports) {
-
         <h2 class="govuk-heading-l govuk-!-margin-top-6">
             @messages("eventReportingOverview.inProgress")
         </h2>
-
-        <ul class="govuk-list">
-            @for(tuple <- viewModel.yearsInProgress) {
-            <li class="govuk-body">
-                <a class="govuk-link" href="@tuple._2">
-                    @tuple._1
-                </a>
-            </li>
-            }
-        </ul>
-        <hr>
+        @if(viewModel.yearsInProgress.nonEmpty && viewModel.isAnyCompiledReports) {
+            <ul class="govuk-list">
+                @for(tuple <- viewModel.yearsInProgress) {
+                    <li class="govuk-body">
+                        <a class="govuk-link" href="@tuple._2">
+                            @tuple._1
+                        </a>
+                    </li>
+                }
+            </ul>
+            <hr>
+        } else {
+            <p class="govuk-body">
+                @messages("eventReportingOverview.noReportsInProgress")
+            </p>
+            <br>
+            <hr>
         }
 
-        @if(viewModel.pastYears.nonEmpty && viewModel.isAnySubmittedReports) {
         <h2 class="govuk-heading-l govuk-!-margin-top-6">
             @messages("eventReportingOverview.pastEventReportingReturns")
         </h2>
-
-        @for(tuple <- viewModel.pastYears) {
-
-        <ul class="govuk-list">
-            <li class="govuk-body">
-                <a class="govuk-link" href="@tuple._2">
-                    @tuple._1
-                </a>
-            </li>
-
-        </ul>
-        }
-
+        @if(viewModel.pastYears.nonEmpty && viewModel.isAnySubmittedReports) {
+            @for(tuple <- viewModel.pastYears) {
+                <ul class="govuk-list">
+                    <li class="govuk-body">
+                        <a class="govuk-link" href="@tuple._2">
+                            @tuple._1
+                        </a>
+                    </li>
+                </ul>
+            }
+        } else {
+            <p class="govuk-body">
+                @messages("eventReportingOverview.noPastReturns")
+            </p>
+            <br>
         }
       <hr>
-     <br>
+      <br>
 
 }
