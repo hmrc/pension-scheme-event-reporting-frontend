@@ -36,6 +36,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
 import scala.reflect.runtime.universe._
+import izumi.reflect.Tag
 
 sealed trait UpscanInitiateRequest
 
@@ -96,7 +97,7 @@ class UpscanInitiateConnector @Inject()(httpClientV2: HttpClientV2, appConfig: F
     initiate(url"${appConfig.initiateV2Url}", req, eventType)
   }
 
-  private def initiate[T: TypeTag](url: URL, initialRequest: T, eventType: EventType)(
+  private def initiate[T: Tag](url: URL, initialRequest: T, eventType: EventType)(
     implicit request: DataRequest[AnyContent], headerCarrier: HeaderCarrier, wts: Writes[T]): Future[UpscanInitiateResponse] = {
     // Define an implicit BodyWritable for any type T that has a Writes[T]
     implicit def jsonBodyWritable[T](implicit writes: Writes[T]): BodyWritable[T] = {
