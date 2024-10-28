@@ -25,8 +25,10 @@ import play.api.http.Status._
 import play.api.libs.json._
 import play.api.mvc.Result
 import play.api.mvc.Results.{BadRequest, NoContent}
+import uk.gov.hmrc.http
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.HttpClientV2
 import utils.HttpResponseHelper
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,27 +36,27 @@ import scala.util.Failure
 
 class EventReportingConnector @Inject()(
                                          config: FrontendAppConfig,
-                                         http: HttpClient
+                                         httpClientV2: HttpClientV2
                                        )(implicit ec: ExecutionContext) extends HttpResponseHelper {
   private val logger = Logger(classOf[EventReportingConnector])
 
-  private def eventRepSummaryUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/event-summary"
+  private def eventRepSummaryUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/event-summary"
 
-  private def eventCompileUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/compile"
+  private def eventCompileUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/compile"
 
-  private def eventSubmitUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event-declaration-report"
+  private def eventSubmitUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event-declaration-report"
 
-  private def event20ASubmitUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event20a-declaration-report"
+  private def event20ASubmitUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event20a-declaration-report"
 
-  private def getFileUploadResponseUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/get"
+  private def getFileUploadResponseUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/get"
 
-  private def eventReportingToggleUrl(toggleName: String) = s"${config.eventReportingUrl}/admin/get-toggle/$toggleName"
+  private def eventReportingToggleUrl(toggleName: String) = url"${config.eventReportingUrl}/admin/get-toggle/$toggleName"
 
-  private def eventOverviewUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/overview"
+  private def eventOverviewUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/overview"
 
-  private def erListOfVersionsUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/versions"
+  private def erListOfVersionsUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/versions"
 
-  private def deleteMemberUrl = s"${config.eventReportingUrl}/pension-scheme-event-reporting/delete-member"
+  private def deleteMemberUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/delete-member"
 
 
   def getEventReportSummary(pstr: String, reportStartDate: String, version: Int)
@@ -68,7 +70,7 @@ class EventReportingConnector @Inject()(
     )
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.GET[HttpResponse](eventRepSummaryUrl)(implicitly, hc, implicitly)
+    httpClientV2.get(eventRepSummaryUrl).setHeader(headers: _*).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -96,9 +98,10 @@ class EventReportingConnector @Inject()(
       "currentVersion" -> currentVersion.toString,
       "version" -> edi.version
     ) ++ (if (delete) Seq(("delete", "true")) else Seq())
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.POST[JsValue, HttpResponse](eventCompileUrl, Json.obj())(implicitly, implicitly, hc, implicitly)
+    httpClientV2.post(eventCompileUrl)
+      .withBody(Json.obj())
+      .setHeader(headers: _*).execute[HttpResponse]
       .map { response =>
         response.status match {
           case NO_CONTENT => ()
@@ -123,16 +126,18 @@ class EventReportingConnector @Inject()(
 
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.POST[JsValue, HttpResponse](eventSubmitUrl, ua.data)(implicitly, implicitly, hc, implicitly)
-      .map { response =>
-        response.status match {
-          case NO_CONTENT => NoContent
-          case BAD_REQUEST => BadRequest
-          case EXPECTATION_FAILED => throw new ExpectationFailedException("Nothing to submit")
-          case _ =>
-            throw new HttpException(response.body, response.status)
-        }
-      }
+    httpClientV2.post(eventSubmitUrl)
+                .withBody(ua.data)
+                .setHeader(headers: _*).execute[HttpResponse]
+                .map { response =>
+                  response.status match {
+                    case NO_CONTENT => NoContent
+                    case BAD_REQUEST => BadRequest
+                    case EXPECTATION_FAILED => throw new ExpectationFailedException("Nothing to submit")
+                    case _ =>
+                      throw new HttpException(response.body, response.status)
+                  }
+                }
   }
 
   def submitReportEvent20A(pstr: String, ua: UserAnswers, version: String)
@@ -144,9 +149,10 @@ class EventReportingConnector @Inject()(
       "version" -> version
     )
 
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
-
-    http.POST[JsValue, HttpResponse](event20ASubmitUrl, ua.data)(implicitly, implicitly, hc, implicitly)
+    httpClientV2.post(event20ASubmitUrl)
+      .withBody(ua.data)
+      .setHeader(headers: _*)
+      .execute[HttpResponse]
       .map { response =>
         response.status match {
           case NO_CONTENT => NoContent
@@ -159,7 +165,7 @@ class EventReportingConnector @Inject()(
   }
 
   def getFeatureToggle(toggleName: String)(implicit hc: HeaderCarrier): Future[ToggleDetails] = {
-    http.GET[HttpResponse](eventReportingToggleUrl(toggleName))(implicitly, hc, implicitly).map { response =>
+    httpClientV2.get(eventReportingToggleUrl(toggleName)).execute[http.HttpResponse].map { response =>
       val toggleOpt = response.status match {
         case NO_CONTENT => None
         case OK =>
@@ -176,8 +182,10 @@ class EventReportingConnector @Inject()(
   }
 
   def getFileUploadOutcome(reference: String)(implicit hc: HeaderCarrier): Future[FileUploadOutcomeResponse] = {
-    val headerCarrier: HeaderCarrier = hc.withExtraHeaders("reference" -> reference)
-    http.GET[HttpResponse](getFileUploadResponseUrl)(implicitly, headerCarrier, implicitly).map { response =>
+    val headers = Seq(("reference", reference))
+    httpClientV2.get(getFileUploadResponseUrl).setHeader(headers: _*)
+      .execute[HttpResponse]
+      .map { response =>
       response.status match {
         case OK =>
           ((response.json \ "fileStatus").asOpt[String],
@@ -209,7 +217,7 @@ class EventReportingConnector @Inject()(
     )
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.GET[HttpResponse](eventOverviewUrl)(implicitly, hc, implicitly)
+    httpClientV2.get(eventOverviewUrl).setHeader(headers: _*).execute[HttpResponse]
       .map { response =>
         response.status match {
           case OK =>
@@ -233,9 +241,11 @@ class EventReportingConnector @Inject()(
       "currentVersion" -> currentVersion.toString,
       "memberIdToDelete" -> memberIdToDelete
     )
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.POST[JsValue, HttpResponse](deleteMemberUrl, Json.obj())(implicitly, implicitly, hc, implicitly)
+    httpClientV2.post(deleteMemberUrl)
+      .withBody(Json.obj())
+      .setHeader(headers: _*)
+      .execute[HttpResponse]
       .map { response =>
         response.status match {
           case NO_CONTENT => ()
@@ -246,8 +256,11 @@ class EventReportingConnector @Inject()(
   }
 
   def getListOfVersions(pstr: String, startDate: String)(implicit headerCarrier: HeaderCarrier): Future[Seq[VersionsWithSubmitter]] = {
-    val hc = headerCarrier.withExtraHeaders("pstr" -> pstr, "startDate" -> startDate)
-    http.GET[HttpResponse](erListOfVersionsUrl)(implicitly, hc, implicitly).map { response =>
+    val headers = Seq(("pstr", pstr), ("startDate", startDate))
+    httpClientV2.get(erListOfVersionsUrl)
+      .setHeader(headers: _*)
+      .execute[HttpResponse]
+      .map { response =>
       response.status match {
         case OK =>
           Json.parse(response.body).validate[Seq[VersionsWithSubmitter]] match {
@@ -255,7 +268,7 @@ class EventReportingConnector @Inject()(
             case JsError(errors) => throw JsResultException(errors)
           }
         case NOT_FOUND => Seq.empty
-        case _ => handleErrorResponse("GET", erListOfVersionsUrl)(response)
+        case _ => handleErrorResponse("GET", erListOfVersionsUrl.toString)(response)
       }
     } andThen {
       case Failure(t: Throwable) => logger.warn("Unable to get list of versions", t)

@@ -21,14 +21,17 @@ import config.FrontendAppConfig
 import models.{PsaSchemeDetails, PspSchemeDetails}
 import play.api.http.Status._
 import play.api.libs.json._
+import uk.gov.hmrc.http
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HttpClient, _}
 import utils.HttpResponseHelper
 
+import java.net.URL
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
+class SchemeConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig)
   extends HttpResponseHelper {
   def getOpenDate(idType: String, idValue: String, pstr: String)
                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
@@ -40,25 +43,25 @@ class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
 
     idTypeValue.map { idTypeValue =>
       val schemeHc = hc.withExtraHeaders("idType" -> idTypeValue, "idValue" -> idValue, "pstr" -> pstr)
-      openDate(config.openDateUrl)(schemeHc, ec)
+      openDate(url"${config.openDateUrl}")(schemeHc, ec)
     }.getOrElse(Future.failed(new IllegalArgumentException("Invalid idType")))
   }
-  private def openDate(url: String)
+  private def openDate(url: URL)
                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
-    http.GET[HttpResponse](url).map { response =>
+    http.get(url).execute[HttpResponse].map { response =>
       response.status match {
         case OK =>
           val openDate = response.body.replace("\"", "")
           LocalDate.parse(openDate)
         case _ =>
-          handleErrorResponse("GET", url)(response)
+          handleErrorResponse("GET", url.toString)(response)
       }
     }
   }
   def getSchemeDetails(psaId: String, idNumber: String, schemeIdType: String)
                       (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[PsaSchemeDetails] = {
 
-    val url = config.schemeDetailsUrl
+    val url = url"${config.schemeDetailsUrl}"
 
     val headers: Seq[(String, String)] =
       Seq(
@@ -67,9 +70,8 @@ class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
         ("psaId", psaId)
       )
 
-    implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    http.GET[HttpResponse](url)(implicitly, hc, implicitly) map {
+    http.get(url).setHeader(headers: _*).execute[HttpResponse] map {
       response =>
         response.status match {
           case OK =>
@@ -78,16 +80,16 @@ class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
               case JsError(errors) => throw JsResultException(errors)
             }
           case _ =>
-            handleErrorResponse("GET", url)(response)
+            handleErrorResponse("GET", url.toString)(response)
         }
     }
   }
   def getPspSchemeDetails(pspId: String, pstr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PspSchemeDetails] = {
 
-    val url = config.pspSchemeDetailsUrl
-    val schemeHc = hc.withExtraHeaders("pstr" -> pstr, "pspId" -> pspId)
+    val url = url"${config.pspSchemeDetailsUrl}"
+    val headers = Seq(("pstr", pstr), ("pspId", pspId))
 
-    http.GET[HttpResponse](url)(implicitly, schemeHc, implicitly) map { response =>
+    http.get(url).setHeader(headers: _*).execute[HttpResponse] map { response =>
         response.status match {
           case OK =>
             Json.parse(response.body).validate[PspSchemeDetails] match {
@@ -95,7 +97,7 @@ class SchemeConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
               case JsError(errors) => throw JsResultException(errors)
             }
           case _ =>
-            handleErrorResponse("GET", url)(response)
+            handleErrorResponse("GET", url.toString)(response)
         }
     }
   }
