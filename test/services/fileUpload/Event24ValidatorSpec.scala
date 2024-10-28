@@ -186,7 +186,7 @@ class Event24ValidatorSpec extends BulkUploadSpec[Event24Validator](2023) with B
       val ((output, errors), rowNumber) = validate(data)
 
       errors mustBe Seq(
-        ValidationError(1, 4, "Date must be between 06 April 2023 and 05 April 2024", "crystallisedDate"),
+        ValidationError(1, 4, "Date must be between 06 April 2023 and 05 April 2024", "crystallisedDate")
       )
     }
 
