@@ -19,9 +19,8 @@ package services
 import base.SpecBase
 import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
-import models.enumeration.EventType.Event1
 import models.enumeration.VersionStatus.Compiled
-import models.{EROverview, EROverviewVersion, EventDataIdentifier, TaxYear, UserAnswers, VersionInfo}
+import models.{EROverview, EROverviewVersion, TaxYear, UserAnswers, VersionInfo}
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
@@ -40,12 +39,6 @@ class EventReportingOverviewServiceSpec extends SpecBase with BeforeAndAfterEach
   val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(2, Compiled), nonEventTypeData = true)
 
   private val pstr = "pstr"
-  private val taxYear = "2022"
-  private val currentTaxYear = TaxYear(taxYear)
-  private val seqEROverview = Seq(EROverview(
-    LocalDate.now(), LocalDate.now().plusYears(1),
-    currentTaxYear, tpssReportPresent = false,
-    Some(EROverviewVersion(1, submittedVersionAvailable = true, compiledVersionAvailable = false))))
   val versionDetails = EROverviewVersion(numberOfVersions = 1, compiledVersionAvailable = true, submittedVersionAvailable = true)
   val erOverview = EROverview(
     LocalDate.of(2021, 4, 6),
@@ -89,7 +82,6 @@ class EventReportingOverviewServiceSpec extends SpecBase with BeforeAndAfterEach
 
       "return the correct in progress years and URLs" in {
         val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        val edi = EventDataIdentifier(Event1, taxYear, "1")
         when(mockUserAnswersCacheConnector.get(any())(any(), any()))
           .thenReturn(Future.successful(Some((ua))))
 
@@ -105,8 +97,6 @@ class EventReportingOverviewServiceSpec extends SpecBase with BeforeAndAfterEach
   "getPastYearsAndUrl" - {
 
     "return the correct past years and URLs" in {
-      val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      val edi = EventDataIdentifier(Event1, taxYear, "1")
       when(mockUserAnswersCacheConnector.get(any())(any(), any()))
         .thenReturn(Future.successful(Some((ua))))
 
