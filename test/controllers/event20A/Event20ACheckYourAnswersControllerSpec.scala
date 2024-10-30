@@ -30,7 +30,6 @@ import play.api.inject
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.SummaryListFluency
@@ -39,8 +38,6 @@ import views.html.CheckYourAnswersView
 import java.time.LocalDate
 
 class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
-  private val mockCompileService = mock[CompileService]
-
 
   import Event20ACheckYourAnswersControllerSpec._
 

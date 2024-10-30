@@ -35,7 +35,6 @@ import java.net.URL
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
-import scala.reflect.runtime.universe._
 import izumi.reflect.Tag
 
 sealed trait UpscanInitiateRequest

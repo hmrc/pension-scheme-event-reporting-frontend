@@ -23,7 +23,6 @@ import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalCo
 import handlers.NothingToSubmitException
 import models.VersionInfo
 import models.enumeration.AdministratorOrPractitioner.Administrator
-import models.enumeration.EventType
 import models.enumeration.VersionStatus.{Compiled, Submitted}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -35,14 +34,12 @@ import pages.{EmptyWaypoints, VersionInfoPage}
 import play.api.http.Status.OK
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.Results.{BadRequest, NoContent, Ok}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, _}
 import services.SubmitService
 import views.html.DeclarationView
 
-import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
