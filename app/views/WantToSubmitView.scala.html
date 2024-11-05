@@ -35,10 +35,21 @@
         }
 
         @govukRadios(
-            RadiosViewModel.yesNoNotInline(
+            RadiosViewModel(
                 field = form("value"),
                 legend = LegendViewModel(messages("wantToSubmit.heading")).asPageHeading(),
-                hint = Some(Hint(content = messages("wantToSubmit.hint")))
+                items = Seq(
+                    RadioItem(
+                        id      = Some(form("value").id),
+                        value   = Some("true"),
+                        content = Text(messages("site.yes"))
+                    ),
+                    RadioItem(
+                        id      = Some(s"${form("value").id}-no"),
+                        value   = Some("false"),
+                        content = Text(messages("wantToSubmit.radioItem.no"))
+                    )
+                )
             )
         )
 
