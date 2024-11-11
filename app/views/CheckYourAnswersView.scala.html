@@ -30,7 +30,7 @@
         @readOnlyHeading._1.map{v => <span class="govuk-caption-l">@{s"event reporting submission $v"}</span>}
         @readOnlyHeading._2.map(event => <h1 class="govuk-heading-l">{messages(s"eventSummary.event$event")}</h1>)
     } else {
-        <h1 class="govuk-heading-xl">@messages("checkYourAnswers.heading")</h1>
+        <h1 class="govuk-heading-l">@messages("checkYourAnswers.heading")</h1>
     }
 
     @govukSummaryList(list)

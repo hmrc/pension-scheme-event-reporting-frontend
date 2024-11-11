@@ -24,7 +24,7 @@
 @layout(pageTitle = titleNoForm(messages("cannotSubmitLockedEvents.title"))) {
 
     @if(isMultipleEvents) {
-        <h1 class="govuk-heading-xl">@messages("cannotSubmitLockedEvents.multiple.heading")</h1>
+        <h1 class="govuk-heading-l">@messages("cannotSubmitLockedEvents.multiple.heading")</h1>
         <p class="govuk-body">@messages("cannotSubmitLockedEvents.multiple.p1")</p>
         <ul class="govuk-list govuk-list--bullet">
             @seqOfEventTypes.map { eventSummary =>
@@ -32,7 +32,7 @@
             }
         </ul>
     } else {
-        <h1 class="govuk-heading-xl">@messages("cannotSubmitLockedEvents.heading")</h1>
+        <h1 class="govuk-heading-l">@messages("cannotSubmitLockedEvents.heading")</h1>
             @seqOfEventTypes.map { eventSummary =>
                 <p class="govuk-body">@messages("cannotSubmitLockedEvents.p1", eventSummary.lockedBy.map(lockedBy => lockedBy).getOrElse("Another user"), eventSummary.eventType.toString)</p>
             }

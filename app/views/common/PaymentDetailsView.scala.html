@@ -38,7 +38,7 @@
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = targetField("eventDate", form.errors.head.message)))
         }
 
-        <h1 class="govuk-heading-xl">@messages(s"event$eventType.paymentDetails.heading")</h1>
+        <h1 class="govuk-heading-l">@messages(s"event$eventType.paymentDetails.heading")</h1>
 
         @govukInput(
                 InputViewModel(

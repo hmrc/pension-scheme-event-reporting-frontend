@@ -57,7 +57,12 @@ trait FieldsetFluency {
 
   implicit class FluentLegend(legend: Legend) {
 
-    def asPageHeading(size: LegendSize = LegendSize.ExtraLarge): Legend =
+    def asPageHeading(size: LegendSize = LegendSize.Large): Legend =
+      legend
+        .copy(isPageHeading = true)
+        .withCssClass(size.toString)
+
+    def asXLPageHeading(size: LegendSize = LegendSize.ExtraLarge): Legend =
       legend
         .copy(isPageHeading = true)
         .withCssClass(size.toString)
