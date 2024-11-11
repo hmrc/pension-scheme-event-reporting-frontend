@@ -76,7 +76,7 @@ class UpscanInitiateConnectorSpec
     val successRedirectUrl = appConfig.successEndPointTarget(EventType.Event22)
 
     val errorRedirectUrl = appConfig
-      .failureEndPointTarget(EventType.Event22)
+      .validateEndPointTarget(EventType.Event22)
 
     val response1 =
       s"""{

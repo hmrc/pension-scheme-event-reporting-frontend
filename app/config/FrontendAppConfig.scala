@@ -48,7 +48,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   val betaFeedbackUnauthenticatedUrl: String = getConfigString("contact-frontend.beta-feedback-url.unauthenticated")
 
-  lazy val erLoginUrl: String = configuration.get[String](path = "urls.partials.erLoginLink")
   lazy val erStartNewUrl: String = configuration.get[String](path = "urls.partials.erStartNew")
   lazy val erCompiledUrl: String = configuration.get[String](path = "urls.partials.erCompiledLink")
   lazy val erSubmittedUrl: String = configuration.get[String](path = "urls.partials.erSubmittedLink")
@@ -83,8 +82,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   def successEndPointTarget(eventType: EventType): String = loadConfig("upscan.success-endpoint").format(toRoute(eventType))
 
-  def failureEndPointTarget(eventType: EventType): String = loadConfig("upscan.failure-endpoint").format(toRoute(eventType))
-
   def validateEndPointTarget(eventType: EventType): String = loadConfig("upscan.validate-endpoint").format(toRoute(eventType))
 
   lazy val maxUploadFileSize: Int = configuration.getOptional[Int]("upscan.maxUploadFileSizeMb").getOrElse(1)
@@ -110,7 +107,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   lazy val schemeDetailsUrl: String = s"$pensionSchemeUrl${configuration.get[String](path = "urls.schemeDetails")}"
   lazy val pspSchemeDetailsUrl: String = s"$pensionSchemeUrl${configuration.get[String](path = "urls.pspSchemeDetails")}"
   lazy val openDateUrl: String = s"$pensionSchemeUrl${configuration.get[String](path = "urls.openDate")}"
-  lazy val erListOfVersionsUrl: String = configuration.get[String](path = "urls.erListOfVersions")
 
   lazy val emailApiUrl: String = servicesConfig.baseUrl("email")
   lazy val emailSendForce: Boolean = configuration.getOptional[Boolean]("email.force").getOrElse(false)
