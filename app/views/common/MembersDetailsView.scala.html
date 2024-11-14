@@ -39,12 +39,12 @@
 
         @if(eventType== Event2) {
             @if(memberPageNo == 1) {
-                <h1 class="govuk-heading-xl">@messages("deceasedMembersDetails.heading")</h1>
+                <h1 class="govuk-heading-l">@messages("deceasedMembersDetails.heading")</h1>
             } else {
-                <h1 class="govuk-heading-xl">@messages("beneficiaryDetails.heading")</h1>
+                <h1 class="govuk-heading-l">@messages("beneficiaryDetails.heading")</h1>
             }
         }else {
-            <h1 class="govuk-heading-xl">@messages("membersDetails.heading")</h1>
+            <h1 class="govuk-heading-l">@messages("membersDetails.heading")</h1>
         }
 
         @govukInput(

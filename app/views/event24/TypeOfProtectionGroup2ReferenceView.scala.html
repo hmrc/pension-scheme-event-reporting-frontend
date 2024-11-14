@@ -31,7 +31,7 @@
 
     @formHelper(action = routes.TypeOfProtectionGroup2ReferenceController.onSubmit(waypoints, index)) {
 
-        <h1 class="govuk-heading-xl">@messages("typeOfProtectionReferenceGroup2.event24.heading")</h1>
+        <h1 class="govuk-heading-l">@messages("typeOfProtectionReferenceGroup2.event24.heading")</h1>
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
