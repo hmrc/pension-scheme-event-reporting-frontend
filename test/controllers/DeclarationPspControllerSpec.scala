@@ -96,7 +96,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
     "must return OK and the correct view for a GET when when isReportSubmitted is false" in {
       val userAnswersWithVersionInfo = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -113,7 +113,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
     "must redirect to cannot resume page when isReportSubmitted is true" in {
       val userAnswersWithVersionInfo = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -126,7 +126,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       val userAnswers = UserAnswers().set(DeclarationPspPage, validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers), extraModules).build()
@@ -144,7 +144,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
@@ -167,7 +167,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must return bad request when invalid data is submitted" in {
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
@@ -209,7 +209,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must redirect to the cannot resume page for method onClick when report has been submitted multiple times in quick succession" in {
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))

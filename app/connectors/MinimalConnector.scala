@@ -32,15 +32,20 @@ class MinimalConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig)
 
   import MinimalConnector._
 
-  def getMinimalDetails(idName: String, idValue: String)
-                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalDetails] =
-    minDetails(Seq((idName, idValue)))
+  def getMinimalDetails(idName: String)
+                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalDetails] = {
+    val headers = idName match {
+      case "psaId" => Seq(("loggedInAsPsa", "true"))
+      case "pspId" => Seq(("loggedInAsPsa", "false"))
+      case _ => Seq()
+    }
+    minDetails(headers)
+  }
 
   private def minDetails(headers: Seq[(String, String)])
                         (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[MinimalDetails] = {
 
     val url = url"${config.minimalDetailsUrl}"
-
     http.get(url).setHeader(headers: _*).execute[HttpResponse] map {
       response =>
         response.status match {

@@ -44,7 +44,7 @@ class ReturnSubmittedController @Inject()(
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
 
-    minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map { minimalDetails =>
+    minimalConnector.getMinimalDetails(request.loggedInUser.idName).map { minimalDetails =>
       val schemeName = request.schemeName
 
       val viewOtherPensionSchemesUrl: String = request.loggedInUser.administratorOrPractitioner match {

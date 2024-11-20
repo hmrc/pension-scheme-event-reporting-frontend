@@ -78,8 +78,7 @@ class DeclarationController @Inject()(
         )
 
         def emailFuture: Future[EmailStatus] = minimalConnector.getMinimalDetails(
-          request.loggedInUser.idName,
-          request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
+          request.loggedInUser.idName).flatMap { minimalDetails =>
           val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
           val email = minimalDetails.email
           val schemeName = request.schemeName

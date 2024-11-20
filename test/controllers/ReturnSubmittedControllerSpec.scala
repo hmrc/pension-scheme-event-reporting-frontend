@@ -55,7 +55,7 @@ class ReturnSubmittedControllerSpec extends SpecBase {
     "must return OK and the correct view for a GET (PSA)" in {
       val minimalDetails = MinimalDetails(email = email, isPsaSuspended = false,
         organisationName = None, individualDetails = None, rlsFlag = false, deceasedFlag = false)
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(minimalDetails))
 
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"))
       val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
@@ -84,7 +84,7 @@ class ReturnSubmittedControllerSpec extends SpecBase {
     "must return OK and the correct view for a GET (PSP)" in {
       val minimalDetails = MinimalDetails(email = email, isPsaSuspended = false,
         organisationName = None, individualDetails = None, rlsFlag = false, deceasedFlag = false)
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(minimalDetails))
 
       val ua = UserAnswers().setOrException(TaxYearPage, TaxYear("2022"))
       val application = applicationBuilderForPSP(userAnswers = Some(ua), extraModules).build()

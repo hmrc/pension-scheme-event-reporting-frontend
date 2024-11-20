@@ -89,7 +89,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
     "must return OK and the correct view for a GET when when isReportSubmitted is false" in {
       val userAnswersWithVersionInfo = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -106,7 +106,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
     "must redirect to cannot resume page when isReportSubmitted is true" in {
       val userAnswersWithVersionInfo = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
@@ -120,7 +120,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       val userAnswers = emptyUserAnswersWithTaxYear.set(Event20APspDeclarationPage, validValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers), extraModules).build()
@@ -139,7 +139,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
@@ -163,7 +163,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
     }
 
     "must return bad request when invalid data is submitted" in {
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
       when(mockEventReportingConnector.submitReportEvent20A(
         any(), any(), any())(any())).thenReturn(Future.successful(BadRequest))
@@ -187,7 +187,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found onSubmit" in {
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
 
@@ -199,14 +199,14 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad(None).url
-        verify(mockMinimalConnector, times(0)).getMinimalDetails(any(), any())(any(), any())
+        verify(mockMinimalConnector, times(0)).getMinimalDetails(any())(any(), any())
         verify(mockSchemeDetailsConnector, times(0)).getPspSchemeDetails(any(), any())(any(), any())
         verify(mockUserAnswersCacheConnector, times(0)).save(any(), any(), any())(any(), any())
       }
     }
 
     "must redirect to the cannot resume page for method onClick when report has been submitted multiple times in quick succession" in {
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
@@ -224,7 +224,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.CannotResumeController.onPageLoad(EmptyWaypoints).url
-        verify(mockMinimalConnector, times(1)).getMinimalDetails(any(), any())(any(), any())
+        verify(mockMinimalConnector, times(1)).getMinimalDetails(any())(any(), any())
         verify(mockSchemeDetailsConnector, times(1)).getPspSchemeDetails(any(), any())(any(), any())
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
         verify(mockEventReportingConnector, times(1)).submitReportEvent20A(any(), any(), any())(any())

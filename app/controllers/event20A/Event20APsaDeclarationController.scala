@@ -48,7 +48,7 @@ class Event20APsaDeclarationController @Inject()(
   private val eventType = EventType.Event20A
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
-    minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map {
+    minimalConnector.getMinimalDetails(request.loggedInUser.idName).map {
       minimalDetails =>
         if (request.isReportSubmitted) {
           Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
