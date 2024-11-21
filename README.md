@@ -8,6 +8,7 @@ Anything that's not done automatically by the development environment:
 
 - You need to run mongo
 - ```sm2 --start PODS_ER```
+- 
 
 ### Running the test suite
 
