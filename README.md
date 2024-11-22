@@ -150,7 +150,13 @@ The Pension Scheme Event Reporting Frontend integrates with the Manage Pension S
 ## Dependencies
 There are multiple microservices that this service depends on. These are:
 
-*INSERT HERE IN TABLE*
+| Service               | Link                                                         |
+|-----------------------|--------------------------------------------------------------|
+| Event-reporting       | https://github.com/hmrc/pension-scheme-event-reporting       |
+| Pension-administrator | https://github.com/hmrc/pension-administrator                |
+| address-lookup        | https://github.com/hmrc/address-lookup                       |
+| email                 | https://github.com/hmrc/email                                |
+| auth                  | https://github.com/hmrc/auth                                 |
 
 ## Service Documentation
 [To Do]
