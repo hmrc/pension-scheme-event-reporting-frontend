@@ -37,7 +37,7 @@ class MinimalConnectorSpec
   override protected def portConfigKey: String = "microservice.services.pension-administrator.port"
 
   private lazy val connector: MinimalConnector = injector.instanceOf[MinimalConnector]
-  private val minimalPsaDetailsUrl = "/pension-administrator/get-minimal-psa"
+  private val minimalPsaDetailsUrl = "/pension-administrator/get-minimal-details-self"
   private val email = "test@test.com"
 
   private def validResponse(b:Boolean) =
@@ -62,7 +62,7 @@ class MinimalConnectorSpec
           )
       )
 
-      connector.getMinimalDetails(psaIdName, psaId) map {
+      connector.getMinimalDetails(psaIdName) map {
         _ mustBe MinimalDetails(email, isPsaSuspended = false, Some("test ltd"), None, rlsFlag = false, deceasedFlag = false)
       }
     }
@@ -76,7 +76,7 @@ class MinimalConnectorSpec
           )
       )
 
-      connector.getMinimalDetails(psaIdName, psaId) map {
+      connector.getMinimalDetails(psaIdName) map {
         _ mustBe MinimalDetails(email, isPsaSuspended = true, Some("test ltd"), None, rlsFlag = false, deceasedFlag = false)
       }
     }
@@ -91,7 +91,7 @@ class MinimalConnectorSpec
       )
 
       recoverToSucceededIf[BadRequestException] {
-        connector.getMinimalDetails(psaIdName, psaId)
+        connector.getMinimalDetails(psaIdName)
       }
     }
   }

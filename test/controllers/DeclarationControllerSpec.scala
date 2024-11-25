@@ -129,7 +129,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         templateParams = any(),
         reportVersion = any())(any(), any()))
         .thenReturn(Future.successful(EmailSent))
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(minimalDetails))
       when(mockSubmitService.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(Ok))
 
       val application =
@@ -177,7 +177,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         templateParams = any(),
         reportVersion = any())(any(), any()))
         .thenReturn(Future.successful(EmailSent))
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(minimalDetails))
       when(mockSubmitService.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(BadRequest))
       when(mockUserAnswersConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(()))
 

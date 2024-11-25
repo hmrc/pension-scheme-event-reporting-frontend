@@ -69,7 +69,7 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       }
 
       running(application) {
-        when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+        when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(minimalDetails))
 
         val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onPageLoad().url)
         val result = route(application, request).value
@@ -93,7 +93,7 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       }
 
       running(application) {
-        when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+        when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(minimalDetails))
 
         val request = FakeRequest(GET, controllers.event20A.routes.Event20APsaDeclarationController.onPageLoad().url)
         val result = route(application, request).value
@@ -108,7 +108,7 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       val organisationName = "Test company ltd"
       val minimalDetails = MinimalDetails(testEmail, isPsaSuspended = false, Some(organisationName), None, rlsFlag = false, deceasedFlag = false)
 
-      when(mockMinimalConnector.getMinimalDetails(any(), any())(any(), any())).thenReturn(Future.successful(minimalDetails))
+      when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(minimalDetails))
       when(mockERConnector.submitReportEvent20A(any(), any(), any())(any())).thenReturn(Future.successful(NoContent))
 
       val application = applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules).build()

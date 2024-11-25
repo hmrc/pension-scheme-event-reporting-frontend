@@ -64,7 +64,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
       case Some(value) => form(authorisingPsaId = None).fill(value)
       case None => form(authorisingPsaId = None)
     }
-    minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map {
+    minimalConnector.getMinimalDetails(request.loggedInUser.idName).map {
       minimalDetails =>
         if (request.isReportSubmitted) {
           Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
@@ -81,8 +81,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
       requireData.invokeBlock(request, { implicit request: DataRequest[_] =>
 
         def emailFuture: Future[EmailStatus] = minimalConnector.getMinimalDetails(
-          request.loggedInUser.idName,
-          request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
+          request.loggedInUser.idName).flatMap { minimalDetails =>
           val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
           val email = minimalDetails.email
           val schemeName = request.schemeName
@@ -90,7 +89,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
         }
 
         schemeDetailsConnector.getPspSchemeDetails(request.loggedInUser.psaIdOrPspId, request.pstr).map(_.pspDetails.map {_.authorisingPSAID}).flatMap { authorisingPsaId =>
-          minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
+          minimalConnector.getMinimalDetails(request.loggedInUser.idName).flatMap { minimalDetails =>
             form(authorisingPsaId = authorisingPsaId)
               .bindFromRequest().fold(
               formWithErrors =>

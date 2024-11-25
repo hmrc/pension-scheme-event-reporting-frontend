@@ -57,7 +57,7 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
       case Some(value) => form(authorisingPsaId = None).fill(value)
       case None => form(authorisingPsaId = None)
     }
-    minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).map {
+    minimalConnector.getMinimalDetails(request.loggedInUser.idName).map {
       minimalDetails =>
         if (request.isReportSubmitted) {
           Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints))
@@ -69,7 +69,7 @@ class Event20APspDeclarationController @Inject()(val controllerComponents: Messa
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async {
     implicit request =>
-      minimalConnector.getMinimalDetails(request.loggedInUser.idName, request.loggedInUser.psaIdOrPspId).flatMap { minimalDetails =>
+      minimalConnector.getMinimalDetails(request.loggedInUser.idName).flatMap { minimalDetails =>
         schemeDetailsConnector.getPspSchemeDetails(request.loggedInUser.psaIdOrPspId, request.pstr).map(_.pspDetails.map(_.authorisingPSAID)).flatMap { authorisingPsaId =>
           form(authorisingPsaId = authorisingPsaId)
             .bindFromRequest().fold(
