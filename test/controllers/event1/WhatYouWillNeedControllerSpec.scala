@@ -45,5 +45,18 @@ class WhatYouWillNeedControllerSpec extends SpecBase {
         contentAsString(result).removeAllNonces()mustEqual view(controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, Event1, 0, memberPageNo = 0).url)(request, messages(application)).toString
       }
     }
+
+    "must return BAD_REQUEST for invalid index" in {
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+
+        val request = FakeRequest(GET, routes.WhatYouWillNeedController.onPageLoad(waypoints, -1).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+      }
+    }
   }
 }

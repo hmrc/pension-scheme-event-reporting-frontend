@@ -26,8 +26,8 @@ import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.VersionInfoPage
-import play.api.http.Status.{BAD_REQUEST, NOT_FOUND, OK}
-import play.api.mvc.Results.{BadRequest, NoContent}
+import play.api.http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR, NOT_FOUND, OK}
+import play.api.mvc.Results.{BadRequest, Forbidden, InternalServerError, NoContent}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -107,6 +107,62 @@ class SubmitServiceSpec extends SpecBase with BeforeAndAfterEach {
         status mustBe NOT_FOUND
       }
     }
+
+    "must return NotFound when no version info is found" in {
+      when(mockEventReportingConnector.submitReport(ArgumentMatchers.eq(pstr), any(), any())(any))
+        .thenReturn(Future.successful(NoContent))
+      when(mockUserAnswersCacheConnector.save(ArgumentMatchers.eq(pstr), any())(any(), any()))
+        .thenReturn(Future.successful((): Unit))
+      val ua = emptyUserAnswersWithTaxYear
+      submitService.submitReport(pstr, ua).map { status =>
+        verify(mockUserAnswersCacheConnector, times(0))
+          .save(ArgumentMatchers.eq(pstr), any())(any(), any())
+        status mustBe NOT_FOUND
+      }
+    }
+
+    "must return InternalServerError if the connector responds with an unexpected status" in {
+      when(mockEventReportingConnector.submitReport(ArgumentMatchers.eq(pstr), any(), any())(any))
+        .thenReturn(Future.successful(InternalServerError))
+      when(mockUserAnswersCacheConnector.save(ArgumentMatchers.eq(pstr), any())(any(), any()))
+        .thenReturn(Future.successful((): Unit))
+      val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(2, Compiled), nonEventTypeData = true)
+      submitService.submitReport(pstr, ua).map { status =>
+        status mustBe InternalServerError
+      }
+    }
+
+    "must return Forbidden if the connector returns a Forbidden status" in {
+      when(mockEventReportingConnector.submitReport(ArgumentMatchers.eq(pstr), any(), any())(any))
+        .thenReturn(Future.successful(Forbidden))
+      when(mockUserAnswersCacheConnector.save(ArgumentMatchers.eq(pstr), any())(any(), any()))
+        .thenReturn(Future.successful((): Unit))
+      val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(2, Compiled), nonEventTypeData = true)
+      submitService.submitReport(pstr, ua).map { status =>
+        status mustBe Forbidden
+      }
+    }
+
+    "must handle failures in saving user answers to cache" in {
+      when(mockEventReportingConnector.submitReport(ArgumentMatchers.eq(pstr), any(), any())(any))
+        .thenReturn(Future.successful(NoContent))
+      when(mockUserAnswersCacheConnector.save(ArgumentMatchers.eq(pstr), any())(any(), any()))
+        .thenReturn(Future.failed(new RuntimeException("Database error")))
+      val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(2, Compiled), nonEventTypeData = true)
+      submitService.submitReport(pstr, ua).map { status =>
+        status mustBe INTERNAL_SERVER_ERROR
+      }
+    }
+
+    "must return InternalServerError if cache update fails after successful report submission" in {
+      when(mockEventReportingConnector.submitReport(ArgumentMatchers.eq(pstr), any(), any())(any))
+        .thenReturn(Future.successful(NoContent))
+      when(mockUserAnswersCacheConnector.save(ArgumentMatchers.eq(pstr), any())(any(), any()))
+        .thenReturn(Future.failed(new RuntimeException("Cache save error")))
+      val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(2, Compiled), nonEventTypeData = true)
+      submitService.submitReport(pstr, ua).map { status =>
+        status mustBe INTERNAL_SERVER_ERROR
+      }
+    }
   }
 }
-

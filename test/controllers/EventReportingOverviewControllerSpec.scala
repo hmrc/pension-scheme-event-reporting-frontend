@@ -49,6 +49,7 @@ class EventReportingOverviewControllerSpec extends SpecBase with BeforeAndAfterE
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockEventReportingConnector = mock[EventReportingConnector]
   private val mockAFTFrontendConnector = mock[AFTFrontendConnector]
+
   private def getRoute: String = routes.EventReportingOverviewController.onPageLoad("S2400000041").url
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
@@ -61,8 +62,6 @@ class EventReportingOverviewControllerSpec extends SpecBase with BeforeAndAfterE
   "EventReportingOverviewController" - {
 
     "must return OK and the correct view for a GET with feature toggle OFF" in {
-
-
       val application =  applicationBuilder(userAnswers = Some(ua), extraModules).build()
 
       when(mockUserAnswersCacheConnector.get(any()) (any(), any()))

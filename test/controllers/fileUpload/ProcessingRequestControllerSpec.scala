@@ -55,6 +55,8 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
       testReturnOkAndCorrectViewWhenOutcomeGeneralError(event)
       testReturnOkAndCorrectViewWhenValidationErrorsLessThan10(event)
       testReturnOkAndCorrectViewWhenValidationErrorsMoreThanOrEqualTo10(event)
+      testRedirectToInvalidHeadersOrEmptyFile(event)
+      testReturnOkAndCorrectViewDefault(event)
     }
   }
 
@@ -136,6 +138,43 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.ValidationErrorsSummaryController.onPageLoad(waypoints, eventType).url
+      verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
+
+      Await.result(application.stop(), 10.seconds)
+    }
+  }
+
+  private def testRedirectToInvalidHeadersOrEmptyFile(eventType: EventType): Unit = {
+    s"redirect to InvalidHeadersOrEmptyFileController for a GET when outcome is IncorrectHeadersOrEmptyFile (Event${eventType.toString})" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
+
+      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
+        .thenReturn(Future.successful(Some(ParsingAndValidationOutcome(status = ParsingAndValidationOutcomeStatus.IncorrectHeadersOrEmptyFile, fileName = None))))
+
+      val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, eventType).url)
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.InvalidHeadersOrEmptyFileController.onPageLoad(waypoints, eventType).url
+      verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
+
+      Await.result(application.stop(), 10.seconds)
+    }
+  }
+
+  private def testReturnOkAndCorrectViewDefault(eventType: EventType): Unit = {
+    s"return OK and the correct view for a GET when outcome is not matched (Event${eventType.toString})" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
+
+      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
+        .thenReturn(Future.successful(None))
+
+      val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, eventType).url)
+      val result = route(application, request).value
+
+      status(result) mustEqual OK
       verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
 
       Await.result(application.stop(), 10.seconds)

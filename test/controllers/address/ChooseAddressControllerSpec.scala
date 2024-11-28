@@ -118,5 +118,34 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
+
+    "must return to the same page with errors if the form is invalid" in {
+      val ua = emptyUserAnswers.setOrException(EnterPostcodePage(Event1EmployerAddressJourney, 0), seqTolerantAddresses)
+
+      val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) must include(messages("chooseAddress.error.required"))
+      }
+    }
+
+    "must return bad request when no address is selected" in {
+      val ua = emptyUserAnswers.setOrException(EnterPostcodePage(Event1EmployerAddressJourney, 0), seqTolerantAddresses)
+
+      val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
+
+      running(application) {
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", ""))
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) must include(messages("chooseAddress.error.required"))
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
   }
 }

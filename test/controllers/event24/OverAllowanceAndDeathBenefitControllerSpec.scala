@@ -25,7 +25,7 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
-import pages.event24.OverAllowanceAndDeathBenefitPage
+import pages.event24.{Event24CheckYourAnswersPage, MarginalRatePage, OverAllowanceAndDeathBenefitPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -111,6 +111,39 @@ class OverAllowanceAndDeathBenefitControllerSpec extends SpecBase with BeforeAnd
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual OverAllowanceAndDeathBenefitPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+      }
+    }
+
+    "must return a form with no value when no answer has been selected" in {
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[OverAllowanceAndDeathBenefitView]
+
+        status(result) mustEqual OK
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, 0)(request, messages(application)).toString
+      }
+    }
+
+    "must return a bad request when invalid data is submitted" in {
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+        .build()
+
+      running(application) {
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
+
+        val view = application.injector.instanceOf[OverAllowanceAndDeathBenefitView]
+        val boundForm = form.bind(Map("value" -> "invalid"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
 

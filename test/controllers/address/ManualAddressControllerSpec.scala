@@ -20,6 +20,7 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import data.SampleData._
 import forms.address.ManualAddressFormProvider
+import models.address.TolerantAddress
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -146,6 +147,60 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
         status(result) mustEqual BAD_REQUEST
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
+    }
+
+    "must correctly convert TolerantAddress to Address" in {
+      val tolerantAddress = TolerantAddress(
+        Some("Line 1"),
+        Some("Line 2"),
+        Some("Line 3"),
+        Some("Line 4"),
+        Some("12345"),
+        Some("Country")
+      )
+
+      val addressOption = tolerantAddress.toAddress
+
+      addressOption mustBe defined
+      addressOption.get.addressLine1 mustEqual "Line 1"
+      addressOption.get.addressLine2 mustEqual "Line 2"
+      addressOption.get.addressLine3 mustEqual Some("Line 3")
+      addressOption.get.addressLine4 mustEqual Some("Line 4")
+      addressOption.get.postcode mustEqual Some("12345")
+      addressOption.get.country mustEqual "Country"
+    }
+
+    "must correctly handle shuffling of address lines in TolerantAddress" in {
+      val tolerantAddress = TolerantAddress(
+        None,
+        None,
+        Some("Line 3"),
+        Some("Line 4"),
+        Some("12345"),
+        Some("Country")
+      )
+
+      val addressOption = tolerantAddress.toAddress
+
+      addressOption mustBe defined
+      addressOption.get.addressLine1 mustEqual "Line 3"
+      addressOption.get.addressLine2 mustEqual "Line 4"
+      addressOption.get.addressLine3 mustEqual None
+      addressOption.get.addressLine4 mustEqual None
+    }
+
+    "must return None if country or postcode is missing" in {
+      val tolerantAddress = TolerantAddress(
+        Some("Line 1"),
+        Some("Line 2"),
+        None,
+        None,
+        None,
+        None
+      )
+
+      val addressOption = tolerantAddress.toAddress
+      addressOption mustBe None
     }
   }
 }

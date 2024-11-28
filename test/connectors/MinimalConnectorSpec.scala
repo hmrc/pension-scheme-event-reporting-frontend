@@ -16,10 +16,11 @@
 
 package connectors
 
+import com.fasterxml.jackson.core.JsonParseException
 import com.github.tomakehurst.wiremock.client.WireMock._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
-import play.api.libs.json.Json
+import play.api.libs.json.{JsResultException, Json}
 import uk.gov.hmrc.http._
 import utils.WireMockHelper
 
@@ -50,6 +51,66 @@ class MinimalConnectorSpec
         "rlsFlag" -> false
       )
     )
+
+  "MinimalDetails" should {
+
+    "return the organisation name when individualDetails is None and organisationName is defined" in {
+      val minimalDetails = MinimalDetails(
+        email = email,
+        isPsaSuspended = false,
+        organisationName = Some("test ltd"),
+        individualDetails = None,
+        rlsFlag = false,
+        deceasedFlag = false
+      )
+
+      minimalDetails.name mustBe "test ltd"
+    }
+
+    "return the individual's full name when organisationName is None and individualDetails is defined" in {
+      val individualDetails = IndividualDetails(
+        firstName = "John",
+        middleName = Some("Edward"),
+        lastName = "Doe"
+      )
+
+      val minimalDetails = MinimalDetails(
+        email = email,
+        isPsaSuspended = false,
+        organisationName = None,
+        individualDetails = Some(individualDetails),
+        rlsFlag = false,
+        deceasedFlag = false
+      )
+
+      minimalDetails.name mustBe "John Edward Doe"
+    }
+
+    "throw an exception when both organisationName and individualDetails are None" in {
+      val minimalDetails = MinimalDetails(
+        email = email,
+        isPsaSuspended = false,
+        organisationName = None,
+        individualDetails = None,
+        rlsFlag = false,
+        deceasedFlag = false
+      )
+
+      intercept[RuntimeException] {
+        minimalDetails.name
+      }.getMessage mustBe "Cannot find name"
+    }
+
+    "return the full name without a middle name when middleName is None" in {
+      val individualDetails = IndividualDetails(
+        firstName = "Jane",
+        middleName = None,
+        lastName = "Smith"
+      )
+
+      individualDetails.fullName mustBe "Jane Smith"
+    }
+  }
 
   "getMinimalDetails" must {
 
@@ -91,6 +152,49 @@ class MinimalConnectorSpec
       )
 
       recoverToSucceededIf[BadRequestException] {
+        connector.getMinimalDetails(psaIdName, psaId)
+      }
+    }
+
+    "handle deserialization error when invalid JSON is returned" in {
+      server.stubFor(
+        get(urlEqualTo(minimalPsaDetailsUrl))
+          .willReturn(
+            ok("{invalid-json}")
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      recoverToSucceededIf[JsonParseException] {
+        connector.getMinimalDetails(psaIdName, psaId)
+      }
+    }
+
+    "throw DelimitedAdminException when the response body contains 'DELIMITED_PSAID'" in {
+      server.stubFor(
+        get(urlEqualTo(minimalPsaDetailsUrl))
+          .willReturn(
+            forbidden
+              .withBody("DELIMITED_PSAID")
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      recoverToSucceededIf[DelimitedAdminException] {
+        connector.getMinimalDetails(psaIdName, psaId)
+      }
+    }
+
+    "handle unexpected error codes gracefully" in {
+      server.stubFor(
+        get(urlEqualTo(minimalPsaDetailsUrl))
+          .willReturn(
+            serverError
+              .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      recoverToSucceededIf[UpstreamErrorResponse] {
         connector.getMinimalDetails(psaIdName, psaId)
       }
     }
