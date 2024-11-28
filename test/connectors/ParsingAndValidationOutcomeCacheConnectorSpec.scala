@@ -65,6 +65,32 @@ class ParsingAndValidationOutcomeCacheConnectorSpec extends AsyncWordSpec with M
           result.value mustEqual successOutcome
       }
     }
+
+    "return `None` when the response is not OK" in {
+      server.stubFor(
+        get(urlEqualTo(url))
+          .willReturn(
+            serverError()
+          )
+      )
+
+      connector.getOutcome.map { result =>
+        result mustNot be(defined)
+      }
+    }
+
+    "handle NotFoundException gracefully" in {
+      server.stubFor(
+        get(urlEqualTo(url))
+          .willReturn(
+            notFound()
+          )
+      )
+
+      connector.getOutcome.map { result =>
+        result mustNot be(defined)
+      }
+    }
   }
 
   ".setOutcome" must {
@@ -83,6 +109,22 @@ class ParsingAndValidationOutcomeCacheConnectorSpec extends AsyncWordSpec with M
         _ mustEqual(():Unit)
       }
     }
+
+    "log a warning if the outcome cannot be saved" in {
+      val json = Json.toJson(successOutcome)
+
+      server.stubFor(
+        post(urlEqualTo(url))
+          .withRequestBody(equalTo(Json.stringify(json)))
+          .willReturn(
+            serverError()
+          )
+      )
+
+      connector.setOutcome(successOutcome).map {
+        _ mustEqual((): Unit)
+      }
+    }
   }
 
   ".deleteOutcome" must {
@@ -92,6 +134,19 @@ class ParsingAndValidationOutcomeCacheConnectorSpec extends AsyncWordSpec with M
       )
       connector.deleteOutcome.map {
         _ mustEqual(():Unit)
+      }
+    }
+
+    "log a warning if the outcome cannot be deleted" in {
+      server.stubFor(
+        delete(urlEqualTo(url))
+          .willReturn(
+            serverError()
+          )
+      )
+
+      connector.deleteOutcome.map {
+        _ mustEqual((): Unit)
       }
     }
   }

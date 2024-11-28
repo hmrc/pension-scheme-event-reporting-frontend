@@ -147,7 +147,37 @@ class EventReportingConnectorSpec
         connector.getEventReportSummary(pstr, "21/01/22", 1)
       }
     }
-  }
+
+      "return an empty list if the backend returns an empty JSON array" in {
+        server.stubFor(
+          get(urlEqualTo(eventReportSummaryCacheUrl))
+            .willReturn(
+              ok
+                .withHeader("Content-Type", "application/json")
+                .withBody(Json.arr().toString())
+            )
+        )
+
+        connector.getEventReportSummary(pstr, "21/01/22", 1) map { response =>
+          response mustBe Nil
+        }
+      }
+
+      "throw a RuntimeException for unexpected response structure" in {
+        server.stubFor(
+          get(urlEqualTo(eventReportSummaryCacheUrl))
+            .willReturn(
+              ok
+                .withHeader("Content-Type", "application/json")
+                .withBody("""{"unexpectedKey": "unexpectedValue"}""")
+            )
+        )
+
+        recoverToSucceededIf[RuntimeException] {
+          connector.getEventReportSummary(pstr, "21/01/22", 1)
+        }
+      }
+    }
 
   "compileEvent" must {
     "return unit for successful post" in {
@@ -196,6 +226,32 @@ class EventReportingConnectorSpec
           .willReturn(
             badRequest
               .withHeader("Content-Type", "application/json")
+          )
+      )
+
+      recoverToSucceededIf[HttpException] {
+        connector.deleteMember(pstr, EventDataIdentifier(eventType, "2020", "1"), 0, "0")
+      }
+    }
+
+    "return HttpException for a 500 internal server error response" in {
+      server.stubFor(
+        post(urlEqualTo(eventReportCompileUrl))
+          .willReturn(
+            serverError()
+          )
+      )
+
+      recoverToSucceededIf[HttpException] {
+        connector.compileEvent(pstr, EventDataIdentifier(eventType, "2020", "1"), 1)
+      }
+    }
+
+    "return HttpException when the backend responds with a 404 not found" in {
+      server.stubFor(
+        post(urlEqualTo(deleteMemberUrl))
+          .willReturn(
+            notFound()
           )
       )
 
@@ -496,6 +552,34 @@ class EventReportingConnectorSpec
       connector.getListOfVersions(pstr, "2022-04-06") map {
         result =>
           result mustEqual Nil
+      }
+    }
+
+    "return an empty sequence if the backend responds with an empty JSON array" in {
+      server.stubFor(
+        get(urlEqualTo(getOverviewUrl))
+          .willReturn(
+            ok
+              .withHeader("Content-Type", "application/json")
+              .withBody(Json.arr().toString())
+          )
+      )
+
+      connector.getOverview(pstr, "ER", "2022-04-06", "2023-04-05") map { response =>
+        response mustBe Seq.empty
+      }
+    }
+
+    "throw an HttpException for a 401 unauthorized response" in {
+      server.stubFor(
+        get(urlEqualTo(getOverviewUrl))
+          .willReturn(
+            unauthorized()
+          )
+      )
+
+      recoverToSucceededIf[HttpException] {
+        connector.getOverview(pstr, "ER", "2022-04-06", "2023-04-05")
       }
     }
   }

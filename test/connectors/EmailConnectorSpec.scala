@@ -88,5 +88,26 @@ class EmailConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper
         }
       }
     }
+
+    "email fails to send" in {
+      server.stubFor(
+        post(urlEqualTo(url)).willReturn(
+          aResponse().withStatus(Status.INTERNAL_SERVER_ERROR)
+        )
+      )
+
+      connector.sendEmail(
+        AdministratorOrPractitioner.Administrator,
+        requestId,
+        testPsaId.id,
+        testPstr,
+        testEmailAddress,
+        testTemplate,
+        Map.empty,
+        "reportVersion"
+      ).map { result =>
+        result mustBe EmailNotSent
+      }
+    }
   }
 }
