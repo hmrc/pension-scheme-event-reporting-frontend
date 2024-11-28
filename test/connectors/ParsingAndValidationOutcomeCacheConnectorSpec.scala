@@ -70,7 +70,7 @@ class ParsingAndValidationOutcomeCacheConnectorSpec extends AsyncWordSpec with M
       server.stubFor(
         get(urlEqualTo(url))
           .willReturn(
-            serverError() // Simulate an internal server error
+            serverError()
           )
       )
 
@@ -83,7 +83,7 @@ class ParsingAndValidationOutcomeCacheConnectorSpec extends AsyncWordSpec with M
       server.stubFor(
         get(urlEqualTo(url))
           .willReturn(
-            notFound() // Simulating a NotFoundException
+            notFound()
           )
       )
 
