@@ -166,7 +166,7 @@ class MinimalConnectorSpec
       )
 
       recoverToSucceededIf[JsonParseException] {
-        connector.getMinimalDetails(psaIdName, psaId)
+        connector.getMinimalDetails(psaIdName)
       }
     }
 
@@ -181,7 +181,7 @@ class MinimalConnectorSpec
       )
 
       recoverToSucceededIf[DelimitedAdminException] {
-        connector.getMinimalDetails(psaIdName, psaId)
+        connector.getMinimalDetails(psaIdName)
       }
     }
 
@@ -195,7 +195,7 @@ class MinimalConnectorSpec
       )
 
       recoverToSucceededIf[UpstreamErrorResponse] {
-        connector.getMinimalDetails(psaIdName, psaId)
+        connector.getMinimalDetails(psaIdName)
       }
     }
   }

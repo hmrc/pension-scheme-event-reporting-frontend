@@ -37,7 +37,7 @@ class AuthController @Inject()(
 
   def signOut(): Action[AnyContent] = identify.async {
     implicit request =>
-      sessionDataCacheConnector.removeAll(request.loggedInUser.externalId).flatMap { _ =>
+      sessionDataCacheConnector.removeAll().flatMap { _ =>
         userAnswersCacheConnector.removeAll(request.pstr)
         Future.successful(Redirect(config.signOutUrl))
       }
@@ -45,7 +45,7 @@ class AuthController @Inject()(
 
   def signOutNoSurvey(): Action[AnyContent] = identify.async {
     implicit request =>
-      sessionDataCacheConnector.removeAll(request.loggedInUser.externalId).flatMap { _ =>
+      sessionDataCacheConnector.removeAll().flatMap { _ =>
         userAnswersCacheConnector.removeAll(request.pstr)
         Future.successful(Redirect(config.loginUrl,
           Map("continue" -> Seq(config.loginContinueUrl))).withNewSession)

@@ -46,7 +46,6 @@ class IdentifierActionSpec
   extends SpecBase with BeforeAndAfterEach with GuiceOneAppPerSuite with MockitoSugar {
 
   private class FakeFailingAuthConnector @Inject()(exceptionToReturn: Throwable) extends AuthConnector {
-    val serviceUrl: String = ""
 
     override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])
                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] =
@@ -95,9 +94,9 @@ class IdentifierActionSpec
     Mockito.reset(mockSchemeConnector)
     when(mockFrontendAppConfig.loginUrl).thenReturn(dummyCall.url)
     when(mockFrontendAppConfig.loginContinueUrl).thenReturn(dummyCall.url)
-    when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+    when(mockSessionDataCacheConnector.fetch()(any(), any()))
       .thenReturn(Future.successful(None))
-    when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+    when(mockSessionDataCacheConnector.fetch()(any(), any()))
       .thenReturn(Future.successful(None))
     when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
       PsaSchemeDetails("test scheme", "test pstr", "test status", Some(Seq(
@@ -130,7 +129,7 @@ class IdentifierActionSpec
         )
       )
 
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(pstrJson)))
 
       val result = controller.onPageLoad()(fakeRequest)
@@ -159,7 +158,7 @@ class IdentifierActionSpec
         )
       )
 
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(pstrJson)))
 
       val adminOrPractitionerUrl = "/dummy-url"
@@ -175,8 +174,6 @@ class IdentifierActionSpec
 
     "the user has logged in with HMRC-PODS-ORG and HMRC_PODSPP_ORG enrolments and has chosen the role of administrator " +
       "must have the PSAID" in {
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
-        .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
       val controller = new Harness(authAction)
       val enrolments = Enrolments(Set(
         Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None),
@@ -185,6 +182,7 @@ class IdentifierActionSpec
 
       val pstrInDB = "456"
       val pstrJson = Json.obj(
+        "administratorOrPractitioner" -> Administrator.toString,
         "eventReporting" -> Json.obj(
           "pstr" -> pstrInDB,
           "schemeName" -> "schemeName",
@@ -193,7 +191,7 @@ class IdentifierActionSpec
         )
       )
 
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(pstrJson)))
 
       when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
@@ -207,8 +205,6 @@ class IdentifierActionSpec
 
     "the user has logged in with HMRC-PODS-ORG and HMRC_PODSPP_ORG enrolments and has chosen the role of practitioner " +
       "must have the PSPID and no PSAID" in {
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
-        .thenReturn(Future.successful(Some(jsonAOP(Practitioner))))
       val controller = new Harness(authAction)
       val enrolments = Enrolments(Set(
         Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None),
@@ -217,6 +213,7 @@ class IdentifierActionSpec
 
       val pstrInDB = "456"
       val pstrJson = Json.obj(
+        "administratorOrPractitioner" -> Practitioner.toString,
         "eventReporting" -> Json.obj(
           "pstr" -> pstrInDB,
           "schemeName" -> "schemeName",
@@ -225,7 +222,7 @@ class IdentifierActionSpec
         )
       )
 
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(pstrJson)))
 
       when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
@@ -291,8 +288,6 @@ class IdentifierActionSpec
     when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
       PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId, AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId)))
     ))
-    when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
-      .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
     val controller = new Harness(authAction)
     val enrolments = Enrolments(Set(
       Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None),
@@ -301,6 +296,7 @@ class IdentifierActionSpec
 
     val pstrInDB = "456"
     val pstrJson = Json.obj(
+      "administratorOrPractitioner" -> Administrator.toString,
       "eventReporting" -> Json.obj(
         "pstr" -> pstrInDB,
         "schemeName" -> "schemeName",
@@ -309,13 +305,14 @@ class IdentifierActionSpec
       )
     )
 
-    when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+    when(mockSessionDataCacheConnector.fetch()(any(), any()))
       .thenReturn(Future.successful(Some(pstrJson)))
 
     when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
       .thenReturn(Future.successful(new ~(Some("id"), enrolments)))
 
     val result = controller.onPageLoad()(fakeRequest)
+    println("====> "+contentAsString(result))
     status(result) mustBe OK
   }
 
@@ -329,7 +326,7 @@ class IdentifierActionSpec
       when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
         PspSchemeDetails("schemeName", "87219363YN", "Open", None)
       ))
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
       val controller = new Harness(authAction)
       val enrolments = Enrolments(Set(
@@ -346,7 +343,7 @@ class IdentifierActionSpec
         )
       )
 
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(pstrJson)))
 
       when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
@@ -362,7 +359,7 @@ class IdentifierActionSpec
       when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
         PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId, AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId)))
       ))
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
       val controller = new Harness(authAction)
       val enrolments = Enrolments(Set(
@@ -379,7 +376,7 @@ class IdentifierActionSpec
         )
       )
 
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(pstrJson)))
 
       when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
@@ -397,8 +394,6 @@ class IdentifierActionSpec
       when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
         PspSchemeDetails("schemeName", "87219363YN", "Open", None)
       ))
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
-        .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
       val controller = new Harness(authAction)
       val enrolments = Enrolments(Set(
         Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None),
@@ -407,6 +402,7 @@ class IdentifierActionSpec
 
       val pstrInDB = "456"
       val pstrJson = Json.obj(
+        "administratorOrPractitioner" -> Administrator.toString,
         "eventReporting" -> Json.obj(
           "pstr" -> pstrInDB,
           "schemeName" -> "schemeName",
@@ -415,7 +411,7 @@ class IdentifierActionSpec
         )
       )
 
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(pstrJson)))
 
       when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
@@ -431,8 +427,6 @@ class IdentifierActionSpec
       when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
         PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId, AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId)))
       ))
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
-        .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
       val controller = new Harness(authAction)
       val enrolments = Enrolments(Set(
         Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None),
@@ -441,6 +435,7 @@ class IdentifierActionSpec
 
       val pstrInDB = "456"
       val pstrJson = Json.obj(
+        "administratorOrPractitioner" -> Administrator.toString,
         "eventReporting" -> Json.obj(
           "pstr" -> pstrInDB,
           "schemeName" -> "schemeName",
@@ -449,7 +444,7 @@ class IdentifierActionSpec
         )
       )
 
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(pstrJson)))
 
       when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
@@ -468,8 +463,6 @@ class IdentifierActionSpec
       when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.failed(
         new NotFoundException("PSP_RELATIONSHIP_NOT_FOUND")
       ))
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
-        .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
       val controller = new Harness(authAction)
       val enrolments = Enrolments(Set(
         Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None),
@@ -478,6 +471,7 @@ class IdentifierActionSpec
 
       val pstrInDB = "456"
       val pstrJson = Json.obj(
+        "administratorOrPractitioner" -> Administrator.toString,
         "eventReporting" -> Json.obj(
           "pstr" -> pstrInDB,
           "schemeName" -> "schemeName",
@@ -486,7 +480,7 @@ class IdentifierActionSpec
         )
       )
 
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(pstrJson)))
 
       when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
@@ -505,7 +499,7 @@ class IdentifierActionSpec
             PsaDetails(psaId + "A", None, None, None)
           ))))
         )
-        when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+        when(mockSessionDataCacheConnector.fetch()(any(), any()))
           .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
         val controller = new Harness(authAction)
         val enrolments = Enrolments(Set(
@@ -522,7 +516,7 @@ class IdentifierActionSpec
           )
         )
 
-        when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+        when(mockSessionDataCacheConnector.fetch()(any(), any()))
           .thenReturn(Future.successful(Some(pstrJson)))
 
         when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
@@ -541,7 +535,7 @@ class IdentifierActionSpec
       when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
         PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId, AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId + "A")))
       ))
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
       val controller = new Harness(authAction)
       val enrolments = Enrolments(Set(
@@ -558,7 +552,7 @@ class IdentifierActionSpec
         )
       )
 
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(pstrJson)))
 
       when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
@@ -579,8 +573,6 @@ class IdentifierActionSpec
       when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
         PspSchemeDetails("schemeName", "87219363YN", "Open", None)
       ))
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
-        .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
       val controller = new Harness(authAction)
       val enrolments = Enrolments(Set(
         Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None),
@@ -589,6 +581,7 @@ class IdentifierActionSpec
 
       val pstrInDB = "456"
       val pstrJson = Json.obj(
+        "administratorOrPractitioner" -> Administrator.toString,
         "eventReporting" -> Json.obj(
           "pstr" -> pstrInDB,
           "schemeName" -> "schemeName",
@@ -597,7 +590,7 @@ class IdentifierActionSpec
         )
       )
 
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(pstrJson)))
 
       when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
@@ -619,7 +612,7 @@ class IdentifierActionSpec
       when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
         PspSchemeDetails("schemeName", "87219363YN", "Open", None)
       ))
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
       val controller = new Harness(authAction)
       val enrolments = Enrolments(Set(
@@ -636,7 +629,7 @@ class IdentifierActionSpec
         )
       )
 
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(pstrJson)))
 
       when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
@@ -655,7 +648,7 @@ class IdentifierActionSpec
         PsaSchemeDetails("test scheme", "test pstr", "test status", None))
       )
       when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.failed(new RuntimeException("")))
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(externalId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
       val controller = new Harness(authAction)
       val enrolments = Enrolments(Set(
@@ -672,7 +665,7 @@ class IdentifierActionSpec
         )
       )
 
-      when(mockSessionDataCacheConnector.fetch(ArgumentMatchers.eq(SessionKeys.sessionId))(any(), any()))
+      when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(pstrJson)))
 
       when(authConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))

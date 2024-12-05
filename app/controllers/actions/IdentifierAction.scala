@@ -56,8 +56,9 @@ class AuthenticatedIdentifierAction @Inject()(
   private def getEventReportingData[A](request: Request[A])(implicit headerCarrier: HeaderCarrier): Future[Option[EventReporting]] = {
     request.session.get(SessionKeys.sessionId) match {
       case None => Future.successful(None)
-      case Some(sessionId) =>
-        sessionDataCacheConnector.fetch(sessionId).map { optionJsValue =>
+      case Some(_) =>
+        sessionDataCacheConnector.fetch().map { optionJsValue =>
+          println("========= optionJsValue "+ optionJsValue)
           optionJsValue.flatMap { json =>
             (json \ "eventReporting").validate[EventReporting].asOpt
           }
@@ -114,8 +115,8 @@ class AuthenticatedIdentifierAction @Inject()(
       .flatMap(_.getIdentifier("PSPID"))
       .map(enrolmentIdentifier => PspId(enrolmentIdentifier.value).id)
 
-  private def administratorOrPractitioner(id: String)(implicit hc: HeaderCarrier): Future[Option[AdministratorOrPractitioner]] = {
-    sessionDataCacheConnector.fetch(id).map { optionJsValue =>
+  private def administratorOrPractitioner()(implicit hc: HeaderCarrier): Future[Option[AdministratorOrPractitioner]] = {
+    sessionDataCacheConnector.fetch().map { optionJsValue =>
       optionJsValue.flatMap { json =>
         (json \ "administratorOrPractitioner").toOption.flatMap(_.validate[AdministratorOrPractitioner].asOpt)
       }
@@ -134,7 +135,8 @@ class AuthenticatedIdentifierAction @Inject()(
 
   private def actionForBothEnrolments[A](eventReporting: EventReporting, externalId: String, enrolments: Enrolments, request: Request[A],
                                          block: IdentifierRequest[A] => Future[Result])(implicit headerCarrier: HeaderCarrier): Future[Result] = {
-    administratorOrPractitioner(externalId).flatMap {
+    println("==========> in actionForBothEnrolments eventReporting= " + eventReporting)
+    administratorOrPractitioner().flatMap {
       case None => Future.successful(Redirect(Call("GET", config.administratorOrPractitionerUrl)))
       case Some(role) =>
         getLoggedInUser(externalId, role, enrolments) match {

@@ -58,7 +58,7 @@ class SessionDataCacheConnectorSpec
           )
       )
 
-      connector.fetch(externalId) map {
+      connector.fetch() map {
         _ mustBe Some(Json.parse(validResponse("administrator")))
       }
     }
@@ -72,7 +72,7 @@ class SessionDataCacheConnectorSpec
           )
       )
 
-      connector.fetch(externalId) map {
+      connector.fetch() map {
         _ mustBe Some(jsonAOP(AdministratorOrPractitioner.Practitioner))
       }
     }
@@ -86,7 +86,7 @@ class SessionDataCacheConnectorSpec
           )
       )
 
-      connector.fetch(externalId) map {
+      connector.fetch() map {
         _ mustBe None
       }
     }
@@ -101,7 +101,7 @@ class SessionDataCacheConnectorSpec
       )
 
       recoverToSucceededIf[HttpException] {
-        connector.fetch(externalId)
+        connector.fetch()
       }
     }
   }
@@ -115,7 +115,7 @@ class SessionDataCacheConnectorSpec
               .withHeader("Content-Type", "application/json")
           )
       )
-      connector.removeAll(externalId).map { response =>
+      connector.removeAll().map { response =>
         response.header.status mustBe OK
       }
     }
