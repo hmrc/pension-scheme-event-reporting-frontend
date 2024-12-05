@@ -58,7 +58,6 @@ class AuthenticatedIdentifierAction @Inject()(
       case None => Future.successful(None)
       case Some(_) =>
         sessionDataCacheConnector.fetch().map { optionJsValue =>
-          println("========= optionJsValue "+ optionJsValue)
           optionJsValue.flatMap { json =>
             (json \ "eventReporting").validate[EventReporting].asOpt
           }
@@ -135,7 +134,6 @@ class AuthenticatedIdentifierAction @Inject()(
 
   private def actionForBothEnrolments[A](eventReporting: EventReporting, externalId: String, enrolments: Enrolments, request: Request[A],
                                          block: IdentifierRequest[A] => Future[Result])(implicit headerCarrier: HeaderCarrier): Future[Result] = {
-    println("==========> in actionForBothEnrolments eventReporting= " + eventReporting)
     administratorOrPractitioner().flatMap {
       case None => Future.successful(Redirect(Call("GET", config.administratorOrPractitionerUrl)))
       case Some(role) =>
@@ -155,7 +153,8 @@ class AuthenticatedIdentifierAction @Inject()(
 
             userAuthorised.map { authFtr =>
               authFtr.flatMap {
-                case true => block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName, eventReporting.returnUrl, eventReporting.srn))
+                case true => block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName,
+                  eventReporting.returnUrl, eventReporting.srn))
                 case false =>
                   logger.warn("Potentially prevented unauthorised access")
                   futureUnauthorisedPage
@@ -174,7 +173,8 @@ class AuthenticatedIdentifierAction @Inject()(
 
     getLoggedInUser(externalId, administratorOrPractitioner, enrolments) match {
       case Some(loggedInUser) =>
-        def proceed = block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName, eventReporting.returnUrl, eventReporting.srn))
+        def proceed = block(IdentifierRequest(request, loggedInUser, eventReporting.pstr,
+          eventReporting.schemeName, eventReporting.returnUrl, eventReporting.srn))
         administratorOrPractitioner match {
           case AdministratorOrPractitioner.Administrator =>
             schemeAuthorisedForPsa(loggedInUser.psaIdOrPspId, eventReporting.srn).flatMap {
