@@ -32,9 +32,7 @@ class SessionDataCacheConnector @Inject()(
                                            config: FrontendAppConfig,
                                            http: HttpClientV2
                                          ) {
-  private def url() = {
-    url"${config.pensionsAdministratorUrl}/pension-administrator/journey-cache/session-data-self"
-  }
+  private def url() = url"${config.pensionsAdministratorUrl}/pension-administrator/journey-cache/session-data-self"
 
   def fetch()(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[JsValue]] = {
 

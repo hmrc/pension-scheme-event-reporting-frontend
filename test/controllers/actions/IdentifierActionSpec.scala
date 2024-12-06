@@ -312,7 +312,6 @@ class IdentifierActionSpec
       .thenReturn(Future.successful(new ~(Some("id"), enrolments)))
 
     val result = controller.onPageLoad()(fakeRequest)
-    println("====> "+contentAsString(result))
     status(result) mustBe OK
   }
 
