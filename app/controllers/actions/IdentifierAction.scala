@@ -56,8 +56,8 @@ class AuthenticatedIdentifierAction @Inject()(
   private def getEventReportingData[A](request: Request[A])(implicit headerCarrier: HeaderCarrier): Future[Option[EventReporting]] = {
     request.session.get(SessionKeys.sessionId) match {
       case None => Future.successful(None)
-      case Some(sessionId) =>
-        sessionDataCacheConnector.fetch(sessionId).map { optionJsValue =>
+      case Some(_) =>
+        sessionDataCacheConnector.fetch().map { optionJsValue =>
           optionJsValue.flatMap { json =>
             (json \ "eventReporting").validate[EventReporting].asOpt
           }
@@ -114,8 +114,8 @@ class AuthenticatedIdentifierAction @Inject()(
       .flatMap(_.getIdentifier("PSPID"))
       .map(enrolmentIdentifier => PspId(enrolmentIdentifier.value).id)
 
-  private def administratorOrPractitioner(id: String)(implicit hc: HeaderCarrier): Future[Option[AdministratorOrPractitioner]] = {
-    sessionDataCacheConnector.fetch(id).map { optionJsValue =>
+  private def administratorOrPractitioner()(implicit hc: HeaderCarrier): Future[Option[AdministratorOrPractitioner]] = {
+    sessionDataCacheConnector.fetch().map { optionJsValue =>
       optionJsValue.flatMap { json =>
         (json \ "administratorOrPractitioner").toOption.flatMap(_.validate[AdministratorOrPractitioner].asOpt)
       }
@@ -134,7 +134,7 @@ class AuthenticatedIdentifierAction @Inject()(
 
   private def actionForBothEnrolments[A](eventReporting: EventReporting, externalId: String, enrolments: Enrolments, request: Request[A],
                                          block: IdentifierRequest[A] => Future[Result])(implicit headerCarrier: HeaderCarrier): Future[Result] = {
-    administratorOrPractitioner(externalId).flatMap {
+    administratorOrPractitioner().flatMap {
       case None => Future.successful(Redirect(Call("GET", config.administratorOrPractitionerUrl)))
       case Some(role) =>
         getLoggedInUser(externalId, role, enrolments) match {
@@ -153,7 +153,8 @@ class AuthenticatedIdentifierAction @Inject()(
 
             userAuthorised.map { authFtr =>
               authFtr.flatMap {
-                case true => block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName, eventReporting.returnUrl, eventReporting.srn))
+                case true => block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName,
+                  eventReporting.returnUrl, eventReporting.srn))
                 case false =>
                   logger.warn("Potentially prevented unauthorised access")
                   futureUnauthorisedPage
@@ -172,7 +173,8 @@ class AuthenticatedIdentifierAction @Inject()(
 
     getLoggedInUser(externalId, administratorOrPractitioner, enrolments) match {
       case Some(loggedInUser) =>
-        def proceed = block(IdentifierRequest(request, loggedInUser, eventReporting.pstr, eventReporting.schemeName, eventReporting.returnUrl, eventReporting.srn))
+        def proceed = block(IdentifierRequest(request, loggedInUser, eventReporting.pstr,
+          eventReporting.schemeName, eventReporting.returnUrl, eventReporting.srn))
         administratorOrPractitioner match {
           case AdministratorOrPractitioner.Administrator =>
             schemeAuthorisedForPsa(loggedInUser.psaIdOrPspId, eventReporting.srn).flatMap {
