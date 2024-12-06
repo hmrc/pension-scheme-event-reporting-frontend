@@ -35,8 +35,7 @@ class SessionDataCacheConnectorSpec
   override protected def portConfigKey: String = "microservice.services.pension-administrator.port"
 
   private lazy val connector: SessionDataCacheConnector = injector.instanceOf[SessionDataCacheConnector]
-  private val externalId = "test-value"
-  private val sessionDataCacheUrl = s"/pension-administrator/journey-cache/session-data/$externalId"
+  private val sessionDataCacheUrl = s"/pension-administrator/journey-cache/session-data-self"
 
   private def jsonAOP(aop: AdministratorOrPractitioner) =
     Json.obj("administratorOrPractitioner" -> aop.toString)
