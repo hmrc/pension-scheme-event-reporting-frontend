@@ -104,22 +104,6 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
   "TaxYear Controller" - {
 
-    "must return OK and the correct view for a GET with feature toggle OFF" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, getRoute)
-
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[TaxYearView]
-
-        status(result) mustEqual OK
-        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, radioOptions, eventReportingUrl)(request, messages(application)).toString
-      }
-    }
-
     "must return OK and the correct view for a GET when past events chosen from tile page" in {
       val ua = emptyUserAnswers
         .setOrException(EventReportingTileLinksPage, PastEventTypes)

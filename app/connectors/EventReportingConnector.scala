@@ -19,13 +19,12 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.amend.VersionsWithSubmitter
-import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, ToggleDetails, UserAnswers}
+import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, UserAnswers}
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json._
 import play.api.mvc.Result
 import play.api.mvc.Results.{BadRequest, NoContent}
-import uk.gov.hmrc.http
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -49,8 +48,6 @@ class EventReportingConnector @Inject()(
   private def event20ASubmitUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event20a-declaration-report"
 
   private def getFileUploadResponseUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/get"
-
-  private def eventReportingToggleUrl(toggleName: String) = url"${config.eventReportingUrl}/admin/get-toggle/$toggleName"
 
   private def eventOverviewUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/overview"
 
@@ -162,23 +159,6 @@ class EventReportingConnector @Inject()(
             throw new HttpException(response.body, response.status)
         }
       }
-  }
-
-  def getFeatureToggle(toggleName: String)(implicit hc: HeaderCarrier): Future[ToggleDetails] = {
-    httpClientV2.get(eventReportingToggleUrl(toggleName)).execute[http.HttpResponse].map { response =>
-      val toggleOpt = response.status match {
-        case NO_CONTENT => None
-        case OK =>
-          Some(response.json.as[ToggleDetails])
-        case _ =>
-          throw new HttpException(response.body, response.status)
-      }
-
-      toggleOpt match {
-        case None => ToggleDetails(toggleName, None, isEnabled = false)
-        case Some(a) => a
-      }
-    }
   }
 
   def getFileUploadOutcome(reference: String)(implicit hc: HeaderCarrier): Future[FileUploadOutcomeResponse] = {

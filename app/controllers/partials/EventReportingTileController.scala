@@ -21,7 +21,7 @@ import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import helpers.DateHelper.dateFormatter
 import models.requests.OptionalDataRequest
-import models.{EROverview, ToggleDetails, UserAnswers}
+import models.{EROverview, UserAnswers}
 import pages.EventReportingOverviewPage
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -109,30 +109,26 @@ class EventReportingTileController @Inject()(
                              submittedLinks: Seq[Link],
                              maybeCardSubHeading: Seq[CardSubHeading],
                              loginLink: Seq[Link])(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
-    eventReportingConnector.getFeatureToggle("event-reporting").map {
-      case ToggleDetails(_, _, true) =>
-        val card =
-          Seq(
-            CardViewModel(
-              id = "new",
-              heading = Messages("eventReportingTile.heading"),
-              subHeadings = maybeCardSubHeading,
-              links = loginLink
-            ),
-            CardViewModel(
-              id = "compiled",
-              heading = "",
-              links = compiledLinks
-            ),
-            CardViewModel(
-              id = "submitted",
-              heading = "",
-              links = submittedLinks
-            )
+     val card =
+        Seq(
+          CardViewModel(
+            id = "new",
+            heading = Messages("eventReportingTile.heading"),
+            subHeadings = maybeCardSubHeading,
+            links = loginLink
+          ),
+          CardViewModel(
+            id = "compiled",
+            heading = "",
+            links = compiledLinks
+          ),
+          CardViewModel(
+            id = "submitted",
+            heading = "",
+            links = submittedLinks
           )
-        Ok(view(card))
-      case _ => Ok("")
-    }
+        )
+      Future.successful(Ok(view(card)))
   }
 }
 
