@@ -19,7 +19,7 @@ package controllers.partials
 import base.SpecBase
 import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
-import models.{EROverview, TaxYear, ToggleDetails}
+import models.{EROverview, TaxYear}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -56,10 +56,6 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
   "Event Reporting Tile Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
-      when(mockConnector.getFeatureToggle(any())(any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting", None, isEnabled = true))
-      )
 
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
@@ -100,39 +96,6 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
         verify(mockUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
 
         contentAsString(result).filterNot(_.isWhitespace).removeAllNonces() mustEqual view(card)(request, messages(application)).toString.filterNot(_.isWhitespace)
-      }
-    }
-
-    "must return empty html if feature toggle is disabled" in {
-      when(mockConnector.getFeatureToggle(any())(any())).thenReturn(
-        Future.successful(ToggleDetails("event-reporting", None, isEnabled = false))
-      )
-
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
-        .thenReturn(Future.successful(()))
-      when(mockUserAnswersCacheConnector.removeAll(any())(any(), any()))
-        .thenReturn(Future.successful((): Unit))
-
-      when(mockConnector.getOverview(any(), any(), any(), any())(any())).thenReturn(
-        Future.successful(Seq(EROverview(
-          LocalDate.now(),
-          LocalDate.now().plusYears(1),
-          TaxYear(LocalDate.now().getYear.toString),
-          tpssReportPresent = false,
-          None
-        )))
-      )
-
-      val application = appNoTaxYear
-
-      running(application) {
-        val request = FakeRequest(GET, controllers.partials.routes.EventReportingTileController.eventReportPartial().url)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        verify(mockUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
-        contentAsString(result).removeAllNonces()mustEqual ""
       }
     }
   }
