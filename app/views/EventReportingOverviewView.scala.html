@@ -59,7 +59,7 @@ govukButton: GovukButton
             </h3>
         }
 
-        @if(viewModel.outstandingAmount != "0.00") {
+        @if(viewModel.outstandingAmount != "£0.00") {
             <p class="govuk-body govuk-!-margin-bottom-6">
                 <a class="govuk-link" href="@viewModel.paymentsAndChargesUrl">
                     @messages("eventReportingOverview.viewOutstanding")
