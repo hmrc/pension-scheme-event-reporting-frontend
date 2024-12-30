@@ -180,6 +180,7 @@ eventSummary.event22 = Event 22: Annual allowance
 eventSummary.event23 = Event 23: Dual annual allowance
 eventSummary.event24 = Event 24: Payment of lump sum in relation to relevant benefit crystallisation event
 eventSummary.eventWindUp = Scheme has wound up
+eventSummary.heading.version.draft = Draft
 eventSummary.heading.version = Event reporting submission {0}
 eventSummary.lockedBy = Event locked by
 

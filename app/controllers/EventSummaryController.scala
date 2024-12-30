@@ -22,7 +22,7 @@ import forms.EventSummaryFormProvider
 import models.TaxYear.getSelectedTaxYearAsString
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event18, Event20A, Event8A, WindUp}
-import models.enumeration.VersionStatus.Submitted
+import models.enumeration.VersionStatus.{Compiled, Submitted}
 import models.requests.DataRequest
 import models.{EventSummary, MemberSummaryPath, UserAnswers}
 import pages.{EmptyWaypoints, EventSummaryPage, TaxYearPage, VersionInfoPage, Waypoints}
@@ -145,7 +145,8 @@ class EventSummaryController @Inject()(
     summaryListRows.map { rows =>
       val schemeName = request.schemeName
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
-      Ok(view(form, waypoints, rows, selectedTaxYear, schemeName, version))
+      val isSubmitted = request.userAnswers.get(VersionInfoPage).exists(_.status == Submitted)
+      Ok(view(form, waypoints, rows, selectedTaxYear, schemeName, version, isSubmitted))
     }
   }
 
@@ -153,6 +154,7 @@ class EventSummaryController @Inject()(
     val version = request.userAnswers.get(VersionInfoPage).map(_.version)
     val schemeName = request.schemeName
     val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
+    val isSubmitted: Boolean = request.userAnswers.get(VersionInfoPage).exists(_.status == Submitted)
     val t = Seq(SummaryListRow(
       key = Key(content = Text(Message("eventSummary.event18"))),
       actions = Some(Actions(
@@ -166,7 +168,7 @@ class EventSummaryController @Inject()(
         ).flatten
       ))
     ))
-    Future.successful(Ok(view(form, waypoints, t, selectedTaxYear, schemeName, version)))
+    Future.successful(Ok(view(form, waypoints, t, selectedTaxYear, schemeName, version, isSubmitted)))
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
@@ -175,7 +177,10 @@ class EventSummaryController @Inject()(
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       val schemeName = request.schemeName
       form.bindFromRequest().fold(
-        formWithErrors => summaryListRows.map(rows => BadRequest(view(formWithErrors, waypoints, rows, selectedTaxYear, schemeName, version))),
+        formWithErrors => {
+          val isSubmitted: Boolean = request.userAnswers.get(VersionInfoPage).exists(_.status == Submitted)
+          summaryListRows.map(rows => BadRequest(view(formWithErrors, waypoints, rows, selectedTaxYear, schemeName, version, isSubmitted)))
+        },
         value => {
           val originalUserAnswers = UserAnswers()
           val updatedUserAnswers = originalUserAnswers.setOrException(EventSummaryPage, value)
