@@ -43,27 +43,29 @@ govukButton: GovukButton
         </p>
 
         @if(viewModel.outstandingAmount != messages("eventReportingOverview.totalOutstandingNotAvailable")) {
-        <h3 class="govuk-caption-l govuk-!-margin-top-8 govuk-!-margin-bottom-2">
-            @messages("eventReportingOverview.totalOutstanding")
-        </h3>
+            <h3 class="govuk-caption-l govuk-!-margin-top-8 govuk-!-margin-bottom-2">
+                @messages("eventReportingOverview.totalOutstanding")
+            </h3>
 
-        <p class="govuk-heading-l">
-            <strong>
-                @viewModel.outstandingAmount
-            </strong>
-        </p>
+            <p class="govuk-heading-l">
+                <strong>
+                    @viewModel.outstandingAmount
+                </strong>
+            </p>
 
         } else {
-        <h3 class="govuk-caption-l govuk-!-margin-top-8 govuk-!-margin-bottom-2">
-            @messages("eventReportingOverview.totalOutstandingNotAvailable")
-        </h3>
+            <h3 class="govuk-caption-l govuk-!-margin-top-8 govuk-!-margin-bottom-2">
+                @messages("eventReportingOverview.totalOutstandingNotAvailable")
+            </h3>
         }
 
-        <p class="govuk-body govuk-!-margin-bottom-6">
-            <a class="govuk-link" href="@viewModel.paymentsAndChargesUrl">
-                @messages("eventReportingOverview.viewOutstanding")
-            </a>
-        </p>
+        @if(viewModel.outstandingAmount != "£0.00") {
+            <p class="govuk-body govuk-!-margin-bottom-6">
+                <a class="govuk-link" href="@viewModel.paymentsAndChargesUrl">
+                    @messages("eventReportingOverview.viewOutstanding")
+                </a>
+            </p>
+        }
         <hr>
 
         <h2 class="govuk-heading-l govuk-!-margin-top-6">

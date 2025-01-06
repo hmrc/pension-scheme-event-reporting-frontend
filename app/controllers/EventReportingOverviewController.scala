@@ -49,8 +49,6 @@ class EventReportingOverviewController @Inject()(
 
     val ua = request.userAnswers
 
-
-
     val ovm = for {
       pastYears <- service.getPastYearsAndUrl(ua, request.pstr)
       inProgressYears <- service.getInProgressYearAndUrl(ua, request.pstr)
@@ -63,7 +61,6 @@ class EventReportingOverviewController @Inject()(
       outstandingAmount = outstandingAmount.toString(), paymentsAndChargesUrl = service.linkForOutstandingAmount(srn, outstandingAmount.toString()),
       isAnyCompiledReports = isAnyCompiledReports, isAnySubmittedReports = isAnySubmittedReports,
       newEventReportingUrl = startNewURL)
-
 
       ovm.map( y => Ok(view(y)))
   }
