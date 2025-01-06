@@ -69,7 +69,7 @@ case class DataRequest[A](pstr: String,
         case Some(erOverview) =>
           val isMostRecentVersionInCompileState = erOverview.versionDetails.map(_.compiledVersionAvailable)
           val reportVersion: Int = isMostRecentVersionInCompileState match {
-            case Some(true) => erOverview.versionDetails.map(_.numberOfVersions - 1).getOrElse(1)
+            case Some(true) => erOverview.versionDetails.map(_.numberOfVersions).getOrElse(1)
             case Some(false) => erOverview.versionDetails.map(_.numberOfVersions).getOrElse(1)
             case _ => throw new RuntimeException("Missing event report compile information")
           }

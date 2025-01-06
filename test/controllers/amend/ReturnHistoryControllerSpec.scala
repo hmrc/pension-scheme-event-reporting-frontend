@@ -18,10 +18,10 @@ package controllers.amend
 
 import base.SpecBase
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
-import controllers.amend.ReturnHistoryControllerSpec.{seqOfReturnHistorySummary, versionsWithSubmitter}
+import controllers.amend.ReturnHistoryControllerSpec.{seqOfReturnHistorySummary, versionsWithCompiler, versionsWithSubmitter}
 import models.VersionInfo
 import models.amend.VersionsWithSubmitter
-import models.enumeration.VersionStatus.Submitted
+import models.enumeration.VersionStatus.{Compiled, Submitted}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -59,7 +59,7 @@ class ReturnHistoryControllerSpec extends SpecBase with BeforeAndAfterEach {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
       when(mockErConnector.getListOfVersions(ArgumentMatchers.eq("87219363YN"), ArgumentMatchers.eq("2022-04-06"))(any()))
-        .thenReturn(Future.successful(Seq(versionsWithSubmitter)))
+        .thenReturn(Future.successful(Seq(versionsWithSubmitter, versionsWithCompiler)))
 
       running(application) {
         val request = FakeRequest(GET, routes.ReturnHistoryController.onPageLoad().url)
@@ -80,8 +80,11 @@ class ReturnHistoryControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       when(mockUACacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful())
 
+      when(mockErConnector.getListOfVersions(ArgumentMatchers.eq("87219363YN"), ArgumentMatchers.eq("2022-04-06"))(any()))
+        .thenReturn(Future.successful(Seq(versionsWithSubmitter, versionsWithCompiler)))
+
       running(application) {
-        val request = FakeRequest(GET, routes.ReturnHistoryController.onClick(EmptyWaypoints, "1").url)
+        val request = FakeRequest(GET, routes.ReturnHistoryController.onClick(EmptyWaypoints, "2").url)
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -101,14 +104,29 @@ object ReturnHistoryControllerSpec {
   val versionsWithSubmitter: VersionsWithSubmitter =
     VersionsWithSubmitter(VersionInfo(versionNo, Submitted), Some("John Smith"), LocalDate.of(dateYear, Month.JUNE, dayOfMonth))
 
+  val versionsWithCompiler: VersionsWithSubmitter =
+    VersionsWithSubmitter(VersionInfo(versionNo + 1, Compiled), Some("John Smith"), LocalDate.of(dateYear, Month.JUNE, dayOfMonth))
+
   val seqOfReturnHistorySummary: Seq[ReturnHistorySummary] = Seq(ReturnHistorySummary(
+    key = "Draft",
+    firstValue = "In progress",
+    secondValue = "",
+    actions = Some(Actions(
+      items = Seq(
+        ActionItem(
+          content = Text("View or change"),
+          href = controllers.amend.routes.ReturnHistoryController.onClick(EmptyWaypoints, "3").url
+        )
+      )
+    ))
+  ), ReturnHistorySummary(
     key = "1",
     firstValue = "Submitted on 09 June 2022",
     secondValue = "John Smith",
     actions = Some(Actions(
       items = Seq(
         ActionItem(
-          content = Text("View or change"),
+          content = Text("View"),
           href = controllers.amend.routes.ReturnHistoryController.onClick(EmptyWaypoints, "1").url
         )
       )
