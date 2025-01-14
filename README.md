@@ -13,7 +13,7 @@
 
 ## Overview
 
-This is the repository for the Pension Scheme Event Reporting Frontend service. This service allows a user to report events pertaining to ... Clarify any other points overviewing the service here.
+This is the repository for the Pension Scheme Event Reporting Frontend service. This service allows a user to report events.
 
 This service has a corresponding back-end microservice, namely Pension Scheme Event Reporting which integrates with *(E.G. HOD i.e DES/ETMP)*.
 
@@ -145,7 +145,7 @@ Add the following to application.conf of identity_verification_frontend:
 Eventually we might want to move to iv-stubs, but currently they don't support organisations. identity_verification_stub repository.
 
 ## Navigation
-The Pension Scheme Event Reporting Frontend integrates with the Manage Pension Schemes (MPS) service and uses various stubs available on [GitHub](https://github.com/hmrc/pensions-scheme-stubs). From the Authority Wizard page you will be redirected to the dashboard. Navigate to the appropriate area by accessing items listed within the service-specific tiles on the dashboard. On the *TEMPLATE* frontend, *WHAT CAN BE DONE ON THIS FRONTEND?*.
+The Pension Scheme Event Reporting Frontend integrates with the Manage Pension Schemes (MPS) service and uses various stubs available on [GitHub](https://github.com/hmrc/pensions-scheme-stubs). From the Authority Wizard page you will be redirected to the dashboard. Navigate to the appropriate area by accessing items listed within the service-specific tiles on the dashboard.
 
 ## Dependencies
 There are multiple microservices that this service depends on. These are:
@@ -157,10 +157,6 @@ There are multiple microservices that this service depends on. These are:
 | address-lookup        | https://github.com/hmrc/address-lookup                       |
 | email                 | https://github.com/hmrc/email                                |
 | auth                  | https://github.com/hmrc/auth                                 |
-
-## Service Documentation
-[To Do]
-Include relevant links or details to any additional, service-specific documents (e.g., stubs, testing protocols) when available.
 
 ## Note on terminology
 The terms scheme reference number and submission reference number (SRN) are interchangeable within the PODS codebase; some downstream APIs use scheme reference number, some use submission reference number, probably because of oversight on part of the technical teams who developed these APIs. This detail means the same thing, the reference number that was returned from ETMP when the scheme details were submitted.
