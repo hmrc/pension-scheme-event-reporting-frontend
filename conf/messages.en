@@ -1635,7 +1635,7 @@ whatYouWillNeed.event20.p = For this event, you will need to tell us the date th
 
 event19.countryOrTerritory.title = Which country or territory has this scheme been relocated to?
 event19.countryOrTerritory.heading = In which country or territory is the scheme now established?
-event19.countryOrTerritory.error.required = Please select an option
+event19.countryOrTerritory.error.required = Select a country or territory
 event19.countryOrTerritory.error.invalid = Invalid country
 event19.countryOrTerritory.change.hidden = In which country or territory is the scheme now established?
 event19.countryOrTerritory.change.checkYourAnswersLabel = Country or territory
