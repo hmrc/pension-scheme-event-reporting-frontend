@@ -50,13 +50,13 @@ index.guidance = Welcome to your new frontend. Please see the README file for a 
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 
-journeyRecovery.continue.title = Sorry, there is a problem with the service and it is temporarily unavailable
-journeyRecovery.continue.heading = Sorry, there is a problem with the service and it is temporarily unavailable
+journeyRecovery.continue.title = There is a problem with the service and it is temporarily unavailable
+journeyRecovery.continue.heading = There is a problem with the service and it is temporarily unavailable
 journeyRecovery.continue.guidance1 = Please try again later.
 journeyRecovery.continue.guidance2 = If you were using the service when it became unavailable, any information entered will have been saved from the last ‘save and continue’.
 
-journeyRecovery.startAgain.title = Sorry, there is a problem with the service
-journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
+journeyRecovery.startAgain.title = There is a problem with the service
+journeyRecovery.startAgain.heading = There is a problem with the service
 journeyRecovery.startAgain.guidance1 = Please try again later.
 journeyRecovery.startAgain.guidance2 = If you were using the service when it became unavailable, any information entered will have been saved from the last ‘save and continue’.
 
@@ -1741,8 +1741,8 @@ return.to.fileupload = Return to file upload
 fileUpload.generic.total.error.part1 = Your file has {0} errors. At least one:
 fileUpload.generic.actions = Actions
 
-problemWithService.title = Sorry, there was a problem with the service
-problemWithService.heading = Sorry, there was a problem with the service
+problemWithService.title = There was a problem with the service
+problemWithService.heading = There was a problem with the service
 problemWithService.p = We could not process your file upload
 problemWithService.link = Try uploading your file again.
 
