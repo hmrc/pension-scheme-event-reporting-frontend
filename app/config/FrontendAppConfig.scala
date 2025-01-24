@@ -24,6 +24,8 @@ import play.api.Configuration
 import play.api.i18n.Lang
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import scala.concurrent.duration.Duration
+
 @Singleton
 class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: ServicesConfig) {
 
@@ -35,6 +37,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
 
   val host: String = configuration.get[String]("host")
   val appName: String = configuration.get[String]("appName")
+
+  val ifsTimeout: Duration = configuration.get[Duration]("ifs.timeout")
 
   lazy val eventReportingUrl: String = servicesConfig.baseUrl("pension-scheme-event-reporting")
   lazy val pensionsAdministratorUrl: String = servicesConfig.baseUrl("pension-administrator")

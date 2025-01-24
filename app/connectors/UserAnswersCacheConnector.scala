@@ -112,7 +112,7 @@ class UserAnswersCacheConnector @Inject()(
 
   private def getJson(headers: Seq[(String, String)])(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier) = {
 
-    http.get(url).setHeader(headers: _*).execute[HttpResponse]
+    http.get(url).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -139,7 +139,7 @@ class UserAnswersCacheConnector @Inject()(
       "version" -> version
     )
 
-    http.post(url).withBody(userAnswers).setHeader(headers: _*).execute[HttpResponse]
+    http.post(url).withBody(userAnswers).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
       .map { response =>
         response.status match {
           case OK => ()
@@ -169,7 +169,7 @@ class UserAnswersCacheConnector @Inject()(
       "newVersion" -> newVersion
     )
 
-    http.put(url).withBody(Json.obj()).setHeader(headers: _*).execute[HttpResponse]
+    http.put(url).withBody(Json.obj()).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
       .map { response =>
         response.status match {
           case NOT_FOUND | NO_CONTENT => ()
@@ -187,7 +187,7 @@ class UserAnswersCacheConnector @Inject()(
       "pstr" -> pstr
     )
 
-    http.post(url).withBody(userAnswers.noEventTypeData).setHeader(headers: _*).execute[HttpResponse]
+    http.post(url).withBody(userAnswers.noEventTypeData).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
       .map { response =>
         response.status match {
           case OK => ()
@@ -210,7 +210,7 @@ class UserAnswersCacheConnector @Inject()(
       "pstr" -> pstr
     )
 
-    http.delete(url).setHeader(headers: _*).execute[HttpResponse]
+    http.delete(url).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
       .map { response =>
         response.status match {
           case OK => ()

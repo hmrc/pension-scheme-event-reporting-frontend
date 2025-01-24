@@ -67,7 +67,10 @@ class EventReportingConnector @Inject()(
     )
     val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
-    httpClientV2.get(eventRepSummaryUrl).setHeader(headers: _*).execute[HttpResponse]
+    httpClientV2.get(eventRepSummaryUrl)
+      .setHeader(headers: _*)
+      .transform(_.withRequestTimeout(config.ifsTimeout))
+      .execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -98,7 +101,9 @@ class EventReportingConnector @Inject()(
 
     httpClientV2.post(eventCompileUrl)
       .withBody(Json.obj())
-      .setHeader(headers: _*).execute[HttpResponse]
+      .setHeader(headers: _*)
+      .transform(_.withRequestTimeout(config.ifsTimeout))
+      .execute[HttpResponse]
       .map { response =>
         response.status match {
           case NO_CONTENT => ()
@@ -225,6 +230,7 @@ class EventReportingConnector @Inject()(
     httpClientV2.post(deleteMemberUrl)
       .withBody(Json.obj())
       .setHeader(headers: _*)
+      .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute[HttpResponse]
       .map { response =>
         response.status match {
