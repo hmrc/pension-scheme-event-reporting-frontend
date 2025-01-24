@@ -29,7 +29,7 @@ timeout.keepAlive = Stay signed in
 timeout.signOut = Sign out
 
 error.browser.title.prefix = Error:
-error.boolean = Please give an answer
+error.boolean = Give an answer
 error.invalid_date = Give a correct date
 error.date.day_blank = Enter a day
 error.date.day_invalid = Give a correct day using numbers 1 to 31
@@ -39,25 +39,25 @@ error.date.year_blank = Enter a year
 error.date.year_invalid = Give a correct year
 error.integer = Give an answer in whole numbers
 error.non_numeric = Give a value using only numbers
-error.number = Please enter a valid number
-error.required = Please enter a value
+error.number = Enter a valid number
+error.required = Enter a value
 error.summary.title = There is a problem
 
 index.title = Event Reporting
 index.heading = Event Reporting
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
+index.guidance = Welcome to your new frontend. See the README file for a guide to getting started.
 
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 
-journeyRecovery.continue.title = Sorry, there is a problem with the service and it is temporarily unavailable
-journeyRecovery.continue.heading = Sorry, there is a problem with the service and it is temporarily unavailable
-journeyRecovery.continue.guidance1 = Please try again later.
+journeyRecovery.continue.title = There is a problem with the service and it is temporarily unavailable
+journeyRecovery.continue.heading = There is a problem with the service and it is temporarily unavailable
+journeyRecovery.continue.guidance1 = Try again later.
 journeyRecovery.continue.guidance2 = If you were using the service when it became unavailable, any information entered will have been saved from the last ‘save and continue’.
 
-journeyRecovery.startAgain.title = Sorry, there is a problem with the service
-journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
-journeyRecovery.startAgain.guidance1 = Please try again later.
+journeyRecovery.startAgain.title = There is a problem with the service
+journeyRecovery.startAgain.heading = There is a problem with the service
+journeyRecovery.startAgain.guidance1 = Try again later.
 journeyRecovery.startAgain.guidance2 = If you were using the service when it became unavailable, any information entered will have been saved from the last ‘save and continue’.
 
 signedOut.title = For your security, we signed you out
@@ -1741,8 +1741,8 @@ return.to.fileupload = Return to file upload
 fileUpload.generic.total.error.part1 = Your file has {0} errors. At least one:
 fileUpload.generic.actions = Actions
 
-problemWithService.title = Sorry, there was a problem with the service
-problemWithService.heading = Sorry, there was a problem with the service
+problemWithService.title = There was a problem with the service
+problemWithService.heading = There was a problem with the service
 problemWithService.p = We could not process your file upload
 problemWithService.link = Try uploading your file again.
 
