@@ -29,6 +29,18 @@
 
 @(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
+@formGroupErrorClass = {
+    @if(form.errors.nonEmpty) {
+        govuk-form-group--error
+    } else {
+        ""
+    }
+}
+
+@errorMessage = {
+    @form("value").error.map(err => messages(err.message, err.args: _*))
+}
+
 @layout(
 pageTitle = title(form, messages("typeOfProtectionGroup2.event24.title"))
 ) {
@@ -39,13 +51,18 @@ pageTitle = title(form, messages("typeOfProtectionGroup2.event24.title"))
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
-        <div class="govuk-form-group">
+        <div class="govuk-form-group @formGroupErrorClass">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 class="govuk-fieldset__heading">
                         @messages("typeOfProtectionGroup2.event24.heading")
                     </h1>
                 </legend>
+                @if(form.errors.nonEmpty) {
+                    <p id="value-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> @errorMessage
+                    </p>
+                }
                 <div class="govuk-radios" data-module="govuk-radios">
                     @TypeOfProtectionGroup2.protectionOptions.map { item =>
                         <div class="govuk-radios__item">
