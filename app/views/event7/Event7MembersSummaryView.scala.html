@@ -42,15 +42,16 @@ searchHref: String)(implicit request: RequiredSchemeDataRequest[_], messages: Me
 
 @layout(pageTitle = title(form, messages(s"membersSummary.event${eventType.toString}.title", selectedTaxYear))) {
 
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form))
+        }
+
 <h1 class="govuk-heading-l">@messages(s"membersSummary.event${eventType.toString}.heading", selectedTaxYear)</h1>
 
 @components.MembersSummarySearch(value = searchValue, searchHref = searchHref, eventType = eventType)
 
     @formHelper(action = controllers.event7.routes.Event7MembersSummaryController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-        }
 
         @if(paginationStats.totalNumberOfPages > 1) {
             @if((pageNumber.toInt + 1) > paginationStats.totalNumberOfPages) {
