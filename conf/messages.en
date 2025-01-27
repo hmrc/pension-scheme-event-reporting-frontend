@@ -1095,8 +1095,8 @@ removeEvent18.change.hidden = Are you sure you want to remove Event 18: Scheme c
 removeEvent.title = Are you sure you want to remove {0}?
 removeEvent.heading = Are you sure you want to remove {0}?
 removeEvent.checkYourAnswersLabel = Are you sure you want to remove {0}?
-removeEvent.remove.hint = Select yes if you want to remove this event.
-removeEvent.error.required = Select yes if you want to remove this event.
+removeEvent.remove.hint = Select yes if you want to remove this event
+removeEvent.error.required = Select yes if you want to remove this event
 removeEvent.change.hidden = Are you sure you want to remove {0}?
 
 taxYear.title = Which tax year are you submitting an event report for?
