@@ -53,6 +53,7 @@
                 label = LabelViewModel(messages("membersDetails.firstName.heading"))
             )
             .withWidth(OneHalf)
+            .withAutocomplete("given-name")
         )
 
         @govukInput(
@@ -61,6 +62,7 @@
                 label = LabelViewModel(messages("membersDetails.lastName.heading"))
             )
             .withWidth(OneHalf)
+            .withAutocomplete("family-name")
         )
 
         @govukInput(
