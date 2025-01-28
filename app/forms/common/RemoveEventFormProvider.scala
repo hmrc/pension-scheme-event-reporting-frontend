@@ -27,6 +27,6 @@ class RemoveEventFormProvider @Inject() extends Mappings {
 
   def apply(eventType: EventType)(implicit messages: Messages): Form[Boolean] =
     Form(
-      "value" -> boolean(messages("removeEvent.error.required", messages(s"eventSelection.event$eventType")))
+      "value" -> boolean(messages("removeEvent.error.required", messages("removeEvent.remove.hint")))
     )
 }
