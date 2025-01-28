@@ -36,12 +36,14 @@
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = targetField("crystallisedDate", form.errors.head.message)))
         }
 
-        <h1 class="govuk-heading-l">@messages("crystallisedDate.event24.heading")</h1>
-
         @govukDateInput(
             DateViewModel(
                 field = form("crystallisedDate"),
-                legend = Legend()
+                legend = Legend(
+                    content = messages("crystallisedDate.event24.heading"),
+                    isPageHeading = true,
+                    classes = "govuk-fieldset__legend--l"
+                )
             )
             .withHint(Hint(content = Text(messages("crystallisedDate.event24.date.hint"))))
         )

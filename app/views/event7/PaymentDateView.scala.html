@@ -36,12 +36,14 @@
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = targetField("paymentDate", form.errors.head.message)))
         }
 
-        <h1 class="govuk-heading-l">@messages("paymentDate.heading")</h1>
-
         @govukDateInput(
             DateViewModel(
                 field = form("paymentDate"),
-                legend = Legend()
+                legend = Legend(
+                    content = messages("paymentDate.heading"),
+                    isPageHeading = true,
+                    classes = "govuk-fieldset__legend--l"
+                )
             )
             .withHint(Hint(content = Text(messages("paymentDate.date.hint"))))
         )
