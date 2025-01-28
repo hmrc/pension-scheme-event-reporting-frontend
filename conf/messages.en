@@ -419,7 +419,7 @@ companyDetails.companyNumber.title = Company number
 companyDetails.checkYourAnswersLabel = Company or organisation name
 companyDetails.companyName.error.required = Enter the company or organisation’s name
 companyDetails.companyName.error.length = The company or organisation’s name must be 160 characters or fewer
-companyDetails.companyName.error.invalidCharacters = The company name contains invalid characters
+companyDetails.companyName.error.invalidCharacters = The company name must only include letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 companyDetails.companyNumber.error.required = Enter the company or organisation’s company number
 companyDetails.companyNumber.error.length = The company or organisation’s company number must be 7 or 8 characters, like 0123456 or AB123456
 companyDetails.companyNumber.error.invalidCharacters = The company or organisation’s company number must only include letters and numbers, like 01234567 or AB123456
@@ -501,7 +501,7 @@ errorDescription.heading = Give a brief description of the error
 errorDescription.checkYourAnswersLabel = Give a brief description of the error
 errorDescription.error.required = Enter a brief description of the error
 errorDescription.error.length = The error description must be 160 characters or less
-errorDescription.error.invalidCharacters = The error description contains invalid characters
+errorDescription.error.invalidCharacters = The error description must only include letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 errorDescription.change.hidden = Give a brief description of the error
 
 benefitsPaidEarly.title = Give a brief description of why the benefits are being paid early
@@ -509,7 +509,7 @@ benefitsPaidEarly.heading = Give a brief description of why the benefits are bei
 benefitsPaidEarly.checkYourAnswersLabel = Give a brief description of why the benefits are being paid early
 benefitsPaidEarly.error.required = Enter the description of why benefits are being paid early
 benefitsPaidEarly.error.length = The description of why the benefits are being paid early must be 160 characters or less
-benefitsPaidEarly.error.invalidCharacters = The description of why the benefits are being paid early contains invalid characters
+benefitsPaidEarly.error.invalidCharacters = The description of why the benefits are being paid early must only include letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 benefitsPaidEarly.change.hidden = Give a brief description of why the benefits are being paid early
 
 benefitInKindBriefDescription.title = Give a brief description of the benefit in kind
@@ -517,7 +517,7 @@ benefitInKindBriefDescription.heading = Give a brief description of the benefit 
 benefitInKindBriefDescription.checkYourAnswersLabel = Give a brief description of the benefit in kind
 benefitInKindBriefDescription.error.required = Enter the description of the benefit in kind
 benefitInKindBriefDescription.error.length = You can enter a maximum of 160 characters
-benefitInKindBriefDescription.error.invalidCharacters = The description contains invalid characters
+benefitInKindBriefDescription.error.invalidCharacters = Benefit in kind must only include letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 benefitInKindBriefDescription.change.hidden = Give a brief description of the benefit in kind
 
 whoWasTheTransferMade.title = Who was the transfer made to?
@@ -537,9 +537,9 @@ schemeDetails.reference = Reference (optional)
 schemeDetails.checkYourAnswersLabel = Scheme details
 schemeDetails.error.required = Enter Scheme details
 schemeDetails.error.name.length = Scheme-name must be 160 characters or less
-schemeDetails.error.name.invalidCharacters = The scheme-name contains invalid characters
+schemeDetails.error.name.invalidCharacters = The scheme-name must only include letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 schemeDetails.error.ref.length = Reference must be 160 characters or less
-schemeDetails.error.ref.invalidCharacters = The reference contains invalid characters
+schemeDetails.error.ref.invalidCharacters = The reference must only include letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 schemeName.change.hidden = Scheme name
 schemeReference.change.hidden = Reference
 
@@ -548,7 +548,7 @@ memberTangibleMoveableProperty.heading = Give a brief description of the tangibl
 memberTangibleMoveableProperty.checkYourAnswersLabel = Give a brief description of the tangible moveable property
 memberTangibleMoveableProperty.error.required = Enter the description of the tangible moveable property
 memberTangibleMoveableProperty.error.length = The tangible moveable property must be 160 characters or fewer
-memberTangibleMoveableProperty.error.invalidCharacters = The tangible moveable property description contains invalid characters
+memberTangibleMoveableProperty.error.invalidCharacters = The tangible moveable property description must only include letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 memberTangibleMoveableProperty.change.hidden = Give a brief description of the tangible moveable property
 
 employerTangibleMoveableProperty.title = Give a brief description of the tangible moveable property
@@ -556,7 +556,7 @@ employerTangibleMoveableProperty.heading = Give a brief description of the tangi
 employerTangibleMoveableProperty.checkYourAnswersLabel = Give a brief description of the tangible moveable property
 employerTangibleMoveableProperty.error.required = Enter the description of the tangible moveable property
 employerTangibleMoveableProperty.error.length = The tangible moveable property must be 160 characters or fewer
-employerTangibleMoveableProperty.error.invalidCharacters = The tangible moveable property description contains invalid characters
+employerTangibleMoveableProperty.error.invalidCharacters = The tangible moveable property description must only include letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 employerTangibleMoveableProperty.change.hidden = Give a brief description of the tangible moveable property
 
 memberPaymentNatureDescription.title = Give a brief description of the nature of the payment
@@ -564,7 +564,7 @@ memberPaymentNatureDescription.heading = Give a brief description of the nature 
 memberPaymentNatureDescription.checkYourAnswersLabel = Description of the nature of the payment
 memberPaymentNatureDescription.error.required = Enter the description of the nature of the payment
 memberPaymentNatureDescription.error.length = The nature of the payment must be 160 characters or fewer
-memberPaymentNatureDescription.error.invalidCharacters = The description contains invalid characters
+memberPaymentNatureDescription.error.invalidCharacters = The payment description must only include letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 memberPaymentNatureDescription.change.hidden = Description of the nature of the payment
 
 employerPaymentNatureDescription.title = Give a brief description of the nature of the payment
@@ -572,7 +572,7 @@ employerPaymentNatureDescription.heading = Give a brief description of the natur
 employerPaymentNatureDescription.checkYourAnswersLabel = Description of the nature of the payment
 employerPaymentNatureDescription.error.required = Enter the description of the nature of the payment
 employerPaymentNatureDescription.error.length = The nature of the payment must be 160 characters or fewer
-employerPaymentNatureDescription.error.invalidCharacters = The description contains invalid characters
+employerPaymentNatureDescription.error.invalidCharacters = The payment description must only include letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 employerPaymentNatureDescription.change.hidden = Description of the nature of the payment
 
 residentialAddress.enterPostcode.title = What is the postcode of the residential property?
