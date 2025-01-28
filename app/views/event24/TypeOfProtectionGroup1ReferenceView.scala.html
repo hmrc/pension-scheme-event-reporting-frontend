@@ -33,14 +33,14 @@
 
     @formHelper(action = routes.TypeOfProtectionGroup1ReferenceController.onSubmit(waypoints, index)) {
 
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form))
+        }
+
         <h1 class="govuk-heading-l">@messages("typeOfProtectionReferenceGroup1.event24.heading")</h1>
 
         <p class="govuk-body">@messages("typeOfProtection.p1")</p>
         <div class="govuk-hint">@messages("typeOfProtection.group1.p2")</div>
-
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-        }
 
         @requiredReferenceTypes.map { fieldName =>
             @govukInput(

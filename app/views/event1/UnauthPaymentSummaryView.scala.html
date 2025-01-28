@@ -38,15 +38,15 @@
 
 @layout(pageTitle = title(form, messages("unauthPaymentSummary.title", taxYear))) {
 
+        @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummaryViewModel(form))
+        }
+
 <h1 class="govuk-heading-l">@messages("unauthPaymentSummary.heading", taxYear)</h1>
 
 @components.MembersSummarySearch(value = searchValue, searchHref = searchHref, eventType = Event1)
 
     @formHelper(action = controllers.event1.routes.UnauthPaymentSummaryController.onSubmitPaginated(waypoints, pageNumber), Symbol("autoComplete") -> "off") {
-
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-        }
 
         @components.entity_table_list(
             paginationStats.slicedMembers,
