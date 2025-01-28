@@ -37,7 +37,7 @@ class CountryOptions(val options: Seq[InputOption]) {
           Json.fromJson[Seq[Seq[String]]](locationJsValue).asOpt.map {
             _.map { countryList =>
               InputOption(countryList(1).replaceAll("country:", StringUtils.EMPTY), countryList.head)
-            }
+            } .sortBy(_.label)
           }
       }.getOrElse {
         throw new ConfigException.BadValue(config.locationCanonicalList, "country json does not exist")
