@@ -26,8 +26,7 @@ class MemberPaymentNatureDescriptionFormProvider @Inject() extends Mappings {
   def apply(): Form[String] =
     Form(
       "value" -> text("memberPaymentNatureDescription.error.required")
-        .verifying(maxLength(160, "memberPaymentNatureDescription.error.length"),
-          regexp(regexEvent1Description, "memberPaymentNatureDescription.error.invalidCharacters")
-        )
+        .verifying(descriptionConstraint("memberPaymentNatureDescription.error.length",
+          "memberPaymentNatureDescription.error.invalidCharacters"))
     )
 }
