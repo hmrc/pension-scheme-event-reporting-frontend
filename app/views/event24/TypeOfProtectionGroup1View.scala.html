@@ -39,11 +39,16 @@ pageTitle = title(form, messages("typeOfProtectionGroup1.event24.title"))
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
-        <h1 class="govuk-heading-l">@messages("typeOfProtectionGroup1.event24.heading")</h1>
-        <div class="govuk-hint" id="protectionGroup1-hint">@messages("typeOfProtectionGroup1.event24.hint")</div>
-
-        <div class="govuk-form-group">
+        <div class="govuk-form-group @if(form.hasErrors) {govuk-form-group--error}">
             <fieldset class="govuk-fieldset" aria-describedby="protectionGroup1-hint">
+                <legend class="govuk-fieldset__legend govuk-heading govuk-fieldset__legend--l">
+                    <h1 class = "govuk-heading-l">@messages("typeOfProtectionGroup1.event24.heading")</h1>
+                </legend>
+
+                <div class="govuk-hint" id="protectionGroup1-hint">
+                    @messages("typeOfProtectionGroup1.event24.hint")
+                </div>
+
                 <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                     @TypeOfProtectionGroup1.protectionOptions.zipWithIndex.map { case (item, index) =>
                         <div class="govuk-checkboxes__item">
@@ -53,6 +58,7 @@ pageTitle = title(form, messages("typeOfProtectionGroup1.event24.title"))
                             </label>
                         </div>
                     }
+
                     @if(protectionPageVal != "noOtherProtections") {
                         <div class="govuk-checkboxes__divider">or</div>
                         <div class="govuk-checkboxes__item">
@@ -62,6 +68,7 @@ pageTitle = title(form, messages("typeOfProtectionGroup1.event24.title"))
                             </label>
                         </div>
                     }
+
                 </div>
             </fieldset>
         </div>
