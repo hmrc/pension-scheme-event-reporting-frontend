@@ -65,7 +65,6 @@ class EventReportingConnector @Inject()(
       "reportVersionNumber" -> version.toString,
       "reportStartDate" -> reportStartDate
     )
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
     httpClientV2.get(eventRepSummaryUrl)
       .setHeader(headers: _*)
@@ -125,8 +124,6 @@ class EventReportingConnector @Inject()(
       "pstr" -> pstr,
       "version" -> version
     )
-
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
     httpClientV2.post(eventSubmitUrl)
                 .withBody(ua.data)
@@ -202,7 +199,6 @@ class EventReportingConnector @Inject()(
       "startDate" -> startDate,
       "endDate" -> endDate
     )
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
     httpClientV2.get(eventOverviewUrl).setHeader(headers: _*).execute[HttpResponse]
       .map { response =>

@@ -30,7 +30,7 @@
 
 @layout(pageTitle = titleWithErrors(errorMessage, messages("fileUpload.title", eventByName))) {
 
-<form action="@submitUrl" method="@submitUrl.method" enctype="multipart/form-data" encoding="multipart/form-data">
+<form action="@submitUrl" method="@submitUrl.method" enctype="multipart/form-data" encoding="multipart/form-data" novalidate>
 
     @for((key, value) <- upscanFields){
         <input type="hidden" name="@key" value="@value">
@@ -106,7 +106,7 @@
             name = "file",
             label = Label(content = messages("fileUpload.upload.label")),
             errorMessage = errorMessage,
-            attributes = Map("accept" -> ".csv,application/csv", "required" -> "required")
+            attributes = Map("accept" -> ".csv,application/csv")
         ))
 
         @govukButton(
