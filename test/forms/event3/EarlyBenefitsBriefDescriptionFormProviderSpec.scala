@@ -18,11 +18,14 @@ package forms.event3
 
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
+import utils.DateConstraintHandlers.regexSafeText
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class EarlyBenefitsBriefDescriptionFormProviderSpec extends StringFieldBehaviours {
 
   private val lengthKey = "earlyBenefitsBriefDescription.error.length"
   val requiredKey = "earlyBenefitsBriefDescription.error.required"
+  val invalidKey = "earlyBenefitsBriefDescription.error.invalidCharacters"
   private val maxLength = 150
 
   val form = new EarlyBenefitsBriefDescriptionFormProvider()()
@@ -34,7 +37,7 @@ class EarlyBenefitsBriefDescriptionFormProviderSpec extends StringFieldBehaviour
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      RegexpGen.from(regexSafeText).map(_.take(maxLength))
     )
 
     behave like fieldWithMaxLength(
@@ -48,6 +51,13 @@ class EarlyBenefitsBriefDescriptionFormProviderSpec extends StringFieldBehaviour
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like fieldWithRegex(
+      form,
+      fieldName,
+      invalidString = "玚틸훣ȹ",
+      error = FormError(fieldName, invalidKey, Seq(regexSafeText))
     )
   }
 }

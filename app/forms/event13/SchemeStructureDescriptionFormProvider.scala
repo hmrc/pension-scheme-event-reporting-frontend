@@ -26,6 +26,10 @@ class SchemeStructureDescriptionFormProvider @Inject() extends Mappings {
   def apply(): Form[String] =
     Form(
       "value" -> text(errorKey = "event13.schemeStructureDescription.error.required")
-        .verifying(maxLength(150, errorKey = "event13.schemeStructureDescription.error.length"))
+        .verifying(
+          firstError(
+            maxLength(150, errorKey = "event13.schemeStructureDescription.error.length"),
+            regexp(regexSafeText, "event13.schemeStructureDescription.error.invalidCharacters"))
+        )
   )
 }

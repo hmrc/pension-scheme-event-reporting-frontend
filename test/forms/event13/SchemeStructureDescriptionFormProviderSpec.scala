@@ -18,10 +18,13 @@ package forms.event13
 
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
+import utils.DateConstraintHandlers.regexSafeText
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class SchemeStructureDescriptionFormProviderSpec extends StringFieldBehaviours {
 
   private val lengthKey = "event13.schemeStructureDescription.error.length"
+  val invalidKey = "event13.schemeStructureDescription.error.invalidCharacters"
   private val maxLength = 150
 
   private val form = new SchemeStructureDescriptionFormProvider()()
@@ -33,7 +36,7 @@ class SchemeStructureDescriptionFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      RegexpGen.from(regexSafeText).map(_.take(maxLength))
     )
 
     behave like fieldWithMaxLength(
@@ -42,5 +45,13 @@ class SchemeStructureDescriptionFormProviderSpec extends StringFieldBehaviours {
       maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
+
+    behave like fieldWithRegex(
+      form,
+      fieldName,
+      invalidString = "玚틸훣ȹ",
+      error = FormError(fieldName, invalidKey, Seq(regexSafeText))
+    )
+
   }
 }
