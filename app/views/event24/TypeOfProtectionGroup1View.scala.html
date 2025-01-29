@@ -17,6 +17,7 @@
 @import controllers.event24.routes
 @import models.enumeration.EventType
 @import models.event24.TypeOfProtectionGroup1
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem
 
 @this(
     layout: templates.SchemeLayout,
@@ -34,13 +35,12 @@ pageTitle = title(form, messages("typeOfProtectionGroup1.event24.title"))
 ) {
 
     @formHelper(action = routes.TypeOfProtectionGroup1Controller.onSubmit(waypoints, index), Symbol("autoComplete") -> "off") {
-
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
         <h1 class="govuk-heading-l">@messages("typeOfProtectionGroup1.event24.heading")</h1>
-        <div class="govuk-hint">@messages("typeOfProtectionGroup1.event24.hint")</div>
+        <div class="govuk-hint" id="protectionGroup1-hint">@messages("typeOfProtectionGroup1.event24.hint")</div>
 
         <div class="govuk-form-group">
             <fieldset class="govuk-fieldset" aria-describedby="protectionGroup1-hint">
