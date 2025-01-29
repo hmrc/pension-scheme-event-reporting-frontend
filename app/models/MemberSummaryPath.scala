@@ -22,20 +22,31 @@ import play.api.mvc.PathBindable
 case class MemberSummaryPath(event:EventType)
 
 object MemberSummaryPath {
+
+  private val restrictedEventTypes = Set(
+    "10", "11", "12", "13", "14", "18", "19", "20", "20A"
+  )
+
   implicit def pathBinder: PathBindable[MemberSummaryPath] = new PathBindable[MemberSummaryPath] {
     override def bind(key: String, value: String): Either[String, MemberSummaryPath] = {
       val splitString = value.split('-')
-      if(splitString.length == 3) {
+      if (splitString.length == 3 && splitString(0) == "event" && splitString(2) == "summary") {
         val eventName = splitString(1)
-        EventType.mapOfEvents.get(eventName)
-          .map(eventName => Right(MemberSummaryPath(eventName))).getOrElse(Left("Unknown event type"))
+        if (restrictedEventTypes.contains(eventName)) {
+          Left(s"Event type '$eventName' does not have a relevant summary page.")
+        } else {
+          EventType.mapOfEvents.get(eventName)
+            .map(eventType => Right(MemberSummaryPath(eventType)))
+            .getOrElse(Left(s"Unknown event type '$eventName'"))
+        }
       } else {
-        Left("Unknown url format")
+        Left("Unknown URL format")
       }
     }
 
+
     override def unbind(key: String, eventSummaryPath: MemberSummaryPath): String = {
-      "event-" + eventSummaryPath.event.toString + "-summary"
+      s"event-${eventSummaryPath.event.toString}-summary"
     }
   }
 }

@@ -30,7 +30,7 @@ import scala.concurrent.duration._
 
 class FileUploadWhatYouWillNeedControllerSpec extends SpecBase {
 
-  private val seqOfEvents = Seq(Event6, Event22, Event23, Event24)
+  private val seqOfEvents = Seq(Event6, Event22, Event23)
 
   private def getRoute(eventType: EventType): String = controllers.common.routes.FileUploadWhatYouWillNeedController.onPageLoad(EmptyWaypoints, eventType).url
 
