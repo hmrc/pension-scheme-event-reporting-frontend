@@ -130,6 +130,7 @@ class EventReportingConnector @Inject()(
 
     httpClientV2.post(eventSubmitUrl)
                 .withBody(ua.data)
+                .transform(_.withRequestTimeout(config.ifsTimeout))
                 .setHeader(headers: _*).execute[HttpResponse]
                 .map { response =>
                   response.status match {
@@ -154,6 +155,7 @@ class EventReportingConnector @Inject()(
     httpClientV2.post(event20ASubmitUrl)
       .withBody(ua.data)
       .setHeader(headers: _*)
+      .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute[HttpResponse]
       .map { response =>
         response.status match {
