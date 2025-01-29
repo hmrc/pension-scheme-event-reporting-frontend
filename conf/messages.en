@@ -1383,6 +1383,7 @@ event13.schemeStructureDescription.heading = Give a brief description of the pen
 event13.schemeStructureDescription.checkYourAnswersLabel = Description of the scheme structure
 event13.schemeStructureDescription.error.required = Enter description of the pension scheme structure
 event13.schemeStructureDescription.error.length = The scheme structure description must be 150 characters or less
+event13.schemeStructureDescription.error.invalidCharacters = The scheme structure description must only include letters, numbers, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 event13.schemeStructureDescription.change.hidden = Give a brief description of the pension scheme structure
 
 reasonForBenefits.event3.title = Reason for the benefits being taken
@@ -1398,6 +1399,7 @@ earlyBenefitsBriefDescription.heading = Give a brief description of why the bene
 earlyBenefitsBriefDescription.title = Brief description of why the benefits were taken early
 earlyBenefitsBriefDescription.checkYourAnswersLabel = Give a brief description of why the benefits were taken early
 earlyBenefitsBriefDescription.error.length = The description must be 150 characters or fewer
+earlyBenefitsBriefDescription.error.invalidCharacters = The description must only include letters, numbers, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 earlyBenefitsBriefDescription.change.hidden = The description for why the benefits were taken early
 earlyBenefitsBriefDescription.error.required = Enter description of why the benefits were taken early
 

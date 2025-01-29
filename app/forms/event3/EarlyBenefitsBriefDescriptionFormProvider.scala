@@ -26,6 +26,10 @@ class EarlyBenefitsBriefDescriptionFormProvider @Inject() extends Mappings {
   def apply(): Form[String] =
     Form(
       "value" -> text("earlyBenefitsBriefDescription.error.required")
-        .verifying(maxLength(150, "earlyBenefitsBriefDescription.error.length"))
+        .verifying(
+          firstError(
+            maxLength(150, "earlyBenefitsBriefDescription.error.length"),
+            regexp(regexSafeText, "earlyBenefitsBriefDescription.error.invalidCharacters"))
+        )
     )
 }
