@@ -353,7 +353,7 @@ beneficiaryDetails.change.hidden = The name of the person who was paid
 beneficiaryDetails.change.nino.hidden = The National Insurance number of the person who was paid
 
 amountPaid.event2.title = How much was paid?
-amountPaid.event2.heading = How much was paid to {0}?
+amountPaid.event2.heading = How much was paid to {0}, in pounds?
 amountPaid.event2.checkYourAnswersLabel = The amount that was paid to {0}
 amountPaid.event2.error.nonNumeric = The amount must be an amount of money, like £123.45 or £156.00
 amountPaid.event2.error.negative = The amount must not be a negative amount of money, like -£123.45 or -£156.00
@@ -599,7 +599,7 @@ unauthorisedPaymentRecipientName.employer.hint = Recipient name (optional)
 paymentValueAndDate.title = Payment value and date
 paymentValueAndDate.heading = Payment value and date
 
-paymentValueAndDate.value.heading = Total value or amount of the unauthorised payment
+paymentValueAndDate.value.heading = Total value or amount of the unauthorised payment, in pounds
 paymentValueAndDate.value.hint = For example, £600 or £193.54
 paymentValueAndDate.value.error.nothingEntered = Enter the payment value
 paymentValueAndDate.value.error.notANumber = The payment value must be an amount of money, like £123.45 or £156.00
@@ -670,8 +670,8 @@ loanDetails.fundValue.amountTooHigh = The fund value must be £999999999.99 or l
 loanDetails.fundValue.negative = The fund value must not be a negative amount of money, like -£123.45 or -£156.00
 loanDetails.fundValue.zeroAmount = The fund value cannot be zero
 
-loanDetails.loanAmount.heading = Amount of the loan
-loanDetails.fundValue.heading = Value of the fund
+loanDetails.loanAmount.heading = Amount of the loan, in pounds
+loanDetails.fundValue.heading = Value of the fund, in pounds
 
 country.AD = Andorra
 country.AE = United Arab Emirates
@@ -1278,7 +1278,7 @@ typeOfProtectionReference.error.invalid = The protection reference can only cont
 amountCrystallisedAndDate.title = Amount crystallised and date
 amountCrystallisedAndDate.heading = Amount crystallised and date
 
-amountCrystallisedAndDate.value.heading = Total amount crystallised
+amountCrystallisedAndDate.value.heading = Total amount crystallised, in pounds
 amountCrystallisedAndDate.value.error.nothingEntered = Enter the total amount crystallised
 amountCrystallisedAndDate.value.error.notANumber = The total amount crystallised must be an amount of money, like £123.45 or £156.00
 amountCrystallisedAndDate.value.error.tooManyDecimals = The total amount crystallised can only include pounds and pence, like £123.45 or £156.00
@@ -1298,13 +1298,13 @@ amountCrystallisedAndDate.date.change.hidden = The date of the benefit crystalli
 amountCrystallisedAndDate.date.checkYourAnswersLabel = Date of the benefit crystallisation
 
 lumpSumAmount.title = How much lump sum was paid?
-lumpSumAmount.heading = How much lump sum was paid?
+lumpSumAmount.heading = How much lump sum was paid, in pounds?
 lumpSumAmount.checkYourAnswersLabel = The amount of the lump sum
 lumpSumAmount.change.hidden = The amount of the lump sum that was paid
 lumpSumAmount.value.error.nothingEntered = Enter how much lump sum was paid
 
 crystallisedAmount.title = How much was crystallised?
-crystallisedAmount.heading = How much was crystallised?
+crystallisedAmount.heading = How much was crystallised, in pounds?
 crystallisedAmount.checkYourAnswersLabel = The amount crystallised
 crystallisedAmount.change.hidden = The amount that was crystallised
 crystallisedAmount.value.error.nothingEntered = Enter how much was crystallised
@@ -1328,7 +1328,7 @@ paymentDate.date.checkYourAnswersLabel = The date the payment was made
 lumpSumAmountAndDate.title = Lump sum amount and date
 lumpSumAmountAndDate.heading = Lump sum amount and date
 
-lumpSumAmountAndDate.value.heading = How much lump sum was paid?
+lumpSumAmountAndDate.value.heading = How much lump sum was paid, in pounds?
 lumpSumAmountAndDate.value.error.nothingEntered = Enter the lump sum amount
 lumpSumAmountAndDate.value.error.notANumber = The lump sum amount must be an amount of money, like £123.45 or £156.00
 lumpSumAmountAndDate.value.error.tooManyDecimals = The lump sum amount can only include pounds and pence, like £123.45 or £156.00
@@ -1405,8 +1405,8 @@ event4.paymentDetails.title = Amount paid and date
 event4.paymentDetails.heading = Amount paid and date
 event5.paymentDetails.title = What was the member’s annual rate of pension entitlement immediately before the date of non-payment started?
 event5.paymentDetails.heading = What was the member’s annual rate of pension entitlement immediately before the date of non-payment started?
-event4.paymentDetails.value.heading = Total amount paid
-event5.paymentDetails.value.heading = Total amount paid
+event4.paymentDetails.value.heading = Total amount paid, in pounds
+event5.paymentDetails.value.heading = Total amount paid, in pounds
 
 paymentDetails.value.error.nothingEntered = Enter the total amount that was paid
 paymentDetails.value.error.notANumber = The total amount must be an amount of money, like £123.45 or £156.00
@@ -1417,7 +1417,7 @@ paymentDetails.value.error.zeroEntered = The total amount must be greater than z
 paymentDetails.value.change.hidden = The total amount paid
 paymentDetails.value.checkYourAnswersLabel = Total amount paid
 
-event3.paymentDetails.value.heading = Total amount of benefits taken
+event3.paymentDetails.value.heading = Total amount of benefits taken, in pounds
 event3.paymentDetails.value.checkYourAnswersLabel = Total amount of benefits taken
 event3.paymentDetails.value.change.hidden = The total amount of benefits taken
 event3.paymentDetails.date.heading = Date benefits were taken
@@ -1916,7 +1916,7 @@ bceTypeSelection.event24.change.hidden = What was the type of relevant benefit c
 bceTypeSelection.event24.checkYourAnswersLabel = What was the type of relevant benefit crystallisation event?
 
 totalAmountBenefitCrystallisation.event24.title = Total amount of the relevant benefit crystallisation event
-totalAmountBenefitCrystallisation.event24.heading = What was the total of the relevant benefit crystallisation event?
+totalAmountBenefitCrystallisation.event24.heading = What was the total of the relevant benefit crystallisation event, in pounds?
 totalAmountBenefitCrystallisation.event24.checkYourAnswersLabel = What was the total of the relevant benefit crystallisation event?
 totalAmountBenefitCrystallisation.event24.error.nonNumeric = The total amount must be an amount of money, like 123 or 123.00
 totalAmountBenefitCrystallisation.event24.error.required = Enter the total amount of the relevant benefit crystallisation event
