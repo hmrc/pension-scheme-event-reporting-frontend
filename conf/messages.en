@@ -504,6 +504,7 @@ errorDescription.error.length = The error description must be 160 characters or 
 errorDescription.error.invalidCharacters = The error description must only include letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 errorDescription.change.hidden = Give a brief description of the error
 
+description.error.invalid = This exceeds the maximum character limit. It must also only include letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 benefitsPaidEarly.title = Give a brief description of why the benefits are being paid early
 benefitsPaidEarly.heading = Give a brief description of why the benefits are being paid early
 benefitsPaidEarly.checkYourAnswersLabel = Give a brief description of why the benefits are being paid early

@@ -46,6 +46,14 @@ class MemberPaymentNatureDescriptionFormProviderSpec extends StringFieldBehaviou
       }
     }
 
+    s"not bind strings longer than $maxLength characters and contains invalid characters" in {
+      forAll(stringsWithSpecialChars(maxLength) -> "longString") {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors must contain(FormError(fieldName, "description.error.invalid"))
+      }
+    }
+
     "not bind empty data" in {
       val result = form.bind(Map(fieldName -> "")).apply(fieldName)
       result.value.value mustBe ""

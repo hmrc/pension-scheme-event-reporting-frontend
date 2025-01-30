@@ -29,6 +29,7 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
   private val validAddress = "10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB"
   private val commonUaEmployer = "employer,,,,,,,Company Name,12345678"
   private val moreThanMax: String = "a" * 161
+  private val moreThanMaxAndSpecialChar: String = "a" * 161 + "%^&"
 
   "Event 1 validator" - {
     "must return items in user answers when there are no validation errors for Member" in {
@@ -429,7 +430,6 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
         ValidationError(5, 0, "whoReceivedUnauthPayment.error.required", "memberOrEmployer"),
         ValidationError(6, 10, "paymentNature.error.required", "natureOfPayment"),
         ValidationError(7, 11, "benefitInKindBriefDescription.error.length", "benefitDescription", ArraySeq(160)),
-        ValidationError(7, 11, "benefitInKindBriefDescription.error.invalidCharacters", "benefitDescription", ArraySeq(regexEvent1Description)),
         ValidationError(8, 22, "whoWasTheTransferMade.error.required", "transferMadeTo"),
         ValidationError(9, 4, "doYouHoldSignedMandate.error.format", "doYouHoldSignedMandate"),
         ValidationError(9, 5, "valueOfUnauthorisedPayment.error.format", "valueOfUnauthorisedPayment"),
@@ -437,15 +437,10 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
         ValidationError(11, 10, "paymentNature.error.format", "natureOfPayment"),
         ValidationError(12, 22, "whoWasTheTransferMade.error.format", "transferMadeTo"),
         ValidationError(13, 23, "schemeDetails.error.name.length", "schemeName", ArraySeq(160)),
-        ValidationError(13, 23, "schemeDetails.error.name.invalidCharacters", "schemeName", ArraySeq(regexEvent1Description)),
         ValidationError(13, 23, "schemeDetails.error.ref.length", "reference", ArraySeq(160)),
-        ValidationError(13, 23, "schemeDetails.error.ref.invalidCharacters", "reference", ArraySeq(regexEvent1Description)),
         ValidationError(14, 14, "errorDescription.error.length", "errorDescription", ArraySeq(160)),
-        ValidationError(14, 14, "errorDescription.error.invalidCharacters", "errorDescription", ArraySeq(regexEvent1Description)),
         ValidationError(15, 21, "memberTangibleMoveableProperty.error.length", "tangibleDescription", ArraySeq(160)),
-        ValidationError(15, 21, "memberTangibleMoveableProperty.error.invalidCharacters", "tangibleDescription", ArraySeq(regexEvent1Description)),
         ValidationError(16, 17, "memberPaymentNatureDescription.error.length", "otherDescription", ArraySeq(160)),
-        ValidationError(16, 17, "memberPaymentNatureDescription.error.invalidCharacters", "otherDescription", ArraySeq(regexEvent1Description)),
         ValidationError(17, 19, "refundOfContributions.error.required", "whoReceivedRefund"),
         ValidationError(18, 19, "refundOfContributions.error.format", "whoReceivedRefund"),
         ValidationError(19, 18, "reasonForTheOverpaymentOrWriteOff.error.required", "overpaymentReason"),
@@ -580,7 +575,8 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
                             $commonUaEmployer,"$validAddress",TANGIBLE,,,,,,,,,,,$moreThanMax,,,1000.00,08/11/2022
                             $commonUaEmployer,"$validAddress",COURT,,$moreThanMax,,,,,,,,,,,,1000.00,08/11/2022
                             $commonUaEmployer,"$validAddress",COURT,,Organisation£# Name,,,,,,,,,,,,1000.00,08/11/2022
-                            $commonUaEmployer,"$validAddress",OTHER,,,,,,,$moreThanMax,,,,,,,1000.00,08/11/2022"""
+                            $commonUaEmployer,"$validAddress",OTHER,,,,,,,$moreThanMax,,,,,,,1000.00,08/11/2022
+                            $commonUaEmployer,"$validAddress",TANGIBLE,,,,,,,,,,,$moreThanMaxAndSpecialChar,,,1000.00,08/11/2022"""
 
       val ((output, errors), rowNumber) = validate(data)
 
@@ -588,12 +584,11 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
         ValidationError(1, 10, "paymentNature.error.required", "natureOfPayment"),
         ValidationError(2, 10, "paymentNature.error.format", "natureOfPayment"),
         ValidationError(3, 21, "employerTangibleMoveableProperty.error.length", "tangibleDescription", ArraySeq(160)),
-        ValidationError(3, 21, "employerTangibleMoveableProperty.error.invalidCharacters", "tangibleDescription", ArraySeq(regexEvent1Description)),
         ValidationError(4, 12, "unauthorisedPaymentRecipientName.employer.error.length", "courtNameOfPersonOrOrg", ArraySeq(160)),
         ValidationError(5, 12, "unauthorisedPaymentRecipientName.employer.error.invalid", "courtNameOfPersonOrOrg",
           ArraySeq("""^[a-zA-Z &`\'\.^\\]{0,160}$""")),
         ValidationError(6, 17, "employerPaymentNatureDescription.error.length", "otherDescription", ArraySeq(160)),
-        ValidationError(6, 17, "employerPaymentNatureDescription.error.invalidCharacters", "otherDescription", ArraySeq(regexEvent1Description))
+        ValidationError(7, 21, "description.error.invalid", "tangibleDescription")
       )
     }
 
