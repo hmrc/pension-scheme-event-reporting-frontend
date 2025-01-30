@@ -43,7 +43,7 @@
         @govukInput(
                 InputViewModel(
                     field = form("lumpSumAmount"),
-                    label = Label(content = Text(messages("lumpSumAmountAndDate.value.heading"))).withCssClass("govuk-label--m")
+                    label = Label(content = Text(messages("lumpSumAmountAndDate.value.heading")))
                 )
                 .withWidth(OneQuarter)
                 .withPrefix(PrefixOrSuffix(content = Text("£")))
@@ -53,9 +53,9 @@
         @govukDateInput(
             DateViewModel(
                 field  = form("lumpSumDate"),
-                legend = Legend(content = Text(messages("lumpSumAmountAndDate.date.heading"))).withCssClass("govuk-label--m")
+                legend = Legend(content = Text(messages("lumpSumAmountAndDate.date.heading")))
             )
-            .withHint(Hint(content = Text(messages("lumpSumAmountAndDate.date.hint"))))
+            .withHint(Hint(content = Text(messages("lumpSumAmountAndDate.date.hint")))).withCssClass("govuk-label--l")
         )
 
         @govukButton(

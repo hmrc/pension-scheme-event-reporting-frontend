@@ -55,7 +55,7 @@
                 field  = form("eventDate"),
                 legend = Legend(content = Text(messages(s"event$eventType.paymentDetails.date.heading")))
             )
-            .withHint(Hint(content = Text(messages("paymentDetails.date.hint"))))
+            .withHint(Hint(content = Text(messages("paymentDetails.date.hint")))).withCssClass("govuk-label--l")
         )
 
         @govukButton(
