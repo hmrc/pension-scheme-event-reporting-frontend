@@ -30,6 +30,18 @@
 
 @(form: Form[_], protectionPageVal: String, waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
+@formGroupErrorClass = {
+    @if(form.errors.nonEmpty) {
+        govuk-form-group--error
+    } else {
+        ""
+    }
+}
+
+@errorMessage = {
+    @form("value").error.map(err => messages(err.message, err.args: _*))
+}
+
 @layout(
 pageTitle = title(form, messages("typeOfProtectionGroup1.event24.title"))
 ) {
@@ -39,16 +51,19 @@ pageTitle = title(form, messages("typeOfProtectionGroup1.event24.title"))
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
-        <div class="govuk-form-group @if(form.hasErrors) {govuk-form-group--error}">
+        <div class="govuk-form-group @formGroupErrorClass">
 
             <fieldset class="govuk-fieldset" aria-describedby="protectionGroup1-hint">
                 <legend class="govuk-fieldset__legend govuk-heading govuk-fieldset__legend--l">
-                    <h1 class = "govuk-heading-l">@messages("typeOfProtectionGroup1.event24.heading")</h1>
+                    <h1 class = "govuk-fieldset__heading">
+                        @messages("typeOfProtectionGroup1.event24.heading")</h1>
                 </legend>
 
-                <div class="govuk-hint" id="protectionGroup1-hint">
-                    @messages("typeOfProtectionGroup1.event24.hint")
-                </div>
+                @if(form.errors.nonEmpty) {
+                <p id="value-error" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span> @errorMessage
+                </p>
+                }
 
                 <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                     @TypeOfProtectionGroup1.protectionOptions.zipWithIndex.map { case (item, index) =>
