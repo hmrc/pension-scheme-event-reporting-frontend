@@ -142,7 +142,7 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
     }
 
     "must save the answer and redirect to the next page when valid data is submitted (Become a scheme)" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val userAnswers = emptyUserAnswersWithTaxYear.setOrException(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItBecameAnInvestmentRegulatedPensionScheme)
@@ -160,12 +160,12 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual SchemeChangeDatePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
       }
     }
 
     "must save the answer and redirect to the next page when valid data is submitted (Ceased to become a scheme)" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val userAnswers = emptyUserAnswersWithTaxYear.setOrException(BecomeOrCeaseSchemePage, BecomeOrCeaseScheme.ItHasCeasedToBeAnInvestmentRegulatedPensionScheme)
@@ -183,7 +183,7 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual SchemeChangeDatePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
       }
     }
 
@@ -206,7 +206,7 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, becomeAScheme)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
 
@@ -229,7 +229,7 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, ceasedToBecomeAScheme)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
   }

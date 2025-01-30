@@ -59,7 +59,7 @@ class UpscanInitiateConnectorSpec
 
   private lazy val connector: UpscanInitiateConnector = app.injector.instanceOf[UpscanInitiateConnector]
   private implicit val dataRequest: DataRequest[AnyContent] =
-    DataRequest("Pstr123", "SchemeABC", "returnUrl", FakeRequest(GET, "/"), LoggedInUser("user", Administrator, "psaId"), UserAnswers())
+    DataRequest("Pstr123", "SchemeABC", "returnUrl", FakeRequest(GET, "/"), LoggedInUser("user", Administrator, "psaId"), UserAnswers(), "S2400000041")
 
   private val url = "/upscan/v2/initiate"
 

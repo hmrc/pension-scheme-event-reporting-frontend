@@ -141,10 +141,10 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
     "must save the answer and redirect to the next page when valid data is submitted" in {
       when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
       when(mockEventReportingConnector.submitReportEvent20A(
-        any(), any(), any())(any())).thenReturn(Future.successful(NoContent))
+        any(), any(), any())(any(), any())).thenReturn(Future.successful(NoContent))
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
           .build()
@@ -158,7 +158,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual Event20APspDeclarationPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
       }
     }
 
@@ -166,7 +166,7 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
       when(mockEventReportingConnector.submitReportEvent20A(
-        any(), any(), any())(any())).thenReturn(Future.successful(BadRequest))
+        any(), any(), any())(any(), any())).thenReturn(Future.successful(BadRequest))
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
           .build()
@@ -182,14 +182,14 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result).removeAllNonces() mustEqual view(schemeName, pstr, taxYear, practitionerName, boundForm, waypoints)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found onSubmit" in {
       when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(()))
 
       val application = applicationBuilder(userAnswers = None, extraModules).build()
 
@@ -201,17 +201,17 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad(None).url
         verify(mockMinimalConnector, times(0)).getMinimalDetails(any())(any(), any())
         verify(mockSchemeDetailsConnector, times(0)).getPspSchemeDetails(any(), any())(any(), any())
-        verify(mockUserAnswersCacheConnector, times(0)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(0)).save(any(), any(), any())(any(), any(), any())
       }
     }
 
     "must redirect to the cannot resume page for method onClick when report has been submitted multiple times in quick succession" in {
       when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
       when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
       when(mockEventReportingConnector.submitReportEvent20A(
-        any(), any(), any())(any())).thenReturn(Future.successful(BadRequest))
+        any(), any(), any())(any(), any())).thenReturn(Future.successful(BadRequest))
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
           .build()
@@ -226,8 +226,8 @@ class Event20APspDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
         redirectLocation(result).value mustEqual controllers.routes.CannotResumeController.onPageLoad(EmptyWaypoints).url
         verify(mockMinimalConnector, times(1)).getMinimalDetails(any())(any(), any())
         verify(mockSchemeDetailsConnector, times(1)).getPspSchemeDetails(any(), any())(any(), any())
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
-        verify(mockEventReportingConnector, times(1)).submitReportEvent20A(any(), any(), any())(any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
+        verify(mockEventReportingConnector, times(1)).submitReportEvent20A(any(), any(), any())(any(), any())
       }
     }
   }

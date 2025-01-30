@@ -97,7 +97,7 @@ class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with 
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
@@ -113,12 +113,12 @@ class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual SchemeDetailsPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
       }
     }
 
     "must save the answer and redirect to the next page when valid data is submitted (empty value)" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
@@ -134,7 +134,7 @@ class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual SchemeDetailsPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
       }
     }
     "must return bad request when submitting data that is too long" in {
@@ -152,7 +152,7 @@ class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
     "must return bad request when invalid data is submitted" in {
@@ -170,7 +170,7 @@ class SchemeDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
   }

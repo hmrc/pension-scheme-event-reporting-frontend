@@ -18,13 +18,18 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import handlers.TaxYearNotAvailableException
+import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.enumeration.EventType
 import models.enumeration.VersionStatus.Compiled
-import models.{TaxYear, UserAnswers, VersionInfo}
+import models.requests.DataRequest
+import models.{LoggedInUser, TaxYear, UserAnswers, VersionInfo}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import pages.{TaxYearPage, VersionInfoPage}
 import play.api.libs.json.Json
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
+import play.api.test.Helpers.GET
 import uk.gov.hmrc.http._
 import utils.WireMockHelper
 
@@ -43,8 +48,11 @@ class UserAnswersCacheConnectorSpec
   override protected def portConfigKey: String = "microservice.services.pension-scheme-event-reporting.port"
 
   private lazy val connector: UserAnswersCacheConnector = injector.instanceOf[UserAnswersCacheConnector]
-  private val userAnswersCacheUrl = s"/pension-scheme-event-reporting/user-answers"
-  private val compareUrl = s"/pension-scheme-event-reporting/compare"
+  private val userAnswersCacheUrl = s"/pension-scheme-event-reporting/user-answers/S2400000041"
+  private val compareUrl = s"/pension-scheme-event-reporting/compare/S2400000041"
+
+  private implicit val dataRequest: DataRequest[AnyContent] =
+    DataRequest("Pstr123", "SchemeABC", "returnUrl", FakeRequest(GET, "/"), LoggedInUser("user", Administrator, "psaId"), UserAnswers(), "S2400000041")
 
   private val validResponse =
     Json.obj(
@@ -68,7 +76,7 @@ class UserAnswersCacheConnectorSpec
           )
       )
 
-      connector.get(pstr, eventType) map {
+      connector.getByEventType(pstr, eventType) map {
         _ mustBe Some(UserAnswers(userAnswersForSave.data, userAnswersForSave.data))
       }
     }
@@ -83,7 +91,7 @@ class UserAnswersCacheConnectorSpec
       )
 
       recoverToSucceededIf[TaxYearNotAvailableException] {
-        connector.get(pstr, eventType)
+        connector.getByEventType(pstr, eventType)
       }
     }
 
@@ -97,7 +105,7 @@ class UserAnswersCacheConnectorSpec
       )
 
       recoverToSucceededIf[HttpException] {
-        connector.get(pstr, eventType)
+        connector.getByEventType(pstr, eventType)
       }
     }
   }

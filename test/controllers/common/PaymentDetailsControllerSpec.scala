@@ -116,7 +116,7 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
 
   private def testSaveAnswerAndRedirectWhenValid(eventType: EventType): Unit = {
     s"must save the answer and redirect to the next page when valid data is submitted for Event $eventType" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
@@ -129,7 +129,7 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual PaymentDetailsPage(eventType, 0).navigate(waypoints, emptyUserAnswersWithTaxYear, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
       }
     }
   }
@@ -148,7 +148,7 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, eventType, 0)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
   }

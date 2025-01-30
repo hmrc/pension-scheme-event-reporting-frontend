@@ -45,7 +45,7 @@ class CannotResumeControllerSpec extends SpecBase with BeforeAndAfterEach {
   "CannotResume Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      when(mockUserAnswersCacheConnector.removeAll(any())(any(), any())).thenReturn(Future.successful(()))
+      when(mockUserAnswersCacheConnector.removeAll(any())(any(), any(), any())).thenReturn(Future.successful(()))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
 

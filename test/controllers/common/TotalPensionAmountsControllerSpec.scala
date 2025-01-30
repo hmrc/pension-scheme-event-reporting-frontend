@@ -107,7 +107,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
 
   private def testSaveAnswerAndRedirectWhenValid(eventType: EventType): Unit = {
     s"must save the answer and redirect to the next page when valid data is submitted for Event $eventType" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(()))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
       running(application) {
@@ -117,7 +117,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual TotalPensionAmountsPage(eventType, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
       }
     }
   }
@@ -134,7 +134,7 @@ class TotalPensionAmountsControllerSpec extends SpecBase with BeforeAndAfterEach
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result).removeAllNonces()mustEqual view.render(boundForm, waypoints, eventType, StringUtils.EMPTY, index = 0, request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
   }

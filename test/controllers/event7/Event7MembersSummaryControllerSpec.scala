@@ -142,7 +142,7 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
       } */
 
       "must save the answer and redirect to the next page when valid data is submitted" in {
-        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
           .thenReturn(Future.successful(()))
 
         val application =
@@ -164,7 +164,7 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
       }
 
       "must return bad request when invalid data is submitted" in {
-        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
           .thenReturn(Future.successful(()))
         val emptyPageStats = PaginationStats[SummaryListRowWithThreeValues](Seq(), 0, 1, (0, 1), Seq())
         when(mockEventPaginationService.paginateMappedMembers[SummaryListRowWithThreeValues](any(), any())).thenReturn(emptyPageStats)
@@ -186,7 +186,7 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
           status(result) mustEqual BAD_REQUEST
           contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, Event7, Nil, "0.00", "2023", emptyPageStats, Index(0), None, "/manage-pension-scheme-event-report/report/event-7-summary")(request, messages(application)).toString
-          verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
+          verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any(), any())
         }
       }
     }

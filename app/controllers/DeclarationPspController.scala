@@ -74,11 +74,11 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
     }
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
 
-      request.userAnswers.getOrElse(throw new NothingToSubmitException("User data not available"))
-      requireData.invokeBlock(request, { implicit request: DataRequest[_] =>
+     // request.userAnswers.getOrElse(throw new NothingToSubmitException("User data not available"))
+   //   requireData.invokeBlock(request, { implicit request: DataRequest[_] =>
 
         def emailFuture: Future[EmailStatus] = minimalConnector.getMinimalDetails(
           request.loggedInUser.idName).flatMap { minimalDetails =>
@@ -121,7 +121,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
             )
           }
         }
-      })
+//      })
   }
 
   private def sendEmail(pspName: String, email: String, taxYear: String, schemeName: String)(

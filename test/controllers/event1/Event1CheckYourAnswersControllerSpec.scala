@@ -257,7 +257,7 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
     }
 
     "must redirect to the correct page onClick if all expected answers are present" in {
-      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful())
 
       val event1Answers = emptyUserAnswers.set(WhoReceivedUnauthPaymentPage(0), WhoReceivedUnauthPayment.Member).get
@@ -276,11 +276,11 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(EmptyWaypoints).url
-        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
+        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any(), any())
       }
     }
     "must redirect to the correct page onClick if an answer is missing" in {
-      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful())
 
       val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))

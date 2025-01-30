@@ -39,7 +39,8 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
   private val loggedInUser = LoggedInUser("user", Administrator, "psaId")
   private val pstr = "pstr"
-  private val request: IdentifierRequest[AnyContent] = IdentifierRequest(fakeRequest, loggedInUser, pstr, "schemeName", "returnUrl", "srn")
+  private val srn = "S2400000041"
+  private val request: IdentifierRequest[AnyContent] = IdentifierRequest(fakeRequest, loggedInUser, pstr, "schemeName", "returnUrl", srn)
   private val eventType = EventType.Event1
 
   class Harness extends DataRetrievalImpl(eventType, userAnswersCacheConnector) {
@@ -53,11 +54,11 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
   "Data Retrieval Action when there is no data in the cache" - {
     "must set userAnswers to 'None' in the request" in {
-      when(userAnswersCacheConnector.get(eqTo(pstr), eqTo(eventType))(any(), any())) thenReturn Future(None)
-      when(userAnswersCacheConnector.get(eqTo(pstr))(any(), any())) thenReturn Future(None)
+      when(userAnswersCacheConnector.getBySrn(eqTo(pstr), eqTo(eventType), eqTo(srn))(any(), any())) thenReturn Future(None)
+      when(userAnswersCacheConnector.getBySrn(eqTo(pstr), eqTo(srn))(any(), any())) thenReturn Future(None)
       val action = new Harness
 
-      val expectedResult = OptionalDataRequest(pstr, "schemeName", "returnUrl", request, loggedInUser, None)
+      val expectedResult = OptionalDataRequest(pstr, "schemeName", "returnUrl", request, loggedInUser, None, srn)
       val futureResult = action.callTransform(request)
 
       whenReady(futureResult) { result =>

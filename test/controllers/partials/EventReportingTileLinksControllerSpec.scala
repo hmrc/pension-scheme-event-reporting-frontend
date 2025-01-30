@@ -49,7 +49,7 @@ class EventReportingTileLinksControllerSpec extends SpecBase with BeforeAndAfter
 
   "Event Reporting Tile Controller" - {
     "must redirect to tax year page for a GET when 2 compiled versions available" in {
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
       val overview1 = EROverview(
         LocalDate.of(2021, 4, 6),
@@ -89,7 +89,7 @@ class EventReportingTileLinksControllerSpec extends SpecBase with BeforeAndAfter
     }
 
     "must redirect to summary page for a GET when 1 compiled version available but >1 overview item" in {
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
       val overview1 = EROverview(
         LocalDate.of(2021, 4, 6),
@@ -129,7 +129,7 @@ class EventReportingTileLinksControllerSpec extends SpecBase with BeforeAndAfter
     }
 
     "must redirect to summary page for a GET when 1 compiled version available and 1 overview item" in {
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
       val overview1 = EROverview(
         LocalDate.of(2021, 4, 6),

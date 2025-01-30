@@ -58,7 +58,7 @@ class ReturnHistoryControllerSpec extends SpecBase with BeforeAndAfterEach {
     "must return OK and the correct view for a GET" in {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
-      when(mockErConnector.getListOfVersions(ArgumentMatchers.eq("87219363YN"), ArgumentMatchers.eq("2022-04-06"))(any()))
+      when(mockErConnector.getListOfVersions(ArgumentMatchers.eq("87219363YN"), ArgumentMatchers.eq("2022-04-06"))(any(), any()))
         .thenReturn(Future.successful(Seq(versionsWithSubmitter, versionsWithCompiler)))
 
       running(application) {
@@ -78,9 +78,9 @@ class ReturnHistoryControllerSpec extends SpecBase with BeforeAndAfterEach {
     "must redirect to the correct page and save correct version in mongodb onClick " in {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
-      when(mockUACacheConnector.save(any(), any())(any(), any())).thenReturn(Future.successful())
+      when(mockUACacheConnector.save(any(), any())(any(), any(), any())).thenReturn(Future.successful())
 
-      when(mockErConnector.getListOfVersions(ArgumentMatchers.eq("87219363YN"), ArgumentMatchers.eq("2022-04-06"))(any()))
+      when(mockErConnector.getListOfVersions(ArgumentMatchers.eq("87219363YN"), ArgumentMatchers.eq("2022-04-06"))(any(), any()))
         .thenReturn(Future.successful(Seq(versionsWithSubmitter, versionsWithCompiler)))
 
       running(application) {
@@ -89,7 +89,7 @@ class ReturnHistoryControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.EventSummaryController.onPageLoad(EmptyWaypoints).url
-        verify(mockUACacheConnector, times(1)).save(any(), any())(any(), any())
+        verify(mockUACacheConnector, times(1)).save(any(), any())(any(), any(), any())
       }
     }
   }

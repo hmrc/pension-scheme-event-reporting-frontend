@@ -182,7 +182,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
         case ArrayBuffer() =>
           (uaAfterRemovalOfEventType.get(TaxYearPage), uaAfterRemovalOfEventType.get(VersionInfoPage)) match {
             case (Some(year), Some(version)) =>
-              userAnswersCacheConnector.save(request.pstr, eventType, dataAccumulator.toJson, year.startYear, version.version.toString).flatMap { _ =>
+              userAnswersCacheConnector.save(request.pstr, eventType, dataAccumulator.toJson, year.startYear, version.version.toString, request.srn).flatMap { _ =>
                 compileService.compileEvent(eventType, request.pstr, uaAfterRemovalOfEventType)
                   .map(_ => ParsingAndValidationOutcome(Success, Json.obj(), fileName))
               }

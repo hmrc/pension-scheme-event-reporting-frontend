@@ -25,6 +25,8 @@ import play.api.mvc.{Request, WrappedRequest}
 abstract class RequiredSchemeDataRequest[A](request: Request[A]) extends WrappedRequest[A](request) {
   def pstr: String
 
+  def srn: String
+
   def schemeName: String
 
   def returnUrl: String
@@ -38,7 +40,8 @@ case class OptionalDataRequest[A](
                                    returnUrl: String,
                                    request: Request[A],
                                    loggedInUser: LoggedInUser,
-                                   userAnswers: Option[UserAnswers]
+                                   userAnswers: Option[UserAnswers],
+                                   srn: String
                                  ) extends RequiredSchemeDataRequest[A](request) {
   def isReportSubmitted: Boolean = {
     userAnswers match {
@@ -53,7 +56,8 @@ case class DataRequest[A](pstr: String,
                           returnUrl: String,
                           request: Request[A],
                           loggedInUser: LoggedInUser,
-                          userAnswers: UserAnswers
+                          userAnswers: UserAnswers,
+                          srn: String
                          ) extends RequiredSchemeDataRequest[A](request) {
 
   // read only is true if the version selected is less than the current report version:

@@ -19,14 +19,19 @@ package connectors
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.FileUploadOutcomeStatus.{FAILURE, IN_PROGRESS, SUCCESS}
 import models.amend.VersionsWithSubmitter
+import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.enumeration.EventType.{Event1, Event2}
 import models.enumeration.VersionStatus.Submitted
 import models.enumeration.{Enumerable, EventType}
-import models.{EROverview, EROverviewVersion, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, TaxYear, UserAnswers, VersionInfo}
+import models.requests.DataRequest
+import models.{EROverview, EROverviewVersion, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, LoggedInUser, TaxYear, UserAnswers, VersionInfo}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import play.api.libs.json.{JsArray, JsResultException, Json}
+import play.api.mvc.AnyContent
 import play.api.mvc.Results.{BadRequest, NoContent}
+import play.api.test.FakeRequest
+import play.api.test.Helpers.GET
 import uk.gov.hmrc.http._
 import utils.WireMockHelper
 
@@ -44,6 +49,9 @@ class EventReportingConnectorSpec
   private val reportVersion: String = "reportVersion"
   private val userAnswers = UserAnswers()
 
+  private implicit val dataRequest: DataRequest[AnyContent] =
+    DataRequest("Pstr123", "SchemeABC", "returnUrl", FakeRequest(GET, "/"), LoggedInUser("user", Administrator, "psaId"), UserAnswers(), "S2400000041")
+
   private val validResponse = Seq(
     EventSummary(Event1, 2, None),
     EventSummary(Event2, 1, None)
@@ -53,22 +61,22 @@ class EventReportingConnectorSpec
     Json.obj("eventType" -> "1", "recordVersion" -> 2),
     Json.obj("eventType" -> "2", "recordVersion" -> 1)
   )
-
+  private val srn = "S2400000041"
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   override protected def portConfigKey: String = "microservice.services.pension-scheme-event-reporting.port"
 
   private lazy val connector: EventReportingConnector = injector.instanceOf[EventReportingConnector]
-  private val eventReportSummaryCacheUrl = "/pension-scheme-event-reporting/event-summary"
-  private val eventReportCompileUrl = "/pension-scheme-event-reporting/compile"
-  private val eventReportSubmitUrl = "/pension-scheme-event-reporting/submit-event-declaration-report"
-  private val deleteMemberUrl = "/pension-scheme-event-reporting/delete-member"
+  private val eventReportSummaryCacheUrl = s"/pension-scheme-event-reporting/event-summary/$srn"
+  private val eventReportCompileUrl = s"/pension-scheme-event-reporting/compile/$srn"
+  private val eventReportSubmitUrl = s"/pension-scheme-event-reporting/submit-event-declaration-report/$srn"
+  private val deleteMemberUrl = s"/pension-scheme-event-reporting/delete-member/$srn"
 
-  private def event20AReportSubmitUrl = "/pension-scheme-event-reporting/submit-event20a-declaration-report"
+  private def event20AReportSubmitUrl = s"/pension-scheme-event-reporting/submit-event20a-declaration-report/$srn"
 
-  private val getFileUploadResponseUrl = "/pension-scheme-event-reporting/file-upload-response/get"
-  private val getOverviewUrl = "/pension-scheme-event-reporting/overview"
-  private val getVersionUrl = "/pension-scheme-event-reporting/versions"
+  private val getFileUploadResponseUrl = s"/pension-scheme-event-reporting/file-upload-response/get/$srn"
+  private val getOverviewUrl = s"/pension-scheme-event-reporting/overview/$srn"
+  private val getVersionUrl = s"/pension-scheme-event-reporting/versions/$srn"
 
   private val failureOutcome = FileUploadOutcomeResponse(fileName = None, FAILURE, None, referenceStub, None)
   private val failureOutcomeJson = Json.obj("fileStatus" -> "ERROR")

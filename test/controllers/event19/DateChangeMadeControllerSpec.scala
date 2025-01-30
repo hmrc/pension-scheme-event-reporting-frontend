@@ -93,7 +93,7 @@ class DateChangeMadeControllerSpec extends SpecBase with BeforeAndAfterEach with
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
@@ -113,7 +113,7 @@ class DateChangeMadeControllerSpec extends SpecBase with BeforeAndAfterEach with
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual DateChangeMadePage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
       }
     }
 
@@ -133,7 +133,7 @@ class DateChangeMadeControllerSpec extends SpecBase with BeforeAndAfterEach with
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
   }

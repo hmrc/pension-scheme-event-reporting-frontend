@@ -80,7 +80,7 @@ class EventSummaryControllerSpec extends SpecBase with SummaryListFluency with B
 
       val seqOfEvents = Seq(EventSummary(EventType.Event1, 1, None), EventSummary(EventType.Event8, 1, Some("TestUser")), EventSummary(EventType.Event18, 1, None))
 
-      when(mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any())).thenReturn(
+      when(mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
         Future.successful(seqOfEvents)
       )
 
