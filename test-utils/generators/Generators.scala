@@ -128,6 +128,13 @@ trait Generators extends PageGenerators with ModelGenerators with UserAnswersEnt
       surplus <- alphaNumStr
     } yield base + surplus
 
+  def stringsWithSpecialChars(minLength: Int): Gen[String] = {
+    val specialCharGen: Gen[Char] = Gen.oneOf("!@#$%^&*()_-+=<>?/|")
+    for {
+      base <- Gen.listOfN(minLength + 1, specialCharGen).map(_.mkString)
+    } yield base
+  }
+
   def stringsShorterThan(maxLength: Int): Gen[String] =
     for {
       base <- Gen.listOfN(maxLength-1, alphaNumChar).map(_.mkString)

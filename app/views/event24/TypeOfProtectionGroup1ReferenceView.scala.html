@@ -40,7 +40,7 @@
         <h1 class="govuk-heading-l">@messages("typeOfProtectionReferenceGroup1.event24.heading")</h1>
 
         <p class="govuk-body">@messages("typeOfProtection.p1")</p>
-        <div class="govuk-hint">@messages("typeOfProtection.group1.p2")</div>
+        <div class="govuk-hint" id="protectionGroup1-hint">@messages("typeOfProtection.group1.p2")</div>
 
         @requiredReferenceTypes.map { fieldName =>
             @govukInput(
@@ -49,6 +49,7 @@
                     label = LabelViewModel(messages(s"typeOfProtection.$fieldName"))
                 )
                 .withWidth(TwoThirds)
+                .describedBy("protectionGroup1-hint")
             )
         }
 

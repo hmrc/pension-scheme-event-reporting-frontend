@@ -285,7 +285,6 @@ GET        /bulk-what-you-need-event-1                                          
 GET        /bulk-what-you-need-event-6                                            controllers.common.FileUploadWhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event6)
 GET        /bulk-what-you-need-event-22                                           controllers.common.FileUploadWhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event22)
 GET        /bulk-what-you-need-event-23                                           controllers.common.FileUploadWhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event23)
-GET        /bulk-what-you-need-event-24                                           controllers.common.FileUploadWhatYouWillNeedController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event24)
 
 GET        /report/event-1-upload                                             controllers.fileUpload.FileUploadController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1)
 GET        /report/event-1-validate                                           controllers.fileUpload.FileUploadController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, eventType: EventType = Event1)

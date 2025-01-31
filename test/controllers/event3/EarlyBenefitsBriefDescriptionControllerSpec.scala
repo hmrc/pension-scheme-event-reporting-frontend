@@ -156,5 +156,21 @@ class EarlyBenefitsBriefDescriptionControllerSpec extends SpecBase with BeforeAn
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
       }
     }
+
+    "must return bad request when input contains invalid characters" in {
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "玚틸훣ȹ"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+      }
+    }
   }
 }
