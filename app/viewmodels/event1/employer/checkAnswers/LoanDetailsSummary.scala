@@ -30,47 +30,24 @@ import viewmodels.implicits._
 
 object LoanDetailsSummary extends Formatters {
 
-  def rowLoanAmount(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
-                   (implicit messages: Messages): Option[SummaryListRow] =
+  def rowLoanDetails(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
+                    (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(LoanDetailsPage(index)).map {
       answer =>
 
-        val value = ValueViewModel(
-          HtmlContent(
-            Html(s"£${currencyFormatter.format(answer.loanAmount)}")
-          )
-        )
+        val htmlContent = HtmlContent(
+          s"""<p class="govuk-body">£${currencyFormatter.format(answer.loanAmount)}</p>
+             |<p class="govuk-body">£${currencyFormatter.format(answer.fundValue)}</p>""".stripMargin)
+
+        val value = ValueViewModel(htmlContent)
 
         SummaryListRow(
-          key = "loanDetails.CYA.loanAmountLabel",
+          key = "loanDetails.CYA.label",
           value = value,
           actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
               ActionItemViewModel("site.change", LoanDetailsPage(index).changeLink(waypoints, sourcePage).url)
                 .withVisuallyHiddenText(messages("loanAmount.change.hidden"))
-            )))
-          }
-        )
-    }
-
-  def rowFundValue(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
-                  (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(LoanDetailsPage(index)).map {
-      answer =>
-
-        val value = ValueViewModel(
-          HtmlContent(
-            Html(s"£${currencyFormatter.format(answer.fundValue)}")
-          )
-        )
-
-        SummaryListRow(
-          key = "loanDetails.CYA.fundValueLabel",
-          value = value,
-          actions = if (isReadOnly) None else {
-            Some(Actions(items = Seq(
-              ActionItemViewModel("site.change", LoanDetailsPage(index).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("fundAmount.change.hidden"))
             )))
           }
         )

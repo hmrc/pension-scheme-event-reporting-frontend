@@ -37,55 +37,27 @@ class LoanDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionValues
 
   private implicit val messages: Messages = stubMessages()
 
-  "rowLoanAmount" - {
+  "rowLoanDetails" - {
 
-    "must display correct information for loan amount" in {
-      val loanAmountValue = "£10.00"
+    "must display correct information for loan details" in {
+      val htmlContent = HtmlContent(
+        s"""<p class="govuk-body">£10.00</p>
+           |<p class="govuk-body">£20.57</p>""".stripMargin)
       val answer = UserAnswers().setOrException(LoanDetailsPage(0), loanDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
       val isReadOnly = false
 
-      val value = ValueViewModel(
-        HtmlContent(
-          Html(loanAmountValue)
-        )
-      )
+      val value = ValueViewModel(htmlContent)
 
-      LoanDetailsSummary.rowLoanAmount(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+      LoanDetailsSummary.rowLoanDetails(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
         SummaryListRow(
-          key = "loanDetails.CYA.loanAmountLabel",
+          key = "loanDetails.CYA.label",
           value = value,
           actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
               ActionItemViewModel("site.change", LoanDetailsPage(0).changeLink(waypoints, sourcePage).url)
                 .withVisuallyHiddenText(messages("loanAmount.change.hidden"))
-            )))
-          }
-        )
-      )
-    }
-
-    "must display correct information for fund value" in {
-      val fundValue = "£20.57"
-      val answer = UserAnswers().setOrException(LoanDetailsPage(0), loanDetails)
-      val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-      val isReadOnly = false
-      val value = ValueViewModel(
-        HtmlContent(
-          Html(fundValue)
-        )
-      )
-
-      LoanDetailsSummary.rowFundValue(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
-        SummaryListRow(
-          key = "loanDetails.CYA.fundValueLabel",
-          value = value,
-          actions = if (isReadOnly) None else {
-            Some(Actions(items = Seq(
-              ActionItemViewModel("site.change", LoanDetailsPage(0).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("fundAmount.change.hidden"))
             )))
           }
         )

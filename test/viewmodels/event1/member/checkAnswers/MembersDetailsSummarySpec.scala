@@ -40,16 +40,19 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
   private implicit val messages: Messages = stubMessages()
 
 
-  "rowFullName" - {
+  "rowMembersDetails" - {
 
     "must display correct information" in {
 
       val answers = UserAnswers().setOrException(MembersDetailsPage(Event1, 0), memberDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-      val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(memberDetails.fullName)).toString))
+      val htmlContent = HtmlContent(
+        s"""<p class="govuk-body">Joe Bloggs</p>
+           |<p class="govuk-body">AA234567D</p>""".stripMargin)
+      val value = ValueViewModel(htmlContent)
 
-      MembersDetailsSummary.rowFullName(answers, waypoints, 0, sourcePage, isReadOnly = false, Event1) mustBe Some(
+      MembersDetailsSummary.rowMembersDetails(answers, waypoints, 0, sourcePage, isReadOnly = false, Event1) mustBe Some(
         SummaryListRowViewModel(
           key = "membersDetails.checkYourAnswersLabel",
           value = value,
@@ -57,30 +60,6 @@ class MembersDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
             ActionItemViewModel("site.change", MembersDetailsPage(Event1, 0).changeLink(waypoints, sourcePage).url)
               .withVisuallyHiddenText(messages("membersDetails.change.hidden"))
           )
-        )
-      )
-    }
-  }
-
-  "rowNino" - {
-
-    "must display correct information" in {
-
-      val answers = UserAnswers().setOrException(MembersDetailsPage(Event1, 0), memberDetails)
-      val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-      val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(memberDetails.nino)).toString))
-      val isReadOnly = false
-      MembersDetailsSummary.rowNino(answers, waypoints, 0, sourcePage, isReadOnly, Event1) mustBe Some(
-        SummaryListRow(
-          key = "membersDetails.checkYourAnswersLabel.nino",
-          value = value,
-          actions = if (isReadOnly) None else {
-            Some(Actions(items = Seq(
-              ActionItemViewModel("site.change", MembersDetailsPage(Event1, 0).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("membersDetails.change.nino.hidden"))
-            )))
-          }
         )
       )
     }

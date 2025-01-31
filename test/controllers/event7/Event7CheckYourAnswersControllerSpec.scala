@@ -272,18 +272,15 @@ object Event7CheckYourAnswersControllerSpec {
         ), ""),
       Value(Text(text), ""), "")
 
+  private val membersDetailsContent = s"""<p class="govuk-body">Joe Bloggs</p>
+                                         |<p class="govuk-body">AA234567D</p>""".stripMargin
+
   private def expectedMemberSummaryListRowsEvent7(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel",
-      "Joe Bloggs",
+      membersDetailsContent,
       "/manage-pension-scheme-event-report/report/1/event-7-member-details?waypoints=event-7-check-answers-1",
       "membersDetails.change.hidden"
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContent(
-      "membersDetails.checkYourAnswersLabel.nino",
-      "AA234567D",
-      "/manage-pension-scheme-event-report/report/1/event-7-member-details?waypoints=event-7-check-answers-1",
-      "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "lumpSumAmount.checkYourAnswersLabel",
@@ -308,11 +305,7 @@ object Event7CheckYourAnswersControllerSpec {
   private def expectedMemberSummaryListRowsEvent7ViewOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "membersDetails.checkYourAnswersLabel",
-      "Joe Bloggs"
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
-      "membersDetails.checkYourAnswersLabel.nino",
-      "AA234567D"
+      membersDetailsContent
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "lumpSumAmount.checkYourAnswersLabel",

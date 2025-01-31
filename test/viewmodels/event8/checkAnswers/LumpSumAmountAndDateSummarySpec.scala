@@ -26,49 +26,32 @@ import pages.event8.{Event8CheckYourAnswersPage, LumpSumAmountAndDatePage}
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, HtmlContent, SummaryListRow}
 import viewmodels.event8.checkAnswers.LumpSumAmountAndDateSummary.{currencyFormatter, dateFormatter}
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
 class LumpSumAmountAndDateSummarySpec extends AnyFreeSpec with Matchers with OptionValues with TryValues with SummaryListFluency {
   private implicit val messages: Messages = stubMessages()
-  "rowLumpSumValue" - {
+  "rowLumpSumDetails" - {
     "must display correct information for the sum amount" in {
       val answer = UserAnswers().setOrException(LumpSumAmountAndDatePage(Event8, 0), lumpSumDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event8CheckYourAnswersPage(0)
       val isReadOnly = false
-      LumpSumAmountAndDateSummary.rowLumpSumValue(answer, waypoints, sourcePage, isReadOnly, Event8, 0) mustBe Some(
+
+      val htmlContent = HtmlContent(
+        s"""<p class="govuk-body">£${currencyFormatter.format(lumpSumDetails.lumpSumAmount)}</p>
+           |<p class="govuk-body">${dateFormatter.format(lumpSumDetails.lumpSumDate)}</p>""".stripMargin)
+
+      LumpSumAmountAndDateSummary.rowLumpSumDetails(answer, waypoints, sourcePage, isReadOnly, Event8, 0) mustBe Some(
         SummaryListRow(
           key = messages("lumpSumAmountAndDate.value.checkYourAnswersLabel"),
-          value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(lumpSumDetails.lumpSumAmount)}")),
+          value = ValueViewModel(htmlContent),
           actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
               ActionItemViewModel("site.change", LumpSumAmountAndDatePage(Event8, index = 0).changeLink(waypoints, sourcePage).url)
                 .withVisuallyHiddenText(messages("lumpSumAmountAndDate.value.change.hidden"))
-            )))
-          }
-        )
-      )
-    }
-  }
-
-  "rowLumpSumDate" - {
-    "must display correct information for the sum date" in {
-      val answer = UserAnswers().setOrException(LumpSumAmountAndDatePage(Event8, 0), lumpSumDetails)
-      val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = Event8CheckYourAnswersPage(0)
-      val isReadOnly = false
-      LumpSumAmountAndDateSummary.rowLumpSumDate(answer, waypoints, sourcePage, isReadOnly, Event8, 0) mustBe Some(
-        SummaryListRow(
-          key = messages("lumpSumAmountAndDate.date.checkYourAnswersLabel"),
-          value = ValueViewModel(dateFormatter.format(lumpSumDetails.lumpSumDate)),
-          actions = if (isReadOnly) None else {
-            Some(Actions(items = Seq(
-              ActionItemViewModel("site.change", LumpSumAmountAndDatePage(Event8, index = 0).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("lumpSumAmountAndDate.date.change.hidden"))
             )))
           }
         )

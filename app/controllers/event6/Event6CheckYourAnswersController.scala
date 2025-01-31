@@ -65,11 +65,9 @@ class Event6CheckYourAnswersController @Inject()(
 
   private def buildEvent6CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
                                 (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event6).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event6).toSeq ++
+    MembersDetailsSummary.rowMembersDetails(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event6).toSeq ++
       TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
       InputProtectionTypeSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq ++
-      AmountCrystallisedAndDateSummary.rowCrystallisedValue(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq ++
-      AmountCrystallisedAndDateSummary.rowCrystallisedDate(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq
+      AmountCrystallisedAndDateSummary.rowCrystallisedDetails(request.userAnswers, waypoints, sourcePage, request.readOnly(), index).toSeq
   }
 }

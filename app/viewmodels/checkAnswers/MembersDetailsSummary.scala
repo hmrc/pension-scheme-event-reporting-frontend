@@ -31,9 +31,9 @@ import viewmodels.implicits._
 
 object MembersDetailsSummary {
 
-  def rowFullName(answers: UserAnswers, waypoints: Waypoints, index: Int, sourcePage: CheckAnswersPage, isReadOnly: Boolean,
-                  eventType: EventType, memberPageNo: Int = 0)
-                 (implicit messages: Messages): Option[SummaryListRow] =
+  def rowMembersDetails(answers: UserAnswers, waypoints: Waypoints, index: Int, sourcePage: CheckAnswersPage, isReadOnly: Boolean,
+                        eventType: EventType, memberPageNo: Int = 0)
+                       (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MembersDetailsPage(eventType, index, memberPageNo)).map {
       val detailsType = (eventType, memberPageNo) match {
         case (Event2, 1) => "deceasedMembersDetails"
@@ -41,7 +41,11 @@ object MembersDetailsSummary {
         case _ => "membersDetails"
       }
       answer =>
-        val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(answer.fullName)).toString))
+        val htmlContent = HtmlContent(
+          s"""<p class="govuk-body">${messages(answer.fullName)}</p>
+             |<p class="govuk-body">${messages(answer.nino)}</p>""".stripMargin)
+
+        val value = ValueViewModel(htmlContent)
         SummaryListRow(
           key = s"$detailsType.checkYourAnswersLabel",
           value = value,

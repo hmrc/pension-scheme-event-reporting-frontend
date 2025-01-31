@@ -265,49 +265,35 @@ object Event4CheckYourAnswersControllerSpec {
         ), ""),
       Value(Text(text), ""), "")
 
+  private val membersDetailsContent = s"""<p class="govuk-body">Joe Bloggs</p>
+                                         |<p class="govuk-body">AA234567D</p>""".stripMargin
+
+  private val lumpSumDetails = s"""<p class="govuk-body">£10.00</p>
+                                  |<p class="govuk-body">05 April 2022</p>""".stripMargin
+
   private def expectedMemberSummaryListRowsEvent4(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel",
-      "Joe Bloggs",
+      membersDetailsContent,
       "/manage-pension-scheme-event-report/report/1/event-4-member-details?waypoints=event-4-check-answers-1",
       "membersDetails.change.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
-      "membersDetails.checkYourAnswersLabel.nino",
-      "AA234567D",
-      "/manage-pension-scheme-event-report/report/1/event-4-member-details?waypoints=event-4-check-answers-1",
-      "membersDetails.change.nino.hidden"
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "paymentDetails.value.checkYourAnswersLabel",
-      "£10.00",
+      lumpSumDetails,
       "/manage-pension-scheme-event-report/report/1/event-4-payment-details?waypoints=event-4-check-answers-1",
       "paymentDetails.value.change.hidden"
-    ),
-    fakeSummaryListRowWithTextWithHiddenContent(
-      "paymentDetails.date.checkYourAnswersLabel",
-      "05 April 2022",
-      "/manage-pension-scheme-event-report/report/1/event-4-payment-details?waypoints=event-4-check-answers-1",
-      "paymentDetails.date.change.hidden"
     )
   )
 
   private def expectedMemberSummaryListRowsEvent4ViewOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "membersDetails.checkYourAnswersLabel",
-      "Joe Bloggs"
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
-      "membersDetails.checkYourAnswersLabel.nino",
-      "AA234567D"
+      membersDetailsContent
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "paymentDetails.value.checkYourAnswersLabel",
-      "£10.00"
-    ),
-    fakeSummaryListRowWithTextWithHiddenContentViewOnly(
-      "paymentDetails.date.checkYourAnswersLabel",
-      "05 April 2022"
+      lumpSumDetails
     )
   )
 }

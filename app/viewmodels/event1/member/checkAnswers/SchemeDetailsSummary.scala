@@ -35,17 +35,17 @@ object SchemeDetailsSummary {
     )
   }
 
-  def rowSchemeName(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
-                   (implicit messages: Messages): Option[SummaryListRow] = {
+  def rowSchemeDetails(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
+                      (implicit messages: Messages): Option[SummaryListRow] = {
 
 
     val value = answers.get(SchemeDetailsPage(index)).map {
       answer =>
-        ValueViewModel(
-          HtmlContent(
-            schemeDetailsAnswer(answer.schemeName)
-          )
-        )
+        val htmlContent = HtmlContent(
+          s"""<p class="govuk-body">${schemeDetailsAnswer(answer.schemeName)}</p>
+             |<p class="govuk-body">${schemeDetailsAnswer(answer.reference)}</p>""".stripMargin)
+
+        ValueViewModel(htmlContent)
     }
 
     Some(
@@ -55,33 +55,7 @@ object SchemeDetailsSummary {
         actions = if (isReadOnly) None else {
           Some(Actions(items = Seq(
             ActionItemViewModel("site.change", SchemeDetailsPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("schemeName.change.hidden"))
-          )))
-        }
-      )
-    )
-  }
-
-  def rowSchemeReference(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
-                        (implicit messages: Messages): Option[SummaryListRow] = {
-
-    val value = answers.get(SchemeDetailsPage(index)).map {
-      answer =>
-        ValueViewModel(
-          HtmlContent(
-            schemeDetailsAnswer(answer.reference)
-          )
-        )
-    }
-
-    Some(
-      SummaryListRow(
-        key = "Reference",
-        value = value.getOrElse(ValueViewModel(StringUtils.EMPTY)),
-        actions = if (isReadOnly) None else {
-          Some(Actions(items = Seq(
-            ActionItemViewModel("site.change", SchemeDetailsPage(index).changeLink(waypoints, sourcePage).url)
-              .withVisuallyHiddenText(messages("schemeReference.change.hidden"))
+              .withVisuallyHiddenText(messages("schemeDetails.change.hidden"))
           )))
         }
       )

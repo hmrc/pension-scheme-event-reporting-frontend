@@ -68,8 +68,7 @@ class Event24CheckYourAnswersController @Inject()(
 
   private def buildEvent24CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
                                  (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), eventType).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), eventType).toSeq ++
+    MembersDetailsSummary.rowMembersDetails(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), eventType).toSeq ++
       CrystallisedDateSummary.rowCrystallisedDate(request.userAnswers, waypoints, sourcePage, request.readOnly(), index) ++
       BCETypeSelectionSummary.rowBCETypeSelection(request.userAnswers, waypoints, index, sourcePage, request.readOnly()) ++
       TotalAmountBenefitCrystallisationSummary.row(request.userAnswers, waypoints, sourcePage, index) ++

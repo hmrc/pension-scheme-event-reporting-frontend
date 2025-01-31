@@ -30,35 +30,22 @@ import viewmodels.implicits._
 
 object AmountCrystallisedAndDateSummary extends Formatters {
 
-  def rowCrystallisedValue(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, index: Index)
-                          (implicit messages: Messages): Option[SummaryListRow] =
+  def rowCrystallisedDetails(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, index: Index)
+                            (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AmountCrystallisedAndDatePage(Event6, index)).map {
       answer =>
 
+        val htmlContent = HtmlContent(
+          s"""<p class="govuk-body">£${currencyFormatter.format(answer.amountCrystallised)}</p>
+             |<p class="govuk-body">${dateFormatter.format(answer.crystallisedDate)}</p>""".stripMargin)
+
         SummaryListRow(
           key = messages("amountCrystallisedAndDate.value.checkYourAnswersLabel"),
-          value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer.amountCrystallised)}")),
+          value = ValueViewModel(htmlContent),
           actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
               ActionItemViewModel("site.change", AmountCrystallisedAndDatePage(Event6, index).changeLink(waypoints, sourcePage).url)
                 .withVisuallyHiddenText(messages("amountCrystallisedAndDate.value.change.hidden"))
-            )))
-          }
-        )
-    }
-
-  def rowCrystallisedDate(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, index: Index)
-                         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmountCrystallisedAndDatePage(Event6, index)).map {
-      answer =>
-
-        SummaryListRow(
-          key = messages("amountCrystallisedAndDate.date.checkYourAnswersLabel"),
-          value = ValueViewModel(dateFormatter.format(answer.crystallisedDate)),
-          actions = if (isReadOnly) None else {
-            Some(Actions(items = Seq(
-              ActionItemViewModel("site.change", AmountCrystallisedAndDatePage(Event6, index).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("amountCrystallisedAndDate.date.change.hidden"))
             )))
           }
         )
