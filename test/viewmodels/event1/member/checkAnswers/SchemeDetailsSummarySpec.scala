@@ -28,7 +28,6 @@ import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, HtmlContent, SummaryListRow}
-import viewmodels.event1.member.checkAnswers.SchemeDetailsSummary.schemeDetailsAnswer
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 

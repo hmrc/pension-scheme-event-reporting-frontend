@@ -16,27 +16,57 @@
 
 package viewmodels.event24.checkAnswers
 
+import models.event24.TypeOfProtectionGroup1
+import models.event24.TypeOfProtectionGroup1.{NonResidenceEnhancement, PensionCreditsPreCRE, PreCommencement, SchemeSpecific}
 import models.{Index, UserAnswers}
 import pages.event24.TypeOfProtectionGroup1ReferencePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object NonResidenceSummary  {
+import scala.annotation.tailrec
 
-  def row(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
-         (implicit messages: Messages): Option[SummaryListRow] =
+object EnhancementsSummary {
+  def row(protectionTypes: Set[TypeOfProtectionGroup1],
+          answers: UserAnswers,
+          waypoints: Waypoints,
+          index: Index,
+          sourcePage: CheckAnswersPage,
+          isReadOnly: Boolean)
+         (implicit messages: Messages): Option[SummaryListRow] = {
     answers.get(TypeOfProtectionGroup1ReferencePage(index)).map {
       answer =>
 
-        val value = answer.nonResidenceEnhancement
+        @tailrec
+        def aux(protectionTypes: Set[TypeOfProtectionGroup1], content: String): String = {
+          if (protectionTypes.isEmpty) {
+            content
+          } else if (protectionTypes.head == NonResidenceEnhancement) {
+            val newContent = content +
+              getContent(messages("nonResidenceEnhancement.event24.checkYourAnswersLabel"), answer.nonResidenceEnhancement) + addPageBreak(protectionTypes.tail)
+            aux(protectionTypes.tail, newContent)
+          } else if (protectionTypes.head == PensionCreditsPreCRE) {
+            val newContent = content +
+              getContent(messages("pensionCreditsPreCRE.event24.checkYourAnswersLabel"), answer.pensionCreditsPreCRE) + addPageBreak(protectionTypes.tail)
+            aux(protectionTypes.tail, newContent)
+          } else if (protectionTypes.head == PreCommencement) {
+            val newContent = content +
+              getContent(messages("preCommencement.event24.checkYourAnswersLabel"), answer.preCommencement) + addPageBreak(protectionTypes.tail)
+            aux(protectionTypes.tail, newContent)
+          } else {
+            val newContent = content +
+              getContent(messages("recognisedOverseasPSTE.event24.checkYourAnswersLabel"), answer.recognisedOverseasPSTE) + addPageBreak(protectionTypes.tail)
+            aux(protectionTypes.tail, newContent)
+          }
+        }
 
         SummaryListRow(
-          key     = "nonResidenceEnhancement.event24.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
+          key     = "references.event24.checkYourAnswersLabel",
+          value   = ValueViewModel(HtmlContent(aux(protectionTypes - SchemeSpecific, ""))),
           actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
               ActionItemViewModel("site.change", TypeOfProtectionGroup1ReferencePage(index).changeLink(waypoints, sourcePage).url)
@@ -45,4 +75,18 @@ object NonResidenceSummary  {
           }
         )
     }
+  }
+
+  private def getContent(title: String, reference: String) = {
+      s"""<p class="govuk-body">${title}</p>
+         |<p class="govuk-body">${reference}</p>""".stripMargin
+  }
+
+  private def addPageBreak(protectionTypes: Set[TypeOfProtectionGroup1]) = {
+    if (protectionTypes.nonEmpty) {
+      "</br>"
+    } else {
+      ""
+    }
+  }
 }

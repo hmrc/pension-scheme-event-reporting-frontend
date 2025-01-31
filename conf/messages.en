@@ -1953,6 +1953,7 @@ typeOfProtection.event24.noneOfTheAbove = No – none of the above
 typeOfProtectionGroup1.event24.change.hidden = Were any other protections or enhancements relied upon for the relevant benefit crystallisation event?
 typeOfProtectionGroup2.event24.checkYourAnswersLabel = Protections or enhancements relied upon for the relevant benefit crystallisation event
 typeOfProtectionGroup2.event24.change.hidden = Was any protection relied upon for the relevant benefit crystallisation event?
+references.event24.checkYourAnswersLabel = References
 nonResidenceEnhancement.event24.checkYourAnswersLabel = Non-residence reference:
 pensionCreditsPreCRE.event24.checkYourAnswersLabel = Pension credits reference:
 preCommencement.event24.checkYourAnswersLabel = Pre-commencement pension reference:

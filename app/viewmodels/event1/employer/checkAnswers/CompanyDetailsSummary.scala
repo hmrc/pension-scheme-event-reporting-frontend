@@ -20,11 +20,9 @@ import models.{Index, UserAnswers}
 import pages.event1.employer.CompanyDetailsPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.event1.checkAnswers.PaymentValueAndDateSummary.{currencyFormatter, dateFormatter}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 

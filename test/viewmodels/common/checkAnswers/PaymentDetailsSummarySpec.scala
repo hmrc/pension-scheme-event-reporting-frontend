@@ -29,7 +29,6 @@ import pages.event5.Event5CheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
-import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.Actions
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -60,7 +59,7 @@ class PaymentDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
         val format = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
         val htmlContent = HtmlContent(
-          s"""<p class="govuk-body">£54.23</p>
+          s"""<p class="govuk-body">${amountPaid}</p>
              |<p class="govuk-body">${format.format(paymentDetails.eventDate)}</p>""".stripMargin)
 
         PaymentDetailsSummary.rowPaymentDetails(answer, waypoints, sourcePage, isReadOnly, eventType, 0) mustBe Some(
