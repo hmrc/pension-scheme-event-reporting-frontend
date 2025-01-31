@@ -66,8 +66,6 @@ class DeclarationController @Inject()(
   def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
 
-   //   request.userAnswers.getOrElse(throw new NothingToSubmitException("User data not available"))
-
         val data: UserAnswers = UserAnswers(
           declarationData(
             request.pstr,
