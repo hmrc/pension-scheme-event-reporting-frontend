@@ -28,6 +28,7 @@ import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.implicits._
 
@@ -36,7 +37,7 @@ class CompanyDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
 
   private implicit val messages: Messages = stubMessages()
 
-  "rowCompanyName" - {
+  "rowCompanyDetails" - {
 
     "must display correct information" in {
 
@@ -44,14 +45,19 @@ class CompanyDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
       val isReadOnly = false
-      CompanyDetailsSummary.rowCompanyName(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
+
+      val htmlContent = HtmlContent(
+        s"""<p class="govuk-body">Company Name</p>
+           |<p class="govuk-body">12345678</p>""".stripMargin)
+
+      CompanyDetailsSummary.rowCompanyDetails(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
         SummaryListRow(
-          key = "companyDetails.CYA.companyName",
-          value = ValueViewModel(HtmlFormat.escape(companyDetails.companyName).toString),
+          key = "companyDetails.title",
+          value = ValueViewModel(htmlContent),
           actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
               ActionItemViewModel("site.change", CompanyDetailsPage(0).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("companyDetails.companyName.change.hidden"))
+                .withVisuallyHiddenText(messages("companyDetails.title"))
             )))
           }
         )
@@ -59,27 +65,4 @@ class CompanyDetailsSummarySpec extends AnyFreeSpec with Matchers with OptionVal
     }
   }
 
-
-  "rowCompanyNumber" - {
-
-    "must display correct information" in {
-
-      val answer = UserAnswers().setOrException(CompanyDetailsPage(0), companyDetails)
-      val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
-      val isReadOnly = false
-      CompanyDetailsSummary.rowCompanyNumber(answer, waypoints, 0, sourcePage, isReadOnly) mustBe Some(
-        SummaryListRow(
-          key = "companyDetails.CYA.companyNumber",
-          value = ValueViewModel(HtmlFormat.escape(companyDetails.companyNumber).toString),
-          actions = if (isReadOnly) None else {
-            Some(Actions(items = Seq(
-              ActionItemViewModel("site.change", CompanyDetailsPage(0).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("companyDetails.companyNumber.change.hidden"))
-            )))
-          }
-        )
-      )
-    }
-  }
 }

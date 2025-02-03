@@ -42,6 +42,7 @@ import play.api.test.Helpers._
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.Aliases._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
@@ -298,18 +299,19 @@ object Event8ACheckYourAnswersControllerSpec {
         ), ""),
       Value(Text(text), ""), "")
 
+  private val membersDetailsContent = s"""<p class="govuk-body">Joe Bloggs</p>
+       |<p class="govuk-body">AA234567D</p>""".stripMargin
+
+  private val lumpSumDetails = s"""<p class="govuk-body">£10.00</p>
+       |<p class="govuk-body">22 March 2022</p>""".stripMargin
+
+
   private def expectedMemberSummaryListRowsEvent8A(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel",
-      "Joe Bloggs",
+      membersDetailsContent,
       "/manage-pension-scheme-event-report/report/1/event-8a-member-details?waypoints=event-8A-check-answers-1",
       "membersDetails.change.hidden"
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContent(
-      "membersDetails.checkYourAnswersLabel.nino",
-      "AA234567D",
-      "/manage-pension-scheme-event-report/report/1/event-8a-member-details?waypoints=event-8A-check-answers-1",
-      "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "paymentType.checkYourAnswersLabel",
@@ -332,26 +334,16 @@ object Event8ACheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "lumpSumAmountAndDate.value.checkYourAnswersLabel",
-      "£10.00",
+      lumpSumDetails,
       "/manage-pension-scheme-event-report/report/1/event-8a-payment-details?waypoints=event-8A-check-answers-1",
       "lumpSumAmountAndDate.value.change.hidden"
-    ),
-    fakeSummaryListRowWithTextWithHiddenContent(
-      "lumpSumAmountAndDate.date.checkYourAnswersLabel",
-      "22 March 2022",
-      "/manage-pension-scheme-event-report/report/1/event-8a-payment-details?waypoints=event-8A-check-answers-1",
-      "lumpSumAmountAndDate.date.change.hidden"
     )
   )
 
   private def expectedMemberSummaryListRowsEvent8AViewOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "membersDetails.checkYourAnswersLabel",
-      "Joe Bloggs"
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
-      "membersDetails.checkYourAnswersLabel.nino",
-      "AA234567D"
+      membersDetailsContent
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "paymentType.checkYourAnswersLabel",
@@ -368,11 +360,7 @@ object Event8ACheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "lumpSumAmountAndDate.value.checkYourAnswersLabel",
-      "£10.00"
-    ),
-    fakeSummaryListRowWithTextWithHiddenContentViewOnly(
-      "lumpSumAmountAndDate.date.checkYourAnswersLabel",
-      "22 March 2022"
+      lumpSumDetails
     )
   )
 }

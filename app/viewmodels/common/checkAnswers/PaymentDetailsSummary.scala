@@ -30,35 +30,21 @@ import viewmodels.implicits._
 
 object PaymentDetailsSummary extends Formatters {
 
-  def rowAmountPaid(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, eventType: EventType, index: Index)
-                   (implicit messages: Messages): Option[SummaryListRow] = {
+  def rowPaymentDetails(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, eventType: EventType, index: Index)
+                       (implicit messages: Messages): Option[SummaryListRow] = {
     answers.get(PaymentDetailsPage(eventType, index)).map {
       answer =>
+        val htmlContent = HtmlContent(
+          s"""<p class="govuk-body">£${currencyFormatter.format(answer.amountPaid)}</p>
+             |<p class="govuk-body">${dateFormatter.format(answer.eventDate)}</p>""".stripMargin)
+
         SummaryListRow(
           key = messages("paymentDetails.value.checkYourAnswersLabel"),
-          value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer.amountPaid)}")),
+          value = ValueViewModel(htmlContent),
           actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
               ActionItemViewModel("site.change", PaymentDetailsPage(eventType, index).changeLink(waypoints, sourcePage).url)
                 .withVisuallyHiddenText(messages("paymentDetails.value.change.hidden"))
-            )))
-          }
-        )
-    }
-  }
-
-
-  def rowEventDate(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, eventType: EventType, index: Index)
-                  (implicit messages: Messages): Option[SummaryListRow] = {
-    answers.get(PaymentDetailsPage(eventType, index)).map {
-      answer =>
-        SummaryListRow(
-          key = messages("paymentDetails.date.checkYourAnswersLabel"),
-          value = ValueViewModel(dateFormatter.format(answer.eventDate)),
-          actions = if (isReadOnly) None else {
-            Some(Actions(items = Seq(
-              ActionItemViewModel("site.change", PaymentDetailsPage(eventType, index).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("paymentDetails.date.change.hidden"))
             )))
           }
         )

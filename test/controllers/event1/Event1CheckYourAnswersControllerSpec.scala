@@ -406,18 +406,18 @@ object Event1CheckYourAnswersControllerSpec {
         ), ""),
       Value(Text(text), ""), "")
 
+  private val membersDetailsContent = s"""<p class="govuk-body">Joe Bloggs</p>
+                                         |<p class="govuk-body">AA234567D</p>""".stripMargin
+
+  private val paymentDetails = s"""<p class="govuk-body">£1,000.00</p>
+                                  |<p class="govuk-body">08 November 2022</p>""".stripMargin
+
   private def expectedMemberSummaryListRows(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "membersDetails.checkYourAnswersLabel",
-      "Joe Bloggs",
+      membersDetailsContent,
       "/manage-pension-scheme-event-report/report/1/event-1-member-details?waypoints=event-1-check-answers-1",
       "membersDetails.change.hidden"
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
-      "membersDetails.checkYourAnswersLabel.nino",
-      "AA234567D",
-      "/manage-pension-scheme-event-report/report/1/event-1-member-details?waypoints=event-1-check-answers-1",
-      "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithText(
       "doYouHoldSignedMandate.checkYourAnswersLabel",
@@ -441,26 +441,16 @@ object Event1CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "paymentValueAndDate.value.checkYourAnswersLabel",
-      "£1,000.00",
+      paymentDetails,
       "/manage-pension-scheme-event-report/report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
       "paymentValueAndDate.value.change.hidden"
-    ),
-    fakeSummaryListRowWithTextWithHiddenContent(
-      "paymentValueAndDate.date.checkYourAnswersLabel",
-      "08 November 2022",
-      "/manage-pension-scheme-event-report/report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
-      "paymentValueAndDate.date.change.hidden"
     )
   )
 
   private def expectedMemberSummaryListRowsViewOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChangeViewOnly(
       "membersDetails.checkYourAnswersLabel",
-      "Joe Bloggs"
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChangeViewOnly(
-      "membersDetails.checkYourAnswersLabel.nino",
-      "AA234567D"
+      membersDetailsContent
     ),
     fakeSummaryListRowWithTextViewOnly(
       "doYouHoldSignedMandate.checkYourAnswersLabel",
@@ -480,23 +470,17 @@ object Event1CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "paymentValueAndDate.value.checkYourAnswersLabel",
-      "£1,000.00"
-    ),
-    fakeSummaryListRowWithTextWithHiddenContentViewOnly(
-      "paymentValueAndDate.date.checkYourAnswersLabel",
-      "08 November 2022"
+      paymentDetails
     )
   )
 
+  private val companyDetailsContent = s"""<p class="govuk-body">Company Name</p>
+                                         |<p class="govuk-body">12345678</p>""".stripMargin
+
   private def expectedEmployerSummaryListRows(implicit messages: Messages): Seq[SummaryListRow] = Seq(
-    fakeSummaryListRowWithText(
-      "companyDetails.CYA.companyName",
-      "Company Name",
-      "/manage-pension-scheme-event-report/report/1/event-1-company-details?waypoints=event-1-check-answers-1"
-    ),
-    fakeSummaryListRowWithText(
-      "companyDetails.CYA.companyNumber",
-      "12345678",
+    fakeSummaryListRowWithHtmlContent(
+      "companyDetails.title",
+      companyDetailsContent,
       "/manage-pension-scheme-event-report/report/1/event-1-company-details?waypoints=event-1-check-answers-1"
     ),
     fakeSummaryListRowWithHtmlContent(
@@ -516,26 +500,16 @@ object Event1CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "paymentValueAndDate.value.checkYourAnswersLabel",
-      "£1,000.00",
+      paymentDetails,
       "/manage-pension-scheme-event-report/report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
       "paymentValueAndDate.value.change.hidden"
-    ),
-    fakeSummaryListRowWithTextWithHiddenContent(
-      "paymentValueAndDate.date.checkYourAnswersLabel",
-      "08 November 2022",
-      "/manage-pension-scheme-event-report/report/1/event-1-payment-details?waypoints=event-1-check-answers-1",
-      "paymentValueAndDate.date.change.hidden"
     )
   )
 
   private def expectedEmployerSummaryListRowsViewOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
-    fakeSummaryListRowWithTextViewOnly(
-      "companyDetails.CYA.companyName",
-      "Company Name"
-    ),
-    fakeSummaryListRowWithTextViewOnly(
-      "companyDetails.CYA.companyNumber",
-      "12345678"
+    fakeSummaryListRowWithHtmlContentViewOnly(
+      "companyDetails.title",
+      companyDetailsContent
     ),
     fakeSummaryListRowWithHtmlContentViewOnly(
       "companyDetails.CYA.companyAddress",
@@ -551,11 +525,7 @@ object Event1CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "paymentValueAndDate.value.checkYourAnswersLabel",
-      "£1,000.00"
-    ),
-    fakeSummaryListRowWithTextWithHiddenContentViewOnly(
-      "paymentValueAndDate.date.checkYourAnswersLabel",
-      "08 November 2022"
+      paymentDetails
     )
   )
 }

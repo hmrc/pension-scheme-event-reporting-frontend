@@ -30,35 +30,22 @@ import viewmodels.implicits._
 
 object LumpSumAmountAndDateSummary extends Formatters {
 
-  def rowLumpSumValue(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, eventType: EventType, index: Index)
-                     (implicit messages: Messages): Option[SummaryListRow] =
+  def rowLumpSumDetails(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, eventType: EventType, index: Index)
+                       (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(LumpSumAmountAndDatePage(eventType, index)).map {
       answer =>
 
+        val htmlContent = HtmlContent(
+          s"""<p class="govuk-body">£${currencyFormatter.format(answer.lumpSumAmount)}</p>
+             |<p class="govuk-body">${dateFormatter.format(answer.lumpSumDate)}</p>""".stripMargin)
+
         SummaryListRow(
           key = messages("lumpSumAmountAndDate.value.checkYourAnswersLabel"),
-          value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer.lumpSumAmount)}")),
+          value = ValueViewModel(htmlContent),
           actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
               ActionItemViewModel("site.change", LumpSumAmountAndDatePage(eventType, index).changeLink(waypoints, sourcePage).url)
                 .withVisuallyHiddenText(messages("lumpSumAmountAndDate.value.change.hidden"))
-            )))
-          }
-        )
-    }
-
-  def rowLumpSumDate(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage, isReadOnly: Boolean, eventType: EventType, index: Index)
-                    (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(LumpSumAmountAndDatePage(eventType, index)).map {
-      answer =>
-
-        SummaryListRow(
-          key = messages("lumpSumAmountAndDate.date.checkYourAnswersLabel"),
-          value = ValueViewModel(dateFormatter.format(answer.lumpSumDate)),
-          actions = if (isReadOnly) None else {
-            Some(Actions(items = Seq(
-              ActionItemViewModel("site.change", LumpSumAmountAndDatePage(eventType, index).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("lumpSumAmountAndDate.date.change.hidden"))
             )))
           }
         )

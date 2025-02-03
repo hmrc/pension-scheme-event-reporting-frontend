@@ -42,9 +42,9 @@ class AmountCrystallisedAndDateSummarySpec extends AnyFreeSpec with Matchers wit
   private val eventType = Event6
 
 
-  "rowAmountCrystallised" - {
+  "rowCrystallisedDetails" - {
 
-    "must display correct information for the amount crystallised" in {
+    "must display correct information for the amount and date crystallised" in {
 
       val crystallisedDetails = CrystallisedDetails(1000000.00, LocalDate.now())
       val amountCrystallised = "£1,000,000.00"
@@ -52,43 +52,20 @@ class AmountCrystallisedAndDateSummarySpec extends AnyFreeSpec with Matchers wit
       val answer = UserAnswers().setOrException(AmountCrystallisedAndDatePage(eventType, 0), crystallisedDetails)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event6CheckYourAnswersPage(0)
+      val format = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
-      AmountCrystallisedAndDateSummary.rowCrystallisedValue(answer, waypoints, sourcePage, isReadOnly, 0) mustBe Some(
+      val htmlContent = HtmlContent(
+        s"""<p class="govuk-body">${amountCrystallised}</p>
+           |<p class="govuk-body">${format.format(crystallisedDetails.crystallisedDate)}</p>""".stripMargin)
+
+      AmountCrystallisedAndDateSummary.rowCrystallisedDetails(answer, waypoints, sourcePage, isReadOnly, 0) mustBe Some(
         SummaryListRow(
           key = messages("amountCrystallisedAndDate.value.checkYourAnswersLabel"),
-          value = ValueViewModel(HtmlContent(Html(amountCrystallised))),
+          value = ValueViewModel(htmlContent),
           actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
               ActionItemViewModel("site.change", AmountCrystallisedAndDatePage(eventType, index = 0).changeLink(waypoints, sourcePage).url)
                 .withVisuallyHiddenText(messages("amountCrystallisedAndDate.value.change.hidden"))
-            )))
-          }
-        )
-      )
-    }
-  }
-
-  "rowCrystallisedDate" - {
-
-    "must display correct information for the crystallised date" in {
-
-      val crystallisedDetails = CrystallisedDetails(1000.00, LocalDate.now())
-
-      val answer = UserAnswers().setOrException(AmountCrystallisedAndDatePage(eventType, 0), crystallisedDetails)
-      val waypoints: Waypoints = EmptyWaypoints
-      val sourcePage: CheckAnswersPage = Event6CheckYourAnswersPage(0)
-      val isReadOnly = false
-      val date = crystallisedDetails.crystallisedDate
-      val format = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-
-      AmountCrystallisedAndDateSummary.rowCrystallisedDate(answer, waypoints, sourcePage, isReadOnly, 0) mustBe Some(
-        SummaryListRow(
-          key = messages("amountCrystallisedAndDate.date.checkYourAnswersLabel"),
-          value = ValueViewModel(format.format(date)),
-          actions = if (isReadOnly) None else {
-            Some(Actions(items = Seq(
-              ActionItemViewModel("site.change", AmountCrystallisedAndDatePage(eventType, 0).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("amountCrystallisedAndDate.date.change.hidden"))
             )))
           }
         )
