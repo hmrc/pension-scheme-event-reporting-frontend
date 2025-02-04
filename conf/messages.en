@@ -528,7 +528,7 @@ whoWasTheTransferMade.change.hidden = Who was the transfer made to?
 
 schemeDetails.title = Scheme details
 schemeDetails.heading = Scheme details
-schemeDetails.schemeName = Scheme-name (optional)
+schemeDetails.schemeName = Scheme name (optional)
 schemeDetails.reference = Reference (optional)
 schemeDetails.checkYourAnswersLabel = Scheme details
 schemeDetails.error.required = Enter Scheme details
