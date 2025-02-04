@@ -1712,7 +1712,7 @@ fileUpload.memberDetails.generic.error.firstName = member’s first name cannot 
 fileUpload.memberDetails.generic.error.lastName = member’s last name cannot be blank and must contain only letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 fileUpload.memberDetails.generic.error.nino = member’s National Insurance number cannot be blank and must be in the correct format, for example QQ 12 34 56 C
 
-fileUpload.taxYear.generic.error = tax year cannot be blank a must be in the correct format, for example 27/3/2024
+fileUpload.taxYear.generic.error = tax year cannot be blank and must be in the correct format, for example 27/3/2024
 fileUpload.totalAmounts.generic.error = the total of the member’s pension input amounts cannot be blank and must only contain numbers or decimal points
 
 fileUpload.typeOfProtection.generic.error = "Error for type of protection needs to be confirmed"

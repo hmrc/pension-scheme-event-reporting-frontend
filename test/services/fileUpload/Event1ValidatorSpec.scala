@@ -26,7 +26,7 @@ import scala.collection.immutable.ArraySeq
 class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAndAfterEach {
   //scalastyle:off magic.number
 
-  private val validAddress = "10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GB"
+  private val validAddress = "10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,UK"
   private val commonUaEmployer = "employer,,,,,,,Company Name,12345678"
   private val moreThanMax: String = "a" * 161
   private val moreThanMaxAndSpecialChar: String = "a" * 161 + "%^&"
@@ -520,14 +520,14 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
       val data =
         s"""$header
               member,Joe,Bloggs,AA234567A,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,,,,,1000.00,08/11/2022
-              member,Joe,Bloggs,AA234567B,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,"$overMaxAddLength,$overMaxAddLength,$overMaxAddLength,$overMaxAddLength,ZZ1 1ZZ,GB",,,,1000.00,08/11/2022
-              member,Joe,Bloggs,AA234567C,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,"%123Sgdfg,*&^%wfdg,25*sgsd4,!£@qfqdt,345DFG2452,GB",,,,1000.00,08/11/2022
+              member,Joe,Bloggs,AA234567B,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,"$overMaxAddLength,$overMaxAddLength,$overMaxAddLength,$overMaxAddLength,ZZ1 1ZZ,UK",,,,1000.00,08/11/2022
+              member,Joe,Bloggs,AA234567C,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,"%123Sgdfg,*&^%wfdg,25*sgsd4,!£@qfqdt,345DFG2452,UK",,,,1000.00,08/11/2022
               member,Joe,Bloggs,AA234567D,YES,YES,NO,,,,RESIDENTIAL,,,,,,,,,,"10 Other Place,Some District,Anytown,Anyplace,ZZ1 1ZZ,GIBBERISH",,,,1000.00,08/11/2022"""
 
 
       val ((output, errors), rowNumber) = validate(data)
 
-      errors mustBe Seq(
+      errors.toList mustBe Seq(
         ValidationError(1, 20, messages("address.addressLine1.error.required", fullName), "addressLine1"),
         ValidationError(1, 20, messages("address.addressLine2.error.required", fullName), "addressLine2"),
         ValidationError(1, 20, messages("address.country.error.required", fullName), "country"),
@@ -540,7 +540,7 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
         ValidationError(3, 20, messages("address.addressLine3.error.invalid", fullName), "addressLine3", ArraySeq("^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$")),
         ValidationError(3, 20, messages("address.addressLine4.error.invalid", fullName), "addressLine4", ArraySeq("^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$")),
         ValidationError(3, 20, messages("enterPostcode.error.invalid", fullName), "postCode"),
-        ValidationError(4, 20, "address.country.error.invalid", "country")
+        ValidationError(4, 20, messages("address.country.error.required", fullName), "country")
       )
     }
 

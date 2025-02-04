@@ -266,7 +266,11 @@ class Event1Validator @Inject()(
     val country = countryOptions.options.filter(inputOption => {
       inputOption.label == countryInput.trim()
     })
-    country.head.value
+    if (country.isEmpty) {
+      ""
+    } else {
+      country.head.value
+    }
   }
 
   private def addressValidation(index: Int, chargeFields: Seq[String], fieldNumber: Int, isMemberJourney: Boolean = false, columns: Seq[String] = Seq.empty)
