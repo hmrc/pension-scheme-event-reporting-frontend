@@ -88,7 +88,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
           sendEmail(minimalDetails.name, email, taxYear, schemeName)
         }
 
-        schemeDetailsConnector.getPspSchemeDetails(request.loggedInUser.psaIdOrPspId, request.pstr).map(_.pspDetails.map {_.authorisingPSAID}).flatMap { authorisingPsaId =>
+        schemeDetailsConnector.getPspSchemeDetails(request.loggedInUser.psaIdOrPspId, request.pstr, request.srn).map(_.pspDetails.map {_.authorisingPSAID}).flatMap { authorisingPsaId =>
           minimalConnector.getMinimalDetails(request.loggedInUser.idName).flatMap { minimalDetails =>
             form(authorisingPsaId = authorisingPsaId)
               .bindFromRequest().fold(

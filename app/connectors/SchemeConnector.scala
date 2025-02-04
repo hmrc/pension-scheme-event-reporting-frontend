@@ -60,8 +60,7 @@ class SchemeConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig)
   def getSchemeDetails(psaId: String, idNumber: String, schemeIdType: String)
                       (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[PsaSchemeDetails] = {
 
-    val url = url"${config.schemeDetailsUrl}"
-
+    val url = url"${config.schemeDetailsUrl.format(idNumber)}"
     val headers: Seq[(String, String)] =
       Seq(
         ("idNumber", idNumber),
@@ -83,9 +82,9 @@ class SchemeConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig)
         }
     }
   }
-  def getPspSchemeDetails(pspId: String, pstr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PspSchemeDetails] = {
+  def getPspSchemeDetails(pspId: String, pstr: String, srn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PspSchemeDetails] = {
 
-    val url = url"${config.pspSchemeDetailsUrl}"
+    val url = url"${config.pspSchemeDetailsUrl.format(srn)}"
     val headers = Seq(("pstr", pstr), ("pspId", pspId))
 
     http.get(url).setHeader(headers: _*).execute[HttpResponse] map { response =>

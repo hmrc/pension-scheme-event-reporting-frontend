@@ -29,7 +29,8 @@ object RequiredDataRequest {
     "returnUrl",
     request,
     LoggedInUser("", Administrator, ""),
-    None
+    None,
+    "srn"
   )
 
 }

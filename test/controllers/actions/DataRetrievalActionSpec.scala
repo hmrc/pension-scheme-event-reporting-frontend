@@ -57,7 +57,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
       when(userAnswersCacheConnector.get(eqTo(pstr))(any(), any())) thenReturn Future(None)
       val action = new Harness
 
-      val expectedResult = OptionalDataRequest(pstr, "schemeName", "returnUrl", request, loggedInUser, None)
+      val expectedResult = OptionalDataRequest(pstr, "schemeName", "returnUrl", request, loggedInUser, None, "srn")
       val futureResult = action.callTransform(request)
 
       whenReady(futureResult) { result =>
