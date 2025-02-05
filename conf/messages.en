@@ -1804,6 +1804,11 @@ fileUpload.valueOfFund.generic.error = value of fund cannot be blank and must on
 fileUpload.loanAmount.generic.error = loan amount cannot be blank and must only contain numbers or decimal points
 fileUpload.memberOrEmployer.generic.error = entry of who received the unauthorised payment or deemed unauthorised payment cannot be blank and must contain only letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 fileUpload.natureOfPayment.generic.error = nature of payment cannot be blank and must contain only letters and numbers
+fileUpload.doYouHoldSignedMandate.generic.error = entry for whether you hold a signed mandate cannot be blank
+fileUpload.valueOfUnauthorisedPayment.generic.error = What is the total value or amount of the unauthorised payment?
+fileUpload.schemeUnAuthPaySurcharge.generic.error = entry for whether the scheme paying the unauthorised payment surcharge on behalf of the member cannot be blank
+fileUpload.transferMadeTo.generic.error = entry for who the transfer was made to cannot be left blank
+fileUpload.schemeDetails.generic.error = scheme details cannot be left blank
 
 fileUpload.bceDate.generic.error = benefit crystallisation date cannot be blank a must be in the correct format, for example 27/3/2024
 fileUpload.bceType.generic.error = type of benefit crystallisation cannot be blank and must contain only letters and numbers
